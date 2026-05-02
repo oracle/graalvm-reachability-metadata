@@ -1,0 +1,1066 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dea92-8410-7212-b03d-a4ce29fa8cbf
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.smallrye.classfile:jdk-classfile-backport:26
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "26" when "$version$" is replaced with "26".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+- Set "coordinates" to "io.smallrye.classfile:jdk-classfile-backport:26".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "26".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven and upstream, then patch the discovered metadata JSON directly with version-templated URLs.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+-rw-rw-r-- 1 vjovanov vjovanov 72 May  2 23:22 build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+{
+  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
+}
+
+web search: 
+web search: Maven io.smallrye.classfile jdk-classfile-backport 26 pom scm url sources tests javadoc
+web search: 
+web search: 
+web search: 
+web search: https://javadoc.io/doc/io.smallrye.classfile/jdk-classfile-backport/latest/index.html
+codex
+The POM on Maven Central identifies this as a `jar`, version `26`, with SCM tag `26` and the GitHub root under `smallrye/jdk-classfile-backport`; I’m checking whether Central also publishes sources, tests, and Javadoc artifacts so the metadata can prefer Maven-hosted URLs where appropriate.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:21:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jmx/src/test/java",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-json/src/test/java",
+metadata/io.dropwizard.metrics/metrics-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jvm/src/test",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-$version$/src/test",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-javadoc.jar",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/fusesource/hawtjni/hawtjni-runtime/$version$/hawtjni-runtime-$version$-sources.jar",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:7:    "test-code-url" : "N/A",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/fusesource/hawtjni/hawtjni-runtime/$version$/hawtjni-runtime-$version$-javadoc.jar",
+metadata/com.android.tools.build/builder-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:7:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-javadoc.jar",
+metadata/com.android.tools.build/builder-model/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:22:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-javadoc.jar",
+metadata/com.android.tools.build/builder-model/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:37:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-javadoc.jar",
+metadata/javax.portlet/portlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-sources.jar",
+metadata/javax.portlet/portlet-api/index.json:7:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/smallrye/classfile/jdk-classfile-backport/26</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/smallrye/classfile/jdk-classfile-backport/26</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jdk-classfile-backport-26-javadoc.jar" title="jdk-classfile-backport-26-javadoc.jar">jdk-classfile-backport-26-javadoc.jar</a>             2026-01-16 23:00   1670510      
+<a href="jdk-classfile-backport-26-javadoc.jar.asc" title="jdk-classfile-backport-26-javadoc.jar.asc">jdk-classfile-backport-26-javadoc.jar.asc</a>         2026-01-16 23:00       821      
+<a href="jdk-classfile-backport-26-javadoc.jar.md5" title="jdk-classfile-backport-26-javadoc.jar.md5">jdk-classfile-backport-26-javadoc.jar.md5</a>         2026-01-16 23:00        32      
+<a href="jdk-classfile-backport-26-javadoc.jar.sha1" title="jdk-classfile-backport-26-javadoc.jar.sha1">jdk-classfile-backport-26-javadoc.jar.sha1</a>        2026-01-16 23:00        40      
+<a href="jdk-classfile-backport-26-javadoc.jar.sha256" title="jdk-classfile-backport-26-javadoc.jar.sha256">jdk-classfile-backport-26-javadoc.jar.sha256</a>      2026-01-16 23:00        64      
+<a href="jdk-classfile-backport-26-javadoc.jar.sha512" title="jdk-classfile-backport-26-javadoc.jar.sha512">jdk-classfile-backport-26-javadoc.jar.sha512</a>      2026-01-16 23:00       128      
+<a href="jdk-classfile-backport-26-sources.jar" title="jdk-classfile-backport-26-sources.jar">jdk-classfile-backport-26-sources.jar</a>             2026-01-16 23:00    615297      
+<a href="jdk-classfile-backport-26-sources.jar.asc" title="jdk-classfile-backport-26-sources.jar.asc">jdk-classfile-backport-26-sources.jar.asc</a>         2026-01-16 23:00       821      
+<a href="jdk-classfile-backport-26-sources.jar.md5" title="jdk-classfile-backport-26-sources.jar.md5">jdk-classfile-backport-26-sources.jar.md5</a>         2026-01-16 23:00        32      
+<a href="jdk-classfile-backport-26-sources.jar.sha1" title="jdk-classfile-backport-26-sources.jar.sha1">jdk-classfile-backport-26-sources.jar.sha1</a>        2026-01-16 23:00        40      
+<a href="jdk-classfile-backport-26-sources.jar.sha256" title="jdk-classfile-backport-26-sources.jar.sha256">jdk-classfile-backport-26-sources.jar.sha256</a>      2026-01-16 23:00        64      
+<a href="jdk-classfile-backport-26-sources.jar.sha512" title="jdk-classfile-backport-26-sources.jar.sha512">jdk-classfile-backport-26-sources.jar.sha512</a>      2026-01-16 23:00       128      
+<a href="jdk-classfile-backport-26.jar" title="jdk-classfile-backport-26.jar">jdk-classfile-backport-26.jar</a>                     2026-01-16 23:00    967151      
+<a href="jdk-classfile-backport-26.jar.asc" title="jdk-classfile-backport-26.jar.asc">jdk-classfile-backport-26.jar.asc</a>                 2026-01-16 23:00       821      
+<a href="jdk-classfile-backport-26.jar.md5" title="jdk-classfile-backport-26.jar.md5">jdk-classfile-backport-26.jar.md5</a>                 2026-01-16 23:00        32      
+<a href="jdk-classfile-backport-26.jar.sha1" title="jdk-classfile-backport-26.jar.sha1">jdk-classfile-backport-26.jar.sha1</a>                2026-01-16 23:00        40      
+<a href="jdk-classfile-backport-26.jar.sha256" title="jdk-classfile-backport-26.jar.sha256">jdk-classfile-backport-26.jar.sha256</a>              2026-01-16 23:00        64      
+<a href="jdk-classfile-backport-26.jar.sha512" title="jdk-classfile-backport-26.jar.sha512">jdk-classfile-backport-26.jar.sha512</a>              2026-01-16 23:00       128      
+<a href="jdk-classfile-backport-26.pom" title="jdk-classfile-backport-26.pom">jdk-classfile-backport-26.pom</a>                     2026-01-16 23:00      3994      
+<a href="jdk-classfile-backport-26.pom.asc" title="jdk-classfile-backport-26.pom.asc">jdk-classfile-backport-26.pom.asc</a>                 2026-01-16 23:00       821      
+<a href="jdk-classfile-backport-26.pom.md5" title="jdk-classfile-backport-26.pom.md5">jdk-classfile-backport-26.pom.md5</a>                 2026-01-16 23:00        32      
+<a href="jdk-classfile-backport-26.pom.sha1" title="jdk-classfile-backport-26.pom.sha1">jdk-classfile-backport-26.pom.sha1</a>                2026-01-16 23:00        40      
+<a href="jdk-classfile-backport-26.pom.sha256" title="jdk-classfile-backport-26.pom.sha256">jdk-classfile-backport-26.pom.sha256</a>              2026-01-16 23:00        64      
+<a href="jdk-classfile-backport-26.pom.sha512" title="jdk-classfile-backport-26.pom.sha512">jdk-classfile-backport-26.pom.sha512</a>              2026-01-16 23:00       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-build-parent</artifactId>
+        <version>48</version>
+    </parent>
+
+    <groupId>io.smallrye.classfile</groupId>
+    <artifactId>jdk-classfile-backport</artifactId>
+    <version>26</version>
+
+    <name>JDK Classfile API backport</name>
+    <description>An unofficial backport of the JDK Classfile API to Java 17</description>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+        <maven.javadoc.failOnWarning>false</maven.javadoc.failOnWarning>
+    </properties>
+
+    <packaging>jar</packaging>
+
+    <url>https://github.com/smallrye/jdk-classfile-backport</url>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License, version 2, with the Classpath Exception</name>
+            <url>http://openjdk.java.net/legal/gplv2+ce.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/smallrye/jdk-classfile-backport</url>
+        <connection>scm:git:git://github.com/smallrye/jdk-classfile-backport</connection>
+        <developerConnection>scm:git:git@github.com:smallrye/jdk-classfile-backport</developerConnection>
+      <tag>26</tag>
+  </scm>
+
+    <developers>
+        <developer>
+            <name>David Lloyd</name>
+            <email>david.lloyd@redhat.com</email>
+            <organization>Contributors to the unofficial JDK classfile backporting project</organization>
+            <organizationUrl>https://github.com/smallrye/jdk-classfile-backport</organizationUrl>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <url>https://github.com/smallrye/jdk-classfile-backport/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>6.0.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/snippet-files/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>format-sources</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>impsort-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>sort-imports</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>sort</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26.pom
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/converters/
+web search: 
+web search: 'classfile' in https://repo1.maven.org/maven2/io/smallrye/
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/classfile/
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/
+web search: 
+web search: site:github.com/smallrye/jdk-classfile-backport/tree/26 src/test jdk-classfile-backport
+codex
+Central publishes the main JAR, sources JAR, and Javadoc JAR for `26`, but no `-tests.jar`. I’m using the upstream tag for the test suite URL and keeping this as a normal JVM artifact because the published artifact is a `jar`, not an Android/JS/native-only package.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/smallrye/jdk-classfile-backport.git 'refs/tags/26' 'refs/tags/v26'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/src/test?ref=26' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26.jar | jar tf /dev/stdin | head -40' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+curl: (23) Failure writing output to destination
+
+ succeeded in 365ms:
+036303deaddb853426f720874cd8f96efc322974	refs/tags/26
+
+ succeeded in 375ms:
+[
+  {
+    "name": "java",
+    "path": "src/test/java",
+    "sha": "6659b01bbed455801b55e538bf0e5d0e81f9cae3",
+    "size": 0,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/src/test/java?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/trees/6659b01bbed455801b55e538bf0e5d0e81f9cae3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/src/test/java?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/trees/6659b01bbed455801b55e538bf0e5d0e81f9cae3",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL -o "$tmp" https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26.jar && jar tf "$tmp" | head -60; rm -f "$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/smallrye/jdk-classfile-backport/contents?ref=26' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/README.md?ref=26 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 149ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/smallrye/
+io/smallrye/classfile/
+io/smallrye/classfile/components/
+io/smallrye/classfile/extras/
+io/smallrye/classfile/extras/constant/
+io/smallrye/classfile/extras/reflect/
+io/smallrye/classfile/attribute/
+io/smallrye/classfile/impl/
+io/smallrye/classfile/impl/verifier/
+io/smallrye/classfile/instruction/
+io/smallrye/classfile/constantpool/
+META-INF/maven/
+META-INF/maven/io.smallrye.classfile/
+META-INF/maven/io.smallrye.classfile/jdk-classfile-backport/
+io/smallrye/classfile/ClassHierarchyResolver$1.class
+io/smallrye/classfile/FieldTransform$1.class
+io/smallrye/classfile/TypeKind.class
+io/smallrye/classfile/ClassFile$LineNumbersOption.class
+io/smallrye/classfile/ClassFileTransform.class
+io/smallrye/classfile/CodeBuilder.class
+io/smallrye/classfile/Interfaces.class
+io/smallrye/classfile/ClassFile$ClassHierarchyResolverOption.class
+io/smallrye/classfile/Annotation.class
+io/smallrye/classfile/Attribute.class
+io/smallrye/classfile/CodeBuilder$1.class
+io/smallrye/classfile/FieldBuilder.class
+io/smallrye/classfile/TypeAnnotation$OffsetTarget.class
+io/smallrye/classfile/ClassReader.class
+io/smallrye/classfile/BootstrapMethodEntry.class
+io/smallrye/classfile/ClassFile$ConstantPoolSharingOption.class
+io/smallrye/classfile/MethodElement.class
+io/smallrye/classfile/Signature.class
+io/smallrye/classfile/TypeAnnotation$TypePathComponent$Kind.class
+io/smallrye/classfile/Opcode$Kind.class
+io/smallrye/classfile/ClassHierarchyResolver$1Factory.class
+io/smallrye/classfile/Signature$RefTypeSig.class
+io/smallrye/classfile/ClassFile$DeadLabelsOption.class
+io/smallrye/classfile/ClassTransform$2.class
+io/smallrye/classfile/FieldTransform.class
+io/smallrye/classfile/CodeTransform$1.class
+io/smallrye/classfile/CodeTransform$2.class
+io/smallrye/classfile/AnnotationValue$OfEnum.class
+io/smallrye/classfile/AccessFlags.class
+io/smallrye/classfile/FieldElement.class
+io/smallrye/classfile/MethodTransform$2.class
+io/smallrye/classfile/Opcode.class
+io/smallrye/classfile/ClassElement.class
+io/smallrye/classfile/AnnotationValue$OfInt.class
+io/smallrye/classfile/FieldModel.class
+io/smallrye/classfile/CustomAttribute.class
+io/smallrye/classfile/AnnotationValue$OfClass.class
+io/smallrye/classfile/PseudoInstruction.class
+io/smallrye/classfile/package-info.class
+io/smallrye/classfile/ClassHierarchyResolver$2.class
+io/smallrye/classfile/AnnotationValue$OfLong.class
+io/smallrye/classfile/TypeAnnotation$TypePathComponent.class
+io/smallrye/classfile/Signature$TypeArg.class
+
+ succeeded in 163ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "6a003840243cac923fd391e071093f6f0746b6e6",
+    "size": 0,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/.github?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/tree/26/.github",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/trees/6a003840243cac923fd391e071093f6f0746b6e6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/.github?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/trees/6a003840243cac923fd391e071093f6f0746b6e6",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/tree/26/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "ef97236ebc84261242ef3cc9a0e5e0a226af2f81",
+    "size": 180,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/.gitignore?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/blob/26/.gitignore",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/ef97236ebc84261242ef3cc9a0e5e0a226af2f81",
+    "download_url": "https://raw.githubusercontent.com/smallrye/jdk-classfile-backport/26/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/.gitignore?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/ef97236ebc84261242ef3cc9a0e5e0a226af2f81",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/blob/26/.gitignore"
+    }
+  },
+  {
+    "name": ".gitmodules",
+    "path": ".gitmodules",
+    "sha": "b8256cf3211c51bdb113d67735abe39d0c114cd6",
+    "size": 64,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/.gitmodules?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/blob/26/.gitmodules",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/b8256cf3211c51bdb113d67735abe39d0c114cd6",
+    "download_url": "https://raw.githubusercontent.com/smallrye/jdk-classfile-backport/26/.gitmodules",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/.gitmodules?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/b8256cf3211c51bdb113d67735abe39d0c114cd6",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/blob/26/.gitmodules"
+    }
+  },
+  {
+    "name": "COPYING.txt",
+    "path": "COPYING.txt",
+    "sha": "d159169d1050894d3ea3b98e1c965c4058208fe1",
+    "size": 18092,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/COPYING.txt?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/blob/26/COPYING.txt",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/d159169d1050894d3ea3b98e1c965c4058208fe1",
+    "download_url": "https://raw.githubusercontent.com/smallrye/jdk-classfile-backport/26/COPYING.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/COPYING.txt?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/d159169d1050894d3ea3b98e1c965c4058208fe1",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/blob/26/COPYING.txt"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "f6819b813dba9abacd52c38f99e820844ae803db",
+    "size": 1143,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/LICENSE.txt?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/blob/26/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/f6819b813dba9abacd52c38f99e820844ae803db",
+    "download_url": "https://raw.githubusercontent.com/smallrye/jdk-classfile-backport/26/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/LICENSE.txt?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/f6819b813dba9abacd52c38f99e820844ae803db",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/blob/26/LICENSE.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "aa29567c6abc42408893c7b2acea5abc516cee36",
+    "size": 3100,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/README.md?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/blob/26/README.md",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/aa29567c6abc42408893c7b2acea5abc516cee36",
+    "download_url": "https://raw.githubusercontent.com/smallrye/jdk-classfile-backport/26/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/README.md?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/aa29567c6abc42408893c7b2acea5abc516cee36",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/blob/26/README.md"
+    }
+  },
+  {
+    "name": "jdk",
+    "path": "jdk",
+    "sha": "45dcc0e7e26b8130236c5ba80edb54fa530dab57",
+    "size": 0,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/jdk?ref=26",
+    "html_url": "https://github.com/openjdk/jdk/tree/45dcc0e7e26b8130236c5ba80edb54fa530dab57",
+    "git_url": "https://api.github.com/repos/openjdk/jdk/git/trees/45dcc0e7e26b8130236c5ba80edb54fa530dab57",
+    "download_url": null,
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/jdk?ref=26",
+      "git": "https://api.github.com/repos/openjdk/jdk/git/trees/45dcc0e7e26b8130236c5ba80edb54fa530dab57",
+      "html": "https://github.com/openjdk/jdk/tree/45dcc0e7e26b8130236c5ba80edb54fa530dab57"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "6ff436b8b332dd75222acdf91d374f1971a46c50",
+    "size": 3994,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/pom.xml?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/blob/26/pom.xml",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/6ff436b8b332dd75222acdf91d374f1971a46c50",
+    "download_url": "https://raw.githubusercontent.com/smallrye/jdk-classfile-backport/26/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/pom.xml?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/6ff436b8b332dd75222acdf91d374f1971a46c50",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/blob/26/pom.xml"
+    }
+  },
+  {
+    "name": "process-patch.pl",
+    "path": "process-patch.pl",
+    "sha": "e4ae33682142d349443654d0b5f9ce53d9780092",
+    "size": 2198,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/process-patch.pl?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/blob/26/process-patch.pl",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/e4ae33682142d349443654d0b5f9ce53d9780092",
+    "download_url": "https://raw.githubusercontent.com/smallrye/jdk-classfile-backport/26/process-patch.pl",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/process-patch.pl?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/e4ae33682142d349443654d0b5f9ce53d9780092",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/blob/26/process-patch.pl"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "d1f49d1f86ce59334d95db5c18118fa6339da561",
+    "size": 0,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/src?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/tree/26/src",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/trees/d1f49d1f86ce59334d95db5c18118fa6339da561",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/src?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/trees/d1f49d1f86ce59334d95db5c18118fa6339da561",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/tree/26/src"
+    }
+  },
+  {
+    "name": "utils",
+    "path": "utils",
+    "sha": "88c8e49dc32d18bf3100fa199869b7c007a42522",
+    "size": 0,
+    "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/utils?ref=26",
+    "html_url": "https://github.com/smallrye/jdk-classfile-backport/tree/26/utils",
+    "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/trees/88c8e49dc32d18bf3100fa199869b7c007a42522",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/utils?ref=26",
+      "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/trees/88c8e49dc32d18bf3100fa199869b7c007a42522",
+      "html": "https://github.com/smallrye/jdk-classfile-backport/tree/26/utils"
+    }
+  }
+]
+
+ succeeded in 188ms:
+{
+  "name": "README.md",
+  "path": "README.md",
+  "sha": "aa29567c6abc42408893c7b2acea5abc516cee36",
+  "size": 3100,
+  "url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/README.md?ref=26",
+  "html_url": "https://github.com/smallrye/jdk-classfile-backport/blob/26/README.md",
+  "git_url": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/aa29567c6abc42408893c7b2acea5abc516cee36",
+  "download_url": "https://raw.githubusercontent.com/smallrye/jdk-classfile-backport/26/README.md",
+  "type": "file",
+  "content": "VW5vZmZpY2lhbCBKREsgQ2xhc3NmaWxlIEFQSSBCYWNrcG9ydAo9PT09PT09\nPQoKWyFbTWF2ZW4gQ2VudHJhbF0oaHR0cHM6Ly9pbWcuc2hpZWxkcy5pby9t\nYXZlbi1jZW50cmFsL3YvaW8uc21hbGxyeWUuY2xhc3NmaWxlL2pkay1jbGFz\nc2ZpbGUtYmFja3BvcnQ/Y29sb3I9Z3JlZW4pXShodHRwczovL3NlYXJjaC5t\nYXZlbi5vcmcvc2VhcmNoP3E9Zzppby5zbWFsbHJ5ZS5jbGFzc2ZpbGUlMjBB\nTkQlMjBhOmpkay1jbGFzc2ZpbGUtYmFja3BvcnQpCgpUaGlzIGlzIGEgYmFj\na3BvcnQgdG8gSkRLIDE3IG9mIHRoZSBuZXcgY2xhc3NmaWxlIEFQSSBmb3Vu\nZCBpbiBKREsgMjEgYW5kIGxhdGVyLgoKQnVncyBpbiB0aGlzIHByb2plY3Qg\nc2hvdWxkIGJlIHJlcG9ydGVkIHRvIFt0aGUgR2l0SHViIGlzc3VlIHRyYWNr\nZXJdKGh0dHBzOi8vZ2l0aHViLmNvbS9zbWFsbHJ5ZS9qZGstY2xhc3NmaWxl\nLWJhY2twb3J0L2lzc3VlcykgZmlyc3QuIEJ1Z3MgaW4gdGhpcyBwcm9qZWN0\nIGFyZSBsaWtlbHkgdG8gYmUgYSByZXN1bHQgb2YgYmFja3BvcnRpbmcuIFNv\nbWUgYnVncyBtaWdodCBiZSByZWxheWVkIHVwc3RyZWFtIGJ5IHRoZSBwcm9q\nZWN0IG1haW50YWluZXIocyksIHN1YmplY3QgdG8gdGVzdGluZyBhbmQgdmVy\naWZpY2F0aW9uOyBpbiB0aGlzIGNhc2UsIHRoZSB1cHN0cmVhbSBidWcgd2ls\nbCBiZSBsaW5rZWQgZm9yIGVhc2llciB0cmFja2luZy4KClJlbG9jYXRpb24g\nbm90aWNlCi0tLS0tLS0tLS0tLS0tLS0tCgpUaGlzIHByb2plY3QgaGFzIGJl\nZW4gcmVsb2NhdGVkIGZyb20gb2xkIHRvIG5ldyBNYXZlbiBjb29yZGluYXRl\ncywgYW5kIGFsc28gaGFzIGEgbmV3IHBhY2thZ2UgbmFtZSwgYXMgb2YgdmVy\nc2lvbiAyNi4KClBsZWFzZSB1c2UgdGhlIG5ldyBNYXZlbiBjb29yZGluYXRl\ncyBpbiB5b3VyIGRlcGVuZGVuY3kgZGVjbGFyYXRpb246CgpgYGB4bWwKICAg\nIDxkZXBlbmRlbmN5PgogICAgICAgIDxncm91cElkPmlvLnNtYWxscnllLmNs\nYXNzZmlsZTwvZ3JvdXBJZD4KICAgICAgICA8YXJ0aWZhY3RJZD5qZGstY2xh\nc3NmaWxlLWJhY2twb3J0PC9hcnRpZmFjdElkPgogICAgPC9kZXBlbmRlbmN5\nPgpgYGAKClRoZSBjbGFzc2ZpbGUgQVBJIG5vdyBoYXMgYSBiYXNlIHBhY2th\nZ2UgbmFtZSBvZiBgaW8uc21hbGxyeWUuY2xhc3NmaWxlYC4gR2VuZXJhbGx5\nIGl0IGlzIHN1ZmZpY2llbnQgdG8gc2VhcmNoLWFuZC1yZXBsYWNlIHRoZSBv\nbGQgcGFja2FnZSBuYW1lIChgaW8uZ2l0aHViLmRtbGxveWQuY2xhc3NmaWxl\nYCkgaW4geW91ciBwcm9qZWN0cyB0byB1c2UgdGhlIG5ldyBBUEkgdmVyc2lv\nbi4KClJlbGVhc2VzCi0tLS0tLS0tCgpSZWxlYXNlcyBvZiB0aGUgcHJvamVj\ndCByb3VnaGx5IHRyYWNrIHJlbGVhc2VzIG9mIHRoZSBjb3JyZXNwb25kaW5n\nIEpESyBmcm9tIHdoaWNoIGl0IGlzIGJhY2twb3J0ZWQuIFRoaXMgbWVhbnMg\ndGhhdCB2ZXJzaW9uIDI0Lnggb2YgdGhpcyBwcm9qZWN0IGNvcnJlc3BvbmRz\nIHRvIHRoZSBzdGF0ZSBvZiB0aGUgdXBzdHJlYW0gY2xhc3NmaWxlIEFQSSBp\nbiBKREsgMjQsIGFuZCBzbyBvbi4KCkJpbmFyeSBjb21wYXRpYmlsaXR5IGlz\nIG1haW50YWluZWQgd2l0aCBhIHN0cmljdG5lc3MgY29ycmVzcG9uZGluZyB0\nbyB0aGF0IG9mIHRoZSB1cHN0cmVhbSBBUEkuCgpJdCBpcyBjdXJyZW50bHkg\ncGxhbm5lZCB0byBjb250aW51ZSB0byBiYWNrcG9ydCBmZWF0dXJlcyBpbmRl\nZmluaXRlbHkuIFRoZSBtYWpvciB2ZXJzaW9uIG9mIHRoaXMgcHJvamVjdCB3\naWxsIGNvbnRpbnVlIHRvIGNvcnJlc3BvbmQgdG8gdGhlIEpESyBmcm9tIHdo\naWNoIHRoZSBjaGFuZ2VzIHdlcmUgYmFja3BvcnRlZC4gV2hlbiBwbGFubmlu\nZyBhIHRyYW5zaXRpb24gZnJvbSB0aGlzIGxpYnJhcnkgdG8gdGhlIG9mZmlj\naWFsIEFQSSwgYmUgc3VyZSB0aGF0IHRoZSBtYWpvciB2ZXJzaW9uIG9mIHRo\naXMgbGlicmFyeSBjb3JyZXNwb25kcyB0byB0aGUgdGFyZ2V0IEpESyB0byBh\ndm9pZCBhIHNpdHVhdGlvbiB3aGVyZSB5b3Ugc3RhcnQgdXNpbmcgZmVhdHVy\nZXMgd2hpY2ggYXJlIG5vdCBhdmFpbGFibGUgaW4gdGhlIEpESyB2ZXJzaW9u\nIHlvdSB3YW50IHRvIHRhcmdldCwgY2F1c2luZyBkaWZmaWN1bHRpZXMgd2hl\nbiBtaWdyYXRpbmcuCgpUaGUgcmVsZWFzZSBzY2hlZHVsZSBpcyBmYWlybHkg\nYWQtaG9jIGFuZCBpcnJlZ3VsYXIsIGJ1dCB3aWxsIGdlbmVyYWxseSBhbGln\nbiB3aXRoIHRoYXQgb2YgdGhlIHVwc3RyZWFtIEpESy4gSWYgeW91IGVuY291\nbnRlciBhIGJ1ZyB3aGljaCBoYXMgYmVlbiBmaXhlZCBpbiB0aGlzIHByb2pl\nY3QgYnV0IG5vdCB5ZXQgcmVsZWFzZWQsIGZlZWwgZnJlZSB0byBvcGVuIGFu\nIGlzc3VlIHRvIHJlcXVlc3QgYSByZWxlYXNlLgoKR2V0dGluZyBzdGFydGVk\nCi0tLS0tLS0tLS0tLS0tLQoKQWZ0ZXIgYWRkaW5nIHRoZSBhcHByb3ByaWF0\nZSBNYXZlbiBkZXBlbmRlbmN5IChzZWUgdGhlIE1hdmVuIHJlbGVhc2UgYmFk\nZ2UgYWJvdmUpLCB0aGUgZWFzaWVzdCBlbnRyeSBwb2ludHMgYXJlOgoKRm9y\nIHBhcnNpbmcgYSBjbGFzczoKCmBgYGphdmEKYnl0ZVtdIGIgPSBGaWxlcy5y\nZWFkQWxsQnl0ZXMoUGF0aC5vZigic29tZS9maWxlLmNsYXNzIikpOwpDbGFz\nc01vZGVsIG1vZGVsID0gQ2xhc3NGaWxlLm9mKCkucGFyc2UoYik7Ci8vIG5v\ndywgZG8gc29tZXRoaW5nIHdpdGggYG1vZGVsYC4uLgpgYGAKCk9yIGZvciB3\ncml0aW5nIGEgY2xhc3M6CgpgYGBqYXZhCmJ5dGVbXSBiID0gQ2xhc3NGaWxl\nLm9mKCkuYnVpbGQoY2xhc3NEZXNjLCBjbGFzc0J1aWxkZXIgLT4gewogICAg\nLy8gLi4uIGJ1aWxkIHRoZSBjbGFzcyBoZXJlIC4uLgp9KTsKYGBgCk1vcmUg\naW5mb3JtYXRpb24KLS0tLS0tLS0tLS0tLS0tLQoKRm9yIG1vcmUgaW5mb3Jt\nYXRpb24gb24gdGhpcyBBUEksIHNlZToKCiogW0pFUCA0ODRdKGh0dHBzOi8v\nb3Blbmpkay5vcmcvamVwcy80ODQpCiogW1RoZSBvZmZpY2lhbCB1cHN0cmVh\nbSBkb2N1bWVudGF0aW9uIGF0IE9yYWNsZV0oaHR0cHM6Ly9kb2NzLm9yYWNs\nZS5jb20vZW4vamF2YS9qYXZhc2UvMjQvZG9jcy9hcGkvamF2YS5iYXNlL2ph\ndmEvbGFuZy9jbGFzc2ZpbGUvcGFja2FnZS1zdW1tYXJ5Lmh0bWwpCg==\n",
+  "encoding": "base64",
+  "_links": {
+    "self": "https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/README.md?ref=26",
+    "git": "https://api.github.com/repos/smallrye/jdk-classfile-backport/git/blobs/aa29567c6abc42408893c7b2acea5abc516cee36",
+    "html": "https://github.com/smallrye/jdk-classfile-backport/blob/26/README.md"
+  }
+}
+
+codex
+I have enough to patch the JSON now: Maven Central for sources/Javadoc, the GitHub `26` tag for tests, no language marker, and no `not-for-native-image` marker.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+{
+  "coordinates": "io.smallrye.classfile:jdk-classfile-backport:26",
+  "repository-url": "https://github.com/smallrye/jdk-classfile-backport",
+  "source-code-url": "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
+  "test-code-url": "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
+  "description": "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26-sources.jar | sed -n '1,6p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 21:23:36 GMT
+content-type: application/java-archive
+content-length: 615297
+cf-ray: 9f5a16886c81576e-ZRH
+cf-cache-status: HIT
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26-javadoc.jar | sed -n '1,6p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java | sed -n '1,10p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 291ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 21:23:36 GMT
+content-type: application/java-archive
+content-length: 1670510
+cf-ray: 9f5a16886d8a03a3-ZRH
+cf-cache-status: MISS
+
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+2026-05-02T21:23:54.850270Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+exec
+/usr/bin/bash -lc "ps -ef | rg 'curl -fsSI https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java|sed -n' || true" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+vjovanov 2052473 2045589  0 23:23 ?        00:00:00 /usr/bin/bash -c curl -fsSI https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java | sed -n '1,10p'
+vjovanov 2052475 2052473  0 23:23 ?        00:00:00 curl -fsSI https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java
+vjovanov 2052476 2052473  0 23:23 ?        00:00:00 sed -n 1,10p
+vjovanov 2054308 2045589  0 23:23 ?        00:00:00 /usr/bin/bash -c ps -ef | rg 'curl -fsSI https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java|sed -n' || true
+vjovanov 2054310 2054308  0 23:23 ?        00:00:00 rg curl -fsSI https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java|sed -n
+
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+exec
+/usr/bin/bash -lc 'kill 2052473 2052475 2052476 || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+ exited -1 in 24618ms:
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26.pom
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/classfile/
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/
+web search: 
+web search: https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/
+web search: 
+web search: 
+web search: 
+web search: smallrye/jdk-classfile-backport README backport JDK 17 classfile API
+web search: 
+web search: api.github.com/repos/smallrye/jdk-classfile-backport/contents/src/test?ref=26
+web search: 
+web search: smallrye jdk-classfile-backport src/test/java
+web search: 
+web search: https://mvnrepository.com/artifact/io.smallrye.classfile/jdk-classfile-backport
+web search: 
+web search: https://github.com/smallrye/jdk-classfile-backport
+web search: 
+web search: https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+ succeeded in 142ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+{
+  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
+  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
+  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
+  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
+  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
+  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+}
+
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..4e90b29c9d1de9f79a512834ba092b138923c300
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+web search: 
+web search: io.smallrye.classfile jdk-classfile-backport 26 Maven Central
+web search: 
+web search: https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/classfile/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/
+web search: 
+web search: 
+web search: 
+web search: https://github.com/smallrye/jdk-classfile-backport
+codex
+One small normalization: I’m aligning the Maven URLs to the canonical `repo.maven.apache.org` host from the Central directory I verified.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..c8a3ebc2db499bf004b32599f7c230ec636c8f77
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..c8a3ebc2db499bf004b32599f7c230ec636c8f77
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json >/dev/null' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26-javadoc.jar | sed -n '1,5p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 21:25:16 GMT
+content-type: application/java-archive
+content-length: 1670510
+cf-ray: 9f5a18fadf3e9808-ZRH
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26-sources.jar | sed -n '1,5p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 21:25:16 GMT
+content-type: application/java-archive
+content-length: 615297
+cf-ray: 9f5a18faffba273b-ZRH
+
+exec
+/usr/bin/bash -lc "curl --max-time 10 -fsSL https://api.github.com/repos/smallrye/jdk-classfile-backport/contents/src/test/java?ref=26 | jq -r '.[0].html_url // .message'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..c8a3ebc2db499bf004b32599f7c230ec636c8f77
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+ succeeded in 189ms:
+https://github.com/smallrye/jdk-classfile-backport/tree/26/src/test/java/io
+
+web search: 
+web search: Maven Central Repository io smallrye classfile jdk-classfile-backport 26
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/26/jdk-classfile-backport-26-sources.jar
+codex
+Updated [io.smallrye.classfile-jdk-classfile-backport-26.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json:1).
+
+I set the repository, Maven-hosted sources/Javadoc URLs, GitHub tag-based test URL, and a two-sentence description. I left `language` absent and did not set `not-for-native-image`, since this is a normal JVM JAR artifact. Maven metadata confirms version `26` and the GitHub homepage, and javadoc.io resolves docs for version `26`. ([mvnrepository.com](https://mvnrepository.com/artifact/io.smallrye.classfile/jdk-classfile-backport?utm_source=openai))
+
+Validation run: JSON parses with `jq`; rendered source and Javadoc URLs return HTTP 200; GitHub API resolves the `26` test tree.
+diff --git a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+index d525a7f050f106e16e071a1821715349ecaf17a5..c8a3ebc2db499bf004b32599f7c230ec636c8f77
+--- a/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
++++ b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26"
++  "coordinates" : "io.smallrye.classfile:jdk-classfile-backport:26",
++  "repository-url" : "https://github.com/smallrye/jdk-classfile-backport",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
++  "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
++  "description" : "jdk-classfile-backport is an unofficial Java 17 backport of the JDK Classfile API introduced in JDK 21 and later. It lets JVM applications parse, transform, and generate class files through the io.smallrye.classfile API while tracking the upstream JDK classfile API by major version."
+ }
+
+tokens used
+164,838
+Updated [io.smallrye.classfile-jdk-classfile-backport-26.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b/build/discovered-artifact-metadata/io.smallrye.classfile-jdk-classfile-backport-26.json:1).
+
+I set the repository, Maven-hosted sources/Javadoc URLs, GitHub tag-based test URL, and a two-sentence description. I left `language` absent and did not set `not-for-native-image`, since this is a normal JVM JAR artifact. Maven metadata confirms version `26` and the GitHub homepage, and javadoc.io resolves docs for version `26`. ([mvnrepository.com](https://mvnrepository.com/artifact/io.smallrye.classfile/jdk-classfile-backport?utm_source=openai))
+
+Validation run: JSON parses with `jq`; rendered source and Javadoc URLs return HTTP 200; GitHub API resolves the `26` test tree.
+Ran agent for io.smallrye.classfile:jdk-classfile-backport:26 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b/build/agent-artifact-discovery-logs/io.smallrye.classfile-jdk-classfile-backport-26.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3733-c30a4c6b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 3s
+9 actionable tasks: 4 executed, 5 from cache
