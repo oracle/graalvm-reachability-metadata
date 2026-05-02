@@ -92,7 +92,7 @@ public class TransformSecuritySupport12Anonymous4Test {
 
     private static URLClassLoader newXmlParserApisClassLoader() throws Exception {
         return new XmlParserApisClassLoader(
-                new URL[] { xmlParserApisClassesLocation().toUri().toURL() },
+                new URL[] {xmlParserApisClassesLocation().toUri().toURL()},
                 TransformSecuritySupport12Anonymous4Test.class.getClassLoader());
     }
 

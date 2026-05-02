@@ -68,7 +68,7 @@ public class OrgXmlSaxHelpersSecuritySupportTest {
 
     private static InputStream getResourceAsStream(ClassLoader classLoader, String resourceName) throws Exception {
         try (URLClassLoader xmlParserApisClassLoader = new XmlParserApisClassLoader(
-                new URL[] { xmlParserApisClassesLocation().toUri().toURL() },
+                new URL[] {xmlParserApisClassesLocation().toUri().toURL()},
                 OrgXmlSaxHelpersSecuritySupportTest.class.getClassLoader())) {
             Object securitySupport = newSecuritySupport(xmlParserApisClassLoader);
             Method getResourceAsStream = securitySupport.getClass()

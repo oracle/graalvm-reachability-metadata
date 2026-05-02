@@ -66,7 +66,7 @@ public class TransformSecuritySupportTest {
 
     private static InputStream getResourceAsStream(ClassLoader classLoader, String resourceName) throws Exception {
         try (URLClassLoader xmlParserApisClassLoader = new URLClassLoader(
-                new URL[] { xmlParserApisClassesLocation().toUri().toURL() },
+                new URL[] {xmlParserApisClassesLocation().toUri().toURL()},
                 TransformSecuritySupportTest.class.getClassLoader())) {
             Object securitySupport = newSecuritySupport(xmlParserApisClassLoader);
             Method getResourceAsStream = securitySupport.getClass()

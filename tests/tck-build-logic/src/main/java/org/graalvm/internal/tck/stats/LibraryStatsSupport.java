@@ -245,7 +245,11 @@ public final class LibraryStatsSupport {
             );
         }
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(
+                dynamicAccessDir,
+                libraryClasses,
+                parsedJacocoReport
+        );
         return versionStats(
                 coordinate,
                 LibraryStatsModels.DynamicAccessStatsValue.available(parsedDynamicAccess.dynamicAccessStats()),
@@ -270,7 +274,11 @@ public final class LibraryStatsSupport {
         if (libraryClasses.isEmpty()) {
             return new ExternalDynamicAccessSummary(0L, Map.of());
         }
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, Map.of());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(
+                dynamicAccessDir,
+                libraryClasses,
+                ParsedJacocoReport.empty()
+        );
         return new ExternalDynamicAccessSummary(
                 parsedDynamicAccess.dynamicAccessStats().totalCalls(),
                 parsedDynamicAccess.dynamicAccessStats().breakdown()
@@ -293,7 +301,11 @@ public final class LibraryStatsSupport {
             );
         }
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(
+                dynamicAccessDir,
+                libraryClasses,
+                parsedJacocoReport
+        );
         return new LibraryStatsModels.DynamicAccessCoverageReport(
                 coordinate,
                 parsedDynamicAccess.dynamicAccessStats().totalCalls() > 0,
@@ -570,7 +582,7 @@ public final class LibraryStatsSupport {
     private static ParsedDynamicAccess parseDynamicAccessReports(
             Path dynamicAccessDir,
             Set<String> libraryClasses,
-            Map<String, Set<Integer>> coveredLinesBySource
+            ParsedJacocoReport parsedJacocoReport
     ) {
         if (!Files.isDirectory(dynamicAccessDir)) {
             return emptyDynamicAccess();
@@ -583,7 +595,7 @@ public final class LibraryStatsSupport {
                     .filter(Files::isRegularFile)
                     .filter(path -> DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString()).matches())
                     .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
-                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, coveredLinesBySource, callSitesByKey));
+                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, parsedJacocoReport, callSitesByKey));
         } catch (IOException e) {
             throw new GradleException("Failed to traverse dynamic access directory " + dynamicAccessDir, e);
         }
@@ -640,7 +652,7 @@ public final class LibraryStatsSupport {
     private static void parseDynamicAccessFile(
             Path path,
             Set<String> libraryClasses,
-            Map<String, Set<Integer>> coveredLinesBySource,
+            ParsedJacocoReport parsedJacocoReport,
             Map<String, ParsedDynamicAccessCallSite> callSitesByKey
     ) {
         Matcher matcher = DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString());
@@ -663,12 +675,7 @@ public final class LibraryStatsSupport {
                     if (callSitesByKey.containsKey(callSiteKey)) {
                         continue;
                     }
-                    boolean covered = false;
-                    if (parsedFrame.lineNumber() != null) {
-                        String sourceKey = sourceKey(parsedFrame.className(), parsedFrame.sourceFile());
-                        Set<Integer> coveredLines = coveredLinesBySource.get(sourceKey);
-                        covered = coveredLines != null && coveredLines.contains(parsedFrame.lineNumber());
-                    }
+                    boolean covered = isDynamicAccessFrameCovered(parsedFrame, parsedJacocoReport);
                     callSitesByKey.put(
                             callSiteKey,
                             new ParsedDynamicAccessCallSite(
@@ -686,6 +693,20 @@ public final class LibraryStatsSupport {
         } catch (IOException e) {
             throw new GradleException("Failed to parse dynamic access report " + path, e);
         }
+    }
+
+    private static boolean isDynamicAccessFrameCovered(
+            ParsedStackFrame parsedFrame,
+            ParsedJacocoReport parsedJacocoReport
+    ) {
+        if (parsedFrame.lineNumber() != null) {
+            String sourceKey = sourceKey(parsedFrame.className(), parsedFrame.sourceFile());
+            Set<Integer> coveredLines = parsedJacocoReport.coveredLinesBySource().get(sourceKey);
+            return coveredLines != null && coveredLines.contains(parsedFrame.lineNumber());
+        }
+
+        Set<String> coveredMethods = parsedJacocoReport.coveredMethodsByClass().get(parsedFrame.className());
+        return coveredMethods != null && coveredMethods.contains(parsedFrame.methodName());
     }
 
     private static String normalizeDynamicAccessReportType(String rawType, Path path) {
@@ -706,10 +727,11 @@ public final class LibraryStatsSupport {
             return null;
         }
         String className = matcher.group(1);
+        String methodName = matcher.group(2);
         String sourceFile = matcher.group(3);
         String lineNumberString = matcher.group(4);
         Integer lineNumber = lineNumberString == null ? null : Integer.parseInt(lineNumberString);
-        return new ParsedStackFrame(className, sourceFile, lineNumber);
+        return new ParsedStackFrame(className, methodName, sourceFile, lineNumber);
     }
 
     private static ParsedJacocoReport parseJacocoReport(Path jacocoReport) {
@@ -759,11 +781,13 @@ public final class LibraryStatsSupport {
                 }
             }
 
+            Map<String, Set<String>> coveredMethodsByClass = parseCoveredMethodsByClass(root);
             Map<String, LibraryStatsModels.CoverageMetric> rootCounters = parseRootCounters(root);
             if (hasNothingToCover(root, rootCounters)) {
                 LibraryStatsModels.CoverageMetricValue fullyCoveredMetric = fullyCoveredCoverageMetricValue();
                 return new ParsedJacocoReport(
                         coveredLinesBySource,
+                        coveredMethodsByClass,
                         fullyCoveredMetric,
                         fullyCoveredMetric,
                         fullyCoveredMetric
@@ -771,6 +795,7 @@ public final class LibraryStatsSupport {
             }
             return new ParsedJacocoReport(
                     coveredLinesBySource,
+                    coveredMethodsByClass,
                     coverageMetricOrNa(rootCounters, "LINE"),
                     coverageMetricOrNa(rootCounters, "INSTRUCTION"),
                     coverageMetricOrNa(rootCounters, "METHOD")
@@ -778,6 +803,59 @@ public final class LibraryStatsSupport {
         } catch (Exception e) {
             throw new GradleException("Failed to parse JaCoCo report " + jacocoReport, e);
         }
+    }
+
+    private static Map<String, Set<String>> parseCoveredMethodsByClass(Element root) {
+        Map<String, Set<String>> coveredMethodsByClass = new HashMap<>();
+        NodeList packages = root.getChildNodes();
+        for (int i = 0; i < packages.getLength(); i++) {
+            Node packageNode = packages.item(i);
+            if (!(packageNode instanceof Element packageElement) || !"package".equals(packageElement.getTagName())) {
+                continue;
+            }
+            NodeList packageChildren = packageElement.getChildNodes();
+            for (int j = 0; j < packageChildren.getLength(); j++) {
+                Node child = packageChildren.item(j);
+                if (!(child instanceof Element classElement) || !"class".equals(classElement.getTagName())) {
+                    continue;
+                }
+                String className = classElement.getAttribute("name").replace('/', '.');
+                Set<String> coveredMethods = parseCoveredMethods(classElement);
+                if (!coveredMethods.isEmpty()) {
+                    coveredMethodsByClass.put(className, coveredMethods);
+                }
+            }
+        }
+        return coveredMethodsByClass;
+    }
+
+    private static Set<String> parseCoveredMethods(Element classElement) {
+        Set<String> coveredMethods = new LinkedHashSet<>();
+        NodeList classChildren = classElement.getChildNodes();
+        for (int i = 0; i < classChildren.getLength(); i++) {
+            Node child = classChildren.item(i);
+            if (!(child instanceof Element methodElement) || !"method".equals(methodElement.getTagName())) {
+                continue;
+            }
+            if (isMethodCovered(methodElement)) {
+                coveredMethods.add(methodElement.getAttribute("name"));
+            }
+        }
+        return coveredMethods;
+    }
+
+    private static boolean isMethodCovered(Element methodElement) {
+        NodeList methodChildren = methodElement.getChildNodes();
+        for (int i = 0; i < methodChildren.getLength(); i++) {
+            Node child = methodChildren.item(i);
+            if (!(child instanceof Element counterElement) || !"counter".equals(counterElement.getTagName())) {
+                continue;
+            }
+            if ("METHOD".equals(counterElement.getAttribute("type"))) {
+                return Long.parseLong(counterElement.getAttribute("covered")) > 0L;
+            }
+        }
+        return false;
     }
 
     private static boolean hasNothingToCover(
@@ -901,7 +979,7 @@ public final class LibraryStatsSupport {
         );
     }
 
-    private record ParsedStackFrame(String className, String sourceFile, Integer lineNumber) {
+    private record ParsedStackFrame(String className, String methodName, String sourceFile, Integer lineNumber) {
     }
 
     private record ParsedDynamicAccess(
@@ -923,10 +1001,15 @@ public final class LibraryStatsSupport {
 
     private record ParsedJacocoReport(
             Map<String, Set<Integer>> coveredLinesBySource,
+            Map<String, Set<String>> coveredMethodsByClass,
             LibraryStatsModels.CoverageMetricValue line,
             LibraryStatsModels.CoverageMetricValue instruction,
             LibraryStatsModels.CoverageMetricValue method
     ) {
+        private static ParsedJacocoReport empty() {
+            LibraryStatsModels.CoverageMetricValue emptyMetric = LibraryStatsModels.CoverageMetricValue.notAvailable();
+            return new ParsedJacocoReport(Map.of(), Map.of(), emptyMetric, emptyMetric, emptyMetric);
+        }
     }
 
     public record ExternalDynamicAccessSummary(
