@@ -1,0 +1,513 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de9c9-3144-7df3-98d8-634e815e8ad0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: junit:junit:3.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.7" when "$version$" is replaced with "3.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999/metadata/junit/junit/index.json
+- Entry selector: "metadata-version" = "3.7"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "3.7".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "3.7".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "3.7".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "3.7" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download
+- repository-url: https://sourceforge.net/p/junit/cvs/
+- test-code-url: https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download
+- documentation-url: https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download
+- description: JUnit 3.7 is the classic JUnit 3 testing framework for writing and running repeatable unit tests on the JVM. It provides assertions, test cases, test suites, and text, AWT, and Swing runners used by Java applications and libraries.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.7
+- Entry metadata-version: 3.7
+- Entry test-version: 3.7
+codex
+I’ll inspect the existing metadata entry, then verify the rendered URLs for version `3.7` before making any JSON changes. Since the request depends on external artifact and project URLs, I’ll also check the upstream/Maven locations rather than relying on the current values.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.7\")' metadata/junit/junit/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.7",
+  "source-code-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "repository-url": "https://sourceforge.net/p/junit/cvs/",
+  "test-code-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "documentation-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "description": "JUnit 3.7 is the classic JUnit 3 testing framework for writing and running repeatable unit tests on the JVM. It provides assertions, test cases, test suites, and text, AWT, and Swing runners used by Java applications and libraries.",
+  "tested-versions": [
+    "3.7"
+  ],
+  "allowed-packages": [
+    "junit.awtui",
+    "junit.extensions",
+    "junit.framework",
+    "junit.runner",
+    "junit.swingui",
+    "junit.textui",
+    "junit.ui"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+ succeeded in 0ms:
+?? metadata/junit/
+?? tests/src/junit/
+
+web search: 
+web search: Maven Central junit junit 3.7 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/junit/junit/3.7/
+codex
+The `3.7` entry already has non-blank URL and description fields; the only candidate missing field is `language`. I’m checking whether the current templates render to real `3.7` artifacts and whether Maven Central offers better source/test/doc artifacts for this version.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/junit/junit/3.7/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: junit/junit/3.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>junit/junit/3.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="junit-3.7.jar" title="junit-3.7.jar">junit-3.7.jar</a>                                     2005-09-20 05:49    117522      
+<a href="junit-3.7.jar.md5" title="junit-3.7.jar.md5">junit-3.7.jar.md5</a>                                 2005-09-20 05:49        32      
+<a href="junit-3.7.jar.sha1" title="junit-3.7.jar.sha1">junit-3.7.jar.sha1</a>                                2005-09-20 05:49        40      
+<a href="junit-3.7.pom" title="junit-3.7.pom">junit-3.7.pom</a>                                     2005-09-20 05:49       745      
+<a href="junit-3.7.pom.md5" title="junit-3.7.pom.md5">junit-3.7.pom.md5</a>                                 2005-09-20 05:49        48      
+<a href="junit-3.7.pom.sha1" title="junit-3.7.pom.sha1">junit-3.7.pom.sha1</a>                                2005-09-20 05:49        56      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:49       107      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:49        71      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:49       126      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSIL -L https://sourceforge.net/projects/junit/files/junit/3.7/junit3.7.zip/download | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+exec
+/usr/bin/bash -lc "curl -fsSIL -L https://sourceforge.net/p/junit/cvs/ | sed -n '1,60p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+ succeeded in 253ms:
+HTTP/2 103 
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/lato.css?1777483952>; as=style; rel=preload
+
+HTTP/2 200 
+date: Sat, 02 May 2026 17:43:12 GMT
+content-type: text/html; charset=utf-8
+content-length: 50384
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1777483952>; rel=preload; as=style
+content-security-policy: script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; object-src 'none'; fenced-frame-src https:; form-action 'self'; script-src-attr 'none' 'report-sample'; frame-ancestors 'self'; upgrade-insecure-requests
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=479afd99-dca8-4eaa-b829-9676b7c2f7b3; Max-Age=315360000; Path=/; expires=Tue, 29-Apr-2036 17:43:12 GMT; secure; HttpOnly
+set-cookie: _csrf_token=f8219a73c70fbffa349e4805460451d42dea2357542096fffded10fa433009e9f0beb92087ac8e39; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=o4UCu8A.u9wDSkKAPcjRe6SOkEHcDLOmH0q3oiWx8qA-1777743792.4396076-1.0.1.1-ZSYIltYNkaikOYppIiI7DZki3vk7cqWcUZEYE2X4.H_it5nEAchznuyOq0higptHy_EdAteFsChK.Hv6frVQj6WflIXbisRaIIzhwLtcfcDZzcQGxVZfbhF13FuXUCis; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Sat, 02 May 2026 18:13:12 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9f58d3aebfec24c0-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 900ms:
+HTTP/2 302 
+date: Sat, 02 May 2026 17:43:12 GMT
+content-type: text/html; charset=UTF-8
+location: https://downloads.sourceforge.net/project/junit/junit/3.7/junit3.7.zip?ts=gAAAAABp9jew05k_9qQ6JBtVb53JDSlB9b5vCwhK13jjhqh6WD578Rrqq4o0HFOlDtFYjrabccLRiRSItrQgSce37ACIiDorcg%3D%3D&use_mirror=master&r=
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+cross-origin-opener-policy: same-origin
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; document-domain 'none'; display-capture 'none'; autoplay 'none'
+x-frame-options: SAMEORIGIN
+content-security-policy: upgrade-insecure-requests; frame-src 'self' a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.googletagmanager.com *.doubleclick.net *.gstatic.com *.recaptcha.net recaptcha.net *.youtube.com www.youtube-nocookie.com *.consentmanager.net player.twitch.tv app.hubspot.com; frame-ancestors 'self'; script-src 'self' *.licdn.com a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.cloudflareinsights.com *.google-analytics.com *.tiny.cloud *.recaptcha.net recaptcha.net *.gstatic.com *.googletagservices.com *.googlesyndication.com *.doubleclick.net *.googletagmanager.com *.consentmanager.net *.microsofttranslator.com translate.googleapis.com translate.google.cn *.gstatic.cn *.tds.bid esm.sh blob: *.adnxs.com *.bing.com *.slashdotmedia.com ml314.com j.6sc.co *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com fe.sitedataprocessing.com a.usbrowserspeed.com d-code.liadm.com frontend.id-visitors.com *.identitymatrix.ai 'unsafe-inline' 'unsafe-eval'; fenced-frame-src https:; object-src 'none'; form-action 'self' lists.sourceforge.net aistudio.google.com; script-src-attr 'unsafe-hashes' 'sha256-4d6SN0yYeMqJ0cKMQtg6WeJWMAytzagOyddgGs8IrQg=' 'sha256-tBDVzvq7nAZRA5cnijB1/8uEyvj+5hEDBhcx7F72AGE=' 'report-sample'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=bdfc5f8b-0d02-42b1-8d8e-932a34e58f79; Max-Age=315360000; Path=/; expires=Tue, 29-Apr-2036 17:43:12 GMT; secure; HttpOnly
+set-cookie: __cf_bm=IqTNkVEJcwz3Be2fad3BL1W98k2JpiJqNseAcGZn5XA-1777743792.433223-1.0.1.1-T6tKKOJYo.EMq0kPzJTzkrnisuPDpU9IW8ETbLC.rUUZZ2oZWo8SHuEwYHzPdOIyy5nfcuBsf.KXBkgJMRN5UIq.XyWIyX0OYGRvCHEKyAlQ.y6nvyeobrIHFtOuBC5o; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Sat, 02 May 2026 18:13:12 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9f58d3aebb15bb15-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 302 
+date: Sat, 02 May 2026 17:43:12 GMT
+content-type: text/html; charset=UTF-8
+location: https://master.dl.sourceforge.net/project/junit/junit/3.7/junit3.7.zip?viasf=1&fid=e02c7a9d396f95f5
+server: cloudflare
+content-security-policy: upgrade-insecure-requests
+content-disposition: attachment; filename="junit3.7.zip"
+cf-cache-status: DYNAMIC
+set-cookie: sf_mirror_attempt=junit:master:junit/3.7/junit3.7.zip; Max-Age=120; Path=/; expires=Sat, 02-May-2026 17:45:12 GMT; secure
+set-cookie: __cf_bm=pT0ku7TckzUT85hCXa_sOMjhCJMtaUF_E5..LZrurdI-1777743792.6639626-1.0.1.1-F5mXT1AovG959ZyHH0LFD1Yhx7nfE30wMIg_jT3w4JuPHGMpEPiIWaxe4G8amjcoc6Yx5zrUb2Bmpip14G4s9PdWHuZUUntwj_xjxNSCZpTjOf4a8P84Sx82ZjDA8Dgg; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Sat, 02 May 2026 18:13:12 GMT
+cf-ray: 9f58d3b02d19bc6b-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/1.1 200 OK
+Server: nginx
+Date: Sat, 02 May 2026 17:43:13 GMT
+Content-Type: application/octet-stream
+Content-Length: 374491
+Connection: keep-alive
+last-modified: Mon, 21 May 2001 20:34:13 GMT
+etag: "3b097bc5-5b6db"
+accept-ranges: bytes
+
+
+codex
+Maven Central for `junit:junit:3.7` only exposes the binary JAR and POM, so there is no Maven sources, tests, or javadocs artifact to prefer. The current SourceForge release ZIP resolves successfully; I’m checking its contents now to confirm it actually contains sources, tests, and versioned docs.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL '"'https://sourceforge.net/projects/junit/files/junit/3.7/junit3.7.zip/download' -o \""'$tmp/junit3.7.zip"; unzip -l "$tmp/junit3.7.zip" | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/junit/junit/3.7/junit-3.7.pom | sed -n '1,140p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>3.7</version>
+  <name>JUnit</name>
+  <url>http://junit.org</url>
+  <description>
+    JUnit is a regression testing framework written by Erich Gamma and Kent Beck. It is used by the developer who implements unit tests in Java.
+  </description>
+  <organization>
+    <name>JUnit</name>
+    <url>http://www.junit.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Common Public License Version 1.0</name>
+      <url>http://www.opensource.org/licenses/cpl1.0.txt</url>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://junit.cvs.sourceforge.net/junit/</url>
+  </scm>
+  <dependencies>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://sourceforge.net/p/junit/cvs/ci/HEAD/tree/ | rg -n \"junit|CVS|tree|browse\" | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+ succeeded in 253ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 2800ms:
+Archive:  /tmp/tmp.dK6b3nwNC5/junit3.7.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2001-05-21 10:18   junit3.7/
+    53547  2001-05-21 10:18   junit3.7/src.jar
+        0  2001-05-21 10:18   junit3.7/junit/
+        0  2001-05-21 10:18   junit3.7/junit/samples/
+        0  2001-05-21 10:18   junit3.7/junit/samples/money/
+     2548  2001-05-21 10:18   junit3.7/junit/samples/money/Money.class
+     4691  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyBag.class
+     3860  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyBag.java
+     5342  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyTest.java
+      665  2001-05-21 10:18   junit3.7/junit/samples/money/IMoney.class
+     1664  2001-05-21 10:18   junit3.7/junit/samples/money/Money.java
+     5665  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyTest.class
+      854  2001-05-21 10:18   junit3.7/junit/samples/money/IMoney.java
+     1167  2001-05-21 10:18   junit3.7/junit/samples/SimpleTest.java
+     1903  2001-05-21 10:18   junit3.7/junit/samples/SimpleTest.class
+     2928  2001-05-21 10:18   junit3.7/junit/samples/VectorTest.class
+     1769  2001-05-21 10:18   junit3.7/junit/samples/VectorTest.java
+     1423  2001-05-21 10:18   junit3.7/junit/samples/AllTests.class
+      499  2001-05-21 10:18   junit3.7/junit/samples/AllTests.java
+        0  2001-05-21 10:18   junit3.7/junit/tests/
+     2179  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest.java
+      542  2001-05-21 10:18   junit3.7/junit/tests/RepeatedTestTest$SuccessTest.class
+     1358  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest$DoubleTestCase.class
+      545  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$4.class
+     2843  2001-05-21 10:18   junit3.7/junit/tests/SuiteTest.java
+     1029  2001-05-21 10:18   junit3.7/junit/tests/TextRunnerTest.java
+      783  2001-05-21 10:18   junit3.7/junit/tests/SorterTest.java
+     1862  2001-05-21 10:18   junit3.7/junit/tests/ClassLoaderTest.class
+      474  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$4.class
+     1508  2001-05-21 10:18   junit3.7/junit/tests/LoadedFromJar.class
+     2196  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest.class
+      290  2001-05-21 10:18   junit3.7/junit/tests/NotVoidTestCase.java
+      579  2001-05-21 10:18   junit3.7/junit/tests/OneTestCase.class
+      720  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest$ThrowExceptionTestCase.class
+      486  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest$3.class
+     3109  2001-05-21 10:18   junit3.7/junit/tests/AllTests.class
+      238  2001-05-21 10:18   junit3.7/junit/tests/NoTestCases.java
+     3942  2001-05-21 10:18   junit3.7/junit/tests/SuiteTest.class
+      459  2001-05-21 10:18   junit3.7/junit/tests/WasRun.class
+      427  2001-05-21 10:18   junit3.7/junit/tests/NoTestCases.class
+      519  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$7.class
+     1970  2001-05-21 10:18   junit3.7/junit/tests/StackFilterTest.java
+     1190  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest.class
+      515  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$3.class
+      495  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest$2.class
+      518  2001-05-21 10:18   junit3.7/junit/tests/NotPublicTestCase.class
+     3053  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest.class
+     1952  2001-05-21 10:18   junit3.7/junit/tests/ActiveTestTest.class
+      427  2001-05-21 10:18   junit3.7/junit/tests/NoTestCaseClass.class
+      577  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$3.class
+     3030  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest.java
+      213  2001-05-21 10:18   junit3.7/junit/tests/OverrideTestCase.java
+     1748  2001-05-21 10:18   junit3.7/junit/tests/ActiveTestTest.java
+     2167  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest.class
+      529  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$2.class
+     1061  2001-05-21 10:18   junit3.7/junit/tests/SorterTest.class
+     1234  2001-05-21 10:18   junit3.7/junit/tests/AllTests.java
+      675  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$TornDown.class
+      538  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest$2.class
+      584  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$TornDown.class
+      614  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$2.class
+      298  2001-05-21 10:18   junit3.7/junit/tests/WasRun.java
+      264  2001-05-21 10:18   junit3.7/junit/tests/Success.java
+      461  2001-05-21 10:18   junit3.7/junit/tests/Failure.class
+      732  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest$ThrowRuntimeExceptionTestCase.class
+      580  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$6.class
+      524  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest$1.class
+     2016  2001-05-21 10:18   junit3.7/junit/tests/TextRunnerTest.class
+      954  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest$1.class
+      275  2001-05-21 10:18   junit3.7/junit/tests/Failure.java
+     2446  2001-05-21 10:18   junit3.7/junit/tests/AssertTest.java
+      534  2001-05-21 10:18   junit3.7/junit/tests/ActiveTestTest$SuccessTest.class
+     1466  2001-05-21 10:18   junit3.7/junit/tests/RepeatedTestTest.java
+      515  2001-05-21 10:18   junit3.7/junit/tests/NotVoidTestCase.class
+      212  2001-05-21 10:18   junit3.7/junit/tests/InheritedTestCase.java
+      537  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$5.class
+      409  2001-05-21 10:18   junit3.7/junit/tests/Success.class
+     2565  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest.class
+      668  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest$ThrowNoExceptionTestCase.class
+     2235  2001-05-21 10:18   junit3.7/junit/tests/StackFilterTest.class
+      842  2001-05-21 10:18   junit3.7/junit/tests/ClassLoaderTest.java
+      289  2001-05-21 10:18   junit3.7/junit/tests/NotPublicTestCase.java
+      529  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$1.class
+     1894  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest.java
+      307  2001-05-21 10:18   junit3.7/junit/tests/OneTestCase.java
+     1534  2001-05-21 10:18   junit3.7/junit/tests/TestCaseClassLoaderTest.java
+      512  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$1.class
+      439  2001-05-21 10:18   junit3.7/junit/tests/OverrideTestCase.class
+      558  2001-05-21 10:18   junit3.7/junit/tests/LoadedFromJar.java
+     1434  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest.java
+     2699  2001-05-21 10:18   junit3.7/junit/tests/AssertTest.class
+      759  2001-05-21 10:18   junit3.7/junit/tests/SorterTest$Swapper.class
+     1703  2001-05-21 10:18   junit3.7/junit/tests/TestCaseClassLoaderTest.class
+     1810  2001-05-21 10:18   junit3.7/junit/tests/RepeatedTestTest.class
+     1192  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest.java
+      526  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$5.class
+      229  2001-05-21 10:18   junit3.7/junit/tests/NoTestCaseClass.java
+      439  2001-05-21 10:18   junit3.7/junit/tests/InheritedTestCase.class
+     1391  2001-05-21 10:18   junit3.7/junit/tests/test.jar
+        0  2001-05-21 10:18   junit3.7/javadoc/
+     6063  2001-05-21 10:19   junit3.7/javadoc/overview-tree.html
+    36139  2001-05-21 10:19   junit3.7/javadoc/index-all.html
+     5623  2001-05-21 10:19   junit3.7/javadoc/deprecated-list.html
+     1786  2001-05-21 10:19   junit3.7/javadoc/allclasses-frame.html
+      760  2001-05-21 10:19   junit3.7/javadoc/index.html
+      680  2001-05-21 10:19   junit3.7/javadoc/packages.html
+     4283  2001-05-21 10:19   junit3.7/javadoc/overview-summary.html
+     1027  2001-05-21 10:19   junit3.7/javadoc/overview-frame.html
+        0  2001-05-21 10:19   junit3.7/javadoc/junit/
+        0  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/
+     5230  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/package-summary.html
+     5508  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/package-tree.html
+     1085  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/package-frame.html
+    11718  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/ActiveTestSuite.html
+    14261  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/ExceptionTestCase.html
+    15469  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/RepeatedTest.html
+    16635  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/TestDecorator.html
+    15109  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/TestSetup.html
+        0  2001-05-21 10:19   junit3.7/javadoc/junit/framework/
+     6430  2001-05-21 10:19   junit3.7/javadoc/junit/framework/package-summary.html
+     5673  2001-05-21 10:19   junit3.7/javadoc/junit/framework/package-tree.html
+     1701  2001-05-21 10:19   junit3.7/javadoc/junit/framework/package-frame.html
+     6629  2001-05-21 10:19   junit3.7/javadoc/junit/framework/Protectable.html
+     7747  2001-05-21 10:19   junit3.7/javadoc/junit/framework/Test.html
+     8918  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestListener.html
+    31175  2001-05-21 10:19   junit3.7/javadoc/junit/framework/Assert.html
+    22458  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestCase.html
+    11656  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestFailure.html
+    22944  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestResult.html
+    17103  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestSuite.html
+     8206  2001-05-21 10:19   junit3.7/javadoc/junit/framework/AssertionFailedError.html
+     4475  2001-05-21 10:19   junit3.7/javadoc/serialized-form.html
+       35  2001-05-21 10:19   junit3.7/javadoc/package-list
+     7332  2001-05-21 10:19   junit3.7/javadoc/help-doc.html
+     1269  2001-05-21 10:19   junit3.7/javadoc/stylesheet.css
+        0  2001-05-21 10:19   junit3.7/doc/
+        0  2001-05-21 10:19   junit3.7/doc/cookstour/
+     5295  2001-05-21 10:19   junit3.7/doc/cookstour/Image7.gif
+     2946  2001-05-21 10:19   junit3.7/doc/cookstour/Image3.gif
+     3694  2001-05-21 10:19   junit3.7/doc/cookstour/Image4.gif
+    38905  2001-05-21 10:19   junit3.7/doc/cookstour/cookstour.htm
+     4858  2001-05-21 10:19   junit3.7/doc/cookstour/Image5.gif
+     1820  2001-05-21 10:19   junit3.7/doc/cookstour/Image1.gif
+     8950  2001-05-21 10:19   junit3.7/doc/cookstour/Image6.gif
+     2490  2001-05-21 10:19   junit3.7/doc/cookstour/Image2.gif
+        0  2001-05-21 10:19   junit3.7/doc/testinfected/
+     6426  2001-05-21 10:19   junit3.7/doc/testinfected/IMG00001.GIF
+    31615  2001-05-21 10:19   junit3.7/doc/testinfected/testing.htm
+     6934  2001-05-21 10:19   junit3.7/doc/testinfected/IMG00002.GIF
+     5992  2001-05-21 10:19   junit3.7/doc/testinfected/IMG00003.GIF
+      964  2001-05-21 10:19   junit3.7/doc/testinfected/logo.gif
+        0  2001-05-21 10:19   junit3.7/doc/cookbook/
+      964  2001-05-21 10:19   junit3.7/doc/cookbook/logo.gif
+     6934  2001-05-21 10:19   junit3.7/doc/cookbook/IMG00001.GIF
+    11304  2001-05-21 10:19   junit3.7/doc/cookbook/cookbook.htm
+     5992  2001-05-21 10:19   junit3.7/doc/cookbook/IMG00002.GIF
+     3733  2001-05-21 10:19   junit3.7/doc/changes21.html
+
+web search: 
+web search: repo1.maven.org maven2 junit junit 3.7 junit-3.7.pom
+web search: 
+web search: https://repo1.maven.org/maven2/junit/junit/3.7/
+codex
+The release ZIP includes `src.jar`, `junit/tests/*.java`, and versioned `javadoc/` and `doc/` content, so the current SourceForge template is suitable for source, tests, and documentation. JUnit 3.7 is not Kotlin, Groovy, or Scala-specific, so the missing `language` field should stay absent.
+exec
+/usr/bin/bash -lc 'jq empty metadata/junit/junit/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/junit/junit/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.7\") | {\"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", description, language}' metadata/junit/junit/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999
+ succeeded in 0ms:
+{
+  "source-code-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "repository-url": "https://sourceforge.net/p/junit/cvs/",
+  "test-code-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "documentation-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "description": "JUnit 3.7 is the classic JUnit 3 testing framework for writing and running repeatable unit tests on the JVM. It provides assertions, test cases, test suites, and text, AWT, and Swing runners used by Java applications and libraries.",
+  "language": null
+}
+
+web search: 
+web search: junit junit 3.7 maven central repo1.maven.org
+web search: 
+web search: https://repo1.maven.org/maven2/junit/junit/3.7/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://sourceforge.net/p/junit/cvs/
+codex
+No edit was required in [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999/metadata/junit/junit/index.json): all requested non-language fields were already non-blank and valid, and `language` should remain absent because this is not a Kotlin, Groovy, or Scala-specific library. Maven Central for `junit:junit:3.7` only lists the JAR/POM artifacts, while SourceForge provides the versioned `junit3.7.zip` release and the canonical CVS repository page. ([repo1.maven.org](https://repo1.maven.org/maven2/junit/junit/3.7/))
+
+Selected values:
+
+```json
+{
+  "source-code-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "repository-url": "https://sourceforge.net/p/junit/cvs/",
+  "test-code-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "documentation-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "description": "JUnit 3.7 is the classic JUnit 3 testing framework for writing and running repeatable unit tests on the JVM. It provides assertions, test cases, test suites, and text, AWT, and Swing runners used by Java applications and libraries."
+}
+```
+
+Validation: `jq empty metadata/junit/junit/index.json` passed, and `git diff -- metadata/junit/junit/index.json` is empty.
+tokens used
+50,546
+No edit was required in [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999/metadata/junit/junit/index.json): all requested non-language fields were already non-blank and valid, and `language` should remain absent because this is not a Kotlin, Groovy, or Scala-specific library. Maven Central for `junit:junit:3.7` only lists the JAR/POM artifacts, while SourceForge provides the versioned `junit3.7.zip` release and the canonical CVS repository page. ([repo1.maven.org](https://repo1.maven.org/maven2/junit/junit/3.7/))
+
+Selected values:
+
+```json
+{
+  "source-code-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "repository-url": "https://sourceforge.net/p/junit/cvs/",
+  "test-code-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "documentation-url": "https://sourceforge.net/projects/junit/files/junit/$version$/junit$version$.zip/download",
+  "description": "JUnit 3.7 is the classic JUnit 3 testing framework for writing and running repeatable unit tests on the JVM. It provides assertions, test cases, test suites, and text, AWT, and Swing runners used by Java applications and libraries."
+}
+```
+
+Validation: `jq empty metadata/junit/junit/index.json` passed, and `git diff -- metadata/junit/junit/index.json` is empty.
+Ran agent for junit:junit:3.7 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999/build/agent-url-discovery-logs/junit-junit-3.7.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-99f4b999/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 7s
+9 actionable tasks: 1 executed, 8 up-to-date
