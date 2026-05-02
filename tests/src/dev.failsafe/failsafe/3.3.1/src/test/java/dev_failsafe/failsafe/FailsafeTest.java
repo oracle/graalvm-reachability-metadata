@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import dev.failsafe.Bulkhead;
 import dev.failsafe.BulkheadFullException;
 import dev.failsafe.CircuitBreaker;
+import dev.failsafe.CircuitBreaker.State;
 import dev.failsafe.CircuitBreakerOpenException;
 import dev.failsafe.Failsafe;
 import dev.failsafe.Fallback;
@@ -155,6 +156,45 @@ public class FailsafeTest {
     }
 
     @Test
+    void circuitBreakerHalfOpensAfterDelayAndClosesAfterSuccessfulProbes() throws Exception {
+        AtomicInteger halfOpenEvents = new AtomicInteger();
+        AtomicInteger closeEvents = new AtomicInteger();
+        AtomicReference<State> halfOpenPreviousState = new AtomicReference<>();
+        AtomicReference<State> closePreviousState = new AtomicReference<>();
+        CircuitBreaker<String> circuitBreaker = CircuitBreaker.<String>builder()
+                .handle(IllegalStateException.class)
+                .withFailureThreshold(1)
+                .withSuccessThreshold(2)
+                .withDelay(Duration.ofMillis(20))
+                .onHalfOpen(event -> {
+                    halfOpenEvents.incrementAndGet();
+                    halfOpenPreviousState.set(event.getPreviousState());
+                })
+                .onClose(event -> {
+                    closeEvents.incrementAndGet();
+                    closePreviousState.set(event.getPreviousState());
+                })
+                .build();
+
+        assertThatThrownBy(() -> Failsafe.with(circuitBreaker).get(() -> failWithIllegalState(new AtomicInteger())))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("boom 1");
+        assertThat(circuitBreaker.isOpen()).isTrue();
+
+        awaitDelayElapsed(circuitBreaker);
+
+        assertThat(Failsafe.with(circuitBreaker).get(() -> "first probe")).isEqualTo("first probe");
+        assertThat(circuitBreaker.isHalfOpen()).isTrue();
+        assertThat(halfOpenEvents).hasValue(1);
+        assertThat(halfOpenPreviousState).hasValue(State.OPEN);
+
+        assertThat(Failsafe.with(circuitBreaker).get(() -> "second probe")).isEqualTo("second probe");
+        assertThat(circuitBreaker.isClosed()).isTrue();
+        assertThat(closeEvents).hasValue(1);
+        assertThat(closePreviousState).hasValue(State.HALF_OPEN);
+    }
+
+    @Test
     void bulkheadRejectsExecutionWhenNoPermitIsAvailable() throws Exception {
         Bulkhead<String> bulkhead = Bulkhead.<String>builder(1)
                 .withMaxWaitTime(Duration.ZERO)
@@ -269,6 +309,14 @@ public class FailsafeTest {
     private static String failWithIllegalState(AtomicInteger guardedCalls) {
         int attempt = guardedCalls.incrementAndGet();
         throw new IllegalStateException("boom " + attempt);
+    }
+
+    private static void awaitDelayElapsed(CircuitBreaker<?> circuitBreaker) throws InterruptedException {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
+        while (circuitBreaker.getRemainingDelay().compareTo(Duration.ZERO) > 0 && System.nanoTime() < deadline) {
+            Thread.sleep(10);
+        }
+        assertThat(circuitBreaker.getRemainingDelay()).isEqualTo(Duration.ZERO);
     }
 
     private static void shutdown(ExecutorService executor) throws InterruptedException {
