@@ -146,6 +146,49 @@ public class Netty_codec_mqttTest {
     }
 
     @Test
+    void decoderBuffersFragmentedPublishFrameUntilCompleteMultiByteRemainingLengthFrameArrives() {
+        byte[] payloadBytes = new byte[180];
+        for (int i = 0; i < payloadBytes.length; i++) {
+            payloadBytes[i] = (byte) ('a' + i % 26);
+        }
+        MqttPublishMessage message = MqttMessageBuilders.publish()
+                .topicName("fragments/large-payload")
+                .qos(MqttQoS.AT_MOST_ONCE)
+                .payload(Unpooled.wrappedBuffer(payloadBytes))
+                .build();
+
+        ByteBuf encoded = encode(message, false);
+        assertThat(encoded.getUnsignedByte(1) & 0x80).isNotZero();
+        EmbeddedChannel decoder = new EmbeddedChannel(new MqttDecoder(MAX_MESSAGE_SIZE));
+        try {
+            assertThat(decoder.writeInbound(encoded.readRetainedSlice(1))).isFalse();
+            Object incompleteHeader = decoder.readInbound();
+            assertThat(incompleteHeader).isNull();
+            assertThat(decoder.writeInbound(encoded.readRetainedSlice(2))).isFalse();
+            Object incompletePayload = decoder.readInbound();
+            assertThat(incompletePayload).isNull();
+            assertThat(decoder.writeInbound(encoded.readRetainedSlice(encoded.readableBytes()))).isTrue();
+
+            MqttPublishMessage decoded = (MqttPublishMessage) decoder.readInbound();
+            try {
+                assertThat(decoded.decoderResult().isSuccess()).isTrue();
+                assertThat(decoded.fixedHeader().messageType()).isEqualTo(MqttMessageType.PUBLISH);
+                assertThat(decoded.variableHeader().topicName()).isEqualTo("fragments/large-payload");
+                byte[] decodedBytes = new byte[decoded.payload().readableBytes()];
+                decoded.payload().getBytes(decoded.payload().readerIndex(), decodedBytes);
+                assertThat(decodedBytes).containsExactly(payloadBytes);
+                Object unexpectedMessage = decoder.readInbound();
+                assertThat(unexpectedMessage).isNull();
+            } finally {
+                decoded.release();
+            }
+        } finally {
+            encoded.release();
+            decoder.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void subscribeAndUnsubscribeMessagesPreservePacketIdsOptionsAndFilters() {
         MqttProperties subscribeProperties = new MqttProperties();
         subscribeProperties.add(new IntegerProperty(MqttPropertyType.SUBSCRIPTION_IDENTIFIER.value(), 1234));
