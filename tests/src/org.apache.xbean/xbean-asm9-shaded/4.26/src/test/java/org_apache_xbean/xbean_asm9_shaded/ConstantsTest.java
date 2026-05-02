@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 public class ConstantsTest {
     private static final String EXPERIMENTAL_API_REJECTION_MESSAGE =
-            "ASM9_EXPERIMENTAL can only be used by classes compiled with --enable-preview";
+            "ASM10_EXPERIMENTAL can only be used by classes compiled with --enable-preview";
     private static final String GENERATED_VISITOR_NAME =
             "org_apache_xbean.xbean_asm9_shaded.ConstantsPreviewVisitor";
     private static final String GENERATED_VISITOR_INTERNAL_NAME = GENERATED_VISITOR_NAME.replace('.', '/');
