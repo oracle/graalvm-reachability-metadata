@@ -8,12 +8,14 @@ package org_jboss_arquillian_test.arquillian_test_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -30,8 +32,8 @@ import org.junit.jupiter.api.Test;
 public class Arquillian_test_apiTest {
     @Test
     public void annotationContractAdvertisesRuntimeFieldAndParameterUsage() {
-        Retention retention = ArquillianResource.class.getAnnotation(Retention.class);
-        Target target = ArquillianResource.class.getAnnotation(Target.class);
+        Retention retention = annotation(ArquillianResource.class, Retention.class);
+        Target target = annotation(ArquillianResource.class, Target.class);
 
         assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(EnumSet.copyOf(Arrays.asList(target.value())))
@@ -44,7 +46,7 @@ public class Arquillian_test_apiTest {
     @Test
     public void fieldResourceCanUseFieldTypeAsDefaultLookupKey() throws Exception {
         Field field = ResourceConsumer.class.getField("defaultUrlResource");
-        ArquillianResource resource = field.getAnnotation(ArquillianResource.class);
+        ArquillianResource resource = annotation(field, ArquillianResource.class);
 
         assertThat(resource).isNotNull();
         assertThat(resource.value()).isEqualTo(ArquillianResource.class);
@@ -55,7 +57,7 @@ public class Arquillian_test_apiTest {
     @Test
     public void fieldResourceCanOverrideLookupKeyWithExplicitType() throws Exception {
         Field field = ResourceConsumer.class.getField("explicitUriResource");
-        ArquillianResource resource = field.getAnnotation(ArquillianResource.class);
+        ArquillianResource resource = annotation(field, ArquillianResource.class);
 
         assertThat(resource).isNotNull();
         assertThat(resource.value()).isEqualTo(URI.class);
@@ -69,7 +71,7 @@ public class Arquillian_test_apiTest {
 
         Map<Class<?>, Class<?>> resourceLookupPlan = new LinkedHashMap<>();
         for (Parameter parameter : parameters) {
-            ArquillianResource resource = parameter.getAnnotation(ArquillianResource.class);
+            ArquillianResource resource = annotation(parameter, ArquillianResource.class);
             resourceLookupPlan.put(parameter.getType(), resolveParameterResourceType(parameter, resource));
         }
 
@@ -124,6 +126,13 @@ public class Arquillian_test_apiTest {
         assertThat(callback.describe(url, uri)).isEqualTo("example.test|arquillian:lambda-resource");
     }
 
+    // Checkstyle: allow direct annotation access
+    private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
+        AnnotatedElement elementAnnotationAccess = element;
+        return elementAnnotationAccess.getAnnotation(annotationType);
+    }
+    // Checkstyle: disallow direct annotation access
+
     private static Class<?> resolveFieldResourceType(Field field, ArquillianResource resource) {
         if (resource.value().equals(ArquillianResource.class)) {
             return field.getType();
@@ -141,7 +150,7 @@ public class Arquillian_test_apiTest {
     private static void injectAnnotatedFields(ResourceConsumer consumer, Map<Class<?>, Object> resources)
             throws IllegalAccessException {
         for (Field field : ResourceConsumer.class.getFields()) {
-            ArquillianResource resource = field.getAnnotation(ArquillianResource.class);
+            ArquillianResource resource = annotation(field, ArquillianResource.class);
             if (resource != null) {
                 field.set(consumer, resources.get(resolveFieldResourceType(field, resource)));
             }
