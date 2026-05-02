@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -120,6 +121,18 @@ public class Jackson_module_parameter_namesTest {
     }
 
     @Test
+    void disabledBindingModeIgnoresDefaultModeAnnotatedCreator() {
+        JsonMapper mapper = JsonMapper.builder()
+                .addModule(new ParameterNamesModule(JsonCreator.Mode.DISABLED))
+                .build();
+
+        assertThatThrownBy(() -> mapper.readValue("{\"value\":\"active\"}", DisabledCreatorValue.class))
+                .isInstanceOf(JsonMappingException.class)
+                .hasMessageContaining("Cannot construct instance")
+                .hasMessageContaining("DisabledCreatorValue");
+    }
+
+    @Test
     void explicitParameterAnnotationsContinueToWorkWhenModuleIsRegistered() throws Exception {
         JsonMapper mapper = mapperWithDefaultModule();
 
@@ -222,6 +235,19 @@ public class Jackson_module_parameter_namesTest {
 
         @JsonCreator
         public ScalarToken(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return value;
+        }
+    }
+
+    public static final class DisabledCreatorValue {
+        private final String value;
+
+        @JsonCreator
+        public DisabledCreatorValue(String value) {
             this.value = value;
         }
 
