@@ -165,6 +165,29 @@ public class RuntimeTest {
     }
 
     @Test
+    fun applyObserverIsNotifiedWhenMutableSnapshotCommitsChanges() {
+        val state = mutableStateOf("initial")
+        val observedValues = mutableListOf<String>()
+        val changedObjectCounts = mutableListOf<Int>()
+        val observerHandle = Snapshot.registerApplyObserver { changedObjects, _ ->
+            changedObjectCounts.add(changedObjects.size)
+            observedValues.add(state.value)
+        }
+
+        try {
+            Snapshot.withMutableSnapshot {
+                state.value = "committed"
+            }
+
+            assertThat(observedValues).contains("committed")
+            assertThat(changedObjectCounts).isNotEmpty()
+            assertThat(changedObjectCounts.max()).isGreaterThan(0)
+        } finally {
+            observerHandle.dispose()
+        }
+    }
+
+    @Test
     fun customSnapshotMutationPolicyMergesConcurrentSnapshotWrites() {
         val counter = mutableStateOf(MergedCounter(0), AdditiveCounterPolicy)
         val firstSnapshot = Snapshot.takeMutableSnapshot()
