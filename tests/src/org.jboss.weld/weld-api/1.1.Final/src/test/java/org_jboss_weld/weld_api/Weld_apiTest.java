@@ -9,6 +9,7 @@ package org_jboss_weld.weld_api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.inject.Singleton;
+import javax.interceptor.InvocationContext;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.BoundContext;
 import org.jboss.weld.context.DependentContext;
@@ -40,6 +42,7 @@ import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.context.bound.MutableBoundRequest;
 import org.jboss.weld.context.ejb.Ejb;
 import org.jboss.weld.context.ejb.EjbLiteral;
+import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.context.http.Http;
 import org.jboss.weld.context.http.HttpLiteral;
 import org.jboss.weld.context.unbound.Unbound;
@@ -157,6 +160,28 @@ public class Weld_apiTest {
 
         assertThat(associate(sessionContext, storage)).isTrue();
         assertThat(sessionContext.getAssociatedStorage()).isSameAs(storage);
+    }
+
+    @Test
+    void ejbRequestContextBindsInvocationContextForRequestProcessing() throws Exception {
+        RecordingEjbRequestContext context = new RecordingEjbRequestContext();
+        GreetingService service = new GreetingService();
+        SimpleInvocationContext invocation = new SimpleInvocationContext(service, new Object[] {"Ada"});
+        invocation.getContextData().put("request-token", "token-1");
+
+        assertThat(context.associate(invocation)).isTrue();
+
+        assertThat(context.getScope()).isEqualTo(RequestScoped.class);
+        assertThat(context.getInvocationContext()).isSameAs(invocation);
+        assertThat(context.getInvocationContext().getTarget()).isSameAs(service);
+        assertThat(context.getInvocationContext().getContextData()).containsEntry("request-token", "token-1");
+        assertThat(context.getInvocationContext().getParameters()).containsExactly("Ada");
+
+        context.getInvocationContext().setParameters(new Object[] {"Grace"});
+
+        assertThat(context.getInvocationContext().proceed()).isEqualTo("Hello Grace");
+        assertThat(context.dissociate(invocation)).isTrue();
+        assertThat(context.getInvocationContext()).isNull();
     }
 
     @Test
@@ -327,6 +352,85 @@ public class Weld_apiTest {
 
         Map<String, Object> getAssociatedStorage() {
             return associatedStorage;
+        }
+    }
+
+    private static final class RecordingEjbRequestContext extends RecordingManagedContext implements EjbRequestContext {
+        private InvocationContext invocationContext;
+
+        RecordingEjbRequestContext() {
+            super(RequestScoped.class);
+        }
+
+        @Override
+        public boolean associate(InvocationContext storage) {
+            invocationContext = storage;
+            return true;
+        }
+
+        @Override
+        public boolean dissociate(InvocationContext storage) {
+            if (invocationContext == storage) {
+                invocationContext = null;
+                return true;
+            }
+            return false;
+        }
+
+        InvocationContext getInvocationContext() {
+            return invocationContext;
+        }
+    }
+
+    private static final class SimpleInvocationContext implements InvocationContext {
+        private final GreetingService target;
+        private final Map<String, Object> contextData = new LinkedHashMap<>();
+        private Object[] parameters;
+
+        SimpleInvocationContext(GreetingService target, Object[] parameters) {
+            this.target = target;
+            setParameters(parameters);
+        }
+
+        @Override
+        public Object getTarget() {
+            return target;
+        }
+
+        @Override
+        public Method getMethod() {
+            return null;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            return parameters.clone();
+        }
+
+        @Override
+        public void setParameters(Object[] parameters) {
+            this.parameters = parameters.clone();
+        }
+
+        @Override
+        public Map<String, Object> getContextData() {
+            return contextData;
+        }
+
+        @Override
+        public Object getTimer() {
+            return null;
+        }
+
+        @Override
+        public Object proceed() {
+            return target.greet((String) parameters[0]);
+        }
+    }
+
+    private static final class GreetingService {
+        String greet(String name) {
+            return "Hello " + name;
         }
     }
 
