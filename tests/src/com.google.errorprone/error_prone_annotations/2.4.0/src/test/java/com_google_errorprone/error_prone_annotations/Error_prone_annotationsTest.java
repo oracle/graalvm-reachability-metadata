@@ -292,7 +292,6 @@ public class Error_prone_annotationsTest {
         }
 
         @RestrictedApi(
-                checkerName = "RestrictedOperationChecker",
                 explanation = "Operation is intentionally limited to the annotated fixture.",
                 link = "https://example.invalid/restricted-perform",
                 whitelistAnnotations = AllowInternalUse.class,
