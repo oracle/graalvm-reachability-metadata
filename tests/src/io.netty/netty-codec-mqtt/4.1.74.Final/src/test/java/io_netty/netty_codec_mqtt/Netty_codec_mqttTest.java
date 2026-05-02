@@ -16,6 +16,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.DecoderResult;
+import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.mqtt.MqttConnAckMessage;
 import io.netty.handler.codec.mqtt.MqttConnectMessage;
 import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
@@ -184,6 +185,31 @@ public class Netty_codec_mqttTest {
             }
         } finally {
             encoded.release();
+            decoder.finishAndReleaseAll();
+        }
+    }
+
+    @Test
+    void decoderReportsFailureWhenFrameExceedsConfiguredMaxMessageSize() {
+        ByteBuf payload = Unpooled.copiedBuffer("payload that is larger than the configured decoder limit",
+                StandardCharsets.UTF_8);
+        MqttPublishMessage message = MqttMessageBuilders.publish()
+                .topicName("limits/max-message-size")
+                .qos(MqttQoS.AT_MOST_ONCE)
+                .payload(payload)
+                .build();
+
+        ByteBuf encoded = encode(message, false);
+        EmbeddedChannel decoder = new EmbeddedChannel(new MqttDecoder(8));
+        try {
+            assertThat(decoder.writeInbound(encoded)).isTrue();
+            MqttMessage decoded = decoder.readInbound();
+            assertThat(decoded).isNotNull();
+            assertThat(decoded.decoderResult().isFailure()).isTrue();
+            assertThat(decoded.decoderResult().cause()).isInstanceOf(TooLongFrameException.class);
+            Object unexpectedMessage = decoder.readInbound();
+            assertThat(unexpectedMessage).isNull();
+        } finally {
             decoder.finishAndReleaseAll();
         }
     }
