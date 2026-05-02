@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 public class ProvidersTest {
     private static final String RESOURCE_PATH = "examples/provider-resource.java";
-    private static final String RESOURCE_SOURCE = "class ProviderResource { String value = \"café\"; }";
+    private static final String RESOURCE_SOURCE = "class ProviderResource { String value = \"caf\u00e9\"; }";
 
     @Test
     void createsProviderFromClassLoaderResourceStream() throws IOException {
