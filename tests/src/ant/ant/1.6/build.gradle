@@ -4,6 +4,11 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.api.file.Directory
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.compile.JavaCompile
+
 plugins {
     id "org.graalvm.internal.tck"
 }
@@ -22,8 +27,28 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+Provider<Directory> legacyBase64Classes = layout.buildDirectory.dir("classes/java/legacyBase64")
+Directory legacyBase64Sources = layout.projectDirectory.dir("src/legacyBase64/java")
+
+TaskProvider<JavaCompile> compileLegacyBase64Encoder = tasks.register("compileLegacyBase64Encoder", JavaCompile) {
+    source = fileTree(legacyBase64Sources.asFile)
+    destinationDirectory.set(legacyBase64Classes)
+    classpath = files()
+    options.release.unset()
+    options.compilerArgs.addAll([
+            "--add-modules",
+            "jdk.unsupported",
+            "--patch-module",
+            "jdk.unsupported=${legacyBase64Sources.asFile.absolutePath}"
+    ])
+}
+
 tasks.withType(Test).configureEach {
+    dependsOn compileLegacyBase64Encoder
     jvmArgs '-Dfile.encoding=ISO-8859-1'
+    jvmArgs "-Xbootclasspath/a:${legacyBase64Classes.get().asFile.absolutePath}"
+    jvmArgs '--add-modules', 'jdk.unsupported'
+    jvmArgs '--patch-module', "jdk.unsupported=${legacyBase64Classes.get().asFile.absolutePath}"
 }
 
 graalvmNative {
