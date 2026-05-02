@@ -7,6 +7,7 @@
 package com_mchange.mchange_commons_java;
 
 import com.mchange.v2.beans.swing.PropertyBoundTextField;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.SwingUtilities;
@@ -18,6 +19,14 @@ import java.lang.reflect.InvocationTargetException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PropertyComponentBindingUtilityTest {
+    @BeforeAll
+    static void configureJavaHome() {
+        String environmentJavaHome = System.getenv("JAVA_HOME");
+        if (System.getProperty("java.home") == null && environmentJavaHome != null) {
+            System.setProperty("java.home", environmentJavaHome);
+        }
+    }
+
     @Test
     void textFieldBindingReadsInitialBeanValueAndListensForBeanChanges()
             throws IntrospectionException, InvocationTargetException, InterruptedException {
