@@ -221,9 +221,17 @@ def _write_thread_dump(root_pid: int, library: str | None) -> str:
                 if result.stdout and not result.stdout.endswith("\n"):
                     dump_file.write("\n")
             except subprocess.TimeoutExpired as exc:
-                dump_file.write(exc.stdout or "")
+                dump_file.write(_decode_subprocess_output(exc.stdout))
                 dump_file.write(f"\njcmd timed out after {_THREAD_DUMP_TIMEOUT_SECONDS}s.\n")
     return thread_dump_path
+
+
+def _decode_subprocess_output(output: str | bytes | None) -> str:
+    if output is None:
+        return ""
+    if isinstance(output, bytes):
+        return output.decode("utf-8", errors="replace")
+    return output
 
 
 def _load_process_table() -> dict[int, _ProcessInfo]:

@@ -75,7 +75,7 @@ def timeoutAnnotationWithinLimit = { String annotationBody ->
         return true
     }
     long value = Long.parseLong(valueMatcher.group(1))
-    def unitMatcher = annotationBody =~ /\bunit\s*=\s*(?:TimeUnit\.)?([A-Z_]+)\b/
+    def unitMatcher = annotationBody =~ /\bunit\s*=\s*(?:[A-Za-z_][A-Za-z0-9_]*\s*\.\s*)*([A-Z_]+)\b/
     String unit = unitMatcher.find() ? unitMatcher.group(1) : "SECONDS"
     switch (unit) {
         case "NANOSECONDS":
