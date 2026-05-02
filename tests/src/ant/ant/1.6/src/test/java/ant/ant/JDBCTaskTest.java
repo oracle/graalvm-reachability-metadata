@@ -8,6 +8,10 @@ package ant.ant;
 
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverPropertyInfo;
+import java.sql.SQLException;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -20,26 +24,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class JDBCTaskTest {
-    private static final String DRIVER_INTERFACE_CLASS_NAME = Driver.class.getName();
+    private static final String TEST_DRIVER_CLASS_NAME = NullJdbcDriver.class.getName();
     private static final String TEST_JDBC_URL = "jdbc:ant-test:unhandled";
 
     @Test
     void loadsDriverWithSystemClassLoader() {
         TestJDBCTask task = newConfiguredTask();
-        task.setDriver(DRIVER_INTERFACE_CLASS_NAME);
+        task.setDriver(TEST_DRIVER_CLASS_NAME);
 
-        assertDriverInstantiationFailed(task);
+        assertDriverWasLoadedAndRejectedUrl(task);
     }
 
     @Test
     void loadsDriverThroughConfiguredAntClassLoader() {
         Project project = newProject();
         TestJDBCTask task = newConfiguredTask(project);
-        task.setDriver(DRIVER_INTERFACE_CLASS_NAME);
+        task.setDriver(TEST_DRIVER_CLASS_NAME);
         task.setCaching(false);
         task.setClasspath(new Path(project, System.getProperty("java.class.path")));
 
-        assertDriverInstantiationFailedOrUnsupportedInNativeImage(task);
+        assertDriverWasLoadedAndRejectedUrlOrUnsupportedInNativeImage(task);
     }
 
     private TestJDBCTask newConfiguredTask() {
@@ -62,18 +66,18 @@ public class JDBCTaskTest {
         return project;
     }
 
-    private void assertDriverInstantiationFailed(TestJDBCTask task) {
+    private void assertDriverWasLoadedAndRejectedUrl(TestJDBCTask task) {
         try {
             task.openConnection();
-            fail("Expected JDBC driver instantiation to fail for the driver interface");
+            fail("Expected JDBC connection creation to fail after loading the test driver");
         } catch (BuildException exception) {
-            assertThat(exception.getMessage()).contains("Instantiation Exception");
+            assertThat(exception.getMessage()).contains("No suitable Driver");
         }
     }
 
-    private void assertDriverInstantiationFailedOrUnsupportedInNativeImage(TestJDBCTask task) {
+    private void assertDriverWasLoadedAndRejectedUrlOrUnsupportedInNativeImage(TestJDBCTask task) {
         try {
-            assertDriverInstantiationFailed(task);
+            assertDriverWasLoadedAndRejectedUrl(task);
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -84,6 +88,39 @@ public class JDBCTaskTest {
     private static final class TestJDBCTask extends JDBCTask {
         Connection openConnection() {
             return getConnection();
+        }
+    }
+
+    public static final class NullJdbcDriver implements Driver {
+        public NullJdbcDriver() {
+        }
+
+        public Connection connect(String url, Properties info) throws SQLException {
+            return null;
+        }
+
+        public boolean acceptsURL(String url) throws SQLException {
+            return true;
+        }
+
+        public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
+            return new DriverPropertyInfo[0];
+        }
+
+        public int getMajorVersion() {
+            return 1;
+        }
+
+        public int getMinorVersion() {
+            return 0;
+        }
+
+        public boolean jdbcCompliant() {
+            return false;
+        }
+
+        public Logger getParentLogger() {
+            return Logger.getLogger(NullJdbcDriver.class.getName());
         }
     }
 }
