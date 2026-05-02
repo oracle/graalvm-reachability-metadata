@@ -248,6 +248,50 @@ public class Netty_codec_mqttTest {
     }
 
     @Test
+    void mqtt5PublishPropertiesRoundTripAfterProtocolVersionNegotiation() {
+        MqttProperties properties = new MqttProperties();
+        properties.add(new MqttProperties.IntegerProperty(
+                MqttProperties.MqttPropertyType.PAYLOAD_FORMAT_INDICATOR.value(), 1));
+        properties.add(new MqttProperties.StringProperty(
+                MqttProperties.MqttPropertyType.CONTENT_TYPE.value(), "application/json"));
+        properties.add(new MqttProperties.StringProperty(
+                MqttProperties.MqttPropertyType.RESPONSE_TOPIC.value(), "devices/replies"));
+        properties.add(new MqttProperties.BinaryProperty(
+                MqttProperties.MqttPropertyType.CORRELATION_DATA.value(), new byte[] {1, 3, 5}));
+        properties.add(new MqttProperties.UserProperty("source", "thermostat"));
+        MqttPublishMessage publish = MqttMessageBuilders.publish()
+                .topicName("devices/1/telemetry")
+                .messageId(314)
+                .qos(MqttQoS.AT_LEAST_ONCE)
+                .properties(properties)
+                .payload(Unpooled.copiedBuffer("{\"temp\":22}", UTF_8))
+                .build();
+
+        MqttPublishMessage decoded = (MqttPublishMessage) encodeAndDecodeAfterMqtt5Connect(publish);
+        try {
+            assertThat(decoded.fixedHeader().messageType()).isEqualTo(MqttMessageType.PUBLISH);
+            assertThat(decoded.fixedHeader().qosLevel()).isEqualTo(MqttQoS.AT_LEAST_ONCE);
+            assertThat(decoded.variableHeader().topicName()).isEqualTo("devices/1/telemetry");
+            assertThat(decoded.variableHeader().packetId()).isEqualTo(314);
+            assertThat(decoded.content().toString(UTF_8)).isEqualTo("{\"temp\":22}");
+            MqttProperties decodedProperties = decoded.variableHeader().properties();
+            assertThat(decodedProperties.getProperty(
+                    MqttProperties.MqttPropertyType.PAYLOAD_FORMAT_INDICATOR.value()).value()).isEqualTo(1);
+            assertThat(decodedProperties.getProperty(
+                    MqttProperties.MqttPropertyType.CONTENT_TYPE.value()).value()).isEqualTo("application/json");
+            assertThat(decodedProperties.getProperty(
+                    MqttProperties.MqttPropertyType.RESPONSE_TOPIC.value()).value()).isEqualTo("devices/replies");
+            assertThat((byte[]) decodedProperties.getProperty(
+                    MqttProperties.MqttPropertyType.CORRELATION_DATA.value()).value())
+                    .containsExactly((byte) 1, (byte) 3, (byte) 5);
+            assertThat(decodedProperties.getProperty(MqttProperties.MqttPropertyType.USER_PROPERTY.value()).value())
+                    .isEqualTo(Arrays.asList(new MqttProperties.StringPair("source", "thermostat")));
+        } finally {
+            decoded.release();
+        }
+    }
+
+    @Test
     void subscribeBuilderRoundTripsMultipleSubscriptionsAndSubscriptionOptions() {
         MqttSubscriptionOption retainedOption = new MqttSubscriptionOption(
                 MqttQoS.EXACTLY_ONCE,
@@ -479,6 +523,50 @@ public class Netty_codec_mqttTest {
             return decode(encoded.retainedDuplicate());
         } finally {
             encoded.release();
+        }
+    }
+
+    private static MqttMessage encodeAndDecodeAfterMqtt5Connect(MqttMessage message) {
+        ByteBuf encodedConnect = null;
+        ByteBuf encodedMessage = null;
+        EmbeddedChannel encoder = new EmbeddedChannel(MqttEncoder.INSTANCE);
+        try {
+            MqttConnectMessage connect = MqttMessageBuilders.connect()
+                    .protocolVersion(MqttVersion.MQTT_5)
+                    .clientId("mqtt5-session")
+                    .cleanSession(true)
+                    .keepAlive(30)
+                    .properties(MqttProperties.NO_PROPERTIES)
+                    .build();
+            assertThat(encoder.writeOutbound(connect)).isTrue();
+            encodedConnect = readAllOutboundBytes(encoder);
+            assertThat(encoder.writeOutbound(message)).isTrue();
+            encodedMessage = readAllOutboundBytes(encoder);
+            return decodeAfterConnect(encodedConnect.retainedDuplicate(), encodedMessage.retainedDuplicate());
+        } finally {
+            if (encodedConnect != null) {
+                encodedConnect.release();
+            }
+            if (encodedMessage != null) {
+                encodedMessage.release();
+            }
+            encoder.finishAndReleaseAll();
+        }
+    }
+
+    private static MqttMessage decodeAfterConnect(ByteBuf encodedConnect, ByteBuf encodedMessage) {
+        EmbeddedChannel channel = new EmbeddedChannel(new MqttDecoder());
+        try {
+            assertThat(channel.writeInbound(encodedConnect)).isTrue();
+            MqttConnectMessage connect = channel.readInbound();
+            assertThat(connect.variableHeader().version()).isEqualTo(5);
+            assertThat(channel.writeInbound(encodedMessage)).isTrue();
+            MqttMessage message = channel.readInbound();
+            assertThat(message).isNotNull();
+            assertThat((Object) channel.readInbound()).isNull();
+            return message;
+        } finally {
+            channel.finishAndReleaseAll();
         }
     }
 
