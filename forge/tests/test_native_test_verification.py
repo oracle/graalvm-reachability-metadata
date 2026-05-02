@@ -12,12 +12,14 @@ The Gradle / native-image side is intentionally not exercised here.
 
 from __future__ import annotations
 
+import io
 import json
 import os
 import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
 
@@ -144,6 +146,51 @@ class CollectEntriesTests(unittest.TestCase):
         a = self._make_run({"opaque.bin": b"AAA"})
         b = self._make_run({"opaque.bin": b"BBB"})
         self.assertNotEqual(nme._collect_entries(a), nme._collect_entries(b))
+
+
+class PrintCollectedMetadataTests(unittest.TestCase):
+    """Readable logging of per-cycle trace metadata."""
+
+    def test_prints_pretty_json_metadata(self) -> None:
+        run_dir = tempfile.mkdtemp(prefix="trace-run-")
+        self.addCleanup(_rmtree, run_dir)
+        metadata_file = Path(run_dir) / "reachability-metadata.json"
+        metadata_file.write_text(
+            json.dumps({"reflection": [{"type": "com.example.Foo"}]}),
+            encoding="utf-8",
+        )
+
+        output = io.StringIO()
+        with redirect_stdout(output):
+            ntv._print_collected_metadata(run_dir, 2)
+
+        printed = output.getvalue()
+        self.assertIn("cycle 2: collected metadata from 1 file(s)", printed)
+        self.assertIn("reachability-metadata.json:", printed)
+        self.assertIn('"type": "com.example.Foo"', printed)
+
+    def test_prints_none_for_empty_trace_dir(self) -> None:
+        run_dir = tempfile.mkdtemp(prefix="trace-run-")
+        self.addCleanup(_rmtree, run_dir)
+
+        output = io.StringIO()
+        with redirect_stdout(output):
+            ntv._print_collected_metadata(run_dir, 1)
+
+        self.assertIn("cycle 1: collected metadata: none", output.getvalue())
+
+    def test_ignores_binary_exit_sentinel(self) -> None:
+        run_dir = tempfile.mkdtemp(prefix="trace-run-")
+        self.addCleanup(_rmtree, run_dir)
+        Path(run_dir, "binary-exit-code").write_text("172", encoding="utf-8")
+
+        output = io.StringIO()
+        with redirect_stdout(output):
+            ntv._print_collected_metadata(run_dir, 1)
+
+        printed = output.getvalue()
+        self.assertIn("cycle 1: collected metadata: none", printed)
+        self.assertNotIn("binary-exit-code:", printed)
 
 
 class GateRoutingTests(unittest.TestCase):

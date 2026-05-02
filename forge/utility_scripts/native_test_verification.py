@@ -27,6 +27,7 @@ must surface to the coding agent. See
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import shutil
@@ -59,6 +60,7 @@ _LOG_TASK_TYPE = "native-test-verify"
 # from this line because the Exec itself runs with ignoreExitValue=true and
 # Gradle's own exit code does not include it.
 _EXIT_VALUE_PATTERN = re.compile(r"exit\s+value\s+(\d+)", re.IGNORECASE)
+_TRACE_SENTINEL_FILE_NAMES = frozenset({"binary-exit-code"})
 
 
 @dataclass
@@ -150,6 +152,7 @@ def verify_native_test_passes(
         )
         last_log_path = log_path
         last_binary_rc = binary_rc if binary_rc is not None else gradle_rc
+        _print_collected_metadata(run_dir, cycle + 1)
 
         if binary_rc == 0:
             log_stage(
@@ -289,6 +292,66 @@ def _run_native_trace_image(
         # exit value; the binary must have returned 0.
         binary_rc = 0
     return result.returncode, binary_rc
+
+
+def _print_collected_metadata(run_dir: str, cycle_number: int) -> None:
+    """Print the trace metadata collected in ``run_dir`` for one gate cycle."""
+    metadata_files = _metadata_files(run_dir)
+    if not metadata_files:
+        log_stage(
+            _GATE_STAGE,
+            f"cycle {cycle_number}: collected metadata: none ({run_dir})",
+            indent_level=1,
+        )
+        return
+
+    log_stage(
+        _GATE_STAGE,
+        f"cycle {cycle_number}: collected metadata from {len(metadata_files)} file(s) ({run_dir})",
+        indent_level=1,
+    )
+    for metadata_file in metadata_files:
+        relative = os.path.relpath(metadata_file, run_dir)
+        log_stage(_GATE_STAGE, f"{relative}:", indent_level=2)
+        for line in _format_metadata_file(metadata_file).splitlines():
+            log_stage(_GATE_STAGE, line, indent_level=3)
+
+
+def _metadata_files(run_dir: str) -> list[str]:
+    """Return trace metadata files below ``run_dir`` in deterministic order."""
+    result: list[str] = []
+    for root, _dirs, files in os.walk(run_dir):
+        for name in files:
+            if name in _TRACE_SENTINEL_FILE_NAMES:
+                continue
+            result.append(os.path.join(root, name))
+    return sorted(result, key=lambda path: os.path.relpath(path, run_dir))
+
+
+def _format_metadata_file(path: str) -> str:
+    """Return a readable representation of one collected metadata file."""
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            data = json.load(handle)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return _read_text_or_binary_summary(path)
+    except OSError as exc:
+        return f"<unreadable: {exc}>"
+    return json.dumps(data, indent=2, sort_keys=True)
+
+
+def _read_text_or_binary_summary(path: str) -> str:
+    """Return text content for UTF-8 files, or a compact summary for binary files."""
+    try:
+        with open(path, "rb") as handle:
+            raw = handle.read()
+    except OSError as exc:
+        return f"<unreadable: {exc}>"
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return f"<binary metadata file: {len(raw)} bytes>"
+    return text if text else "<empty>"
 
 
 def _read_exit_file(path: str) -> int | None:
