@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import org.iq80.leveldb.CompressionType;
 import org.iq80.leveldb.DB;
+import org.iq80.leveldb.DBComparator;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
 import org.iq80.leveldb.Range;
@@ -38,17 +39,17 @@ public class LeveldbjniTest {
         try {
             try (DB db = factory.open(databasePath.toFile(), databaseOptions())) {
                 db.put(bytes("alpha"), bytes("one"));
-                db.put(bytes("unicode"), bytes("Grüße"));
+                db.put(bytes("unicode"), bytes("Gr\u00fc\u00dfe"));
 
                 assertThat(db.get(bytes("alpha"))).containsExactly(bytes("one"));
-                assertThat(asString(db.get(bytes("unicode")))).isEqualTo("Grüße");
+                assertThat(asString(db.get(bytes("unicode")))).isEqualTo("Gr\u00fc\u00dfe");
 
                 db.delete(bytes("alpha"));
                 assertThat(db.get(bytes("alpha"))).isNull();
             }
 
             try (DB reopened = factory.open(databasePath.toFile(), existingDatabaseOptions())) {
-                assertThat(asString(reopened.get(bytes("unicode")))).isEqualTo("Grüße");
+                assertThat(asString(reopened.get(bytes("unicode")))).isEqualTo("Gr\u00fc\u00dfe");
                 reopened.put(bytes("after-reopen"), bytes("still writable"));
                 assertThat(asString(reopened.get(bytes("after-reopen")))).isEqualTo("still writable");
             }
@@ -130,6 +131,37 @@ public class LeveldbjniTest {
     }
 
     @Test
+    public void customComparatorControlsIteratorOrdering() throws Exception {
+        Path databasePath = Files.createTempDirectory("leveldbjni-comparator-");
+        try {
+            try (DB db = factory.open(databasePath.toFile(), databaseOptions().comparator(reverseLexicographicComparator()))) {
+                db.put(bytes("apple"), bytes("red"));
+                db.put(bytes("banana"), bytes("yellow"));
+                db.put(bytes("cherry"), bytes("dark red"));
+
+                assertThat(asString(db.get(bytes("banana")))).isEqualTo("yellow");
+
+                try (DBIterator iterator = db.iterator()) {
+                    iterator.seekToFirst();
+                    assertThat(nextKey(iterator)).isEqualTo("cherry");
+                    assertThat(nextKey(iterator)).isEqualTo("banana");
+                    assertThat(nextKey(iterator)).isEqualTo("apple");
+                    assertThat(iterator.hasNext()).isFalse();
+
+                    iterator.seek(bytes("banana"));
+                    assertThat(iterator.hasNext()).isTrue();
+                    assertThat(nextKey(iterator)).isEqualTo("banana");
+
+                    iterator.seekToLast();
+                    assertThat(previousKey(iterator)).isEqualTo("banana");
+                }
+            }
+        } finally {
+            deleteRecursively(databasePath);
+        }
+    }
+
+    @Test
     public void exposesPropertiesApproximateSizesCompactionRepairAndDestroy() throws Exception {
         Path databasePath = Files.createTempDirectory("leveldbjni-maintenance-");
         try {
@@ -167,7 +199,7 @@ public class LeveldbjniTest {
         Path databasePath = Files.createTempDirectory("leveldbjni-factory-");
         try {
             assertThat(asString(bytes("plain text"))).isEqualTo("plain text");
-            assertThat(asString(bytes("snowman-☃"))).isEqualTo("snowman-☃");
+            assertThat(asString(bytes("snowman-\u2603"))).isEqualTo("snowman-\u2603");
             assertThat(factory.toString()).isNotBlank();
 
             Path missingPath = databasePath.resolve("missing");
@@ -201,6 +233,30 @@ public class LeveldbjniTest {
 
     private static Options existingDatabaseOptions() {
         return databaseOptions().createIfMissing(false);
+    }
+
+    private static DBComparator reverseLexicographicComparator() {
+        return new DBComparator() {
+            @Override
+            public String name() {
+                return "reverse-lexicographic";
+            }
+
+            @Override
+            public int compare(byte[] left, byte[] right) {
+                return asString(right).compareTo(asString(left));
+            }
+
+            @Override
+            public byte[] findShortestSeparator(byte[] start, byte[] limit) {
+                return start;
+            }
+
+            @Override
+            public byte[] findShortSuccessor(byte[] key) {
+                return key;
+            }
+        };
     }
 
     private static ReadOptions newSnapshotReadOptions(Snapshot snapshot) {
