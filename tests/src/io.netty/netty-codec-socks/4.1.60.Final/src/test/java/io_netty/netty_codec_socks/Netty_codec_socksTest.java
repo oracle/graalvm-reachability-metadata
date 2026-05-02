@@ -29,6 +29,8 @@ import io.netty.handler.codec.socksx.v5.DefaultSocks5InitialRequest;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5InitialResponse;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5PasswordAuthRequest;
 import io.netty.handler.codec.socksx.v5.DefaultSocks5PasswordAuthResponse;
+import io.netty.handler.codec.socksx.v5.Socks5AddressDecoder;
+import io.netty.handler.codec.socksx.v5.Socks5AddressEncoder;
 import io.netty.handler.codec.socksx.v5.Socks5AddressType;
 import io.netty.handler.codec.socksx.v5.Socks5AuthMethod;
 import io.netty.handler.codec.socksx.v5.Socks5ClientEncoder;
@@ -213,6 +215,51 @@ public class Netty_codec_socksTest {
             socks4UnifiedServer.finishAndReleaseAll();
             socks5Encoder.finishAndReleaseAll();
             socks5UnifiedServer.finishAndReleaseAll();
+        }
+    }
+
+    @Test
+    void socks5CommandCodecsUseCustomAddressCodecs() {
+        Socks5AddressEncoder aliasingEncoder = (addressType, address, out) -> {
+            String encodedAddress = Socks5AddressType.DOMAIN.equals(addressType) && "alias.example.test".equals(address)
+                    ? "resolved.example.test"
+                    : address;
+            Socks5AddressEncoder.DEFAULT.encodeAddress(addressType, encodedAddress, out);
+        };
+        Socks5AddressDecoder taggingDecoder = (addressType, in) ->
+                "decoded:" + Socks5AddressDecoder.DEFAULT.decodeAddress(addressType, in);
+
+        EmbeddedChannel clientEncoder = new EmbeddedChannel(new Socks5ClientEncoder(aliasingEncoder));
+        EmbeddedChannel serverDecoder = new EmbeddedChannel(new Socks5CommandRequestDecoder(taggingDecoder));
+        EmbeddedChannel serverEncoder = new EmbeddedChannel(new Socks5ServerEncoder(aliasingEncoder));
+        EmbeddedChannel clientDecoder = new EmbeddedChannel(new Socks5CommandResponseDecoder(taggingDecoder));
+        try {
+            Socks5CommandRequest request = new DefaultSocks5CommandRequest(
+                    Socks5CommandType.CONNECT, Socks5AddressType.DOMAIN, "alias.example.test", 443);
+
+            Socks5CommandRequest decodedRequest = decode(
+                    serverDecoder, encode(clientEncoder, request), Socks5CommandRequest.class);
+
+            assertThat(decodedRequest.decoderResult().isSuccess()).isTrue();
+            assertThat(decodedRequest.dstAddrType()).isEqualTo(Socks5AddressType.DOMAIN);
+            assertThat(decodedRequest.dstAddr()).isEqualTo("decoded:resolved.example.test");
+            assertThat(decodedRequest.dstPort()).isEqualTo(443);
+
+            Socks5CommandResponse response = new DefaultSocks5CommandResponse(
+                    Socks5CommandStatus.SUCCESS, Socks5AddressType.DOMAIN, "alias.example.test", 8443);
+
+            Socks5CommandResponse decodedResponse = decode(
+                    clientDecoder, encode(serverEncoder, response), Socks5CommandResponse.class);
+
+            assertThat(decodedResponse.decoderResult().isSuccess()).isTrue();
+            assertThat(decodedResponse.bndAddrType()).isEqualTo(Socks5AddressType.DOMAIN);
+            assertThat(decodedResponse.bndAddr()).isEqualTo("decoded:resolved.example.test");
+            assertThat(decodedResponse.bndPort()).isEqualTo(8443);
+        } finally {
+            clientEncoder.finishAndReleaseAll();
+            serverDecoder.finishAndReleaseAll();
+            serverEncoder.finishAndReleaseAll();
+            clientDecoder.finishAndReleaseAll();
         }
     }
 
