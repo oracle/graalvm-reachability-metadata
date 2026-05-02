@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Principal;
 import java.util.Collection;
@@ -222,6 +223,28 @@ public class Commons_fileupload2_javaxTest {
                     assertThat(exception.getPermitted()).isEqualTo(3);
                     assertThat(exception.getActualSize()).isEqualTo(4);
                 });
+    }
+
+    @Test
+    void writesParsedServletUploadToApplicationFile() throws Exception {
+        String boundary = "write-upload";
+        String content = "line one\nline two\nline three";
+        byte[] body = multipart(boundary,
+                part("Content-Disposition: form-data; name=\"upload\"; filename=\"report.txt\"",
+                        "Content-Type: text/plain; charset=UTF-8",
+                        "",
+                        content));
+        JavaxServletDiskFileUpload upload = newDiskUpload(8);
+        MemoryHttpServletRequest request = multipartRequest("POST", boundary, body, StandardCharsets.UTF_8);
+
+        DiskFileItem item = upload.parseRequest(request).get(0);
+        Path destination = tempDir.resolve("stored-report.txt");
+
+        DiskFileItem writtenItem = item.write(destination);
+
+        assertThat(writtenItem).isSameAs(item);
+        assertThat(item.getSize()).isEqualTo(content.getBytes(StandardCharsets.UTF_8).length);
+        assertThat(Files.readString(destination, StandardCharsets.UTF_8)).isEqualTo(content);
     }
 
     @Test
