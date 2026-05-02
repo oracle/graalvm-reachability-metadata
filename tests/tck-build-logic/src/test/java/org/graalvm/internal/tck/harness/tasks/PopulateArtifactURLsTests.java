@@ -53,13 +53,14 @@ class PopulateArtifactURLsTests {
                 .contains("{ \"name\": \"groovy\", \"version\": \"<groovy major.minor, e.g. 4.0>\" }")
                 .contains("{ \"name\": \"scala\", \"version\": \"2\" }")
                 .contains("If the library is not language-specific, leave the \"language\" field absent.")
-                .contains("The sources URL, the test suite URL, and the documentation URL must be for the EXACT version \"1.4.1\".")
+                .contains("The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version \"1.4.1\" when \"$version$\" is replaced with \"1.4.1\".")
                 .contains("The \"description\" field must explain what the library does in exactly two sentences.")
                 .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
                 .contains("Set missing \"repository-url\" to the selected repository URL.")
                 .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
-                .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
-                .contains("Render template candidates for target metadata-version \"1.4.1\" and verify rendered URLs before writing them.")
+                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
+                .contains("Set missing \"documentation-url\" to the selected project documentation URL with \"$version$\" replacing version \"1.4.1\".")
+                .contains("Render template candidates for entry metadata-version \"1.4.1\" and verify rendered URLs before writing them.")
                 .contains("A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.")
                 .contains("Set missing \"description\" to a concise explanation of the library in exactly two sentences.")
                 .contains("Set missing \"language\" only when the library is language-specific; otherwise leave the field absent.")
@@ -182,7 +183,37 @@ class PopulateArtifactURLsTests {
                 .contains("confirm `-test-sources.jar` contains real test source files.")
                 .contains("For non-Maven source/test URLs")
                 .contains("Prefer a verified repository tag URL instead.")
-                .contains("If an existing URL can be rendered as a version template, verify the rendered exact-version candidate before writing it.");
+                .contains("If an existing URL can be rendered as a version template, verify the rendered exact-version candidate before writing the \"$version$\" template.");
+    }
+
+    @Test
+    void runUsesEntryMetadataVersionForUrlTemplatesWhenCoordinateMatchesTestedVersion() throws IOException, InterruptedException {
+        Project project = createProjectWithSharedMetadataVersion();
+        PopulateArtifactURLs task = project.getTasks().create(
+                "populateArtifactURLs",
+                PopulateArtifactURLs.class
+        );
+        task.setCoordinatesOption("com.example:demo:1.4.2");
+        task.setAgentCommandOption("opencode run");
+
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+        try (PrintStream capturedOut = new PrintStream(outputBuffer, true, StandardCharsets.UTF_8)) {
+            System.setOut(capturedOut);
+            task.run();
+        } finally {
+            System.setOut(originalOut);
+        }
+
+        String output = outputBuffer.toString(StandardCharsets.UTF_8);
+        assertThat(output)
+                .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.example:demo:1.4.2")
+                .contains("The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version \"1.4.1\" when \"$version$\" is replaced with \"1.4.1\".")
+                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
+                .contains("Render template candidates for entry metadata-version \"1.4.1\" and verify rendered URLs before writing them.")
+                .contains("Entry selector: \"metadata-version\" = \"1.4.1\"")
+                .contains("- Coordinate version: 1.4.2")
+                .contains("- Entry metadata-version: 1.4.1");
     }
 
     private Project createProjectWithMetadata() throws IOException {
@@ -205,6 +236,7 @@ class PopulateArtifactURLsTests {
                 ]
                 """
         );
+        Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.4.2"));
         return createProjectSkeleton();
     }
 
@@ -239,6 +271,25 @@ class PopulateArtifactURLsTests {
                     "metadata-version": "2.0.0",
                     "tested-versions": [
                       "2.0.0"
+                    ]
+                  }
+                ]
+                """
+        );
+        return createProjectSkeleton();
+    }
+
+    private Project createProjectWithSharedMetadataVersion() throws IOException {
+        writeMetadataIndex(
+                "com.example",
+                "demo",
+                "1.4.2",
+                """
+                [
+                  {
+                    "metadata-version": "1.4.1",
+                    "tested-versions": [
+                      "1.4.2"
                     ]
                   }
                 ]

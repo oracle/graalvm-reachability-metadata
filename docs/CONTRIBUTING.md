@@ -105,10 +105,10 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
 * `requires`: An array of `groupId:artifactId` coordinates for libraries this metadata depends on.
 * `default-for`: A Java-format regex used to match library versions if no exact match exists in `tested-versions` (e.g., `"0\\.0\\..*"`).
 * `test-version`: Defines the subdirectory in `tests/src` containing the test code. Use this to share a single test suite across multiple metadata versions.
-* `source-code-url`: URL to the metadata source code location for this index entry.
+* `source-code-url`: URL to the metadata source code location for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
 * `repository-url`: URL to the canonical project repository for this index entry.
-* `test-code-url`: URL to the test source code location for this index entry.
-* `documentation-url`: URL to the project documentation for this index entry.
+* `test-code-url`: URL to the test source code location for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+* `documentation-url`: URL to the project documentation for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
 * `description`: A concise explanation of the library in exactly two sentences.
 * `skipped-versions`: An array of objects (with `version` and `reason`) to explicitly exclude library versions known to be broken or incompatible.
 * `override`: Boolean. If `true`, excludes outdated builtin GraalVM metadata.
@@ -137,9 +137,9 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
      "allowed-packages": ["org.example.library"],
      "metadata-version": "1.1.0",
      "test-version": "1.0.0",
-     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/$version$",
      "repository-url": "https://github.com/example/repo",
-     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/$version$",
      "documentation-url": "https://github.com/example/repo/tree/main/README.md",
      "tested-versions": [
        "1.1.0",

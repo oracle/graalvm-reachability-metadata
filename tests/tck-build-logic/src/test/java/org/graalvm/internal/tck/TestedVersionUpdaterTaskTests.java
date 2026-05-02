@@ -208,9 +208,49 @@ class TestedVersionUpdaterTaskTests {
             List<Map<String, Object>> indexEntries = readIndex(group, artifact);
             assertThat(indexEntries.get(0))
                     .containsEntry("metadata-version", newVersion)
-                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/1.0.0/demo-1.0.0-sources.jar")
-                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/1.0.0/demo-1.0.0-javadoc.jar");
+                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
             assertThat(indexEntries.get(0)).containsEntry("test-code-url", "N/A");
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
+    void runPromotesUrlsUsingEmbeddedPreReleaseVersionTokenAsTemplate() throws IOException {
+        String group = "com.example";
+        String artifact = "demo";
+        String oldVersion = "1.0.0-RC1";
+        String urlVersion = "1.0.0-M20";
+        String newVersion = "1.0.0";
+        byte[] sourceJar = zipArchive("com/example/Demo.java", "package com.example; class Demo {}");
+        HttpServer server = startServer(Map.of(
+                "/maven/com/example/demo/1.0.0/demo-1.0.0-sources.jar", sourceJar,
+                "/maven/com/example/demo/1.0.0/demo-1.0.0-javadoc.jar", zipArchive("index.html", "<html></html>")
+        ));
+
+        try {
+            String baseUrl = "http://localhost:" + server.getAddress().getPort();
+            writeIndex(
+                    group,
+                    artifact,
+                    oldVersion,
+                    baseUrl + "/maven/com/example/demo/" + urlVersion + "/demo-" + urlVersion + "-sources.jar",
+                    "N/A",
+                    baseUrl + "/maven/com/example/demo/" + urlVersion + "/demo-" + urlVersion + "-javadoc.jar"
+            );
+
+            TestTestedVersionUpdaterTask task = createTask();
+            task.setCoordinates(group + ":" + artifact + ":" + newVersion);
+            task.getLastSupportedVersion().set(oldVersion);
+
+            task.run();
+
+            List<Map<String, Object>> indexEntries = readIndex(group, artifact);
+            assertThat(indexEntries.get(0))
+                    .containsEntry("metadata-version", newVersion)
+                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
         } finally {
             server.stop(0);
         }
@@ -245,7 +285,7 @@ class TestedVersionUpdaterTaskTests {
 
             assertThat(readIndex(group, artifact).get(0))
                     .containsEntry("metadata-version", newVersion)
-                    .containsEntry("test-code-url", baseUrl + "/svn/demo/tags/2.0.0/src/test");
+                    .containsEntry("test-code-url", baseUrl + "/svn/demo/tags/$version$/src/test");
         } finally {
             server.stop(0);
         }
