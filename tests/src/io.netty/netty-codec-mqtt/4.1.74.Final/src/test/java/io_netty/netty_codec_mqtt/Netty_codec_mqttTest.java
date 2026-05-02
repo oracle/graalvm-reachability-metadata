@@ -187,7 +187,7 @@ public class Netty_codec_mqttTest {
 
     @Test
     void publishMessageRoundTripsPayloadHeadersAndReferenceCountOperations() {
-        ByteBuf payload = Unpooled.copiedBuffer("22.5°C", UTF_8);
+        ByteBuf payload = Unpooled.copiedBuffer("22.5\u00b0C", UTF_8);
         MqttPublishMessage publish = MqttMessageBuilders.publish()
                 .topicName("sensors/temperature")
                 .messageId(1234)
@@ -201,17 +201,17 @@ public class Netty_codec_mqttTest {
         assertThat(publish.fixedHeader().isRetain()).isTrue();
         assertThat(publish.variableHeader().topicName()).isEqualTo("sensors/temperature");
         assertThat(publish.variableHeader().packetId()).isEqualTo(1234);
-        assertThat(publish.content().toString(UTF_8)).isEqualTo("22.5°C");
+        assertThat(publish.content().toString(UTF_8)).isEqualTo("22.5\u00b0C");
 
         MqttPublishMessage copy = publish.copy();
         MqttPublishMessage duplicate = publish.duplicate();
-        MqttPublishMessage replacement = publish.replace(Unpooled.copiedBuffer("23.0°C", UTF_8));
+        MqttPublishMessage replacement = publish.replace(Unpooled.copiedBuffer("23.0\u00b0C", UTF_8));
         try {
             publish.content().setByte(0, '3');
-            assertThat(copy.payload().toString(UTF_8)).isEqualTo("22.5°C");
-            assertThat(duplicate.payload().toString(UTF_8)).isEqualTo("32.5°C");
+            assertThat(copy.payload().toString(UTF_8)).isEqualTo("22.5\u00b0C");
+            assertThat(duplicate.payload().toString(UTF_8)).isEqualTo("32.5\u00b0C");
             assertThat(replacement.variableHeader().topicName()).isEqualTo("sensors/temperature");
-            assertThat(replacement.payload().toString(UTF_8)).isEqualTo("23.0°C");
+            assertThat(replacement.payload().toString(UTF_8)).isEqualTo("23.0\u00b0C");
             assertThat(publish.retain()).isSameAs(publish);
             assertThat(publish.refCnt()).isEqualTo(2);
         } finally {
@@ -226,7 +226,7 @@ public class Netty_codec_mqttTest {
                 .messageId(1234)
                 .qos(MqttQoS.AT_LEAST_ONCE)
                 .retained(true)
-                .payload(Unpooled.copiedBuffer("22.5°C", UTF_8))
+                .payload(Unpooled.copiedBuffer("22.5\u00b0C", UTF_8))
                 .build();
         ByteBuf encoded = encode(outboundPublish);
         try {
@@ -238,7 +238,7 @@ public class Netty_codec_mqttTest {
                 assertThat(decoded.fixedHeader().isRetain()).isTrue();
                 assertThat(decoded.variableHeader().topicName()).isEqualTo("sensors/temperature");
                 assertThat(decoded.variableHeader().packetId()).isEqualTo(1234);
-                assertThat(decoded.payload().toString(UTF_8)).isEqualTo("22.5°C");
+                assertThat(decoded.payload().toString(UTF_8)).isEqualTo("22.5\u00b0C");
                 assertThat(decoded.decoderResult()).isEqualTo(DecoderResult.SUCCESS);
             } finally {
                 decoded.release();
