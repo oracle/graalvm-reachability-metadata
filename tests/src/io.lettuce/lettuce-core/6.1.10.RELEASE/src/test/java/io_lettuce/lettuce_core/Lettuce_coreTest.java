@@ -8,8 +8,11 @@ package io_lettuce.lettuce_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.within;
 
 import io.lettuce.core.ClientOptions;
+import io.lettuce.core.GeoArgs;
+import io.lettuce.core.GeoCoordinates;
 import io.lettuce.core.KeyValue;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisFuture;
@@ -182,6 +185,37 @@ public class Lettuce_coreTest {
     }
 
     @Test
+    void geospatialCommandsDecodeCoordinatesAndDistances() throws Exception {
+        try (FakeRedisServer server = new FakeRedisServer()) {
+            RedisClient client = RedisClient.create(server.redisUri());
+            StatefulRedisConnection<String, String> connection = null;
+            try {
+                connection = client.connect();
+                connection.setTimeout(COMMAND_TIMEOUT);
+                RedisCommands<String, String> commands = connection.sync();
+
+                assertThat(commands.geoadd("places", 13.361389, 38.115556, "Palermo")).isEqualTo(1L);
+                assertThat(commands.geoadd("places", 15.087269, 37.502669, "Catania")).isEqualTo(1L);
+
+                List<GeoCoordinates> positions = commands.geopos("places", "Palermo", "Catania");
+                Double distance = commands.geodist("places", "Palermo", "Catania", GeoArgs.Unit.km);
+
+                assertThat(positions).hasSize(2);
+                assertThat(positions.get(0).getX().doubleValue()).isCloseTo(13.361389, within(0.000001));
+                assertThat(positions.get(0).getY().doubleValue()).isCloseTo(38.115556, within(0.000001));
+                assertThat(positions.get(1).getX().doubleValue()).isCloseTo(15.087269, within(0.000001));
+                assertThat(positions.get(1).getY().doubleValue()).isCloseTo(37.502669, within(0.000001));
+                assertThat(distance).isCloseTo(166.0, within(1.0));
+                assertThat(server.commands()).extracting(command -> command.get(0))
+                        .contains("GEOADD", "GEOPOS", "GEODIST");
+            } finally {
+                closeConnection(connection);
+                shutdown(client);
+            }
+        }
+    }
+
+    @Test
     void sortedSetCommandsMapScoredValues() throws Exception {
         try (FakeRedisServer server = new FakeRedisServer()) {
             RedisClient client = RedisClient.create(server.redisUri());
@@ -256,6 +290,7 @@ public class Lettuce_coreTest {
         private final Map<String, List<String>> lists = Collections.synchronizedMap(new LinkedHashMap<>());
         private final Map<String, Set<String>> sets = Collections.synchronizedMap(new LinkedHashMap<>());
         private final Map<String, Map<String, Double>> sortedSets = Collections.synchronizedMap(new LinkedHashMap<>());
+        private final Map<String, Map<String, GeoCoordinates>> geoIndexes = Collections.synchronizedMap(new LinkedHashMap<>());
         private volatile boolean closed;
 
         FakeRedisServer() throws Exception {
@@ -412,6 +447,15 @@ public class Lettuce_coreTest {
                 case "ZRANGE":
                     writeArray(output, zrange(command));
                     break;
+                case "GEOADD":
+                    writeInteger(output, geoadd(command));
+                    break;
+                case "GEOPOS":
+                    writeGeoPositions(output, command);
+                    break;
+                case "GEODIST":
+                    writeBulk(output, geodist(command));
+                    break;
                 case "EVAL":
                     writeEvalResponse(output, command);
                     break;
@@ -488,6 +532,60 @@ public class Lettuce_coreTest {
                 }
             }
             return response;
+        }
+
+        private long geoadd(List<String> command) {
+            Map<String, GeoCoordinates> index = geoIndexes.computeIfAbsent(command.get(1), unused -> new LinkedHashMap<>());
+            GeoCoordinates coordinates = GeoCoordinates.create(Double.parseDouble(command.get(2)),
+                    Double.parseDouble(command.get(3)));
+            boolean absent = !index.containsKey(command.get(4));
+            index.put(command.get(4), coordinates);
+            return absent ? 1 : 0;
+        }
+
+        private String geodist(List<String> command) {
+            Map<String, GeoCoordinates> index = geoIndexes.getOrDefault(command.get(1), Collections.emptyMap());
+            GeoCoordinates from = index.get(command.get(2));
+            GeoCoordinates to = index.get(command.get(3));
+            if (from == null || to == null) {
+                return null;
+            }
+            double distanceMeters = haversineMeters(from, to);
+            String unit = command.size() > 4 ? command.get(4) : "m";
+            double convertedDistance = switch (unit.toLowerCase()) {
+                case "km" -> distanceMeters / 1_000.0;
+                case "mi" -> distanceMeters / 1_609.344;
+                case "ft" -> distanceMeters * 3.28084;
+                default -> distanceMeters;
+            };
+            return Double.toString(convertedDistance);
+        }
+
+        private double haversineMeters(GeoCoordinates from, GeoCoordinates to) {
+            double earthRadiusMeters = 6_371_000.0;
+            double fromLatitude = Math.toRadians(from.getY().doubleValue());
+            double toLatitude = Math.toRadians(to.getY().doubleValue());
+            double latitudeDelta = Math.toRadians(to.getY().doubleValue() - from.getY().doubleValue());
+            double longitudeDelta = Math.toRadians(to.getX().doubleValue() - from.getX().doubleValue());
+            double a = Math.sin(latitudeDelta / 2) * Math.sin(latitudeDelta / 2)
+                    + Math.cos(fromLatitude) * Math.cos(toLatitude)
+                    * Math.sin(longitudeDelta / 2) * Math.sin(longitudeDelta / 2);
+            return 2 * earthRadiusMeters * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        private void writeGeoPositions(OutputStream output, List<String> command) throws IOException {
+            Map<String, GeoCoordinates> index = geoIndexes.getOrDefault(command.get(1), Collections.emptyMap());
+            output.write(("*" + (command.size() - 2) + "\r\n").getBytes(StandardCharsets.UTF_8));
+            for (int i = 2; i < command.size(); i++) {
+                GeoCoordinates coordinates = index.get(command.get(i));
+                if (coordinates == null) {
+                    output.write("*-1\r\n".getBytes(StandardCharsets.UTF_8));
+                    continue;
+                }
+                output.write("*2\r\n".getBytes(StandardCharsets.UTF_8));
+                writeBulk(output, coordinates.getX().toString());
+                writeBulk(output, coordinates.getY().toString());
+            }
         }
 
         private void writeEvalResponse(OutputStream output, List<String> command) throws IOException {
