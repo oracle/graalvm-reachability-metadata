@@ -108,6 +108,29 @@ class ScaffoldTaskTests {
     }
 
     @Test
+    void runRejectsNotForNativeImageMarker() throws IOException {
+        Coordinates coordinates = Coordinates.parse("org.scala-js:scalajs-library_2.13:1.18.2");
+        Files.createDirectories(tempDir.resolve("metadata/org.scala-js/scalajs-library_2.13"));
+        Files.writeString(
+                tempDir.resolve("metadata/org.scala-js/scalajs-library_2.13/index.json"),
+                """
+                [
+                  {
+                    "not-for-native-image": true,
+                    "reason": "Scala.js artifact; not a JVM library consumed by native-image."
+                  }
+                ]
+                """
+        );
+        Project project = createProject();
+        ScaffoldTask task = registerScaffoldTask(project, "scaffoldMarker", coordinates);
+
+        assertThatThrownBy(task::run)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("not-for-native-image");
+    }
+
+    @Test
     void runWithSkipTestsOmitsOnlyJavaTestStub() throws IOException {
         Coordinates coordinates = Coordinates.parse("org.postgresql:postgresql:42.7.3");
         installLibraryArtifact(coordinates, List.of(
@@ -153,7 +176,10 @@ class ScaffoldTaskTests {
                 "https://example.com/tests",
                 "https://example.com/docs",
                 "Ktor provides asynchronous servers. It is designed for Kotlin applications.",
-                new LibraryLanguage("kotlin", "2.0")
+                new LibraryLanguage("kotlin", "2.0"),
+                null,
+                null,
+                null
         ));
         ScaffoldTask task = registerScaffoldTask(project, "scaffold", coordinates);
 
@@ -198,7 +224,10 @@ class ScaffoldTaskTests {
                 "https://example.com/tests",
                 "https://example.com/docs",
                 "Groovy JSON provides JSON parsing and generation APIs. It is designed for Groovy applications.",
-                new LibraryLanguage("groovy", "4.0")
+                new LibraryLanguage("groovy", "4.0"),
+                null,
+                null,
+                null
         ));
         ScaffoldTask task = registerScaffoldTask(project, "scaffold", coordinates);
 
@@ -244,7 +273,10 @@ class ScaffoldTaskTests {
                 null,
                 null,
                 null,
-                new LibraryLanguage("scala", "3")
+                new LibraryLanguage("scala", "3"),
+                null,
+                null,
+                null
         ));
         ScaffoldTask task = registerScaffoldTask(project, "scaffold", coordinates);
 
@@ -277,7 +309,10 @@ class ScaffoldTaskTests {
                 null,
                 null,
                 null,
-                new LibraryLanguage("scala", "2")
+                new LibraryLanguage("scala", "2"),
+                null,
+                null,
+                null
         ));
         ScaffoldTask task = registerScaffoldTask(project, "scaffold", coordinates);
 

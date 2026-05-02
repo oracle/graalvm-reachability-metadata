@@ -6,6 +6,7 @@
  */
 package org.graalvm.internal.tck.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -42,5 +43,21 @@ public record MetadataVersionsIndexEntry(
         @JsonProperty("allowed-packages")
         List<String> allowedPackages,
         @JsonProperty("requires")
-        List<String> requires
-) {}
+        List<String> requires,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {
+    @JsonIgnore
+    public boolean isNotForNativeImage() {
+        return Boolean.TRUE.equals(notForNativeImage);
+    }
+
+    @JsonIgnore
+    public boolean isSupportedMetadataEntry() {
+        return !isNotForNativeImage() && metadataVersion != null && testedVersions != null;
+    }
+}

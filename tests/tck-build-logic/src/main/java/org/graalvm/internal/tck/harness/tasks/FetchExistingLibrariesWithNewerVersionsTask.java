@@ -183,7 +183,9 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
                     indexFile, new TypeReference<List<MetadataVersionsIndexEntry>>() {});
             List<String> testedVersions = new ArrayList<>();
             for (MetadataVersionsIndexEntry entry : entries) {
-                testedVersions.addAll(entry.testedVersions());
+                if (entry != null && entry.testedVersions() != null) {
+                    testedVersions.addAll(entry.testedVersions());
+                }
             }
             return testedVersions;
         } catch (IOException e) {
@@ -210,7 +212,7 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
 
             List<String> skipped = new ArrayList<>();
             for (MetadataVersionsIndexEntry entry : entries) {
-                if (entry.skippedVersions() != null) {
+                if (entry != null && entry.skippedVersions() != null) {
                     for (SkippedVersionEntry sve : entry.skippedVersions()) {
                         skipped.add(sve.version());
                     }

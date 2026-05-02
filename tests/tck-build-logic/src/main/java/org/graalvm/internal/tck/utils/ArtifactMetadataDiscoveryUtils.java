@@ -45,6 +45,9 @@ public final class ArtifactMetadataDiscoveryUtils {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 null
         ));
     }

@@ -84,6 +84,10 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
             // Split by whitespace to support lists passed from GitHub Actions/CLI
             for (String singleFilter : filter.split("\\s+")) {
                 if (!singleFilter.isEmpty()) {
+                    String directIndexPath = directMetadataIndexPath(singleFilter);
+                    if (directIndexPath != null) {
+                        targetFiles.add(directIndexPath);
+                    }
                     allResolved.addAll(computeMatchingCoordinates(singleFilter));
                 }
             }
@@ -101,6 +105,15 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
                 });
 
         executeValidation(targetFiles);
+    }
+
+    private String directMetadataIndexPath(String coordinateFilter) {
+        String[] parts = coordinateFilter.split(":");
+        if (parts.length < 2 || parts.length > 3) {
+            return null;
+        }
+        String filePath = String.format("metadata/%s/%s/index.json", parts[0], parts[1]);
+        return getProject().file(filePath).exists() ? filePath : null;
     }
 
     private void executeValidation(Set<String> targetFiles) {

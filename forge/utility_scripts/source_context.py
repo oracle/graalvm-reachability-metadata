@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from email.message import Message
 from typing import Any
 
+from utility_scripts.metadata_index import is_not_for_native_image_entry
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import build_task_log_path, display_log_path
 
@@ -238,6 +239,13 @@ def load_index_entry(reachability_repo_path: str, coordinate: str) -> dict[str, 
 
     with open(index_path, "r", encoding="utf-8") as index_file:
         entries = json.load(index_file)
+
+    if any(is_not_for_native_image_entry(entry) for entry in entries):
+        print(
+            f"ERROR: {group}:{artifact} is marked not-for-native-image in {index_path_display}.",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
 
     for entry in entries:
         if entry.get("metadata-version") == version:

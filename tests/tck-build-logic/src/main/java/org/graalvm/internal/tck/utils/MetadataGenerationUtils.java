@@ -244,6 +244,9 @@ public final class MetadataGenerationUtils {
         if (indexFile.exists()) {
             entries = objectMapper.readValue(indexFile, new TypeReference<>() {});
         }
+        if (entries.stream().anyMatch(MetadataVersionsIndexEntry::isNotForNativeImage)) {
+            throw new GradleException("Cannot mark a new version latest for not-for-native-image artifact: " + newCoords.group() + ":" + newCoords.artifact());
+        }
 
         // If the version already exists, no update needed
         String newVersion = newCoords.version();
@@ -279,7 +282,10 @@ public final class MetadataGenerationUtils {
                         entry.testedVersions(),
                         entry.skippedVersions(),
                         entry.allowedPackages(),
-                        entry.requires()
+                        entry.requires(),
+                        null,
+                        null,
+                        null
                 ));
                 latestAllowedPackages = entry.allowedPackages();
                 latestRequires = entry.requires();
@@ -305,7 +311,10 @@ public final class MetadataGenerationUtils {
                 testedVersions,
                 null, // skipped-versions
                 latestAllowedPackages, // allowed-packages
-                latestRequires // requires
+                latestRequires, // requires
+                null, // not-for-native-image
+                null, // reason
+                null // replacement
         );
         entries.addFirst(newEntry);
 

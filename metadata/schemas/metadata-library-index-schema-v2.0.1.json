@@ -1,120 +1,159 @@
 {
   "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.0.1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each entry describes a metadata bundle for a range of library versions.",
+  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each file either describes Native Image metadata bundles for a range of library versions, or marks the artifact as not applicable to Native Image.",
   "type": "array",
   "minItems": 1,
-  "items": {
-    "type": "object",
-    "additionalProperties": false,
-    "required": [
-      "allowed-packages",
-      "metadata-version",
-      "tested-versions"
-    ],
-    "properties": {
-      "metadata-version": {
-        "type": "string",
-        "minLength": 1,
-        "description": "Subdirectory name where the metadata files for this entry reside, e.g. '7.1.0.Final'."
-      },
-      "tested-versions": {
-        "type": "array",
-        "description": "Explicitly tested upstream library versions that this metadata is known to support.",
-        "minItems": 1,
-        "uniqueItems": true,
-        "items": {
-          "type": "string",
-          "minLength": 1
-        }
-      },
-      "test-version": {
-        "type": "string",
-        "minLength": 1,
-        "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
-      },
-      "source-code-url": {
-        "type": "string",
-        "minLength": 1,
-        "description": "Optional URL pointing to the metadata source code for this entry."
-      },
-      "repository-url": {
-        "type": "string",
-        "minLength": 1,
-        "description": "Optional URL pointing to the canonical project repository for this entry."
-      },
-      "documentation-url": {
-        "type": "string",
-        "minLength": 1,
-        "description": "Optional URL pointing to the project documentation for this entry."
-      },
-      "description": {
-        "type": "string",
-        "minLength": 1,
-        "description": "Optional two-sentence explanation of what the library does."
-      },
-      "language": {
-        "$ref": "#/$defs/libraryLanguage"
-      },
-      "test-code-url": {
-        "type": "string",
-        "minLength": 1,
-        "description": "Optional URL pointing to the test source code for this entry."
-      },
-      "latest": {
-        "type": "boolean",
-        "description": "Marks this entry as the latest/default metadata for currently supported versions."
-      },
-      "default-for": {
-        "type": "string",
-        "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
-      },
-      "override": {
-        "type": "boolean",
-        "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
-      },
-      "allowed-packages": {
-        "type": "array",
-        "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
-        "minItems": 1,
-        "uniqueItems": true,
-        "items": {
-          "type": "string",
-          "minLength": 1
-        }
-      },
-      "skipped-versions": {
-        "type": "array",
-        "description": "Versions explicitly excluded from support, each with a reason.",
-        "minItems": 1,
-        "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [ "version", "reason" ],
-          "properties": {
-            "version": {
-              "type": "string",
-              "minLength": 1
-            },
-            "reason": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        }
-      },
-      "requires": {
-        "type": "array",
-        "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
-        "minItems": 1,
-        "uniqueItems": true,
-        "items": {
-          "$ref": "#/$defs/moduleCoordinate"
-        }
+  "oneOf": [
+    {
+      "items": {
+        "$ref": "#/$defs/metadataIndexEntry"
+      }
+    },
+    {
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/notForNativeImageEntry"
       }
     }
-  },
+  ],
   "$defs": {
+    "metadataIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed-packages",
+        "metadata-version",
+        "tested-versions"
+      ],
+      "properties": {
+        "metadata-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Subdirectory name where the metadata files for this entry reside, e.g. '7.1.0.Final'."
+        },
+        "tested-versions": {
+          "type": "array",
+          "description": "Explicitly tested upstream library versions that this metadata is known to support.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "test-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
+        },
+        "source-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the metadata source code for this entry."
+        },
+        "repository-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the canonical project repository for this entry."
+        },
+        "documentation-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the project documentation for this entry."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional two-sentence explanation of what the library does."
+        },
+        "language": {
+          "$ref": "#/$defs/libraryLanguage"
+        },
+        "test-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the test source code for this entry."
+        },
+        "latest": {
+          "type": "boolean",
+          "description": "Marks this entry as the latest/default metadata for currently supported versions."
+        },
+        "default-for": {
+          "type": "string",
+          "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+        },
+        "override": {
+          "type": "boolean",
+          "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+        },
+        "allowed-packages": {
+          "type": "array",
+          "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "skipped-versions": {
+          "type": "array",
+          "description": "Versions explicitly excluded from support, each with a reason.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "version", "reason" ],
+            "properties": {
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "requires": {
+          "type": "array",
+          "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/moduleCoordinate"
+          }
+        }
+      }
+    },
+    "notForNativeImageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "not-for-native-image",
+        "reason"
+      ],
+      "properties": {
+        "not-for-native-image": {
+          "type": "boolean",
+          "const": true,
+          "description": "Marks this artifact as intentionally not applicable to GraalVM Native Image metadata."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reason this artifact is not a Native Image metadata target."
+        },
+        "replacement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional replacement artifact or guidance for users."
+        }
+      }
+    },
     "moduleCoordinate": {
       "type": "string",
       "pattern": "^[^:]+:[^:]+$"
@@ -203,6 +242,13 @@
         "skipped-versions": [
           { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
         ]
+      }
+    ],
+    [
+      {
+        "not-for-native-image": true,
+        "reason": "Scala.js artifact; not a JVM library consumed by native-image.",
+        "replacement": "Use the JVM artifact if one exists."
       }
     ]
   ]

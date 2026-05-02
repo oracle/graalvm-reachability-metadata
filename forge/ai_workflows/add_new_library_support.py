@@ -32,6 +32,8 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
+from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
+from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics, validate_benchmark_run_metrics
 from utility_scripts.source_context import (
@@ -388,8 +390,25 @@ def main(argv=None):
 
     os.chdir(reachability_repo_path)
     create_feature_branch_for_library(package, artifact, library_version)
+    if is_not_for_native_image(reachability_repo_path, package, artifact):
+        log_stage("native-image-eligibility", f"{package}:{artifact} is already marked not-for-native-image")
+        return 0
     try:
         discover_artifact_metadata(reachability_repo_path, library)
+        eligibility = evaluate_native_image_eligibility(reachability_repo_path, library)
+        if eligibility.not_for_native_image:
+            marker_path = write_not_for_native_image_marker(
+                reachability_repo_path,
+                package,
+                artifact,
+                eligibility.reason or "Artifact is not applicable to GraalVM Native Image metadata.",
+                eligibility.replacement,
+            )
+            log_stage(
+                "native-image-eligibility",
+                f"Marked {package}:{artifact} as not-for-native-image in {os.path.relpath(marker_path, reachability_repo_path)}",
+            )
+            return 0
         run_scaffold(library)
     except ScaffoldError as exc:
         print(f"ERROR: Gradle 'scaffold' task failed for coordinates: {library}", file=sys.stderr)

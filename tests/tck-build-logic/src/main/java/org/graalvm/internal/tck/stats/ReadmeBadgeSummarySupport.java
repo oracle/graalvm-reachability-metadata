@@ -269,9 +269,15 @@ public final class ReadmeBadgeSummarySupport {
         })) {
             for (Path indexFile : paths.sorted().toList()) {
                 List<MetadataVersionsIndexEntry> entries = readIndexEntries(indexFile);
+                if (!hasMetadataIndexEntries(entries)) {
+                    continue;
+                }
                 metadataIndexes++;
-                metadataBaselines += entries.size();
                 for (MetadataVersionsIndexEntry entry : entries) {
+                    if (!isMetadataIndexEntry(entry)) {
+                        continue;
+                    }
+                    metadataBaselines++;
                     if (Boolean.TRUE.equals(entry.latest())) {
                         latestEntries++;
                     }
@@ -314,6 +320,9 @@ public final class ReadmeBadgeSummarySupport {
                 Path relative = metadataRoot.relativize(indexFile);
                 String coordinate = relative.getName(0) + ":" + relative.getName(1);
                 List<MetadataVersionsIndexEntry> indexEntries = readIndexEntries(indexFile);
+                if (!hasMetadataIndexEntries(indexEntries)) {
+                    continue;
+                }
                 entriesByCoordinate.put(
                         coordinate,
                         new CoverageTableEntry(
@@ -396,6 +405,17 @@ public final class ReadmeBadgeSummarySupport {
         } catch (IOException e) {
             throw new GradleException("Failed to read metadata index file " + indexFile, e);
         }
+    }
+
+    private static boolean hasMetadataIndexEntries(List<MetadataVersionsIndexEntry> entries) {
+        if (entries == null) {
+            return false;
+        }
+        return entries.stream().anyMatch(ReadmeBadgeSummarySupport::isMetadataIndexEntry);
+    }
+
+    private static boolean isMetadataIndexEntry(MetadataVersionsIndexEntry entry) {
+        return entry != null && !entry.isNotForNativeImage() && entry.metadataVersion() != null;
     }
 
     private static String buildMetricsOverviewGraph(ReadmeMetricsHistory history, Instant generatedAt) {

@@ -157,6 +157,10 @@ public class DiscoverArtifactMetadata extends DefaultTask {
                 - { "name": "scala", "version": "2" } for Scala 2 libraries
                 - { "name": "scala", "version": "3" } for Scala 3 libraries
                 If the library is not language-specific, leave the "language" field absent.
+                Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
                 The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "%s".
                 The source, test suite, and documentation URLs should point to the right tag of the library.
                 If we have these source of these artifacts on maven, that should be prefered.
@@ -169,6 +173,7 @@ public class DiscoverArtifactMetadata extends DefaultTask {
                 - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
                 - Set "description" to the selected two-sentence explanation.
                 - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
                 - Keep the JSON valid and consistently formatted.
                 """.formatted(
                 parsedCoordinates.toString(),

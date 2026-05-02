@@ -66,10 +66,16 @@ from git_scripts.common_git import (
 from git_scripts.make_pr_javac_fix import main as run_make_pr_javac_fix
 from git_scripts.make_pr_java_run_fix import main as run_make_pr_java_run_fix
 from git_scripts.make_pr_new_library_support import main as run_make_pr_new_library_support
+from git_scripts.make_pr_not_for_native_image import main as run_make_pr_not_for_native_image
 from git_scripts.make_pr_ni_run_fix import main as run_make_pr_ni_run_fix
 from git_scripts.make_pr_improve_coverage import main as run_make_pr_improve_coverage
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.library_stats import resolve_stats_file_path
+from utility_scripts.metadata_index import (
+    coordinate_parts as metadata_coordinate_parts,
+    get_not_for_native_image_marker,
+    is_not_for_native_image,
+)
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import (
     add_in_metadata_repo_argument,
@@ -134,6 +140,7 @@ LABEL_PR_LIBRARY_BULK_UPDATE = "library-bulk-update"
 LABEL_PRIORITY = "priority"
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
+LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
 
 SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
 SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
@@ -141,6 +148,7 @@ SCRATCH_METRICS_DIRNAME = "forge_run_metrics"
 ISSUE_CLAIM_LOCK_DIRNAME = "metadata-forge-issue-claim-locks"
 ISSUE_CLAIM_CACHE_REASON_ASSIGNED = "assigned"
 ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION = "human_intervention"
+ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE = "not_for_native_image"
 ISSUE_CLAIM_CACHE_REASON_BLOCKED = "blocked"
 ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM = "missing_project_item"
 ISSUE_CLAIM_CACHE_REASON_NON_TODO = "non_todo"
@@ -148,6 +156,7 @@ ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS = "in_progress"
 ISSUE_CLAIM_CACHE_REASONS = {
     ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
     ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
+    ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
     ISSUE_CLAIM_CACHE_REASON_BLOCKED,
     ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
     ISSUE_CLAIM_CACHE_REASON_NON_TODO,
@@ -162,6 +171,10 @@ LOW_DYNAMIC_ACCESS_COVERAGE_RATIO = 0.10
 HUMAN_INTERVENTION_LABEL_COLOR = "B60205"
 HUMAN_INTERVENTION_LABEL_DESCRIPTION = (
     "Requires manual follow-up because automated processing needs human attention"
+)
+NOT_FOR_NATIVE_IMAGE_LABEL_COLOR = "5319E7"
+NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION = (
+    "Artifact is tracked but is not applicable to GraalVM Native Image reachability metadata"
 )
 
 
@@ -411,13 +424,21 @@ def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
     sys.exit(1)
 
 
-def build_issue_search_query(label: str, extra_labels: list[str] | None = None) -> str:
+def build_issue_search_query(
+        label: str,
+        extra_labels: list[str] | None = None,
+        excluded_labels: list[str] | None = None,
+) -> str:
     """Build a GitHub issue search query for open issues with all requested labels."""
     label_terms = " ".join(
         f'label:"{label_name}"'
         for label_name in [label, *(extra_labels or [])]
     )
-    return f"repo:{REPO} is:issue is:open {label_terms}"
+    excluded_terms = " ".join(
+        f'-label:"{label_name}"'
+        for label_name in (excluded_labels or [LABEL_NOT_FOR_NATIVE_IMAGE])
+    )
+    return f"repo:{REPO} is:issue is:open {label_terms} {excluded_terms}".strip()
 
 
 def normalize_github_issue_search_item(item: dict) -> dict:
@@ -2359,10 +2380,15 @@ def post_issue_comment(issue_number: int, body: str) -> None:
 
 def add_issue_label(issue_number: int, label_name: str) -> None:
     """Add a label to a GitHub issue, creating the label if necessary."""
+    label_color = HUMAN_INTERVENTION_LABEL_COLOR
+    label_description = HUMAN_INTERVENTION_LABEL_DESCRIPTION
+    if label_name == LABEL_NOT_FOR_NATIVE_IMAGE:
+        label_color = NOT_FOR_NATIVE_IMAGE_LABEL_COLOR
+        label_description = NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION
     ensure_repo_label_exists(
         label_name,
-        HUMAN_INTERVENTION_LABEL_COLOR,
-        HUMAN_INTERVENTION_LABEL_DESCRIPTION,
+        label_color,
+        label_description,
     )
     gh(
         "issue",
@@ -3198,6 +3224,44 @@ def build_claim_metadata(
     return issue_coordinates, current_coordinates, new_version
 
 
+def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metadata_path: str) -> bool:
+    """Apply terminal labels and comment when the repository already has a marker for the artifact."""
+    issue_coordinates = extract_maven_coordinates(issue["title"])
+    if issue_coordinates is None:
+        return False
+    group, artifact, _version = metadata_coordinate_parts(issue_coordinates)
+    if not is_not_for_native_image(base_reachability_metadata_path, group, artifact):
+        return False
+
+    marker = get_not_for_native_image_marker(base_reachability_metadata_path, group, artifact) or {}
+    reason = marker.get("reason") or "The artifact is marked as not applicable to GraalVM Native Image metadata."
+    replacement = marker.get("replacement")
+    body = (
+        f"`{group}:{artifact}` is already tracked in the repository as `not-for-native-image`, "
+        "so Forge will not run reachability-metadata workflows for this artifact.\n\n"
+        f"Reason: {reason}"
+    )
+    if replacement:
+        body += f"\n\nReplacement guidance: {replacement}"
+    try:
+        post_issue_comment(issue["number"], body)
+        add_issue_label(issue["number"], LABEL_NOT_FOR_NATIVE_IMAGE)
+        add_issue_label(issue["number"], LABEL_HUMAN_INTERVENTION)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to apply not-for-native-image follow-up to issue #{issue['number']}: {exc!r}",
+            file=sys.stderr,
+        )
+    record_issue_claim_cache_observations([
+        IssueClaimCacheObservation(
+            issue_number=issue["number"],
+            reason=ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
+        )
+    ])
+    log_stage("issue-claim", f"Issue #{issue['number']} targets not-for-native-image artifact {group}:{artifact}. Skipping.")
+    return True
+
+
 def claim_issue_for_processing(
         issue: dict,
         label: str,
@@ -3209,6 +3273,9 @@ def claim_issue_for_processing(
     """Claim an issue and prepare its isolated execution workspace."""
     in_metadata_repo = True
     print(format_issue_processing_message(issue))
+
+    if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
+        return None
 
     claim_metadata = build_claim_metadata(issue, label, base_reachability_metadata_path)
     if claim_metadata is None:
@@ -3313,6 +3380,16 @@ def finalize_successful_issue(
 ) -> None:
     """Create the PR for a successful isolated workflow run."""
     if claimed_issue.label == LABEL_LIBRARY_NEW:
+        group, artifact, _version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
+        if is_not_for_native_image(claimed_issue.worktree_path, group, artifact):
+            run_make_pr_not_for_native_image(
+                [
+                    "--coordinates", claimed_issue.issue_coordinates,
+                    "--reachability-metadata-path", claimed_issue.worktree_path,
+                    *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
+                ]
+            )
+            return
         run_make_pr_new_library_support(
             [
                 "--coordinates", claimed_issue.issue_coordinates,
@@ -3678,6 +3755,11 @@ def get_issue_claim_cache_observation_from_payload(
             issue_number=issue_number,
             reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
         )
+    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
+        return IssueClaimCacheObservation(
+            issue_number=issue_number,
+            reason=ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
+        )
     payload_assignees = get_issue_payload_assignees(issue)
     if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
         return IssueClaimCacheObservation(
@@ -3732,6 +3814,8 @@ def format_cached_issue_claim_skip(cached_skip: CachedIssueClaimSkip) -> str:
         return f"recently cached as assigned to {list(cached_skip.assignees)}"
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION:
         return f"recently cached with label '{LABEL_HUMAN_INTERVENTION}'"
+    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE:
+        return f"recently cached with label '{LABEL_NOT_FOR_NATIVE_IMAGE}'"
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_BLOCKED:
         blockers_text = ", ".join(f"#{blocker}" for blocker in cached_skip.open_blockers)
         return f"recently cached as blocked by open issue(s) {blockers_text}"
@@ -3819,6 +3903,8 @@ def issue_needs_claim_preflight(issue: dict, authenticated_user: str | None = No
     """Return True when an issue needs GraphQL preflight before claim attempts."""
     if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
         return False
+    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
+        return False
     payload_assignees = get_issue_payload_assignees(issue)
     if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
         return False
@@ -3861,6 +3947,10 @@ def should_skip_issue_from_preflight(
     if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
         print()
         log_stage("issue-claim", f"Issue #{number} has label '{LABEL_HUMAN_INTERVENTION}'. Skipping.")
+        return True
+    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
+        print()
+        log_stage("issue-claim", f"Issue #{number} has label '{LABEL_NOT_FOR_NATIVE_IMAGE}'. Skipping.")
         return True
 
     payload_assignees = get_issue_payload_assignees(issue)
@@ -3950,6 +4040,16 @@ def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
             IssueClaimCacheObservation(
                 issue_number=number,
                 reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
+            )
+        ])
+        return None
+    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
+        print()
+        log_stage("issue-claim", f"Issue #{number} has label '{LABEL_NOT_FOR_NATIVE_IMAGE}'. Skipping.")
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=number,
+                reason=ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
             )
         ])
         return None

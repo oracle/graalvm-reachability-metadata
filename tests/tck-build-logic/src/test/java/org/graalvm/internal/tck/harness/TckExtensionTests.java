@@ -80,6 +80,23 @@ class TckExtensionTests {
     }
 
     @Test
+    void getMatchingCoordinatesSkipsNotForNativeImageMarker() throws IOException {
+        TckExtension extension = createExtension(
+                """
+                [
+                  {
+                    "not-for-native-image": true,
+                    "reason": "Scala.js artifact; not a JVM library consumed by native-image."
+                  }
+                ]
+                """
+        );
+
+        assertThat(extension.getMatchingCoordinates("com.example:demo")).isEmpty();
+        assertThat(extension.getMatchingCoordinatesStrict("com.example:demo")).isEmpty();
+    }
+
+    @Test
     void getTestDirUsesSharedTestVersionForSupportedVersion() throws IOException {
         TckExtension extension = createExtension(
                 """

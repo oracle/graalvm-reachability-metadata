@@ -382,7 +382,7 @@ public final class LibraryStatsSchemaValidator {
                 try {
                     List<MetadataVersionsIndexEntry> entries = OBJECT_MAPPER.readValue(indexFile.toFile(), INDEX_ENTRIES_TYPE);
                     for (MetadataVersionsIndexEntry entry : entries) {
-                        if (entry != null && entry.testedVersions() != null) {
+                        if (entry != null && entry.isSupportedMetadataEntry()) {
                             testedVersions.addAll(entry.testedVersions());
                         }
                     }

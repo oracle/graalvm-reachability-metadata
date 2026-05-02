@@ -24,5 +24,11 @@ public record DiscoveredArtifactMetadata(
         @JsonProperty("description")
         String description,
         @JsonProperty("language")
-        LibraryLanguage language
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
 ) {}

@@ -110,10 +110,13 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(coordinatesMetadataIndex, new TypeReference<>() {});
+        if (entries.stream().anyMatch(MetadataVersionsIndexEntry::isNotForNativeImage)) {
+            throw new IllegalStateException("Cannot add tested versions to not-for-native-image artifact: " + coordinatesMetadataIndex);
+        }
         for (int i = 0; i < entries.size(); i++) {
             MetadataVersionsIndexEntry entry = entries.get(i);
 
-            if (entry.testedVersions().contains(getLastSupportedVersion().get())) {
+            if (entry.testedVersions() != null && entry.testedVersions().contains(getLastSupportedVersion().get())) {
                 entry.testedVersions().add(newVersion);
                 entry.testedVersions().sort(Comparator.comparing(VersionNumber::parse));
 
@@ -184,7 +187,10 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                         entry.testedVersions(),
                         entry.skippedVersions(),
                         entry.allowedPackages(),
-                        entry.requires()
+                        entry.requires(),
+                        null,
+                        null,
+                        null
                 );
             }
         }
@@ -400,6 +406,9 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
     private void updateDependentTestVersions(String oldTestVersion, String newTestVersion, List<MetadataVersionsIndexEntry> entries) {
         for (int i = 0; i < entries.size(); i++) {
             MetadataVersionsIndexEntry entry = entries.get(i);
+            if (entry.isNotForNativeImage()) {
+                continue;
+            }
 
             // Check if the entry explicitly points to the old directory via 'test-version'
             if (oldTestVersion.equals(entry.testVersion())) {
@@ -419,7 +428,10 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                         entry.testedVersions(),
                         entry.skippedVersions(),
                         entry.allowedPackages(),
-                        entry.requires()
+                        entry.requires(),
+                        null,
+                        null,
+                        null
                 );
                 entries.set(i, updatedEntry);
             }

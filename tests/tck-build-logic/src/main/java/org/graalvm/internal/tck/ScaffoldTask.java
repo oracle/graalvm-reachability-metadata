@@ -88,18 +88,20 @@ class ScaffoldTask extends DefaultTask {
     @TaskAction
     void run() throws IOException {
         Coordinates coordinates = Coordinates.parse(this.coordinates);
-        List<String> packageRoots = MetadataGenerationUtils.derivePackageRootsFromJar(getProject(), coordinates);
-        DiscoveredArtifactMetadata discoveredMetadata = loadDiscoveredArtifactMetadata(coordinates);
-
         Path coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates)).toPath();
         Path coordinatesMetadataVersionRoot = coordinatesMetadataRoot.resolve(coordinates.version());
         Path coordinatesTestRoot = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).toPath();
         Path coordinatesMetadataIndex = coordinatesMetadataRoot.resolve("index.json");
         boolean metadataRootExists = Files.exists(coordinatesMetadataIndex);
-        boolean metadataEntryExists = metadataRootExists && !shouldAddNewMetadataEntry(coordinatesMetadataRoot, coordinates);
         List<MetadataVersionsIndexEntry> existingEntries = metadataRootExists
                 ? objectMapper.readValue(coordinatesMetadataIndex.toFile(), new TypeReference<>() {})
                 : List.of();
+        if (existingEntries.stream().anyMatch(MetadataVersionsIndexEntry::isNotForNativeImage)) {
+            throw new IllegalStateException("Artifact '%s:%s' is marked not-for-native-image. Remove the marker before scaffolding Native Image metadata.".formatted(coordinates.group(), coordinates.artifact()));
+        }
+        List<String> packageRoots = MetadataGenerationUtils.derivePackageRootsFromJar(getProject(), coordinates);
+        DiscoveredArtifactMetadata discoveredMetadata = loadDiscoveredArtifactMetadata(coordinates);
+        boolean metadataEntryExists = metadataRootExists && !shouldAddNewMetadataEntry(coordinatesMetadataRoot, coordinates);
         LibraryLanguage entryLanguage = resolveEntryLanguage(discoveredMetadata, existingEntries);
 
         // Metadata
@@ -145,7 +147,9 @@ class ScaffoldTask extends DefaultTask {
     private boolean shouldAddNewMetadataEntry(Path coordinatesMetadataRoot, Coordinates coordinates) throws IOException {
         File metadataIndex = coordinatesMetadataRoot.resolve("index.json").toFile();
         List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
-        return entries.stream().noneMatch(e -> e.metadataVersion().equalsIgnoreCase(coordinates.version()));
+        return entries.stream()
+                .filter(MetadataVersionsIndexEntry::isSupportedMetadataEntry)
+                .noneMatch(e -> e.metadataVersion().equalsIgnoreCase(coordinates.version()));
     }
 
     private void writeTestScaffold(Path coordinatesTestRoot, Coordinates coordinates, List<String> packageRoots, LibraryLanguage language) throws IOException {
@@ -241,7 +245,10 @@ class ScaffoldTask extends DefaultTask {
                 oldEntry.testedVersions(),
                 oldEntry.skippedVersions(),
                 oldEntry.allowedPackages(),
-                oldEntry.requires()
+                oldEntry.requires(),
+                null,
+                null,
+                null
         ));
     }
 
@@ -313,6 +320,7 @@ class ScaffoldTask extends DefaultTask {
             return discoveredMetadata.language();
         }
         return existingEntries.stream()
+                .filter(MetadataVersionsIndexEntry::isSupportedMetadataEntry)
                 .filter(entry -> entry.language() != null)
                 .max(Comparator.comparing(e -> VersionNumber.parse(e.metadataVersion())))
                 .map(MetadataVersionsIndexEntry::language)
@@ -335,7 +343,10 @@ class ScaffoldTask extends DefaultTask {
                 List.of(coordinates.version()),
                 null, // skipped-versions
                 packageRoots,
-                null // requires
+                null, // requires
+                null, // not-for-native-image
+                null, // reason
+                null // replacement
         );
     }
 

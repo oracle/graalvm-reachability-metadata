@@ -149,7 +149,11 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         var metadataIndex = readIndexFile(metadataDir.getParent());
         for (Object entryObj : (Iterable<?>) metadataIndex) {
             Map<String, Object> entry = (Map<String, Object>) entryObj;
-            if (((List<String>) entry.get("tested-versions")).contains(version)) {
+            List<String> testedVersions = (List<String>) entry.get("tested-versions");
+            if (testedVersions == null) {
+                continue;
+            }
+            if (testedVersions.contains(version)) {
                 if (entry.containsKey("override")) {
                     Object ov = entry.get("override");
                     if (ov instanceof Boolean b) {
