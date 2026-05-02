@@ -37,7 +37,7 @@ public class ReflectionHelperTest {
         final Constructor<MutableService> constructor = MutableService.class.getConstructor(String.class);
         final MutableService service = (MutableService) ReflectionHelper.makeMe(
                 constructor,
-                new Object[] { "hk2" },
+                new Object[] {"hk2"},
                 true
         );
         assertThat(service.getName()).isEqualTo("hk2");
@@ -47,7 +47,7 @@ public class ReflectionHelperTest {
         assertThat(service.getName()).isEqualTo("glassfish");
 
         final Method method = MutableService.class.getMethod("describe", String.class, int.class);
-        assertThat(ReflectionHelper.invoke(service, method, new Object[] { "run", 2 }, true))
+        assertThat(ReflectionHelper.invoke(service, method, new Object[] {"run", 2}, true))
                 .isEqualTo("run:glassfish:2");
     }
 
