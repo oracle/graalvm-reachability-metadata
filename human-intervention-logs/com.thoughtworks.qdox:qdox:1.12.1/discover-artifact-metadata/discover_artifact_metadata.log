@@ -1,0 +1,1413 @@
+Starting a Gradle Daemon, 2 busy and 8 incompatible and 179 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de946-9466-7a13-9740-d03475b1a907
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.thoughtworks.qdox:qdox:1.12.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.12.1" when "$version$" is replaced with "1.12.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+- Set "coordinates" to "com.thoughtworks.qdox:qdox:1.12.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.12.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven Central and the upstream project history, then update only the requested JSON file.
+web search: 
+web search: com.thoughtworks.qdox qdox 1.12.1 Maven Central sources javadoc
+codex
+Maven Central confirms this is a normal `jar` artifact with published sources and Javadocs. I’m checking whether a test artifact exists there before falling back to an upstream tagged source tree for tests.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+{
+  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>org.codehaus</groupId>
+    <artifactId>codehaus-parent</artifactId>
+    <version>4</version>
+  </parent>
+  
+  <name>QDox</name>
+  <groupId>com.thoughtworks.qdox</groupId>
+  <artifactId>qdox</artifactId>
+  <version>1.12.1</version>
+  
+  <url>http://qdox.codehaus.org</url>
+  <description>
+    QDox is a high speed, small footprint parser for extracting class/interface/method definitions from source files
+    complete with JavaDoc @tags. It is designed to be used by active code generators or documentation tools.
+  </description>
+  <inceptionYear>2002</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <mailingLists>
+    <mailingList>
+      <name>announce at QDox</name>
+      <post>announce@qdox.codehaus.org</post>
+      <subscribe>announce-subscribe@qdox.codehaus.org</subscribe>
+      <unsubscribe>announce-unsubscribe@qdox.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.qdox.announce</archive>
+    </mailingList>
+    <mailingList>
+      <name>dev at QDox</name>
+      <post>dev@qdox.codehaus.org</post>
+      <subscribe>dev-subscribe@qdox.codehaus.org</subscribe>
+      <unsubscribe>dev-unsubscribe@qdox.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.qdox.dev</archive>
+    </mailingList>
+    <mailingList>
+      <name>scm at QDox</name>
+      <subscribe>scm-subscribe@qdox.codehaus.org</subscribe>
+      <unsubscribe>scm-unsubscribe@qdox.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.qdox.scm</archive>
+    </mailingList>
+    <mailingList>
+      <name>user at QDox</name>
+      <post>user@qdox.codehaus.org</post>
+      <subscribe>user-subscribe@qdox.codehaus.org</subscribe>
+      <unsubscribe>user-unsubscribe@qdox.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.qdox.user</archive>
+    </mailingList>
+  </mailingLists>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/QDOX</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/qdox/tags/qdox-1.12.1</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/qdox/tags/qdox-1.12.1</developerConnection>
+    <url>http://svn.qdox.codehaus.org/browse/qdox/tags/qdox-1.12.1</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>rfscholte</id>
+      <name>Robert Scholte</name>
+      <timezone>+1</timezone>
+      <roles>
+        <role>project lead</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>joe</id>
+      <name>Joe Walnes</name>
+      <roles>
+        <role>project founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Aslak Hellesoy</name>
+      <id>rinkrank</id>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Paul Hammant</name>
+      <id>paul</id>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Mike Williams</name>
+      <id>mdub</id>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mauro</id>
+      <name>Mauro Talevi</name>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Mike Royle</name>
+    </contributor>
+    <contributor>
+      <name>Peter Donald</name>
+    </contributor>
+    <contributor>
+      <name>James Strachan</name>
+    </contributor>
+    <contributor>
+      <name>Nick Pomfret</name>
+    </contributor>
+    <contributor>
+      <name>Chris Stevenson</name>
+    </contributor>
+    <contributor>
+      <name>Ben Hogan</name>
+    </contributor>
+    <contributor>
+      <name>Laurent Etiemble</name>
+    </contributor>
+    <contributor>
+      <name>Shawn Chain</name>
+    </contributor>
+    <contributor>
+      <name>Brian Slesinsky</name>
+    </contributor>
+    <contributor>
+      <name>James Lee</name>
+    </contributor>
+    <contributor>
+      <name>Eric Redmond</name>
+    </contributor>
+  </contributors>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav</artifactId>
+        <version>1.0-beta-2</version>
+      </extension>
+    </extensions>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
+    <testResources>
+      <testResource>
+        <directory>${basedir}/src/test-resources</directory>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <plugin>
+        <groupId>de.jflex</groupId>
+        <artifactId>maven-jflex-plugin</artifactId>
+        <version>1.4.3</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+           <outputDirectory>${project.build.directory}/generated-sources/parser</outputDirectory>
+           <lexDefinitions>
+             <lexFile>${basedir}/src/grammar/lexer.flex</lexFile>
+           </lexDefinitions>
+           <skeleton>${basedir}/src/grammar/skeleton.inner</skeleton>
+         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.3</version>
+        <configuration>
+          <tasks>
+            <echo>OS Arch = ${os.arch}</echo>
+            <exec executable="${qdox.byaccj.executable}" dir="${project.build.directory}/generated-sources/parser/com/thoughtworks/qdox/parser/impl" failonerror="true">
+              <arg value="-v" />
+              <arg value="-Jnorun" />
+              <arg value="-Jnoconstruct" />
+              <arg value="-Jclass=Parser" />
+              <arg value="-Jsemantic=Value" />
+              <arg value="-Jpackage=com.thoughtworks.qdox.parser.impl" />
+              <arg value="${basedir}/src/grammar/parser.y" />
+            </exec>
+            <move tofile="${project.build.directory}/yacc-states.txt" file="${project.build.directory}/generated-sources/parser/com/thoughtworks/qdox/parser/impl/y" failonerror="false" />
+          </tasks>
+          <sourceRoot>${project.build.directory}/generated-sources/parser</sourceRoot>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.0.2</version>
+        <configuration>
+          <source>1.4</source>
+          <target>1.4</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <id>attach-javadoc</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <links>
+                <link>http://java.sun.com/j2se/1.5/docs/api</link>
+              </links>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-5</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>project</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+            <phase>package</phase> <!-- append to the packaging phase. -->
+            <goals>
+              <goal>single</goal> <!-- goals == mojos -->
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.2</version>
+        <configuration>
+          <templateFile>${basedir}/src/site/templates/site-template.vm</templateFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.xsite</groupId>
+        <artifactId>xsite-maven-plugin</artifactId>
+        <version>1.0</version>
+        <configuration>
+          <sitemapPath>content/website.xml</sitemapPath>
+          <skinPath>templates/skin.html</skinPath>
+          <sourceDirectoryPath>${xsite.sourceDirectoryPath}</sourceDirectoryPath>
+          <outputDirectoryPath>${project.build.directory}/site</outputDirectoryPath>
+          <resourcePaths>resources</resourcePaths>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>site</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.3</version>
+        <executions>
+          <execution>
+            <id>pre-copy-resources</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${xsite.sourceDirectoryPath}</outputDirectory>
+              <resources>          
+                <resource>
+                  <directory>src/site</directory>
+                  <excludes>
+                    <exclude>**/download.html</exclude>
+                    <exclude>**/skin.html</exclude>
+                  </excludes>
+                </resource>
+                <resource>
+                  <directory>src/site</directory>
+                  <includes>
+                    <include>**/download.html</include>
+                    <include>**/skin.html</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>              
+            </configuration>            
+          </execution>
+          <execution>
+            <id>post-copy-resources</id>
+            <phase>site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
+              <resources>          
+                <resource>
+                  <directory>${xsite.sourceDirectoryPath}/content</directory>
+                  <includes>
+                    <include>images/*.*</include>
+                    <include>apidocs/**/*.*</include>
+                  </includes>
+                </resource>
+              </resources>              
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <goals>deploy</goals> <!-- deploy-site by hand -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.5.1</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>jmock</groupId>
+      <artifactId>jmock</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <distributionManagement>
+    <site>
+      <id>codehaus.org</id>
+      <name>QDox Site</name>
+      <url>dav:https://dav.codehaus.org/qdox/</url>
+    </site>
+  </distributionManagement>
+
+  <profiles>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <family>Linux</family>
+          <arch>i386</arch>
+        </os>
+      </activation>
+      <properties>
+        <qdox.byaccj.executable>${basedir}/bootstrap/yacc.linux</qdox.byaccj.executable>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux64</id>
+      <activation>
+        <os>
+          <family>Linux</family>
+          <arch>amd64</arch>
+        </os>
+      </activation>
+      <properties>
+        <qdox.byaccj.executable>${basedir}/bootstrap/yacc.linux.x86_64</qdox.byaccj.executable>
+      </properties>
+    </profile>
+    <profile>
+      <id>solaris</id>
+      <activation>
+        <os>
+          <family>SunOS</family>
+        </os>
+      </activation>
+      <properties>
+        <qdox.byaccj.executable>${basedir}/bootstrap/yacc.solaris</qdox.byaccj.executable>
+      </properties>
+    </profile>
+    <profile>
+      <id>macosx</id>
+      <activation>
+        <os>
+          <family>Mac</family>
+        </os>
+      </activation>
+      <properties>
+        <qdox.byaccj.executable>${basedir}/bootstrap/yacc.macosx</qdox.byaccj.executable>
+      </properties>
+    </profile>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>Windows</family>
+        </os>
+      </activation>
+      <properties>
+        <qdox.byaccj.executable>${basedir}/bootstrap/yacc.exe</qdox.byaccj.executable>
+      </properties>
+    </profile>
+  </profiles>
+
+  <!-- Reports -->
+  <reporting>
+    <outputDirectory>${xsite.sourceDirectoryPath}/content</outputDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.1</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependencies</report>
+              <report>project-team</report>
+              <report>mailing-list</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <report>scm</report>
+              <report>summary</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <packagenames>com.thoughtworks.qdox.*</packagenames>
+          <use>true</use>
+          <version>true</version>
+          <windowtitle>${project.name} ${project.version} API</windowtitle>
+          <tag name="noinspection" description="IntelliJ Inspection Ignore tag" enabled="false" />
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- Manual Changelist -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+		  <!-- changes-report -->
+          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
+<!--           jira-report -->
+<!--          <resolutionIds>Closed</resolutionIds>-->
+<!--          <statusIds>Resolved, Closed</statusIds>-->
+<!--          <onlyCurrentVersion>false</onlyCurrentVersion>-->
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+<!--              <report>jira-report</report>-->
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+  <properties>
+    <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <xsite.sourceDirectoryPath>${project.build.directory}/generated-site</xsite.sourceDirectoryPath>
+  </properties>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/thoughtworks/qdox/qdox/1.12.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/thoughtworks/qdox/qdox/1.12.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="qdox-1.12.1-javadoc.jar" title="qdox-1.12.1-javadoc.jar">qdox-1.12.1-javadoc.jar</a>                           2012-11-04 17:13    590824      
+<a href="qdox-1.12.1-javadoc.jar.asc" title="qdox-1.12.1-javadoc.jar.asc">qdox-1.12.1-javadoc.jar.asc</a>                       2012-11-04 17:13       235      
+<a href="qdox-1.12.1-javadoc.jar.asc.md5" title="qdox-1.12.1-javadoc.jar.asc.md5">qdox-1.12.1-javadoc.jar.asc.md5</a>                   2012-11-04 17:13        32      
+<a href="qdox-1.12.1-javadoc.jar.asc.sha1" title="qdox-1.12.1-javadoc.jar.asc.sha1">qdox-1.12.1-javadoc.jar.asc.sha1</a>                  2012-11-04 17:13        40      
+<a href="qdox-1.12.1-javadoc.jar.md5" title="qdox-1.12.1-javadoc.jar.md5">qdox-1.12.1-javadoc.jar.md5</a>                       2012-11-04 17:13        32      
+<a href="qdox-1.12.1-javadoc.jar.sha1" title="qdox-1.12.1-javadoc.jar.sha1">qdox-1.12.1-javadoc.jar.sha1</a>                      2012-11-04 17:13        40      
+<a href="qdox-1.12.1-project.tar.bz2" title="qdox-1.12.1-project.tar.bz2">qdox-1.12.1-project.tar.bz2</a>                       2012-11-04 17:13    492858      
+<a href="qdox-1.12.1-project.tar.bz2.asc" title="qdox-1.12.1-project.tar.bz2.asc">qdox-1.12.1-project.tar.bz2.asc</a>                   2012-11-04 17:13       235      
+<a href="qdox-1.12.1-project.tar.bz2.asc.md5" title="qdox-1.12.1-project.tar.bz2.asc.md5">qdox-1.12.1-project.tar.bz2.asc.md5</a>               2012-11-04 17:13        32      
+<a href="qdox-1.12.1-project.tar.bz2.asc.sha1" title="qdox-1.12.1-project.tar.bz2.asc.sha1">qdox-1.12.1-project.tar.bz2.asc.sha1</a>              2012-11-04 17:13        40      
+<a href="qdox-1.12.1-project.tar.bz2.md5" title="qdox-1.12.1-project.tar.bz2.md5">qdox-1.12.1-project.tar.bz2.md5</a>                   2012-11-04 17:13        32      
+<a href="qdox-1.12.1-project.tar.bz2.sha1" title="qdox-1.12.1-project.tar.bz2.sha1">qdox-1.12.1-project.tar.bz2.sha1</a>                  2012-11-04 17:13        40      
+<a href="qdox-1.12.1-project.tar.gz" title="qdox-1.12.1-project.tar.gz">qdox-1.12.1-project.tar.gz</a>                        2012-11-04 17:13    518604      
+<a href="qdox-1.12.1-project.tar.gz.asc" title="qdox-1.12.1-project.tar.gz.asc">qdox-1.12.1-project.tar.gz.asc</a>                    2012-11-04 17:13       235      
+<a href="qdox-1.12.1-project.tar.gz.asc.md5" title="qdox-1.12.1-project.tar.gz.asc.md5">qdox-1.12.1-project.tar.gz.asc.md5</a>                2012-11-04 17:13        32      
+<a href="qdox-1.12.1-project.tar.gz.asc.sha1" title="qdox-1.12.1-project.tar.gz.asc.sha1">qdox-1.12.1-project.tar.gz.asc.sha1</a>               2012-11-04 17:13        40      
+<a href="qdox-1.12.1-project.tar.gz.md5" title="qdox-1.12.1-project.tar.gz.md5">qdox-1.12.1-project.tar.gz.md5</a>                    2012-11-04 17:13        32      
+<a href="qdox-1.12.1-project.tar.gz.sha1" title="qdox-1.12.1-project.tar.gz.sha1">qdox-1.12.1-project.tar.gz.sha1</a>                   2012-11-04 17:13        40      
+<a href="qdox-1.12.1-project.zip" title="qdox-1.12.1-project.zip">qdox-1.12.1-project.zip</a>                           2012-11-04 17:13    578239      
+<a href="qdox-1.12.1-project.zip.asc" title="qdox-1.12.1-project.zip.asc">qdox-1.12.1-project.zip.asc</a>                       2012-11-04 17:13       235      
+<a href="qdox-1.12.1-project.zip.asc.md5" title="qdox-1.12.1-project.zip.asc.md5">qdox-1.12.1-project.zip.asc.md5</a>                   2012-11-04 17:13        32      
+<a href="qdox-1.12.1-project.zip.asc.sha1" title="qdox-1.12.1-project.zip.asc.sha1">qdox-1.12.1-project.zip.asc.sha1</a>                  2012-11-04 17:13        40      
+<a href="qdox-1.12.1-project.zip.md5" title="qdox-1.12.1-project.zip.md5">qdox-1.12.1-project.zip.md5</a>                       2012-11-04 17:13        32      
+<a href="qdox-1.12.1-project.zip.sha1" title="qdox-1.12.1-project.zip.sha1">qdox-1.12.1-project.zip.sha1</a>                      2012-11-04 17:13        40      
+<a href="qdox-1.12.1-sources.jar" title="qdox-1.12.1-sources.jar">qdox-1.12.1-sources.jar</a>                           2012-11-04 17:13    108237      
+<a href="qdox-1.12.1-sources.jar.asc" title="qdox-1.12.1-sources.jar.asc">qdox-1.12.1-sources.jar.asc</a>                       2012-11-04 17:13       235      
+<a href="qdox-1.12.1-sources.jar.asc.md5" title="qdox-1.12.1-sources.jar.asc.md5">qdox-1.12.1-sources.jar.asc.md5</a>                   2012-11-04 17:13        32      
+<a href="qdox-1.12.1-sources.jar.asc.sha1" title="qdox-1.12.1-sources.jar.asc.sha1">qdox-1.12.1-sources.jar.asc.sha1</a>                  2012-11-04 17:13        40      
+<a href="qdox-1.12.1-sources.jar.md5" title="qdox-1.12.1-sources.jar.md5">qdox-1.12.1-sources.jar.md5</a>                       2012-11-04 17:13        32      
+<a href="qdox-1.12.1-sources.jar.sha1" title="qdox-1.12.1-sources.jar.sha1">qdox-1.12.1-sources.jar.sha1</a>                      2012-11-04 17:13        40      
+<a href="qdox-1.12.1.jar" title="qdox-1.12.1.jar">qdox-1.12.1.jar</a>                                   2012-11-04 17:13    179818      
+<a href="qdox-1.12.1.jar.asc" title="qdox-1.12.1.jar.asc">qdox-1.12.1.jar.asc</a>                               2012-11-04 17:13       235      
+<a href="qdox-1.12.1.jar.asc.md5" title="qdox-1.12.1.jar.asc.md5">qdox-1.12.1.jar.asc.md5</a>                           2012-11-04 17:13        32      
+<a href="qdox-1.12.1.jar.asc.sha1" title="qdox-1.12.1.jar.asc.sha1">qdox-1.12.1.jar.asc.sha1</a>                          2012-11-04 17:13        40      
+<a href="qdox-1.12.1.jar.md5" title="qdox-1.12.1.jar.md5">qdox-1.12.1.jar.md5</a>                               2012-11-04 17:13        32      
+<a href="qdox-1.12.1.jar.sha1" title="qdox-1.12.1.jar.sha1">qdox-1.12.1.jar.sha1</a>                              2012-11-04 17:13        40      
+<a href="qdox-1.12.1.pom" title="qdox-1.12.1.pom">qdox-1.12.1.pom</a>                                   2012-11-04 17:13     17598      
+<a href="qdox-1.12.1.pom.asc" title="qdox-1.12.1.pom.asc">qdox-1.12.1.pom.asc</a>                               2012-11-04 17:13       235      
+<a href="qdox-1.12.1.pom.asc.md5" title="qdox-1.12.1.pom.asc.md5">qdox-1.12.1.pom.asc.md5</a>                           2012-11-04 17:13        32      
+<a href="qdox-1.12.1.pom.asc.sha1" title="qdox-1.12.1.pom.asc.sha1">qdox-1.12.1.pom.asc.sha1</a>                          2012-11-04 17:13        40      
+<a href="qdox-1.12.1.pom.md5" title="qdox-1.12.1.pom.md5">qdox-1.12.1.pom.md5</a>                               2012-11-04 17:13        32      
+<a href="qdox-1.12.1.pom.sha1" title="qdox-1.12.1.pom.sha1">qdox-1.12.1.pom.sha1</a>                              2012-11-04 17:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "rg 'source-code-url.*repo1.maven.org|test-code-url.*repo1.maven.org|repository-url.*svn' build/discovered-artifact-metadata metadata -g '*.json' | head -50" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/javax.validation/validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-openwire-legacy/$version$/activemq-openwire-legacy-$version$-sources.jar",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\".*javadoc.jar|\"test-code-url\".*project' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+metadata/com.google.re2j/re2j/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/$version$/smallrye-common-os-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/com.google.android/annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-constraint/$version$/smallrye-common-constraint-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/$version$/smallrye-common-ref-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/$version$/smallrye-common-resource-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-net/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-net/$version$/smallrye-common-net-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/$version$/annotations-java5-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/$version$/annotations-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg 'com.thoughtworks.qdox|qdox' -n . -g '*.json' -g '*.properties' -g '*.xml' | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'project\\.tar|project\\.zip|project\\.bz2' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz | tar -tzf - | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.jar | jar tf /dev/stdin | head -40' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 109ms:
+curl: (23) Failure writing output to destination
+
+ succeeded in 441ms:
+qdox-1.12.1/
+qdox-1.12.1/bootstrap/
+qdox-1.12.1/src/
+qdox-1.12.1/src/changes/
+qdox-1.12.1/src/grammar/
+qdox-1.12.1/src/java/
+qdox-1.12.1/src/java/com/
+qdox-1.12.1/src/java/com/thoughtworks/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/ant/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/directorywalker/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/junit/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/util/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/parser/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/parser/structs/
+qdox-1.12.1/src/java/com/thoughtworks/qdox/tools/
+qdox-1.12.1/src/site/
+qdox-1.12.1/src/site/content/
+qdox-1.12.1/src/site/resources/
+qdox-1.12.1/src/site/templates/
+qdox-1.12.1/src/test/
+qdox-1.12.1/src/test/com/
+qdox-1.12.1/src/test/com/thoughtworks/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/ant/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/directorywalker/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/util/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/parser/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/testdata/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/traversal/
+qdox-1.12.1/src/test-resources/
+qdox-1.12.1/src/test-resources/qdox-140/
+qdox-1.12.1/bootstrap/yacc.exe
+qdox-1.12.1/bootstrap/yacc.linux
+qdox-1.12.1/bootstrap/yacc.linux.x86_64
+qdox-1.12.1/bootstrap/yacc.macosx
+qdox-1.12.1/bootstrap/yacc.solaris
+qdox-1.12.1/LICENSE.txt
+qdox-1.12.1/pom.xml
+qdox-1.12.1/README.txt
+qdox-1.12.1/src/changes/changes.xml
+qdox-1.12.1/src/grammar/lexer.flex
+qdox-1.12.1/src/grammar/parser.y
+qdox-1.12.1/src/grammar/skeleton.inner
+qdox-1.12.1/src/java/com/thoughtworks/qdox/ant/AbstractQdoxTask.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/DefaultJavaClassCache.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/directorywalker/DirectoryScanner.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/directorywalker/FileVisitor.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/directorywalker/Filter.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/directorywalker/SuffixFilter.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/JavaClassContext.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/JavaDocBuilder.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/junit/APITestCase.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/AbstractBaseJavaEntity.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/AbstractInheritableJavaEntity.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/AbstractJavaEntity.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationAdd.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationAnd.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationBinaryOperator.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationCast.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationConstant.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationDivide.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationEquals.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationExclusiveOr.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationFieldRef.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationGreaterEquals.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationGreaterThan.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationLessEquals.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationLessThan.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationLogicalAnd.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationLogicalNot.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationLogicalOr.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationMinusSign.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationMultiply.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationNot.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationNotEquals.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationOr.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationParenExpression.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationPlusSign.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationQuery.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationRemainder.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationShiftLeft.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationShiftRight.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationSubtract.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationTypeRef.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationUnaryOperator.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationUnsignedShiftRight.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationValue.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationValueList.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/AnnotationVisitor.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/EvaluatingVisitor.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/annotation/RecursiveAnnotationVisitor.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/Annotation.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/BeanProperty.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/ClassLibrary.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/DefaultDocletTag.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/DefaultDocletTagFactory.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/DocletTag.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/DocletTagFactory.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/IndentBuffer.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/JavaClass.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/JavaClassCache.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/JavaClassParent.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/JavaField.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/JavaMethod.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/JavaMethodDelegate.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/JavaPackage.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/JavaParameter.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/JavaSource.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/Member.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/ModelBuilder.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/Type.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/TypeVariable.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/util/OrderedMap.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/util/TagParser.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/model/WildcardType.java
+qdox-1.12.1/src/java/com/thoughtworks/qdox/parser/Builder.java
+
+codex
+There is no dedicated Maven `tests.jar` in the 1.12.1 directory, but the Maven-published project archive includes `src/test` and `src/site`. I’m using that archive for tests, and the Maven-published sources and Javadocs for source and documentation.
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:20:43 GMT
+content-type: application/java-archive
+content-length: 179818
+cf-ray: 9f5802f7cae0343e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1751284
+etag: "9fb6970f934f8d836ae8e6d133316ab4"
+last-modified: Sun, 04 Nov 2012 17:13:37 GMT
+x-checksum-md5: 9fb6970f934f8d836ae8e6d133316ab4
+x-checksum-sha1: f7122f6ab1f64bdf9f5970b0e89bfb355e036897
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz | tar -tzf - | rg '"'^qdox-1'"\\.12\\.1/src/(site|test)/' | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+qdox-1.12.1/src/site/
+qdox-1.12.1/src/site/content/
+qdox-1.12.1/src/site/resources/
+qdox-1.12.1/src/site/templates/
+qdox-1.12.1/src/test/
+qdox-1.12.1/src/test/com/
+qdox-1.12.1/src/test/com/thoughtworks/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/ant/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/directorywalker/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/util/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/parser/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/testdata/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/traversal/
+qdox-1.12.1/src/site/content/changes.html
+qdox-1.12.1/src/site/content/download.html
+qdox-1.12.1/src/site/content/faq.html
+qdox-1.12.1/src/site/content/index.html
+qdox-1.12.1/src/site/content/license.html
+qdox-1.12.1/src/site/content/model.html
+qdox-1.12.1/src/site/content/upgrade.html
+qdox-1.12.1/src/site/content/usage.html
+qdox-1.12.1/src/site/content/website.xml
+qdox-1.12.1/src/site/content/whouses.html
+qdox-1.12.1/src/site/resources/blue2white.jpg
+qdox-1.12.1/src/site/resources/breadcrumbs.jpg
+qdox-1.12.1/src/site/resources/logo.gif
+qdox-1.12.1/src/site/resources/style.css
+qdox-1.12.1/src/site/resources/tekton_logo.png
+qdox-1.12.1/src/site/resources/white2blue.jpg
+qdox-1.12.1/src/site/templates/site-template.vm
+qdox-1.12.1/src/site/templates/skin.html
+qdox-1.12.1/src/test/com/thoughtworks/qdox/AnnotationsModelTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/AnnotationsTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/ant/AbstractQdoxTaskTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/ClassResolutionTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/directorywalker/DirectoryScannerTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/EnumsModelTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/EnumsTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/FieldsTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/GenericsTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/JavaDocBuilderTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/JSR14Test.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/MethodsTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/AbstractDocletTagTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/AbstractJavaEntityTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/ClassLibraryTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/DefaultDocletTagTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/IndentBufferTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/JavaClassTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/JavaFieldTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/JavaMethodTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/JavaPackageTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/JavaParameterTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/JavaSourceTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/ModelBuilderTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/TypeTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/util/OrderedMapTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/util/SerializationUtils.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/util/TagParserTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/parser/LexerTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/parser/MockBuilder.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/parser/MockLexer.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/parser/ParserTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/testdata/DefaultCtor.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/testdata/PropertyClass.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/testdata/Unicode.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/TestQDoxBug131.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/traversal/TraversalTest.java
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-sources.jar && curl -fsI https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-javadoc.jar && curl -fsI https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 162ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:20:43 GMT
+content-type: application/x-gzip
+content-length: 518604
+cf-ray: 9f5802f95d0c5da5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 6
+etag: "225d22ebf376f613e87e07a3ac5f0f2f"
+last-modified: Sun, 04 Nov 2012 17:14:01 GMT
+x-checksum-md5: 225d22ebf376f613e87e07a3ac5f0f2f
+x-checksum-sha1: 45483a9469bcee114de4e9e01fd19f57a3f5882d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL -o "$tmp" https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.jar; jar tf "$tmp" | rg '"'\\.class"'$'"' | head -20; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz | tar -xOzf - qdox-1.12.1/README.txt | sed -n '1,140p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz | tar -xOzf - qdox-1.12.1/src/site/content/index.html | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 107ms:
+<html>
+  <head>
+    <title>Overview</title>
+  </head>
+  <body>
+
+		<h2>QDox</h2>
+			<p>
+				QDox is a high speed, small footprint parser for extracting class/interface/method
+				definitions from source files complete with JavaDoc @tags. It is designed to be used
+				by active code generators or documentation tools.
+			</p>
+		
+		<h2>In A Nutshell</h2>
+			<p>
+				A custom built parser has been built using <a href="http://www.jflex.de/">JFlex</a>
+				and <a href="http://byaccj.sourceforge.net/">BYacc/J</a>.
+				These have been chosen because of their
+				proven performance and they require no external libraries at runtime.
+			</p>
+			<p>
+				The parser skims the source files only looking for things of interest such as
+				class/interface definitions, import statements, JavaDoc and member declarations. The parser ignores things
+				such as actual method implementations to avoid overhead (while in method blocks, curly brace counting
+				suffices).
+			</p>
+			<p>
+				The end result of the parser is a very simple document model containing enough information to be useful.
+			</p>
+
+		<h2>Getting Started</h2>
+
+			<p>
+				<ol>
+					<li><a href="download.html">Download</a> it.</li>
+					<li><a href="usage.html">Use</a> it.</li>
+				</ol>
+			</p>
+
+	</body>
+	
+</html>
+
+ succeeded in 185ms:
+com/thoughtworks/qdox/ant/AbstractQdoxTask.class
+com/thoughtworks/qdox/DefaultJavaClassCache.class
+com/thoughtworks/qdox/directorywalker/DirectoryScanner$1.class
+com/thoughtworks/qdox/directorywalker/DirectoryScanner.class
+com/thoughtworks/qdox/directorywalker/FileVisitor.class
+com/thoughtworks/qdox/directorywalker/Filter.class
+com/thoughtworks/qdox/directorywalker/SuffixFilter.class
+com/thoughtworks/qdox/JavaClassContext.class
+com/thoughtworks/qdox/JavaDocBuilder$1.class
+com/thoughtworks/qdox/JavaDocBuilder$2.class
+com/thoughtworks/qdox/JavaDocBuilder$DefaultErrorHandler.class
+com/thoughtworks/qdox/JavaDocBuilder$ErrorHandler.class
+com/thoughtworks/qdox/JavaDocBuilder.class
+com/thoughtworks/qdox/junit/APITestCase$1.class
+com/thoughtworks/qdox/junit/APITestCase.class
+com/thoughtworks/qdox/model/AbstractBaseJavaEntity.class
+com/thoughtworks/qdox/model/AbstractInheritableJavaEntity.class
+com/thoughtworks/qdox/model/AbstractJavaEntity.class
+com/thoughtworks/qdox/model/annotation/AnnotationAdd.class
+com/thoughtworks/qdox/model/annotation/AnnotationAnd.class
+
+ succeeded in 225ms:
+To build QDox there are two prerequisites:
+
+* Maven 2 (2.0.9 or later)
+http://maven.apache.org
+ 
+* BYacc/J (1.8 or later)
+http://byaccj.sourceforge.net/
+Paarser generator used to create an effective parser for JavaDoc.
+If using Windows, Linux, Solaris or Mac OS X, no additional installation is 
+needed as yacc binaries are supplied in the bootstrap directory. 
+If using any other platform, download BYacc/J from the site or build it yourself, in which case
+we would be grateful to receive a copy of your binary, so we can upgrade the bootstrap support.
+
+Build goals:
+
+mvn install				- Create qdox jar
+mvn generate-sources 	- Generate the Java parser code (allowing you to develop in an IDE).
+mvn site      			- Build the QDox website
+mvn release:prepare		- Prepare release (confirm or change release version interactively)
+mvn release:perform		- Perform release (perform release from tag of prepare phase)
+
+If you are releasing, remember to 
+
+1) Update src/site/content/download.html
+2) Go to JIRA and release the applicable version for QDOX : http://jira.codehaus.org/secure/project/ManageVersions.jspa?pid=10103
+3) Copy the contents of target/site/ to the DAV folder for QDox's website : https://dav.codehaus.org/qdox/
+web search: 
+web search: 
+web search: 
+web search: QDox GitHub qdox-1.12.1 tag
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/paul-hammant/qdox.git | rg '1\\.12\\.1|qdox-1\\.12\\.1'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+exec
+/usr/bin/bash -lc 'git ls-remote https://github.com/paul-hammant/qdox.git HEAD' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/paul-hammant/qdox' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 186ms:
+{
+  "id": 35381883,
+  "node_id": "MDEwOlJlcG9zaXRvcnkzNTM4MTg4Mw==",
+  "name": "qdox",
+  "full_name": "paul-hammant/qdox",
+  "private": false,
+  "owner": {
+    "login": "paul-hammant",
+    "id": 82182,
+    "node_id": "MDQ6VXNlcjgyMTgy",
+    "avatar_url": "https://avatars.githubusercontent.com/u/82182?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/paul-hammant",
+    "html_url": "https://github.com/paul-hammant",
+    "followers_url": "https://api.github.com/users/paul-hammant/followers",
+    "following_url": "https://api.github.com/users/paul-hammant/following{/other_user}",
+    "gists_url": "https://api.github.com/users/paul-hammant/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/paul-hammant/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/paul-hammant/subscriptions",
+    "organizations_url": "https://api.github.com/users/paul-hammant/orgs",
+    "repos_url": "https://api.github.com/users/paul-hammant/repos",
+    "events_url": "https://api.github.com/users/paul-hammant/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/paul-hammant/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "html_url": "https://github.com/paul-hammant/qdox",
+  "description": "QDox - full extractor of Java class/interface/method definitions (including annotations, parameters, param names)",
+  "fork": false,
+  "url": "https://api.github.com/repos/paul-hammant/qdox",
+  "forks_url": "https://api.github.com/repos/paul-hammant/qdox/forks",
+  "keys_url": "https://api.github.com/repos/paul-hammant/qdox/keys{/key_id}",
+  "collaborators_url": "https://api.github.com/repos/paul-hammant/qdox/collaborators{/collaborator}",
+  "teams_url": "https://api.github.com/repos/paul-hammant/qdox/teams",
+  "hooks_url": "https://api.github.com/repos/paul-hammant/qdox/hooks",
+  "issue_events_url": "https://api.github.com/repos/paul-hammant/qdox/issues/events{/number}",
+  "events_url": "https://api.github.com/repos/paul-hammant/qdox/events",
+  "assignees_url": "https://api.github.com/repos/paul-hammant/qdox/assignees{/user}",
+  "branches_url": "https://api.github.com/repos/paul-hammant/qdox/branches{/branch}",
+  "tags_url": "https://api.github.com/repos/paul-hammant/qdox/tags",
+  "blobs_url": "https://api.github.com/repos/paul-hammant/qdox/git/blobs{/sha}",
+  "git_tags_url": "https://api.github.com/repos/paul-hammant/qdox/git/tags{/sha}",
+  "git_refs_url": "https://api.github.com/repos/paul-hammant/qdox/git/refs{/sha}",
+  "trees_url": "https://api.github.com/repos/paul-hammant/qdox/git/trees{/sha}",
+  "statuses_url": "https://api.github.com/repos/paul-hammant/qdox/statuses/{sha}",
+  "languages_url": "https://api.github.com/repos/paul-hammant/qdox/languages",
+  "stargazers_url": "https://api.github.com/repos/paul-hammant/qdox/stargazers",
+  "contributors_url": "https://api.github.com/repos/paul-hammant/qdox/contributors",
+  "subscribers_url": "https://api.github.com/repos/paul-hammant/qdox/subscribers",
+  "subscription_url": "https://api.github.com/repos/paul-hammant/qdox/subscription",
+  "commits_url": "https://api.github.com/repos/paul-hammant/qdox/commits{/sha}",
+  "git_commits_url": "https://api.github.com/repos/paul-hammant/qdox/git/commits{/sha}",
+  "comments_url": "https://api.github.com/repos/paul-hammant/qdox/comments{/number}",
+  "issue_comment_url": "https://api.github.com/repos/paul-hammant/qdox/issues/comments{/number}",
+  "contents_url": "https://api.github.com/repos/paul-hammant/qdox/contents/{+path}",
+  "compare_url": "https://api.github.com/repos/paul-hammant/qdox/compare/{base}...{head}",
+  "merges_url": "https://api.github.com/repos/paul-hammant/qdox/merges",
+  "archive_url": "https://api.github.com/repos/paul-hammant/qdox/{archive_format}{/ref}",
+  "downloads_url": "https://api.github.com/repos/paul-hammant/qdox/downloads",
+  "issues_url": "https://api.github.com/repos/paul-hammant/qdox/issues{/number}",
+  "pulls_url": "https://api.github.com/repos/paul-hammant/qdox/pulls{/number}",
+  "milestones_url": "https://api.github.com/repos/paul-hammant/qdox/milestones{/number}",
+  "notifications_url": "https://api.github.com/repos/paul-hammant/qdox/notifications{?since,all,participating}",
+  "labels_url": "https://api.github.com/repos/paul-hammant/qdox/labels{/name}",
+  "releases_url": "https://api.github.com/repos/paul-hammant/qdox/releases{/id}",
+  "deployments_url": "https://api.github.com/repos/paul-hammant/qdox/deployments",
+  "created_at": "2015-05-10T18:00:43Z",
+  "updated_at": "2026-04-06T04:20:06Z",
+  "pushed_at": "2026-03-01T13:43:34Z",
+  "git_url": "git://github.com/paul-hammant/qdox.git",
+  "ssh_url": "git@github.com:paul-hammant/qdox.git",
+  "clone_url": "https://github.com/paul-hammant/qdox.git",
+  "svn_url": "https://github.com/paul-hammant/qdox",
+  "homepage": "",
+  "size": 3517,
+  "stargazers_count": 478,
+  "watchers_count": 478,
+  "language": "Java",
+  "has_issues": true,
+
+ exited 1 in 332ms:
+ succeeded in 460ms:
+c7c07c0a5386f1bd5e4a5c250aa2295e876bb7c2	HEAD
+
+codex
+I found the POM’s SCM root in the released metadata, but the GitHub mirror does not expose a matching 1.12.1 tag. Since the release artifacts on Maven Central are complete for this version, I’m going to record Maven Central URLs where possible and the POM SCM root for the repository.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+index b471f56869ab36a94e03c41a94f94ae2963a3dfa..5f9adbae78fcd613f20b97efd642985137eceeb2
+--- a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1"
++  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1",
++  "repository-url" : "http://svn.codehaus.org/qdox",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-project.tar.gz",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-javadoc.jar",
++  "description" : "QDox is a lightweight Java source parser that extracts classes, interfaces, methods, fields, annotations, and Javadoc tags into a document model. It is intended for code generators and documentation tools that need source-level metadata without compiling or loading the analyzed code."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+index b471f56869ab36a94e03c41a94f94ae2963a3dfa..5f9adbae78fcd613f20b97efd642985137eceeb2
+--- a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1"
++  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1",
++  "repository-url" : "http://svn.codehaus.org/qdox",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-project.tar.gz",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-javadoc.jar",
++  "description" : "QDox is a lightweight Java source parser that extracts classes, interfaces, methods, fields, annotations, and Javadoc tags into a document model. It is intended for code generators and documentation tools that need source-level metadata without compiling or loading the analyzed code."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+{
+  "coordinates": "com.thoughtworks.qdox:qdox:1.12.1",
+  "repository-url": "http://svn.codehaus.org/qdox",
+  "source-code-url": "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-sources.jar",
+  "test-code-url": "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-project.tar.gz",
+  "documentation-url": "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-javadoc.jar",
+  "description": "QDox is a lightweight Java source parser that extracts classes, interfaces, methods, fields, annotations, and Javadoc tags into a document model. It is intended for code generators and documentation tools that need source-level metadata without compiling or loading the analyzed code."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-sources.jar \\
+  https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz \\
+  https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-javadoc.jar; do curl -fsI \""'$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+index b471f56869ab36a94e03c41a94f94ae2963a3dfa..5f9adbae78fcd613f20b97efd642985137eceeb2
+--- a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1"
++  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1",
++  "repository-url" : "http://svn.codehaus.org/qdox",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-project.tar.gz",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-javadoc.jar",
++  "description" : "QDox is a lightweight Java source parser that extracts classes, interfaces, methods, fields, annotations, and Javadoc tags into a document model. It is intended for code generators and documentation tools that need source-level metadata without compiling or loading the analyzed code."
+ }
+
+ succeeded in 132ms:
+HTTP/2 200 
+
+codex
+The JSON parses cleanly, and all three version-substituted Maven Central URLs return `200`. I’m doing one last status check to confirm exactly what changed in the workspace.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+ succeeded in 0ms:
+{
+  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1",
+  "repository-url" : "http://svn.codehaus.org/qdox",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-sources.jar",
+  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-project.tar.gz",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-javadoc.jar",
+  "description" : "QDox is a lightweight Java source parser that extracts classes, interfaces, methods, fields, annotations, and Javadoc tags into a document model. It is intended for code generators and documentation tools that need source-level metadata without compiling or loading the analyzed code."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+index b471f56869ab36a94e03c41a94f94ae2963a3dfa..5f9adbae78fcd613f20b97efd642985137eceeb2
+--- a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1"
++  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1",
++  "repository-url" : "http://svn.codehaus.org/qdox",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-project.tar.gz",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-javadoc.jar",
++  "description" : "QDox is a lightweight Java source parser that extracts classes, interfaces, methods, fields, annotations, and Javadoc tags into a document model. It is intended for code generators and documentation tools that need source-level metadata without compiling or loading the analyzed code."
+ }
+
+ succeeded in 186ms:
+web search: 
+web search: Maven Central com.thoughtworks.qdox qdox 1.12.1 repo1.maven.org
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.pom
+codex
+Updated [com.thoughtworks.qdox-qdox-1.12.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json) with repository, source, test, documentation, and two-sentence description fields.
+
+I left `language` absent and did not set `not-for-native-image`: `qdox` is published as a Java `jar`, and it is a JVM-consumable artifact rather than a Kotlin/Groovy/Scala variant or non-JVM artifact. ([mvnrepository.com](https://mvnrepository.com/artifact/com.thoughtworks.qdox/qdox/1.12.1?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and the three `$version$` Maven Central URLs resolve with `1.12.1` substituted.
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+index b471f56869ab36a94e03c41a94f94ae2963a3dfa..5f9adbae78fcd613f20b97efd642985137eceeb2
+--- a/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1"
++  "coordinates" : "com.thoughtworks.qdox:qdox:1.12.1",
++  "repository-url" : "http://svn.codehaus.org/qdox",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-project.tar.gz",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/qdox/qdox/$version$/qdox-$version$-javadoc.jar",
++  "description" : "QDox is a lightweight Java source parser that extracts classes, interfaces, methods, fields, annotations, and Javadoc tags into a document model. It is intended for code generators and documentation tools that need source-level metadata without compiling or loading the analyzed code."
+ }
+
+tokens used
+62,815
+Updated [com.thoughtworks.qdox-qdox-1.12.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9/build/discovered-artifact-metadata/com.thoughtworks.qdox-qdox-1.12.1.json) with repository, source, test, documentation, and two-sentence description fields.
+
+I left `language` absent and did not set `not-for-native-image`: `qdox` is published as a Java `jar`, and it is a JVM-consumable artifact rather than a Kotlin/Groovy/Scala variant or non-JVM artifact. ([mvnrepository.com](https://mvnrepository.com/artifact/com.thoughtworks.qdox/qdox/1.12.1?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and the three `$version$` Maven Central URLs resolve with `1.12.1` substituted.
+Ran agent for com.thoughtworks.qdox:qdox:1.12.1 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9/build/agent-artifact-discovery-logs/com.thoughtworks.qdox-qdox-1.12.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2229-922e0cf9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 36s
+9 actionable tasks: 4 executed, 5 from cache
