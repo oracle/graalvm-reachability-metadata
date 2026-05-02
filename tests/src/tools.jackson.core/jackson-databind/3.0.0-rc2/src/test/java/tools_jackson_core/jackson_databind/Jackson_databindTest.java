@@ -29,6 +29,7 @@ import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.databind.util.TokenBuffer;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -132,6 +133,42 @@ public class Jackson_databindTest {
 
         assertThat(json).isEqualTo("[3,1,4]");
         assertThat(values).containsExactly(3, 1, 4);
+    }
+
+    @Test
+    void buffersAndReplaysTokenStreams() throws JacksonException {
+        TokenBuffer tokenBuffer = TokenBuffer.forGeneration();
+        tokenBuffer.writeStartObject();
+        tokenBuffer.writeName("batch");
+        tokenBuffer.writeStartArray();
+        tokenBuffer.writeStartObject();
+        tokenBuffer.writeName("id");
+        tokenBuffer.writeNumber(1);
+        tokenBuffer.writeName("status");
+        tokenBuffer.writeString("queued");
+        tokenBuffer.writeEndObject();
+        tokenBuffer.writeStartObject();
+        tokenBuffer.writeName("id");
+        tokenBuffer.writeNumber(2);
+        tokenBuffer.writeName("status");
+        tokenBuffer.writeString("done");
+        tokenBuffer.writeEndObject();
+        tokenBuffer.writeEndArray();
+        tokenBuffer.writeEndObject();
+
+        JsonNode bufferedTree;
+        try (JsonParser parser = tokenBuffer.asParser()) {
+            bufferedTree = MAPPER.readTree(parser);
+        }
+
+        StringWriter output = new StringWriter();
+        try (JsonGenerator generator = MAPPER.createGenerator(output)) {
+            tokenBuffer.serialize(generator);
+        }
+
+        assertThat(bufferedTree.at("/batch/0/status").asString()).isEqualTo("queued");
+        assertThat(bufferedTree.at("/batch/1/id").asInt()).isEqualTo(2);
+        assertThat(MAPPER.readTree(output.toString())).isEqualTo(bufferedTree);
     }
 
     @Test
