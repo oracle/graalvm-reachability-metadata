@@ -1,0 +1,898 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de95b-d640-7811-8ab4-85e3014612c5
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.istack:istack-commons-tools:4.1.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.1.2" when "$version$" is replaced with "4.1.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+- Set "coordinates" to "com.sun.istack:istack-commons-tools:4.1.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.1.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream project/tag, then update the JSON in place with URLs that resolve for `4.1.2`.
+exec
+/usr/bin/bash -lc "pwd && ls -la build/discovered-artifact-metadata | sed -n '1,40p' && sed -n '1,200p' build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+total 12
+drwxrwxr-x 2 vjovanov vjovanov 4096 May  2 17:43 .
+drwxrwxr-x 4 vjovanov vjovanov 4096 May  2 17:43 ..
+-rw-rw-r-- 1 vjovanov vjovanov   66 May  2 17:43 com.sun.istack-istack-commons-tools-4.1.2.json
+{
+  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "istack-commons-tools|com.sun.istack" .' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+./stats/com.sun.istack/istack-commons-runtime/3.0.7/execution-metrics.json:4:    "library": "com.sun.istack:istack-commons-runtime:3.0.7",
+./stats/com.sun.istack/istack-commons-runtime/3.0.7/execution-metrics.json:21:      "test_file": "tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java",
+./stats/com.sun.istack/istack-commons-runtime/3.0.7/execution-metrics.json:22:      "metadata_file": "metadata/com.sun.istack/istack-commons-runtime/3.0.7/reachability-metadata.json"
+./metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:13:      "com.sun.istack"
+./metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:33:      "com.sun.istack"
+./metadata/com.sun.istack/istack-commons-runtime/3.0.7/reachability-metadata.json:5:        "typeReached": "com.sun.istack.localization.Localizer"
+./metadata/com.sun.istack/istack-commons-runtime/3.0.7/reachability-metadata.json:11:        "typeReached": "com.sun.istack.localization.Localizer"
+./metadata/com.sun.istack/istack-commons-runtime/3.0.7/reachability-metadata.json:17:        "typeReached": "com.sun.istack.localization.Localizer"
+./metadata/com.sun.istack/istack-commons-runtime/3.0.7/reachability-metadata.json:23:        "typeReached": "com.sun.istack.localization.Localizer"
+./metadata/com.sun.istack/istack-commons-runtime/3.0.7/reachability-metadata.json:29:        "typeReached": "com.sun.istack.localization.Localizer"
+./metadata/com.sun.istack/istack-commons-runtime/3.0.7/reachability-metadata.json:35:        "typeReached": "com.sun.istack.localization.Localizer"
+./metadata/com.sun.istack/istack-commons-runtime/3.0.7/reachability-metadata.json:41:        "typeReached": "com.sun.istack.localization.Localizer"
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/build.gradle:14:    testImplementation "com.sun.istack:istack-commons-runtime:$libraryVersion"
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/settings.gradle:20:rootProject.name = 'com.sun.istack.istack-commons-runtime_tests'
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:7:package com_sun_istack.istack_commons_runtime;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:9:import com.sun.istack.ByteArrayDataSource;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:10:import com.sun.istack.FinalArrayList;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:11:import com.sun.istack.FragmentContentHandler;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:12:import com.sun.istack.Pool;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:13:import com.sun.istack.SAXException2;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:14:import com.sun.istack.SAXParseException2;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:15:import com.sun.istack.XMLStreamException2;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:16:import com.sun.istack.XMLStreamReaderToContentHandler;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:17:import com.sun.istack.localization.Localizable;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:18:import com.sun.istack.localization.LocalizableMessage;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:19:import com.sun.istack.localization.LocalizableMessageFactory;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:20:import com.sun.istack.localization.Localizer;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:21:import com.sun.istack.localization.NullLocalizable;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:22:import com.sun.istack.logging.Logger;
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:311:        String loggerName = "com.sun.istack.tests." + System.nanoTime();
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/gradle.properties:4:library.coordinates = com.sun.istack:istack-commons-runtime:4.0.0
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/gradle.properties:6:metadata.dir = com.sun.istack/istack-commons-runtime/4.0.0/
+./tests/src/com.sun.istack/istack-commons-runtime/4.0.0/user-code-filter.json:7:      "includeClasses" : "com.sun.istack.**"
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/build.gradle:14:    testImplementation "com.sun.istack:istack-commons-runtime:$libraryVersion"
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/settings.gradle:20:rootProject.name = 'com.sun.istack.istack-commons-runtime_tests'
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:7:package com_sun_istack.istack_commons_runtime;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:29:import com.sun.istack.ByteArrayDataSource;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:30:import com.sun.istack.FinalArrayList;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:31:import com.sun.istack.FragmentContentHandler;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:32:import com.sun.istack.Pool;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:33:import com.sun.istack.SAXException2;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:34:import com.sun.istack.SAXParseException2;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:35:import com.sun.istack.XMLStreamException2;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:36:import com.sun.istack.XMLStreamReaderToContentHandler;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:37:import com.sun.istack.localization.Localizable;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:38:import com.sun.istack.localization.LocalizableMessage;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:39:import com.sun.istack.localization.LocalizableMessageFactory;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:40:import com.sun.istack.localization.NullLocalizable;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:41:import com.sun.istack.localization.Localizer;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/src/test/java/com_sun_istack/istack_commons_runtime/Istack_commons_runtimeTest.java:42:import com.sun.istack.logging.Logger;
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/gradle.properties:4:library.coordinates = com.sun.istack:istack-commons-runtime:3.0.7
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/gradle.properties:6:metadata.dir = com.sun.istack/istack-commons-runtime/3.0.7/
+./tests/src/com.sun.istack/istack-commons-runtime/3.0.7/user-code-filter.json:7:      "includeClasses" : "com.sun.istack.**"
+
+web search: 
+web search: Maven Central com.sun.istack istack-commons-tools 4.1.2 pom scm url
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/
+codex
+Maven Central has the runtime JAR plus `-sources.jar` and `-javadoc.jar` for this version. I’m checking the POM and tag layout now so the test URL points at the exact source tree instead of a moving branch.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/com.sun.istack/istack-commons-runtime/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "3.0.7",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/jaxb-istack-commons",
+    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/$version$-RELEASE/istack-commons/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+    "description" : "Provides the runtime portion of iStack Commons, a small set of shared utility classes used by JAXB and related Java XML and web-services components. It includes reusable support for annotations, localization, logging, XML and SAX helpers, and other common infrastructure.",
+    "tested-versions" : [
+      "3.0.7"
+    ],
+    "allowed-packages" : [
+      "com.sun.istack"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
+    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/runtime/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+    "description" : "Provides the runtime portion of iStack Commons, a small set of shared utility classes used by JAXB and related Java XML and web-services components. It includes reusable support for annotations, localization, logging, XML and SAX helpers, and other common infrastructure.",
+    "tested-versions" : [
+      "4.0.0",
+      "4.0.1",
+      "4.1.0",
+      "4.1.1",
+      "4.1.2",
+      "4.2.0"
+    ],
+    "allowed-packages" : [
+      "com.sun.istack"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -LfsS https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+<!--
+
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.sun.istack</groupId>
+        <artifactId>istack-commons</artifactId>
+        <version>4.1.2</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>istack-commons-tools</artifactId>
+
+    <name>istack common utility code tools</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <argLine/>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>--add-reads</arg>
+                                <arg>com.sun.istack.tools=ALL-UNNAMED</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>--add-reads</arg>
+                                <arg>com.sun.istack.tools=ALL-UNNAMED</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        @{argLine} --add-opens java.base/java.net=com.sun.istack.tools
+                    </argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalJOptions>
+                        <additionalJOption>--add-reads</additionalJOption>
+                        <additionalJOption>com.sun.istack.tools=ALL-UNNAMED</additionalJOption>
+                    </additionalJOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -LfsS https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/istack/istack-commons-tools/4.1.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/istack/istack-commons-tools/4.1.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="istack-commons-tools-4.1.2-javadoc.jar" title="istack-commons-tools-4.1.2-javadoc.jar">istack-commons-tools-4.1.2-javadoc.jar</a>            2023-04-11 15:07    432607      
+<a href="istack-commons-tools-4.1.2-javadoc.jar.asc" title="istack-commons-tools-4.1.2-javadoc.jar.asc">istack-commons-tools-4.1.2-javadoc.jar.asc</a>        2023-04-11 15:07       833      
+<a href="istack-commons-tools-4.1.2-javadoc.jar.md5" title="istack-commons-tools-4.1.2-javadoc.jar.md5">istack-commons-tools-4.1.2-javadoc.jar.md5</a>        2023-04-11 15:07        32      
+<a href="istack-commons-tools-4.1.2-javadoc.jar.sha1" title="istack-commons-tools-4.1.2-javadoc.jar.sha1">istack-commons-tools-4.1.2-javadoc.jar.sha1</a>       2023-04-11 15:07        40      
+<a href="istack-commons-tools-4.1.2-sources.jar" title="istack-commons-tools-4.1.2-sources.jar">istack-commons-tools-4.1.2-sources.jar</a>            2023-04-11 15:07     12972      
+<a href="istack-commons-tools-4.1.2-sources.jar.asc" title="istack-commons-tools-4.1.2-sources.jar.asc">istack-commons-tools-4.1.2-sources.jar.asc</a>        2023-04-11 15:07       833      
+<a href="istack-commons-tools-4.1.2-sources.jar.md5" title="istack-commons-tools-4.1.2-sources.jar.md5">istack-commons-tools-4.1.2-sources.jar.md5</a>        2023-04-11 15:07        32      
+<a href="istack-commons-tools-4.1.2-sources.jar.sha1" title="istack-commons-tools-4.1.2-sources.jar.sha1">istack-commons-tools-4.1.2-sources.jar.sha1</a>       2023-04-11 15:07        40      
+<a href="istack-commons-tools-4.1.2.jar" title="istack-commons-tools-4.1.2.jar">istack-commons-tools-4.1.2.jar</a>                    2023-04-11 15:07     22711      
+<a href="istack-commons-tools-4.1.2.jar.asc" title="istack-commons-tools-4.1.2.jar.asc">istack-commons-tools-4.1.2.jar.asc</a>                2023-04-11 15:07       833      
+<a href="istack-commons-tools-4.1.2.jar.md5" title="istack-commons-tools-4.1.2.jar.md5">istack-commons-tools-4.1.2.jar.md5</a>                2023-04-11 15:07        32      
+<a href="istack-commons-tools-4.1.2.jar.sha1" title="istack-commons-tools-4.1.2.jar.sha1">istack-commons-tools-4.1.2.jar.sha1</a>               2023-04-11 15:07        40      
+<a href="istack-commons-tools-4.1.2.pom" title="istack-commons-tools-4.1.2.pom">istack-commons-tools-4.1.2.pom</a>                    2023-04-11 15:07      3925      
+<a href="istack-commons-tools-4.1.2.pom.asc" title="istack-commons-tools-4.1.2.pom.asc">istack-commons-tools-4.1.2.pom.asc</a>                2023-04-11 15:07       833      
+<a href="istack-commons-tools-4.1.2.pom.md5" title="istack-commons-tools-4.1.2.pom.md5">istack-commons-tools-4.1.2.pom.md5</a>                2023-04-11 15:07        32      
+<a href="istack-commons-tools-4.1.2.pom.sha1" title="istack-commons-tools-4.1.2.pom.sha1">istack-commons-tools-4.1.2.pom.sha1</a>               2023-04-11 15:07        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -LfsS https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/git/matching-refs/tags/4.1.2 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 196ms:
+[
+  {
+    "ref": "refs/tags/4.1.2",
+    "node_id": "MDM6UmVmMTQ2NTc4ODMyOnJlZnMvdGFncy80LjEuMg==",
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/git/refs/tags/4.1.2",
+    "object": {
+      "sha": "4969a81adb70f402f4dae63d2585c14373da7409",
+      "type": "tag",
+      "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/git/tags/4969a81adb70f402f4dae63d2585c14373da7409"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -LfsS https://repo1.maven.org/maven2/com/sun/istack/istack-commons/4.1.2/istack-commons-4.1.2.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.7</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.sun.istack</groupId>
+    <artifactId>istack-commons</artifactId>
+    <version>4.1.2</version>
+    <packaging>pom</packaging>
+    <name>iStack Common Utility Code</name>
+    <description>istack common utility code</description>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-istack-commons.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-istack-commons.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jaxb-istack-commons</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Eclipse Distribution License - v 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Lukas Jungmann</name>
+            <email>lukas.jungmann@oracle.com</email>
+            <organization>Oracle Corporation</organization>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jaxb-istack-commons/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Eclipse Implementation of JAXB mailing list</name>
+            <post>jaxb-impl-dev@eclipse.org</post>
+            <subscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</subscribe>
+            <unsubscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</unsubscribe>
+            <archive>https://dev.eclipse.org/mhonarc/lists/jaxb-impl-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <properties>
+        <project.build.commonResourcesDirectory>${project.build.directory}/common-resources</project.build.commonResourcesDirectory>
+        <legal.doc.source>${project.build.commonResourcesDirectory}/legal</legal.doc.source>
+        <config.dir>${project.build.commonResourcesDirectory}/config</config.dir>
+        <copyright.exclude>${config.dir}/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.exclude>${config.dir}/spotbugs-exclude.xml</spotbugs.exclude>
+        <spotbugs.skip>false</spotbugs.skip>
+        <spotbugs.threshold>Low</spotbugs.threshold>
+        <spotbugs.version>4.7.3.4</spotbugs.version>
+
+        <activation.version>2.1.1</activation.version>
+        <maven.api.version>3.9.1</maven.api.version>
+        <maven.resolver.version>1.9.7</maven.resolver.version>
+        <junit.version>4.13.2</junit.version>
+        <ant.version>1.10.13</ant.version>
+        <codemodel.version>4.0.2</codemodel.version>
+        <plexus-utils.version>3.5.1</plexus-utils.version>
+        <maven-plugin-annotations.version>3.8.1</maven-plugin-annotations.version>
+        <testng.version>7.7.1</testng.version>
+        <args4j.version>2.33</args4j.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.testRelease>${maven.compiler.release}</maven.compiler.testRelease>
+        <vendor.name>Eclipse Foundation</vendor.name>
+    </properties>
+
+    <modules>
+        <module>buildtools</module>
+        <module>runtime</module>
+        <module>test</module>
+        <module>tools</module>
+        <module>maven-plugin</module>
+        <module>import-properties-plugin</module>
+        <module>soimp</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${activation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>${ant.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-junit</artifactId>
+                <version>${ant.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>codemodel</artifactId>
+                <version>${codemodel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>${maven.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-artifact</artifactId>
+                <version>${maven.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-model</artifactId>
+                <version>${maven.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>${plexus-utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${maven-plugin-annotations.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-settings</artifactId>
+                <version>${maven.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-api</artifactId>
+                <version>${maven.resolver.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-impl</artifactId>
+                <version>${maven.resolver.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>args4j</groupId>
+                <artifactId>args4j</artifactId>
+                <version>${args4j.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+
+exec
+/usr/bin/bash -lc "curl -LfsS https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/git/trees/4.1.2?recursive=1 | jq -r '.tree[].path' | rg '"'^istack-commons/(tools|runtime)|(''^README|site|doc)'"' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+exec
+/usr/bin/bash -lc "curl -LfsS https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2.jar -o /tmp/istack-commons-tools-4.1.2.jar && jar tf /tmp/istack-commons-tools-4.1.2.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/sun/
+com/sun/istack/
+com/sun/istack/tools/
+META-INF/maven/
+META-INF/maven/com.sun.istack/
+META-INF/maven/com.sun.istack/istack-commons-tools/
+com/sun/istack/tools/SecureLoader$1.class
+com/sun/istack/tools/SecureLoader$2.class
+com/sun/istack/tools/SecureLoader$3.class
+com/sun/istack/tools/SecureLoader$4.class
+com/sun/istack/tools/SecureLoader$5.class
+com/sun/istack/tools/SecureLoader.class
+com/sun/istack/tools/DefaultAuthenticator$Receiver.class
+com/sun/istack/tools/DefaultAuthenticator$DefaultRImpl.class
+com/sun/istack/tools/DefaultAuthenticator$AuthInfo.class
+com/sun/istack/tools/DefaultAuthenticator.class
+com/sun/istack/tools/MaskingClassLoader.class
+com/sun/istack/tools/ParallelWorldClassLoader.class
+com/sun/istack/tools/Utils.class
+com/sun/istack/tools/ProtectedTask$AntElement.class
+com/sun/istack/tools/ProtectedTask.class
+META-INF/maven/com.sun.istack/istack-commons-tools/pom.xml
+META-INF/maven/com.sun.istack/istack-commons-tools/pom.properties
+module-info.class
+
+exec
+/usr/bin/bash -lc "curl -LfsS -I https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-javadoc.jar | sed -n '1,40p' && curl -LfsS -I https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 269ms:
+README.md
+istack-commons/runtime
+istack-commons/runtime/pom.xml
+istack-commons/runtime/src
+istack-commons/runtime/src/main
+istack-commons/runtime/src/main/java
+istack-commons/runtime/src/main/java/com
+istack-commons/runtime/src/main/java/com/sun
+istack-commons/runtime/src/main/java/com/sun/istack
+istack-commons/runtime/src/main/java/com/sun/istack/Builder.java
+istack-commons/runtime/src/main/java/com/sun/istack/ByteArrayDataSource.java
+istack-commons/runtime/src/main/java/com/sun/istack/FinalArrayList.java
+istack-commons/runtime/src/main/java/com/sun/istack/FragmentContentHandler.java
+istack-commons/runtime/src/main/java/com/sun/istack/Interned.java
+istack-commons/runtime/src/main/java/com/sun/istack/NotNull.java
+istack-commons/runtime/src/main/java/com/sun/istack/Nullable.java
+istack-commons/runtime/src/main/java/com/sun/istack/Pool.java
+istack-commons/runtime/src/main/java/com/sun/istack/SAXException2.java
+istack-commons/runtime/src/main/java/com/sun/istack/SAXParseException2.java
+istack-commons/runtime/src/main/java/com/sun/istack/XMLStreamException2.java
+istack-commons/runtime/src/main/java/com/sun/istack/XMLStreamReaderToContentHandler.java
+istack-commons/runtime/src/main/java/com/sun/istack/localization
+istack-commons/runtime/src/main/java/com/sun/istack/localization/Localizable.java
+istack-commons/runtime/src/main/java/com/sun/istack/localization/LocalizableMessage.java
+istack-commons/runtime/src/main/java/com/sun/istack/localization/LocalizableMessageFactory.java
+istack-commons/runtime/src/main/java/com/sun/istack/localization/Localizer.java
+istack-commons/runtime/src/main/java/com/sun/istack/localization/NullLocalizable.java
+istack-commons/runtime/src/main/java/com/sun/istack/logging
+istack-commons/runtime/src/main/java/com/sun/istack/logging/Logger.java
+istack-commons/runtime/src/main/java/com/sun/istack/logging/StackHelper.java
+istack-commons/runtime/src/main/java/com/sun/istack/package-info.java
+istack-commons/runtime/src/main/java/module-info.java
+istack-commons/runtime/src/test
+istack-commons/runtime/src/test/java
+istack-commons/runtime/src/test/java/com
+istack-commons/runtime/src/test/java/com/sun
+istack-commons/runtime/src/test/java/com/sun/istack
+istack-commons/runtime/src/test/java/com/sun/istack/logging
+istack-commons/runtime/src/test/java/com/sun/istack/logging/LoggerTest.java
+istack-commons/tools
+istack-commons/tools/pom.xml
+istack-commons/tools/src
+istack-commons/tools/src/main
+istack-commons/tools/src/main/java
+istack-commons/tools/src/main/java/com
+istack-commons/tools/src/main/java/com/sun
+istack-commons/tools/src/main/java/com/sun/istack
+istack-commons/tools/src/main/java/com/sun/istack/tools
+istack-commons/tools/src/main/java/com/sun/istack/tools/DefaultAuthenticator.java
+istack-commons/tools/src/main/java/com/sun/istack/tools/MaskingClassLoader.java
+istack-commons/tools/src/main/java/com/sun/istack/tools/ParallelWorldClassLoader.java
+istack-commons/tools/src/main/java/com/sun/istack/tools/ProtectedTask.java
+istack-commons/tools/src/main/java/com/sun/istack/tools/SecureLoader.java
+istack-commons/tools/src/main/java/com/sun/istack/tools/Utils.java
+istack-commons/tools/src/main/java/com/sun/istack/tools/package-info.java
+istack-commons/tools/src/main/java/module-info.java
+istack-commons/tools/src/test
+istack-commons/tools/src/test/java
+istack-commons/tools/src/test/java/com
+istack-commons/tools/src/test/java/com/sun
+istack-commons/tools/src/test/java/com/sun/istack
+istack-commons/tools/src/test/java/com/sun/istack/tools
+istack-commons/tools/src/test/java/com/sun/istack/tools/DefaultAuthenticatorTest.java
+istack-commons/tools/src/test/java/com/sun/istack/tools/ParallelWorldClassLoaderTest.java
+istack-commons/tools/src/test/java/javax
+istack-commons/tools/src/test/java/javax/xml
+istack-commons/tools/src/test/java/javax/xml/ws
+istack-commons/tools/src/test/java/javax/xml/ws/Service.java
+istack-commons/tools/src/test/java/javax/xml/ws/XMLFactory.java
+istack-commons/tools/src/test/resources
+istack-commons/tools/src/test/resources/META-INF
+istack-commons/tools/src/test/resources/META-INF/services
+istack-commons/tools/src/test/resources/META-INF/services/javax.xml.stream.XMLInputFactory
+istack-commons/tools/src/test/resources/com
+istack-commons/tools/src/test/resources/com/sun
+istack-commons/tools/src/test/resources/com/sun/istack
+istack-commons/tools/src/test/resources/com/sun/istack/tools
+istack-commons/tools/src/test/resources/com/sun/istack/tools/.auth
+istack-commons/tools/src/test/resources/com/sun/istack/tools/auth_test.resource
+
+ succeeded in 665ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 15:43:47 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"580338909116269de44ab5fca6703b67"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=w1zVDbFgGo8DCXifVTxDUN8290XngrAvzXUNXun3A%2B5G%2BKrOLW2ZxXqIlvkcl0AYMdEbkfU%2F0nZ%2B5WZJfQKoBrfsk%2BLJNawRQHgujFEiNtOrLGSZUCHMenXAFnDgM6GInCdR38jYGmcvoq5nBhjKVNwj9qs76jCrv2aDpCC0G1ImLZH7UhThTxqskmpvYRjvzN%2F0WfHxEGgBtvstXSNvsFbqkEY9FaDWaDtscSpRv3fjVN165CVWwzK%2FvEC%2BNZqmYd%2BrgT1YaHScvb52C7eBXg%3D%3D--KO3lpy3Izle0Oo8K--onWmfvZapPeUrFfrGd4FWg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.554978141.1777736627; expires=Sun, 02 May 2027 15:43:47 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 02 May 2027 15:43:47 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510B:3C4DFD:BA9CBD2:8B5428C:69F61BB3
+
+
+codex
+The artifact is a normal JVM JAR: it contains `.class` files and `module-info.class`, so I won’t mark it as `not-for-native-image`. It also isn’t a Kotlin/Groovy/Scala-specific artifact, so the `language` field should stay absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..2d3f60b6a071822d2e21744221e253ff4e561dec
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "Provides the tools portion of iStack Commons, with shared Java helper classes used by JAXB and related XML tooling. It includes support for authenticated resource access, class-loader isolation, secure loader utilities, and protected Ant task execution."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..2d3f60b6a071822d2e21744221e253ff4e561dec
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "Provides the tools portion of iStack Commons, with shared Java helper classes used by JAXB and related XML tooling. It includes support for authenticated resource access, class-loader isolation, secure loader utilities, and protected Ant task execution."
+ }
+
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test
+web search: 
+web search: repo.maven.apache.org com.sun.istack istack-commons-tools 4.1.2 sources javadoc pom
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/com.sun.istack/istack-commons-tools/4.1.2
+web search: 
+web search: 
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-istack-commons
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.istack:istack-commons-tools:4.1.2",
+  "repository-url": "https://github.com/eclipse-ee4j/jaxb-istack-commons",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
+  "test-code-url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
+  "description": "Provides the tools portion of iStack Commons, with shared Java helper classes used by JAXB and related XML tooling. It includes support for authenticated resource access, class-loader isolation, secure loader utilities, and protected Ant task execution."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-sources.jar \\
+  https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test \\
+  https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-javadoc.jar; do \\
+  printf '%s ' \""'$url"; curl -LfsS -o /dev/null -w '"'%{http_code}\\n' \""'$url"; '"\\
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..2d3f60b6a071822d2e21744221e253ff4e561dec
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "Provides the tools portion of iStack Commons, with shared Java helper classes used by JAXB and related XML tooling. It includes support for authenticated resource access, class-loader isolation, secure loader utilities, and protected Ant task execution."
+ }
+
+ succeeded in 327ms:
+200
+https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-javadoc.jar 200
+
+web search: 
+web search: Maven Central com.sun.istack istack-commons-tools 4.1.2
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..2d3f60b6a071822d2e21744221e253ff4e561dec
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "Provides the tools portion of iStack Commons, with shared Java helper classes used by JAXB and related XML tooling. It includes support for authenticated resource access, class-loader isolation, secure loader utilities, and protected Ant task execution."
+ }
+
+web search: 
+web search: site:mvnrepository.com/artifact/com.sun.istack/istack-commons-tools/4.1.2 istack-commons-tools 4.1.2
+codex
+Updated [com.sun.istack-istack-commons-tools-4.1.2.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json:1) with the repository, Maven source/Javadoc URLs, tagged GitHub test URL, and two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image`; the artifact is a normal JVM JAR on Maven Central, and the upstream repo is the Eclipse iStack Commons project. ([mvnrepository.com](https://mvnrepository.com/artifact/com.sun.istack/istack-commons-tools/4.1.2?utm_source=openai))
+
+Verified with `jq`, and the rendered source, test, and documentation URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..2d3f60b6a071822d2e21744221e253ff4e561dec
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "Provides the tools portion of iStack Commons, with shared Java helper classes used by JAXB and related XML tooling. It includes support for authenticated resource access, class-loader isolation, secure loader utilities, and protected Ant task execution."
+ }
+
+tokens used
+68,809
+Updated [com.sun.istack-istack-commons-tools-4.1.2.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json:1) with the repository, Maven source/Javadoc URLs, tagged GitHub test URL, and two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image`; the artifact is a normal JVM JAR on Maven Central, and the upstream repo is the Eclipse iStack Commons project. ([mvnrepository.com](https://mvnrepository.com/artifact/com.sun.istack/istack-commons-tools/4.1.2?utm_source=openai))
+
+Verified with `jq`, and the rendered source, test, and documentation URLs all returned HTTP 200.
+Ran agent for com.sun.istack:istack-commons-tools:4.1.2 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a/build/agent-artifact-discovery-logs/com.sun.istack-istack-commons-tools-4.1.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-08c9cc3a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 12s
+9 actionable tasks: 4 executed, 5 from cache
