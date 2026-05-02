@@ -62,27 +62,28 @@ public class Selenium_apiTest {
         capabilities.setCapability("loggingPrefs", loggingMap);
 
         ImmutableCapabilities extraCapabilities = new ImmutableCapabilities(
-                "version", "3.141",
+                "browserVersion", "4.0.0",
                 "custom:option", 42);
         MutableCapabilities merged = capabilities.merge(extraCapabilities);
 
-        assertThat(merged).isSameAs(capabilities);
-        assertThat(capabilities.getBrowserName()).isEqualTo("firefox");
-        assertThat(capabilities.is("javascriptEnabled")).isTrue();
-        assertThat(capabilities.getVersion()).isEqualTo("3.141");
-        assertThat(capabilities.getPlatform()).isEqualTo(Platform.LINUX);
-        assertThat(capabilities.getCapability("unhandledPromptBehavior")).isEqualTo("accept");
-        assertThat(capabilities.getCapability("temporary")).isNull();
-        assertThat(capabilities.getCapabilityNames())
-                .contains("browserName", "javascriptEnabled", "platform", "loggingPrefs", "version", "custom:option")
+        assertThat(merged).isNotSameAs(capabilities);
+        assertThat(capabilities.getCapability("custom:option")).isNull();
+        assertThat(merged.getBrowserName()).isEqualTo("firefox");
+        assertThat(merged.is("javascriptEnabled")).isTrue();
+        assertThat(merged.getBrowserVersion()).isEqualTo("4.0.0");
+        assertThat(merged.getPlatformName()).isEqualTo(Platform.LINUX);
+        assertThat(merged.getCapability("unhandledPromptBehavior")).isEqualTo("accept");
+        assertThat(merged.getCapability("temporary")).isNull();
+        assertThat(merged.getCapabilityNames())
+                .contains("browserName", "javascriptEnabled", "platform", "loggingPrefs", "browserVersion", "custom:option")
                 .doesNotContain("temporary");
-        assertThat(capabilities.asMap()).containsEntry("custom:option", 42);
-        assertThatThrownBy(() -> capabilities.asMap().put("newCapability", true))
+        assertThat(merged.asMap()).containsEntry("custom:option", 42);
+        assertThatThrownBy(() -> merged.asMap().put("newCapability", true))
                 .isInstanceOf(UnsupportedOperationException.class);
 
-        LoggingPreferences loggingPreferences = (LoggingPreferences) capabilities.getCapability("loggingPrefs");
+        LoggingPreferences loggingPreferences = (LoggingPreferences) merged.getCapability("loggingPrefs");
         assertThat(loggingPreferences.getLevel("browser")).isEqualTo(Level.FINE);
-        assertThat(ImmutableCapabilities.copyOf(capabilities)).isEqualTo(capabilities);
+        assertThat(ImmutableCapabilities.copyOf(merged)).isEqualTo(merged);
     }
 
     @Test
@@ -285,7 +286,9 @@ public class Selenium_apiTest {
         LogEntries entries = new LogEntries(Arrays.asList(warning, info));
 
         assertThat(entries.getAll()).containsExactly(warning, info);
-        assertThat(entries.filter(Level.WARNING)).containsExactly(warning);
+        assertThat(entries)
+                .filteredOn(entry -> entry.getLevel().equals(Level.WARNING))
+                .containsExactly(warning);
         assertThat(entries.toJson()).containsExactly(warning, info);
         assertThat(warning.toJson())
                 .containsEntry("level", Level.WARNING)
@@ -375,8 +378,8 @@ public class Selenium_apiTest {
                 .containsEntry("button", 0);
 
         assertThatThrownBy(() -> mouse.createPointerMove(Duration.ofMillis(-1), PointerInput.Origin.pointer(), 0, 0))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("Duration value must be 0 or greater");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Duration must be set to 0 or more");
         assertThatThrownBy(() -> new Sequence(keyboard, 0).addAction(mouse.createPointerDown(0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("wrong kind of input device");
