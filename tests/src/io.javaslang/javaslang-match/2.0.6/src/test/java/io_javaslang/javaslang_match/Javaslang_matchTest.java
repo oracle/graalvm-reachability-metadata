@@ -80,6 +80,28 @@ public class Javaslang_matchTest {
     }
 
     @Test
+    void generatedPatternAcceptsPredicateSubpatternsForDeconstructedValues() {
+        Score score = new Score("build", 92);
+
+        Option<String> successfulMatch = API.Match(score)
+                .option(API.Case(
+                        Javaslang_matchTest_PatternDefinitionsPatterns.score(
+                                API.$((String category) -> category.startsWith("bu")),
+                                API.$((Integer points) -> points >= 90)),
+                        (String category, Integer points) -> category + "=" + points));
+        Option<String> rejectedMatch = API.Match(score)
+                .option(API.Case(
+                        Javaslang_matchTest_PatternDefinitionsPatterns.score(
+                                API.$((String category) -> category.startsWith("doc")),
+                                API.$((Integer points) -> points >= 90)),
+                        (String category, Integer points) -> "unreachable"));
+
+        assertThat(successfulMatch.isDefined()).isTrue();
+        assertThat(successfulMatch.get()).isEqualTo("build=92");
+        assertThat(rejectedMatch.isEmpty()).isTrue();
+    }
+
+    @Test
     void unapplyMethodsExposeExpectedTupleShapesForGeneratedPatterns() {
         Tuple0 closedDoor = PatternDefinitions.closedDoor(new ClosedDoor());
         Tuple1<String> box = PatternDefinitions.box(new Box<>("value"));
@@ -127,6 +149,11 @@ public class Javaslang_matchTest {
         }
 
         @Unapply
+        public static Tuple2<String, Integer> score(Score score) {
+            return Tuple.of(score.category, score.points);
+        }
+
+        @Unapply
         public static Tuple3<String, Integer, Priority> task(Task task) {
             return Tuple.of(task.title, task.estimate, task.priority);
         }
@@ -147,6 +174,16 @@ public class Javaslang_matchTest {
 
         private Box(T value) {
             this.value = value;
+        }
+    }
+
+    public static final class Score {
+        private final String category;
+        private final int points;
+
+        private Score(String category, int points) {
+            this.category = category;
+            this.points = points;
         }
     }
 
