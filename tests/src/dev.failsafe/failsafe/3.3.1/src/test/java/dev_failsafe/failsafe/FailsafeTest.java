@@ -89,6 +89,34 @@ public class FailsafeTest {
     }
 
     @Test
+    void composedRetryAndFallbackRecoverAfterRetriesAreExceeded() {
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicInteger retries = new AtomicInteger();
+        AtomicReference<Throwable> fallbackFailure = new AtomicReference<>();
+        RetryPolicy<String> retryPolicy = RetryPolicy.<String>builder()
+                .handle(IllegalStateException.class)
+                .withMaxRetries(2)
+                .onRetry(event -> retries.incrementAndGet())
+                .build();
+        Fallback<String> fallback = Fallback.of(event -> {
+            fallbackFailure.set(event.getLastException());
+            return "recovered";
+        });
+
+        String result = Failsafe.with(fallback, retryPolicy).get(() -> {
+            int attempt = attempts.incrementAndGet();
+            throw new IllegalStateException("temporary failure " + attempt);
+        });
+
+        assertThat(result).isEqualTo("recovered");
+        assertThat(attempts).hasValue(3);
+        assertThat(retries).hasValue(2);
+        assertThat(fallbackFailure.get())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("temporary failure 3");
+    }
+
+    @Test
     void circuitBreakerOpensAfterThresholdAndRejectsProtectedExecutions() {
         AtomicInteger openEvents = new AtomicInteger();
         AtomicInteger guardedCalls = new AtomicInteger();
