@@ -6,11 +6,12 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import java.lang.reflect.Constructor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
+import com.fasterxml.jackson.jr.ob.impl.RecordsHelpers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,10 +27,8 @@ public class BeanConstructorsDynamicAccessTest {
     }
 
     @Test
-    void createsBeansDirectlyThroughPublicDefaultConstructors() throws Exception {
-        Constructor<PublicDefaultCtorBean> constructor = PublicDefaultCtorBean.class.getDeclaredConstructor();
-        AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(PublicDefaultCtorBean.class);
-        constructors.addNoArgsConstructor(constructor);
+    void createsBeansDirectlyThroughDefaultConstructorsDiscoveredByLibraryIntrospection() throws Exception {
+        AccessibleBeanConstructors constructors = AccessibleBeanConstructors.forNonRecord(PublicDefaultCtorBean.class);
 
         PublicDefaultCtorBean bean = (PublicDefaultCtorBean) constructors.createBean();
 
@@ -39,15 +38,24 @@ public class BeanConstructorsDynamicAccessTest {
 
     @Test
     void createsBeansDirectlyThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
-        Constructor<PrivateDefaultCtorBean> constructor = PrivateDefaultCtorBean.class.getDeclaredConstructor();
-        AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(PrivateDefaultCtorBean.class);
-        constructors.addNoArgsConstructor(constructor);
+        AccessibleBeanConstructors constructors = AccessibleBeanConstructors.forNonRecord(PrivateDefaultCtorBean.class);
         constructors.forceAccess();
 
         PrivateDefaultCtorBean bean = (PrivateDefaultCtorBean) constructors.createBean();
 
         assertThat(bean).isNotNull();
         assertThat(PrivateDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void createsRecordsDirectlyThroughCanonicalConstructorsDiscoveredByLibraryIntrospection() throws Exception {
+        AccessibleBeanConstructors constructors = AccessibleBeanConstructors.forRecord(ArticleRecord.class);
+
+        ArticleRecord article = (ArticleRecord) constructors.createRecordBean("GraalVM", 42, true);
+
+        assertThat(article.title()).isEqualTo("GraalVM");
+        assertThat(article.pageCount()).isEqualTo(42);
+        assertThat(article.published()).isTrue();
     }
 
     @Test
@@ -67,13 +75,41 @@ public class BeanConstructorsDynamicAccessTest {
         assertThat(PrivateDefaultCtorBean.CONSTRUCTOR_CALLS).hasValue(1);
     }
 
+    @Test
+    void createsRecordsThroughCanonicalConstructorsWhenReadingObjects() throws Exception {
+        ArticleRecord article = JSON.std.beanFrom(ArticleRecord.class,
+                """
+                {"published":true,"pageCount":42,"title":"GraalVM"}
+                """);
+
+        assertThat(article.title()).isEqualTo("GraalVM");
+        assertThat(article.pageCount()).isEqualTo(42);
+        assertThat(article.published()).isTrue();
+    }
+
     static final class AccessibleBeanConstructors extends BeanConstructors {
-        AccessibleBeanConstructors(Class<?> valueType) {
+        private AccessibleBeanConstructors(Class<?> valueType) {
             super(valueType);
+        }
+
+        static AccessibleBeanConstructors forNonRecord(Class<?> valueType) {
+            AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(valueType);
+            BeanPropertyIntrospector.addNonRecordConstructors(valueType, constructors);
+            return constructors;
+        }
+
+        static AccessibleBeanConstructors forRecord(Class<?> valueType) {
+            AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(valueType);
+            constructors.addRecordConstructor(RecordsHelpers.findCanonicalConstructor(valueType));
+            return constructors;
         }
 
         Object createBean() throws Exception {
             return create();
+        }
+
+        Object createRecordBean(Object... components) throws Exception {
+            return createRecord(components);
         }
     }
 
@@ -95,5 +131,8 @@ public class BeanConstructorsDynamicAccessTest {
         private PrivateDefaultCtorBean() {
             CONSTRUCTOR_CALLS.incrementAndGet();
         }
+    }
+
+    public record ArticleRecord(String title, int pageCount, boolean published) {
     }
 }

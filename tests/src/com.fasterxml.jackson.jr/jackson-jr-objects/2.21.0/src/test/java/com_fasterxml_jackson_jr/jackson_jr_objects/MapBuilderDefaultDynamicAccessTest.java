@@ -12,10 +12,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.MapBuilder;
+import com.fasterxml.jackson.jr.ob.impl.ClassKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class MapBuilderDefaultDynamicAccessTest {
     @BeforeEach
@@ -47,6 +49,45 @@ public class MapBuilderDefaultDynamicAccessTest {
         assertThat(counts).isInstanceOf(ConstructorTrackingMap.class);
         assertThat(counts).containsEntry("only", 99);
         assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void instantiatesConfiguredMapImplementationWhenStartingABuilderDirectly() {
+        Map<String, Object> counts = configuredMapBuilder().start()
+                .put("alpha", 1)
+                .put("beta", 2)
+                .build();
+
+        assertThat(counts).isInstanceOf(ConstructorTrackingMap.class);
+        assertThat(counts).containsEntry("alpha", 1).containsEntry("beta", 2);
+        assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void instantiatesConfiguredMapImplementationForEmptyMapsDirectly() throws Exception {
+        Map<String, Object> counts = configuredMapBuilder().emptyMap();
+
+        assertThat(counts).isInstanceOf(ConstructorTrackingMap.class).isEmpty();
+        assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void instantiatesConfiguredMapImplementationForSingletonMapsDirectly() throws Exception {
+        Map<String, Object> counts = configuredMapBuilder().singletonMap("only", 99);
+
+        assertThat(counts).isInstanceOf(ConstructorTrackingMap.class);
+        assertThat(counts).containsEntry("only", 99);
+        assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void reportsConfiguredTypeThatCannotBeUsedAsMap() {
+        MapBuilder builder = MapBuilder.defaultImpl().newBuilder(ClassKey.class);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(builder::emptyMap)
+                .withMessageContaining(ClassKey.class.getName())
+                .withMessageContaining(ClassCastException.class.getName());
     }
 
     @Test

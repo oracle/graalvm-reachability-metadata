@@ -6,9 +6,11 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.JSONObjectException;
 import com.fasterxml.jackson.jr.ob.api.CollectionBuilder;
 import com.fasterxml.jackson.jr.ob.api.MapBuilder;
 import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class BeanPropertyIntrospectorDynamicAccessTest {
     private static final BeanPropertyIntrospector INTROSPECTOR = BeanPropertyIntrospector.instance();
@@ -80,6 +83,61 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         assertThat(json).contains("\"title\":\"Ada\"");
     }
 
+    @Test
+    void publicJsonWriterIntrospectsDeclaredFieldsAndMethodsOnLibraryPojoDefinitions() throws Exception {
+        POJODefinition definition = new POJODefinition(POJODefinition.class, new POJODefinition.Prop[0],
+                new BeanConstructors(POJODefinition.class));
+
+        String json = JSON_WITH_FORCE_ACCESS.asString(definition);
+
+        assertThat(json).contains("\"ignorableNames\":[]", "\"properties\":[]");
+    }
+
+    @Test
+    void publicJsonReaderIntrospectsDeclaredConstructorsOnLibraryPojoDefinitions() {
+        assertThatThrownBy(() -> JSON_WITH_FORCE_ACCESS.beanFrom(POJODefinition.class, "{}"))
+                .isInstanceOf(JSONObjectException.class)
+                .hasMessageContaining("Failed to create an instance of")
+                .hasMessageContaining(POJODefinition.class.getName());
+    }
+
+    @Test
+    void directIntrospectionCollectsEverySupportedConstructorShape() {
+        RecordingBeanConstructors constructors = new RecordingBeanConstructors(AllConstructorShapes.class);
+
+        BeanPropertyIntrospector.addNonRecordConstructors(AllConstructorShapes.class, constructors);
+
+        assertThat(constructors.noArgsConstructors).isEqualTo(1);
+        assertThat(constructors.stringConstructors).isEqualTo(1);
+        assertThat(constructors.intConstructors).isEqualTo(2);
+        assertThat(constructors.longConstructors).isEqualTo(2);
+    }
+
+    @Test
+    void directIntrospectionVisitsDeclaredFieldsAndMethods() {
+        POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER,
+                StaticAndFluentBean.class);
+
+        assertThat(propertyNames(definition)).containsExactly("enabled", "name");
+        assertThat(property(definition, "enabled").isGetter).isNotNull();
+        assertThat(property(definition, "name").getter).isNotNull();
+    }
+
+    @Test
+    void publicJsonWriterIntrospectsStaticFieldsWhenEnabled() throws Exception {
+        String json = JSON_WITH_FORCE_ACCESS.with(JSON.Feature.INCLUDE_STATIC_FIELDS)
+                .asString(new StaticAndFluentBean("Ada", true));
+
+        assertThat(json).contains("\"name\":\"Ada\"", "\"enabled\":true", "\"shared\":\"common\"");
+    }
+
+    @Test
+    void publicJsonWriterIntrospectsFieldNamedGettersWhenEnabled() throws Exception {
+        String json = JSON_WITH_FIELD_MATCHING_GETTERS.asString(new StaticAndFluentBean("Ada", true));
+
+        assertThat(json).contains("\"title\":\"Ada title\"");
+    }
+
     private static List<String> propertyNames(POJODefinition definition) {
         return definition.getProperties().stream().map(prop -> prop.name).toList();
     }
@@ -135,11 +193,91 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         }
     }
 
+    static final class RecordingBeanConstructors extends BeanConstructors {
+        private int noArgsConstructors;
+        private int stringConstructors;
+        private int intConstructors;
+        private int longConstructors;
+
+        RecordingBeanConstructors(Class<?> valueType) {
+            super(valueType);
+        }
+
+        @Override
+        public BeanConstructors addNoArgsConstructor(Constructor<?> constructor) {
+            noArgsConstructors++;
+            return super.addNoArgsConstructor(constructor);
+        }
+
+        @Override
+        public BeanConstructors addStringConstructor(Constructor<?> constructor) {
+            stringConstructors++;
+            return super.addStringConstructor(constructor);
+        }
+
+        @Override
+        public BeanConstructors addIntConstructor(Constructor<?> constructor) {
+            intConstructors++;
+            return super.addIntConstructor(constructor);
+        }
+
+        @Override
+        public BeanConstructors addLongConstructor(Constructor<?> constructor) {
+            longConstructors++;
+            return super.addLongConstructor(constructor);
+        }
+    }
+
+    static final class AllConstructorShapes {
+        AllConstructorShapes() {
+        }
+
+        AllConstructorShapes(String value) {
+        }
+
+        AllConstructorShapes(int value) {
+        }
+
+        AllConstructorShapes(Integer value) {
+        }
+
+        AllConstructorShapes(long value) {
+        }
+
+        AllConstructorShapes(Long value) {
+        }
+    }
+
     static final class FieldNamedGetterBean {
         private final String title;
 
         FieldNamedGetterBean(String title) {
             this.title = title;
+        }
+
+        public String title() {
+            return title;
+        }
+    }
+
+    static final class StaticAndFluentBean {
+        public static String shared = "common";
+        private final String name;
+        private final String title;
+        private final boolean enabled;
+
+        StaticAndFluentBean(String name, boolean enabled) {
+            this.name = name;
+            this.title = name + " title";
+            this.enabled = enabled;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
         }
 
         public String title() {

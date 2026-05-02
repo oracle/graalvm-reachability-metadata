@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,10 +24,11 @@ public class TypeResolverDynamicAccessTest {
         Object runtimeComponentValue = runtimeComponentValue();
         Class<?> componentClass = runtimeComponentValue.getClass();
         ResolvedType componentType = resolver.resolve(TypeBindings.emptyBindings(), componentClass);
-        GenericArrayType genericArrayType = new SyntheticGenericArrayType(componentType);
+        GenericArrayType genericArrayType = new SyntheticGenericArrayType(componentClass);
 
         ResolvedType resolvedArrayType = resolver.resolve(TypeBindings.emptyBindings(), genericArrayType);
 
+        assertThat(componentClass).isEqualTo(ArrayComponentValue.class);
         assertThat(resolvedArrayType.isArray()).isTrue();
         assertThat(resolvedArrayType.erasedType().getComponentType()).isEqualTo(componentClass);
         assertThat(resolvedArrayType.elementType()).isEqualTo(componentType);
@@ -37,7 +39,7 @@ public class TypeResolverDynamicAccessTest {
         TypeResolver resolver = new TypeResolver();
         ResolvedType declaringType = resolver.resolve(
                 TypeBindings.emptyBindings(),
-                StringArrayContainer.class.getGenericSuperclass());
+                ArrayComponentValueContainer.class.getGenericSuperclass());
         Type genericArrayType = GenericArrayContainer.class
                 .getDeclaredField("values")
                 .getGenericType();
@@ -45,8 +47,26 @@ public class TypeResolverDynamicAccessTest {
         ResolvedType resolvedArrayType = resolver.resolve(declaringType.typeBindings(), genericArrayType);
 
         assertThat(resolvedArrayType.isArray()).isTrue();
-        assertThat(resolvedArrayType.erasedType()).isEqualTo(String[].class);
-        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(String.class);
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(ArrayComponentValue[].class);
+        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(ArrayComponentValue.class);
+    }
+
+    @Test
+    void resolvesGenericArrayTypesWithParameterizedComponents() throws Exception {
+        TypeResolver resolver = new TypeResolver();
+        Type genericArrayType = ParameterizedComponentArrayContainer.class
+                .getDeclaredField("values")
+                .getGenericType();
+
+        ResolvedType resolvedArrayType = resolver.resolve(TypeBindings.emptyBindings(), genericArrayType);
+
+        assertThat(genericArrayType).isInstanceOf(GenericArrayType.class);
+        assertThat(resolvedArrayType.isArray()).isTrue();
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(List[].class);
+        assertThat(resolvedArrayType.erasedType().getComponentType()).isEqualTo(List.class);
+        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(List.class);
+        assertThat(resolvedArrayType.elementType().typeParametersFor(List.class).get(0).erasedType())
+                .isEqualTo(Number.class);
     }
 
     static class GenericArrayContainer<T> {
@@ -61,14 +81,26 @@ public class TypeResolverDynamicAccessTest {
         }
     }
 
-    static final class StringArrayContainer extends GenericArrayContainer<String> {
+    static final class ArrayComponentValueContainer extends GenericArrayContainer<ArrayComponentValue> {
+    }
+
+    static final class ParameterizedComponentArrayContainer {
+        private List<? extends Number>[] values;
+
+        public List<? extends Number>[] getValues() {
+            return values;
+        }
+
+        public void setValues(List<? extends Number>[] values) {
+            this.values = values;
+        }
     }
 
     private static Object runtimeComponentValue() {
-        if (Thread.currentThread().getName().isEmpty()) {
-            return Integer.valueOf(7);
-        }
-        return Thread.currentThread().getName();
+        return new ArrayComponentValue();
+    }
+
+    static final class ArrayComponentValue {
     }
 
     static final class SyntheticGenericArrayType implements GenericArrayType {

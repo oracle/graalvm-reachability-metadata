@@ -9,19 +9,38 @@ package com_fasterxml_jackson_jr.jackson_jr_objects;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.impl.SimpleValueReader;
+import com.fasterxml.jackson.jr.ob.impl.ValueLocatorBase;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleValueReaderDynamicAccessTest {
     @Test
+    void simpleReaderResolvesClassValuesDirectly() throws Exception {
+        JsonFactory jsonFactory = new JsonFactory();
+        SimpleValueReader reader = new SimpleValueReader(Class.class,
+                ValueLocatorBase.SER_CLASS);
+
+        try (JsonParser parser = jsonFactory.createParser("\"java.lang.String\"")) {
+            parser.nextToken();
+
+            Object resolved = reader.read(null, parser);
+
+            assertThat(resolved).isEqualTo(String.class);
+        }
+    }
+
+    @Test
     void resolvesTopLevelClassesFromStringValues() throws Exception {
         String className = loadableClassName();
 
         Class<?> resolved = JSON.std.beanFrom(Class.class, '"' + className + '"');
 
-        assertThat(resolved).isEqualTo(LoadableType.class);
+        assertThat(resolved.getName()).isEqualTo(className);
     }
 
     @Test
@@ -31,7 +50,7 @@ public class SimpleValueReaderDynamicAccessTest {
         TypeHolder holder = JSON.std.beanFrom(TypeHolder.class,
                 "{\"type\":\"" + className + "\"}");
 
-        assertThat(holder.type).isEqualTo(LoadableType.class);
+        assertThat(holder.type.getName()).isEqualTo(className);
     }
 
     @Test
@@ -43,14 +62,13 @@ public class SimpleValueReaderDynamicAccessTest {
         List<Class> classes = JSON.std.listOfFrom(Class.class,
                 "[\"" + className + "\"]");
 
-        assertThat(classesByName.get("primary")).isEqualTo(LoadableType.class);
-        assertThat(classes).singleElement().isEqualTo(LoadableType.class);
+        assertThat(classesByName.get("primary").getName()).isEqualTo(className);
+        assertThat(classes).singleElement().satisfies(resolved ->
+                assertThat(resolved.getName()).isEqualTo(className));
     }
 
     private static String loadableClassName() {
-        String propertyName = "simple.value.reader.class." + System.nanoTime();
-        System.setProperty(propertyName, LoadableType.class.getName());
-        return System.getProperty(propertyName);
+        return SimpleValueReaderDynamicAccessTest.class.getName() + "$LoadableType";
     }
 
     public static final class TypeHolder {

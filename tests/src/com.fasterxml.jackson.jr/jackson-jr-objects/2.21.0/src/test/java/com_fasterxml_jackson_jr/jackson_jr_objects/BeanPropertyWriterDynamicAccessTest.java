@@ -7,7 +7,11 @@
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyWriter;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,18 +25,26 @@ public class BeanPropertyWriterDynamicAccessTest {
 
     @Test
     void serializesFieldBackedProperties() throws Exception {
-        String json = JSON_WITH_FIELD_ACCESS.asString(new FieldBackedWriterBean());
+        FieldBackedWriterBean bean = new FieldBackedWriterBean();
+        String json = JSON_WITH_FIELD_ACCESS.asString(bean);
+        Field idField = FieldBackedWriterBean.class.getField("id");
+        BeanPropertyWriter writer = new BeanPropertyWriter(0, "id", idField, null);
 
         assertThat(json).isEqualTo("{\"id\":3}");
+        assertThat(writer.getValueFor(bean)).isEqualTo(3);
     }
 
     @Test
     void serializesGetterBackedProperties() throws Exception {
         GetterBackedWriterBean bean = new GetterBackedWriterBean("Ada");
         String json = JSON_WITH_GETTER_ACCESS.asString(bean);
+        Method getName = GetterBackedWriterBean.class.getMethod("getName");
+        BeanPropertyWriter writer = new BeanPropertyWriter(0, "name", null, getName);
 
         assertThat(json).isEqualTo("{\"name\":\"Ada\"}");
         assertThat(bean.getterCalls).isEqualTo(1);
+        assertThat(writer.getValueFor(bean)).isEqualTo("Ada");
+        assertThat(bean.getterCalls).isEqualTo(2);
     }
 
     public static final class FieldBackedWriterBean {

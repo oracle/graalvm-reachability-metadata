@@ -7,7 +7,11 @@
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.ValueIterator;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
 import com.fasterxml.jackson.jr.ob.impl.BeanPropertyReader;
+import com.fasterxml.jackson.jr.ob.impl.JSONReader;
+import com.fasterxml.jackson.jr.ob.impl.POJODefinition.Prop;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,25 +20,24 @@ public class BeanPropertyReaderDynamicAccessTest {
     private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
 
     @Test
-    void setsFieldBackedValuesThroughBeanPropertyReader() throws Exception {
-        BeanPropertyReader reader = new BeanPropertyReader("x", FieldBackedReaderBean.class.getField("x"), null);
+    void assignsValuesWithDiscoveredFieldBackedPropertyReader() throws Exception {
+        BeanPropertyReader propertyReader = discoveredReaderFor(FieldBackedReaderBean.class, "x");
         FieldBackedReaderBean bean = new FieldBackedReaderBean();
 
-        reader.setValueFor(bean, new Object[]{3});
+        propertyReader.setValueFor(bean, new Object[] {13});
 
         assertThat(bean.isConstructed()).isTrue();
-        assertThat(bean.x).isEqualTo(3);
+        assertThat(bean.x).isEqualTo(13);
     }
 
     @Test
-    void invokesSetterBackedValuesThroughBeanPropertyReader() throws Exception {
-        BeanPropertyReader reader = new BeanPropertyReader("name", null,
-                PublicSetterBackedReaderBean.class.getMethod("setName", String.class));
+    void assignsValuesWithDiscoveredSetterBackedPropertyReader() throws Exception {
+        BeanPropertyReader propertyReader = discoveredReaderFor(PublicSetterBackedReaderBean.class, "name");
         PublicSetterBackedReaderBean bean = new PublicSetterBackedReaderBean();
 
-        reader.setValueFor(bean, new Object[]{"Ada"});
+        propertyReader.setValueFor(bean, new Object[] {"Katherine"});
 
-        assertThat(bean.getName()).isEqualTo("Ada");
+        assertThat(bean.getName()).isEqualTo("Katherine");
         assertThat(bean.getSetterCalls()).isEqualTo(1);
     }
 
@@ -72,6 +75,46 @@ public class BeanPropertyReaderDynamicAccessTest {
 
         assertThat(bean.getName()).isEqualTo("Ada");
         assertThat(bean.getSetterCalls()).isEqualTo(1);
+    }
+
+    @Test
+    void populatesFieldBackedPropertiesFromBeanSequence() throws Exception {
+        try (ValueIterator<FieldBackedReaderBean> iterator = JSON_WITH_FORCE_ACCESS
+                .beanSequenceFrom(FieldBackedReaderBean.class, "[{\"x\":11,\"y\":12}]")) {
+            assertThat(iterator.hasNext()).isTrue();
+
+            FieldBackedReaderBean bean = iterator.next();
+
+            assertThat(bean.isConstructed()).isTrue();
+            assertThat(bean.x).isEqualTo(11);
+            assertThat(bean.y).isEqualTo(12);
+            assertThat(iterator.hasNext()).isFalse();
+        }
+    }
+
+    @Test
+    void populatesSetterBackedPropertiesFromBeanSequence() throws Exception {
+        try (ValueIterator<PublicSetterBackedReaderBean> iterator = JSON_WITH_FORCE_ACCESS
+                .beanSequenceFrom(PublicSetterBackedReaderBean.class, "[{\"name\":\"Grace\"}]")) {
+            assertThat(iterator.hasNext()).isTrue();
+
+            PublicSetterBackedReaderBean bean = iterator.next();
+
+            assertThat(bean.getName()).isEqualTo("Grace");
+            assertThat(bean.getSetterCalls()).isEqualTo(1);
+            assertThat(iterator.hasNext()).isFalse();
+        }
+    }
+
+    private static BeanPropertyReader discoveredReaderFor(Class<?> beanType, String propertyName) {
+        JSONReader introspectionReader = JSON.builder().jsonReader();
+        for (Prop property : BeanPropertyIntrospector.instance()
+                .pojoDefinitionForDeserialization(introspectionReader, beanType).getProperties()) {
+            if (propertyName.equals(property.name)) {
+                return new BeanPropertyReader(property.name, property.field, property.setter);
+            }
+        }
+        throw new IllegalArgumentException("No property named " + propertyName + " on " + beanType.getName());
     }
 
     public static final class FieldBackedReaderBean {
