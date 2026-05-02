@@ -138,6 +138,14 @@ public class DaggerTest {
         assertThat(dependent.featureService().status()).isEqualTo("Analytics feature enabled");
     }
 
+    @Test
+    void componentFactoryAcceptsModuleInstancesAndIncludedModules() {
+        GreetingComponent component = DaggerDaggerTest_GreetingComponent.factory()
+                .create(new RuntimeGreetingModule("Hello"));
+
+        assertThat(component.greetingCard().render("Dagger")).isEqualTo("Hello, Dagger!");
+    }
+
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
     @interface ApplicationName {
@@ -244,6 +252,16 @@ public class DaggerTest {
         }
     }
 
+    @Component(modules = RuntimeGreetingModule.class)
+    interface GreetingComponent {
+        GreetingCard greetingCard();
+
+        @Component.Factory
+        interface Factory {
+            GreetingComponent create(RuntimeGreetingModule greetingModule);
+        }
+    }
+
     @Subcomponent(modules = SessionModule.class)
     interface SessionComponent {
         Session session();
@@ -315,6 +333,31 @@ public class DaggerTest {
         @Provides
         static SessionSuffix sessionSuffix() {
             return new SessionSuffix("active");
+        }
+    }
+
+    @Module(includes = GreetingPunctuationModule.class)
+    static final class RuntimeGreetingModule {
+        private final String salutation;
+
+        RuntimeGreetingModule(String salutation) {
+            this.salutation = salutation;
+        }
+
+        @Provides
+        GreetingPrefix greetingPrefix() {
+            return new GreetingPrefix(salutation);
+        }
+    }
+
+    @Module
+    static final class GreetingPunctuationModule {
+        private GreetingPunctuationModule() {
+        }
+
+        @Provides
+        static GreetingPunctuation greetingPunctuation() {
+            return new GreetingPunctuation("!");
         }
     }
 
@@ -558,6 +601,45 @@ public class DaggerTest {
         private final String value;
 
         SessionSuffix(String value) {
+            this.value = value;
+        }
+
+        String value() {
+            return value;
+        }
+    }
+
+    static final class GreetingCard {
+        private final GreetingPrefix prefix;
+        private final GreetingPunctuation punctuation;
+
+        @Inject
+        GreetingCard(GreetingPrefix prefix, GreetingPunctuation punctuation) {
+            this.prefix = prefix;
+            this.punctuation = punctuation;
+        }
+
+        String render(String recipient) {
+            return prefix.value() + ", " + recipient + punctuation.value();
+        }
+    }
+
+    static final class GreetingPrefix {
+        private final String value;
+
+        GreetingPrefix(String value) {
+            this.value = value;
+        }
+
+        String value() {
+            return value;
+        }
+    }
+
+    static final class GreetingPunctuation {
+        private final String value;
+
+        GreetingPunctuation(String value) {
             this.value = value;
         }
 
