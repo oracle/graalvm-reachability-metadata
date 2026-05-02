@@ -166,6 +166,11 @@ public class ServiceTrackerTest {
         }
 
         @Override
+        public <A> A adapt(Class<A> type) {
+            return null;
+        }
+
+        @Override
         public int compareTo(Object reference) {
             ServiceReference<?> other = (ServiceReference<?>) reference;
             int rankingComparison = ranking.compareTo((Integer) other.getProperty(Constants.SERVICE_RANKING));
