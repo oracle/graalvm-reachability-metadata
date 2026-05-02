@@ -109,6 +109,24 @@ public class Netty_codec_xmlTest {
     }
 
     @Test
+    void decoderResolvesXmlEntitiesInTextAndAttributes() {
+        String xml = """
+                <root description="Tom &amp; Jerry &quot;show&quot;">
+                  3 &lt; 5 &amp;&amp; 7 &gt; 2&apos;s
+                </root>
+                """.stripLeading();
+
+        List<Object> events = decode(xml);
+
+        XmlElementStart root = elementStart(events, "root");
+        assertThat(root.attributes()).singleElement().satisfies(attribute -> {
+            assertThat(attribute.name()).isEqualTo("description");
+            assertThat(attribute.value()).isEqualTo("Tom & Jerry \"show\"");
+        });
+        assertThat(String.join("", characterData(events)).trim()).isEqualTo("3 < 5 && 7 > 2's");
+    }
+
+    @Test
     void decoderClosesNamespaceScopeForEmptyElements() {
         String xml = """
                 <root>
