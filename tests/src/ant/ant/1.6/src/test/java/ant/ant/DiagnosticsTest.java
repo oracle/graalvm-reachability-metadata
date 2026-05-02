@@ -23,6 +23,7 @@ public class DiagnosticsTest {
 
         try (PrintStream stream = new PrintStream(output, true, StandardCharsets.UTF_8)) {
             try {
+                Diagnostics.validateVersion();
                 Diagnostics.doReport(stream);
             } catch (Error error) {
                 if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
@@ -41,6 +42,6 @@ public class DiagnosticsTest {
                 .contains("optional tasks :")
                 .contains("Tasks availability")
                 .doesNotContain("None available");
-        assertThat(Diagnostics.isOptionalAvailable()).isFalse();
+        assertThat(Diagnostics.isOptionalAvailable()).isTrue();
     }
 }
