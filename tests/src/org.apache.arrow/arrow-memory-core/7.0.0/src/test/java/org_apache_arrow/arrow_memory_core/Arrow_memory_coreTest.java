@@ -8,7 +8,7 @@ package org_apache_arrow.arrow_memory_core;
 
 import org.junit.jupiter.api.Test;
 
-class Arrow_memory_coreTest {
+public class Arrow_memory_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
