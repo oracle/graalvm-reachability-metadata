@@ -8,6 +8,7 @@ package org_eclipse_jetty.jetty_ee;
 
 import org.eclipse.jetty.ee.WebAppClassLoading;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.Attributes;
 import org.eclipse.jetty.util.AttributesMap;
 import org.eclipse.jetty.util.ClassMatcher;
 import org.eclipse.jetty.util.component.Environment;
@@ -99,6 +100,22 @@ public class Jetty_eeTest {
         WebAppClassLoading.addHiddenClasses((Environment) attributes);
 
         assertThat(attributes.getAttribute(WebAppClassLoading.PROTECTED_CLASSES_ATTRIBUTE)).isNull();
+        assertThat(attributes.getAttribute(WebAppClassLoading.HIDDEN_CLASSES_ATTRIBUTE)).isNull();
+    }
+
+    @Test
+    void genericAttributesStoreProtectedClassMatcherWithoutEnvironmentDefaults() {
+        Attributes attributes = new AttributesMap();
+
+        WebAppClassLoading.addProtectedClasses(attributes, "com.attributes.protected.");
+
+        ClassMatcher protectedMatcher = (ClassMatcher) attributes.getAttribute(
+                WebAppClassLoading.PROTECTED_CLASSES_ATTRIBUTE);
+
+        assertThat(protectedMatcher).isNotNull();
+        assertThat(protectedMatcher.match("com.attributes.protected.Endpoint")).isTrue();
+        assertThat(protectedMatcher.match("com.attributes.public.Endpoint")).isFalse();
+        assertThat(protectedMatcher.match("java.lang.String")).isFalse();
         assertThat(attributes.getAttribute(WebAppClassLoading.HIDDEN_CLASSES_ATTRIBUTE)).isNull();
     }
 
