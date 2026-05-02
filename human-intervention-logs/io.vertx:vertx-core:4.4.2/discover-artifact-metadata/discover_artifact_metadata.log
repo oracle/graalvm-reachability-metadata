@@ -1,0 +1,1186 @@
+Starting a Gradle Daemon, 5 busy and 7 incompatible and 103 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de920-8da0-7583-a5ad-338d84e3c7ce
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.vertx:vertx-core:4.4.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.4.2" when "$version$" is replaced with "4.4.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+- Set "coordinates" to "io.vertx:vertx-core:4.4.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.4.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact details against Maven and the upstream Vert.x release/tag, then update the JSON in place using the repository’s existing formatting.
+web search: 
+web search: Maven Central io.vertx vertx-core 4.4.2 sources jar tests jar
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,220p' build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+{
+  "coordinates" : "io.vertx:vertx-core:4.4.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\": \"io\\.vertx:vertx-core|vertx-core|repository-url.*vertx' build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.xml' -g '*.java'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json:2:  "coordinates" : "io.vertx:vertx-core:4.4.2"
+
+web search: 
+web search: Maven Central io.vertx vertx-core 4.4.2 sources jar tests jar
+codex
+Maven Central exposes versioned classifier artifacts for this release, including sources and test sources, so I’m using those where they are available instead of reconstructing GitHub paths. I’m also checking the POM/SCM and docs location before writing the JSON.
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/io/vertx/vertx-core/4.4.2/ vertx-core-4.4.2-sources.jar
+web search: 
+web search: https://archiva.wikimedia.org/repository/mirror-maven-central/io/vertx/vertx-core/4.4.2/
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 0ms:
+{
+  "coordinates" : "io.vertx:vertx-core:4.4.2"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/vertx/vertx-core/4.4.2/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/vertx/vertx-core/4.4.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/vertx/vertx-core/4.4.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="vertx-core-4.4.2-docs.zip" title="vertx-core-4.4.2-docs.zip">vertx-core-4.4.2-docs.zip</a>                         2023-05-12 06:22    100401      
+<a href="vertx-core-4.4.2-docs.zip.asc" title="vertx-core-4.4.2-docs.zip.asc">vertx-core-4.4.2-docs.zip.asc</a>                     2023-05-12 06:22       488      
+<a href="vertx-core-4.4.2-docs.zip.md5" title="vertx-core-4.4.2-docs.zip.md5">vertx-core-4.4.2-docs.zip.md5</a>                     2023-05-12 06:22        32      
+<a href="vertx-core-4.4.2-docs.zip.sha1" title="vertx-core-4.4.2-docs.zip.sha1">vertx-core-4.4.2-docs.zip.sha1</a>                    2023-05-12 06:22        40      
+<a href="vertx-core-4.4.2-javadoc.jar" title="vertx-core-4.4.2-javadoc.jar">vertx-core-4.4.2-javadoc.jar</a>                      2023-05-12 06:22   2055647      
+<a href="vertx-core-4.4.2-javadoc.jar.asc" title="vertx-core-4.4.2-javadoc.jar.asc">vertx-core-4.4.2-javadoc.jar.asc</a>                  2023-05-12 06:22       488      
+<a href="vertx-core-4.4.2-javadoc.jar.md5" title="vertx-core-4.4.2-javadoc.jar.md5">vertx-core-4.4.2-javadoc.jar.md5</a>                  2023-05-12 06:22        32      
+<a href="vertx-core-4.4.2-javadoc.jar.sha1" title="vertx-core-4.4.2-javadoc.jar.sha1">vertx-core-4.4.2-javadoc.jar.sha1</a>                 2023-05-12 06:22        40      
+<a href="vertx-core-4.4.2-sources.jar" title="vertx-core-4.4.2-sources.jar">vertx-core-4.4.2-sources.jar</a>                      2023-05-12 06:22   1047952      
+<a href="vertx-core-4.4.2-sources.jar.asc" title="vertx-core-4.4.2-sources.jar.asc">vertx-core-4.4.2-sources.jar.asc</a>                  2023-05-12 06:22       488      
+<a href="vertx-core-4.4.2-sources.jar.md5" title="vertx-core-4.4.2-sources.jar.md5">vertx-core-4.4.2-sources.jar.md5</a>                  2023-05-12 06:22        32      
+<a href="vertx-core-4.4.2-sources.jar.sha1" title="vertx-core-4.4.2-sources.jar.sha1">vertx-core-4.4.2-sources.jar.sha1</a>                 2023-05-12 06:22        40      
+<a href="vertx-core-4.4.2-test-sources.jar" title="vertx-core-4.4.2-test-sources.jar">vertx-core-4.4.2-test-sources.jar</a>                 2023-05-12 06:22   1337302      
+<a href="vertx-core-4.4.2-test-sources.jar.asc" title="vertx-core-4.4.2-test-sources.jar.asc">vertx-core-4.4.2-test-sources.jar.asc</a>             2023-05-12 06:22       488      
+<a href="vertx-core-4.4.2-test-sources.jar.md5" title="vertx-core-4.4.2-test-sources.jar.md5">vertx-core-4.4.2-test-sources.jar.md5</a>             2023-05-12 06:22        32      
+<a href="vertx-core-4.4.2-test-sources.jar.sha1" title="vertx-core-4.4.2-test-sources.jar.sha1">vertx-core-4.4.2-test-sources.jar.sha1</a>            2023-05-12 06:22        40      
+<a href="vertx-core-4.4.2-tests.jar" title="vertx-core-4.4.2-tests.jar">vertx-core-4.4.2-tests.jar</a>                        2023-05-12 06:22   2684205      
+<a href="vertx-core-4.4.2-tests.jar.asc" title="vertx-core-4.4.2-tests.jar.asc">vertx-core-4.4.2-tests.jar.asc</a>                    2023-05-12 06:22       488      
+<a href="vertx-core-4.4.2-tests.jar.md5" title="vertx-core-4.4.2-tests.jar.md5">vertx-core-4.4.2-tests.jar.md5</a>                    2023-05-12 06:22        32      
+<a href="vertx-core-4.4.2-tests.jar.sha1" title="vertx-core-4.4.2-tests.jar.sha1">vertx-core-4.4.2-tests.jar.sha1</a>                   2023-05-12 06:22        40      
+<a href="vertx-core-4.4.2.jar" title="vertx-core-4.4.2.jar">vertx-core-4.4.2.jar</a>                              2023-05-12 06:22   1534643      
+<a href="vertx-core-4.4.2.jar.asc" title="vertx-core-4.4.2.jar.asc">vertx-core-4.4.2.jar.asc</a>                          2023-05-12 06:22       488      
+<a href="vertx-core-4.4.2.jar.md5" title="vertx-core-4.4.2.jar.md5">vertx-core-4.4.2.jar.md5</a>                          2023-05-12 06:22        32      
+<a href="vertx-core-4.4.2.jar.sha1" title="vertx-core-4.4.2.jar.sha1">vertx-core-4.4.2.jar.sha1</a>                         2023-05-12 06:22        40      
+<a href="vertx-core-4.4.2.pom" title="vertx-core-4.4.2.pom">vertx-core-4.4.2.pom</a>                              2023-05-12 06:22     31478      
+<a href="vertx-core-4.4.2.pom.asc" title="vertx-core-4.4.2.pom.asc">vertx-core-4.4.2.pom.asc</a>                          2023-05-12 06:22       488      
+<a href="vertx-core-4.4.2.pom.md5" title="vertx-core-4.4.2.pom.md5">vertx-core-4.4.2.pom.md5</a>                          2023-05-12 06:22        32      
+<a href="vertx-core-4.4.2.pom.sha1" title="vertx-core-4.4.2.pom.sha1">vertx-core-4.4.2.pom.sha1</a>                         2023-05-12 06:22        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/vertx/vertx-core/4.4.2/vertx-core-4.4.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2011-2019 Contributors to the Eclipse Foundation
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache License, Version 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~
+  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-parent</artifactId>
+    <version>19</version>
+  </parent>
+
+  <artifactId>vertx-core</artifactId>
+  <version>4.4.2</version>
+
+  <name>Vert.x Core</name>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>Eclipse Public License - v 2.0</name>
+      <url>http://www.eclipse.org/legal/epl-v20.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:eclipse/vert.x.git</connection>
+    <developerConnection>scm:git:git@github.com:eclipse/vert.x.git</developerConnection>
+    <url>git@github.com:eclipse/vert.x.git</url>
+  </scm>
+
+  <properties>
+    <junit.version>4.13.1</junit.version>
+    <assertj.version>3.4.1</assertj.version>
+    <apacheds-protocol-dns.version>1.5.7</apacheds-protocol-dns.version>
+    <generated.dir>${project.basedir}/src/main/generated</generated.dir>
+    <stack.version>4.4.2</stack.version>
+    <jmh.version>1.36</jmh.version>
+    <vertx.testNativeTransport>false</vertx.testNativeTransport>
+    <vertx.testDomainSockets>false</vertx.testDomainSockets>
+    <jar.manifest>${project.basedir}/src/main/resources/META-INF/MANIFEST.MF</jar.manifest>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-dependencies</artifactId>
+        <version>${stack.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+
+    <!-- We depend on the specific Netty dependencies not netty-all to reduce the size of fatjars -->
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler-proxy</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-http2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver-dns</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec-haproxy</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-kqueue</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Jackson -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Loggers -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Generators -->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-codegen</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-docgen</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-protocol-dns</artifactId>
+      <version>${apacheds-protocol-dns.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-tcnative-boringssl-static</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.aayushatharva.brotli4j</groupId>
+      <artifactId>brotli4j</artifactId>
+      <version>1.8.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- JMH -->
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <version>${jmh.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.surefire.plugin.version}</version>
+          <configuration>
+            <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
+
+web search: 
+web search: 
+web search: 
+web search: io.vertx vertx-core 4.4.2
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"|\"source-code-url\"|\"documentation-url\"' . -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 0ms:
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:31:    "test-code-url" : "N/A",
+./metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+./metadata/org.javamoney.moneta/moneta-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:21:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+./metadata/org.javamoney.moneta/moneta-core/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+./metadata/nekohtml/xercesMinimal/index.json:5:    "source-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/",
+./metadata/nekohtml/xercesMinimal/index.json:7:    "test-code-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/test/",
+./metadata/nekohtml/xercesMinimal/index.json:8:    "documentation-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/doc/index.html",
+./metadata/org.aspectj/aspectjweaver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-sources.jar",
+./metadata/org.aspectj/aspectjweaver/index.json:7:    "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_7/tests",
+./metadata/org.aspectj/aspectjweaver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-javadoc.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/$version$/jboss-interceptor-spi-$version$-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/$version$/jboss-interceptor-api-$version$-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-javadoc.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/datatypes/src/test",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/datetime/src/test",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-javadoc.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-sources.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.junit.platform/junit-platform-commons/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/$version$/mail/src/test",
+
+exec
+/usr/bin/bash -lc "rg -n 'test-sources\\.jar' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 0ms:
+metadata/info.picocli/picocli/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/$version$/picocli-$version$-test-sources.jar",
+metadata/commons-codec/commons-codec/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/$version$/commons-codec-$version$-test-sources.jar",
+metadata/commons-fileupload/commons-fileupload/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-fileupload/commons-fileupload/$version$/commons-fileupload-$version$-test-sources.jar",
+metadata/commons-logging/commons-logging/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/$version$/commons-logging-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/$version$/commons-pool2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/$version$/commons-dbcp2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-stomp/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-stomp/$version$/netty-codec-stomp-$version$-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:44:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:72:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:87:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-haproxy/index.json:7:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-haproxy/index.json:23:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-dns/index.json:8:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-dns/$version$/netty-codec-dns-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-dns/index.json:23:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-dns/$version$/netty-codec-dns-$version$-test-sources.jar",
+metadata/io.netty/netty-handler-proxy/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final-test-sources.jar",
+metadata/dev.langchain4j/langchain4j/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/$version$/langchain4j-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-socks/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-codec-socks/$version$/netty-codec-socks-$version$-test-sources.jar",
+metadata/org.apache.kafka/kafka-clients/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/$version$/kafka-clients-$version$-test-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://vertx.io/docs/4.4.2/vertx-core/java/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse/vert.x | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-vertx/vert.x/tags?per_page=100 | rg '\"name\": \"4\\.4\\.2\"|\"name\": \"v4\\.4\\.2\"|\"zipball_url\"' -n -C 1" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 265ms:
+3-    "name": "v2.1.6",
+4:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1.6",
+5-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1.6",
+--
+13-    "name": "v2.1.5",
+14:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1.5",
+15-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1.5",
+--
+23-    "name": "v2.1.4",
+24:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1.4",
+25-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1.4",
+--
+33-    "name": "v2.1.3",
+34:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1.3",
+35-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1.3",
+--
+43-    "name": "v2.1.2",
+44:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1.2",
+45-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1.2",
+--
+53-    "name": "v2.1.1",
+54:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1.1",
+55-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1.1",
+--
+63-    "name": "v2.1",
+64:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1",
+65-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1",
+--
+73-    "name": "v2.1RC3",
+74:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1RC3",
+75-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1RC3",
+--
+83-    "name": "v2.1RC2",
+84:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1RC2",
+85-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1RC2",
+--
+93-    "name": "v2.1RC1",
+94:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1RC1",
+95-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1RC1",
+--
+103-    "name": "v2.1M5",
+104:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1M5",
+105-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1M5",
+--
+113-    "name": "v2.1M4",
+114:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1M4",
+115-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1M4",
+--
+123-    "name": "v2.1M3",
+124:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1M3",
+125-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1M3",
+--
+133-    "name": "v2.1M2",
+134:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1M2",
+135-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1M2",
+--
+143-    "name": "v2.1M1",
+144:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.1M1",
+145-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.1M1",
+--
+153-    "name": "v2.0.2-final",
+154:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.0.2-final",
+155-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.0.2-final",
+--
+163-    "name": "v2.0.1-final",
+164:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.0.1-final",
+165-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.0.1-final",
+--
+173-    "name": "v2.0.0-beta3",
+174:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/v2.0.0-beta3",
+175-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/v2.0.0-beta3",
+--
+183-    "name": "_old/v2.0.0.beta1",
+184:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0.beta1",
+185-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0.beta1",
+--
+193-    "name": "_old/v2.0.0-final",
+194:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0-final",
+195-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0-final",
+--
+203-    "name": "_old/v2.0.0-beta5",
+204:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0-beta5",
+205-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0-beta5",
+--
+213-    "name": "_old/v2.0.0-beta4",
+214:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0-beta4",
+215-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0-beta4",
+--
+223-    "name": "_old/v2.0.0-beta3",
+224:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0-beta3",
+225-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0-beta3",
+--
+233-    "name": "_old/v2.0.0-beta2",
+234:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0-beta2",
+235-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0-beta2",
+--
+243-    "name": "_old/v2.0.0-beta1",
+244:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0-beta1",
+245-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0-beta1",
+--
+253-    "name": "_old/v2.0.0-CR3",
+254:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0-CR3",
+255-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0-CR3",
+--
+263-    "name": "_old/v2.0.0-CR2",
+264:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0-CR2",
+265-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0-CR2",
+--
+273-    "name": "_old/v2.0.0-CR1",
+274:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v2.0.0-CR1",
+275-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v2.0.0-CR1",
+--
+283-    "name": "_old/v1.3.1.final",
+284:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.3.1.final",
+285-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.3.1.final",
+--
+293-    "name": "_old/v1.3.0.final",
+294:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.3.0.final",
+295-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.3.0.final",
+--
+303-    "name": "_old/v1.2.3.final",
+304:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.2.3.final",
+305-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.2.3.final",
+--
+313-    "name": "_old/v1.2.2.final",
+314:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.2.2.final",
+315-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.2.2.final",
+--
+323-    "name": "_old/v1.2.1.final",
+324:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.2.1.final",
+325-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.2.1.final",
+--
+333-    "name": "_old/v1.2.0.final",
+334:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.2.0.final",
+335-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.2.0.final",
+--
+343-    "name": "_old/v1.1.0.final",
+344:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.1.0.final",
+345-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.1.0.final",
+--
+353-    "name": "_old/v1.0.1.final",
+354:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.1.final",
+355-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.1.final",
+--
+363-    "name": "_old/v1.0.0.final",
+364:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.final",
+365-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.final",
+--
+373-    "name": "_old/v1.0.0.beta11",
+374:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.beta11",
+375-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.beta11",
+--
+383-    "name": "_old/v1.0.0.beta10",
+384:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.beta10",
+385-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.beta10",
+--
+393-    "name": "_old/v1.0.0.beta9",
+394:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.beta9",
+395-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.beta9",
+--
+403-    "name": "_old/v1.0.0.beta8",
+404:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.beta8",
+405-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.beta8",
+--
+413-    "name": "_old/v1.0.0.beta7",
+414:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.beta7",
+415-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.beta7",
+--
+423-    "name": "_old/v1.0.0.beta6",
+424:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.beta6",
+425-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.beta6",
+--
+433-    "name": "_old/v1.0.0.beta5",
+434:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.beta5",
+435-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.beta5",
+--
+443-    "name": "_old/v1.0.0.beta4",
+444:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.beta4",
+445-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.beta4",
+--
+453-    "name": "_old/v1.0.0.beta3",
+454:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.0.beta3",
+455-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.0.beta3",
+--
+463-    "name": "_old/v1.0.beta1",
+464:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v1.0.beta1",
+465-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v1.0.beta1",
+--
+473-    "name": "_old/v0.2",
+474:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v0.2",
+475-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v0.2",
+--
+483-    "name": "_old/v0.1",
+484:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/v0.1",
+485-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/v0.1",
+--
+493-    "name": "_old/Eclipse_Foundation_Initial_Contribution",
+494:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/_old/Eclipse_Foundation_Initial_Contribution",
+495-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/_old/Eclipse_Foundation_Initial_Contribution",
+--
+503-    "name": "Eclipse_Initial_Contribution_2",
+504:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/Eclipse_Initial_Contribution_2",
+505-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/Eclipse_Initial_Contribution_2",
+--
+513-    "name": "5.0.11",
+514:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.11",
+515-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.11",
+--
+523-    "name": "5.0.10",
+524:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.10",
+525-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.10",
+--
+533-    "name": "5.0.9",
+534:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.9",
+535-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.9",
+--
+543-    "name": "5.0.8",
+544:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.8",
+545-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.8",
+--
+553-    "name": "5.0.7",
+554:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.7",
+555-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.7",
+--
+563-    "name": "5.0.6",
+564:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.6",
+565-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.6",
+--
+573-    "name": "5.0.5",
+574:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.5",
+575-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.5",
+--
+583-    "name": "5.0.4",
+584:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.4",
+585-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.4",
+--
+593-    "name": "5.0.3",
+594:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.3",
+595-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.3",
+--
+603-    "name": "5.0.2",
+604:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.2",
+605-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.2",
+--
+613-    "name": "5.0.1",
+614:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.1",
+615-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.1",
+--
+623-    "name": "5.0.0",
+624:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.0",
+625-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.0",
+--
+633-    "name": "5.0.0.CR8",
+634:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.0.CR8",
+635-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.0.CR8",
+--
+643-    "name": "5.0.0.CR7",
+644:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.0.CR7",
+645-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.0.CR7",
+--
+653-    "name": "5.0.0.CR6",
+654:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.0.CR6",
+655-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.0.CR6",
+--
+663-    "name": "5.0.0.CR4",
+664:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.0.CR4",
+665-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.0.CR4",
+--
+673-    "name": "5.0.0.CR3",
+674:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.0.CR3",
+675-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.0.CR3",
+--
+683-    "name": "5.0.0.CR2",
+684:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.0.CR2",
+685-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.0.CR2",
+--
+693-    "name": "5.0.0.CR1",
+694:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/5.0.0.CR1",
+695-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/5.0.0.CR1",
+--
+703-    "name": "4.5.26",
+704:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.26",
+705-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.26",
+--
+713-    "name": "4.5.25",
+714:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.25",
+715-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.25",
+--
+723-    "name": "4.5.24",
+724:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.24",
+725-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.24",
+--
+733-    "name": "4.5.23",
+734:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.23",
+735-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.23",
+--
+743-    "name": "4.5.22",
+744:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.22",
+745-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.22",
+--
+753-    "name": "4.5.21",
+754:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.21",
+755-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.21",
+--
+763-    "name": "4.5.20",
+764:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.20",
+765-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.20",
+--
+773-    "name": "4.5.19",
+774:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.19",
+775-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.19",
+--
+783-    "name": "4.5.18",
+784:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.18",
+785-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.18",
+--
+793-    "name": "4.5.17",
+794:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.17",
+795-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.17",
+--
+803-    "name": "4.5.16",
+804:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.16",
+805-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.16",
+--
+813-    "name": "4.5.15",
+814:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.15",
+815-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.15",
+--
+823-    "name": "4.5.14",
+824:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.14",
+825-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.14",
+--
+833-    "name": "4.5.13",
+834:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.13",
+835-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.13",
+--
+843-    "name": "4.5.12",
+844:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.12",
+845-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.12",
+--
+853-    "name": "4.5.11",
+854:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.11",
+855-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.11",
+--
+863-    "name": "4.5.10",
+864:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.10",
+865-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.10",
+--
+873-    "name": "4.5.9",
+874:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.9",
+875-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.9",
+--
+883-    "name": "4.5.8",
+884:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.8",
+885-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.8",
+--
+893-    "name": "4.5.7",
+894:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.7",
+895-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.7",
+--
+903-    "name": "4.5.6",
+904:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.6",
+905-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.6",
+--
+913-    "name": "4.5.5",
+914:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.5",
+915-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.5",
+--
+923-    "name": "4.5.4",
+924:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.4",
+925-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.4",
+--
+933-    "name": "4.5.3",
+934:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.3",
+935-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.3",
+--
+943-    "name": "4.5.2",
+944:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.2",
+945-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.2",
+--
+953-    "name": "4.5.1",
+954:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.1",
+955-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.1",
+--
+963-    "name": "4.5.0",
+964:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.5.0",
+965-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.5.0",
+--
+973-    "name": "4.4.9",
+974:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.4.9",
+975-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.4.9",
+--
+983-    "name": "4.4.8",
+984:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.4.8",
+985-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.4.8",
+--
+993-    "name": "4.4.7",
+994:    "zipball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/zipball/refs/tags/4.4.7",
+995-    "tarball_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tarball/refs/tags/4.4.7",
+
+ succeeded in 376ms:
+<html><head><meta http-equiv="refresh" content="0;URL='/docs/4.4.9/vertx-core/java'"/></head></html>
+ succeeded in 391ms:
+{
+  "id": 1911523,
+  "node_id": "MDEwOlJlcG9zaXRvcnkxOTExNTIz",
+  "name": "vert.x",
+  "full_name": "eclipse-vertx/vert.x",
+  "private": false,
+  "owner": {
+    "login": "eclipse-vertx",
+    "id": 19804680,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjE5ODA0Njgw",
+    "avatar_url": "https://avatars.githubusercontent.com/u/19804680?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/eclipse-vertx",
+    "html_url": "https://github.com/eclipse-vertx",
+    "followers_url": "https://api.github.com/users/eclipse-vertx/followers",
+    "following_url": "https://api.github.com/users/eclipse-vertx/following{/other_user}",
+    "gists_url": "https://api.github.com/users/eclipse-vertx/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/eclipse-vertx/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/eclipse-vertx/subscriptions",
+    "organizations_url": "https://api.github.com/users/eclipse-vertx/orgs",
+    "repos_url": "https://api.github.com/users/eclipse-vertx/repos",
+    "events_url": "https://api.github.com/users/eclipse-vertx/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/eclipse-vertx/received_events",
+    "type": "Organization",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "html_url": "https://github.com/eclipse-vertx/vert.x",
+  "description": "Vert.x is a tool-kit for building reactive applications on the JVM",
+  "fork": false,
+  "url": "https://api.github.com/repos/eclipse-vertx/vert.x",
+  "forks_url": "https://api.github.com/repos/eclipse-vertx/vert.x/forks",
+  "keys_url": "https://api.github.com/repos/eclipse-vertx/vert.x/keys{/key_id}",
+  "collaborators_url": "https://api.github.com/repos/eclipse-vertx/vert.x/collaborators{/collaborator}",
+  "teams_url": "https://api.github.com/repos/eclipse-vertx/vert.x/teams",
+  "hooks_url": "https://api.github.com/repos/eclipse-vertx/vert.x/hooks",
+  "issue_events_url": "https://api.github.com/repos/eclipse-vertx/vert.x/issues/events{/number}",
+  "events_url": "https://api.github.com/repos/eclipse-vertx/vert.x/events",
+  "assignees_url": "https://api.github.com/repos/eclipse-vertx/vert.x/assignees{/user}",
+  "branches_url": "https://api.github.com/repos/eclipse-vertx/vert.x/branches{/branch}",
+  "tags_url": "https://api.github.com/repos/eclipse-vertx/vert.x/tags",
+  "blobs_url": "https://api.github.com/repos/eclipse-vertx/vert.x/git/blobs{/sha}",
+  "git_tags_url": "https://api.github.com/repos/eclipse-vertx/vert.x/git/tags{/sha}",
+  "git_refs_url": "https://api.github.com/repos/eclipse-vertx/vert.x/git/refs{/sha}",
+  "trees_url": "https://api.github.com/repos/eclipse-vertx/vert.x/git/trees{/sha}",
+  "statuses_url": "https://api.github.com/repos/eclipse-vertx/vert.x/statuses/{sha}",
+  "languages_url": "https://api.github.com/repos/eclipse-vertx/vert.x/languages",
+  "stargazers_url": "https://api.github.com/repos/eclipse-vertx/vert.x/stargazers",
+  "contributors_url": "https://api.github.com/repos/eclipse-vertx/vert.x/contributors",
+  "subscribers_url": "https://api.github.com/repos/eclipse-vertx/vert.x/subscribers",
+  "subscription_url": "https://api.github.com/repos/eclipse-vertx/vert.x/subscription",
+  "commits_url": "https://api.github.com/repos/eclipse-vertx/vert.x/commits{/sha}",
+  "git_commits_url": "https://api.github.com/repos/eclipse-vertx/vert.x/git/commits{/sha}",
+  "comments_url": "https://api.github.com/repos/eclipse-vertx/vert.x/comments{/number}",
+  "issue_comment_url": "https://api.github.com/repos/eclipse-vertx/vert.x/issues/comments{/number}",
+  "contents_url": "https://api.github.com/repos/eclipse-vertx/vert.x/contents/{+path}",
+  "compare_url": "https://api.github.com/repos/eclipse-vertx/vert.x/compare/{base}...{head}",
+  "merges_url": "https://api.github.com/repos/eclipse-vertx/vert.x/merges",
+  "archive_url": "https://api.github.com/repos/eclipse-vertx/vert.x/{archive_format}{/ref}",
+  "downloads_url": "https://api.github.com/repos/eclipse-vertx/vert.x/downloads",
+  "issues_url": "https://api.github.com/repos/eclipse-vertx/vert.x/issues{/number}",
+  "pulls_url": "https://api.github.com/repos/eclipse-vertx/vert.x/pulls{/number}",
+  "milestones_url": "https://api.github.com/repos/eclipse-vertx/vert.x/milestones{/number}",
+  "notifications_url": "https://api.github.com/repos/eclipse-vertx/vert.x/notifications{?since,all,participating}",
+  "labels_url": "https://api.github.com/repos/eclipse-vertx/vert.x/labels{/name}",
+  "releases_url": "https://api.github.com/repos/eclipse-vertx/vert.x/releases{/id}",
+  "deployments_url": "https://api.github.com/repos/eclipse-vertx/vert.x/deployments",
+  "created_at": "2011-06-17T14:54:55Z",
+  "updated_at": "2026-04-30T12:52:32Z",
+  "pushed_at": "2026-04-30T12:52:25Z",
+  "git_url": "git://github.com/eclipse-vertx/vert.x.git",
+  "ssh_url": "git@github.com:eclipse-vertx/vert.x.git",
+  "clone_url": "https://github.com/eclipse-vertx/vert.x.git",
+  "svn_url": "https://github.com/eclipse-vertx/vert.x",
+  "homepage": "http://vertx.io",
+  "size": 125256,
+  "stargazers_count": 14657,
+  "watchers_count": 14657,
+  "language": "Java",
+  "has_issues": true,
+
+web search: 
+web search: https://github.com/eclipse-vertx/vert.x
+web search: 
+web search: repo.maven.apache.org/maven2/io/vertx/vertx-core/4.4.2/vertx-core-4.4.2-sources.jar
+web search: 
+web search: https://archiva.wikimedia.org/repository/mirror-maven-central/io/vertx/vertx-core/4.4.2/
+web search: 
+web search: https://mvnrepository.com/artifact/io.vertx/vertx-core/4.4.2
+web search: 
+web search: https://repo1.maven.org/maven2/io/vertx/vertx-core/4.4.2/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://github.com/eclipse-vertx/vert.x/tree/4.4.2
+codex
+The artifact is a regular JVM JAR, not an Android/JS/Native-only artifact, and it is not specific to Kotlin, Groovy, or Scala. I’m going to populate the discovered metadata with Maven Central classifier URLs and the current GitHub repository root.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+diff --git a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+index f1fb4af64f8680db4fd60b395c70b50b6f82aec8..ae3f40c1e58f1b9db09445326cb91848dc812ab8
+--- a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
++++ b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.vertx:vertx-core:4.4.2"
++  "coordinates" : "io.vertx:vertx-core:4.4.2",
++  "repository-url" : "https://github.com/eclipse-vertx/vert.x",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-docs.zip",
++  "description" : "Vert.x Core provides the core APIs and runtime building blocks for building reactive, event-driven applications on the JVM. It includes low-level support for HTTP, TCP, UDP, file-system access, asynchronous streams, and other Vert.x components."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+index f1fb4af64f8680db4fd60b395c70b50b6f82aec8..ae3f40c1e58f1b9db09445326cb91848dc812ab8
+--- a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
++++ b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.vertx:vertx-core:4.4.2"
++  "coordinates" : "io.vertx:vertx-core:4.4.2",
++  "repository-url" : "https://github.com/eclipse-vertx/vert.x",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-docs.zip",
++  "description" : "Vert.x Core provides the core APIs and runtime building blocks for building reactive, event-driven applications on the JVM. It includes low-level support for HTTP, TCP, UDP, file-system access, asynchronous streams, and other Vert.x components."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 0ms:
+{
+  "coordinates": "io.vertx:vertx-core:4.4.2",
+  "repository-url": "https://github.com/eclipse-vertx/vert.x",
+  "source-code-url": "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+  "test-code-url": "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-docs.zip",
+  "description": "Vert.x Core provides the core APIs and runtime building blocks for building reactive, event-driven applications on the JVM. It includes low-level support for HTTP, TCP, UDP, file-system access, asynchronous streams, and other Vert.x components."
+}
+
+exec
+/usr/bin/bash -lc 'for url in https://repo1.maven.org/maven2/io/vertx/vertx-core/4.4.2/vertx-core-4.4.2-sources.jar https://repo1.maven.org/maven2/io/vertx/vertx-core/4.4.2/vertx-core-4.4.2-test-sources.jar https://repo1.maven.org/maven2/io/vertx/vertx-core/4.4.2/vertx-core-4.4.2-docs.zip https://github.com/eclipse-vertx/vert.x; do curl -fsSI "$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+diff --git a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+index f1fb4af64f8680db4fd60b395c70b50b6f82aec8..ae3f40c1e58f1b9db09445326cb91848dc812ab8
+--- a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
++++ b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.vertx:vertx-core:4.4.2"
++  "coordinates" : "io.vertx:vertx-core:4.4.2",
++  "repository-url" : "https://github.com/eclipse-vertx/vert.x",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-docs.zip",
++  "description" : "Vert.x Core provides the core APIs and runtime building blocks for building reactive, event-driven applications on the JVM. It includes low-level support for HTTP, TCP, UDP, file-system access, asynchronous streams, and other Vert.x components."
+ }
+
+ succeeded in 1758ms:
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+
+diff --git a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+index f1fb4af64f8680db4fd60b395c70b50b6f82aec8..ae3f40c1e58f1b9db09445326cb91848dc812ab8
+--- a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
++++ b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.vertx:vertx-core:4.4.2"
++  "coordinates" : "io.vertx:vertx-core:4.4.2",
++  "repository-url" : "https://github.com/eclipse-vertx/vert.x",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-docs.zip",
++  "description" : "Vert.x Core provides the core APIs and runtime building blocks for building reactive, event-driven applications on the JVM. It includes low-level support for HTTP, TCP, UDP, file-system access, asynchronous streams, and other Vert.x components."
+ }
+
+codex
+The JSON parses cleanly, and the version-substituted Maven URLs plus the repository URL all return HTTP 200. I’ll do one final diff check so the completed file is easy to audit.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+index f1fb4af64f8680db4fd60b395c70b50b6f82aec8..ae3f40c1e58f1b9db09445326cb91848dc812ab8
+--- a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
++++ b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.vertx:vertx-core:4.4.2"
++  "coordinates" : "io.vertx:vertx-core:4.4.2",
++  "repository-url" : "https://github.com/eclipse-vertx/vert.x",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-docs.zip",
++  "description" : "Vert.x Core provides the core APIs and runtime building blocks for building reactive, event-driven applications on the JVM. It includes low-level support for HTTP, TCP, UDP, file-system access, asynchronous streams, and other Vert.x components."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json && sed -n '1,120p' build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096
+diff --git a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+index f1fb4af64f8680db4fd60b395c70b50b6f82aec8..ae3f40c1e58f1b9db09445326cb91848dc812ab8
+--- a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
++++ b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.vertx:vertx-core:4.4.2"
++  "coordinates" : "io.vertx:vertx-core:4.4.2",
++  "repository-url" : "https://github.com/eclipse-vertx/vert.x",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-docs.zip",
++  "description" : "Vert.x Core provides the core APIs and runtime building blocks for building reactive, event-driven applications on the JVM. It includes low-level support for HTTP, TCP, UDP, file-system access, asynchronous streams, and other Vert.x components."
+ }
+
+ succeeded in 157ms:
+{
+  "coordinates" : "io.vertx:vertx-core:4.4.2",
+  "repository-url" : "https://github.com/eclipse-vertx/vert.x",
+  "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+  "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-docs.zip",
+  "description" : "Vert.x Core provides the core APIs and runtime building blocks for building reactive, event-driven applications on the JVM. It includes low-level support for HTTP, TCP, UDP, file-system access, asynchronous streams, and other Vert.x components."
+}
+
+web search: 
+web search: https://github.com/eclipse-vertx/vert.x
+web search: 
+web search: repo1.maven.org io.vertx vertx-core 4.4.2 sources test-sources docs.zip
+web search: 
+web search: 
+web search: 
+web search: https://github.com/eclipse/vert.x
+codex
+Updated [io.vertx-vertx-core-4.4.2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json) with Maven Central source, test-source, and docs artifact URLs, plus the Vert.x repository root and two-sentence description. Vert.x Core is a JVM Java artifact and not Kotlin/Groovy/Scala-specific, so I left `language` and `not-for-native-image` absent. ([mvnrepository.com](https://mvnrepository.com/artifact/io.vertx/vertx-core/4.4.2?utm_source=openai))
+
+Validation done: `jq` parsed the JSON successfully, and the resolved `4.4.2` URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+index f1fb4af64f8680db4fd60b395c70b50b6f82aec8..ae3f40c1e58f1b9db09445326cb91848dc812ab8
+--- a/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
++++ b/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.vertx:vertx-core:4.4.2"
++  "coordinates" : "io.vertx:vertx-core:4.4.2",
++  "repository-url" : "https://github.com/eclipse-vertx/vert.x",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-docs.zip",
++  "description" : "Vert.x Core provides the core APIs and runtime building blocks for building reactive, event-driven applications on the JVM. It includes low-level support for HTTP, TCP, UDP, file-system access, asynchronous streams, and other Vert.x components."
+ }
+
+tokens used
+97,685
+Updated [io.vertx-vertx-core-4.4.2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096/build/discovered-artifact-metadata/io.vertx-vertx-core-4.4.2.json) with Maven Central source, test-source, and docs artifact URLs, plus the Vert.x repository root and two-sentence description. Vert.x Core is a JVM Java artifact and not Kotlin/Groovy/Scala-specific, so I left `language` and `not-for-native-image` absent. ([mvnrepository.com](https://mvnrepository.com/artifact/io.vertx/vertx-core/4.4.2?utm_source=openai))
+
+Validation done: `jq` parsed the JSON successfully, and the resolved `4.4.2` URLs returned HTTP 200.
+Ran agent for io.vertx:vertx-core:4.4.2 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096/build/agent-artifact-discovery-logs/io.vertx-vertx-core-4.4.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1464-e9b82096/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 4s
+9 actionable tasks: 4 executed, 5 from cache
