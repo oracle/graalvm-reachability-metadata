@@ -6,6 +6,9 @@
  */
 package com_graphql_java.graphql_java;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 import graphql.schema.PropertyFetchingImpl;
 import org.junit.jupiter.api.Test;
 
@@ -58,6 +61,21 @@ public class PropertyFetchingImplTest {
     assertThat(cachedValue).isEqualTo("private field");
   }
 
+  @Test
+  void resolvesPublicMethodFallbackForNonPublicInterface() throws Exception {
+    PropertyFetchingImpl fetcher = new PropertyFetchingImpl(Object.class);
+    Method lookupMethod = Arrays.stream(PropertyFetchingImpl.class.getDeclaredMethods())
+        .filter(method -> method.getName().equals("findPubliclyAccessibleMethod"))
+        .findFirst()
+        .orElseThrow();
+    lookupMethod.setAccessible(true);
+
+    Method getter = (Method) lookupMethod.invoke(fetcher, null, FallbackGetter.class, "getFallbackName", false);
+
+    assertThat(getter.getName()).isEqualTo("getFallbackName");
+    assertThat(getter.getDeclaringClass()).isEqualTo(FallbackGetter.class);
+  }
+
   public static final class SingleArgumentPojo {
     private final String name;
 
@@ -96,6 +114,10 @@ public class PropertyFetchingImplTest {
     private PrivateFieldPojo(String label) {
       this.label = label;
     }
+  }
+
+  private interface FallbackGetter {
+    String getFallbackName();
   }
 
 }
