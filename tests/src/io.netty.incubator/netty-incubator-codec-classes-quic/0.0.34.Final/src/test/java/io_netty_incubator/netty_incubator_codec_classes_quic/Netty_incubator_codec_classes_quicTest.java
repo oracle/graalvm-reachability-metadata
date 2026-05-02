@@ -11,6 +11,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.incubator.codec.quic.BoringSSLAsyncPrivateKeyMethod;
+import io.netty.incubator.codec.quic.BoringSSLKeylessManagerFactory;
 import io.netty.incubator.codec.quic.DefaultQuicStreamFrame;
 import io.netty.incubator.codec.quic.FlushStrategy;
 import io.netty.incubator.codec.quic.QLogConfiguration;
@@ -28,8 +29,14 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ImmediateEventExecutor;
 import org.junit.jupiter.api.Test;
 
+import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.X509KeyManager;
+import java.io.ByteArrayInputStream;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +46,28 @@ import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Netty_incubator_codec_classes_quicTest {
+    private static final String KEYLESS_CERTIFICATE = """
+            -----BEGIN CERTIFICATE-----
+            MIIDHTCCAgWgAwIBAgIUKLISeh90RTgcXnTaGodu9MJu1SAwDQYJKoZIhvcNAQEL
+            BQAwHTEbMBkGA1UEAwwSbmV0dHkta2V5bGVzcy10ZXN0MCAXDTI2MDUwMjA0NDUw
+            OVoYDzIxMjYwNDA4MDQ0NTA5WjAdMRswGQYDVQQDDBJuZXR0eS1rZXlsZXNzLXRl
+            c3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMlav7XU/C5vo1s4oO
+            muUby7dA9Ewp4wX8O9S8jcf0l8yy9sXuSi7Y+++FOARC9YyEqGbg/v4+LLGuS0s6
+            lusCnNlsl/WfoFDLMTNtNWFqUVtMcSERH0xyU/k7wbifHoHTRgHk/GuO8OdoUzSr
+            EDrCwfSntlMpA/bEUBb0bRHXr8ODCOJQ6Rwzu1MSeVzD1Cak+Go8COtQal8hj6m+
+            s+tNWi4ewiwe2Uia8MUjxcfX3ltcq3FK6vYD8XTDtKumKxMZ9dZwlqWNKKvWD6AR
+            S2KujBczPMKjfARdb/TPj/rEBh0snTngKCntQ9jtvc+DnUwJwsDPt1hm9uY+HKaB
+            AklXAgMBAAGjUzBRMB0GA1UdDgQWBBTtcamtg452JTgi6znCBTIX4KILyjAfBgNV
+            HSMEGDAWgBTtcamtg452JTgi6znCBTIX4KILyjAPBgNVHRMBAf8EBTADAQH/MA0G
+            CSqGSIb3DQEBCwUAA4IBAQCEoV40XNAgdm1/93Cnr/dzIG55TUsUkho4l7du5CAd
+            bKiKVbzKE6yoX0cmp0U0NaHKn9HW3oY/CRhG5KXswbLufgqnx1uyJh+NpjtZb2pN
+            TJ2HcnhWRTX7gwOk4SquwGcebV/6J2jgFqA/ILtWSN7q97gbzhAfbkJG8QNFwo6w
+            ZLIZIz6jawjorxGNqSnoiNNIpoKry+7hYlTQ1XBJpKP0Q+YQ577Murqf9JiTkotH
+            dO0zoe/oxfB+TO9F0X16UvXfmTDv5uxjlD0+J7WjLBCQwzHRO9OWnLQuQd+7BodF
+            anytZi+NAYpeo8TOrKb4xbLclh79hFk48yE2orWvBHVB
+            -----END CERTIFICATE-----
+            """;
+
     @Test
     void quicAvailabilityReportsNativeStateConsistently() {
         boolean available = Quic.isAvailable();
@@ -225,6 +254,36 @@ public class Netty_incubator_codec_classes_quicTest {
     }
 
     @Test
+    void keylessManagerFactoryExposesCertificateChainAndKeylessPrivateKey() throws Exception {
+        BoringSSLAsyncPrivateKeyMethod privateKeyMethod = new BoringSSLAsyncPrivateKeyMethod() {
+            @Override
+            public Future<byte[]> sign(SSLEngine engine, int signatureAlgorithm, byte[] input) {
+                return ImmediateEventExecutor.INSTANCE.newSucceededFuture(input.clone());
+            }
+
+            @Override
+            public Future<byte[]> decrypt(SSLEngine engine, byte[] input) {
+                return ImmediateEventExecutor.INSTANCE.newSucceededFuture(input.clone());
+            }
+        };
+        X509Certificate certificate = keylessCertificate();
+        BoringSSLKeylessManagerFactory factory = BoringSSLKeylessManagerFactory.newKeyless(
+                privateKeyMethod, certificate);
+
+        KeyManager[] keyManagers = factory.getKeyManagers();
+        assertThat(keyManagers).hasSize(1);
+        assertThat(keyManagers[0]).isInstanceOf(X509KeyManager.class);
+
+        X509KeyManager keyManager = (X509KeyManager) keyManagers[0];
+        String alias = keyManager.chooseServerAlias("RSA", null, null);
+        assertThat(alias).isNotNull();
+        assertThat(keyManager.getServerAliases("RSA", null)).contains(alias);
+        assertThat(keyManager.getCertificateChain(alias)).containsExactly(certificate);
+        assertThat(keyManager.getPrivateKey(alias).getAlgorithm()).isEqualTo("keyless");
+        assertThat(keyManager.getPrivateKey(alias).getEncoded()).isEmpty();
+    }
+
+    @Test
     void segmentedDatagramAllocatorContractsAreUsableWithNettyPackets() {
         InetSocketAddress remoteAddress = new InetSocketAddress("127.0.0.1", 9999);
         SegmentedDatagramPacketAllocator allocator = (buffer, segmentSize, recipient) ->
@@ -242,5 +301,12 @@ public class Netty_incubator_codec_classes_quicTest {
         assertThat(SegmentedDatagramPacketAllocator.NONE.maxNumSegments()).isZero();
         assertThatThrownBy(() -> SegmentedDatagramPacketAllocator.NONE.newPacket(
                 Unpooled.EMPTY_BUFFER, 1, remoteAddress)).isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    private static X509Certificate keylessCertificate() throws Exception {
+        CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+        ByteArrayInputStream certificateBytes = new ByteArrayInputStream(
+                KEYLESS_CERTIFICATE.getBytes(StandardCharsets.US_ASCII));
+        return (X509Certificate) certificateFactory.generateCertificate(certificateBytes);
     }
 }
