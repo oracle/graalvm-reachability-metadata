@@ -28,11 +28,17 @@ Previous reviews follow a simple pattern:
    - Expected files: `metadata/<group>/<artifact>/index.json`.
    - Normal change shape: new values appended to `tested-versions`, with formatting-only line movement around the surrounding JSON.
    - Be suspicious of changes to `latest`, `metadata-version`, `test-version`, `allowed-packages`, `requires`, or URL fields unless the PR clearly needs them.
+   - A pure pre-release-to-release promotion produced by `addTestedVersion` is allowed when it is limited to the matching library and consists only of:
+     - `metadata/<group>/<artifact>/<oldVersion> -> <newVersion>`
+     - `tests/src/<group>/<artifact>/<oldVersion> -> <newVersion>`
+     - `stats/<group>/<artifact>/<oldVersion> -> <newVersion>`
+     - matching `index.json` changes to `metadata-version`, `tested-versions`, and exact-version artifact URLs
    - Reject or close the PR if it changes:
      - `.github/workflows/**`
      - `ci.json`
      - `gradle/**`, `build.gradle`, `settings.gradle`, `gradle.properties`
-     - `tests/src/**`
+     - `tests/src/**` outside a pure matching pre-release promotion rename
+     - `stats/**` outside a pure matching pre-release promotion rename
      - generated Java sources
      - any other non-`metadata/**/index.json` file
 
@@ -51,10 +57,12 @@ Previous reviews follow a simple pattern:
    - Confirm the new versions were added under the correct `metadata-version` entry.
    - Preserve existing ordering conventions; new tested versions are typically appended in version order.
    - Do not accept dropped tested versions, entry reshuffling, or unrelated field edits without a clear reason.
+   - For pre-release promotions, confirm `metadata-version` moved from the matching pre-release to the corresponding full release, old pre-release values were removed from `tested-versions`, and any `test-version` references were updated only when they pointed at the promoted test directory.
 
 6. Apply URL verification when URL fields changed.
    - This is higher scrutiny than a normal bulk-update PR.
    - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+   - For pre-release promotions, verify the `source-code-url`, `test-code-url`, and `documentation-url` values were rendered from the old version to the promoted `metadata-version` or otherwise corrected to an exact-version URL. Do not accept stale URLs that still point at the old pre-release.
 
 7. If the PR is clean and approved, enable auto-merge.
    - In this repository, approved automation PRs are expected to auto-merge after approval.
@@ -72,6 +80,7 @@ If any URL field changed, verify all of the following:
 - If a Maven `-sources.jar` or `-test-sources.jar` is used, verify it contains real source files such as `.java`, `.kt`, `.scala`, or `.groovy`, not only metadata or license files.
 - If the URL points to a repository tree or archive instead of Maven, verify that it resolves to real source or test files for the exact version tag.
 - If a candidate source or test URL cannot be verified with confidence, it should not be approved as-is.
+- For pre-release promotions, template rendering is expected: old-version URL tokens may be replaced by the promoted version only when the rendered URL resolves and archive/source checks pass.
 
 Use the logic from `tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java`, especially the `urlUpdateInstructions` and `sourceArtifactVerificationInstructions` rules.
 
@@ -80,6 +89,7 @@ Use the logic from `tests/tck-build-logic/src/main/groovy/org/graalvm/internal/t
 Approve when all of these are true:
 
 - The PR is limited to the expected `metadata/**/index.json` files.
+- Or the PR is a pure verified pre-release promotion rename limited to the matching `metadata/`, `tests/src/`, `stats/`, and `index.json` changes.
 - The diff is only tested-version maintenance or clearly justified URL maintenance.
 - CI is green, or any rerun confirms green status.
 - Any changed URLs were verified against the exact version.

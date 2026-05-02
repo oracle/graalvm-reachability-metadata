@@ -342,6 +342,7 @@ public class PopulateArtifactURLs extends DefaultTask {
                 - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
                 - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
                 - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
+                - If an existing URL can be rendered as a version template, verify the rendered exact-version candidate before writing it.
                 """.formatted(version).strip();
     }
 
@@ -354,9 +355,13 @@ public class PopulateArtifactURLs extends DefaultTask {
                     - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
                     - Set "test-code-url" to the selected test suite URL.
                     - Set "documentation-url" to the selected project documentation URL for version "%s".
+                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+                    - Render template candidates for target metadata-version "%s" and verify rendered URLs before writing them.
+                    - If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+                    - A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
                     - Set "description" to a concise explanation of the library in exactly two sentences.
                     - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
-                    """.formatted(version).strip();
+                    """.formatted(version, version).strip();
         }
         return """
                 - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
@@ -367,9 +372,13 @@ public class PopulateArtifactURLs extends DefaultTask {
                 - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
                 - Set missing "test-code-url" to the selected test suite URL.
                 - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+                - When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+                - Render template candidates for target metadata-version "%s" and verify rendered URLs before writing them.
+                - If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+                - A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
                 - Set missing "description" to a concise explanation of the library in exactly two sentences.
                 - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
-                """.formatted(version).strip();
+                """.formatted(version, version).strip();
     }
 
     private static String currentValue(String value) {

@@ -59,6 +59,8 @@ class PopulateArtifactURLsTests {
                 .contains("Set missing \"repository-url\" to the selected repository URL.")
                 .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
                 .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
+                .contains("Render template candidates for target metadata-version \"1.4.1\" and verify rendered URLs before writing them.")
+                .contains("A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.")
                 .contains("Set missing \"description\" to a concise explanation of the library in exactly two sentences.")
                 .contains("Set missing \"language\" only when the library is language-specific; otherwise leave the field absent.")
                 .contains("If any of these URLs or the description cannot be found with confidence, set that field value to \"N/A\".")
@@ -179,7 +181,8 @@ class PopulateArtifactURLsTests {
                 .contains("confirm `-sources.jar` contains real source files")
                 .contains("confirm `-test-sources.jar` contains real test source files.")
                 .contains("For non-Maven source/test URLs")
-                .contains("Prefer a verified repository tag URL instead.");
+                .contains("Prefer a verified repository tag URL instead.")
+                .contains("If an existing URL can be rendered as a version template, verify the rendered exact-version candidate before writing it.");
     }
 
     private Project createProjectWithMetadata() throws IOException {
