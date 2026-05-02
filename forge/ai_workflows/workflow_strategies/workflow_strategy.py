@@ -27,6 +27,7 @@ from utility_scripts.strategy_loader import load_prompt_template
 RUN_STATUS_SUCCESS = "success"
 RUN_STATUS_FAILURE = "failure"
 SUCCESS_WITH_INTERVENTION_STATUS = "success_with_intervention"
+RUN_STATUS_CHUNK_READY = "chunk_ready"
 
 class WorkflowStrategy(ABC):
     """Base class for workflow strategy implementations.

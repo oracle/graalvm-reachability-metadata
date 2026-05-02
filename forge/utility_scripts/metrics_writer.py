@@ -980,7 +980,7 @@ def commit_run_metrics_with_retry(
 def collect_new_library_support_quality_issues(run_metrics: dict) -> list[str]:
     """Return validation failures for a new-library-support run that is not meaningful enough for a PR."""
     status = run_metrics.get("status")
-    if status not in {"success", "success_with_intervention"}:
+    if status not in {"success", "success_with_intervention", "chunk_ready"}:
         return [f"workflow status is `{status or 'unknown'}`"]
 
     metrics = run_metrics.get("metrics") or {}

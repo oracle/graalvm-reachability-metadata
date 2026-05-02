@@ -30,6 +30,7 @@ from utility_scripts.metrics_writer import (
     commit_run_metrics_with_retry,
     read_pending_metrics,
 )
+from utility_scripts.large_library_progress import LABEL_LARGE_LIBRARY_PART, LargeLibraryProgressState
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.source_context import resolve_test_source_layout
 from utility_scripts.test_quality_checks import cleanup_scaffold_placeholder_tests, format_placeholder_occurrence
@@ -54,6 +55,10 @@ def build_pull_request_body(
         metrics,
         library_stats=None,
         post_generation_intervention=None,
+        is_large_library_part=False,
+        is_final_large_library_part=True,
+        large_library_part=None,
+        series_id=None,
 ):
     """Build the PR body with metrics, strategy name, and optional stats."""
     input_tokens_used = metrics.get("input_tokens_used", 0)
@@ -69,15 +74,23 @@ def build_pull_request_body(
     if test_only_metadata_entries > 0:
         test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_metadata_entries}\n"
 
+    issue_reference = f"Fixes: #{issue_no}"
+    if is_large_library_part and not is_final_large_library_part:
+        issue_reference = f"Refs: #{issue_no}"
+    part_line = ""
+    if is_large_library_part:
+        part_line = f"- Large-library series: `{series_id or 'unknown'}`\n- Part: {large_library_part}\n"
+
     body = f"""
-## What does this PR do?
+    ## What does this PR do?
 
-Fixes: #{issue_no}
+    {issue_reference}
 
-This PR introduces tests and metadata for {coordinates}, enabling support for this library.
+    This PR introduces tests and metadata for {coordinates}, enabling support for this library.
 
-Summary:
-- Strategy: {strategy_name}
+    Summary:
+    {part_line}\
+    - Strategy: {strategy_name}
 - Agent: {agent_name}
 - Model: {model_display_name}
 - Input tokens: {input_tokens_used}
@@ -144,7 +157,16 @@ def _fetch_pr_base(repo_path: str) -> str:
     return "FETCH_HEAD"
 
 
-def create_pull_request(branch, coordinates, metrics_repo_root, repo_path):
+def create_pull_request(
+        branch,
+        coordinates,
+        metrics_repo_root,
+        repo_path,
+        issue_number=None,
+        large_library_part=None,
+        is_final_large_library_part=True,
+        series_id=None,
+):
     """Create a GitHub pull request for the current branch, linking to the matching issue."""
     if shutil.which("gh") is None:
         print("gh CLI not found. Skipping PR creation.")
@@ -158,7 +180,7 @@ def create_pull_request(branch, coordinates, metrics_repo_root, repo_path):
         print(f"Pull request already exists for branch {branch}.")
         return
 
-    issue_no = find_issue_common(coordinates, REPO)
+    issue_no = issue_number if issue_number is not None else find_issue_common(coordinates, REPO)
 
     # Read evaluations from the pending metrics file
     matched = read_pending_metrics(metrics_repo_root)
@@ -168,6 +190,8 @@ def create_pull_request(branch, coordinates, metrics_repo_root, repo_path):
     model_display_name = get_model_display_name(strategy_name)
     agent_name = get_agent_name(strategy_name)
     title = f"[GenAI] Add support for {coordinates} using {model_display_name}"
+    if large_library_part is not None:
+        title = f"{title} (part {large_library_part})"
 
     library_stats = load_library_stats(repo_path, coordinates)
     body = build_pull_request_body(
@@ -180,6 +204,10 @@ def create_pull_request(branch, coordinates, metrics_repo_root, repo_path):
         metrics=metrics,
         library_stats=library_stats,
         post_generation_intervention=matched.get("post_generation_intervention"),
+        is_large_library_part=large_library_part is not None,
+        is_final_large_library_part=is_final_large_library_part,
+        large_library_part=large_library_part,
+        series_id=series_id,
     )
 
     cmd = [
@@ -192,10 +220,13 @@ def create_pull_request(branch, coordinates, metrics_repo_root, repo_path):
         "--label", "GenAI",
         "--label", "library-new-request",
     ]
+    if large_library_part is not None:
+        cmd.extend(["--label", LABEL_LARGE_LIBRARY_PART])
     if REVIEWERS:
         for r in REVIEWERS:
             cmd.extend(["--reviewer", r])
-    gh(*cmd[1:])
+    result = gh(*cmd[1:])
+    return _parse_pr_number(result.stdout)
 
 
 def build_parser():
@@ -237,6 +268,15 @@ def build_parser():
             "If omitted, the forge directory in the selected worktree is used."
         ),
     )
+    parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
+    parser.add_argument("--large-library-part", type=int, help="Part number for a large-library PR series.")
+    parser.add_argument(
+        "--large-library-final",
+        action="store_true",
+        help="Use Fixes instead of Refs for a large-library part.",
+    )
+    parser.add_argument("--series-id", help="Large-library series identifier for the PR body.")
+    parser.add_argument("--large-library-state-path", help="Progress state JSON path to update after publishing.")
     add_in_metadata_repo_argument(parser)
 
     return parser
@@ -277,17 +317,28 @@ def parse_flags(argv_list):
         resolved_repo_path,
         resolved_metrics_repo_path,
         flags.in_metadata_repo,
+        flags.issue_number,
+        flags.large_library_part,
+        flags.large_library_final,
+        flags.series_id,
+        flags.large_library_state_path,
     )
 
 
-def push_current_branch_to_origin(coordinates, repo_path, metrics_repo_path=None, include_in_repo_metrics=False):
+def push_current_branch_to_origin(
+        coordinates,
+        repo_path,
+        metrics_repo_path=None,
+        include_in_repo_metrics=False,
+        large_library_part=None,
+):
     """Create and push a feature branch, returning branch and coordinates."""
     group, artifact, library_version = parse_coordinate_parts(coordinates)
 
-    new_branch = build_ai_branch_name(
-        f"add-lib-support-{group}-{artifact}-{library_version}",
-        cwd=repo_path,
-    )
+    branch_suffix = f"add-lib-support-{group}-{artifact}-{library_version}"
+    if large_library_part is not None:
+        branch_suffix = f"{branch_suffix}-part-{large_library_part:04d}"
+    new_branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
     delete_remote_branch_if_exists(new_branch, cwd=repo_path)
     subprocess.run(["git", "switch", "-C", new_branch], check=True, cwd=repo_path)
 
@@ -310,6 +361,32 @@ def push_current_branch_to_origin(coordinates, repo_path, metrics_repo_path=None
     )
 
     return new_branch
+
+
+def _parse_pr_number(output: str) -> int | None:
+    """Extract a PR number from gh pr create output."""
+    for token in output.replace("/", " ").split():
+        if token.isdigit():
+            return int(token)
+    return None
+
+
+def update_large_library_state_after_publish(
+        state_path: str | None,
+        branch: str,
+        repo_path: str,
+        pr_number: int | None,
+        final_part: bool,
+) -> None:
+    """Record the published branch/commit in the large-library progress artifact."""
+    if not state_path:
+        return
+    state = LargeLibraryProgressState.load(state_path)
+    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
+    state.record_published_pr(branch, commit, pr_number)
+    if not final_part:
+        state.advance_to_next_part()
+    state.save(state_path)
 
 
 def metrics_commit_and_push(metrics_repo_root: str, coordinates: str):
@@ -355,7 +432,17 @@ def cleanup_generated_test_scaffold(coordinates: str, repo_path: str, metrics_re
 
 
 def main(argv=None):
-    coordinates, repo_path, metrics_repo_path, in_metadata_repo = parse_flags(argv if argv is not None else sys.argv[1:])
+    (
+        coordinates,
+        repo_path,
+        metrics_repo_path,
+        in_metadata_repo,
+        issue_number,
+        large_library_part,
+        large_library_final,
+        series_id,
+        large_library_state_path,
+    ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     ensure_gh_authenticated()
     validate_run_quality(coordinates, metrics_repo_path)
@@ -366,8 +453,25 @@ def main(argv=None):
         repo_path=repo_path,
         metrics_repo_path=metrics_repo_path,
         include_in_repo_metrics=in_metadata_repo,
+        large_library_part=large_library_part,
     )
-    create_pull_request(branch, coordinates, metrics_repo_path, repo_path)
+    pr_number = create_pull_request(
+        branch,
+        coordinates,
+        metrics_repo_path,
+        repo_path,
+        issue_number=issue_number,
+        large_library_part=large_library_part,
+        is_final_large_library_part=large_library_final or large_library_part is None,
+        series_id=series_id,
+    )
+    update_large_library_state_after_publish(
+        large_library_state_path,
+        branch,
+        repo_path,
+        pr_number,
+        large_library_final or large_library_part is None,
+    )
     if not in_metadata_repo:
         metrics_commit_and_push(metrics_repo_path, coordinates)
 
