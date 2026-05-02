@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -29,6 +31,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,36 +39,77 @@ class Opengauss_jdbcTest {
     private static final String USERNAME = "fred";
     private static final String PASSWORD = "Secretpassword@123";
     private static final String DATABASE = "postgres";
-    private static final String JDBC_URL = "jdbc:opengauss://localhost:15432/" + DATABASE;
+    private static int hostPort;
+    private static Path containerIdFile;
     private static Process process;
+    private static String containerId;
 
     private static Connection openConnection() throws SQLException {
         Properties props = new Properties();
         props.setProperty("user", USERNAME);
         props.setProperty("password", PASSWORD);
-        return DriverManager.getConnection(JDBC_URL, props);
+        return DriverManager.getConnection("jdbc:postgresql://localhost:" + hostPort + "/" + DATABASE, props);
     }
 
     @BeforeAll
     static void beforeAll() throws IOException {
         System.out.println("Starting OpenGauss ...");
+        containerIdFile = Files.createTempFile("opengauss-jdbc-test-", ".cid");
+        Files.delete(containerIdFile);
         process = new ProcessBuilder(
-                "docker", "run", "--rm", "-p", "15432:5432", "-e", "GS_USERNAME=" + USERNAME,
-                "-e", "GS_PASSWORD=" + PASSWORD, "opengauss/opengauss:5.0.0")
+                "docker", "run", "--rm", "--cidfile", containerIdFile.toString(), "-p", "127.0.0.1::5432", "-e",
+                "GS_USERNAME=" + USERNAME, "-e", "GS_PASSWORD=" + PASSWORD, "opengauss/opengauss:5.0.0")
                 .redirectOutput(new File("opengauss-stdout.txt")).redirectError(new File("opengauss-stderr.txt")).start();
         Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
+            discoverMappedPort();
             openConnection().close();
             return true;
         });
-        System.out.println("OpenGauss started");
+        System.out.println("OpenGauss started on port " + hostPort);
     }
 
     @AfterAll
-    static void tearDown() {
-        if (process != null && process.isAlive()) {
+    static void tearDown() throws IOException, InterruptedException {
+        if (containerId != null) {
             System.out.println("Shutting down OpenGauss");
-            process.destroy();
+            runDockerCommand("docker", "stop", containerId);
         }
+        if (process != null && process.isAlive()) {
+            process.destroy();
+            if (!process.waitFor(10, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+            }
+        }
+        if (containerIdFile != null) {
+            Files.deleteIfExists(containerIdFile);
+        }
+    }
+
+    private static void discoverMappedPort() throws IOException, InterruptedException {
+        if (containerId == null || containerId.isEmpty()) {
+            containerId = Files.readString(containerIdFile, StandardCharsets.UTF_8).trim();
+        }
+        if (containerId.isEmpty()) {
+            throw new IOException("OpenGauss container id is not available yet");
+        }
+        String portMapping = runDockerCommand("docker", "port", containerId, "5432/tcp");
+        int lineSeparatorIndex = portMapping.indexOf(System.lineSeparator());
+        String firstPortMapping = lineSeparatorIndex == -1 ? portMapping : portMapping.substring(0, lineSeparatorIndex);
+        int portSeparatorIndex = firstPortMapping.lastIndexOf(':');
+        hostPort = Integer.parseInt(firstPortMapping.substring(portSeparatorIndex + 1));
+    }
+
+    private static String runDockerCommand(String... command) throws IOException, InterruptedException {
+        Process commandProcess = new ProcessBuilder(command).redirectErrorStream(true).start();
+        if (!commandProcess.waitFor(5, TimeUnit.SECONDS)) {
+            commandProcess.destroyForcibly();
+            throw new IOException("Docker command timed out");
+        }
+        String output = new String(commandProcess.getInputStream().readAllBytes(), StandardCharsets.UTF_8).trim();
+        if (commandProcess.exitValue() != 0) {
+            throw new IOException(output);
+        }
+        return output;
     }
 
     @Test
