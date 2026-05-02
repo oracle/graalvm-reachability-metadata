@@ -12,7 +12,7 @@ from ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy 
 from ai_workflows.workflow_strategies.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
 from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
-from utility_scripts.large_library_progress import LargeLibraryProgressState
+from utility_scripts.large_library_progress import LargeLibraryProgressState, find_progress_state_path
 
 
 class DynamicAccessProgressLoggingTests(unittest.TestCase):
@@ -294,6 +294,55 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
 
         self.assertIsNone(strategy.large_library_progress_state)
         self.assertIsNone(strategy.large_library_progress_state_path)
+
+    def test_increase_coverage_strategy_starts_large_library_series_for_oversized_report(self) -> None:
+        class LargeReportWithoutWork(DynamicAccessCoverageReport):
+            def next_uncovered_class(self, exhausted_classes: set[str]) -> DynamicAccessClass | None:
+                return None
+
+        report = LargeReportWithoutWork(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=7,
+            covered_calls=0,
+            classes=[
+                self._class_coverage("org.example.A", 3, 0),
+                self._class_coverage("org.example.B", 4, 0),
+            ],
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = IncreaseDynamicAccessCoverageStrategy(
+                {
+                    "model": "test-model",
+                    "prompts": {"dynamic-access-iteration": "unused"},
+                    "parameters": {
+                        "max-iterations": 1,
+                        "max-class-test-iterations": 1,
+                    },
+                },
+                reachability_repo_path="/tmp/reachability",
+                updated_library="org.example:lib:1.0.0",
+                large_library_issue_number=1412,
+                large_library_request_label="library-update-request",
+                large_library_metrics_repo_root=tmpdir,
+                large_library_strategy_name="library_update_pi_gpt-5.5",
+                chunk_class_limit=1,
+            )
+
+            with patch.object(DynamicAccessIterativeStrategy, "_generate_dynamic_access_report", return_value=report), \
+                    patch.object(DynamicAccessIterativeStrategy, "_library_test_change_signature", return_value="clean"):
+                strategy.run(agent=object())
+
+            state_path = find_progress_state_path(tmpdir, 1412)
+            self.assertIsNotNone(state_path)
+            saved_state = LargeLibraryProgressState.load(state_path)
+
+        self.assertEqual(saved_state.request_label, "library-update-request")
+        self.assertEqual(saved_state.strategy_name, "library_update_pi_gpt-5.5")
+        self.assertEqual(saved_state.class_order, ["org.example.A", "org.example.B"])
+        self.assertEqual(saved_state.covered_calls, 0)
+        self.assertEqual(saved_state.total_calls, 7)
 
     def test_increase_coverage_strategy_propagates_chunk_ready_from_dynamic_access_phase(self) -> None:
         class ChunkReadyDynamicAccess:

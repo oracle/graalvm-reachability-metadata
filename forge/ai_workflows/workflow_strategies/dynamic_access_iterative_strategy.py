@@ -119,6 +119,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             current_report = self._generate_dynamic_access_report()
         if self._should_fallback_to_basic_flow(current_report):
             return True, 0
+        self._maybe_activate_large_library_series(current_report)
 
         exhausted_classes: set[str] = set()
         if self.large_library_progress_state is not None:
