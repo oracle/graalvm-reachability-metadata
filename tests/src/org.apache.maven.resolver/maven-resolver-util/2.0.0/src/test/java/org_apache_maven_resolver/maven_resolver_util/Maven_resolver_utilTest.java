@@ -316,7 +316,7 @@ public class Maven_resolver_utilTest {
         RemoteRepository central = repository("central", "https://repo.maven.apache.org/maven2");
         RemoteRepository local = repository("local", "file:/tmp/repository");
         DefaultMirrorSelector mirrorSelector = new DefaultMirrorSelector()
-                .add("mirror", "https://mirror.example.org/maven2", "default", false, "external:*", "*");
+                .add("mirror", "https://mirror.example.org/maven2", "default", false, false, "external:*", "*");
         Proxy proxy = new Proxy(Proxy.TYPE_HTTP, "proxy.example.org", 8080);
         DefaultProxySelector proxySelector = new DefaultProxySelector().add(proxy, "repo.maven.apache.org");
         Authentication authentication = new AuthenticationBuilder()
