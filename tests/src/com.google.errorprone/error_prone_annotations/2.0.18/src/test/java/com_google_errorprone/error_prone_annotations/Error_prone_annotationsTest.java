@@ -188,7 +188,7 @@ public class Error_prone_annotationsTest {
 
     @CanIgnoreReturnValue
     private static final class MessageFormats {
-        private MessageFormats() {}
+        private MessageFormats() { }
 
         @FormatMethod
         static String format(@FormatString String pattern, Object... args) {
@@ -369,7 +369,7 @@ public class Error_prone_annotationsTest {
     }
 
     private static final class LegacyApi {
-        private LegacyApi() {}
+        private LegacyApi() { }
 
         @DoNotCall("Use supportedReplacement instead")
         static String removedOperation() {
