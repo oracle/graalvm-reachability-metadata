@@ -20,7 +20,7 @@ public class PropertiesMessageSourceTest {
         MessageSource source = PropertiesMessageSource.fromResource(RESOURCE_PATH);
 
         assertThat(source.getKey("greeting")).isEqualTo("Hello from a test resource");
-        assertThat(source.getKey("accented")).isEqualTo("café");
+        assertThat(source.getKey("accented")).isEqualTo("caf\u00e9");
         assertThat(source.getKey("missing.key")).isNull();
     }
 }
