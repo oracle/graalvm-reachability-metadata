@@ -26,7 +26,8 @@ public class ConfigurableInnerConfigurableHandlerTest {
         properties.put("integerMap", Map.of("one", "1", "two", "2"));
 
         aQute.bnd.osgi.Annotation markerAnnotation = new aQute.bnd.osgi.Annotation(new MarkerImpl("configured"));
-        assertThat(markerAnnotation.getAnnotation()).isInstanceOf(Marker.class);
+        assertThat(markerAnnotation.
+            getAnnotation()).isInstanceOf(Marker.class);
         properties.put("marker", markerAnnotation);
 
         ConversionConfiguration configuration = Configurable.createConfigurable(ConversionConfiguration.class,
