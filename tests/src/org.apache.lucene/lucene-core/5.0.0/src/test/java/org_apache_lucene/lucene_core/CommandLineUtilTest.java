@@ -6,7 +6,6 @@
  */
 package org_apache_lucene.lucene_core;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -45,13 +44,13 @@ public class CommandLineUtilTest {
     }
 
     @Test
-    void createsFSDirectoryByClassNameUsingFileConstructor() throws IOException {
-        File directoryPath = temporaryDirectory.toFile();
+    void createsFSDirectoryByClassNameUsingPathConstructor() throws IOException {
+        Path directoryPath = temporaryDirectory;
 
         FSDirectory directory = CommandLineUtil.newFSDirectory("NIOFSDirectory", directoryPath);
         try {
             assertThat(directory).isInstanceOf(NIOFSDirectory.class);
-            assertThat(directory.getDirectory()).isEqualTo(directoryPath.getCanonicalFile());
+            assertThat(directory.getDirectory()).isEqualTo(directoryPath.toRealPath());
         } finally {
             directory.close();
         }
@@ -61,7 +60,7 @@ public class CommandLineUtilTest {
     void reportsNonFSDirectoryClassNames() {
         assertThatThrownBy(() -> CommandLineUtil.loadFSDirectoryClass("RAMDirectory"))
                 .isInstanceOf(ClassCastException.class);
-        assertThatThrownBy(() -> CommandLineUtil.newFSDirectory("RAMDirectory", temporaryDirectory.toFile()))
+        assertThatThrownBy(() -> CommandLineUtil.newFSDirectory("RAMDirectory", temporaryDirectory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("RAMDirectory is not a FSDirectory implementation");
     }

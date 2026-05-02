@@ -29,10 +29,10 @@ public class IOUtilsAndNamedSPILoaderTest {
 
     @Test
     void loadsBuiltInPostingsFormatsThroughNamedSpiLookup() {
-        PostingsFormat postingsFormat = PostingsFormat.forName("Lucene41");
+        PostingsFormat postingsFormat = PostingsFormat.forName("Lucene50");
 
         assertThat(postingsFormat.getClass().getName())
-                .isEqualTo("org.apache.lucene.codecs.lucene41.Lucene41PostingsFormat");
-        assertThat(PostingsFormat.availablePostingsFormats()).contains("Lucene40", "Lucene41");
+                .isEqualTo("org.apache.lucene.codecs.lucene50.Lucene50PostingsFormat");
+        assertThat(PostingsFormat.availablePostingsFormats()).contains("Lucene50");
     }
 }

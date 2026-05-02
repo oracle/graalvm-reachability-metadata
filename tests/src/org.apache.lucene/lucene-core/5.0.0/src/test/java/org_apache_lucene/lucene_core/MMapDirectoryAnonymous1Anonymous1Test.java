@@ -6,7 +6,6 @@
  */
 package org_apache_lucene.lucene_core;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InaccessibleObjectException;
 import java.nio.file.Files;
@@ -32,7 +31,7 @@ public class MMapDirectoryAnonymous1Anonymous1Test {
         byte[] content = new byte[] {10, 20, 30, 40, 50, 60, 70, 80};
         Files.write(temporaryDirectory.resolve(INDEX_FILE_NAME), content);
 
-        MMapDirectory directory = new AlwaysUnmappingMMapDirectory(temporaryDirectory.toFile());
+        MMapDirectory directory = new AlwaysUnmappingMMapDirectory(temporaryDirectory);
         try {
             IndexInput input = directory.openInput(INDEX_FILE_NAME, IOContext.DEFAULT);
             try {
@@ -62,7 +61,7 @@ public class MMapDirectoryAnonymous1Anonymous1Test {
     }
 
     private static final class AlwaysUnmappingMMapDirectory extends MMapDirectory {
-        private AlwaysUnmappingMMapDirectory(File path) throws IOException {
+        private AlwaysUnmappingMMapDirectory(Path path) throws IOException {
             super(path);
         }
 

@@ -17,6 +17,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.FSLockFactory;
+import org.apache.lucene.store.Lock;
 import org.apache.lucene.store.LockStressTest;
 import org.apache.lucene.store.SimpleFSLockFactory;
 import org.junit.jupiter.api.Test;
@@ -47,6 +50,33 @@ public class LockStressTestTest {
             });
 
             server.awaitCompletion();
+        }
+    }
+
+    @Test
+    void instantiatesConstructibleLockFactoryAndCompletesSingleLockCycle() throws Exception {
+        try (LockVerificationServer server = LockVerificationServer.start()) {
+            LockStressTest.main(new String[] {
+                    Integer.toString(CLIENT_ID),
+                    InetAddress.getLoopbackAddress().getHostAddress(),
+                    Integer.toString(server.port()),
+                    ConstructibleFSLockFactory.class.getName(),
+                    lockDirectory.toString(),
+                    "0",
+                    "1"
+            });
+
+            server.awaitCompletion();
+        }
+    }
+
+    public static final class ConstructibleFSLockFactory extends FSLockFactory {
+        public ConstructibleFSLockFactory() {
+        }
+
+        @Override
+        protected Lock makeFSLock(FSDirectory dir, String lockName) {
+            return SimpleFSLockFactory.INSTANCE.makeLock(dir, lockName);
         }
     }
 
