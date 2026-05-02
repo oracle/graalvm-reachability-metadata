@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JUnit Jupiter" tests="9" skipped="0" failures="0" errors="1" time="27.248" hostname="kung-fu-workstation" timestamp="2026-05-02T22:45:48">
+<testsuite name="JUnit Jupiter" tests="10" skipped="0" failures="0" errors="0" time="26.009" hostname="kung-fu-workstation" timestamp="2026-05-02T23:01:16">
 <properties>
 <property name="file.encoding" value="UTF-8"/>
 <property name="file.separator" value="/"/>
@@ -33,6 +33,7 @@
 "/>
 <property name="native.encoding" value="UTF-8"/>
 <property name="org.graalvm.nativeimage.future-defaults.complete-reflection-types" value="true"/>
+<property name="org.graalvm.nativeimage.future-defaults.run-time-initialize-security-providers" value="true"/>
 <property name="org.graalvm.nativeimage.imagecode" value="runtime"/>
 <property name="org.graalvm.nativeimage.kind" value="executable"/>
 <property name="os.arch" value="amd64"/>
@@ -52,75 +53,61 @@
 <property name="user.name" value="vjovanov"/>
 <property name="user.timezone" value="Europe/Zurich"/>
 </properties>
-<testcase name="commitAndRollback()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.351">
+<testcase name="commitAndRollback()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.144">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.Opengauss_jdbcTest]/[method:commitAndRollback()]
 display-name: commitAndRollback()
 ]]></system-out>
 </testcase>
-<testcase name="buildsTwoDimensionalObjectArraysFromTextValues()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.045">
+<testcase name="buildsTwoDimensionalObjectArraysFromTextValues()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.034">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.PgArrayTest]/[method:buildsTwoDimensionalObjectArraysFromTextValues()]
 display-name: buildsTwoDimensionalObjectArraysFromTextValues()
 ]]></system-out>
 </testcase>
-<testcase name="buildsTwoDimensionalPrimitiveWrapperArraysFromTextValues()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.039">
+<testcase name="buildsTwoDimensionalPrimitiveWrapperArraysFromTextValues()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.048">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.PgArrayTest]/[method:buildsTwoDimensionalPrimitiveWrapperArraysFromTextValues()]
 display-name: buildsTwoDimensionalPrimitiveWrapperArraysFromTextValues()
 ]]></system-out>
 </testcase>
-<testcase name="decryptsBouncyCastleEncryptedPkcs8PrivateKey()" classname="org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest" time="0.073">
-<error message="Attempted to verify a provider that was not registered at build time: org.bouncycastle.jce.provider.BouncyCastleProvider. All security providers must be registered and verified during native image generation. Try adding the option: -H:AdditionalSecurityProviders=org.bouncycastle.jce.provider.BouncyCastleProvider and rebuild the image." type="java.lang.SecurityException"><![CDATA[java.lang.SecurityException: Attempted to verify a provider that was not registered at build time: org.bouncycastle.jce.provider.BouncyCastleProvider. All security providers must be registered and verified during native image generation. Try adding the option: -H:AdditionalSecurityProviders=org.bouncycastle.jce.provider.BouncyCastleProvider and rebuild the image.
-	at java.base@25.0.2/javax.crypto.JceSecurity.getVerificationResult(JceSecurity.java:300)
-	at java.base@25.0.2/javax.crypto.Cipher.getInstance(Cipher.java:731)
-	at org.bouncycastle.jcajce.util.ProviderJcaJceHelper.createCipher(Unknown Source)
-	at org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8EncryptorBuilder.build(Unknown Source)
-	at org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest.encryptPrivateKey(BouncyCastlePrivateKeyFactoryTest.java:75)
-	at org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest.decryptsBouncyCastleEncryptedPkcs8PrivateKey(BouncyCastlePrivateKeyFactoryTest.java:39)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
-	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
-	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
-	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
-	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
-	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
-	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
-	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
-]]></error>
+<testcase name="initializesBouncyCastleProviderThroughFactory()" classname="org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest" time="0.002">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest]/[method:initializesBouncyCastleProviderThroughFactory()]
+display-name: initializesBouncyCastleProviderThroughFactory()
+]]></system-out>
+</testcase>
+<testcase name="decryptsBouncyCastleEncryptedPkcs8PrivateKey()" classname="org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest" time="0.034">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.BouncyCastlePrivateKeyFactoryTest]/[method:decryptsBouncyCastleEncryptedPkcs8PrivateKey()]
 display-name: decryptsBouncyCastleEncryptedPkcs8PrivateKey()
 ]]></system-out>
 </testcase>
-<testcase name="otherDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.049">
+<testcase name="otherDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.042">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.Opengauss_jdbcTest]/[method:otherDatatypes()]
 display-name: otherDatatypes()
 ]]></system-out>
 </testcase>
-<testcase name="buildsBinaryArraysFromWireFormat()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.047">
+<testcase name="buildsBinaryArraysFromWireFormat()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.035">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.PgArrayTest]/[method:buildsBinaryArraysFromWireFormat()]
 display-name: buildsBinaryArraysFromWireFormat()
 ]]></system-out>
 </testcase>
-<testcase name="simpleDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.062">
+<testcase name="simpleDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.049">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.Opengauss_jdbcTest]/[method:simpleDatatypes()]
 display-name: simpleDatatypes()
 ]]></system-out>
 </testcase>
-<testcase name="geometricDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.073">
+<testcase name="geometricDatatypes()" classname="org_opengauss.opengauss_jdbc.Opengauss_jdbcTest" time="0.044">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.Opengauss_jdbcTest]/[method:geometricDatatypes()]
 display-name: geometricDatatypes()
 ]]></system-out>
 </testcase>
-<testcase name="buildsUuidArraysThroughArrayAssistant()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.03">
+<testcase name="buildsUuidArraysThroughArrayAssistant()" classname="org_opengauss.opengauss_jdbc.PgArrayTest" time="0.034">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:org_opengauss.opengauss_jdbc.PgArrayTest]/[method:buildsUuidArraysThroughArrayAssistant()]
 display-name: buildsUuidArraysThroughArrayAssistant()

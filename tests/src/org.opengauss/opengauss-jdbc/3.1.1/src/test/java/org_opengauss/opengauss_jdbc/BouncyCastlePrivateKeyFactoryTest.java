@@ -33,6 +33,14 @@ public class BouncyCastlePrivateKeyFactoryTest {
     private static final char[] PASSWORD = "changeit".toCharArray();
 
     @Test
+    void initializesBouncyCastleProviderThroughFactory() throws Exception {
+        Provider provider = BouncyCastlePrivateKeyFactory.initBouncyCastleProvider();
+
+        assertThat(provider).isInstanceOf(BouncyCastleProvider.class);
+        assertThat(provider.getName()).isEqualTo(BouncyCastleProvider.PROVIDER_NAME);
+    }
+
+    @Test
     void decryptsBouncyCastleEncryptedPkcs8PrivateKey() throws Exception {
         Provider provider = ensureBouncyCastleProvider();
         KeyPair keyPair = generateRsaKeyPair(provider);

@@ -31,4 +31,11 @@ graalvmNative {
             outputDirectories.add("src/test/resources/META-INF/native-image/org.opengauss/opengauss-jdbc")
         }
     }
+    binaries {
+        all {
+            buildArgs.add("--future-defaults=run-time-initialize-security-providers")
+            buildArgs.add("-Djava.security.properties=${file('java.security.properties').absolutePath}")
+            buildArgs.add("-H:AdditionalSecurityProviders=org.bouncycastle.jce.provider.BouncyCastleProvider")
+        }
+    }
 }
