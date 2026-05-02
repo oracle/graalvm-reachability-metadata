@@ -101,6 +101,16 @@ public class Javax_injectTest {
     }
 
     @Test
+    void markerQualifiersDistinguishCollaboratorsWithoutBindingAttributes() {
+        Provider<PaymentGateway> localGateway = () -> new LocalPaymentGateway("terminal");
+        Provider<PaymentGateway> remoteGateway = () -> new RemotePaymentGateway("processor");
+        PaymentAuthorizer authorizer = new PaymentAuthorizer(localGateway, remoteGateway);
+
+        assertThat(authorizer.authorize(local(), "order-17", 1250)).isEqualTo("local:terminal:order-17:1250");
+        assertThat(authorizer.authorize(remote(), "order-18", 3199)).isEqualTo("remote:processor:order-18:3199");
+    }
+
+    @Test
     void scopeAnnotationsCanModelSharedAndUnscopedProviderLifecycles() {
         AtomicInteger createdCounters = new AtomicInteger();
         Provider<SharedCounter> singletonProvider = new SharedCounterProvider(createdCounters);
@@ -219,6 +229,30 @@ public class Javax_injectTest {
                 return Channel.class;
             }
         };
+    }
+
+    private static Local local() {
+        return new Local() {
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Local.class;
+            }
+        };
+    }
+
+    private static Remote remote() {
+        return new Remote() {
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Remote.class;
+            }
+        };
+    }
+
+    @Qualifier
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({FIELD, PARAMETER, METHOD, TYPE})
+    private @interface Local {
     }
 
     @Qualifier
@@ -355,6 +389,57 @@ public class Javax_injectTest {
                 throw new IllegalArgumentException("Unknown notification channel: " + ChannelBinding.key(channel));
             }
             return provider.get().send(message);
+        }
+    }
+
+    private interface PaymentGateway {
+        String authorize(String orderId, int cents);
+    }
+
+    private static final class LocalPaymentGateway implements PaymentGateway {
+        private final String terminalName;
+
+        private LocalPaymentGateway(String terminalName) {
+            this.terminalName = terminalName;
+        }
+
+        @Override
+        public String authorize(String orderId, int cents) {
+            return "local:" + terminalName + ":" + orderId + ":" + cents;
+        }
+    }
+
+    private static final class RemotePaymentGateway implements PaymentGateway {
+        private final String processorName;
+
+        private RemotePaymentGateway(String processorName) {
+            this.processorName = processorName;
+        }
+
+        @Override
+        public String authorize(String orderId, int cents) {
+            return "remote:" + processorName + ":" + orderId + ":" + cents;
+        }
+    }
+
+    private static final class PaymentAuthorizer {
+        private final Provider<PaymentGateway> localGateway;
+        private final Provider<PaymentGateway> remoteGateway;
+
+        @Inject
+        private PaymentAuthorizer(
+                @Local Provider<PaymentGateway> localGateway,
+                @Remote Provider<PaymentGateway> remoteGateway) {
+            this.localGateway = localGateway;
+            this.remoteGateway = remoteGateway;
+        }
+
+        private String authorize(@Local Local qualifier, String orderId, int cents) {
+            return localGateway.get().authorize(orderId, cents);
+        }
+
+        private String authorize(@Remote Remote qualifier, String orderId, int cents) {
+            return remoteGateway.get().authorize(orderId, cents);
         }
     }
 
