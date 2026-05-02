@@ -345,8 +345,52 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.status, ntv.STATUS_FAILED)
         self.assertEqual(result.iterations_used, 1)
         printed = output.getvalue()
-        self.assertIn("produced no trace metadata; failing fast", printed)
+        self.assertIn("produced no usable trace metadata; failing fast", printed)
         self.assertIn("com.example.MissingThingException: boom", printed)
+
+    def test_fails_fast_when_172_produces_empty_metadata_json(self) -> None:
+        def _fake_run(cmd, **kwargs):  # type: ignore[no-untyped-def]
+            stdout = kwargs.get("stdout")
+            if hasattr(stdout, "write"):
+                stdout.write(
+                    "some native output\n"
+                    "com.oracle.svm.core.jdk.resources.MissingResourceRegistrationError: missing resource\n"
+                )
+            if "runNativeTraceImage" in cmd:
+                exit_file = next(
+                    (a.split("=", 1)[1] for a in cmd if a.startswith("-PtraceBinaryExitFile=")),
+                    None,
+                )
+                run_dir = next(
+                    (a.split("=", 1)[1] for a in cmd if a.startswith("-PtraceMetadataPath=")),
+                    None,
+                )
+                if exit_file:
+                    Path(exit_file).parent.mkdir(parents=True, exist_ok=True)
+                    Path(exit_file).write_text(str(ntv.MISSING_METADATA_EXIT_CODE), encoding="utf-8")
+                if run_dir:
+                    Path(run_dir).mkdir(parents=True, exist_ok=True)
+                    Path(run_dir, "reachability-metadata.json").write_text("{}", encoding="utf-8")
+                return subprocess.CompletedProcess(cmd, 0)
+            return subprocess.CompletedProcess(cmd, 0)
+
+        output = io.StringIO()
+        with patch(
+            "utility_scripts.native_test_verification.subprocess.run",
+            side_effect=_fake_run,
+        ), redirect_stdout(output):
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+        self.assertEqual(result.status, ntv.STATUS_FAILED)
+        self.assertEqual(result.iterations_used, 1)
+        printed = output.getvalue()
+        self.assertIn("reachability-metadata.json:", printed)
+        self.assertIn("{}", printed)
+        self.assertIn("produced no usable trace metadata; failing fast", printed)
 
     def test_failed_when_budget_exhausted_with_only_172(self) -> None:
         fake, _calls = self._fake_run_factory([172, 172])

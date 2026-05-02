@@ -156,6 +156,7 @@ def verify_native_test_passes(
         last_binary_rc = binary_rc if binary_rc is not None else gradle_rc
         _print_collected_metadata(run_dir, cycle + 1)
         collected_metadata_files = _metadata_files(run_dir)
+        usable_metadata_files = _usable_metadata_files(run_dir)
 
         if binary_rc == 0:
             log_stage(
@@ -163,7 +164,7 @@ def verify_native_test_passes(
                 f"cycle {cycle + 1}: binary passed (exit 0); merging trace dirs",
             )
             run_dirs_to_merge = list(accepted_run_dirs)
-            if collected_metadata_files:
+            if usable_metadata_files:
                 run_dirs_to_merge.append(run_dir)
             if not _merge_into_output(
                 reachability_repo_path=reachability_repo_path,
@@ -175,10 +176,10 @@ def verify_native_test_passes(
             return _make_result(status, cycle + 1)
 
         if binary_rc == MISSING_METADATA_EXIT_CODE:
-            if not collected_metadata_files:
+            if not usable_metadata_files:
                 log_stage(
                     _GATE_STAGE,
-                    f"cycle {cycle + 1}: binary exited 172 but produced no trace metadata; failing fast",
+                    f"cycle {cycle + 1}: binary exited 172 but produced no usable trace metadata; failing fast",
                 )
                 _print_failure_stacktrace(log_path, cycle + 1)
                 return _make_result(STATUS_FAILED, cycle + 1)
@@ -388,6 +389,35 @@ def _metadata_files(run_dir: str) -> list[str]:
                 continue
             result.append(os.path.join(root, name))
     return sorted(result, key=lambda path: os.path.relpath(path, run_dir))
+
+
+def _usable_metadata_files(run_dir: str) -> list[str]:
+    """Return trace metadata files that contain at least one metadata entry."""
+    return [path for path in _metadata_files(run_dir) if _metadata_file_has_entries(path)]
+
+
+def _metadata_file_has_entries(path: str) -> bool:
+    """Return true when ``path`` contains usable trace metadata."""
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            data = json.load(handle)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        try:
+            return os.path.getsize(path) > 0
+        except OSError:
+            return False
+    except OSError:
+        return False
+    return _json_has_entries(data)
+
+
+def _json_has_entries(value: object) -> bool:
+    """Return true when a parsed JSON value contains a non-empty entry."""
+    if isinstance(value, dict):
+        return any(_json_has_entries(child) for child in value.values())
+    if isinstance(value, list):
+        return any(_json_has_entries(child) for child in value)
+    return value is not None
 
 
 def _format_metadata_file(path: str) -> str:
