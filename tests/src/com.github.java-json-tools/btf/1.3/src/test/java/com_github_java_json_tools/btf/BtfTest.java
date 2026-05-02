@@ -85,6 +85,20 @@ public class BtfTest {
         assertThat(query.fields()).containsExactly("title", "summary");
     }
 
+    @Test
+    void frozenValuesCanExposeNarrowPublicEditorInterfaces() {
+        Profile profile = new Profile("reader", List.of("read"));
+
+        ProfileEditor editor = openProfileEditor(profile);
+        editor.rename("maintainer")
+                .allow("write")
+                .allow("release");
+        Profile updated = editor.freeze();
+
+        assertThat(updated.name()).isEqualTo("maintainer");
+        assertThat(updated.permissions()).containsExactly("read", "write", "release");
+    }
+
     private static Document build(Builder<Document> builder) {
         return builder.build();
     }
@@ -99,6 +113,10 @@ public class BtfTest {
 
     private static Document freeze(Thawed<Document> thawed) {
         return thawed.freeze();
+    }
+
+    private static ProfileEditor openProfileEditor(Frozen<ProfileEditor> frozen) {
+        return frozen.thaw();
     }
 
     private static final class Document implements Frozen<DocumentBuilder> {
@@ -153,6 +171,62 @@ public class BtfTest {
         @Override
         public Document freeze() {
             return new Document(title, tags);
+        }
+    }
+
+    private interface ProfileEditor extends Thawed<Profile> {
+        ProfileEditor rename(String name);
+
+        ProfileEditor allow(String permission);
+    }
+
+    private static final class Profile implements Frozen<ProfileEditor> {
+        private final String name;
+        private final List<String> permissions;
+
+        private Profile(String name, List<String> permissions) {
+            this.name = name;
+            this.permissions = List.copyOf(permissions);
+        }
+
+        @Override
+        public ProfileEditor thaw() {
+            return new MutableProfile(name, permissions);
+        }
+
+        private String name() {
+            return name;
+        }
+
+        private List<String> permissions() {
+            return permissions;
+        }
+    }
+
+    private static final class MutableProfile implements ProfileEditor {
+        private String name;
+        private final List<String> permissions;
+
+        private MutableProfile(String name, List<String> permissions) {
+            this.name = name;
+            this.permissions = new ArrayList<>(permissions);
+        }
+
+        @Override
+        public ProfileEditor rename(String name) {
+            this.name = name;
+            return this;
+        }
+
+        @Override
+        public ProfileEditor allow(String permission) {
+            permissions.add(permission);
+            return this;
+        }
+
+        @Override
+        public Profile freeze() {
+            return new Profile(name, permissions);
         }
     }
 
