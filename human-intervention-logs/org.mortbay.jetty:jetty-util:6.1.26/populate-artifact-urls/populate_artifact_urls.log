@@ -1,0 +1,737 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de974-0733-7693-bb56-1c3c8894be0a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mortbay.jetty:jetty-util:6.1.26
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "6.1.26" when "$version$" is replaced with "6.1.26".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a/metadata/org.mortbay.jetty/jetty-util/index.json
+- Entry selector: "metadata-version" = "6.1.26"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "6.1.26".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "6.1.26".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "6.1.26".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "6.1.26" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar
+- repository-url: http://svn.codehaus.org/jetty/jetty
+- test-code-url: N/A
+- documentation-url: https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar
+- description: Jetty Utilities provides shared support classes used by Jetty 6, including I/O helpers, URL encoding, lifecycle components, threading, logging, servlet filters, and JSON/Ajax utilities. Applications and Jetty modules use it as a JVM support library for common server infrastructure behavior rather than as a standalone web server.
+- language: <missing>
+
+Context:
+- Coordinate version: 6.1.26
+- Entry metadata-version: 6.1.26
+- Entry test-version: 6.1.26
+codex
+I’ll verify the Maven artifacts and the historical Jetty repository before touching the metadata. The key decision is whether there is a versioned test artifact for `6.1.26`; if not, that field stays `N/A` rather than inventing an unversioned source link.
+web search: 
+web search: Maven Central org.mortbay.jetty jetty-util 6.1.26 sources javadoc test jar
+codex
+Maven Central confirms the published sources and javadocs for `jetty-util-6.1.26`. I’m checking the local entry now and will only change fields that are actually missing or stale under the URL-maintenance rule.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.mortbay.jetty/jetty-util/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "6.1.26",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+    "repository-url" : "http://svn.codehaus.org/jetty/jetty",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+    "description" : "Jetty Utilities provides shared support classes used by Jetty 6, including I/O helpers, URL encoding, lifecycle components, threading, logging, servlet filters, and JSON/Ajax utilities. Applications and Jetty modules use it as a JVM support library for common server infrastructure behavior rather than as a standalone web server.",
+    "tested-versions" : [
+      "6.1.26"
+    ],
+    "allowed-packages" : [
+      "org.mortbay"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/jetty-util-6.1.26-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Sat, 02 May 2026 16:10:02 GMT
+content-type: application/java-archive
+content-length: 123338
+cf-ray: 9f584b3769e6a032-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2030424
+etag: "19d9a358ae5beb93aa2b160a4ed362d2"
+last-modified: Wed, 10 Nov 2010 21:38:14 GMT
+x-checksum-md5: 19d9a358ae5beb93aa2b160a4ed362d2
+x-checksum-sha1: 0ca704dfc9e26567bd69ee3f065a1337fa6d296f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  120k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/jetty-util-6.1.26-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Sat, 02 May 2026 16:10:02 GMT
+content-type: application/java-archive
+content-length: 444864
+cf-ray: 9f584b378cd4b571-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 28761
+etag: "c57700cd99ace8ce27c37704292ffb26"
+last-modified: Wed, 10 Nov 2010 21:38:19 GMT
+x-checksum-md5: c57700cd99ace8ce27c37704292ffb26
+x-checksum-sha1: 51f459ace98514d1c99580ed08706e24bc76138a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  434k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/jetty-util-6.1.26-test-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ exited 22 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 404 
+date: Sat, 02 May 2026 16:10:02 GMT
+content-type: text/html
+cf-ray: 9f584b379c6924bc-ZRH
+cf-cache-status: HIT
+age: 109
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/mortbay/jetty/jetty-util/6.1.26/jetty-util-6.1.26-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+
+codex
+The existing source and javadoc templates render successfully for `6.1.26`; Maven Central does not publish a `test-sources` artifact for this coordinate. I’m checking the POM/SCM metadata next so the repository root is based on the artifact’s own metadata rather than a guessed mirror.
+exec
+/usr/bin/bash -lc 'curl -L --fail https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/jetty-util-6.1.26.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  3876  100  3876    0     0  47695      0 --:--:-- --:--:-- --:--:-- 47851
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>project</artifactId>
+    <groupId>org.mortbay.jetty</groupId>
+    <version>6.1.26</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.mortbay.jetty</groupId>
+  <artifactId>jetty-util</artifactId>
+  <name>Jetty Utilities</name>
+  <description>Utility classes for Jetty</description>
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/java</directory>
+        <includes>
+          <include>**/*Test.java</include>
+          <include>org/mortbay/**/*.xml</include>
+        </includes>
+        <excludes>
+          <exclude>**/Abstract*.java</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <delete failonerror="false" file="../../lib/${project.artifactId}-${project.version}.${project.packaging}" />
+                <delete failonerror="false" file="../../etc/jetty-logging.xml" />
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copyjar</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <copy failonerror="false" file="target/${project.artifactId}-${project.version}.${project.packaging}" todir="../../lib/" />
+                <copy failonerror="false" file="src/main/config/etc/jetty-logging.xml" todir="../../etc" />
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven-bundle-plugin-version}</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <configuration>
+              <instructions>
+                <Bundle-SymbolicName>org.mortbay.jetty.util</Bundle-SymbolicName>
+                <Bundle-RequiredExecutionEnvironment>J2SE-1.4</Bundle-RequiredExecutionEnvironment>
+                <Import-Package>!org.mortbay.*,org.slf4j;resolution:=optional,*</Import-Package>
+                <Bundle-DocURL>http://jetty.mortbay.org</Bundle-DocURL>
+              </instructions>
+            </configuration>
+           </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!--
+        Required for OSGI
+        -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>               
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>${servlet-version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -L --fail https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 256ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/mortbay/jetty/jetty-util/6.1.26</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/mortbay/jetty/jetty-util/6.1.26</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jetty-util-6.1.26-javadoc.jar" title="jetty-util-6.1.26-javadoc.jar">jetty-util-6.1.26-javadoc.jar</a>                     2010-11-10 21:38    444864      
+<a href="jetty-util-6.1.26-javadoc.jar.asc" title="jetty-util-6.1.26-javadoc.jar.asc">jetty-util-6.1.26-javadoc.jar.asc</a>                 2010-11-10 21:38       198      
+<a href="jetty-util-6.1.26-javadoc.jar.asc.md5" title="jetty-util-6.1.26-javadoc.jar.asc.md5">jetty-util-6.1.26-javadoc.jar.asc.md5</a>             2010-11-10 21:38        32      
+<a href="jetty-util-6.1.26-javadoc.jar.asc.sha1" title="jetty-util-6.1.26-javadoc.jar.asc.sha1">jetty-util-6.1.26-javadoc.jar.asc.sha1</a>            2010-11-10 21:38        40      
+<a href="jetty-util-6.1.26-javadoc.jar.md5" title="jetty-util-6.1.26-javadoc.jar.md5">jetty-util-6.1.26-javadoc.jar.md5</a>                 2010-11-10 21:38        32      
+<a href="jetty-util-6.1.26-javadoc.jar.sha1" title="jetty-util-6.1.26-javadoc.jar.sha1">jetty-util-6.1.26-javadoc.jar.sha1</a>                2010-11-10 21:38        40      
+<a href="jetty-util-6.1.26-sources.jar" title="jetty-util-6.1.26-sources.jar">jetty-util-6.1.26-sources.jar</a>                     2010-11-10 21:38    123338      
+<a href="jetty-util-6.1.26-sources.jar.asc" title="jetty-util-6.1.26-sources.jar.asc">jetty-util-6.1.26-sources.jar.asc</a>                 2010-11-10 21:38       198      
+<a href="jetty-util-6.1.26-sources.jar.asc.md5" title="jetty-util-6.1.26-sources.jar.asc.md5">jetty-util-6.1.26-sources.jar.asc.md5</a>             2010-11-10 21:38        32      
+<a href="jetty-util-6.1.26-sources.jar.asc.sha1" title="jetty-util-6.1.26-sources.jar.asc.sha1">jetty-util-6.1.26-sources.jar.asc.sha1</a>            2010-11-10 21:38        40      
+<a href="jetty-util-6.1.26-sources.jar.md5" title="jetty-util-6.1.26-sources.jar.md5">jetty-util-6.1.26-sources.jar.md5</a>                 2010-11-10 21:38        32      
+<a href="jetty-util-6.1.26-sources.jar.sha1" title="jetty-util-6.1.26-sources.jar.sha1">jetty-util-6.1.26-sources.jar.sha1</a>                2010-11-10 21:38        40      
+<a href="jetty-util-6.1.26.jar" title="jetty-util-6.1.26.jar">jetty-util-6.1.26.jar</a>                             2010-11-10 21:38    177131      
+<a href="jetty-util-6.1.26.jar.asc" title="jetty-util-6.1.26.jar.asc">jetty-util-6.1.26.jar.asc</a>                         2010-11-10 21:38       198      
+<a href="jetty-util-6.1.26.jar.asc.md5" title="jetty-util-6.1.26.jar.asc.md5">jetty-util-6.1.26.jar.asc.md5</a>                     2010-11-10 21:38        32      
+<a href="jetty-util-6.1.26.jar.asc.sha1" title="jetty-util-6.1.26.jar.asc.sha1">jetty-util-6.1.26.jar.asc.sha1</a>                    2010-11-10 21:38        40      
+<a href="jetty-util-6.1.26.jar.md5" title="jetty-util-6.1.26.jar.md5">jetty-util-6.1.26.jar.md5</a>                         2010-11-10 21:38        32      
+<a href="jetty-util-6.1.26.jar.sha1" title="jetty-util-6.1.26.jar.sha1">jetty-util-6.1.26.jar.sha1</a>                        2010-11-10 21:38        40      
+<a href="jetty-util-6.1.26.pom" title="jetty-util-6.1.26.pom">jetty-util-6.1.26.pom</a>                             2010-11-10 21:38      3876      
+<a href="jetty-util-6.1.26.pom.asc" title="jetty-util-6.1.26.pom.asc">jetty-util-6.1.26.pom.asc</a>                         2010-11-10 21:38       198      
+<a href="jetty-util-6.1.26.pom.asc.md5" title="jetty-util-6.1.26.pom.asc.md5">jetty-util-6.1.26.pom.asc.md5</a>                     2010-11-10 21:38        32      
+<a href="jetty-util-6.1.26.pom.asc.sha1" title="jetty-util-6.1.26.pom.asc.sha1">jetty-util-6.1.26.pom.asc.sha1</a>                    2010-11-10 21:38        40      
+<a href="jetty-util-6.1.26.pom.md5" title="jetty-util-6.1.26.pom.md5">jetty-util-6.1.26.pom.md5</a>                         2010-11-10 21:38        32      
+<a href="jetty-util-6.1.26.pom.sha1" title="jetty-util-6.1.26.pom.sha1">jetty-util-6.1.26.pom.sha1</a>                        2010-11-10 21:38        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+100  4414    0  4414    0     0  14822      0 --:--:-- --:--:-- --:--:-- 14861
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/mortbay/jetty/project/6.1.26/project-6.1.26.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Sat, 02 May 2026 16:10:11 GMT
+content-type: text/xml
+content-length: 9205
+cf-ray: 9f584b6def390396-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 686782
+etag: "a099bb91ae0084322bf5d2026462aede"
+last-modified: Wed, 10 Nov 2010 21:37:40 GMT
+x-checksum-md5: a099bb91ae0084322bf5d2026462aede
+x-checksum-sha1: e9e775137f6554c861b0b346c1f8b13081ddc5bb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  9205    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -L --fail https://repo.maven.apache.org/maven2/org/mortbay/jetty/project/6.1.26/project-6.1.26.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.mortbay.jetty</groupId>
+    <artifactId>jetty-parent</artifactId>
+    <version>10</version>
+  </parent>
+  <groupId>org.mortbay.jetty</groupId>
+  <artifactId>project</artifactId>
+  <packaging>pom</packaging>
+  <name>Jetty Server Project</name>
+  <version>6.1.26</version>
+  <repositories>
+    <repository>
+      <id>codehaus.org</id>
+      <name>Jetty snapshots</name>
+      <layout>default</layout>
+      <url>http://snapshots.repository.codehaus.org</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/jetty/jetty/branches/jetty-6.1</developerConnection>
+    <url>http://fisheye.codehaus.org/viewrep/jetty/</url>
+  </scm>
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>2.0.6</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[1.4,)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <source>1.4</source>
+          <target>1.4</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagBase>https://svn.codehaus.org/jetty/jetty/tags</tagBase>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <mode>development</mode>
+              <url>${pom.url}</url>
+	          <implementation-version>${pom.version}</implementation-version>
+	          <package>org.mortbay</package>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+	    <inherited>true</inherited>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-source-plugin</artifactId>
+	    <executions>
+	      <execution>
+	        <id>attach-sources</id>
+	        <goals>
+	          <goal>jar</goal>
+	        </goals>
+	      </execution>
+	    </executions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+	  <plugins>
+	    <plugin>
+		  <groupId>org.apache.maven</groupId>
+		  <artifactId>maven-surefire-plugin</artifactId>
+		  <version>2.3</version>
+	    </plugin>
+	  </plugins>
+    </pluginManagement>
+  </build>
+  <modules>
+    <module>modules/util</module>
+    <module>modules/util5</module>
+    <module>modules/jetty</module>
+    <module>modules/jsp-2.1</module>
+    <module>modules/jsp-api-2.0</module>
+    <module>modules/jsp-2.0</module>
+    <module>modules/management</module>
+    <module>modules/start</module>
+    <module>modules/maven-plugin</module>
+    <module>modules/jspc-maven-plugin</module>
+    <module>modules/naming</module>
+    <module>modules/plus</module>
+    <module>modules/html</module>
+    <module>modules/annotations</module>
+
+    <module>extras/servlet-tester</module>
+    <module>extras/xbean</module>
+    <module>extras/spring</module>
+    <module>extras/sslengine</module>
+    <module>extras/ajp</module>
+    <module>extras/win32service</module>
+    <!--module>extras/gwt</module-->
+    <module>extras/threadpool</module>
+    <module>extras/client</module>
+    <module>extras/jetty-java5-stats</module>
+
+    <module>examples/test-webapp</module>
+    <module>examples/test-jaas-webapp</module>
+    <module>examples/test-jndi-webapp</module>
+    <module>examples/embedded</module>
+    <!-- <module>examples/spring-ebj3-demo</module> -->
+    <module>examples/tests</module>
+
+
+    <module>contrib/cometd</module>
+    <module>contrib/jetty-ant</module>
+    <module>contrib/jetty-rewrite-handler</module>
+    <module>contrib/jetty-ldap-jaas</module>
+    <module>contrib/start-daemon</module>
+    <!--module>contrib/grizzly</module-->
+    <!--module>contrib/wadi</module-->
+    <module>contrib/terracotta</module>
+    <module>contrib/sweeper</module>
+    <module>extras/setuid</module>
+  </modules>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-tools-api</artifactId>
+        <version>2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl104-over-slf4j</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ant</groupId>
+        <artifactId>ant</artifactId>
+        <version>${ant-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>geronimo-spec</groupId>
+        <artifactId>geronimo-spec-jta</artifactId>
+        <version>${jta-spec-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>${mail-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>activation</artifactId>
+        <version>${activation-version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <properties>
+    <test-test>${basedir}</test-test>
+    <servlet-version>2.5-20081211</servlet-version>
+    <jsp21-version>2.1.v20091210</jsp21-version>
+    <activation-version>1.1</activation-version>
+    <ant-version>1.6.5</ant-version>
+    <jta-spec-version>1.0.1B-rc4</jta-spec-version>
+    <junit-version>3.8.2</junit-version>
+    <mail-version>1.4</mail-version>
+    <slf4j-version>1.3.1</slf4j-version>
+    <maven-bundle-plugin-version>1.4.0</maven-bundle-plugin-version>
+    <maven-jar-plugin-version>2.2</maven-jar-plugin-version>
+  </properties>
+  <profiles>
+    <profile>
+      <id>generate-site</id>
+      <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <configuration>
+                <resourceBundles>
+                  <resourceBundle>org.mortbay.jetty:jetty-build-resources:1.0.1</resourceBundle>
+                </resourceBundles>
+              </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+              <configuration>
+                <excludePackageNames>org.apache.*:ebay.*:javax.*:com.sun.*:com.google.*:dojox.*:com.acme.*</excludePackageNames>
+                <aggregate>true</aggregate>
+                <debug>false</debug>
+                <stylesheetfile>${project.build.directory}/maven-shared-archive-resources/org/mortbay/jetty/build/resources/javadoc.css</stylesheetfile>
+                <links>
+                  <link>http://java.sun.com/javaee/5/docs/api</link>
+                  <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                </links>
+                <reportOutputDirectory>${basedir}</reportOutputDirectory>
+                <destDir>javadoc</destDir>
+            </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jxr-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <aggregate>true</aggregate>
+            <javadocDir>${basedir}/javadoc</javadocDir>
+            <destDir>${basedir}/jxr</destDir>
+          </configuration>
+        </plugin>
+      </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.0</version>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
+
+100  9205  100  9205    0     0   171k      0 --:--:-- --:--:-- --:--:--  172k
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org mortbay jetty jetty-util 6.1.26 jetty-util-6.1.26-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/
+web search: 
+web search: "project-6.1.26.pom" "svn.codehaus.org/jetty/jetty/branches/jetty-6.1"
+web search: 
+web search: "scm:svn:http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1"
+codex
+The local entry already has non-blank values for the fields that can be set, and `language` should remain absent because this is a Java library, not a Kotlin/Groovy/Scala-specific artifact. I’m doing a final diff/status check so I can report whether the repository needed any actual edit.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.mortbay.jetty/jetty-util/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.mortbay.jetty/jetty-util/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 0ms:
+?? metadata/org.mortbay.jetty/jetty-util/index.json
+
+exec
+/usr/bin/bash -lc "jq -e '.[] | select(.\"metadata-version\" == \"6.1.26\")' metadata/org.mortbay.jetty/jetty-util/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "6.1.26",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+  "repository-url": "http://svn.codehaus.org/jetty/jetty",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+  "description": "Jetty Utilities provides shared support classes used by Jetty 6, including I/O helpers, URL encoding, lifecycle components, threading, logging, servlet filters, and JSON/Ajax utilities. Applications and Jetty modules use it as a JVM support library for common server infrastructure behavior rather than as a standalone web server.",
+  "tested-versions": [
+    "6.1.26"
+  ],
+  "allowed-packages": [
+    "org.mortbay"
+  ]
+}
+
+web search: 
+web search: 
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-util/6.1.26 jetty-util-6.1.26-sources.jar jetty-util-6.1.26-javadoc.jar
+web search: 
+web search: "Central Repository: org/mortbay/jetty/jetty-util/6.1.26"
+web search: 
+web search: "Central Repository: org/mortbay/jetty/project/6.1.26" "project-6.1.26.pom"
+web search: 
+web search: "scm:svn:http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1" "repo.maven.apache.org"
+web search: 
+web search: Maven Central org.mortbay.jetty project 6.1.26 scm connection codehaus
+web search: 
+web search: central.sonatype.com artifact org.mortbay.jetty jetty-util 6.1.26 "Jetty Utilities"
+codex
+No edit was needed in [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a/metadata/org.mortbay.jetty/jetty-util/index.json:1). The existing `source-code-url` and `documentation-url` templates render to Maven Central artifacts for `6.1.26`, and Maven Central lists no corresponding test-sources artifact, so `test-code-url: "N/A"` remains appropriate. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/?utm_source=openai))
+
+The selected description is already exactly two sentences, and `language` stays absent because `org.mortbay.jetty:jetty-util` is a Java/JVM utility artifact, not Kotlin, Groovy, or Scala-specific. Sonatype’s artifact metadata identifies it as “Jetty Utilities” with the description “Utility classes for Jetty.” ([central.sonatype.com](https://central.sonatype.com/artifact/org.mortbay.jetty/jetty-util/6.1.26?utm_source=openai))
+
+Verification: rendered source and javadoc URLs returned HTTP 200; Maven `test-sources` returned HTTP 404; JSON entry parses with `jq`. No Gradle tests were run because the repository content did not change.
+tokens used
+75,342
+No edit was needed in [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a/metadata/org.mortbay.jetty/jetty-util/index.json:1). The existing `source-code-url` and `documentation-url` templates render to Maven Central artifacts for `6.1.26`, and Maven Central lists no corresponding test-sources artifact, so `test-code-url: "N/A"` remains appropriate. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.1.26/?utm_source=openai))
+
+The selected description is already exactly two sentences, and `language` stays absent because `org.mortbay.jetty:jetty-util` is a Java/JVM utility artifact, not Kotlin, Groovy, or Scala-specific. Sonatype’s artifact metadata identifies it as “Jetty Utilities” with the description “Utility classes for Jetty.” ([central.sonatype.com](https://central.sonatype.com/artifact/org.mortbay.jetty/jetty-util/6.1.26?utm_source=openai))
+
+Verification: rendered source and javadoc URLs returned HTTP 200; Maven `test-sources` returned HTTP 404; JSON entry parses with `jq`. No Gradle tests were run because the repository content did not change.
+Ran agent for org.mortbay.jetty:jetty-util:6.1.26 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a/build/agent-url-discovery-logs/org.mortbay.jetty-jetty-util-6.1.26.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2868-3d384e1a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 20s
+9 actionable tasks: 1 executed, 8 up-to-date
