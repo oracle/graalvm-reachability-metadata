@@ -8,6 +8,7 @@ package org_jetbrains_compose_runtime.runtime
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.PausableMonotonicFrameClock
+import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
@@ -164,6 +165,31 @@ public class RuntimeTest {
     }
 
     @Test
+    fun customSnapshotMutationPolicyMergesConcurrentSnapshotWrites() {
+        val counter = mutableStateOf(MergedCounter(0), AdditiveCounterPolicy)
+        val firstSnapshot = Snapshot.takeMutableSnapshot()
+        val secondSnapshot = Snapshot.takeMutableSnapshot()
+
+        try {
+            firstSnapshot.enter {
+                counter.value = counter.value.incrementBy(1)
+            }
+            secondSnapshot.enter {
+                counter.value = counter.value.incrementBy(10)
+            }
+
+            firstSnapshot.apply().check()
+            assertThat(counter.value).isEqualTo(MergedCounter(1))
+
+            secondSnapshot.apply().check()
+            assertThat(counter.value).isEqualTo(MergedCounter(11))
+        } finally {
+            secondSnapshot.dispose()
+            firstSnapshot.dispose()
+        }
+    }
+
+    @Test
     fun snapshotStateObserverInvalidatesOnlyObservedScope() {
         val observed = mutableStateOf("observed")
         val unobserved = mutableStateOf("unobserved")
@@ -237,6 +263,20 @@ public class RuntimeTest {
                 yield()
             }
         }
+    }
+
+    private data class MergedCounter(val count: Int) {
+        fun incrementBy(delta: Int): MergedCounter = copy(count = count + delta)
+    }
+
+    private object AdditiveCounterPolicy : SnapshotMutationPolicy<MergedCounter> {
+        override fun equivalent(a: MergedCounter, b: MergedCounter): Boolean = a == b
+
+        override fun merge(
+            previous: MergedCounter,
+            current: MergedCounter,
+            applied: MergedCounter,
+        ): MergedCounter = MergedCounter(current.count + applied.count - previous.count)
     }
 
     private data class ValueBox(val value: String)
