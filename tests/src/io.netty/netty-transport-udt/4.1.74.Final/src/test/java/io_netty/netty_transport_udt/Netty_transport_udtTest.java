@@ -13,10 +13,17 @@ import com.barchart.udt.nio.KindUDT;
 import com.barchart.udt.nio.SelectorProviderUDT;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFactory;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.udt.UdtChannel;
 import io.netty.channel.udt.UdtChannelConfig;
 import io.netty.channel.udt.UdtChannelOption;
@@ -34,8 +41,13 @@ import io.netty.util.ReferenceCountUtil;
 import java.io.IOException;
 import java.nio.channels.Selector;
 import java.nio.charset.StandardCharsets;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -228,6 +240,57 @@ public class Netty_transport_udtTest {
         }
     }
 
+    @Test
+    void byteTransportBootstrapsClientServerAndTransfersPayload() throws InterruptedException {
+        EventLoopGroup serverGroup = new NioEventLoopGroup(1, (ThreadFactory) null, NioUdtProvider.BYTE_PROVIDER);
+        EventLoopGroup clientGroup = new NioEventLoopGroup(1, (ThreadFactory) null, NioUdtProvider.BYTE_PROVIDER);
+        AtomicReference<ByteBuf> receivedPayload = new AtomicReference<>();
+        CountDownLatch payloadReceived = new CountDownLatch(1);
+        Channel serverChannel = null;
+        Channel clientChannel = null;
+        try {
+            ServerBootstrap serverBootstrap = new ServerBootstrap()
+                    .group(serverGroup, serverGroup)
+                    .channelFactory(NioUdtProvider.BYTE_ACCEPTOR)
+                    .childHandler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                            channel.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
+                                @Override
+                                protected void channelRead0(ChannelHandlerContext context, ByteBuf message) {
+                                    receivedPayload.set(message.retainedDuplicate());
+                                    payloadReceived.countDown();
+                                }
+                            });
+                        }
+                    });
+            serverChannel = serverBootstrap.bind(new InetSocketAddress("127.0.0.1", 0))
+                    .syncUninterruptibly()
+                    .channel();
+
+            Bootstrap clientBootstrap = new Bootstrap()
+                    .group(clientGroup)
+                    .channelFactory(NioUdtProvider.BYTE_CONNECTOR)
+                    .handler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                        }
+                    });
+            InetSocketAddress serverAddress = (InetSocketAddress) serverChannel.localAddress();
+            clientChannel = clientBootstrap.connect(serverAddress).syncUninterruptibly().channel();
+            clientChannel.writeAndFlush(buffer("udt-byte-transport")).syncUninterruptibly();
+
+            assertThat(payloadReceived.await(10, TimeUnit.SECONDS)).isTrue();
+            assertThat(receivedPayload.get().toString(StandardCharsets.UTF_8)).isEqualTo("udt-byte-transport");
+        } finally {
+            ReferenceCountUtil.release(receivedPayload.get());
+            closeRegistered(clientChannel);
+            closeRegistered(serverChannel);
+            serverGroup.shutdownGracefully().syncUninterruptibly();
+            clientGroup.shutdownGracefully().syncUninterruptibly();
+        }
+    }
+
     private static ByteBuf buffer(String value) {
         return Unpooled.copiedBuffer(value, StandardCharsets.UTF_8);
     }
@@ -274,6 +337,12 @@ public class Netty_transport_udtTest {
     private static void closeAll(List<Channel> channels) {
         for (Channel channel : channels) {
             close(channel);
+        }
+    }
+
+    private static void closeRegistered(Channel channel) {
+        if (channel != null) {
+            channel.close().syncUninterruptibly();
         }
     }
 
