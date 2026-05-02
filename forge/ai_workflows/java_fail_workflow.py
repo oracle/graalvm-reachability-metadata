@@ -193,12 +193,28 @@ def resolve_fix_metrics_json(
     return os.path.join(metrics_repo_dir, config.metrics_filename)
 
 
-def copy_and_prepare_project_dir(group, artifact, library_version, updated_library_version):
+def _same_filesystem_path(first_path: str, second_path: str) -> bool:
+    """Return True when two paths resolve to the same filesystem location."""
+    return os.path.normcase(os.path.realpath(first_path)) == os.path.normcase(os.path.realpath(second_path))
+
+
+def copy_and_prepare_project_dir(
+        group: str,
+        artifact: str,
+        library_version: str,
+        updated_library_version: str,
+) -> None:
     """Copy versioned test project directory and update version references."""
     src_dir = os.path.join("tests", "src", group, artifact, library_version)
     dst_dir = os.path.join("tests", "src", group, artifact, updated_library_version)
-    os.makedirs(dst_dir, exist_ok=True)
-    shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
+    if not os.path.isdir(src_dir):
+        raise FileNotFoundError(f"Missing source test project directory: {src_dir}")
+
+    if _same_filesystem_path(src_dir, dst_dir):
+        print(f"[project-prep] Source and destination test project are the same: {dst_dir}")
+    else:
+        os.makedirs(dst_dir, exist_ok=True)
+        shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
 
     gradle_properties_path = os.path.join(dst_dir, "gradle.properties")
     if os.path.isfile(gradle_properties_path):
@@ -244,6 +260,11 @@ def create_project_prep_checkpoint(config: JavaFailWorkflowConfig, group, artifa
     ]
 
     subprocess.run(["git", "add", *candidate_paths], check=False)
+
+    has_staged_changes = subprocess.run(["git", "diff", "--cached", "--quiet"], check=False)
+    if has_staged_changes.returncode == 0:
+        print("[project-prep] No project preparation changes to commit.")
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
     subprocess.run(
         ["git", "commit", "-m", f"Prepare project for {group}:{artifact}:{updated_library_version}"],
@@ -340,6 +361,24 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
     os.chdir(reachability_repo_path)
 
+    tests_dir = os.path.join(
+        reachability_repo_path,
+        "tests",
+        "src",
+        group,
+        artifact,
+        updated_library_version,
+    )
+    metadata_dir = os.path.join(
+        reachability_repo_path,
+        "metadata",
+        group,
+        artifact,
+        updated_library_version,
+    )
+    tests_dir_preexisted = os.path.exists(tests_dir)
+    metadata_dir_preexisted = os.path.exists(metadata_dir)
+
     copy_and_prepare_project_dir(group, artifact, old_library_version, updated_library_version)
     update_metadata_index_json(group, artifact, updated_library_version)
     create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version)
@@ -363,14 +402,6 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         artifact,
         updated_library_version,
         "build.gradle",
-    )
-    tests_dir = os.path.join(
-        reachability_repo_path,
-        "tests",
-        "src",
-        group,
-        artifact,
-        updated_library_version,
     )
     test_source_layout = resolve_test_source_layout(reachability_repo_path, updated_library, tests_dir)
 
@@ -420,15 +451,10 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         print("[Test fixing failed.]")
         subprocess.run(["git", "reset", "--hard", commit_checkpoint], check=True)
         ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-        metadata_dir = os.path.join(
-            reachability_repo_path,
-            "metadata",
-            group,
-            artifact,
-            updated_library_version,
-        )
-        shutil.rmtree(tests_dir, ignore_errors=True)
-        shutil.rmtree(metadata_dir, ignore_errors=True)
+        if not tests_dir_preexisted:
+            shutil.rmtree(tests_dir, ignore_errors=True)
+        if not metadata_dir_preexisted:
+            shutil.rmtree(metadata_dir, ignore_errors=True)
         run_metrics = create_failure_run_metrics_output(
             package=group,
             artifact=artifact,
