@@ -31,6 +31,7 @@ import org.iq80.leveldb.Snapshot;
 import org.iq80.leveldb.WriteBatch;
 import org.iq80.leveldb.WriteOptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assumptions;
 
 public class LeveldbjniTest {
     @Test
@@ -132,6 +133,8 @@ public class LeveldbjniTest {
 
     @Test
     public void customComparatorControlsIteratorOrdering() throws Exception {
+        Assumptions.assumeFalse(isNativeImageRuntime(),
+                "Custom comparators rely on HawtJNI callbacks that are not stable under GraalVM Native Image");
         Path databasePath = Files.createTempDirectory("leveldbjni-comparator-");
         try {
             try (DB db = factory.open(databasePath.toFile(), databaseOptions().comparator(reverseLexicographicComparator()))) {
@@ -287,6 +290,10 @@ public class LeveldbjniTest {
                 .snapshot(snapshot)
                 .fillCache(false)
                 .verifyChecksums(true);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static String nextKey(DBIterator iterator) {
