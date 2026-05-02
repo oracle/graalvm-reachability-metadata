@@ -247,6 +247,39 @@ public class Netty_handler_proxyTest {
     }
 
     @Test
+    void performsSocks5NoAuthenticationConnectToIpv6Address() throws Exception {
+        byte[] loopbackAddress = new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+        InetSocketAddress ipv6Destination = new InetSocketAddress(InetAddress.getByAddress(loopbackAddress), 9443);
+        try (FakeProxyServer proxyServer = FakeProxyServer.start((input, output) -> {
+            assertNextBytes(input, 0x05, 0x01, 0x00);
+            writeBytes(output, 0x05, 0x00);
+
+            assertNextBytes(input, 0x05, 0x01, 0x00, 0x04);
+            assertThat(readFully(input, loopbackAddress.length)).containsExactly(loopbackAddress);
+            assertThat(readUnsignedShort(input)).isEqualTo(9443);
+            writeBytes(output,
+                    0x05, 0x00, 0x00, 0x04,
+                    0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x01,
+                    0x24, 0xe3);
+        })) {
+            Socks5ProxyHandler handler = new Socks5ProxyHandler(proxyServer.address());
+
+            try (ClientConnection client = ClientConnection.connect(handler, ipv6Destination)) {
+                assertThat(handler.connectFuture().isSuccess()).isTrue();
+                assertThat((InetSocketAddress) handler.destinationAddress()).isEqualTo(ipv6Destination);
+                assertThat(client.recorder().event()).isNotNull();
+                assertThat(client.recorder().event().protocol()).isEqualTo("socks5");
+                assertThat(client.recorder().event().authScheme()).isEqualTo("none");
+                assertThat((InetSocketAddress) client.recorder().event().destinationAddress()).isEqualTo(ipv6Destination);
+            }
+            proxyServer.awaitSuccess();
+        }
+    }
+
+    @Test
     void reportsSocks5AuthenticationFailure() throws Exception {
         try (FakeProxyServer proxyServer = FakeProxyServer.start((input, output) -> {
             assertNextBytes(input, 0x05, 0x02, 0x00, 0x02);
