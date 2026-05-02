@@ -42,7 +42,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -203,6 +209,37 @@ public class HikariCPIntegrationTest {
                 assertTrue(secondId > firstId);
                 assertEquals(1, poolMxBean.getActiveConnections());
             }
+        }
+    }
+
+    @Test
+    void poolMxBeanSuspendsAndResumesConnectionAcquisition() throws Exception {
+        RecordingDataSource recordingDataSource = new RecordingDataSource();
+        HikariConfig config = baseDataSourceConfig("suspension", recordingDataSource);
+        config.setAllowPoolSuspension(true);
+        config.setMaximumPoolSize(1);
+        config.setMinimumIdle(0);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try (HikariDataSource dataSource = new HikariDataSource(config)) {
+            HikariPoolMXBean poolMxBean = dataSource.getHikariPoolMXBean();
+            assertNotNull(poolMxBean);
+
+            poolMxBean.suspendPool();
+            Future<Connection> pendingConnection = executor.submit((Callable<Connection>) dataSource::getConnection);
+            try {
+                assertThrows(TimeoutException.class, () -> pendingConnection.get(150, TimeUnit.MILLISECONDS));
+                assertFalse(pendingConnection.isDone());
+            } finally {
+                poolMxBean.resumePool();
+            }
+
+            try (Connection connection = pendingConnection.get(2, TimeUnit.SECONDS)) {
+                assertNotNull(connection.unwrap(RecordingConnection.class));
+            }
+        } finally {
+            executor.shutdownNow();
+            assertTrue(executor.awaitTermination(2, TimeUnit.SECONDS));
         }
     }
 
@@ -900,7 +937,7 @@ public class HikariCPIntegrationTest {
     public static final class NonEvictingExceptionOverride implements SQLExceptionOverride {
         private final AtomicInteger invocationCount = new AtomicInteger();
 
-        @Override
+        @java.lang.Override
         public Override adjudicate(SQLException sqlException) {
             this.invocationCount.incrementAndGet();
             if ("42000".equals(sqlException.getSQLState())) {
