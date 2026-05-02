@@ -157,6 +157,18 @@ public class Jsr305Test {
     }
 
     @Test
+    void customTypeQualifierCanExposeExclusiveAndExhaustiveState() {
+        IdentifierQualifier primaryIdentifier = identifierQualifier("ID", IdentifierKind.PRIMARY);
+        IdentifierQualifier secondaryIdentifier = identifierQualifier("ALT", IdentifierKind.SECONDARY);
+
+        assertThat(primaryIdentifier.annotationType()).isEqualTo(IdentifierQualifier.class);
+        assertThat(primaryIdentifier.value()).isEqualTo("ID");
+        assertThat(primaryIdentifier.kind()).isEqualTo(IdentifierKind.PRIMARY);
+        assertThat(secondaryIdentifier.value()).isEqualTo("ALT");
+        assertThat(secondaryIdentifier.kind()).isEqualTo(IdentifierKind.SECONDARY);
+    }
+
+    @Test
     void annotationsCanBeUsedOnTheirSupportedProgramElements() {
         AnnotatedService service = new AnnotatedService("ready");
         ThreadSafeValue threadSafeValue = new ThreadSafeValue("stable");
@@ -362,6 +374,25 @@ public class Jsr305Test {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return annotationType;
+            }
+        };
+    }
+
+    private static IdentifierQualifier identifierQualifier(String value, IdentifierKind kind) {
+        return new IdentifierQualifier() {
+            @Override
+            public String value() {
+                return value;
+            }
+
+            @Override
+            public IdentifierKind kind() {
+                return kind;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return IdentifierQualifier.class;
             }
         };
     }
