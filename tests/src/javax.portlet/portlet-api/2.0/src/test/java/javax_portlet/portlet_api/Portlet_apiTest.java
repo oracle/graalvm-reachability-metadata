@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationHandler;
@@ -75,13 +76,19 @@ import javax.portlet.UnavailableException;
 import javax.portlet.ValidatorException;
 import javax.portlet.WindowState;
 import javax.portlet.WindowStateException;
+import javax.portlet.filter.ActionFilter;
 import javax.portlet.filter.ActionRequestWrapper;
 import javax.portlet.filter.ActionResponseWrapper;
+import javax.portlet.filter.EventFilter;
 import javax.portlet.filter.EventRequestWrapper;
 import javax.portlet.filter.EventResponseWrapper;
+import javax.portlet.filter.FilterChain;
+import javax.portlet.filter.FilterConfig;
 import javax.portlet.filter.PortletRequestWrapper;
+import javax.portlet.filter.RenderFilter;
 import javax.portlet.filter.RenderRequestWrapper;
 import javax.portlet.filter.RenderResponseWrapper;
+import javax.portlet.filter.ResourceFilter;
 import javax.portlet.filter.ResourceRequestWrapper;
 import javax.portlet.filter.ResourceResponseWrapper;
 import javax.xml.namespace.QName;
@@ -540,6 +547,38 @@ public class Portlet_apiTest {
         assertThat(Collections.list(portalContext.getSupportedWindowStates()))
                 .containsExactly(WindowState.NORMAL, WindowState.MAXIMIZED, WindowState.MINIMIZED);
         assertThat(portalContext.getPortalInfo()).isEqualTo("metadata-test-portal/2.0");
+    }
+
+    @Test
+    void portletFiltersInitializeWrapRequestsAndContinueLifecycleChains() throws Exception {
+        RecordingPortletContext context = new RecordingPortletContext();
+        TestFilterConfig config = new TestFilterConfig("audit-filter", context);
+        RecordingPortletFilter filter = new RecordingPortletFilter();
+        RecordingFilterChain chain = new RecordingFilterChain();
+        RecordingFilterResponse actionResponse = new RecordingFilterResponse();
+        RecordingFilterResponse renderResponse = new RecordingFilterResponse();
+        RecordingFilterResponse eventResponse = new RecordingFilterResponse();
+        RecordingFilterResponse resourceResponse = new RecordingFilterResponse();
+        FilterPortletRequest request = new FilterPortletRequest();
+
+        filter.init(config);
+        filter.doFilter((ActionRequest) request, (ActionResponse) actionResponse, chain);
+        filter.doFilter((RenderRequest) request, (RenderResponse) renderResponse, chain);
+        filter.doFilter((EventRequest) request, (EventResponse) eventResponse, chain);
+        filter.doFilter((ResourceRequest) request, (ResourceResponse) resourceResponse, chain);
+        filter.destroy();
+
+        assertThat(filter.events).containsExactly(
+                "init:audit-filter", "before-action", "after-action", "before-render", "after-render",
+                "before-event", "after-event", "before-resource", "after-resource", "destroy");
+        assertThat(context.getAttribute("audit-filter.prefix")).isEqualTo("filtered");
+        assertThat(Collections.list(config.getInitParameterNames())).containsExactly("prefix");
+        assertThat(chain.events).containsExactly(
+                "action:filtered-save", "render:filtered-mode", "event:filtered-updated", "resource:filtered-resource");
+        assertThat(actionResponse.renderParameters).containsEntry("action", new String[] {"filtered-save"});
+        assertThat(renderResponse.title).isEqualTo("Filtered filtered-mode");
+        assertThat(eventResponse.renderParameters).containsEntry("event", new String[] {"filtered-updated"});
+        assertThat(resourceResponse.properties).containsEntry("X-Resource-ID", "filtered-resource");
     }
 
     private static RecordingGenericPortlet initializedPortlet() throws PortletException {
@@ -1076,6 +1115,470 @@ public class Portlet_apiTest {
         @Override
         protected void doHelp(RenderRequest request, RenderResponse response) {
             events.add("help");
+        }
+    }
+
+    private static class RecordingPortletFilter
+            implements ActionFilter, RenderFilter, EventFilter, ResourceFilter {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void init(FilterConfig filterConfig) {
+            events.add("init:" + filterConfig.getFilterName());
+            filterConfig.getPortletContext()
+                    .setAttribute(filterConfig.getFilterName() + ".prefix", filterConfig.getInitParameter("prefix"));
+        }
+
+        @Override
+        public void doFilter(ActionRequest request, ActionResponse response, FilterChain chain)
+                throws IOException, PortletException {
+            events.add("before-action");
+            chain.doFilter(new ActionNameOverridingRequest(request), response);
+            events.add("after-action");
+        }
+
+        @Override
+        public void doFilter(RenderRequest request, RenderResponse response, FilterChain chain)
+                throws IOException, PortletException {
+            events.add("before-render");
+            chain.doFilter(new RenderModeOverridingRequest(request), response);
+            events.add("after-render");
+        }
+
+        @Override
+        public void doFilter(EventRequest request, EventResponse response, FilterChain chain)
+                throws IOException, PortletException {
+            events.add("before-event");
+            chain.doFilter(new EventOverridingRequest(request), response);
+            events.add("after-event");
+        }
+
+        @Override
+        public void doFilter(ResourceRequest request, ResourceResponse response, FilterChain chain)
+                throws IOException, PortletException {
+            events.add("before-resource");
+            chain.doFilter(new ResourceIdOverridingRequest(request), response);
+            events.add("after-resource");
+        }
+
+        @Override
+        public void destroy() {
+            events.add("destroy");
+        }
+    }
+
+    private static class RecordingFilterChain implements FilterChain {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void doFilter(ActionRequest request, ActionResponse response) {
+            String action = request.getParameter(ActionRequest.ACTION_NAME);
+            events.add("action:" + action);
+            response.setRenderParameter("action", action);
+        }
+
+        @Override
+        public void doFilter(RenderRequest request, RenderResponse response) {
+            String mode = request.getPortletMode().toString();
+            events.add("render:" + mode);
+            response.setTitle("Filtered " + mode);
+        }
+
+        @Override
+        public void doFilter(EventRequest request, EventResponse response) {
+            String eventName = request.getEvent().getName();
+            events.add("event:" + eventName);
+            response.setRenderParameter("event", eventName);
+        }
+
+        @Override
+        public void doFilter(ResourceRequest request, ResourceResponse response) {
+            String resourceId = request.getResourceID();
+            events.add("resource:" + resourceId);
+            response.setProperty("X-Resource-ID", resourceId);
+        }
+    }
+
+    private static class ActionNameOverridingRequest extends ActionRequestWrapper {
+        ActionNameOverridingRequest(ActionRequest request) {
+            super(request);
+        }
+
+        @Override
+        public String getParameter(String name) {
+            return ActionRequest.ACTION_NAME.equals(name) ? "filtered-save" : super.getParameter(name);
+        }
+    }
+
+    private static class RenderModeOverridingRequest extends RenderRequestWrapper {
+        RenderModeOverridingRequest(RenderRequest request) {
+            super(request);
+        }
+
+        @Override
+        public PortletMode getPortletMode() {
+            return new PortletMode("filtered-mode");
+        }
+    }
+
+    private static class EventOverridingRequest extends EventRequestWrapper {
+        EventOverridingRequest(EventRequest request) {
+            super(request);
+        }
+
+        @Override
+        public Event getEvent() {
+            return new TestEvent(new QName(DEFAULT_NAMESPACE, "filtered-updated"), "payload");
+        }
+    }
+
+    private static class ResourceIdOverridingRequest extends ResourceRequestWrapper {
+        ResourceIdOverridingRequest(ResourceRequest request) {
+            super(request);
+        }
+
+        @Override
+        public String getResourceID() {
+            return "filtered-resource";
+        }
+    }
+
+    private static class TestEvent implements Event {
+        private final QName qName;
+        private final Serializable value;
+
+        TestEvent(QName qName, Serializable value) {
+            this.qName = qName;
+            this.value = value;
+        }
+
+        @Override
+        public QName getQName() {
+            return qName;
+        }
+
+        @Override
+        public String getName() {
+            return qName.getLocalPart();
+        }
+
+        @Override
+        public Serializable getValue() {
+            return value;
+        }
+    }
+
+    private static class FilterPortletRequest extends RenderPartRequest
+            implements ActionRequest, EventRequest, ResourceRequest {
+        FilterPortletRequest() {
+            super(PortletRequest.RENDER_MARKUP);
+        }
+
+        @Override
+        public String getParameter(String name) {
+            return ActionRequest.ACTION_NAME.equals(name) ? "save" : super.getParameter(name);
+        }
+
+        @Override
+        public String getCharacterEncoding() {
+            return "UTF-8";
+        }
+
+        @Override
+        public int getContentLength() {
+            return 0;
+        }
+
+        @Override
+        public String getContentType() {
+            return "text/plain";
+        }
+
+        @Override
+        public InputStream getPortletInputStream() {
+            return new ByteArrayInputStream(new byte[0]);
+        }
+
+        @Override
+        public BufferedReader getReader() {
+            return new BufferedReader(new StringReader(""));
+        }
+
+        @Override
+        public void setCharacterEncoding(String encoding) {
+        }
+
+        @Override
+        public String getMethod() {
+            return "POST";
+        }
+
+        @Override
+        public Event getEvent() {
+            return new TestEvent(new QName(DEFAULT_NAMESPACE, "updated"), "payload");
+        }
+
+        @Override
+        public String getResourceID() {
+            return "original-resource";
+        }
+
+        @Override
+        public Map<String, String[]> getPrivateRenderParameterMap() {
+            return Map.of("view", new String[] {"details"});
+        }
+
+        @Override
+        public String getCacheability() {
+            return ResourceURL.PORTLET;
+        }
+    }
+
+    private static class RecordingFilterResponse
+            implements ActionResponse, EventResponse, RenderResponse, ResourceResponse {
+        private final Map<String, String[]> renderParameters = new LinkedHashMap<>();
+        private final Map<String, String> properties = new LinkedHashMap<>();
+        private String title;
+        private PortletMode portletMode = PortletMode.VIEW;
+        private WindowState windowState = WindowState.NORMAL;
+        private Locale locale = Locale.ENGLISH;
+        private String characterEncoding = "UTF-8";
+        private String contentType = "text/html";
+
+        @Override
+        public void setWindowState(WindowState windowState) {
+            this.windowState = windowState;
+        }
+
+        @Override
+        public void setPortletMode(PortletMode portletMode) {
+            this.portletMode = portletMode;
+        }
+
+        @Override
+        public void setRenderParameters(Map<String, String[]> parameters) {
+            renderParameters.clear();
+            renderParameters.putAll(parameters);
+        }
+
+        @Override
+        public void setRenderParameter(String key, String value) {
+            renderParameters.put(key, new String[] {value});
+        }
+
+        @Override
+        public void setRenderParameter(String key, String[] values) {
+            renderParameters.put(key, values);
+        }
+
+        @Override
+        public void setEvent(QName name, Serializable value) {
+            properties.put("event", name.getLocalPart() + ":" + value);
+        }
+
+        @Override
+        public void setEvent(String name, Serializable value) {
+            properties.put("event", name + ":" + value);
+        }
+
+        @Override
+        public Map<String, String[]> getRenderParameterMap() {
+            return renderParameters;
+        }
+
+        @Override
+        public PortletMode getPortletMode() {
+            return portletMode;
+        }
+
+        @Override
+        public WindowState getWindowState() {
+            return windowState;
+        }
+
+        @Override
+        public void removePublicRenderParameter(String name) {
+            renderParameters.remove(name);
+        }
+
+        @Override
+        public void setRenderParameters(EventRequest request) {
+            setRenderParameters(request.getParameterMap());
+        }
+
+        @Override
+        public void sendRedirect(String location) {
+            properties.put("redirect", location);
+        }
+
+        @Override
+        public void sendRedirect(String location, String renderUrlParamName) {
+            properties.put("redirect", location + ":" + renderUrlParamName);
+        }
+
+        @Override
+        public String getContentType() {
+            return contentType;
+        }
+
+        @Override
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        @Override
+        public String getCharacterEncoding() {
+            return characterEncoding;
+        }
+
+        @Override
+        public PrintWriter getWriter() {
+            return new PrintWriter(new StringWriter(), true);
+        }
+
+        @Override
+        public Locale getLocale() {
+            return locale;
+        }
+
+        @Override
+        public void setBufferSize(int size) {
+        }
+
+        @Override
+        public int getBufferSize() {
+            return 0;
+        }
+
+        @Override
+        public void flushBuffer() {
+        }
+
+        @Override
+        public void resetBuffer() {
+        }
+
+        @Override
+        public boolean isCommitted() {
+            return false;
+        }
+
+        @Override
+        public void reset() {
+            renderParameters.clear();
+            properties.clear();
+        }
+
+        @Override
+        public java.io.OutputStream getPortletOutputStream() {
+            return java.io.OutputStream.nullOutputStream();
+        }
+
+        @Override
+        public PortletURL createRenderURL() {
+            return null;
+        }
+
+        @Override
+        public PortletURL createActionURL() {
+            return null;
+        }
+
+        @Override
+        public ResourceURL createResourceURL() {
+            return null;
+        }
+
+        @Override
+        public CacheControl getCacheControl() {
+            return new RecordingCacheControl();
+        }
+
+        @Override
+        public void addProperty(String key, String value) {
+            properties.merge(key, value, (left, right) -> left + "," + right);
+        }
+
+        @Override
+        public void setProperty(String key, String value) {
+            properties.put(key, value);
+        }
+
+        @Override
+        public String encodeURL(String path) {
+            return path;
+        }
+
+        @Override
+        public String getNamespace() {
+            return "sample_";
+        }
+
+        @Override
+        public void addProperty(javax.servlet.http.Cookie cookie) {
+        }
+
+        @Override
+        public void addProperty(String key, org.w3c.dom.Element element) {
+        }
+
+        @Override
+        public org.w3c.dom.Element createElement(String tagName) {
+            return null;
+        }
+
+        @Override
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        @Override
+        public void setNextPossiblePortletModes(Collection<PortletMode> portletModes) {
+        }
+
+        @Override
+        public void setLocale(Locale locale) {
+            this.locale = locale;
+        }
+
+        @Override
+        public void setCharacterEncoding(String characterEncoding) {
+            this.characterEncoding = characterEncoding;
+        }
+
+        @Override
+        public void setContentLength(int length) {
+        }
+    }
+
+    private static class TestFilterConfig implements FilterConfig {
+        private final String filterName;
+        private final PortletContext context;
+        private final Map<String, String> initParameters = Map.of("prefix", "filtered");
+
+        TestFilterConfig(String filterName, PortletContext context) {
+            this.filterName = filterName;
+            this.context = context;
+        }
+
+        @Override
+        public String getFilterName() {
+            return filterName;
+        }
+
+        @Override
+        public PortletContext getPortletContext() {
+            return context;
+        }
+
+        @Override
+        public String getInitParameter(String name) {
+            return initParameters.get(name);
+        }
+
+        @Override
+        public Enumeration<String> getInitParameterNames() {
+            return Collections.enumeration(initParameters.keySet());
         }
     }
 
