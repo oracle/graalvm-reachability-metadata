@@ -6,6 +6,11 @@
  */
 package ant.ant;
 
+import java.io.OutputStream;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
 import java.nio.file.Path;
 
 import org.apache.tools.ant.Project;
@@ -24,8 +29,9 @@ public class SunRmicTest {
     Path temporaryDirectory;
 
     @Test
-    void executeLoadsSunRmicImplementationAndRunsIt() {
+    void executeLoadsSunRmicImplementationAndRunsIt() throws Throwable {
         Main.reset();
+        clearCompilerGeneratedClassCache();
         SunRmic adapter = new SunRmic();
         adapter.setRmic(newRmic());
 
@@ -42,6 +48,40 @@ public class SunRmicTest {
                 throw error;
             }
         }
+    }
+
+    @Test
+    void compilerGeneratedClassLiteralHelperResolvesConstructorParameterTypes() throws Throwable {
+        Class<?> parameterType = resolveCompilerGeneratedClassLiteral(OutputStream.class.getName());
+
+        assertThat(parameterType).isSameAs(OutputStream.class);
+    }
+
+    private static Class<?> resolveCompilerGeneratedClassLiteral(String className) throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                SunRmic.class,
+                MethodHandles.lookup());
+        MethodHandle handle = lookup.findStatic(
+                SunRmic.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class));
+        return (Class<?>) handle.invoke(className);
+    }
+
+    private static void clearCompilerGeneratedClassCache()
+            throws IllegalAccessException, NoSuchFieldException {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                SunRmic.class,
+                MethodHandles.lookup());
+        clearClassCache(lookup, "class$java$io$OutputStream");
+        clearClassCache(lookup, "class$java$lang$String");
+        clearClassCache(lookup, "array$Ljava$lang$String");
+    }
+
+    private static void clearClassCache(MethodHandles.Lookup lookup, String fieldName)
+            throws IllegalAccessException, NoSuchFieldException {
+        VarHandle handle = lookup.findStaticVarHandle(SunRmic.class, fieldName, Class.class);
+        handle.set(null);
     }
 
     private Rmic newRmic() {
