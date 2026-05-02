@@ -86,7 +86,7 @@ public class RuleDependencyCheckerTest {
     }
 
     public static class FixtureRecognizer extends Recognizer<Token, ATNSimulator> {
-        public static String[] ruleNames = { "firstRule", "secondRule" };
+        public static String[] ruleNames = {"firstRule", "secondRule" };
         // Checkstyle: stop constant name check
         public static final int RULE_firstRule = 0;
         public static final int RULE_secondRule = 1;
