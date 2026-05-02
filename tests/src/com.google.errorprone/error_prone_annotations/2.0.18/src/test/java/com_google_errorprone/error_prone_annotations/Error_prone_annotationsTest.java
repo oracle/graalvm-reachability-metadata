@@ -143,6 +143,14 @@ public class Error_prone_annotationsTest {
         assertThat(cache.replaceWithMutableLocal("updated")).isEqualTo("updated!");
     }
 
+    @Test
+    void modifierConstraintAnnotationsCanDefinePublicApiMarkers() {
+        PublicApiEndpoint endpoint = new PublicApiEndpoint("stable");
+
+        assertThat(endpoint.name()).isEqualTo("stable");
+        assertThat(endpoint.supportedOperations()).containsExactly("read", "write");
+    }
+
     @FormatMethod
     private static String annotatedFormat(@FormatString String pattern, Object... args) {
         return String.format(Locale.US, pattern, args);
@@ -346,6 +354,24 @@ public class Error_prone_annotationsTest {
 
         static String supportedReplacement() {
             return "replacement";
+        }
+    }
+
+    private static final class PublicApiEndpoint {
+        private final String name;
+
+        private PublicApiEndpoint(String name) {
+            this.name = name;
+        }
+
+        @PublicApiMarker
+        public String name() {
+            return name;
+        }
+
+        @PublicApiMarker
+        public List<String> supportedOperations() {
+            return List.of("read", "write");
         }
     }
 }
