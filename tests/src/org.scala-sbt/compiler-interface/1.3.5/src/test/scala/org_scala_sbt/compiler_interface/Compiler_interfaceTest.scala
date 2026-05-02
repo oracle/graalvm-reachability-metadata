@@ -16,12 +16,13 @@ import xsbti.T2
 import xsbti.UseScope
 import xsbti.api.{Package => ApiPackage, _}
 import xsbti.compile._
+import xsbti.compile.analysis._
 
 import java.io.File
-import java.lang.{Boolean => JBoolean, Integer => JInteger}
+import java.lang.{Boolean => JBoolean, Integer => JInteger, Long => JLong}
 import java.util.EnumSet
 import java.util.Optional
-import java.util.{ArrayList, HashSet, Set => JSet}
+import java.util.{ArrayList, HashSet, LinkedHashMap, Map => JMap, Set => JSet}
 import java.util.function.Function
 import java.util.function.Supplier
 
@@ -349,6 +350,73 @@ final class Compiler_interfaceTest {
   }
 
   @Test
+  def compileAnalysisReadersAndResultsExposeIncrementalCompilationState(): Unit = {
+    val source = new File("src/main/scala/example/Main.scala")
+    val product = new File("build/classes/example/Main.class")
+    val binary = new File("lib/dependency.jar")
+    val output = SingleOutputDirectory(new File("build/classes/main"))
+    val position = StaticPosition(
+      Optional.of(JInteger.valueOf(2)),
+      "object Main",
+      Optional.of(JInteger.valueOf(7)),
+      Optional.of(JInteger.valueOf(8)),
+      Optional.of("       "),
+      Optional.of(source.getPath),
+      Optional.of(source)
+    )
+    val reportedProblem = DiagnosticProblem("lint", Severity.Warn, "unused import", position)
+    val unreportedProblem = DiagnosticProblem("parser", Severity.Error, "incomplete input", position)
+    val sourceInfo = StaticSourceInfo(Array(reportedProblem), Array(unreportedProblem), Array("example.Main"))
+    val sourceStamp = StaticStamp(1, "hash:source", Optional.of("source-hash"), Optional.empty[JLong]())
+    val productStamp = StaticStamp(2, "lastModified:product", Optional.empty[String](), Optional.of(JLong.valueOf(123456L)))
+    val binaryStamp = StaticStamp(3, "hash:binary", Optional.of("binary-hash"), Optional.empty[JLong]())
+    val sourceStamps = new LinkedHashMap[File, Stamp]()
+    val productStamps = new LinkedHashMap[File, Stamp]()
+    val binaryStamps = new LinkedHashMap[File, Stamp]()
+    val sourceInfos = new LinkedHashMap[File, SourceInfo]()
+    sourceStamps.put(source, sourceStamp)
+    productStamps.put(product, productStamp)
+    binaryStamps.put(binary, binaryStamp)
+    sourceInfos.put(source, sourceInfo)
+    val compilation = StaticCompilation(1234L, output)
+    val analysis = StaticCompileAnalysis(
+      StaticReadStamps(productStamps, sourceStamps, binaryStamps),
+      StaticReadSourceInfos(sourceInfos),
+      StaticReadCompilations(Array(compilation))
+    )
+    val setup = MiniSetup.of(
+      output,
+      MiniOptions.of(Array.empty[FileHash], Array("-deprecation"), Array("-parameters")),
+      "scala-compiler",
+      CompileOrder.Mixed,
+      true,
+      Array.empty[T2[String, String]]
+    )
+    val result = CompileResult.of(analysis, setup, true)
+
+    assertThat(analysis.readStamps().source(source)).isSameAs(sourceStamp)
+    assertThat(analysis.readStamps().source(source).getHash()).contains("source-hash")
+    assertThat(analysis.readStamps().product(product).getLastModified()).contains(JLong.valueOf(123456L))
+    assertThat(analysis.readStamps().binary(binary).writeStamp()).isEqualTo("hash:binary")
+    assertThat(analysis.readStamps().getAllSourceStamps()).containsEntry(source, sourceStamp)
+    assertThat(analysis.readStamps().getAllProductStamps()).containsEntry(product, productStamp)
+    assertThat(analysis.readStamps().getAllBinaryStamps()).containsEntry(binary, binaryStamp)
+    assertThat(analysis.readSourceInfos().get(source)).isSameAs(sourceInfo)
+    assertThat(analysis.readSourceInfos().get(source).getReportedProblems()).containsExactly(reportedProblem)
+    assertThat(analysis.readSourceInfos().get(source).getUnreportedProblems()).containsExactly(unreportedProblem)
+    assertThat(analysis.readSourceInfos().get(source).getMainClasses()).containsExactly("example.Main")
+    assertThat(analysis.readSourceInfos().getAllSourceInfos()).containsEntry(source, sourceInfo)
+    assertThat(analysis.readCompilations().getAllCompilations()).containsExactly(compilation)
+    assertThat(compilation.getStartTime()).isEqualTo(1234L)
+    assertThat(compilation.getOutput()).isSameAs(output)
+    assertThat(result.analysis()).isSameAs(analysis)
+    assertThat(result.setup()).isSameAs(setup)
+    assertThat(result.hasModified()).isTrue()
+    assertThat(result.withHasModified(false).hasModified()).isFalse()
+    assertThat(result.withSetup(setup.withStoreApis(false)).setup().storeApis()).isFalse()
+  }
+
+  @Test
   def outputsAndClasspathOptionsExposeSingleAndMultipleOutputModes(): Unit = {
     val mainClasses = new File("build/classes/main")
     val testClasses = new File("build/classes/test")
@@ -660,6 +728,79 @@ final class Compiler_interfaceTest {
     override def getSourceDirectory(): File = sourceDirectory
 
     override def getOutputDirectory(): File = outputDirectory
+  }
+
+  private final case class StaticCompileAnalysis(
+    stamps: ReadStamps,
+    sourceInfos: ReadSourceInfos,
+    compilations: ReadCompilations
+  ) extends CompileAnalysis {
+    override def readStamps(): ReadStamps = stamps
+
+    override def readSourceInfos(): ReadSourceInfos = sourceInfos
+
+    override def readCompilations(): ReadCompilations = compilations
+  }
+
+  private final case class StaticCompilation(startTime: Long, output: Output) extends Compilation {
+    override def getStartTime(): Long = startTime
+
+    override def getOutput(): Output = output
+  }
+
+  private final case class StaticReadCompilations(compilations: Array[Compilation]) extends ReadCompilations {
+    override def getAllCompilations(): Array[Compilation] = compilations
+  }
+
+  private final case class StaticReadSourceInfos(sourceInfos: JMap[File, SourceInfo]) extends ReadSourceInfos {
+    override def get(sourceFile: File): SourceInfo = sourceInfos.get(sourceFile)
+
+    override def getAllSourceInfos(): JMap[File, SourceInfo] = sourceInfos
+  }
+
+  private final case class StaticReadStamps(
+    productStamps: JMap[File, Stamp],
+    sourceStamps: JMap[File, Stamp],
+    binaryStamps: JMap[File, Stamp]
+  ) extends ReadStamps {
+    override def product(productFile: File): Stamp = productStamps.get(productFile)
+
+    override def source(sourceFile: File): Stamp = sourceStamps.get(sourceFile)
+
+    override def binary(binaryFile: File): Stamp = binaryStamps.get(binaryFile)
+
+    override def getAllBinaryStamps(): JMap[File, Stamp] = binaryStamps
+
+    override def getAllSourceStamps(): JMap[File, Stamp] = sourceStamps
+
+    override def getAllProductStamps(): JMap[File, Stamp] = productStamps
+  }
+
+  private final case class StaticStamp(
+    valueId: Int,
+    stampValue: String,
+    hashValue: Optional[String],
+    lastModifiedValue: Optional[JLong]
+  ) extends Stamp {
+    override def getValueId(): Int = valueId
+
+    override def writeStamp(): String = stampValue
+
+    override def getHash(): Optional[String] = hashValue
+
+    override def getLastModified(): Optional[JLong] = lastModifiedValue
+  }
+
+  private final case class StaticSourceInfo(
+    reportedProblems: Array[Problem],
+    unreportedProblems: Array[Problem],
+    mainClasses: Array[String]
+  ) extends SourceInfo {
+    override def getReportedProblems(): Array[Problem] = reportedProblems
+
+    override def getUnreportedProblems(): Array[Problem] = unreportedProblems
+
+    override def getMainClasses(): Array[String] = mainClasses
   }
 
   private final class RecordingClassFileManager(label: String) extends ClassFileManager {
