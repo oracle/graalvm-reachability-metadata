@@ -1,0 +1,271 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de67d-ce73-7ff2-9c4b-f8ea1dcbc734
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.jcraft:jsch:0.1.27
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "0.1.27".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3/metadata/com.jcraft/jsch/index.json
+- Entry selector: "metadata-version" = "0.1.27"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "0.1.27".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar
+- repository-url: http://www.jcraft.com/jsch/
+- test-code-url: N/A
+- documentation-url: https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar
+- description: JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for remote command execution, port forwarding, X11 forwarding, and SFTP file transfer.
+- language: <missing>
+
+Context:
+- Coordinate version: 0.1.27
+- Entry test-version: 0.1.27
+codex
+I’ll inspect the target entry first, then verify the artifact URLs against Maven Central and only edit fields that are actually missing under the rules you gave.
+exec
+/usr/bin/zsh -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"0\\.1\\.27\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/com.jcraft/jsch/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3
+ succeeded in 0ms:
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3
+4:    "metadata-version" : "0.1.27",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar",
+6:    "repository-url" : "http://www.jcraft.com/jsch/",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar",
+9:    "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for remote command execution, port forwarding, X11 forwarding, and SFTP file transfer.",
+
+exec
+/usr/bin/zsh -lc 'git status --short' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3
+ succeeded in 148ms:
+?? metadata/com.jcraft/
+?? tests/src/com.jcraft/
+
+web search: 
+web search: Maven Central com.jcraft jsch 0.1.27 sources javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/
+web search: 
+web search: 
+web search: 
+web search: https://sourceforge.net/projects/jsch/files/jsch/0.1.27/
+codex
+The target entry already has non-blank values for the URL and description fields, and the only absent requested field is `language`. I’m checking whether JSch qualifies for that language field before deciding whether the file needs an edit.
+exec
+/usr/bin/zsh -lc "sed -n '1,80p' metadata/com.jcraft/jsch/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.1.27",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar",
+    "repository-url" : "http://www.jcraft.com/jsch/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar",
+    "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for remote command execution, port forwarding, X11 forwarding, and SFTP file transfer.",
+    "tested-versions" : [
+      "0.1.27"
+    ],
+    "allowed-packages" : [
+      "com.jcraft.jsch"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3
+ succeeded in 110ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.jcraft</groupId>
+  <artifactId>jsch</artifactId>
+  <version>0.1.27</version>
+  <name>JSch</name>
+  <description>JSch is a pure Java implementation of SSH2</description>
+  <url>http://www.jcraft.com/jsch/</url>
+
+  <organization>
+    <name>jcraft</name>
+    <url>http://www.jcraft.com/jsch</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://www.jcraft.com/jsch/LICENSE.txt</url>
+    </license>
+  </licenses>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jzlib</artifactId>
+      <version>1.0.7</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>
+
+ succeeded in 223ms:
+HTTP/2 200 
+date: Sat, 02 May 2026 02:22:03 GMT
+content-type: application/java-archive
+content-length: 170301
+cf-ray: 9f538e587b7be294-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 24229
+etag: "80b2f70737aaa85995e605c721a3ba49"
+last-modified: Fri, 21 Apr 2006 16:42:59 GMT
+x-checksum-md5: 80b2f70737aaa85995e605c721a3ba49
+x-checksum-sha1: 53cbcfb6365aecad6ecee405b3db6df48be42e43
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 02 May 2026 02:22:03 GMT
+content-type: application/java-archive
+content-length: 488364
+cf-ray: 9f538e590db8e296-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 126
+etag: "6d31804691b85852c3b314ca8da6d8d8"
+last-modified: Fri, 21 Apr 2006 20:58:50 GMT
+x-checksum-md5: 6d31804691b85852c3b314ca8da6d8d8
+x-checksum-sha1: 430d8ca6d8238d42d97a18fa01002864a6ea3d6c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: site:repo1.maven.org/maven2/com/jcraft/jsch/0.1.27 jsch-0.1.27-sources.jar javadoc
+codex
+JSch is published as a pure Java SSH2 implementation, not a Kotlin/Groovy/Scala-specific library, so the missing `language` field should remain absent. Since the other requested fields are already non-blank in the entry, I’m leaving them unchanged per your update rules.
+exec
+/usr/bin/zsh -lc "jq '.[] | select(.\"metadata-version\" == \"0.1.27\")' metadata/com.jcraft/jsch/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "0.1.27",
+  "source-code-url": "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar",
+  "repository-url": "http://www.jcraft.com/jsch/",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar",
+  "description": "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for remote command execution, port forwarding, X11 forwarding, and SFTP file transfer.",
+  "tested-versions": [
+    "0.1.27"
+  ],
+  "allowed-packages": [
+    "com.jcraft.jsch"
+  ]
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- metadata/com.jcraft/jsch/index.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3
+ succeeded in 0ms:
+web search: 
+web search: Maven Central com.jcraft jsch 0.1.27 POM pure Java implementation of SSH2
+codex
+[index.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3/metadata/com.jcraft/jsch/index.json:4) needed no edit: all requested URL/description fields are already non-blank, and JSch is a pure Java library, not a Kotlin/Groovy/Scala-specific library, so `language` should remain absent. The Maven listings confirm `0.1.27` has sources and javadoc artifacts, and the JCraft page describes JSch as a pure Java SSH2 implementation with SSH, port forwarding, X11 forwarding, and file-transfer support. ([jarcasting.com](https://jarcasting.com/artifacts/com.jcraft/jsch/0.1.27/?utm_source=openai))
+
+Selected values remain:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar",
+  "repository-url": "http://www.jcraft.com/jsch/",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar",
+  "description": "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for remote command execution, port forwarding, X11 forwarding, and SFTP file transfer."
+}
+```
+
+Validation: `jq` parsed the entry successfully, and `git diff -- metadata/com.jcraft/jsch/index.json` is empty.
+2026-05-02T02:22:33.455574Z ERROR codex_core::session: failed to record rollout items: thread 019de67d-ce73-7ff2-9c4b-f8ea1dcbc734 not found
+tokens used
+34,717
+[index.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3/metadata/com.jcraft/jsch/index.json:4) needed no edit: all requested URL/description fields are already non-blank, and JSch is a pure Java library, not a Kotlin/Groovy/Scala-specific library, so `language` should remain absent. The Maven listings confirm `0.1.27` has sources and javadoc artifacts, and the JCraft page describes JSch as a pure Java SSH2 implementation with SSH, port forwarding, X11 forwarding, and file-transfer support. ([jarcasting.com](https://jarcasting.com/artifacts/com.jcraft/jsch/0.1.27/?utm_source=openai))
+
+Selected values remain:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar",
+  "repository-url": "http://www.jcraft.com/jsch/",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar",
+  "description": "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for remote command execution, port forwarding, X11 forwarding, and SFTP file transfer."
+}
+```
+
+Validation: `jq` parsed the entry successfully, and `git diff -- metadata/com.jcraft/jsch/index.json` is empty.
+Ran agent for com.jcraft:jsch:0.1.27 (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3/build/agent-url-discovery-logs/com.jcraft-jsch-0.1.27.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-8ecb3cb3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 58s
+9 actionable tasks: 1 executed, 8 up-to-date
