@@ -4,6 +4,14 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.graalvm.buildtools.gradle.tasks.NativeRunTask
+
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
 plugins {
     id "org.graalvm.internal.tck"
 }
@@ -19,8 +27,6 @@ graalvmNative {
     binaries {
         test {
             buildArgs("-H:+AllowJRTFileSystem")
-            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
-            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
         }
     }
     agent {
@@ -31,4 +37,9 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.named("nativeTest", NativeRunTask).configure { NativeRunTask task ->
+    task.runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+    task.runtimeArgs.add("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
 }
