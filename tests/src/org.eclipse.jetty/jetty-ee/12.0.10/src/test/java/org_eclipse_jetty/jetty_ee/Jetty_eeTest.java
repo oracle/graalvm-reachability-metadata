@@ -120,6 +120,24 @@ public class Jetty_eeTest {
     }
 
     @Test
+    void serverMatchersStartWithoutEnvironmentDefaultPatterns() {
+        Server server = new Server();
+        try {
+            ClassMatcher protectedMatcher = WebAppClassLoading.getProtectedClasses(server);
+            ClassMatcher hiddenMatcher = WebAppClassLoading.getHiddenClasses(server);
+
+            assertThat(protectedMatcher.getPatterns()).isEmpty();
+            assertThat(hiddenMatcher.getPatterns()).isEmpty();
+            assertThat(protectedMatcher).isNotSameAs(WebAppClassLoading.DEFAULT_PROTECTED_CLASSES);
+            assertThat(hiddenMatcher).isNotSameAs(WebAppClassLoading.DEFAULT_HIDDEN_CLASSES);
+            assertThat(WebAppClassLoading.getProtectedClasses(server)).isSameAs(protectedMatcher);
+            assertThat(WebAppClassLoading.getHiddenClasses(server)).isSameAs(hiddenMatcher);
+        } finally {
+            server.destroy();
+        }
+    }
+
+    @Test
     void serverMatchersAreStoredAsIndependentServerAttributes() {
         Server server = new Server();
         try {
