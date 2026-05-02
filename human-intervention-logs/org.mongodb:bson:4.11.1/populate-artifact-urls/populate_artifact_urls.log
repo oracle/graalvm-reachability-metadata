@@ -1,0 +1,229 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019de5eb-0e57-7c50-b6db-336a48a62c74
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mongodb:bson:4.11.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "4.11.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a/metadata/org.mongodb/bson/index.json
+- Entry selector: "metadata-version" = "4.11.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "4.11.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar
+- repository-url: https://github.com/mongodb/mongo-java-driver
+- test-code-url: https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test
+- documentation-url: https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar
+- description: BSON provides Java APIs for reading, writing, and representing Binary JSON values and documents. It is the BSON codec and document model layer used by the MongoDB Java driver and related libraries.
+- language: <missing>
+
+Context:
+- Coordinate version: 4.11.1
+- Entry test-version: 4.11.1
+codex
+I’ll verify which fields are actually missing in the `4.11.1` entry, then cross-check the version-specific URLs before editing only the blank/absent values.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"4\\.11\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.mongodb/bson/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+ succeeded in 0ms:
+/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+4:    "metadata-version" : "4.11.1",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar",
+6:    "repository-url" : "https://github.com/mongodb/mongo-java-driver",
+7:    "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar",
+9:    "description" : "BSON provides Java APIs for reading, writing, and representing Binary JSON values and documents. It is the BSON codec and document model layer used by the MongoDB Java driver and related libraries.",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+ succeeded in 0ms:
+?? metadata/org.mongodb/
+?? tests/src/org.mongodb/
+
+web search: 
+web search: Maven Central org.mongodb bson 4.11.1 sources javadoc tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/
+web search: 
+web search: https://mongodb.github.io/mongo-java-driver/4.11
+codex
+The `4.11.1` entry already has non-blank values for the source, repository, test suite, documentation, and description fields. I’m checking the upstream artifacts now; the only absent requested field is `language`, and `org.mongodb:bson` appears to be the Java BSON module rather than a Kotlin, Groovy, or Scala-specific artifact.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.mongodb/bson/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.11.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar",
+    "repository-url" : "https://github.com/mongodb/mongo-java-driver",
+    "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar",
+    "description" : "BSON provides Java APIs for reading, writing, and representing Binary JSON values and documents. It is the BSON codec and document model layer used by the MongoDB Java driver and related libraries.",
+    "tested-versions" : [
+      "4.11.1"
+    ],
+    "allowed-packages" : [
+      "org.bson"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/ | rg 'sources|javadoc|tests|test'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+ succeeded in 0ms:
+<a href="bson-4.11.1-javadoc.jar" title="bson-4.11.1-javadoc.jar">bson-4.11.1-javadoc.jar</a>                           2023-11-08 17:38   1181157      
+<a href="bson-4.11.1-javadoc.jar.asc" title="bson-4.11.1-javadoc.jar.asc">bson-4.11.1-javadoc.jar.asc</a>                       2023-11-08 17:38       821      
+<a href="bson-4.11.1-javadoc.jar.asc.md5" title="bson-4.11.1-javadoc.jar.asc.md5">bson-4.11.1-javadoc.jar.asc.md5</a>                   2023-11-08 17:38        32      
+<a href="bson-4.11.1-javadoc.jar.asc.sha1" title="bson-4.11.1-javadoc.jar.asc.sha1">bson-4.11.1-javadoc.jar.asc.sha1</a>                  2023-11-08 17:38        40      
+<a href="bson-4.11.1-javadoc.jar.md5" title="bson-4.11.1-javadoc.jar.md5">bson-4.11.1-javadoc.jar.md5</a>                       2023-11-08 17:38        32      
+<a href="bson-4.11.1-javadoc.jar.sha1" title="bson-4.11.1-javadoc.jar.sha1">bson-4.11.1-javadoc.jar.sha1</a>                      2023-11-08 17:38        40      
+<a href="bson-4.11.1-sources.jar" title="bson-4.11.1-sources.jar">bson-4.11.1-sources.jar</a>                           2023-11-08 17:38    403542      
+<a href="bson-4.11.1-sources.jar.asc" title="bson-4.11.1-sources.jar.asc">bson-4.11.1-sources.jar.asc</a>                       2023-11-08 17:38       821      
+<a href="bson-4.11.1-sources.jar.asc.md5" title="bson-4.11.1-sources.jar.asc.md5">bson-4.11.1-sources.jar.asc.md5</a>                   2023-11-08 17:38        32      
+<a href="bson-4.11.1-sources.jar.asc.sha1" title="bson-4.11.1-sources.jar.asc.sha1">bson-4.11.1-sources.jar.asc.sha1</a>                  2023-11-08 17:38        40      
+<a href="bson-4.11.1-sources.jar.md5" title="bson-4.11.1-sources.jar.md5">bson-4.11.1-sources.jar.md5</a>                       2023-11-08 17:38        32      
+<a href="bson-4.11.1-sources.jar.sha1" title="bson-4.11.1-sources.jar.sha1">bson-4.11.1-sources.jar.sha1</a>                      2023-11-08 17:38        40      
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/mongodb/mongo-java-driver/r4.11.1/settings.gradle | rg "bson|kotlin|scala|groovy"' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+ succeeded in 176ms:
+include ':bson'
+include ':bson-record-codec'
+include ':bson-kotlin'
+include ':bson-kotlinx'
+include ':driver-kotlin-sync'
+include ':driver-kotlin-coroutine'
+include ':bson-scala'
+include ':driver-scala'
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.mongodb/bson/index.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code}\\n' https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/mongodb/mongo-java-driver/r4.11.1/bson/build.gradle | sed -n '1,120p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+ succeeded in 144ms:
+/*
+ * Copyright 2008-present MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+archivesBaseName = 'bson'
+description = 'The BSON library'
+
+ext {
+    pomName = 'BSON'
+    pomURL = 'https://bsonspec.org'
+}
+
+afterEvaluate {
+    jar.manifest.attributes['Automatic-Module-Name'] = 'org.mongodb.bson'
+    jar.manifest.attributes['Import-Package'] = 'org.slf4j.*;resolution:=optional'
+}
+
+ succeeded in 578ms:
+200
+
+codex
+Maven Central exposes the `4.11.1` source and javadoc jars, but not a test jar for this artifact, so the existing tagged GitHub test path is the right test-suite URL under the stated preference rules. I validated the JSON and am doing one final diff check; I don’t expect a file edit because the only missing field should stay absent.
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.mongodb/bson/index.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+ succeeded in 0ms:
+?? metadata/org.mongodb/bson/index.json
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.mongodb/bson/index.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a
+ succeeded in 0ms:
+web search: 
+web search: site:repo1.maven.org/maven2/org/mongodb/bson/4.11.1/ bson-4.11.1-sources.jar javadoc.jar
+web search: 
+web search: https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test
+codex
+No edit was necessary in [index.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a/metadata/org.mongodb/bson/index.json): the `4.11.1` entry already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`.
+
+I left `language` absent because `org.mongodb:bson` is the Java BSON module, not a Kotlin, Groovy, or Scala-specific artifact. Maven Central confirms the exact `4.11.1` sources and javadoc jars, and the tagged GitHub test suite path exists for `r4.11.1`; Maven Central does not list a test jar for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/?utm_source=openai))
+
+Validation run: `jq empty metadata/org.mongodb/bson/index.json`.
+tokens used
+33,942
+No edit was necessary in [index.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a/metadata/org.mongodb/bson/index.json): the `4.11.1` entry already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`.
+
+I left `language` absent because `org.mongodb:bson` is the Java BSON module, not a Kotlin, Groovy, or Scala-specific artifact. Maven Central confirms the exact `4.11.1` sources and javadoc jars, and the tagged GitHub test suite path exists for `r4.11.1`; Maven Central does not list a test jar for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/?utm_source=openai))
+
+Validation run: `jq empty metadata/org.mongodb/bson/index.json`.
+Ran agent for org.mongodb:bson:4.11.1 (exit 0). Log: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a/build/agent-url-discovery-logs/org.mongodb-bson-4.11.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/2717-03cf7c5a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 48s
+9 actionable tasks: 1 executed, 8 up-to-date
