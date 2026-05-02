@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class DataUtilTest {
     @Test
     void growsReferenceArrayPreservingComponentTypeAndContents() {
-        String[] originalValues = { "alpha", "beta" };
+        String[] originalValues = {"alpha", "beta"};
 
         Object grownArray = DataUtil.growAnyArrayBy(originalValues, 2);
 
@@ -27,7 +27,7 @@ public class DataUtilTest {
 
     @Test
     void growsPrimitiveArrayPreservingComponentTypeAndContents() {
-        int[] originalValues = { 3, 5, 8 };
+        int[] originalValues = {3, 5, 8};
 
         Object grownArray = DataUtil.growAnyArrayBy(originalValues, 1);
 
