@@ -25,6 +25,7 @@ import io.netty.incubator.codec.quic.QuicCongestionControlAlgorithm;
 import io.netty.incubator.codec.quic.QuicConnectionAddress;
 import io.netty.incubator.codec.quic.QuicConnectionIdGenerator;
 import io.netty.incubator.codec.quic.QuicError;
+import io.netty.incubator.codec.quic.QuicHeaderParser;
 import io.netty.incubator.codec.quic.QuicPacketType;
 import io.netty.incubator.codec.quic.QuicServerCodecBuilder;
 import io.netty.incubator.codec.quic.QuicStreamFrame;
@@ -241,6 +242,46 @@ public class Netty_incubator_codec_classes_quicTest {
     }
 
     @Test
+    void quicHeaderParserExtractsVersionNegotiationHeader() throws Exception {
+        if (!Quic.isAvailable()) {
+            assertNativeBackedTypeUnavailable(() -> new QuicHeaderParser(0, 4));
+            return;
+        }
+
+        InetSocketAddress sender = new InetSocketAddress("127.0.0.1", 4433);
+        InetSocketAddress recipient = new InetSocketAddress("127.0.0.1", 9443);
+        byte[] destinationConnectionId = new byte[] {1, 2, 3, 4};
+        byte[] sourceConnectionId = new byte[] {5, 6, 7};
+        boolean[] processed = {false};
+        ByteBuf packet = Unpooled.directBuffer();
+        packet.writeByte(0x80);
+        packet.writeInt(0);
+        packet.writeByte(destinationConnectionId.length);
+        packet.writeBytes(destinationConnectionId);
+        packet.writeByte(sourceConnectionId.length);
+        packet.writeBytes(sourceConnectionId);
+        packet.writeInt(1);
+
+        try (QuicHeaderParser parser = new QuicHeaderParser(0, destinationConnectionId.length)) {
+            parser.parse(sender, recipient, packet, (local, remote, payload, type, version, scid, dcid, token) -> {
+                assertThat(local).isSameAs(sender);
+                assertThat(remote).isSameAs(recipient);
+                assertThat(payload).isSameAs(packet);
+                assertThat(type).isSameAs(QuicPacketType.VERSION_NEGOTIATION);
+                assertThat(version).isZero();
+                assertThat(readBytes(dcid)).containsExactly(destinationConnectionId);
+                assertThat(readBytes(scid)).containsExactly(sourceConnectionId);
+                assertThat(token.readableBytes()).isZero();
+                processed[0] = true;
+            });
+        } finally {
+            packet.release();
+        }
+
+        assertThat(processed[0]).isTrue();
+    }
+
+    @Test
     void nativeBackedAddressAndTokenTypesRespectTransportAvailability() {
         if (!Quic.isAvailable()) {
             assertNativeBackedTypeUnavailable(() -> QuicConnectionAddress.EPHEMERAL.toString());
@@ -309,6 +350,12 @@ public class Netty_incubator_codec_classes_quicTest {
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> serverBuilder.statelessResetToken(new byte[] {1, 2, 3}))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static byte[] readBytes(ByteBuf buffer) {
+        byte[] bytes = new byte[buffer.readableBytes()];
+        buffer.getBytes(buffer.readerIndex(), bytes);
+        return bytes;
     }
 
     private static void assertConnectionIdGeneratorsExposeNativeBackedState(
