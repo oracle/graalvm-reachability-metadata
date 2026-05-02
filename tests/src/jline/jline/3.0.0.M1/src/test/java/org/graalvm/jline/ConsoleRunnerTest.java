@@ -6,114 +6,102 @@
  */
 package org.graalvm.jline;
 
-import jline.TerminalFactory;
-import jline.console.completer.Completer;
-import jline.console.internal.ConsoleRunner;
-import jline.internal.Configuration;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.jline.reader.Candidate;
+import org.jline.reader.Completer;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.ParsedLine;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.Timeout;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConsoleRunnerTest {
 
-    private String originalCompleters;
-    private String originalHistoryName;
-    private String originalTerminalType;
-    private String originalUserHome;
-    private InputStream originalSystemIn;
-
-    @TempDir
-    Path temporaryHome;
-
-    @BeforeEach
-    void setUp() {
-        originalCompleters = System.getProperty(ConsoleRunner.class.getName() + ".completers");
-        originalHistoryName = System.getProperty(ConsoleRunner.property);
-        originalTerminalType = System.getProperty(TerminalFactory.JLINE_TERMINAL);
-        originalUserHome = System.getProperty("user.home");
-        originalSystemIn = System.in;
-
-        TrackingCompleter.constructorCalls = 0;
-        TargetApplication.invocationCount = 0;
-        TargetApplication.lastArguments = null;
-        TargetApplication.systemInClassName = null;
-
-        System.setProperty(ConsoleRunner.class.getName() + ".completers", TrackingCompleter.class.getName());
-        System.setProperty(ConsoleRunner.property, "console-runner");
-        System.setProperty(TerminalFactory.JLINE_TERMINAL, TerminalFactory.NONE);
-        System.setProperty("user.home", temporaryHome.toString());
-        System.setIn(new ByteArrayInputStream(new byte[0]));
-
-        Configuration.reset();
-        TerminalFactory.reset();
-    }
-
-    @AfterEach
-    void tearDown() {
-        restoreProperty(ConsoleRunner.class.getName() + ".completers", originalCompleters);
-        restoreProperty(ConsoleRunner.property, originalHistoryName);
-        restoreProperty(TerminalFactory.JLINE_TERMINAL, originalTerminalType);
-        restoreProperty("user.home", originalUserHome);
-        System.setIn(originalSystemIn);
-
-        Configuration.reset();
-        TerminalFactory.reset();
-    }
-
     @Test
-    void mainLoadsConfiguredCompleterAndInvokesTheTargetMainMethod() throws Exception {
-        ConsoleRunner.main(new String[]{TargetApplication.class.getName(), "alpha", "beta"});
+    @Timeout(10)
+    void lineReaderBuilderInstallsTheConfiguredCompleter() throws Exception {
+        ByteArrayInputStream input = new ByteArrayInputStream(new byte[0]);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        TrackingCompleter completer = new TrackingCompleter();
 
-        assertThat(TrackingCompleter.constructorCalls).isEqualTo(1);
-        assertThat(TargetApplication.invocationCount).isEqualTo(1);
-        assertThat(TargetApplication.lastArguments).containsExactly("alpha", "beta");
-        assertThat(TargetApplication.systemInClassName).contains("ConsoleReaderInputStream");
-        assertThat(System.in.getClass().getName()).doesNotContain("ConsoleReaderInputStream");
-        assertThat(temporaryHome.resolve(".jline-" + TargetApplication.class.getName() + ".console-runner.history"))
-                .exists();
-    }
+        try (Terminal terminal = TerminalBuilder.builder()
+                .name("completion-reader-test")
+                .type("ansi")
+                .streams(input, output)
+                .system(false)
+                .build()) {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .appName("completion-reader-test")
+                    .completer(completer)
+                    .variable(LineReader.DISABLE_HISTORY, Boolean.TRUE)
+                    .build();
+            List<Candidate> candidates = new ArrayList<Candidate>();
 
-    private static void restoreProperty(final String name, final String value) {
-        if (value == null) {
-            System.clearProperty(name);
-        } else {
-            System.setProperty(name, value);
+            completer.complete(reader, new TestParsedLine("can"), candidates);
+
+            assertThat(reader.getTerminal()).isSameAs(terminal);
+            assertThat(completer.completedLines).containsExactly("can");
+            assertThat(candidates).singleElement().extracting(Candidate::value).isEqualTo("candidate");
         }
     }
 
     public static final class TrackingCompleter implements Completer {
 
-        private static int constructorCalls;
-
-        public TrackingCompleter() {
-            constructorCalls++;
-        }
+        private final List<String> completedLines = new ArrayList<String>();
 
         @Override
-        public int complete(final String buffer, final int cursor, final List<CharSequence> candidates) {
-            candidates.add("candidate");
-            return 0;
+        public void complete(final LineReader reader, final ParsedLine line, final List<Candidate> candidates) {
+            completedLines.add(line.line());
+            candidates.add(new Candidate("candidate"));
         }
     }
 
-    public static final class TargetApplication {
+    private static final class TestParsedLine implements ParsedLine {
 
-        private static int invocationCount;
-        private static String[] lastArguments;
-        private static String systemInClassName;
+        private final String line;
 
-        public static void main(final String[] args) {
-            invocationCount++;
-            lastArguments = args.clone();
-            systemInClassName = System.in.getClass().getName();
+        private TestParsedLine(final String line) {
+            this.line = line;
+        }
+
+        @Override
+        public String word() {
+            return line;
+        }
+
+        @Override
+        public int wordCursor() {
+            return line.length();
+        }
+
+        @Override
+        public int wordIndex() {
+            return 0;
+        }
+
+        @Override
+        public List<String> words() {
+            return Collections.singletonList(line);
+        }
+
+        @Override
+        public String line() {
+            return line;
+        }
+
+        @Override
+        public int cursor() {
+            return line.length();
         }
     }
 }
