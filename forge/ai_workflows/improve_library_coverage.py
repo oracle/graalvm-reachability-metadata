@@ -36,7 +36,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
-from utility_scripts.large_library_progress import LargeLibraryProgressState
+from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
@@ -235,19 +235,15 @@ def main(argv=None) -> int:
 
     log_stage("setup", f"Selected strategy: {strategy_name}")
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
-    large_library_state = None
-    large_library_state_path = None
-    if resume_artifact:
-        large_library_state = LargeLibraryProgressState.load(resume_artifact)
-        large_library_state_path = large_library_state.default_path(metrics_repo_root)
-    elif large_library_series:
-        large_library_state = LargeLibraryProgressState.create(
-            coordinate=library,
-            issue_number=issue_number,
-            request_label="library-update-request",
-            strategy_name=strategy_name,
-        )
-        large_library_state_path = large_library_state.default_path(metrics_repo_root)
+    large_library_state, large_library_state_path = resolve_workflow_progress_state(
+        metrics_repo_root=metrics_repo_root,
+        issue_number=issue_number,
+        coordinate=library,
+        request_label="library-update-request",
+        strategy_name=strategy_name,
+        large_library_series=large_library_series,
+        resume_artifact=resume_artifact,
+    )
 
     # Create feature branch
     new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
@@ -315,6 +311,10 @@ def main(argv=None) -> int:
         test_source_dir_name=test_source_layout.source_dir_name,
         large_library_progress_state=large_library_state,
         large_library_progress_state_path=large_library_state_path,
+        large_library_issue_number=issue_number,
+        large_library_request_label="library-update-request",
+        large_library_metrics_repo_root=metrics_repo_root,
+        large_library_strategy_name=strategy_name,
         chunk_class_limit=chunk_class_limit,
         chunk_call_limit=chunk_call_limit,
     )

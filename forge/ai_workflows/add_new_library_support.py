@@ -33,7 +33,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
-from utility_scripts.large_library_progress import LargeLibraryProgressState
+from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
@@ -423,19 +423,15 @@ def main(argv=None):
         print("ERROR: Strategy is missing required field: workflow", file=sys.stderr)
         sys.exit(1)
     StrategyClass = WorkflowStrategy.get_class(workflow_name)
-    large_library_state = None
-    large_library_state_path = None
-    if resume_artifact:
-        large_library_state = LargeLibraryProgressState.load(resume_artifact)
-        large_library_state_path = large_library_state.default_path(metrics_repo_root)
-    elif large_library_series:
-        large_library_state = LargeLibraryProgressState.create(
-            coordinate=library,
-            issue_number=issue_number,
-            request_label="library-new-request",
-            strategy_name=strategy_name,
-        )
-        large_library_state_path = large_library_state.default_path(metrics_repo_root)
+    large_library_state, large_library_state_path = resolve_workflow_progress_state(
+        metrics_repo_root=metrics_repo_root,
+        issue_number=issue_number,
+        coordinate=library,
+        request_label="library-new-request",
+        strategy_name=strategy_name,
+        large_library_series=large_library_series,
+        resume_artifact=resume_artifact,
+    )
 
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
 
@@ -486,6 +482,10 @@ def main(argv=None):
         keep_tests_without_dynamic_access=keep_tests_without_dynamic_access,
         large_library_progress_state=large_library_state,
         large_library_progress_state_path=large_library_state_path,
+        large_library_issue_number=issue_number,
+        large_library_request_label="library-new-request",
+        large_library_metrics_repo_root=metrics_repo_root,
+        large_library_strategy_name=strategy_name,
         chunk_class_limit=chunk_class_limit,
         chunk_call_limit=chunk_call_limit,
         test_language=test_source_layout.language,

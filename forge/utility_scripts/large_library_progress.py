@@ -60,6 +60,37 @@ def find_progress_state_path(metrics_repo_root: str, issue_number: int) -> str |
     return max(matches, key=os.path.getmtime)
 
 
+def resolve_workflow_progress_state(
+        metrics_repo_root: str,
+        issue_number: int | None,
+        coordinate: str,
+        request_label: str,
+        strategy_name: str,
+        large_library_series: bool,
+        resume_artifact: str | None = None,
+) -> tuple["LargeLibraryProgressState | None", str | None]:
+    """Resolve the progress state used by a workflow invocation."""
+    if resume_artifact:
+        state = LargeLibraryProgressState.load(resume_artifact)
+        return state, state.default_path(metrics_repo_root)
+
+    if not large_library_series:
+        return None, None
+
+    if issue_number is not None:
+        state_path = find_progress_state_path(metrics_repo_root, issue_number)
+        if state_path is not None:
+            return LargeLibraryProgressState.load(state_path), state_path
+
+    state = LargeLibraryProgressState.create(
+        coordinate=coordinate,
+        issue_number=issue_number,
+        request_label=request_label,
+        strategy_name=strategy_name,
+    )
+    return state, state.default_path(metrics_repo_root)
+
+
 def copy_progress_artifacts(source_metrics_root: str, destination_metrics_root: str, issue_number: int) -> None:
     """Copy large-library progress artifacts out of a scratch metrics root before cleanup."""
     source_dir = os.path.join(source_metrics_root, LARGE_LIBRARY_PROGRESS_DIR, f"issue-{issue_number}")

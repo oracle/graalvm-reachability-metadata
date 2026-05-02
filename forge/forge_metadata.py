@@ -2702,13 +2702,15 @@ def apply_failed_run_follow_up(
 
 
 def append_large_library_workflow_args(pipeline_argv: list[str], claimed_issue: ClaimedIssue) -> None:
-    """Append large-library workflow flags when a series is active or resuming."""
-    if not claimed_issue.large_library_resume_artifact and not issue_has_label(claimed_issue.issue, LABEL_LARGE_LIBRARY_SERIES):
-        return
+    """Append issue context and large-library chunking configuration."""
     issue_number = claimed_issue.issue["number"]
-    pipeline_argv.extend(["--large-library-series", "--issue-number", str(issue_number)])
-    if claimed_issue.large_library_resume_artifact:
-        pipeline_argv.extend(["--resume-artifact", claimed_issue.large_library_resume_artifact])
+    pipeline_argv.extend(["--issue-number", str(issue_number)])
+    if (
+            claimed_issue.large_library_resume_artifact
+            or issue_has_label(claimed_issue.issue, LABEL_LARGE_LIBRARY_SERIES)
+            or issue_has_label(claimed_issue.issue, LABEL_LARGE_LIBRARY_NEXT_PART)
+    ):
+        pipeline_argv.append("--large-library-series")
     chunk_class_limit = os.environ.get("FORGE_LARGE_LIBRARY_CHUNK_CLASS_LIMIT")
     if chunk_class_limit:
         pipeline_argv.extend(["--chunk-class-limit", chunk_class_limit])
@@ -3221,7 +3223,6 @@ def create_issue_workspace(
         in_metadata_repo: bool = True,
 ) -> tuple[str, str]:
     """Create isolated worktrees for reachability-metadata and metrics storage."""
-    _ = canonical_metrics_repo_path
     _ = in_metadata_repo
     repo_root = get_repo_root()
     worktrees_root = os.path.join(repo_root, "local_repositories", SCRATCH_WORKTREE_DIRNAME)
@@ -3237,7 +3238,9 @@ def create_issue_workspace(
         f"Failed to create worktree for issue #{issue_number}",
     )
 
-    return worktree_path, os.path.join(worktree_path, get_forge_subdir_name())
+    scratch_metrics_repo_path = os.path.join(worktree_path, get_forge_subdir_name())
+    copy_progress_artifacts(canonical_metrics_repo_path, scratch_metrics_repo_path, issue_number)
+    return worktree_path, scratch_metrics_repo_path
 
 
 def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_path: str) -> None:
@@ -3453,10 +3456,9 @@ def claim_issue_for_processing(
             in_metadata_repo=in_metadata_repo,
         )
         if large_library_resume_artifact:
-            verify_large_library_base_contains_published_commit(
-                LargeLibraryProgressState.load(large_library_resume_artifact),
-                worktree_path,
-            )
+            large_library_state = LargeLibraryProgressState.load(large_library_resume_artifact)
+            large_library_state.save(large_library_state.default_path(scratch_metrics_repo_path))
+            verify_large_library_base_contains_published_commit(large_library_state, worktree_path)
     except BaseException as exc:
         revert_issue_claim(
             item_id,
