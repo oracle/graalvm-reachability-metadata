@@ -2906,7 +2906,7 @@ def get_work_queue_configs_from_environment(
         ),
         WorkQueueConfig(
             label=LABEL_LIBRARY_UPDATE,
-            limit=get_env_non_negative_int("FORGE_LIBRARY_UPDATE_WORK_LIMIT", 0),
+            limit=get_env_non_negative_int("FORGE_LIBRARY_UPDATE_WORK_LIMIT", 1),
             strategy_name=os.environ.get("FORGE_LIBRARY_UPDATE_STRATEGY_NAME") or None,
         ),
         WorkQueueConfig(
