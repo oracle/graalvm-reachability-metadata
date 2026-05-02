@@ -172,6 +172,27 @@ public class Jsr305Test {
         assertThat(counter.next()).isEqualTo(1);
     }
 
+    @Test
+    void resourceOwnershipAnnotationsSupportClosingContracts() throws Exception {
+        TrackedResource ownedResource = new TrackedResource("owned");
+        TrackedResource borrowedResource = new TrackedResource("borrowed");
+        TrackedResource consumedResource = new TrackedResource("consumed");
+        ResourceOwner owner = new ResourceOwner(ownedResource);
+
+        assertThat(owner.peek(borrowedResource)).isEqualTo("borrowed");
+        assertThat(borrowedResource.isClosed()).isFalse();
+
+        assertThat(owner.consume(consumedResource)).isEqualTo("consumed");
+        assertThat(consumedResource.isClosed()).isTrue();
+        assertThat(ownedResource.isClosed()).isFalse();
+
+        owner.close();
+
+        assertThat(owner.isClosed()).isTrue();
+        assertThat(ownedResource.isClosed()).isTrue();
+        assertThat(borrowedResource.isClosed()).isFalse();
+    }
+
     private static Nonnull nonnull(When when) {
         return new Nonnull() {
             @Override
@@ -454,6 +475,57 @@ public class Jsr305Test {
         int next() {
             value++;
             return value;
+        }
+    }
+
+    private static class ResourceOwner implements AutoCloseable {
+        private final TrackedResource ownedResource;
+        private boolean closed;
+
+        private ResourceOwner(@WillCloseWhenClosed TrackedResource ownedResource) {
+            this.ownedResource = ownedResource;
+        }
+
+        String peek(@WillNotClose TrackedResource resource) {
+            return resource.value();
+        }
+
+        String consume(@WillClose TrackedResource resource) throws Exception {
+            try (TrackedResource closeableResource = resource) {
+                return closeableResource.value();
+            }
+        }
+
+        boolean isClosed() {
+            return closed;
+        }
+
+        @Override
+        public void close() throws Exception {
+            closed = true;
+            ownedResource.close();
+        }
+    }
+
+    private static class TrackedResource implements AutoCloseable {
+        private final String value;
+        private boolean closed;
+
+        private TrackedResource(String value) {
+            this.value = value;
+        }
+
+        String value() {
+            return value;
+        }
+
+        boolean isClosed() {
+            return closed;
+        }
+
+        @Override
+        public void close() {
+            closed = true;
         }
     }
 }
