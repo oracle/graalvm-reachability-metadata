@@ -14,6 +14,7 @@ import groovy.lang.IntRange
 import groovy.lang.Script
 import groovy.lang.Tuple
 import groovy.lang.Tuple2
+import groovy.transform.CompileStatic
 import groovy.util.ConfigObject
 import groovy.util.Expando
 import groovy.util.ObservableList
@@ -27,6 +28,7 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.io.StringWriter
 import java.math.BigInteger
+import java.util.Arrays
 import java.util.Locale
 import java.util.Properties
 import java.util.concurrent.atomic.AtomicInteger
@@ -105,6 +107,24 @@ public class GroovyTest {
         assertEquals(['groovy', 'Groovy', 'java', 'Java'], flattened)
         assertTrue(inclusiveRange.containsWithinBounds(10))
         assertFalse(inclusiveRange.containsWithinBounds(11))
+    }
+
+    @Test
+    @CompileStatic
+    void stringExtensionsNormalizePaddingAndTokens() {
+        String normalized = '''
+                |alpha
+                |  beta
+                |gamma
+                '''.stripMargin().trim()
+        String centered = 'groovy'.center(10, '.')
+        List<String> tokens = 'core,runtime;native'.tokenize(',;')
+
+        assertEquals('alpha\n  beta\ngamma', normalized)
+        assertEquals('..groovy..', centered)
+        assertEquals(Arrays.asList('core', 'runtime', 'native'), tokens)
+        assertEquals('meta', 'metadata'.take(4))
+        assertEquals('metadata', 'metadata'.take(20))
     }
 
     @Test
