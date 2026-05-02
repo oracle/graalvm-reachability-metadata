@@ -126,6 +126,30 @@ public class Jboss_transaction_api_1_2_specTest {
     }
 
     @Test
+    void xaResourceRecoveryScanReturnsPreparedBranchesAndHonorsTimeoutConfiguration() throws Exception {
+        Xid inDoubtXid = new FixedXid(19);
+        RecoverableXAResource resource = new RecoverableXAResource(inDoubtXid);
+
+        assertThat(resource.setTransactionTimeout(45)).isTrue();
+        assertThat(resource.getTransactionTimeout()).isEqualTo(45);
+        assertThat(resource.prepare(inDoubtXid)).isEqualTo(XAResource.XA_OK);
+        assertThat(resource.recover(XAResource.TMSTARTRSCAN)).containsExactly(inDoubtXid);
+        assertThat(resource.isSameRM(resource)).isTrue();
+        assertThat(resource.isSameRM(new RecoverableXAResource(new FixedXid(20)))).isFalse();
+
+        resource.forget(inDoubtXid);
+
+        assertThat(resource.recover(XAResource.TMENDRSCAN)).isEmpty();
+        assertThat(resource.events)
+                .containsExactly(
+                        "timeout:45",
+                        "prepare:19",
+                        "recover:" + XAResource.TMSTARTRSCAN,
+                        "forget:19",
+                        "recover:" + XAResource.TMENDRSCAN);
+    }
+
+    @Test
     void commitOnRollbackOnlyTransactionRollsBackAndThrowsRollbackException() throws Exception {
         RecordingTransactionManager manager = new RecordingTransactionManager();
         RecordingXAResource resource = new RecordingXAResource();
@@ -561,6 +585,72 @@ public class Jboss_transaction_api_1_2_specTest {
         @Override
         public void start(Xid xid, int flags) {
             events.add("start:" + flags);
+        }
+    }
+
+    private static final class RecoverableXAResource implements XAResource {
+        private final List<String> events = new ArrayList<>();
+        private final Xid preparedXid;
+        private int timeoutSeconds;
+        private boolean forgotten;
+
+        private RecoverableXAResource(Xid preparedXid) {
+            this.preparedXid = preparedXid;
+        }
+
+        @Override
+        public void commit(Xid xid, boolean onePhase) {
+            events.add("commit:" + xid.getFormatId() + ":" + onePhase);
+        }
+
+        @Override
+        public void end(Xid xid, int flags) {
+            events.add("end:" + xid.getFormatId() + ":" + flags);
+        }
+
+        @Override
+        public void forget(Xid xid) {
+            forgotten = true;
+            events.add("forget:" + xid.getFormatId());
+        }
+
+        @Override
+        public int getTransactionTimeout() {
+            return timeoutSeconds;
+        }
+
+        @Override
+        public boolean isSameRM(XAResource resource) {
+            return this == resource;
+        }
+
+        @Override
+        public int prepare(Xid xid) {
+            events.add("prepare:" + xid.getFormatId());
+            return XAResource.XA_OK;
+        }
+
+        @Override
+        public Xid[] recover(int flag) {
+            events.add("recover:" + flag);
+            return forgotten ? new Xid[0] : new Xid[] {preparedXid};
+        }
+
+        @Override
+        public void rollback(Xid xid) {
+            events.add("rollback:" + xid.getFormatId());
+        }
+
+        @Override
+        public boolean setTransactionTimeout(int seconds) {
+            timeoutSeconds = seconds;
+            events.add("timeout:" + seconds);
+            return true;
+        }
+
+        @Override
+        public void start(Xid xid, int flags) {
+            events.add("start:" + xid.getFormatId() + ":" + flags);
         }
     }
 
