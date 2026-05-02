@@ -137,7 +137,7 @@ public class JDK14LoggerAdapterTest {
     private static final class LocationAwareInvoker {
 
         private static void logWarning(LocationAwareLogger logger, String message, Throwable throwable) {
-            logger.log(null, LocationAwareInvoker.class.getName(), LocationAwareLogger.WARN_INT, message, throwable);
+            logger.log(null, LocationAwareInvoker.class.getName(), LocationAwareLogger.WARN_INT, message, null, throwable);
         }
     }
 }
