@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.xerces.util.AugmentationsImpl;
 import org.apache.xerces.util.DefaultErrorHandler;
@@ -35,6 +36,7 @@ import org.apache.xerces.xni.NamespaceContext;
 import org.apache.xerces.xni.QName;
 import org.apache.xerces.xni.XMLLocator;
 import org.apache.xerces.xni.XMLString;
+import org.apache.xerces.xni.parser.XMLComponentManager;
 import org.apache.xerces.xni.parser.XMLConfigurationException;
 import org.apache.xerces.xni.parser.XMLInputSource;
 import org.apache.xerces.xni.parser.XMLParseException;
@@ -291,6 +293,22 @@ public class XercesMinimalTest {
     }
 
     @Test
+    void parserConfigurationDelegatesRecognitionToParentManager() throws Exception {
+        String parentFeature = "http://example.test/features/parent-controlled";
+        String parentProperty = "http://example.test/properties/parent-controlled";
+        ParserConfigurationSettings settings = new ParserConfigurationSettings(new TestComponentManager(
+                Map.of(parentFeature, false),
+                Map.of(parentProperty, "parent-default")));
+        Object propertyValue = List.of("child", "override");
+
+        settings.setFeature(parentFeature, true);
+        settings.setProperty(parentProperty, propertyValue);
+
+        assertThat(settings.getFeature(parentFeature)).isTrue();
+        assertThat(settings.getProperty(parentProperty)).isEqualTo(propertyValue);
+    }
+
+    @Test
     void encodingMapSupportsCustomBidirectionalMappings() {
         String ianaName = "X-NEKOHTML-TEST-IANA";
         String javaName = "X_NekoHTML_Test_Java";
@@ -362,6 +380,34 @@ public class XercesMinimalTest {
             prefixes.add((String) allPrefixes.nextElement());
         }
         return prefixes;
+    }
+
+    private static final class TestComponentManager implements XMLComponentManager {
+        private final Map<String, Boolean> features;
+        private final Map<String, Object> properties;
+
+        private TestComponentManager(Map<String, Boolean> features, Map<String, Object> properties) {
+            this.features = features;
+            this.properties = properties;
+        }
+
+        @Override
+        public boolean getFeature(String featureId) throws XMLConfigurationException {
+            Boolean featureValue = features.get(featureId);
+            if (featureValue == null) {
+                throw new XMLConfigurationException(XMLConfigurationException.NOT_RECOGNIZED, featureId);
+            }
+            return featureValue;
+        }
+
+        @Override
+        public Object getProperty(String propertyId) throws XMLConfigurationException {
+            Object propertyValue = properties.get(propertyId);
+            if (propertyValue == null) {
+                throw new XMLConfigurationException(XMLConfigurationException.NOT_RECOGNIZED, propertyId);
+            }
+            return propertyValue;
+        }
     }
 
     private static final class TestLocator implements XMLLocator {
