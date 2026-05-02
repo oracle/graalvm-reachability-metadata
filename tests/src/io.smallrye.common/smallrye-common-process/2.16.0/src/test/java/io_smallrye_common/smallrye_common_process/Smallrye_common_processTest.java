@@ -226,6 +226,35 @@ public class Smallrye_common_processTest {
     }
 
     @Test
+    void programmaticInputProducersCanFeedProcessStandardInput() {
+        List<String> producedCharacters = ProcessBuilder.newBuilder(CAT)
+                .softExitTimeout(EXIT_TIMEOUT)
+                .hardExitTimeout(EXIT_TIMEOUT)
+                .input()
+                .charset(StandardCharsets.UTF_8)
+                .produceWith(writer -> writer.write("writer-line-one\nwriter-line-two\n"))
+                .output()
+                .charset(StandardCharsets.UTF_8)
+                .toStringList(5, 100)
+                .run();
+
+        assertThat(producedCharacters).containsExactly("writer-line-one", "writer-line-two");
+
+        String producedBytes = ProcessBuilder.newBuilder(CAT)
+                .softExitTimeout(EXIT_TIMEOUT)
+                .hardExitTimeout(EXIT_TIMEOUT)
+                .input()
+                .produceBytesWith(outputStream -> outputStream.write(
+                        "bytes-produced".getBytes(StandardCharsets.UTF_8)))
+                .output()
+                .charset(StandardCharsets.UTF_8)
+                .toSingleString(100)
+                .run();
+
+        assertThat(producedBytes).isEqualTo("bytes-produced");
+    }
+
+    @Test
     void errorLinesCanBeConsumedWithoutChangingOutputResult() {
         List<String> errorLines = new ArrayList<>();
 

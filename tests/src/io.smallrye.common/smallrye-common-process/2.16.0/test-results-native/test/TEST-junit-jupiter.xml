@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JUnit Jupiter" tests="13" skipped="0" failures="0" errors="11" time="610.082" hostname="kung-fu-workstation" timestamp="2026-05-02T20:23:24">
+<testsuite name="JUnit Jupiter" tests="14" skipped="0" failures="0" errors="12" time="670.041" hostname="kung-fu-workstation" timestamp="2026-05-02T20:44:58">
 <properties>
 <property name="file.encoding" value="UTF-8"/>
 <property name="file.separator" value="/"/>
@@ -52,11 +52,11 @@
 <property name="user.name" value="vjovanov"/>
 <property name="user.timezone" value="Europe/Zurich"/>
 </properties>
-<testcase name="asynchronousExecutionInvokesWhileRunningHandler()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="10.005">
+<testcase name="asynchronousExecutionInvokesWhileRunningHandler()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="10.001">
 <error type="java.util.concurrent.TimeoutException"><![CDATA[java.util.concurrent.TimeoutException
 	at java.base@25.0.2/java.util.concurrent.CompletableFuture.timedGet(CompletableFuture.java:1981)
 	at java.base@25.0.2/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2116)
-	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.asynchronousExecutionInvokesWhileRunningHandler(Smallrye_common_processTest.java:277)
+	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.asynchronousExecutionInvokesWhileRunningHandler(Smallrye_common_processTest.java:306)
 	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
 	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
@@ -73,6 +73,103 @@
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_smallrye_common.smallrye_common_process.Smallrye_common_processTest]/[method:asynchronousExecutionInvokesWhileRunningHandler()]
 display-name: asynchronousExecutionInvokesWhileRunningHandler()
+]]></system-out>
+</testcase>
+<testcase name="programmaticInputProducersCanFeedProcessStandardInput()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="60">
+<error message="programmaticInputProducersCanFeedProcessStandardInput() timed out after 60 seconds" type="java.util.concurrent.TimeoutException"><![CDATA[java.util.concurrent.TimeoutException: programmaticInputProducersCanFeedProcessStandardInput() timed out after 60 seconds
+	at org.junit.jupiter.engine.extension.TimeoutExceptionFactory.create(TimeoutExceptionFactory.java:29)
+	at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.lambda$proceed$0(SeparateThreadTimeoutInvocation.java:40)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.resolveFutureAndHandleException(AssertTimeoutPreemptively.java:116)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.assertTimeoutPreemptively(AssertTimeoutPreemptively.java:82)
+	at org.junit.jupiter.api.Assertions.assertTimeoutPreemptively(Assertions.java:3556)
+	at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.proceed(SeparateThreadTimeoutInvocation.java:38)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:217)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base@25.0.2/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base@25.0.2/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
+	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
+	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
+	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
+	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
+Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-4
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers.Pthread.pthread_cond_wait(Pthread.java)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park0(PosixPlatformThreads.java:388)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park(PosixPlatformThreads.java:367)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.parkCurrentPlatformOrCarrierThread(PlatformThreads.java:948)
+	at java.base@25.0.2/jdk.internal.misc.Unsafe.park(Unsafe.java:56)
+	at java.base@25.0.2/java.util.concurrent.locks.LockSupport.park(LockSupport.java:223)
+	at io.smallrye.common.process.ProcessRunner.await(ProcessRunner.java:140)
+	at io.smallrye.common.process.ProcessRunner.run(ProcessRunner.java:91)
+	at io.smallrye.common.process.ProcessBuilderImpl.run(ProcessBuilderImpl.java:199)
+	at io.smallrye.common.process.ProcessBuilderImpl$ViewImpl.run(ProcessBuilderImpl.java:268)
+	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.programmaticInputProducersCanFeedProcessStandardInput(Smallrye_common_processTest.java:239)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+]]></error>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:io_smallrye_common.smallrye_common_process.Smallrye_common_processTest]/[method:programmaticInputProducersCanFeedProcessStandardInput()]
+display-name: programmaticInputProducersCanFeedProcessStandardInput()
 ]]></system-out>
 </testcase>
 <testcase name="environmentAndWorkingDirectoryAreApplied(Path)" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="60.001">
@@ -142,7 +239,7 @@ display-name: asynchronousExecutionInvokesWhileRunningHandler()
 	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
 	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
 	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-6
+Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-7
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers.Pthread.pthread_cond_wait(Pthread.java)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park0(PosixPlatformThreads.java:388)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park(PosixPlatformThreads.java:367)
@@ -172,7 +269,7 @@ unique-id: [engine:junit-jupiter]/[class:io_smallrye_common.smallrye_common_proc
 display-name: environmentAndWorkingDirectoryAreApplied(Path)
 ]]></system-out>
 </testcase>
-<testcase name="outputCanBeCopiedTransferredAndProcessed()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="60.001">
+<testcase name="outputCanBeCopiedTransferredAndProcessed()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="60.004">
 <error message="outputCanBeCopiedTransferredAndProcessed() timed out after 60 seconds" type="java.util.concurrent.TimeoutException"><![CDATA[java.util.concurrent.TimeoutException: outputCanBeCopiedTransferredAndProcessed() timed out after 60 seconds
 	at org.junit.jupiter.engine.extension.TimeoutExceptionFactory.create(TimeoutExceptionFactory.java:29)
 	at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.lambda$proceed$0(SeparateThreadTimeoutInvocation.java:40)
@@ -239,7 +336,7 @@ display-name: environmentAndWorkingDirectoryAreApplied(Path)
 	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
 	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
 	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-7
+Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-8
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers.Pthread.pthread_cond_wait(Pthread.java)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park0(PosixPlatformThreads.java:388)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park(PosixPlatformThreads.java:367)
@@ -336,7 +433,7 @@ display-name: outputCanBeCopiedTransferredAndProcessed()
 	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
 	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
 	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-9
+Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-10
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers.Pthread.pthread_cond_wait(Pthread.java)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park0(PosixPlatformThreads.java:388)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park(PosixPlatformThreads.java:367)
@@ -434,7 +531,7 @@ display-name: execToStringAndStringListCaptureStandardOutput()
 	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
 	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
 	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-5
+Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-6
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers.Pthread.pthread_cond_wait(Pthread.java)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park0(PosixPlatformThreads.java:388)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park(PosixPlatformThreads.java:367)
@@ -444,11 +541,11 @@ Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutExcep
 	at io.smallrye.common.process.ProcessRunner.await(ProcessRunner.java:140)
 	at io.smallrye.common.process.ProcessRunner.run(ProcessRunner.java:91)
 	at io.smallrye.common.process.ProcessBuilderImpl.run(ProcessBuilderImpl.java:199)
-	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.lambda$pipelineFailureReportsProcessExceptions$0(Smallrye_common_processTest.java:261)
+	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.lambda$pipelineFailureReportsProcessExceptions$0(Smallrye_common_processTest.java:290)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3083)
-	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.pipelineFailureReportsProcessExceptions(Smallrye_common_processTest.java:257)
+	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.pipelineFailureReportsProcessExceptions(Smallrye_common_processTest.java:286)
 	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
 	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
@@ -467,7 +564,7 @@ unique-id: [engine:junit-jupiter]/[class:io_smallrye_common.smallrye_common_proc
 display-name: pipelineFailureReportsProcessExceptions()
 ]]></system-out>
 </testcase>
-<testcase name="processUtilityCanObserveAndDestroyPlainJdkProcesses()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="0.069">
+<testcase name="processUtilityCanObserveAndDestroyPlainJdkProcesses()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="0.022">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_smallrye_common.smallrye_common_process.Smallrye_common_processTest]/[method:processUtilityCanObserveAndDestroyPlainJdkProcesses()]
 display-name: processUtilityCanObserveAndDestroyPlainJdkProcesses()
@@ -540,7 +637,7 @@ display-name: processUtilityCanObserveAndDestroyPlainJdkProcesses()
 	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
 	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
 	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-4
+Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-5
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers.Pthread.pthread_cond_wait(Pthread.java)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park0(PosixPlatformThreads.java:388)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park(PosixPlatformThreads.java:367)
@@ -551,7 +648,7 @@ Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutExcep
 	at io.smallrye.common.process.ProcessRunner.run(ProcessRunner.java:91)
 	at io.smallrye.common.process.ProcessBuilderImpl.run(ProcessBuilderImpl.java:199)
 	at io.smallrye.common.process.ProcessBuilderImpl$ViewImpl.run(ProcessBuilderImpl.java:268)
-	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.pipelineFeedsOutputIntoNextProcess(Smallrye_common_processTest.java:250)
+	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.pipelineFeedsOutputIntoNextProcess(Smallrye_common_processTest.java:279)
 	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
 	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
@@ -570,7 +667,7 @@ unique-id: [engine:junit-jupiter]/[class:io_smallrye_common.smallrye_common_proc
 display-name: pipelineFeedsOutputIntoNextProcess()
 ]]></system-out>
 </testcase>
-<testcase name="inputAndOutputCanTransferThroughFiles(Path)" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="60">
+<testcase name="inputAndOutputCanTransferThroughFiles(Path)" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="60.001">
 <error message="inputAndOutputCanTransferThroughFiles(java.nio.file.Path) timed out after 60 seconds" type="java.util.concurrent.TimeoutException"><![CDATA[java.util.concurrent.TimeoutException: inputAndOutputCanTransferThroughFiles(java.nio.file.Path) timed out after 60 seconds
 	at org.junit.jupiter.engine.extension.TimeoutExceptionFactory.create(TimeoutExceptionFactory.java:29)
 	at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.lambda$proceed$0(SeparateThreadTimeoutInvocation.java:40)
@@ -734,7 +831,7 @@ display-name: inputAndOutputCanTransferThroughFiles(Path)
 	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
 	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
 	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-8
+Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-9
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers.Pthread.pthread_cond_wait(Pthread.java)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park0(PosixPlatformThreads.java:388)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park(PosixPlatformThreads.java:367)
@@ -831,7 +928,7 @@ display-name: errorStreamCanBeRedirectedOrCapturedOnFailure()
 	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
 	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
 	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-12
+Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-13
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers.Pthread.pthread_cond_wait(Pthread.java)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park0(PosixPlatformThreads.java:388)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park(PosixPlatformThreads.java:367)
@@ -861,13 +958,13 @@ unique-id: [engine:junit-jupiter]/[class:io_smallrye_common.smallrye_common_proc
 display-name: exitCodeCheckerCanAcceptNonZeroExitStatus()
 ]]></system-out>
 </testcase>
-<testcase name="processUtilitiesExposeNativeCharsetJavaCommandAndSearchPath()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="0">
+<testcase name="processUtilitiesExposeNativeCharsetJavaCommandAndSearchPath()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="0.002">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:io_smallrye_common.smallrye_common_process.Smallrye_common_processTest]/[method:processUtilitiesExposeNativeCharsetJavaCommandAndSearchPath()]
 display-name: processUtilitiesExposeNativeCharsetJavaCommandAndSearchPath()
 ]]></system-out>
 </testcase>
-<testcase name="errorLinesCanBeConsumedWithoutChangingOutputResult()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="60">
+<testcase name="errorLinesCanBeConsumedWithoutChangingOutputResult()" classname="io_smallrye_common.smallrye_common_process.Smallrye_common_processTest" time="60.001">
 <error message="errorLinesCanBeConsumedWithoutChangingOutputResult() timed out after 60 seconds" type="java.util.concurrent.TimeoutException"><![CDATA[java.util.concurrent.TimeoutException: errorLinesCanBeConsumedWithoutChangingOutputResult() timed out after 60 seconds
 	at org.junit.jupiter.engine.extension.TimeoutExceptionFactory.create(TimeoutExceptionFactory.java:29)
 	at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.lambda$proceed$0(SeparateThreadTimeoutInvocation.java:40)
@@ -934,7 +1031,7 @@ display-name: processUtilitiesExposeNativeCharsetJavaCommandAndSearchPath()
 	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
 	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
 	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-11
+Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-12
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.headers.Pthread.pthread_cond_wait(Pthread.java)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park0(PosixPlatformThreads.java:388)
 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.posix.thread.PosixParker.park(PosixPlatformThreads.java:367)
@@ -945,7 +1042,7 @@ Caused by: org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutExcep
 	at io.smallrye.common.process.ProcessRunner.run(ProcessRunner.java:91)
 	at io.smallrye.common.process.ProcessBuilderImpl.run(ProcessBuilderImpl.java:199)
 	at io.smallrye.common.process.ProcessBuilderImpl$ViewImpl.run(ProcessBuilderImpl.java:268)
-	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.errorLinesCanBeConsumedWithoutChangingOutputResult(Smallrye_common_processTest.java:237)
+	at io_smallrye_common.smallrye_common_process.Smallrye_common_processTest.errorLinesCanBeConsumedWithoutChangingOutputResult(Smallrye_common_processTest.java:266)
 	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
 	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
