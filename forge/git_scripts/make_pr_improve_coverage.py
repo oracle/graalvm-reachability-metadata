@@ -6,6 +6,7 @@
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -346,10 +347,8 @@ def push_current_branch_to_origin(coordinates: str, repo_path: str, large_librar
 
 def _parse_pr_number(output: str) -> int | None:
     """Extract a PR number from gh pr create output."""
-    for token in output.replace("/", " ").split():
-        if token.isdigit():
-            return int(token)
-    return None
+    match = re.search(r"/pull/(\d+)", output)
+    return int(match.group(1)) if match else None
 
 
 def update_large_library_state_after_publish(
@@ -370,7 +369,11 @@ def update_large_library_state_after_publish(
     state.save(state_path)
 
 
-def metrics_commit_and_push(metrics_repo_root: str, coordinates: str) -> None:
+def metrics_commit_and_push(
+        metrics_repo_root: str,
+        coordinates: str,
+        extra_paths_to_stage: list[str] | None = None,
+) -> None:
     """Read pending metrics and push with retry logic."""
     run_metrics = read_pending_metrics(metrics_repo_root)
     metrics_json_path = os.path.join(SCRIPT_RUN_METRICS_DIR, "improve_library_coverage.json")
@@ -379,7 +382,18 @@ def metrics_commit_and_push(metrics_repo_root: str, coordinates: str) -> None:
         metrics_json_relative_path=metrics_json_path,
         run_metrics=run_metrics,
         commit_message=f"Run metrics: improve_library_coverage.py for {coordinates}",
+        extra_paths_to_stage=extra_paths_to_stage,
     )
+
+
+def _large_library_extra_paths(
+        state_path: str | None,
+        metrics_repo_root: str,
+) -> list[str] | None:
+    """Return the series progress dir relative to the metrics root, when state is present."""
+    if not state_path:
+        return None
+    return [os.path.relpath(os.path.dirname(state_path), metrics_repo_root)]
 
 
 def main(argv=None) -> None:
@@ -426,7 +440,11 @@ def main(argv=None) -> None:
         large_library_final or large_library_part is None,
     )
     if not in_metadata_repo:
-        metrics_commit_and_push(metrics_repo_path, coordinates)
+        metrics_commit_and_push(
+            metrics_repo_path,
+            coordinates,
+            extra_paths_to_stage=_large_library_extra_paths(large_library_state_path, metrics_repo_path),
+        )
 
 
 if __name__ == "__main__":

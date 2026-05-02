@@ -92,6 +92,8 @@ def _preflight(
 
 def _claimed_issue(
         label: str = forge_metadata.LABEL_LIBRARY_NEW,
+        large_library_resume_artifact: str | None = None,
+        large_library_part: int | None = None,
 ) -> forge_metadata.ClaimedIssue:
     return forge_metadata.ClaimedIssue(
         issue={
@@ -105,6 +107,8 @@ def _claimed_issue(
         scratch_metrics_repo_path="/tmp/metrics-worktree",
         in_metadata_repo=False,
         issue_coordinates="org.example:lib:1.0.0",
+        large_library_resume_artifact=large_library_resume_artifact,
+        large_library_part=large_library_part,
     )
 
 
@@ -604,6 +608,40 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
 
 class SingleIssueProcessingTests(unittest.TestCase):
+    def test_large_library_base_check_uses_pr_merge_commit_for_squash_merges(self) -> None:
+        state = forge_metadata.LargeLibraryProgressState.create(
+            coordinate="org.example:lib:1.0.0",
+            issue_number=1412,
+            request_label=forge_metadata.LABEL_LIBRARY_NEW,
+            strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+        )
+        state.record_published_pr("ai/example-part-0001", "head-commit", 4242)
+
+        with patch.object(
+                forge_metadata,
+                "gh",
+                return_value=subprocess.CompletedProcess(
+                    ["gh"],
+                    0,
+                    stdout=json.dumps({"mergeCommit": {"oid": "squash-merge-commit"}}),
+                ),
+        ), \
+                patch.object(
+                    forge_metadata.subprocess,
+                    "run",
+                    return_value=subprocess.CompletedProcess(["git"], 0),
+                ) as run:
+            forge_metadata.verify_large_library_base_contains_published_commit(
+                state,
+                "/tmp/reachability-worktree",
+            )
+
+        run.assert_called_once_with(
+            ["git", "merge-base", "--is-ancestor", "squash-merge-commit", "HEAD"],
+            cwd="/tmp/reachability-worktree",
+            check=False,
+        )
+
     def test_process_single_issue_claims_without_large_library_artifact_override(self) -> None:
         issue = {
             "number": 1412,
@@ -669,7 +707,10 @@ class SingleIssueProcessingTests(unittest.TestCase):
                     patch.object(
                         forge_metadata,
                         "claim_issue_for_processing",
-                        return_value=_claimed_issue(),
+                        return_value=_claimed_issue(
+                            large_library_resume_artifact=resume_artifact,
+                            large_library_part=2,
+                        ),
                     ) as claim_issue_for_processing, \
                     patch.object(
                         forge_metadata,

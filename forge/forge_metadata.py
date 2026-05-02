@@ -3333,17 +3333,40 @@ def verify_large_library_base_contains_published_commit(
         worktree_path: str,
 ) -> None:
     """Ensure the continuation worktree includes the latest published part commit."""
-    if not state.last_published_commit:
+    commit = resolve_large_library_published_base_commit(state)
+    if not commit:
         return
     result = subprocess.run(
-        ["git", "merge-base", "--is-ancestor", state.last_published_commit, "HEAD"],
+        ["git", "merge-base", "--is-ancestor", commit, "HEAD"],
         cwd=worktree_path,
         check=False,
     )
     if result.returncode != 0:
         raise RuntimeError(
-            f"Base branch does not contain latest large-library part commit {state.last_published_commit}"
+            f"Base branch does not contain latest large-library published commit {commit}"
         )
+
+
+def resolve_large_library_published_base_commit(state: LargeLibraryProgressState) -> str | None:
+    """Return the commit that should be present on the continuation base."""
+    if state.created_pull_requests:
+        previous_pr = state.created_pull_requests[-1]
+        result = gh(
+            "pr",
+            "view",
+            str(previous_pr),
+            "--repo",
+            REPO,
+            "--json",
+            "mergeCommit",
+            check=True,
+        )
+        payload = json.loads(result.stdout)
+        merge_commit = payload.get("mergeCommit") or {}
+        oid = merge_commit.get("oid")
+        if oid:
+            return str(oid)
+    return state.last_published_commit
 
 
 def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metadata_path: str) -> bool:
@@ -4880,20 +4903,6 @@ def process_large_library_continuation(
     if not claimed_issue:
         print(f"ERROR: Could not claim issue #{state.issue_number}.", file=sys.stderr)
         sys.exit(1)
-    claimed_issue = ClaimedIssue(
-        issue=claimed_issue.issue,
-        label=claimed_issue.label,
-        item_id=claimed_issue.item_id,
-        base_reachability_metadata_path=claimed_issue.base_reachability_metadata_path,
-        worktree_path=claimed_issue.worktree_path,
-        scratch_metrics_repo_path=claimed_issue.scratch_metrics_repo_path,
-        in_metadata_repo=claimed_issue.in_metadata_repo,
-        issue_coordinates=claimed_issue.issue_coordinates,
-        current_coordinates=claimed_issue.current_coordinates,
-        new_version=claimed_issue.new_version,
-        large_library_resume_artifact=resume_artifact,
-        large_library_part=state.part,
-    )
     return process_claimed_issue_lifecycle(
         claimed_issue,
         strategy_name,
