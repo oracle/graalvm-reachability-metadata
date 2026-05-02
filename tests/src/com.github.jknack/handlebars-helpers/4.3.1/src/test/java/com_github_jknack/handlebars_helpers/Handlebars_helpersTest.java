@@ -95,6 +95,22 @@ public class Handlebars_helpersTest {
     }
 
     @Test
+    void includeHelperEscapesIncludedTemplateDataBeforeReturningSafeHtml() throws IOException {
+        final MapBackedTemplateLoader loader = new MapBackedTemplateLoader();
+        loader.put("bio", "<strong>{{displayName}}</strong>");
+
+        final Handlebars handlebars = new Handlebars(loader);
+        handlebars.registerHelper(IncludeHelper.NAME, IncludeHelper.INSTANCE);
+
+        final Template template = handlebars.compileInline("{{include \"bio\"}}");
+
+        final Map<String, Object> model = new HashMap<>();
+        model.put("displayName", "<Ada & Grace>");
+
+        assertThat(template.apply(model)).isEqualTo("<strong>&lt;Ada &amp; Grace&gt;</strong>");
+    }
+
+    @Test
     void includeHelperResolvesTemplateLoaderPrefixAndSuffixWithCallerContext() throws IOException {
         final MapBackedTemplateLoader loader = new MapBackedTemplateLoader();
         loader.setPrefix("/templates/");
