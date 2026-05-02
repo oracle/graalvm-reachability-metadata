@@ -15,6 +15,9 @@ import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.TraceFlags;
+import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapSetter;
@@ -253,6 +256,62 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
     }
 
     @Test
+    void parentBasedSamplerConfigurationHonorsRemoteParentSamplingDecision() {
+        AutoConfiguredOpenTelemetrySdk configured = null;
+
+        try {
+            configured = AutoConfiguredOpenTelemetrySdk.builder()
+                    .setResultAsGlobal(false)
+                    .registerShutdownHook(false)
+                    .addPropertiesCustomizer(config -> {
+                        Map<String, String> properties = workingProperties();
+                        properties.put("otel.traces.sampler", "parentbased_traceidratio");
+                        properties.put("otel.traces.sampler.arg", "0");
+                        return properties;
+                    })
+                    .build();
+
+            Span rootSpan = configured.getOpenTelemetrySdk()
+                    .getTracer("parentbased-sampler-test")
+                    .spanBuilder("root-span")
+                    .startSpan();
+            try {
+                assertThat(rootSpan.getSpanContext().isSampled()).isFalse();
+            } finally {
+                rootSpan.end();
+            }
+
+            Context sampledRemoteParent = remoteParentContext(TraceFlags.getSampled());
+            Span childOfSampledRemoteParent = configured.getOpenTelemetrySdk()
+                    .getTracer("parentbased-sampler-test")
+                    .spanBuilder("child-of-sampled-remote-parent")
+                    .setParent(sampledRemoteParent)
+                    .startSpan();
+            try {
+                assertThat(childOfSampledRemoteParent.getSpanContext().isSampled()).isTrue();
+            } finally {
+                childOfSampledRemoteParent.end();
+            }
+
+            Context unsampledRemoteParent = remoteParentContext(TraceFlags.getDefault());
+            Span childOfUnsampledRemoteParent = configured.getOpenTelemetrySdk()
+                    .getTracer("parentbased-sampler-test")
+                    .spanBuilder("child-of-unsampled-remote-parent")
+                    .setParent(unsampledRemoteParent)
+                    .startSpan();
+            try {
+                assertThat(childOfUnsampledRemoteParent.getSpanContext().isSampled()).isFalse();
+            } finally {
+                childOfUnsampledRemoteParent.end();
+            }
+        } finally {
+            if (configured != null) {
+                configured.getOpenTelemetrySdk().close();
+            }
+        }
+    }
+
+    @Test
     void invalidConfigurationFailsFastWithConfigurationException() {
         AutoConfiguredOpenTelemetrySdkBuilder builder = AutoConfiguredOpenTelemetrySdk.builder()
                 .setResultAsGlobal(false)
@@ -327,6 +386,15 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
                 .addLoggerProviderCustomizer(null));
         assertThatNullPointerException().isThrownBy(() -> AutoConfiguredOpenTelemetrySdk.builder()
                 .addLogRecordExporterCustomizer(null));
+    }
+
+    private static Context remoteParentContext(TraceFlags traceFlags) {
+        SpanContext spanContext = SpanContext.createFromRemoteParent(
+                "4bf92f3577b34da6a3ce929d0e0e4736",
+                "00f067aa0ba902b7",
+                traceFlags,
+                TraceState.getDefault());
+        return Span.wrap(spanContext).storeInContext(Context.root());
     }
 
     private static Map<String, String> workingProperties() {
