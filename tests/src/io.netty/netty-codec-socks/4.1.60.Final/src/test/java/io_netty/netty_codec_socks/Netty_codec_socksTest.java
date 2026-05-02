@@ -267,9 +267,9 @@ public class Netty_codec_socksTest {
     void replayingDecodersWaitForCompleteFramesBeforeEmittingMessages() {
         EmbeddedChannel passwordRequestDecoder = new EmbeddedChannel(new Socks5PasswordAuthRequestDecoder());
         try {
-            ByteBuf firstFragment = Unpooled.copiedBuffer(new byte[] { 0x01, 0x04, 'u' });
+            ByteBuf firstFragment = Unpooled.copiedBuffer(new byte[] {0x01, 0x04, 'u' });
             ByteBuf secondFragment = Unpooled.copiedBuffer(
-                    new byte[] { 's', 'e', 'r', 0x06, 's', 'e', 'c', 'r', 'e', 't' });
+                    new byte[] {'s', 'e', 'r', 0x06, 's', 'e', 'c', 'r', 'e', 't' });
 
             assertThat(passwordRequestDecoder.writeInbound(firstFragment)).isFalse();
             assertThat((Object) passwordRequestDecoder.readInbound()).isNull();
