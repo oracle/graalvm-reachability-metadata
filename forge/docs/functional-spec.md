@@ -128,15 +128,16 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 
 ## 6. Failure Semantics
 
-Every workflow returns one of three statuses:
+Every workflow records one of these statuses:
 
 | Status | Meaning |
 | --- | --- |
 | `RUN_STATUS_SUCCESS` | All gates passed; metadata and tests committed. |
 | `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the configured `PostGenerationIntervention` modified the working tree (e.g. `codex_then_pi` removing failing tests via Pi). The intervention's record is included in the run-metrics and PR description. PR-eligible. |
+| `RUN_STATUS_CHUNK_READY` | A large-library series reached a reviewable chunk boundary. The current part is PR-eligible and the issue remains labeled for continuation. |
 | `RUN_STATUS_FAILURE` | The workflow could not converge or a quality gate failed; the feature branch is reset to the scaffold checkpoint and no PR is opened. |
 
-The exit code is `0` for the first two and `1` for failure.
+The exit code is `0` for PR-eligible statuses and `1` for failure.
 
 ## 7. Workflow Specifications
 

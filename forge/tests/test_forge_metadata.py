@@ -603,6 +603,104 @@ class IssueClaimPreflightTests(unittest.TestCase):
         get_project_item_state.assert_not_called()
 
 
+class SingleIssueProcessingTests(unittest.TestCase):
+    def test_process_single_issue_claims_without_large_library_artifact_override(self) -> None:
+        issue = {
+            "number": 1412,
+            "title": "Add support for org.example:lib:1.0.0",
+            "labels": [],
+            "assignees": [],
+        }
+
+        with patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(
+                    forge_metadata,
+                    "get_issue_by_number",
+                    return_value=(issue, forge_metadata.LABEL_LIBRARY_NEW),
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "claim_issue_for_processing",
+                    return_value=_claimed_issue(),
+                ) as claim_issue_for_processing, \
+                patch.object(
+                    forge_metadata,
+                    "process_claimed_issue_lifecycle",
+                    return_value=True,
+                ):
+            self.assertTrue(
+                forge_metadata.process_single_issue(
+                    1412,
+                    "/tmp/reachability",
+                    "/tmp/metrics",
+                    None,
+                    False,
+                    "automation-user",
+                )
+            )
+
+        claim_issue_for_processing.assert_called_once_with(
+            issue,
+            forge_metadata.LABEL_LIBRARY_NEW,
+            "/tmp/reachability",
+            "/tmp/metrics",
+            "automation-user",
+            in_metadata_repo=True,
+        )
+
+    def test_process_large_library_continuation_passes_explicit_artifact_to_claim(self) -> None:
+        issue = _search_issue(1412, [forge_metadata.LABEL_LARGE_LIBRARY_NEXT_PART])
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state = forge_metadata.LargeLibraryProgressState.create(
+                coordinate="org.example:lib:1.0.0",
+                issue_number=1412,
+                request_label=forge_metadata.LABEL_LIBRARY_NEW,
+                strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+            )
+            state.part = 2
+            resume_artifact = state.default_path(tmpdir)
+            state.save(resume_artifact)
+
+            with patch.object(
+                    forge_metadata,
+                    "get_issue_by_number",
+                    return_value=(issue, forge_metadata.LABEL_LIBRARY_NEW),
+            ), \
+                    patch.object(
+                        forge_metadata,
+                        "claim_issue_for_processing",
+                        return_value=_claimed_issue(),
+                    ) as claim_issue_for_processing, \
+                    patch.object(
+                        forge_metadata,
+                        "process_claimed_issue_lifecycle",
+                        return_value=True,
+                    ) as process_claimed_issue_lifecycle:
+                self.assertTrue(
+                    forge_metadata.process_large_library_continuation(
+                        resume_artifact,
+                        "/tmp/reachability",
+                        "/tmp/metrics",
+                        None,
+                        False,
+                        "automation-user",
+                    )
+                )
+
+        claim_issue_for_processing.assert_called_once_with(
+            issue,
+            forge_metadata.LABEL_LIBRARY_NEW,
+            "/tmp/reachability",
+            "/tmp/metrics",
+            "automation-user",
+            in_metadata_repo=True,
+            large_library_resume_artifact_override=resume_artifact,
+        )
+        claimed_issue = process_claimed_issue_lifecycle.call_args.args[0]
+        self.assertEqual(claimed_issue.large_library_resume_artifact, resume_artifact)
+        self.assertEqual(claimed_issue.large_library_part, 2)
+
+
 class WorkQueueSchedulerTests(unittest.TestCase):
     def test_work_queue_configs_allow_zero_limits_from_environment(self) -> None:
         env = {

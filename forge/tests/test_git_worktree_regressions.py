@@ -112,11 +112,23 @@ class GitWorktreeRegressionTests(unittest.TestCase):
                 "library": "com.example:demo:1.0.0",
                 "status": "success",
             }
+            state_relative_path = os.path.join(
+                "large_library_series",
+                "issue-1412",
+                "com.example-demo-1.0.0-1412",
+                "state.json",
+            )
+            state_absolute_path = os.path.join(worktree_path, state_relative_path)
+            os.makedirs(os.path.dirname(state_absolute_path), exist_ok=True)
+            with open(state_absolute_path, "w", encoding="utf-8") as file_handle:
+                json.dump({"issueNumber": 1412}, file_handle)
+
             commit_run_metrics_with_retry(
                 metrics_repo_root=worktree_path,
                 metrics_json_relative_path="script_run_metrics/add_new_library_support.json",
                 run_metrics=run_metrics,
                 commit_message="Persist metrics from scratch worktree",
+                extra_paths_to_stage=[os.path.dirname(state_relative_path)],
             )
 
             _git(["worktree", "remove", "--force", worktree_path], cwd=canonical_repo)
@@ -130,6 +142,7 @@ class GitWorktreeRegressionTests(unittest.TestCase):
                 persisted = json.load(file_handle)
 
             self.assertEqual(persisted, [run_metrics])
+            self.assertTrue(os.path.isfile(os.path.join(canonical_repo, state_relative_path)))
             log_output = _git(["log", "--format=%s", "-1"], cwd=canonical_repo).stdout.strip()
             self.assertEqual(log_output, "Persist metrics from scratch worktree")
 

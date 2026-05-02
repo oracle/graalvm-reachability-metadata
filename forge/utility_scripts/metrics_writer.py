@@ -10,8 +10,10 @@ Helper module for collecting AI generated metrics, creating JSON objects and app
 import json
 import datetime as dt
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 
 import utility_scripts.count_reachability_entries as reachability_metadata_count
 import utility_scripts.count_native_image_config_entries as legacy_metadata_count
@@ -886,33 +888,78 @@ def _commit_metrics_locally(
         metrics_json_relative_path: str,
         run_metrics: dict,
         commit_message: str,
+        extra_paths_to_stage: list[str] | None = None,
 ) -> None:
     """Commit metrics in the main checkout so detached scratch worktrees can be removed safely."""
     commit_repo_root = _resolve_primary_worktree_root(metrics_repo_root)
     metrics_json_absolute_path = os.path.join(commit_repo_root, metrics_json_relative_path)
+    extra_paths = list(extra_paths_to_stage or [])
+    snapshot_root = _snapshot_extra_paths(metrics_repo_root, extra_paths)
 
-    append_run_metrics(run_metrics, metrics_json_absolute_path)
-    subprocess.run(["git", "add", metrics_json_relative_path], check=True, cwd=commit_repo_root)
+    try:
+        append_run_metrics(run_metrics, metrics_json_absolute_path)
+        _restore_extra_paths(commit_repo_root, snapshot_root, extra_paths)
+        subprocess.run(["git", "add", metrics_json_relative_path], check=True, cwd=commit_repo_root)
+        for relative in extra_paths:
+            if os.path.exists(os.path.join(commit_repo_root, relative)):
+                subprocess.run(["git", "add", relative], check=True, cwd=commit_repo_root)
 
-    result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=commit_repo_root)
-    if result.returncode == 0:
-        print(f"No changes in {metrics_json_relative_path} to commit in metrics repo.")
+        result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=commit_repo_root)
+        if result.returncode == 0:
+            print(f"No changes in {metrics_json_relative_path} to commit in metrics repo.")
+            return
+
+        subprocess.run(
+            [
+                "git",
+                "-c",
+                "user.name=metadata-forge",
+                "-c",
+                "user.email=metadata-forge@local",
+                "commit",
+                "-m",
+                commit_message,
+            ],
+            check=True,
+            cwd=commit_repo_root,
+        )
+    finally:
+        if snapshot_root:
+            shutil.rmtree(snapshot_root, ignore_errors=True)
+
+
+def _snapshot_extra_paths(metrics_repo_root: str, relative_paths: list[str]) -> str | None:
+    """Snapshot working-tree paths to a temp dir so they survive a hard reset."""
+    if not relative_paths:
+        return None
+    snapshot_root = tempfile.mkdtemp(prefix="forge-metrics-snapshot-")
+    for relative in relative_paths:
+        source = os.path.join(metrics_repo_root, relative)
+        if not os.path.exists(source):
+            continue
+        destination = os.path.join(snapshot_root, relative)
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
+        if os.path.isdir(source):
+            shutil.copytree(source, destination, dirs_exist_ok=True)
+        else:
+            shutil.copy2(source, destination)
+    return snapshot_root
+
+
+def _restore_extra_paths(metrics_repo_root: str, snapshot_root: str | None, relative_paths: list[str]) -> None:
+    """Restore previously snapshotted paths back into the metrics worktree."""
+    if not snapshot_root:
         return
-
-    subprocess.run(
-        [
-            "git",
-            "-c",
-            "user.name=metadata-forge",
-            "-c",
-            "user.email=metadata-forge@local",
-            "commit",
-            "-m",
-            commit_message,
-        ],
-        check=True,
-        cwd=commit_repo_root,
-    )
+    for relative in relative_paths:
+        source = os.path.join(snapshot_root, relative)
+        if not os.path.exists(source):
+            continue
+        destination = os.path.join(metrics_repo_root, relative)
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
+        if os.path.isdir(source):
+            shutil.copytree(source, destination, dirs_exist_ok=True)
+        else:
+            shutil.copy2(source, destination)
 
 
 def commit_run_metrics_with_retry(
@@ -921,10 +968,17 @@ def commit_run_metrics_with_retry(
         run_metrics: dict,
         commit_message: str,
         max_attempts: int = 5,
+        extra_paths_to_stage: list[str] | None = None,
 ) -> None:
-    """Merge a metrics entry into the latest remote file state, then commit and push with retries."""
+    """Merge a metrics entry into the latest remote file state, then commit and push with retries.
+
+    `extra_paths_to_stage` lists repo-relative paths whose working-tree contents must survive the
+    hard reset to origin/master and be staged alongside the metrics file (used for durable
+    large-library progress state). Both files and directories are supported.
+    """
     metrics_json_absolute_path = os.path.join(metrics_repo_root, metrics_json_relative_path)
     has_origin = git_remote_exists("origin", cwd=metrics_repo_root)
+    extra_paths = list(extra_paths_to_stage or [])
 
     if not has_origin:
         _commit_metrics_locally(
@@ -932,49 +986,59 @@ def commit_run_metrics_with_retry(
             metrics_json_relative_path=metrics_json_relative_path,
             run_metrics=run_metrics,
             commit_message=commit_message,
+            extra_paths_to_stage=extra_paths,
         )
         return
 
-    for attempt in range(1, max_attempts + 1):
-        subprocess.run(["git", "fetch", "origin", "master"], check=True, cwd=metrics_repo_root)
-        subprocess.run(["git", "reset", "--hard", "origin/master"], check=True, cwd=metrics_repo_root)
+    snapshot_root = _snapshot_extra_paths(metrics_repo_root, extra_paths)
+    try:
+        for attempt in range(1, max_attempts + 1):
+            subprocess.run(["git", "fetch", "origin", "master"], check=True, cwd=metrics_repo_root)
+            subprocess.run(["git", "reset", "--hard", "origin/master"], check=True, cwd=metrics_repo_root)
 
-        append_run_metrics(run_metrics, metrics_json_absolute_path)
-        subprocess.run(["git", "add", metrics_json_relative_path], check=True, cwd=metrics_repo_root)
+            append_run_metrics(run_metrics, metrics_json_absolute_path)
+            _restore_extra_paths(metrics_repo_root, snapshot_root, extra_paths)
+            subprocess.run(["git", "add", metrics_json_relative_path], check=True, cwd=metrics_repo_root)
+            for relative in extra_paths:
+                if os.path.exists(os.path.join(metrics_repo_root, relative)):
+                    subprocess.run(["git", "add", relative], check=True, cwd=metrics_repo_root)
 
-        result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=metrics_repo_root)
-        if result.returncode == 0:
-            print(f"No changes in {metrics_json_relative_path} to commit in metrics repo.")
-            return
+            result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=metrics_repo_root)
+            if result.returncode == 0:
+                print(f"No changes in {metrics_json_relative_path} to commit in metrics repo.")
+                return
 
-        subprocess.run(["git", "commit", "-m", commit_message], check=True, cwd=metrics_repo_root)
-        push_result = subprocess.run(
-            ["git", "push", "origin", "HEAD:master"],
-            cwd=metrics_repo_root,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-        )
-        if push_result.returncode == 0:
-            return
-
-        if attempt < max_attempts:
-            print(
-                f"Retrying metrics push after attempt {attempt} failed: {push_result.stdout}",
-                file=sys.stderr,
-            )
-            continue
-
-        if attempt == max_attempts:
-            print(
-                f"ERROR: Failed to push metrics after {max_attempts} attempts: {push_result.stdout}",
-                file=sys.stderr,
-            )
-            raise subprocess.CalledProcessError(
-                push_result.returncode,
+            subprocess.run(["git", "commit", "-m", commit_message], check=True, cwd=metrics_repo_root)
+            push_result = subprocess.run(
                 ["git", "push", "origin", "HEAD:master"],
-                output=push_result.stdout,
+                cwd=metrics_repo_root,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
             )
+            if push_result.returncode == 0:
+                return
+
+            if attempt < max_attempts:
+                print(
+                    f"Retrying metrics push after attempt {attempt} failed: {push_result.stdout}",
+                    file=sys.stderr,
+                )
+                continue
+
+            if attempt == max_attempts:
+                print(
+                    f"ERROR: Failed to push metrics after {max_attempts} attempts: {push_result.stdout}",
+                    file=sys.stderr,
+                )
+                raise subprocess.CalledProcessError(
+                    push_result.returncode,
+                    ["git", "push", "origin", "HEAD:master"],
+                    output=push_result.stdout,
+                )
+    finally:
+        if snapshot_root:
+            shutil.rmtree(snapshot_root, ignore_errors=True)
 
 
 def collect_new_library_support_quality_issues(run_metrics: dict) -> list[str]:
