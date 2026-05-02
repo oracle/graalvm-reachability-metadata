@@ -151,6 +151,16 @@ public class Error_prone_annotationsTest {
         assertThat(endpoint.supportedOperations()).containsExactly("read", "write");
     }
 
+    @Test
+    void canIgnoreReturnValueSupportsFluentMutatorsWhenResultIsNotUsed() {
+        FluentEventLog log = new FluentEventLog();
+
+        log.add("created");
+        log.add("validated").add("committed");
+
+        assertThat(log.events()).containsExactly("created", "validated", "committed");
+    }
+
     @FormatMethod
     private static String annotatedFormat(@FormatString String pattern, Object... args) {
         return String.format(Locale.US, pattern, args);
@@ -341,6 +351,20 @@ public class Error_prone_annotationsTest {
             mutableField = local + "!";
             local = mutableField;
             return local;
+        }
+    }
+
+    private static final class FluentEventLog {
+        private final List<String> events = new ArrayList<>();
+
+        @CanIgnoreReturnValue
+        FluentEventLog add(String event) {
+            events.add(event);
+            return this;
+        }
+
+        List<String> events() {
+            return List.copyOf(events);
         }
     }
 
