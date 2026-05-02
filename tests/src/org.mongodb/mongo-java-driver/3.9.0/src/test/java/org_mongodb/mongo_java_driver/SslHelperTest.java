@@ -6,7 +6,6 @@
  */
 package org_mongodb.mongo_java_driver;
 
-import com.mongodb.ServerAddress;
 import com.mongodb.internal.connection.SslHelper;
 import org.junit.jupiter.api.Test;
 
@@ -31,14 +30,14 @@ public class SslHelperTest {
     @Test
     void enablesServerNameIndicationForHostNames() {
         final SSLParameters sslParameters = new SSLParameters();
-        final ServerAddress address = new ServerAddress("example.mongodb.local");
+        final String host = "example.mongodb.local";
 
-        SslHelper.enableSni(address, sslParameters);
+        SslHelper.enableSni(host, sslParameters);
 
         final List<SNIServerName> serverNames = sslParameters.getServerNames();
         assertThat(serverNames).hasSize(1);
         assertThat(serverNames.get(0)).isInstanceOf(SNIHostName.class);
         final SNIHostName serverName = (SNIHostName) serverNames.get(0);
-        assertThat(serverName.getAsciiName()).isEqualTo(address.getHost());
+        assertThat(serverName.getAsciiName()).isEqualTo(host);
     }
 }
