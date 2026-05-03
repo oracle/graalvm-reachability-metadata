@@ -18,10 +18,13 @@ import com.datastax.oss.protocol.internal.Frame;
 import com.datastax.oss.protocol.internal.FrameCodec;
 import com.datastax.oss.protocol.internal.PrimitiveCodec;
 import com.datastax.oss.protocol.internal.ProtocolConstants;
+import com.datastax.oss.protocol.internal.request.Execute;
+import com.datastax.oss.protocol.internal.request.Prepare;
 import com.datastax.oss.protocol.internal.request.Query;
 import com.datastax.oss.protocol.internal.request.query.QueryOptions;
 import com.datastax.oss.protocol.internal.response.result.ColumnSpec;
 import com.datastax.oss.protocol.internal.response.result.DefaultRows;
+import com.datastax.oss.protocol.internal.response.result.Prepared;
 import com.datastax.oss.protocol.internal.response.result.RawType;
 import com.datastax.oss.protocol.internal.response.result.Rows;
 import com.datastax.oss.protocol.internal.response.result.RowsMetadata;
@@ -171,6 +174,83 @@ public class Native_protocolTest {
         Bytes.erase(fromHex);
         fromHex.rewind();
         assertThat(Bytes.getArray(fromHex.duplicate())).containsOnly((byte) 0);
+    }
+
+    @Test
+    void preparedStatementMessagesRoundTripBetweenClientAndServer() {
+        FrameCodec<ByteBuffer> clientCodec = FrameCodec.defaultClient(PRIMITIVE_CODEC, Compressor.none());
+        FrameCodec<ByteBuffer> serverCodec = FrameCodec.defaultServer(PRIMITIVE_CODEC, Compressor.none());
+
+        ByteBuffer encodedPrepare = flip(clientCodec.encode(Frame.forRequest(
+                ProtocolConstants.Version.V5,
+                12,
+                false,
+                Frame.NO_PAYLOAD,
+                new Prepare("SELECT * FROM users WHERE id = ?", "app"))));
+
+        Frame decodedPrepareFrame = serverCodec.decode(encodedPrepare);
+        assertThat(decodedPrepareFrame.streamId).isEqualTo(12);
+        assertThat(decodedPrepareFrame.message).isInstanceOf(Prepare.class);
+        Prepare decodedPrepare = (Prepare) decodedPrepareFrame.message;
+        assertThat(decodedPrepare.cqlQuery).isEqualTo("SELECT * FROM users WHERE id = ?");
+        assertThat(decodedPrepare.keyspace).isEqualTo("app");
+
+        RawType uuidType = RawType.PRIMITIVES.get(ProtocolConstants.DataType.UUID);
+        RawType textType = RawType.PRIMITIVES.get(ProtocolConstants.DataType.VARCHAR);
+        ColumnSpec idVariable = new ColumnSpec("app", "users", "id", 0, uuidType);
+        RowsMetadata variablesMetadata = new RowsMetadata(List.of(idVariable), null, new int[] {0}, null);
+        List<ColumnSpec> resultColumns = List.of(
+                new ColumnSpec("app", "users", "id", 0, uuidType),
+                new ColumnSpec("app", "users", "login", 1, textType));
+        RowsMetadata resultMetadata = new RowsMetadata(resultColumns, null, new int[] {0}, new byte[] {0x03, 0x04});
+        byte[] preparedQueryId = new byte[] {0x11, 0x22, 0x33};
+        byte[] resultMetadataId = new byte[] {0x44, 0x55};
+
+        ByteBuffer encodedPrepared = flip(serverCodec.encode(Frame.forResponse(
+                ProtocolConstants.Version.V5,
+                12,
+                null,
+                Frame.NO_PAYLOAD,
+                List.of(),
+                new Prepared(preparedQueryId, resultMetadataId, variablesMetadata, resultMetadata))));
+
+        Frame decodedPreparedFrame = clientCodec.decode(encodedPrepared);
+        assertThat(decodedPreparedFrame.message).isInstanceOf(Prepared.class);
+        Prepared decodedPrepared = (Prepared) decodedPreparedFrame.message;
+        assertThat(decodedPrepared.preparedQueryId).containsExactly(preparedQueryId);
+        assertThat(decodedPrepared.resultMetadataId).containsExactly(resultMetadataId);
+        assertThat(decodedPrepared.variablesMetadata.columnSpecs).containsExactly(idVariable);
+        assertThat(decodedPrepared.variablesMetadata.pkIndices).containsExactly(0);
+        assertThat(decodedPrepared.resultMetadata.columnSpecs).containsExactlyElementsOf(resultColumns);
+        assertThat(decodedPrepared.resultMetadata.newResultMetadataId).containsExactly((byte) 0x03, (byte) 0x04);
+
+        QueryOptions executeOptions = new QueryOptions(
+                ProtocolConstants.ConsistencyLevel.QUORUM,
+                List.of(bytes(0xaa, 0xbb, 0xcc, 0xdd)),
+                Map.of(),
+                false,
+                -1,
+                null,
+                ProtocolConstants.ConsistencyLevel.SERIAL,
+                QueryOptions.NO_DEFAULT_TIMESTAMP,
+                "app",
+                QueryOptions.NO_NOW_IN_SECONDS);
+        ByteBuffer encodedExecute = flip(clientCodec.encode(Frame.forRequest(
+                ProtocolConstants.Version.V5,
+                13,
+                false,
+                Frame.NO_PAYLOAD,
+                new Execute(preparedQueryId, resultMetadataId, executeOptions))));
+
+        Frame decodedExecuteFrame = serverCodec.decode(encodedExecute);
+        assertThat(decodedExecuteFrame.streamId).isEqualTo(13);
+        assertThat(decodedExecuteFrame.message).isInstanceOf(Execute.class);
+        Execute decodedExecute = (Execute) decodedExecuteFrame.message;
+        assertThat(decodedExecute.queryId).containsExactly(preparedQueryId);
+        assertThat(decodedExecute.resultMetadataId).containsExactly(resultMetadataId);
+        assertThat(decodedExecute.options.consistency).isEqualTo(ProtocolConstants.ConsistencyLevel.QUORUM);
+        assertBufferEquals(decodedExecute.options.positionalValues.get(0), bytes(0xaa, 0xbb, 0xcc, 0xdd));
+        assertThat(decodedExecute.options.keyspace).isEqualTo("app");
     }
 
     @Test
