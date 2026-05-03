@@ -173,7 +173,8 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
      * Ensures "tested-versions" are mapped to the most appropriate metadata entry.
      * <p>
      * Rule: A version in {@code tested-versions} must be strictly less than the
-     * next higher {@code metadata-version} available in the file.
+     * next higher {@code metadata-version} available in the file, unless the
+     * entry is explicitly marked as {@code latest}.
      * <p>
      * This prevents "stray" versions from being associated with obsolete metadata
      * when a more recent metadata entry exists.
@@ -215,6 +216,10 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
 
         // For each entry, enforce: tested-version < next(metadata-version), if next exists
         for (JsonNode entry : json) {
+            if (entry.path("latest").asBoolean(false)) {
+                continue;
+            }
+
             String underMetaStr = entry.path("metadata-version").isTextual() ? entry.get("metadata-version").asText() : null;
             if (underMetaStr == null) continue;
 
