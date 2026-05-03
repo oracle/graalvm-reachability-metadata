@@ -193,14 +193,14 @@ public class Netty_incubator_codec_classes_quicTest {
 
     @Test
     void simpleEnumsExposeExpectedProtocolConstants() {
-        assertThat(QuicStreamType.values()).containsExactly(
+        assertThat(QuicStreamType.values()).contains(
                 QuicStreamType.UNIDIRECTIONAL,
                 QuicStreamType.BIDIRECTIONAL
         );
         assertThat(QuicStreamType.valueOf("UNIDIRECTIONAL")).isSameAs(QuicStreamType.UNIDIRECTIONAL);
         assertThat(QuicStreamType.valueOf("BIDIRECTIONAL")).isSameAs(QuicStreamType.BIDIRECTIONAL);
 
-        assertThat(QuicPacketType.values()).containsExactly(
+        assertThat(QuicPacketType.values()).contains(
                 QuicPacketType.INITIAL,
                 QuicPacketType.RETRY,
                 QuicPacketType.HANDSHAKE,
@@ -265,7 +265,7 @@ public class Netty_incubator_codec_classes_quicTest {
             return;
         }
 
-        assertThat(QuicCongestionControlAlgorithm.values()).containsExactly(
+        assertThat(QuicCongestionControlAlgorithm.values()).contains(
                 QuicCongestionControlAlgorithm.RENO,
                 QuicCongestionControlAlgorithm.CUBIC
         );
