@@ -15,6 +15,7 @@ import com.google.firestore.bundle.BundleProto;
 import com.google.firestore.bundle.BundledDocumentMetadata;
 import com.google.firestore.bundle.BundledQuery;
 import com.google.firestore.bundle.NamedQuery;
+import com.google.firestore.v1.Cursor;
 import com.google.firestore.v1.Document;
 import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.Value;
@@ -117,6 +118,71 @@ public class Proto_google_cloud_firestore_bundle_v1Test {
                 .getField()
                 .getFieldPath()).isEqualTo("name");
         assertThat(parsed.getBundledQuery().getStructuredQuery().getLimit().getValue()).isEqualTo(10);
+    }
+
+    @Test
+    void bundledQueryPreservesStructuredQueryFiltersAndCursors() {
+        StructuredQuery.Filter stateFilter = StructuredQuery.Filter.newBuilder()
+                .setFieldFilter(StructuredQuery.FieldFilter.newBuilder()
+                        .setField(fieldReference("state"))
+                        .setOp(StructuredQuery.FieldFilter.Operator.EQUAL)
+                        .setValue(stringValue("CA")))
+                .build();
+        StructuredQuery.Filter populationFilter = StructuredQuery.Filter.newBuilder()
+                .setFieldFilter(StructuredQuery.FieldFilter.newBuilder()
+                        .setField(fieldReference("population"))
+                        .setOp(StructuredQuery.FieldFilter.Operator.GREATER_THAN_OR_EQUAL)
+                        .setValue(integerValue(500_000L)))
+                .build();
+        StructuredQuery structuredQuery = StructuredQuery.newBuilder()
+                .setSelect(StructuredQuery.Projection.newBuilder()
+                        .addFields(fieldReference("name"))
+                        .addFields(fieldReference("population")))
+                .addFrom(StructuredQuery.CollectionSelector.newBuilder()
+                        .setCollectionId("cities")
+                        .setAllDescendants(true))
+                .setWhere(StructuredQuery.Filter.newBuilder()
+                        .setCompositeFilter(StructuredQuery.CompositeFilter.newBuilder()
+                                .setOp(StructuredQuery.CompositeFilter.Operator.AND)
+                                .addFilters(stateFilter)
+                                .addFilters(populationFilter)))
+                .setStartAt(Cursor.newBuilder()
+                        .addValues(integerValue(500_000L))
+                        .setBefore(false))
+                .setEndAt(Cursor.newBuilder()
+                        .addValues(integerValue(1_000_000L))
+                        .setBefore(true))
+                .setOffset(2)
+                .build();
+        BundledQuery bundledQuery = BundledQuery.newBuilder()
+                .setParent(PARENT)
+                .setStructuredQuery(structuredQuery)
+                .build();
+
+        StructuredQuery storedQuery = bundledQuery.getStructuredQuery();
+        StructuredQuery.CompositeFilter storedFilter = storedQuery.getWhere().getCompositeFilter();
+
+        assertThat(bundledQuery.getQueryTypeCase()).isEqualTo(BundledQuery.QueryTypeCase.STRUCTURED_QUERY);
+        assertThat(storedQuery.getSelect().getFieldsList())
+                .extracting(StructuredQuery.FieldReference::getFieldPath)
+                .containsExactly("name", "population");
+        assertThat(storedQuery.getFrom(0).getCollectionId()).isEqualTo("cities");
+        assertThat(storedQuery.getFrom(0).getAllDescendants()).isTrue();
+        assertThat(storedFilter.getOp()).isEqualTo(StructuredQuery.CompositeFilter.Operator.AND);
+        assertThat(storedFilter.getFiltersList())
+                .extracting(filter -> filter.getFieldFilter().getField().getFieldPath())
+                .containsExactly("state", "population");
+        assertThat(storedFilter.getFilters(0).getFieldFilter().getOp())
+                .isEqualTo(StructuredQuery.FieldFilter.Operator.EQUAL);
+        assertThat(storedFilter.getFilters(0).getFieldFilter().getValue().getStringValue()).isEqualTo("CA");
+        assertThat(storedFilter.getFilters(1).getFieldFilter().getOp())
+                .isEqualTo(StructuredQuery.FieldFilter.Operator.GREATER_THAN_OR_EQUAL);
+        assertThat(storedFilter.getFilters(1).getFieldFilter().getValue().getIntegerValue()).isEqualTo(500_000L);
+        assertThat(storedQuery.getStartAt().getValues(0).getIntegerValue()).isEqualTo(500_000L);
+        assertThat(storedQuery.getStartAt().getBefore()).isFalse();
+        assertThat(storedQuery.getEndAt().getValues(0).getIntegerValue()).isEqualTo(1_000_000L);
+        assertThat(storedQuery.getEndAt().getBefore()).isTrue();
+        assertThat(storedQuery.getOffset()).isEqualTo(2);
     }
 
     @Test
@@ -248,6 +314,18 @@ public class Proto_google_cloud_firestore_bundle_v1Test {
                 .setCreateTime(timestamp(1_600_000_000L, 0))
                 .setUpdateTime(timestamp(1_700_000_200L, 0))
                 .build();
+    }
+
+    private static StructuredQuery.FieldReference fieldReference(String fieldPath) {
+        return StructuredQuery.FieldReference.newBuilder().setFieldPath(fieldPath).build();
+    }
+
+    private static Value stringValue(String value) {
+        return Value.newBuilder().setStringValue(value).build();
+    }
+
+    private static Value integerValue(long value) {
+        return Value.newBuilder().setIntegerValue(value).build();
     }
 
     private static Timestamp timestamp(long seconds, int nanos) {
