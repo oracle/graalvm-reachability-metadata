@@ -44,6 +44,14 @@ public class AnnotationsTest {
     }
 
     @Test
+    void notNullCanBeComposedIntoReusableRecordComponentContracts() {
+        AccountIdentifier identifier = new AccountIdentifier(" 123456789012 ");
+
+        assertThat(identifier.value()).isEqualTo("123456789012");
+        assertThat(identifier.qualifiedBy("aws")).isEqualTo("aws:123456789012");
+    }
+
+    @Test
     void mutabilityAndThreadSafetyAnnotationsCanDescribeImplementationClasses() {
         MutableCounter mutableCounter = new MutableCounter();
         mutableCounter.increment();
@@ -141,6 +149,23 @@ public class AnnotationsTest {
     @Generated("annotation-type-generator")
     @NotNull
     private @interface NotNullByDefault {
+    }
+
+    @NotNull
+    @Target({ElementType.RECORD_COMPONENT, ElementType.METHOD, ElementType.PARAMETER})
+    private @interface RequiredText {
+    }
+
+    @SdkPublicApi
+    @Immutable
+    private record AccountIdentifier(@RequiredText String value) {
+        private AccountIdentifier {
+            value = value.trim();
+        }
+
+        private String qualifiedBy(@RequiredText String partition) {
+            return partition + ':' + value;
+        }
     }
 
     @SdkPublicApi
