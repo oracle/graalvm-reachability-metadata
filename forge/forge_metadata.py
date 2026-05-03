@@ -197,6 +197,7 @@ CODEX_REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
 DEV_GRAALVM_ENV_VAR = "GRAALVM_HOME"
 POST_GENERATION_GRAALVM_ENV_VAR = "GRAALVM_HOME_25_0"
+LATEST_EA_GRAALVM_ENV_VAR = "GRAALVM_HOME_LATEST_EA"
 INTERRUPT_EXIT_CODES = {130, -int(signal.SIGINT)}
 INTERRUPT_REASON_CTRL_C = "Ctrl+C interrupt"
 INTERRUPT_REASON_SHUTDOWN = "shutdown request"
@@ -366,6 +367,7 @@ def validate_issue_processing_environment() -> None:
     """Validate environment required before issue processing can start."""
     require_graalvm_home_env(DEV_GRAALVM_ENV_VAR)
     require_graalvm_home_env(POST_GENERATION_GRAALVM_ENV_VAR)
+    require_graalvm_home_env(LATEST_EA_GRAALVM_ENV_VAR)
 
 
 def gh(

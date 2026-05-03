@@ -1472,6 +1472,7 @@ class EnvironmentValidationTests(unittest.TestCase):
         require_graalvm_home.assert_has_calls([
             call(forge_metadata.DEV_GRAALVM_ENV_VAR),
             call(forge_metadata.POST_GENERATION_GRAALVM_ENV_VAR),
+            call(forge_metadata.LATEST_EA_GRAALVM_ENV_VAR),
         ])
 
 
