@@ -218,7 +218,6 @@ Closure<String> nativeImageTool = { String toolName ->
 
 if (runNativeTraceImageTaskRequested) {
     requiredAbsolutePathProperty("traceMetadataPath")
-    requiredGradleProperty("traceMetadataConditionPackages")
 }
 if (nativeTraceImageTaskRequested && project.hasProperty("metadataConfigDirs")) {
     requiredDirectoryListProperty("metadataConfigDirs", false)
@@ -360,9 +359,56 @@ tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeIm
     if (runNativeTraceImageTaskRequested) {
         task.doFirst {
             requiredGradleProperty("traceMetadataPath")
-            requiredGradleProperty("traceMetadataConditionPackages")
         }
     }
+}
+
+Closure<String> deriveTraceMetadataConditionPackages = {
+    String explicitConditionPackages = providers.gradleProperty("traceMetadataConditionPackages").getOrElse("").trim()
+    if (!explicitConditionPackages.isBlank()) {
+        return explicitConditionPackages
+    }
+
+    String userCodeFilterPath = graalvmNative.agent.modes.conditional.userCodeFilterPath.getOrElse("user-code-filter.json")
+    File userCodeFilterFile = file(userCodeFilterPath)
+    if (!userCodeFilterFile.isFile()) {
+        String fallbackPackage = libraryGAV.split(":", 2)[0]
+        logger.warn("Cannot derive TraceMetadataConditionPackages for {}: {} does not exist. Falling back to {}.", libraryGAV, userCodeFilterPath, fallbackPackage)
+        return fallbackPackage
+    }
+
+    def parsed = new JsonSlurper().parse(userCodeFilterFile)
+    def rules = parsed instanceof Map ? parsed.rules : null
+    if (!(rules instanceof List)) {
+        throw new GradleException("Cannot derive TraceMetadataConditionPackages for ${libraryGAV}: ${userCodeFilterPath} must contain a rules array.")
+    }
+
+    List<String> packages = []
+    rules.each { rule ->
+        if (!(rule instanceof Map) || !(rule.includeClasses instanceof String)) {
+            return
+        }
+        String includeClasses = rule.includeClasses.trim()
+        if (includeClasses.isBlank() || includeClasses == "**") {
+            return
+        }
+        String packageName = includeClasses
+        if (packageName.endsWith(".**")) {
+            packageName = packageName.substring(0, packageName.length() - 3)
+        } else if (packageName.endsWith(".*")) {
+            packageName = packageName.substring(0, packageName.length() - 2)
+        } else if (packageName.contains(".")) {
+            packageName = packageName.substring(0, packageName.lastIndexOf("."))
+        }
+        if (!packageName.isBlank() && !packages.contains(packageName)) {
+            packages.add(packageName)
+        }
+    }
+
+    if (packages.isEmpty()) {
+        throw new GradleException("Cannot derive TraceMetadataConditionPackages for ${libraryGAV}: ${userCodeFilterPath} has no includeClasses package rules.")
+    }
+    return packages.join(",")
 }
 
 tasks.register("nativeTraceImage") { task ->
@@ -378,7 +424,7 @@ tasks.register("runNativeTraceImage", Exec) { Exec task ->
     task.ignoreExitValue = true
     task.doFirst {
         String traceMetadataPath = requiredAbsolutePathProperty("traceMetadataPath")
-        String traceMetadataConditionPackages = requiredGradleProperty("traceMetadataConditionPackages")
+        String traceMetadataConditionPackages = deriveTraceMetadataConditionPackages()
         BuildNativeImageTask nativeTestCompile = tasks.named("nativeTestCompile", BuildNativeImageTask).get()
         NativeRunTask nativeTest = tasks.named("nativeTest", NativeRunTask).get()
         File imageFile = nativeTestCompile.outputFile.get().asFile

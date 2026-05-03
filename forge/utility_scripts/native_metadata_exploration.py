@@ -78,7 +78,6 @@ def run_native_metadata_exploration(
         reachability_repo_path: str,
         coordinate: str,
         output_dir: str,
-        condition_packages: list[str] | None = None,
         max_iterations: int = 5,
         step_timeout_seconds: int = DEFAULT_TRACE_STEP_TIMEOUT_SECONDS,
 ) -> NativeExplorationResult:
@@ -90,10 +89,6 @@ def run_native_metadata_exploration(
         raise ValueError("max_iterations must be >= 1")
     if not os.path.isabs(output_dir):
         raise ValueError("output_dir must be an absolute path")
-
-    group = coordinate.split(":", 1)[0]
-    packages = list(condition_packages) if condition_packages else [group]
-    condition_packages_arg = ",".join(packages)
 
     runs_dir = os.path.normpath(os.path.join(output_dir, "..", "runs"))
     _reset_directory(output_dir)
@@ -149,7 +144,6 @@ def run_native_metadata_exploration(
             "runNativeTraceImage",
             f"-Pcoordinates={coordinate}",
             f"-PtraceMetadataPath={run_i}",
-            f"-PtraceMetadataConditionPackages={condition_packages_arg}",
         ]
         run_log = _new_log_path(coordinate, f"run-iter-{i}")
         run_log_paths.append(run_log)

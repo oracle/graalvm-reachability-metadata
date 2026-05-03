@@ -94,7 +94,6 @@ def verify_native_test_passes(
         reachability_repo_path: str,
         coordinate: str,
         output_dir: str,
-        condition_packages: list[str] | None = None,
         max_iterations: int = 100,
         cycle_timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
 ) -> NativeTestVerificationResult:
@@ -106,10 +105,6 @@ def verify_native_test_passes(
         raise ValueError("max_iterations must be >= 1")
     if not os.path.isabs(output_dir):
         raise ValueError("output_dir must be an absolute path")
-
-    group = coordinate.split(":", 1)[0]
-    packages = list(condition_packages) if condition_packages else [group]
-    condition_packages_arg = ",".join(packages)
 
     runs_dir = os.path.normpath(os.path.join(output_dir, "..", "runs"))
     _reset_directory(output_dir)
@@ -147,7 +142,6 @@ def verify_native_test_passes(
             reachability_repo_path=reachability_repo_path,
             coordinate=coordinate,
             run_dir=run_dir,
-            condition_packages_arg=condition_packages_arg,
             metadata_config_dirs=accepted_run_dirs,
             log_path=log_path,
             timeout_seconds=cycle_timeout_seconds,
@@ -204,7 +198,6 @@ def verify_native_test_passes(
             reproduction_command=_run_native_trace_image_command(
                 coordinate=coordinate,
                 run_dir=run_dir,
-                condition_packages_arg=condition_packages_arg,
                 metadata_config_dirs=accepted_run_dirs,
             ),
         )
@@ -235,14 +228,12 @@ def verify_native_test_passes(
 def _run_native_trace_image_command(
         coordinate: str,
         run_dir: str,
-        condition_packages_arg: str,
         metadata_config_dirs: list[str],
 ) -> str:
     parts = [
         "./gradlew runNativeTraceImage",
         f"-Pcoordinates={coordinate}",
         f"-PtraceMetadataPath={run_dir}",
-        f"-PtraceMetadataConditionPackages={condition_packages_arg}",
     ]
     if metadata_config_dirs:
         parts.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
@@ -253,7 +244,6 @@ def _run_native_trace_image(
         reachability_repo_path: str,
         coordinate: str,
         run_dir: str,
-        condition_packages_arg: str,
         metadata_config_dirs: list[str],
         log_path: str,
         timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
@@ -274,7 +264,6 @@ def _run_native_trace_image(
         "runNativeTraceImage",
         f"-Pcoordinates={coordinate}",
         f"-PtraceMetadataPath={run_dir}",
-        f"-PtraceMetadataConditionPackages={condition_packages_arg}",
         f"-PtraceBinaryExitFile={exit_file}",
     ]
     if metadata_config_dirs:
