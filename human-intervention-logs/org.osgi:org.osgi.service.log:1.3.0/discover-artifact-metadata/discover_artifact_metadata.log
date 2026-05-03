@@ -1,0 +1,1259 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019def91-1225-7330-a90d-698eb10f6aa9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:org.osgi.service.log:1.3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.3.0" when "$version$" is replaced with "1.3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+- Set "coordinates" to "org.osgi:org.osgi.service.log:1.3.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.3.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream OSGi sources, then patch the JSON directly with version-templated URLs where the target resolves for `1.3.0`.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+{
+  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "org.osgi.service.log|org.osgi:org.osgi.service.log|org.osgi.*service.log" .' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ exited 1 in 0ms:
+codex
+The local file only has coordinates, and there are no existing matching metadata entries to copy from. I’m checking Maven Central first because the request prefers Maven-hosted sources and tests when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.log/1.3.0/org.osgi.service.log-1.3.0.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>org.osgi.service.log</artifactId>
+  <version>1.3.0</version>
+  <description>OSGi Companion Code for org.osgi.service.log Version 1.3.0.</description>
+  <name>org.osgi:org.osgi.service.log</name>
+  <url>http://www.osgi.org/</url>
+  <organization>
+    <name>OSGi Alliance</name>
+    <url>http://www.osgi.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://opensource.org/licenses/apache2.0.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://osgi.org/git/build.git</url>
+    <connection>scm:git:https://osgi.org/git/build.git</connection>
+    <developerConnection>scm:git:https://osgi.org/git/build.git</developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <id>osgi</id>
+      <email>info@osgi.org</email>
+      <name>OSGi Alliance</name>
+      <organization>OSGi Alliance</organization>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.log/1.3.0/org.osgi.service.log-1.3.0-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 20:39:27 GMT
+content-type: application/java-archive
+content-length: 12012
+cf-ray: 9f62133f9c60e5d9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 173334
+etag: "b394f95dc062036071b83f1e3b14cfaf"
+last-modified: Tue, 18 Aug 2015 13:40:51 GMT
+x-checksum-md5: b394f95dc062036071b83f1e3b14cfaf
+x-checksum-sha1: c5329f93ca8fc2f47e2c57c015fa0e26ab8d7c46
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.log/1.3.0/org.osgi.service.log-1.3.0-tests.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.log/1.3.0/org.osgi.service.log-1.3.0-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 224ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 20:39:28 GMT
+content-type: application/java-archive
+content-length: 61512
+cf-ray: 9f62133f985ebc00-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "f1328f09af588cba174a6559ca65b0e1"
+last-modified: Tue, 18 Aug 2015 13:40:51 GMT
+x-checksum-md5: f1328f09af588cba174a6559ca65b0e1
+x-checksum-sha1: 7df8597859e2c7ae6a899b335792ed350ba715a6
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 254ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 20:39:28 GMT
+content-type: text/html
+cf-ray: 9f62133f7f3ba43d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/osgi/org.osgi.service.log/1.3.0/org.osgi.service.log-1.3.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://osgi.org/git/build.git | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://osgi.org/git/build.git | rg \"service.log|1\\.3\\.0|r[0-9]|org.osgi.service.log\"" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.log/1.3.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 208ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/osgi/org.osgi.service.log/1.3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/osgi/org.osgi.service.log/1.3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="org.osgi.service.log-1.3.0-javadoc.jar" title="org.osgi.service.log-1.3.0-javadoc.jar">org.osgi.service.log-1.3.0-javadoc.jar</a>            2015-08-18 13:40     61512      
+<a href="org.osgi.service.log-1.3.0-javadoc.jar.asc" title="org.osgi.service.log-1.3.0-javadoc.jar.asc">org.osgi.service.log-1.3.0-javadoc.jar.asc</a>        2015-08-18 13:40       475      
+<a href="org.osgi.service.log-1.3.0-javadoc.jar.asc.md5" title="org.osgi.service.log-1.3.0-javadoc.jar.asc.md5">org.osgi.service.log-1.3.0-javadoc.jar.asc.md...</a>  2015-08-18 13:40        32      
+<a href="org.osgi.service.log-1.3.0-javadoc.jar.asc.sha1" title="org.osgi.service.log-1.3.0-javadoc.jar.asc.sha1">org.osgi.service.log-1.3.0-javadoc.jar.asc.sh...</a>  2015-08-18 13:40        40      
+<a href="org.osgi.service.log-1.3.0-javadoc.jar.asc.sha256" title="org.osgi.service.log-1.3.0-javadoc.jar.asc.sha256">org.osgi.service.log-1.3.0-javadoc.jar.asc.sh...</a>  2015-08-18 13:40        64      
+<a href="org.osgi.service.log-1.3.0-javadoc.jar.asc.sha512" title="org.osgi.service.log-1.3.0-javadoc.jar.asc.sha512">org.osgi.service.log-1.3.0-javadoc.jar.asc.sh...</a>  2015-08-18 13:40       128      
+<a href="org.osgi.service.log-1.3.0-javadoc.jar.md5" title="org.osgi.service.log-1.3.0-javadoc.jar.md5">org.osgi.service.log-1.3.0-javadoc.jar.md5</a>        2015-08-18 13:40        32      
+<a href="org.osgi.service.log-1.3.0-javadoc.jar.sha1" title="org.osgi.service.log-1.3.0-javadoc.jar.sha1">org.osgi.service.log-1.3.0-javadoc.jar.sha1</a>       2015-08-18 13:40        40      
+<a href="org.osgi.service.log-1.3.0-sources.jar" title="org.osgi.service.log-1.3.0-sources.jar">org.osgi.service.log-1.3.0-sources.jar</a>            2015-08-18 13:40     12012      
+<a href="org.osgi.service.log-1.3.0-sources.jar.asc" title="org.osgi.service.log-1.3.0-sources.jar.asc">org.osgi.service.log-1.3.0-sources.jar.asc</a>        2015-08-18 13:40       475      
+<a href="org.osgi.service.log-1.3.0-sources.jar.asc.md5" title="org.osgi.service.log-1.3.0-sources.jar.asc.md5">org.osgi.service.log-1.3.0-sources.jar.asc.md...</a>  2015-08-18 13:40        32      
+<a href="org.osgi.service.log-1.3.0-sources.jar.asc.sha1" title="org.osgi.service.log-1.3.0-sources.jar.asc.sha1">org.osgi.service.log-1.3.0-sources.jar.asc.sh...</a>  2015-08-18 13:40        40      
+<a href="org.osgi.service.log-1.3.0-sources.jar.asc.sha256" title="org.osgi.service.log-1.3.0-sources.jar.asc.sha256">org.osgi.service.log-1.3.0-sources.jar.asc.sh...</a>  2015-08-18 13:40        64      
+<a href="org.osgi.service.log-1.3.0-sources.jar.asc.sha512" title="org.osgi.service.log-1.3.0-sources.jar.asc.sha512">org.osgi.service.log-1.3.0-sources.jar.asc.sh...</a>  2015-08-18 13:40       128      
+<a href="org.osgi.service.log-1.3.0-sources.jar.md5" title="org.osgi.service.log-1.3.0-sources.jar.md5">org.osgi.service.log-1.3.0-sources.jar.md5</a>        2015-08-18 13:40        32      
+<a href="org.osgi.service.log-1.3.0-sources.jar.sha1" title="org.osgi.service.log-1.3.0-sources.jar.sha1">org.osgi.service.log-1.3.0-sources.jar.sha1</a>       2015-08-18 13:40        40      
+<a href="org.osgi.service.log-1.3.0.jar" title="org.osgi.service.log-1.3.0.jar">org.osgi.service.log-1.3.0.jar</a>                    2015-08-18 13:40     16697      
+<a href="org.osgi.service.log-1.3.0.jar.asc" title="org.osgi.service.log-1.3.0.jar.asc">org.osgi.service.log-1.3.0.jar.asc</a>                2015-08-18 13:40       475      
+<a href="org.osgi.service.log-1.3.0.jar.asc.md5" title="org.osgi.service.log-1.3.0.jar.asc.md5">org.osgi.service.log-1.3.0.jar.asc.md5</a>            2015-08-18 13:40        32      
+<a href="org.osgi.service.log-1.3.0.jar.asc.sha1" title="org.osgi.service.log-1.3.0.jar.asc.sha1">org.osgi.service.log-1.3.0.jar.asc.sha1</a>           2015-08-18 13:40        40      
+<a href="org.osgi.service.log-1.3.0.jar.asc.sha256" title="org.osgi.service.log-1.3.0.jar.asc.sha256">org.osgi.service.log-1.3.0.jar.asc.sha256</a>         2015-08-18 13:40        64      
+<a href="org.osgi.service.log-1.3.0.jar.asc.sha512" title="org.osgi.service.log-1.3.0.jar.asc.sha512">org.osgi.service.log-1.3.0.jar.asc.sha512</a>         2015-08-18 13:40       128      
+<a href="org.osgi.service.log-1.3.0.jar.md5" title="org.osgi.service.log-1.3.0.jar.md5">org.osgi.service.log-1.3.0.jar.md5</a>                2015-08-18 13:40        32      
+<a href="org.osgi.service.log-1.3.0.jar.sha1" title="org.osgi.service.log-1.3.0.jar.sha1">org.osgi.service.log-1.3.0.jar.sha1</a>               2015-08-18 13:40        40      
+<a href="org.osgi.service.log-1.3.0.pom" title="org.osgi.service.log-1.3.0.pom">org.osgi.service.log-1.3.0.pom</a>                    2015-08-18 13:40      1287      
+<a href="org.osgi.service.log-1.3.0.pom.asc" title="org.osgi.service.log-1.3.0.pom.asc">org.osgi.service.log-1.3.0.pom.asc</a>                2015-08-18 13:40       475      
+<a href="org.osgi.service.log-1.3.0.pom.asc.md5" title="org.osgi.service.log-1.3.0.pom.asc.md5">org.osgi.service.log-1.3.0.pom.asc.md5</a>            2015-08-18 13:40        32      
+<a href="org.osgi.service.log-1.3.0.pom.asc.sha1" title="org.osgi.service.log-1.3.0.pom.asc.sha1">org.osgi.service.log-1.3.0.pom.asc.sha1</a>           2015-08-18 13:40        40      
+<a href="org.osgi.service.log-1.3.0.pom.asc.sha256" title="org.osgi.service.log-1.3.0.pom.asc.sha256">org.osgi.service.log-1.3.0.pom.asc.sha256</a>         2015-08-18 13:40        64      
+<a href="org.osgi.service.log-1.3.0.pom.asc.sha512" title="org.osgi.service.log-1.3.0.pom.asc.sha512">org.osgi.service.log-1.3.0.pom.asc.sha512</a>         2015-08-18 13:40       128      
+<a href="org.osgi.service.log-1.3.0.pom.md5" title="org.osgi.service.log-1.3.0.pom.md5">org.osgi.service.log-1.3.0.pom.md5</a>                2015-08-18 13:40        32      
+<a href="org.osgi.service.log-1.3.0.pom.sha1" title="org.osgi.service.log-1.3.0.pom.sha1">org.osgi.service.log-1.3.0.pom.sha1</a>               2015-08-18 13:40        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 1 in 630ms:
+fatal: repository 'https://osgi.org/git/build.git/' not found
+
+ succeeded in 656ms:
+fatal: repository 'https://osgi.org/git/build.git/' not found
+
+web search: 
+web search: org.osgi.service.log 1.3.0 source repository tag
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/osgi/osgi.git | rg \"service.log|1\\.3\\.0|r6|R6|v6\"" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/osgi/osgi.git | sed -n '1,100p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/tags?per_page=100 | rg '\"name\"' | sed -n '1,100p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 299ms:
+fc90876712407fb4cee223a2c6556f5643b4b235	refs/heads/cmpn
+9f8e4323a63f1192bb88c50983511109be70c8d1	refs/heads/core
+58f9d1f435bb8bc61e574ddf66e8d3e01b110a54	refs/heads/cziegeler-patch-1
+ca8c37b220448dbf871a420f0c5e4f794729ddb8	refs/heads/dependabot/github_actions/github/codeql-action-4.35.3
+89db2ad692648676907b6097e4aee209958dd64c	refs/heads/design/168
+9b14b69ed6f492b75886ac28c9b9a0fa45079324	refs/heads/design/172
+ec5782be5198d2c1e47d7c7ff49a476a251a356e	refs/heads/design/372
+eb360277f633b7640c8c3752213775395b9edfa8	refs/heads/design/552
+dd06273354d98f4cb4a841d9df5ee73211d89d91	refs/heads/design/575
+bde596381fb95bf3d11f2a1e2c9b654f2595f987	refs/heads/design/587
+b4e2a9883534b4444642fb37fa06405140d24dd2	refs/heads/design/742
+afcfaf3768f74b98bf0fae3b1c8433f3026f1d50	refs/heads/design/892
+fc90876712407fb4cee223a2c6556f5643b4b235	refs/heads/enterprise
+36b8da2f163aba8629e3e8024d03fc3937b67c5d	refs/heads/gh-pages
+763ed7f1b55b43c6401e67c6b11b7a5b9bee7fc0	refs/heads/jakarta-ws/handler-ordering
+beacb96c3a82278b86f7466dc8302b5aa316f0c9	refs/heads/main
+8e96a2338c89bcf9976f71bd6f4fb3f5055f3f78	refs/heads/release
+92b7e0e9ab5647b59ae05385296dd6657c399a33	refs/heads/requirements/386
+a9dcd22545576260f3571c1db996a5b8d6548e55	refs/heads/requirements/575
+632562146ccacc971e734bb3141f515405f0aa78	refs/heads/requirements/587
+921538670832ad67815f78b583f2dfcf784bcd4f	refs/heads/requirements/696
+1ca722e7a314605f433d9253230731152959cc8d	refs/heads/residential
+f62fba38e9ba5cd1803b258829b6b69d9c6de7f4	refs/heads/tw/design/386
+
+ succeeded in 251ms:
+    "name": "svn-r43-branch",
+    "name": "svn-archive-branch",
+    "name": "r401-core-spec-final",
+    "name": "r401-core-ri-tck-final",
+    "name": "r401-cmpn-spec-final",
+    "name": "r401-cmpn-ri-tck-final",
+    "name": "r9-dev",
+    "name": "r8-core-final-rerelease",
+    "name": "r8-core-final",
+    "name": "r8-cmpn-spec-RC1",
+    "name": "r8-cmpn-final",
+    "name": "r7-enterprise-spec-final",
+    "name": "r7-enterprise-ri-ct-final",
+    "name": "r7-core-spec-final",
+    "name": "r7-core-ri-ct-final",
+    "name": "r7-cmpn-spec-final",
+    "name": "r7-cmpn-ri-ct-final",
+    "name": "r6-residential-supplement-spec-final",
+    "name": "r6-residential-supplement-ri-ct-final",
+    "name": "r6-residential-spec-final",
+    "name": "r6-residential-ri-ct-final",
+    "name": "r6-enterprise-spec-final",
+    "name": "r6-enterprise-ri-ct-final",
+    "name": "r6-core-spec-final",
+    "name": "r6-core-ri-ct-final",
+    "name": "r6-cmpn-spec-final",
+    "name": "r6-cmpn-ri-ct-final",
+    "name": "r5-spec-javadoc",
+    "name": "r5-javaone-prototype",
+    "name": "r5-enterprise-spec-final",
+    "name": "r5-enterprise-ri-ct-final",
+    "name": "r5-core-spec-final",
+    "name": "r5-core-ri-ct-final",
+    "name": "r5-cmpn-spec-final",
+    "name": "r5-cmpn-ri-ct-final",
+    "name": "r4v431-core-cmpn-spec-final",
+    "name": "r4v43-residential-spec-final",
+    "name": "r4v43-residential-ri-ct-final",
+    "name": "r4v43-core-spec-final",
+    "name": "r4v43-core-ri-ct-final",
+    "name": "r4v43-cmpn-spec-final",
+    "name": "r4v43-cmpn-ri-ct-final",
+    "name": "r4v42-enterprise-spec-final",
+    "name": "r4v42-enterprise-ri-ct-final",
+    "name": "r4v42-core-spec-final",
+    "name": "r4v42-core-cmpn-final",
+    "name": "r4v42-cmpn-spec-final",
+    "name": "r4v41-spec-final",
+    "name": "r4v41-ri-tck-final",
+    "name": "r4v41-final",
+    "name": "r4v41-core-ri-tck-final",
+    "name": "r4v41-cmpn-ri-tck-final",
+    "name": "r4-mobile-spec-final",
+    "name": "r4-mobile-ri-tck-final",
+    "name": "r4-mobile-jsr232",
+    "name": "r4-core-spec-final",
+    "name": "r4-core-ri-tck-final",
+    "name": "ee.j2se-1.7-final",
+    "name": "ee.j2se-1.6-final",
+    "name": "ee.j2se-1.5-final",
+    "name": "ee.j2se-1.4-final",
+    "name": "Post-new-SOW-interim",
+    "name": "8.1.0.cmpn-RC1",
+    "name": "8.1.0.cmpn",
+    "name": "8.0.0.1",
+
+ succeeded in 352ms:
+44369ee9127e86c27c1af59f1be763ecc263e34d	refs/tags/r6-cmpn-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-cmpn-ri-ct-final^{}
+482a684d7c95cdb8a7a308d9d12dcdded893fb34	refs/tags/r6-cmpn-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-cmpn-spec-final^{}
+2a11a3e5d8c60b50e4081343ebed6bcec311a598	refs/tags/r6-core-ri-ct-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-ri-ct-final^{}
+d8890daf8811f2c2c451a7ed793bac2d8dcce35a	refs/tags/r6-core-spec-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-spec-final^{}
+837e5d17769f3ef0646b913f1e02509291349d7f	refs/tags/r6-enterprise-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-enterprise-ri-ct-final^{}
+301ecbf2d2502438d34aeaedce156c45882ed856	refs/tags/r6-enterprise-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-enterprise-spec-final^{}
+234b425b53e5b3ef3e475750dc86561b81a7b1c2	refs/tags/r6-residential-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-residential-ri-ct-final^{}
+5655cfae7d61f051746213bab0f386423fa38d8e	refs/tags/r6-residential-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-residential-spec-final^{}
+b23a773251adfcd4e3f8248318a1262cb22ee7cb	refs/tags/r6-residential-supplement-ri-ct-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-ri-ct-final^{}
+7742076a96cb0f7cdd869f0d47ab11678fae7bdb	refs/tags/r6-residential-supplement-spec-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-spec-final^{}
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"https://repo1.maven.org|\"test-code-url\"\\s*:\\s*\"N/A\"|\"documentation-url\"\\s*:\\s*\"https://repo1.maven.org' build/discovered-artifact-metadata metadata tests | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:31:    "test-code-url" : "N/A",
+metadata/org.javamoney.moneta/moneta-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/dev.failsafe/failsafe/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/failsafe/failsafe/$version$/failsafe-$version$-sources.jar",
+metadata/dev.failsafe/failsafe/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/failsafe/failsafe/$version$/failsafe-$version$-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-sources.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-launcher/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-launcher/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-engine/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-engine/index.json:21:    "test-code-url" : "N/A",
+metadata/org.junit.platform/junit-platform-engine/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-commons/index.json:7:    "test-code-url" : "N/A",
+metadata/org.junit.platform/junit-platform-commons/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-reporting/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-reporting/$version$/junit-platform-reporting-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-reporting/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-reporting/$version$/junit-platform-reporting-$version$-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-javadoc.jar",
+metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/$version$/google-auth-library-credentials-$version$-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/$version$/google-auth-library-credentials-$version$-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-sources.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-sources.jar",
+metadata/org.postgresql/postgresql/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+metadata/javax.servlet/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.servlet/servlet-api/index.json:21:    "test-code-url" : "N/A",
+metadata/javax.servlet/servlet-api/index.json:35:    "test-code-url" : "N/A",
+metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.android.tools/annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.android.tools/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.android.tools/annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/org.eclipse.aether/aether-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+metadata/org.eclipse.aether/aether-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/$version$/aether-util-$version$-javadoc.jar",
+metadata/org.eclipse.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/$version$/aether-api-$version$-sources.jar",
+metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/$version$/aether-api-$version$-javadoc.jar",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"\\s*:\\s*\"https://github.com/osgi/osgi|osgi.org/git/build|www.osgi.org|osgi.org' metadata build/discovered-artifact-metadata | head -100" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json:2:  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0"
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:22:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.core/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/$version$/org.osgi.annotation.versioning-$version$-sources.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/$version$/org.osgi.annotation.versioning-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/$version$/org.osgi.namespace.extender-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/$version$/org.osgi.namespace.extender-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.bundle/$version$/org.osgi.annotation.bundle-$version$-sources.jar",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.bundle/$version$/org.osgi.annotation.bundle-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.resource/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.resource/$version$/org.osgi.resource-$version$-sources.jar",
+metadata/org.osgi/org.osgi.resource/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.resource/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.resource/$version$/org.osgi.resource-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.service.serviceloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/$version$/org.osgi.service.serviceloader-$version$-sources.jar",
+metadata/org.osgi/org.osgi.service.serviceloader/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.service.serviceloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/$version$/org.osgi.service.serviceloader-$version$-javadoc.jar",
+metadata/org.osgi/osgi.core/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/osgi.core/index.json:20:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/osgi.core/index.json:34:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.namespace.service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.service/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.namespace.service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-javadoc.jar",
+metadata/org.osgi/osgi.annotation/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/osgi.annotation/index.json:20:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.dto/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.dto/$version$/org.osgi.dto-$version$-sources.jar",
+metadata/org.osgi/org.osgi.dto/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.dto/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.dto/$version$/org.osgi.dto-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/$version$/org.osgi.compendium-$version$-sources.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:7:    "repository-url": "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.compendium/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/$version$/org.osgi.compendium-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "find metadata/org.osgi -type f -maxdepth 3 -name index.json -print -exec sed -n '1,80p' {} \\;" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+metadata/org.osgi/osgi.annotation/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/8.0.0.1/org.osgi.test.cases.bundle.annotations",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-javadoc.jar",
+    "description" : "osgi.annotation is the OSGi Release 8 aggregate annotation artifact used when compiling OSGi bundles. It packages bundle and versioning annotations for declaring manifest headers, requirements, capabilities, exports, package versions, and provider or consumer API roles in source code.",
+    "tested-versions" : [
+      "8.1.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi.annotation"
+    ]
+  },
+  {
+    "metadata-version" : "7.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r7-cmpn-ri-ct-final/org.osgi.test.cases.bundle.annotations",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-javadoc.jar",
+    "description" : "osgi.annotation is the OSGi Release 7 aggregate annotation artifact used when compiling OSGi bundles. It packages bundle and versioning annotations for declaring manifest headers, requirements, capabilities, exports, package versions, and provider or consumer API roles in source code.",
+    "tested-versions" : [
+      "7.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi.annotation"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.compendium/index.json
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "org.osgi" ],
+    "metadata-version": "5.0.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/$version$/org.osgi.compendium-$version$-sources.jar",
+    "repository-url": "https://github.com/osgi/osgi",
+    "test-code-url": "https://github.com/osgi/osgi/tree/r5-cmpn-ri-ct-final",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/$version$/org.osgi.compendium-$version$-javadoc.jar",
+    "tested-versions": [
+      "5.0.0"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.service.serviceloader/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/$version$/org.osgi.service.serviceloader-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.serviceloader",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/$version$/org.osgi.service.serviceloader-$version$-javadoc.jar",
+    "description" : "This OSGi companion API defines the Service Loader capability and requirement namespace used to advertise Java ServiceLoader providers in OSGi bundles. It provides constants and package metadata that let OSGi runtimes mediate and register service-provider implementations as OSGi services.",
+    "tested-versions" : [
+      "1.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi.service.serviceloader"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.dto/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.dto/$version$/org.osgi.dto-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-spec-final/org.osgi.test.cases.framework/src/org/osgi/test/cases/framework/junit/dto",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.dto/$version$/org.osgi.dto-$version$-javadoc.jar",
+    "description" : "org.osgi.dto provides the OSGi Data Transfer Object base type used by OSGi APIs to expose simple, serializable state. The DTO contract restricts public fields to primitive wrappers, strings, DTOs, and simple aggregate types, and its base class supplies a reflective debugging string representation.",
+    "tested-versions" : [
+      "1.0.0",
+      "1.1.0",
+      "1.1.1"
+    ],
+    "allowed-packages" : [
+      "org.osgi.dto"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.namespace.service/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-javadoc.jar",
+    "description" : "This artifact defines the OSGi service namespace constants used to describe service capabilities and requirements in OSGi resource metadata. It provides the ServiceNamespace API for expressing service object class attributes and matching metadata rather than a runtime service implementation.",
+    "tested-versions" : [
+      "1.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi.namespace.service"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.resource/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.resource/$version$/org.osgi.resource-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework/src/org/osgi/test/cases/framework/junit",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.resource/$version$/org.osgi.resource-$version$-javadoc.jar",
+    "description" : "org.osgi.resource provides the OSGi Resource API, a set of interfaces for describing resources, their capabilities, requirements, wires, and wirings. It is used by OSGi frameworks and related services to model dependency resolution and the resolved wiring state of bundles or repository resources.",
+    "tested-versions" : [
+      "1.0.0",
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "org.osgi.resource"
+    ]
+  }
+]
+metadata/org.osgi/osgi.core/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r8-core-final/osgi.ct",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0-javadoc.jar",
+    "description" : "OSGi Core provides the Release 8 Java API interfaces and classes used to compile bundles for the OSGi module and service platform. It defines the framework contracts for bundle lifecycle management, service registration, permissions, resource wiring, and related behaviors implemented by OSGi-compliant runtimes.",
+    "tested-versions" : [
+      "8.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi"
+    ]
+  },
+  {
+    "metadata-version" : "7.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r7-core-ri-ct-final/osgi.ct",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-javadoc.jar",
+    "description" : "OSGi Core provides the Release 7 API interfaces and classes used to compile bundles for the OSGi module and service platform. It defines framework contracts for bundles, lifecycle management, service registration, permissions, and resource wiring that OSGi-compliant runtimes implement.",
+    "tested-versions" : [
+      "7.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi"
+    ]
+  },
+  {
+    "metadata-version" : "6.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/osgi.ct",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-javadoc.jar",
+    "description" : "OSGi Core defines the core Java APIs for the OSGi module system, including bundles, lifecycle management, services, permissions, and framework wiring. It provides the standard interfaces and classes that applications and bundles use to compile against an OSGi-compliant runtime.",
+    "tested-versions" : [
+      "6.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.annotation.bundle/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.bundle/$version$/org.osgi.annotation.bundle-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/8.0.0.1/org.osgi.test.cases.bundle.annotations",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.bundle/$version$/org.osgi.annotation.bundle-$version$-javadoc.jar",
+    "description" : "org.osgi.annotation.bundle provides OSGi bundle annotations for declaring manifest headers, package exports, requirements, capabilities, attributes, and directives in source code. The annotations are intended for build-time processing and are not used at runtime.",
+    "tested-versions" : [
+      "2.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi.annotation.bundle"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.namespace.extender/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/$version$/org.osgi.namespace.extender-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/$version$/org.osgi.namespace.extender-$version$-javadoc.jar",
+    "description" : "org.osgi.namespace.extender provides the OSGi ExtenderNamespace constants used to declare and require extender capabilities in OSGi resource metadata. It is a small companion API package for naming the osgi.extender namespace and its version attribute, not an extender implementation.",
+    "tested-versions" : [
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "org.osgi.namespace.extender"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.annotation.versioning/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/$version$/org.osgi.annotation.versioning-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/$version$/org.osgi.annotation.versioning-$version$-javadoc.jar",
+    "description" : "This library provides OSGi annotations for declaring package versions and marking API types as provider or consumer roles. The annotations are intended for tooling and manifest generation rather than runtime behavior.",
+    "tested-versions" : [
+      "1.1.2"
+    ],
+    "allowed-packages" : [
+      "org.osgi.annotation.versioning"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.core/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.3.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v431-core-cmpn-spec-final/org.osgi.test.cases.framework",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-javadoc.jar",
+    "description" : "This artifact provides the OSGi Core Release 4.3.1 API interfaces and classes used to compile OSGi bundles. It defines the framework contracts for bundles, module lifecycle, service registration, and runtime interaction in OSGi-based applications.",
+    "tested-versions" : [
+      "4.3.1",
+      "5.0.0",
+      "6.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi"
+    ]
+  },
+  {
+    "metadata-version" : "4.3.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v43-core-ri-ct-final",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-javadoc.jar",
+    "description" : "This artifact provides the core OSGi Service Platform Release 4.3 interfaces and classes. It defines the Framework APIs for bundles, lifecycle management, module wiring, and services used when compiling OSGi-based applications.",
+    "tested-versions" : [
+      "4.3.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi"
+    ]
+  }
+]
+metadata/org.osgi/org.osgi.namespace.implementation/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-javadoc.jar",
+    "description" : "org.osgi.namespace.implementation provides the OSGi ImplementationNamespace constants used to declare and require implementation capabilities in OSGi resource metadata. It is a small companion API package for naming the osgi.implementation namespace and its version attribute, not a runtime implementation.",
+    "tested-versions" : [
+      "1.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi.namespace.implementation"
+    ]
+  }
+]
+
+codex
+The Maven artifact has source and javadoc jars, no tests jar, and the existing OSGi entries use `https://github.com/osgi/osgi` plus R6 tag paths. I’m locating the matching R6 compliance test directory for the log service rather than guessing the path.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/git/trees/r6-cmpn-ri-ct-final?recursive=1 | rg 'org\\.osgi\\.test\\.cases\\.(log|.*log)|service\\.log|LogService|LogReader' | head -200" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/git/trees/r6-cmpn-spec-final?recursive=1 | rg 'org\\.osgi\\.service\\.log|service\\.log|LogService|LogReader|org\\.osgi\\.test\\.cases\\.(log|.*log)' | head -200" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/contents?ref=r6-cmpn-ri-ct-final | rg '\"name\"|\"path\"|\"type\"' | head -120" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 316ms:
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "type": "file",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "type": "file",
+    "name": ".gradle-wrapper",
+    "path": ".gradle-wrapper",
+    "type": "dir",
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "type": "file",
+    "name": "cnf",
+    "path": "cnf",
+    "type": "dir",
+    "name": "dmforest",
+    "path": "dmforest",
+    "type": "dir",
+    "name": "ee.foundation",
+    "path": "ee.foundation",
+    "type": "dir",
+    "name": "ee.j2se",
+    "path": "ee.j2se",
+    "type": "dir",
+    "name": "ee.minimum",
+    "path": "ee.minimum",
+    "type": "dir",
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "type": "file",
+    "name": "gradlew",
+    "path": "gradlew",
+    "type": "file",
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "type": "file",
+    "name": "licensed",
+    "path": "licensed",
+    "type": "dir",
+    "name": "org.osgi.annotation.versioning",
+    "path": "org.osgi.annotation.versioning",
+    "type": "dir",
+    "name": "org.osgi.application",
+    "path": "org.osgi.application",
+    "type": "dir",
+    "name": "org.osgi.dto",
+    "path": "org.osgi.dto",
+    "type": "dir",
+    "name": "org.osgi.framework",
+    "path": "org.osgi.framework",
+    "type": "dir",
+    "name": "org.osgi.impl.bundle.autoconf",
+    "path": "org.osgi.impl.bundle.autoconf",
+    "type": "dir",
+    "name": "org.osgi.impl.bundle.component.annotations",
+    "path": "org.osgi.impl.bundle.component.annotations",
+    "type": "dir",
+    "name": "org.osgi.impl.bundle.jaxp",
+    "path": "org.osgi.impl.bundle.jaxp",
+    "type": "dir",
+    "name": "org.osgi.impl.bundle.metatype.annotations",
+    "path": "org.osgi.impl.bundle.metatype.annotations",
+    "type": "dir",
+    "name": "org.osgi.impl.bundle.midletcontainer",
+    "path": "org.osgi.impl.bundle.midletcontainer",
+    "type": "dir",
+    "name": "org.osgi.impl.bundle.rsh",
+    "path": "org.osgi.impl.bundle.rsh",
+    "type": "dir",
+    "name": "org.osgi.impl.bundle.transaction",
+    "path": "org.osgi.impl.bundle.transaction",
+    "type": "dir",
+    "name": "org.osgi.impl.service.application",
+    "path": "org.osgi.impl.service.application",
+    "type": "dir",
+    "name": "org.osgi.impl.service.async",
+    "path": "org.osgi.impl.service.async",
+    "type": "dir",
+    "name": "org.osgi.impl.service.dal.step",
+    "path": "org.osgi.impl.service.dal.step",
+    "type": "dir",
+    "name": "org.osgi.impl.service.dal",
+    "path": "org.osgi.impl.service.dal",
+    "type": "dir",
+    "name": "org.osgi.impl.service.deploymentadmin",
+    "path": "org.osgi.impl.service.deploymentadmin",
+    "type": "dir",
+    "name": "org.osgi.impl.service.device.manager",
+    "path": "org.osgi.impl.service.device.manager",
+    "type": "dir",
+    "name": "org.osgi.impl.service.dmt",
+    "path": "org.osgi.impl.service.dmt",
+    "type": "dir",
+    "name": "org.osgi.impl.service.enocean",
+    "path": "org.osgi.impl.service.enocean",
+    "type": "dir",
+    "name": "org.osgi.impl.service.io",
+    "path": "org.osgi.impl.service.io",
+    "type": "dir",
+    "name": "org.osgi.impl.service.jdbc",
+    "path": "org.osgi.impl.service.jdbc",
+    "type": "dir",
+    "name": "org.osgi.impl.service.jndi",
+    "path": "org.osgi.impl.service.jndi",
+    "type": "dir",
+    "name": "org.osgi.impl.service.log",
+    "path": "org.osgi.impl.service.log",
+    "type": "dir",
+    "name": "org.osgi.impl.service.monitor",
+    "path": "org.osgi.impl.service.monitor",
+    "type": "dir",
+    "name": "org.osgi.impl.service.networkadapter",
+    "path": "org.osgi.impl.service.networkadapter",
+    "type": "dir",
+    "name": "org.osgi.impl.service.prefs",
+    "path": "org.osgi.impl.service.prefs",
+    "type": "dir",
+    "name": "org.osgi.impl.service.residentialmanagement",
+    "path": "org.osgi.impl.service.residentialmanagement",
+    "type": "dir",
+curl: (23) Failure writing output to destination
+
+ succeeded in 981ms:
+      "path": "org.osgi.impl.service.log",
+      "path": "org.osgi.impl.service.log/.classpath",
+      "path": "org.osgi.impl.service.log/.project",
+      "path": "org.osgi.impl.service.log/.settings",
+      "path": "org.osgi.impl.service.log/.settings/org.eclipse.core.resources.prefs",
+      "path": "org.osgi.impl.service.log/.settings/org.eclipse.core.runtime.prefs",
+      "path": "org.osgi.impl.service.log/.settings/org.eclipse.jdt.core.prefs",
+      "path": "org.osgi.impl.service.log/.settings/org.eclipse.jdt.ui.prefs",
+      "path": "org.osgi.impl.service.log/bnd.bnd",
+      "path": "org.osgi.impl.service.log/src",
+      "path": "org.osgi.impl.service.log/src/org",
+      "path": "org.osgi.impl.service.log/src/org/osgi",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/EventQueue.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/Log.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/LogEntryImpl.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/LogReaderServiceImpl.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/LogServiceImpl.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/packageinfo",
+      "path": "org.osgi.service.log",
+      "path": "org.osgi.service.log/.classpath",
+      "path": "org.osgi.service.log/.project",
+      "path": "org.osgi.service.log/.settings",
+      "path": "org.osgi.service.log/.settings/org.eclipse.core.resources.prefs",
+      "path": "org.osgi.service.log/.settings/org.eclipse.core.runtime.prefs",
+      "path": "org.osgi.service.log/.settings/org.eclipse.jdt.core.prefs",
+      "path": "org.osgi.service.log/.settings/org.eclipse.jdt.ui.prefs",
+      "path": "org.osgi.service.log/bnd.bnd",
+      "path": "org.osgi.service.log/src",
+      "path": "org.osgi.service.log/src/org",
+      "path": "org.osgi.service.log/src/org/osgi",
+      "path": "org.osgi.service.log/src/org/osgi/service",
+      "path": "org.osgi.service.log/src/org/osgi/service/log",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/LogEntry.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/LogListener.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/LogReaderService.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/LogService.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/package-info.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/packageinfo",
+      "path": "org.osgi.test.cases.log",
+      "path": "org.osgi.test.cases.log/.classpath",
+      "path": "org.osgi.test.cases.log/.project",
+      "path": "org.osgi.test.cases.log/.settings",
+      "path": "org.osgi.test.cases.log/.settings/org.eclipse.core.resources.prefs",
+      "path": "org.osgi.test.cases.log/.settings/org.eclipse.core.runtime.prefs",
+      "path": "org.osgi.test.cases.log/.settings/org.eclipse.jdt.core.prefs",
+      "path": "org.osgi.test.cases.log/.settings/org.eclipse.jdt.ui.prefs",
+      "path": "org.osgi.test.cases.log/bnd.bnd",
+      "path": "org.osgi.test.cases.log/src",
+      "path": "org.osgi.test.cases.log/src/org",
+      "path": "org.osgi.test.cases.log/src/org/osgi",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log/junit",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log/junit/LogReader.java",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log/junit/LogTestCase.java",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log/junit/SignatureTestCase.java",
+      "path": "org.osgi.test.cases.webcontainer/bnd/log.bnd",
+      "path": "org.osgi.test.cases.webcontainer/src/org/osgi/test/cases/webcontainer/log",
+      "path": "org.osgi.test.cases.webcontainer/src/org/osgi/test/cases/webcontainer/log/SimpleLog.java",
+      "path": "osgi.specs/docbook/101/service.log.xml",
+
+ succeeded in 1443ms:
+      "path": "org.osgi.impl.service.log",
+      "path": "org.osgi.impl.service.log/.classpath",
+      "path": "org.osgi.impl.service.log/.project",
+      "path": "org.osgi.impl.service.log/.settings",
+      "path": "org.osgi.impl.service.log/.settings/org.eclipse.core.resources.prefs",
+      "path": "org.osgi.impl.service.log/.settings/org.eclipse.core.runtime.prefs",
+      "path": "org.osgi.impl.service.log/.settings/org.eclipse.jdt.core.prefs",
+      "path": "org.osgi.impl.service.log/.settings/org.eclipse.jdt.ui.prefs",
+      "path": "org.osgi.impl.service.log/bnd.bnd",
+      "path": "org.osgi.impl.service.log/src",
+      "path": "org.osgi.impl.service.log/src/org",
+      "path": "org.osgi.impl.service.log/src/org/osgi",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/EventQueue.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/Log.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/LogEntryImpl.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/LogReaderServiceImpl.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/LogServiceImpl.java",
+      "path": "org.osgi.impl.service.log/src/org/osgi/impl/service/log/packageinfo",
+      "path": "org.osgi.service.log",
+      "path": "org.osgi.service.log/.classpath",
+      "path": "org.osgi.service.log/.project",
+      "path": "org.osgi.service.log/.settings",
+      "path": "org.osgi.service.log/.settings/org.eclipse.core.resources.prefs",
+      "path": "org.osgi.service.log/.settings/org.eclipse.core.runtime.prefs",
+      "path": "org.osgi.service.log/.settings/org.eclipse.jdt.core.prefs",
+      "path": "org.osgi.service.log/.settings/org.eclipse.jdt.ui.prefs",
+      "path": "org.osgi.service.log/bnd.bnd",
+      "path": "org.osgi.service.log/src",
+      "path": "org.osgi.service.log/src/org",
+      "path": "org.osgi.service.log/src/org/osgi",
+      "path": "org.osgi.service.log/src/org/osgi/service",
+      "path": "org.osgi.service.log/src/org/osgi/service/log",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/LogEntry.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/LogListener.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/LogReaderService.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/LogService.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/package-info.java",
+      "path": "org.osgi.service.log/src/org/osgi/service/log/packageinfo",
+      "path": "org.osgi.test.cases.log",
+      "path": "org.osgi.test.cases.log/.classpath",
+      "path": "org.osgi.test.cases.log/.project",
+      "path": "org.osgi.test.cases.log/.settings",
+      "path": "org.osgi.test.cases.log/.settings/org.eclipse.core.resources.prefs",
+      "path": "org.osgi.test.cases.log/.settings/org.eclipse.core.runtime.prefs",
+      "path": "org.osgi.test.cases.log/.settings/org.eclipse.jdt.core.prefs",
+      "path": "org.osgi.test.cases.log/.settings/org.eclipse.jdt.ui.prefs",
+      "path": "org.osgi.test.cases.log/bnd.bnd",
+      "path": "org.osgi.test.cases.log/src",
+      "path": "org.osgi.test.cases.log/src/org",
+      "path": "org.osgi.test.cases.log/src/org/osgi",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log/junit",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log/junit/LogReader.java",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log/junit/LogTestCase.java",
+      "path": "org.osgi.test.cases.log/src/org/osgi/test/cases/log/junit/SignatureTestCase.java",
+      "path": "org.osgi.test.cases.webcontainer/bnd/log.bnd",
+      "path": "org.osgi.test.cases.webcontainer/src/org/osgi/test/cases/webcontainer/log",
+      "path": "org.osgi.test.cases.webcontainer/src/org/osgi/test/cases/webcontainer/log/SimpleLog.java",
+      "path": "osgi.specs/docbook/101/service.log.xml",
+
+codex
+I found the matching R6 test suite at `org.osgi.test.cases.log` under the `r6-cmpn-ri-ct-final` tag. Next I’m doing a quick URL validation and then I’ll update the JSON.
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/1.3.0/org.osgi.service.log-1.3.0-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 20:40:07 GMT
+content-type: application/java-archive
+content-length: 61512
+cf-ray: 9f6214377b8b0215-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1281971
+etag: "f1328f09af588cba174a6559ca65b0e1"
+last-modified: Tue, 18 Aug 2015 13:40:51 GMT
+x-checksum-md5: f1328f09af588cba174a6559ca65b0e1
+x-checksum-sha1: 7df8597859e2c7ae6a899b335792ed350ba715a6
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/1.3.0/org.osgi.service.log-1.3.0-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.log' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/1.3.0/org.osgi.service.log-1.3.0.jar -o /tmp/org.osgi.service.log-1.3.0.jar && jar tf /tmp/org.osgi.service.log-1.3.0.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 119ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 20:40:07 GMT
+content-type: application/java-archive
+content-length: 12012
+cf-ray: 9f621437eb190219-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2098109
+etag: "b394f95dc062036071b83f1e3b14cfaf"
+last-modified: Tue, 18 Aug 2015 13:40:51 GMT
+x-checksum-md5: b394f95dc062036071b83f1e3b14cfaf
+x-checksum-sha1: c5329f93ca8fc2f47e2c57c015fa0e26ab8d7c46
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 118ms:
+META-INF/MANIFEST.MF
+LICENSE
+META-INF/
+META-INF/maven/
+META-INF/maven/org.osgi/
+META-INF/maven/org.osgi/org.osgi.service.log/
+META-INF/maven/org.osgi/org.osgi.service.log/pom.xml
+OSGI-OPT/
+OSGI-OPT/src/
+OSGI-OPT/src/org/
+OSGI-OPT/src/org/osgi/
+OSGI-OPT/src/org/osgi/service/
+OSGI-OPT/src/org/osgi/service/log/
+OSGI-OPT/src/org/osgi/service/log/LogEntry.java
+OSGI-OPT/src/org/osgi/service/log/LogListener.java
+OSGI-OPT/src/org/osgi/service/log/LogReaderService.java
+OSGI-OPT/src/org/osgi/service/log/LogService.java
+OSGI-OPT/src/org/osgi/service/log/package-info.java
+OSGI-OPT/src/org/osgi/service/log/packageinfo
+about.html
+org/
+org/osgi/
+org/osgi/service/
+org/osgi/service/log/
+org/osgi/service/log/LogEntry.class
+org/osgi/service/log/LogListener.class
+org/osgi/service/log/LogReaderService.class
+org/osgi/service/log/LogService.class
+org/osgi/service/log/packageinfo
+
+ succeeded in 477ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 20:40:08 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"7f085a829d80b163e8d82a0470a76c5a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=oDt6q2EvdUKNP8md9jws0WiZJ%2FFlr4J0Ncf99fAwGTgsqKyL3EivEYhjviKU%2BmNqgo8DT7WcKj%2F9L4CAnPexBBJD7Do0vT5oR0g1Tk2AB%2FoTMHDsi20QsDvXeNwuoenvz5MXgVrxwIiWL6D8ql27dPOtj5MxYZZYkF48UDMetj0CTn2ROQYPoGk6lP7gdFwo4xutzybIGd47fNM7tZIQ3At3zfPO1wAt5ETDvq3eTmrUqmQrz5CTVQSlyJkkwqTVkMi75m12A4n4OZBCO4EC7w%3D%3D--FTvWvz7KCttnLckn--xmIi1LvoCblsYzU%2FBRTDdQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.766125674.1777840807; expires=Mon, 03 May 2027 20:40:07 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 20:40:07 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5101:F790A:3F00A:30280:69F7B2A7
+
+
+web search: 
+web search: 
+codex
+I’m going to patch the metadata with Maven source and javadoc jar URLs, the OSGi GitHub repository root, and the R6 log compliance test directory. The artifact contains JVM `.class` files, so I’m leaving the Native Image exclusion fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+index cf10c5a61134b90cc89c4ebf28b9f2eaeadd8720..3966706422419ae2ec07455abbc697e9954c9348
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0"
++  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-sources.jar",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.log",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-javadoc.jar",
++  "description" : "This artifact provides the OSGi Log Service API used by bundles to record log messages and by log readers to access logged events. It defines the LogService, LogReaderService, LogEntry, and LogListener contracts for OSGi-compliant runtimes rather than a concrete logging implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+index cf10c5a61134b90cc89c4ebf28b9f2eaeadd8720..3966706422419ae2ec07455abbc697e9954c9348
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0"
++  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-sources.jar",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.log",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-javadoc.jar",
++  "description" : "This artifact provides the OSGi Log Service API used by bundles to record log messages and by log readers to access logged events. It defines the LogService, LogReaderService, LogEntry, and LogListener contracts for OSGi-compliant runtimes rather than a concrete logging implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+{
+  "coordinates": "org.osgi:org.osgi.service.log:1.3.0",
+  "repository-url": "https://github.com/osgi/osgi",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-sources.jar",
+  "test-code-url": "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.log",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-javadoc.jar",
+  "description": "This artifact provides the OSGi Log Service API used by bundles to record log messages and by log readers to access logged events. It defines the LogService, LogReaderService, LogEntry, and LogListener contracts for OSGi-compliant runtimes rather than a concrete logging implementation."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+index cf10c5a61134b90cc89c4ebf28b9f2eaeadd8720..3966706422419ae2ec07455abbc697e9954c9348
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0"
++  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-sources.jar",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.log",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-javadoc.jar",
++  "description" : "This artifact provides the OSGi Log Service API used by bundles to record log messages and by log readers to access logged events. It defines the LogService, LogReaderService, LogEntry, and LogListener contracts for OSGi-compliant runtimes rather than a concrete logging implementation."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0",
+  "repository-url" : "https://github.com/osgi/osgi",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-sources.jar",
+  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.log",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-javadoc.jar",
+  "description" : "This artifact provides the OSGi Log Service API used by bundles to record log messages and by log readers to access logged events. It defines the LogService, LogReaderService, LogEntry, and LogListener contracts for OSGi-compliant runtimes rather than a concrete logging implementation."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+index cf10c5a61134b90cc89c4ebf28b9f2eaeadd8720..3966706422419ae2ec07455abbc697e9954c9348
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0"
++  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-sources.jar",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.log",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-javadoc.jar",
++  "description" : "This artifact provides the OSGi Log Service API used by bundles to record log messages and by log readers to access logged events. It defines the LogService, LogReaderService, LogEntry, and LogListener contracts for OSGi-compliant runtimes rather than a concrete logging implementation."
+ }
+
+ succeeded in 244ms:
+codex
+Updated [org.osgi-org.osgi.service.log-1.3.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json).
+
+Set Maven source/javadoc URLs, OSGi GitHub repository and R6 log test suite URL, plus a two-sentence description. I left `language` absent and did not set `not-for-native-image` because the artifact contains JVM `.class` files. Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+index cf10c5a61134b90cc89c4ebf28b9f2eaeadd8720..3966706422419ae2ec07455abbc697e9954c9348
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0"
++  "coordinates" : "org.osgi:org.osgi.service.log:1.3.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-sources.jar",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final/org.osgi.test.cases.log",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.service.log/$version$/org.osgi.service.log-$version$-javadoc.jar",
++  "description" : "This artifact provides the OSGi Log Service API used by bundles to record log messages and by log readers to access logged events. It defines the LogService, LogReaderService, LogEntry, and LogListener contracts for OSGi-compliant runtimes rather than a concrete logging implementation."
+ }
+
+tokens used
+43,543
+Updated [org.osgi-org.osgi.service.log-1.3.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454/build/discovered-artifact-metadata/org.osgi-org.osgi.service.log-1.3.0.json).
+
+Set Maven source/javadoc URLs, OSGi GitHub repository and R6 log test suite URL, plus a two-sentence description. I left `language` absent and did not set `not-for-native-image` because the artifact contains JVM `.class` files. Validated the JSON with `jq`.
+Ran agent for org.osgi:org.osgi.service.log:1.3.0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454/build/agent-artifact-discovery-logs/org.osgi-org.osgi.service.log-1.3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4805-440be454/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 17s
+9 actionable tasks: 4 executed, 5 from cache
