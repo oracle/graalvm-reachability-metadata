@@ -13,11 +13,15 @@ import org.junit.jupiter.api.Test
 import play.api.libs.functional.Alternative
 import play.api.libs.functional.Applicative
 import play.api.libs.functional.ContravariantFunctor
+import play.api.libs.functional.ContravariantFunctorExtractor
 import play.api.libs.functional.FunctionalCanBuild
 import play.api.libs.functional.Functor
+import play.api.libs.functional.FunctorExtractor
 import play.api.libs.functional.InvariantFunctor
+import play.api.libs.functional.InvariantFunctorExtractor
 import play.api.libs.functional.Monoid
 import play.api.libs.functional.Reducer
+import play.api.libs.functional.VariantExtractor
 import play.api.libs.functional.{~ => Tilde}
 import play.api.libs.functional.syntax._
 
@@ -213,6 +217,47 @@ class Play_functional_3Test {
     assertEquals(Some("fallback"), Option.empty[String].or(Option("fallback")))
     assertEquals(None, optionAlternative.empty)
     assertEquals(Some("from-applicative"), optionAlternative.app.pure(f = "from-applicative"))
+  }
+
+  @Test
+  def variantExtractorsClassifyAndExposeWrappedFunctorInstances(): Unit = {
+    val readerFunctor: Functor[Reader] = new Functor[Reader] {
+      override def fmap[A, B](reader: Reader[A], f: A => B): Reader[B] = Reader(input => f(reader.read(input)))
+    }
+    val printerContravariant: ContravariantFunctor[Printer] = new ContravariantFunctor[Printer] {
+      override def contramap[A, B](printer: Printer[A], f: B => A): Printer[B] = Printer(value => printer.print(f(value)))
+    }
+    val codecInvariant: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
+      override def inmap[A, B](codec: Codec[A], f1: A => B, f2: B => A): Codec[B] =
+        Codec(input => f1(codec.parse(input)), value => codec.print(f2(value)))
+    }
+
+    val readerExtractor: VariantExtractor[Reader] = VariantExtractor.functor(readerFunctor)
+    val printerExtractor: VariantExtractor[Printer] = VariantExtractor.contravariantFunctor(printerContravariant)
+    val codecExtractor: VariantExtractor[Codec] = VariantExtractor.invariantFunctor(codecInvariant)
+
+    val readerResult: String = readerExtractor match {
+      case FunctorExtractor(functor) =>
+        functor.fmap(Reader((input: String) => input.length), (length: Int) => s"chars=$length").read("play")
+    }
+    val printerResult: String = printerExtractor match {
+      case ContravariantFunctorExtractor(contravariantFunctor) =>
+        val printer: Printer[Order] = contravariantFunctor.contramap(Printer((quantity: Int) => s"qty=$quantity"), (order: Order) => order.quantity)
+        printer.print(Order("coffee", 4))
+    }
+    val codecResult: String = codecExtractor match {
+      case InvariantFunctorExtractor(invariantFunctor) =>
+        val codec: Codec[Boolean] = invariantFunctor.inmap(
+          Codec((input: String) => input.toInt, (value: Int) => value.toString),
+          (value: Int) => value > 0,
+          (value: Boolean) => if (value) 1 else 0
+        )
+        s"${codec.parse("7")}/${codec.print(false)}"
+    }
+
+    assertEquals("chars=4", readerResult)
+    assertEquals("qty=4", printerResult)
+    assertEquals("true/0", codecResult)
   }
 
   @Test
