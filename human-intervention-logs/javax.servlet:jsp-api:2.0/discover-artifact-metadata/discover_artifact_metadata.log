@@ -1,0 +1,1229 @@
+Starting a Gradle Daemon, 8 busy and 3 incompatible and 132 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deed8-bc97-7361-bb0b-79d35bf9c15c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.servlet:jsp-api:2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0" when "$version$" is replaced with "2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+- Set "coordinates" to "javax.servlet:jsp-api:2.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the existing repository conventions, then patch the JSON in place.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.servlet:jsp-api:2.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg -n "javax.servlet:jsp-api|jsp-api" build/discovered-artifact-metadata metadata -S' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json:2:  "coordinates" : "javax.servlet:jsp-api:2.0"
+metadata/javax.servlet.jsp/jsp-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/$version$/jsp-api-$version$-sources.jar",
+metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:21:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/parameter-names/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-$version$/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-$version$/src/test",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/net.java.dev.jna/jna/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/$version$/jna-$version$-sources.jar",
+metadata/net.java.dev.jna/jna/index.json:10:    "test-code-url": "https://github.com/java-native-access/jna/tree/$version$/test",
+metadata/net.java.dev.jna/jna/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/$version$/jna-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-sources.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-tests.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:8:    "documentation-url" : "https://github.com/qos-ch/cal10n/blob/v$version$/cal10n-site/src/site/pages/documentation.html",
+metadata/javax.portlet/portlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-sources.jar",
+
+codex
+There is already metadata for `javax.servlet.jsp:jsp-api`, but the requested coordinate is `javax.servlet:jsp-api:2.0`, so I’m treating it as a separate legacy artifact and checking its own Maven path.
+web search: 
+web search: Maven Central javax.servlet jsp-api 2.0 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/javax.servlet/jsp-api/2.0
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/javax.servlet.jsp/jsp-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/$version$/jsp-api-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+    "description" : "This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.",
+    "tested-versions" : [
+      "2.1"
+    ],
+    "allowed-packages" : [
+      "javax.el",
+      "javax.servlet.jsp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-sources.jar; curl -I -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-javadoc.jar; curl -I -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-tests.jar; curl -I -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-test-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ exited 22 in 691ms:
+cHTTP/2 404 
+date: Sun, 03 May 2026 17:18:14 GMT
+content-type: text/html
+cf-ray: 9f60ec7c2a7723bc-ZRH
+cf-cache-status: HIT
+age: 67
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+url: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 17:18:14 GMT
+content-type: text/html
+cf-ray: 9f60ec7c9a49bb10-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 17:18:14 GMT
+content-type: text/html
+cf-ray: 9f60ec7e2c2b7dd2-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp-api/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp-api/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0.jar" title="jsp-api-2.0.jar">jsp-api-2.0.jar</a>                                   2006-11-06 01:08     50493      
+<a href="jsp-api-2.0.jar.md5" title="jsp-api-2.0.jar.md5">jsp-api-2.0.jar.md5</a>                               2006-11-06 01:08        32      
+<a href="jsp-api-2.0.jar.sha1" title="jsp-api-2.0.jar.sha1">jsp-api-2.0.jar.sha1</a>                              2006-11-06 01:08        40      
+<a href="jsp-api-2.0.pom" title="jsp-api-2.0.pom">jsp-api-2.0.pom</a>                                   2006-11-06 01:08       362      
+<a href="jsp-api-2.0.pom.md5" title="jsp-api-2.0.pom.md5">jsp-api-2.0.pom.md5</a>                               2006-11-06 01:08       134      
+<a href="jsp-api-2.0.pom.sha1" title="jsp-api-2.0.pom.sha1">jsp-api-2.0.pom.sha1</a>                              2006-11-06 01:08       142      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-06 01:08       172      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-06 01:08        81      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-06 01:08       136      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc 'jar tf ~/.gradle/caches/modules-2/files-2.1/javax.servlet/jsp-api/2.0/*/*.jar 2>/dev/null | head -60 || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/el/
+javax/servlet/jsp/resources/
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/ErrorData.class
+javax/servlet/jsp/HttpJspPage.class
+javax/servlet/jsp/JspContext.class
+javax/servlet/jsp/JspEngineInfo.class
+javax/servlet/jsp/JspException.class
+javax/servlet/jsp/JspFactory.class
+javax/servlet/jsp/JspPage.class
+javax/servlet/jsp/JspTagException.class
+javax/servlet/jsp/JspWriter.class
+javax/servlet/jsp/PageContext.class
+javax/servlet/jsp/SkipPageException.class
+javax/servlet/jsp/el/ELException.class
+javax/servlet/jsp/el/ELParseException.class
+javax/servlet/jsp/el/Expression.class
+javax/servlet/jsp/el/ExpressionEvaluator.class
+javax/servlet/jsp/el/FunctionMapper.class
+javax/servlet/jsp/el/VariableResolver.class
+javax/servlet/jsp/resources/jsp_2_0.xsd
+javax/servlet/jsp/resources/jspxml.dtd
+javax/servlet/jsp/resources/jspxml.xsd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/tagext/BodyContent.class
+javax/servlet/jsp/tagext/BodyTag.class
+javax/servlet/jsp/tagext/BodyTagSupport.class
+javax/servlet/jsp/tagext/DynamicAttributes.class
+javax/servlet/jsp/tagext/FunctionInfo.class
+javax/servlet/jsp/tagext/IterationTag.class
+javax/servlet/jsp/tagext/JspFragment.class
+javax/servlet/jsp/tagext/JspTag.class
+javax/servlet/jsp/tagext/PageData.class
+javax/servlet/jsp/tagext/SimpleTag.class
+javax/servlet/jsp/tagext/SimpleTagSupport.class
+javax/servlet/jsp/tagext/Tag.class
+javax/servlet/jsp/tagext/TagAdapter.class
+javax/servlet/jsp/tagext/TagAttributeInfo.class
+javax/servlet/jsp/tagext/TagData.class
+javax/servlet/jsp/tagext/TagExtraInfo.class
+javax/servlet/jsp/tagext/TagFileInfo.class
+javax/servlet/jsp/tagext/TagInfo.class
+javax/servlet/jsp/tagext/TagLibraryInfo.class
+javax/servlet/jsp/tagext/TagLibraryValidator.class
+javax/servlet/jsp/tagext/TagSupport.class
+javax/servlet/jsp/tagext/TagVariableInfo.class
+javax/servlet/jsp/tagext/TryCatchFinally.class
+javax/servlet/jsp/tagext/ValidationMessage.class
+javax/servlet/jsp/tagext/VariableInfo.class
+
+ succeeded in 321ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp/jsp-api/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp/jsp-api/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0-sources.jar" title="jsp-api-2.0-sources.jar">jsp-api-2.0-sources.jar</a>                           2006-07-17 11:09    118348      
+<a href="jsp-api-2.0-sources.jar.md5" title="jsp-api-2.0-sources.jar.md5">jsp-api-2.0-sources.jar.md5</a>                       2006-07-17 11:09        32      
+<a href="jsp-api-2.0-sources.jar.sha1" title="jsp-api-2.0-sources.jar.sha1">jsp-api-2.0-sources.jar.sha1</a>                      2006-07-17 11:09        40      
+<a href="jsp-api-2.0.jar" title="jsp-api-2.0.jar">jsp-api-2.0.jar</a>                                   2006-07-17 11:09     48457      
+<a href="jsp-api-2.0.jar.md5" title="jsp-api-2.0.jar.md5">jsp-api-2.0.jar.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.0.jar.sha1" title="jsp-api-2.0.jar.sha1">jsp-api-2.0.jar.sha1</a>                              2006-07-17 11:09        40      
+<a href="jsp-api-2.0.pom" title="jsp-api-2.0.pom">jsp-api-2.0.pom</a>                                   2006-07-17 11:09       157      
+<a href="jsp-api-2.0.pom.md5" title="jsp-api-2.0.pom.md5">jsp-api-2.0.pom.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.0.pom.sha1" title="jsp-api-2.0.pom.sha1">jsp-api-2.0.pom.sha1</a>                              2006-07-17 11:09        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-07-17 11:09       121      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-07-17 11:09        85      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-07-17 11:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: central sonatype javax.servlet jsp-api 2.0
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet.jsp</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+</project>
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/a.jar" https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar; curl -fsSL -o "$tmpdir/b.jar" https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar; printf '"'javax.servlet:jsp-api classes/resources\\n'; jar tf \""'$tmpdir/a.jar" | sort | sed -n '"'1,120p'; printf 'javax.servlet.jsp:jsp-api classes/resources\\n'; jar tf \""'$tmpdir/b.jar" | sort | sed -n '"'1,120p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/maven-metadata.xml && printf '\\n--- jsp group ---\\n' && curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/maven-metadata.xml" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <groupId>javax.servlet</groupId>
+  <artifactId>jsp-api</artifactId>
+  <versioning>
+    <versions>
+      <version>2.0</version>
+      <version>2.0.public_draft</version>
+    </versions>
+  </versioning>
+</metadata>
+--- jsp group ---
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>javax.servlet.jsp</groupId>
+  <artifactId>jsp-api</artifactId>
+  <versioning>
+    <latest>2.2.1-b03</latest>
+    <release>2.2.1-b03</release>
+    <versions>
+      <version>2.1-rev-1</version>
+      <version>2.1.1</version>
+      <version>2.1.2</version>
+      <version>2.1.3-b01</version>
+      <version>2.1.3-b02</version>
+      <version>2.1.3-b03</version>
+      <version>2.1.3-b04</version>
+      <version>2.1.3-b05</version>
+      <version>2.1.3-b06</version>
+      <version>2.2</version>
+      <version>2.2.1-b01</version>
+      <version>2.2.1-b02</version>
+      <version>2.2.1-b03</version>
+    </versions>
+    <lastUpdated>20110815192730</lastUpdated>
+  </versioning>
+</metadata>
+
+ succeeded in 316ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/ErrorData.class
+javax/servlet/jsp/HttpJspPage.class
+javax/servlet/jsp/JspContext.class
+javax/servlet/jsp/JspEngineInfo.class
+javax/servlet/jsp/JspException.class
+javax/servlet/jsp/JspFactory.class
+javax/servlet/jsp/JspPage.class
+javax/servlet/jsp/JspTagException.class
+javax/servlet/jsp/JspWriter.class
+javax/servlet/jsp/PageContext.class
+javax/servlet/jsp/SkipPageException.class
+javax/servlet/jsp/el/
+javax/servlet/jsp/el/ELException.class
+javax/servlet/jsp/el/ELParseException.class
+javax/servlet/jsp/el/Expression.class
+javax/servlet/jsp/el/ExpressionEvaluator.class
+javax/servlet/jsp/el/FunctionMapper.class
+javax/servlet/jsp/el/VariableResolver.class
+javax/servlet/jsp/resources/
+javax/servlet/jsp/resources/jsp_2_0.xsd
+javax/servlet/jsp/resources/jspxml.dtd
+javax/servlet/jsp/resources/jspxml.xsd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/tagext/BodyContent.class
+javax/servlet/jsp/tagext/BodyTag.class
+javax/servlet/jsp/tagext/BodyTagSupport.class
+javax/servlet/jsp/tagext/DynamicAttributes.class
+javax/servlet/jsp/tagext/FunctionInfo.class
+javax/servlet/jsp/tagext/IterationTag.class
+javax/servlet/jsp/tagext/JspFragment.class
+javax/servlet/jsp/tagext/JspTag.class
+javax/servlet/jsp/tagext/PageData.class
+javax/servlet/jsp/tagext/SimpleTag.class
+javax/servlet/jsp/tagext/SimpleTagSupport.class
+javax/servlet/jsp/tagext/Tag.class
+javax/servlet/jsp/tagext/TagAdapter.class
+javax/servlet/jsp/tagext/TagAttributeInfo.class
+javax/servlet/jsp/tagext/TagData.class
+javax/servlet/jsp/tagext/TagExtraInfo.class
+javax/servlet/jsp/tagext/TagFileInfo.class
+javax/servlet/jsp/tagext/TagInfo.class
+javax/servlet/jsp/tagext/TagLibraryInfo.class
+javax/servlet/jsp/tagext/TagLibraryValidator.class
+javax/servlet/jsp/tagext/TagSupport.class
+javax/servlet/jsp/tagext/TagVariableInfo.class
+javax/servlet/jsp/tagext/TryCatchFinally.class
+javax/servlet/jsp/tagext/ValidationMessage.class
+javax/servlet/jsp/tagext/VariableInfo.class
+javax.servlet.jsp:jsp-api classes/resources
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/ErrorData.class
+javax/servlet/jsp/HttpJspPage.class
+javax/servlet/jsp/JspContext.class
+javax/servlet/jsp/JspEngineInfo.class
+javax/servlet/jsp/JspException.class
+javax/servlet/jsp/JspFactory.class
+javax/servlet/jsp/JspPage.class
+javax/servlet/jsp/JspTagException.class
+javax/servlet/jsp/JspWriter.class
+javax/servlet/jsp/PageContext.class
+javax/servlet/jsp/SkipPageException.class
+javax/servlet/jsp/el/
+javax/servlet/jsp/el/ELException.class
+javax/servlet/jsp/el/ELParseException.class
+javax/servlet/jsp/el/Expression.class
+javax/servlet/jsp/el/ExpressionEvaluator.class
+javax/servlet/jsp/el/FunctionMapper.class
+javax/servlet/jsp/el/VariableResolver.class
+javax/servlet/jsp/resources/
+javax/servlet/jsp/resources/jsp_2_0.xsd
+javax/servlet/jsp/resources/jspxml.dtd
+javax/servlet/jsp/resources/jspxml.xsd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/tagext/BodyContent.class
+javax/servlet/jsp/tagext/BodyTag.class
+javax/servlet/jsp/tagext/BodyTagSupport.class
+javax/servlet/jsp/tagext/DynamicAttributes.class
+javax/servlet/jsp/tagext/FunctionInfo.class
+javax/servlet/jsp/tagext/IterationTag.class
+javax/servlet/jsp/tagext/JspFragment.class
+javax/servlet/jsp/tagext/JspTag.class
+javax/servlet/jsp/tagext/PageData.class
+javax/servlet/jsp/tagext/SimpleTag.class
+javax/servlet/jsp/tagext/SimpleTagSupport.class
+javax/servlet/jsp/tagext/Tag.class
+javax/servlet/jsp/tagext/TagAdapter.class
+javax/servlet/jsp/tagext/TagAttributeInfo.class
+javax/servlet/jsp/tagext/TagData.class
+javax/servlet/jsp/tagext/TagExtraInfo.class
+javax/servlet/jsp/tagext/TagFileInfo.class
+javax/servlet/jsp/tagext/TagInfo.class
+javax/servlet/jsp/tagext/TagLibraryInfo.class
+javax/servlet/jsp/tagext/TagLibraryValidator.class
+javax/servlet/jsp/tagext/TagSupport.class
+javax/servlet/jsp/tagext/TagVariableInfo.class
+javax/servlet/jsp/tagext/TryCatchFinally.class
+javax/servlet/jsp/tagext/ValidationMessage.class
+javax/servlet/jsp/tagext/VariableInfo.class
+
+web search: 
+web search: "javax.servlet" "jsp-api" "2.0" "source"
+web search: 
+web search: https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/
+web search: 
+web search: site:javadoc.io/doc/javax.servlet/jsp-api/2.0 javax.servlet jsp-api 2.0 javadoc
+exec
+/usr/bin/bash -lc "for u in \\
+  https://javadoc.io/doc/javax.servlet/jsp-api/2.0 \\
+  https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.0 \\
+  https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-javadoc.jar \\
+  https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-tests.jar \\
+  https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-test-sources.jar; do printf '%s\\n' \""'$u"; curl -I -L -s "$u" | sed -n '"'1,8p'; done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.1/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/a.jar" https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar; curl -fsSL -o "$tmpdir/b.jar" https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar; sha1sum "$tmpdir/a.jar" "$tmpdir/b.jar"; cmp -l "$tmpdir/a.jar" "$tmpdir/b.jar" | head -20 || true; rm -rf "$tmpdir"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 121ms:
+e6def06602b51b1d9be51f6c3fcdf163ecd01644  /tmp/tmp.b0JrTRmGrT/a.jar
+e749de55a88f61457866d80da527f5a01bc9c6f3  /tmp/tmp.b0JrTRmGrT/b.jar
+   11  16 224
+   12 172 235
+   13 123 252
+   14  62  64
+   29   0   4
+   40 120 376
+   41 113 312
+   42   3   0
+   43   4   0
+   44  12 120
+   45   0 113
+   46   0   3
+   47   0   4
+   48  10  12
+   50  15   0
+   51 172   0
+   52 123  10
+   53  62   0
+   54 250 223
+   55 313 235
+
+ succeeded in 212ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp/jsp-api/2.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp/jsp-api/2.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.1-sources.jar" title="jsp-api-2.1-sources.jar">jsp-api-2.1-sources.jar</a>                           2006-07-17 11:09    208969      
+<a href="jsp-api-2.1-sources.jar.md5" title="jsp-api-2.1-sources.jar.md5">jsp-api-2.1-sources.jar.md5</a>                       2006-07-17 11:09        32      
+<a href="jsp-api-2.1-sources.jar.sha1" title="jsp-api-2.1-sources.jar.sha1">jsp-api-2.1-sources.jar.sha1</a>                      2006-07-17 11:09        40      
+<a href="jsp-api-2.1.jar" title="jsp-api-2.1.jar">jsp-api-2.1.jar</a>                                   2006-07-17 11:09    100636      
+<a href="jsp-api-2.1.jar.md5" title="jsp-api-2.1.jar.md5">jsp-api-2.1.jar.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.1.jar.sha1" title="jsp-api-2.1.jar.sha1">jsp-api-2.1.jar.sha1</a>                              2006-07-17 11:09        40      
+<a href="jsp-api-2.1.pom" title="jsp-api-2.1.pom">jsp-api-2.1.pom</a>                                   2006-07-17 11:09       157      
+<a href="jsp-api-2.1.pom.md5" title="jsp-api-2.1.pom.md5">jsp-api-2.1.pom.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.1.pom.sha1" title="jsp-api-2.1.pom.sha1">jsp-api-2.1.pom.sha1</a>                              2006-07-17 11:09        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-07-17 11:09       121      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-07-17 11:09        85      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-07-17 11:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 1304ms:
+HTTP/2 303 
+date: Sun, 03 May 2026 17:18:44 GMT
+content-length: 0
+location: /doc/javax.servlet/jsp-api/2.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.0
+HTTP/2 303 
+date: Sun, 03 May 2026 17:18:44 GMT
+content-length: 0
+location: /doc/javax.servlet.jsp/jsp-api/2.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-javadoc.jar
+HTTP/2 404 
+date: Sun, 03 May 2026 17:18:45 GMT
+content-type: text/html
+cf-ray: 9f60ed3c4cf001fc-ZRH
+cf-cache-status: HIT
+age: 2799
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-tests.jar
+HTTP/2 404 
+date: Sun, 03 May 2026 17:18:45 GMT
+content-type: text/html
+cf-ray: 9f60ed3ccf73bb10-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-tests.jar
+https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-test-sources.jar
+HTTP/2 404 
+date: Sun, 03 May 2026 17:18:45 GMT
+content-type: text/html
+cf-ray: 9f60ed3edcd3bc66-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0-test-sources.jar
+
+web search: 
+web search: central.sonatype.com artifact javax.servlet jsp-api 2.0
+web search: 
+web search: "JSP 2.0" "jsp-api" GitHub "javax.servlet.jsp"
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.0/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0/package-list || true; printf '\\n---\\n'; curl -fsSL https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.0/package-list || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 181ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jsp-api 2.0 javadoc (javax.servlet)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/javax.servlet">javax.servlet</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jsp-api
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/javax.servlet/javax.servlet-api" class="dropdown-item">
+							javax.servlet-api
+						</a>
+						
+						<a href="/doc/javax.servlet/jsp-api" class="dropdown-item">
+							jsp-api
+						</a>
+						
+						<a href="/doc/javax.servlet/jstl" class="dropdown-item">
+							jstl
+						</a>
+						
+						<a href="/doc/javax.servlet/servlet-api" class="dropdown-item">
+							servlet-api
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						2.0
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/javax.servlet/jsp-api/latest/index.html" class="dropdown-item">
+							2.0.public_draft
+						</a>
+
+2026-05-03T17:19:20.613562Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+2026-05-03T17:19:22.786759Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+ succeeded in 20023ms:
+curl: (22) The requested URL returned error: 522
+
+---
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 23621ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jsp-api 2.0 javadoc (javax.servlet.jsp)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/javax.servlet.jsp">javax.servlet.jsp</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jsp-api
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/javax.servlet.jsp/javax.servlet.jsp-api" class="dropdown-item">
+							javax.servlet.jsp-api
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api" class="dropdown-item">
+							jsp-api
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						2.0
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/javax.servlet.jsp/jsp-api/latest/index.html" class="dropdown-item">
+							2.2.1-b03
+						</a>
+
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.2.1-b02/index.html" class="dropdown-item">
+							2.2.1-b02
+						</a>
+						
+						<a href="/doc/javax.servlet.jsp/jsp-api/2.2.1-b01/index.html" class="dropdown-item">
+							2.2.1-b01
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0/index.html | rg -n "src-html|javax/servlet/jsp/JspPage|package-summary|All Classes" | head -40' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0/javax/servlet/jsp/JspPage.html | sed -n '1,60p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/doc/javax.servlet/jsp-api/2.0/javax/servlet/jsp/JspPage.html | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 154ms:
+ succeeded in 263ms:
+HTTP/2 303 
+date: Sun, 03 May 2026 17:19:35 GMT
+content-length: 0
+location: /doc/javax.servlet/jsp-api/2.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=XSrVbT0IHG7fcgd9be%2BLfixb%2FY1DcMwEgaU%2F32%2Fo0QEQFwaOfsvGuuSfwEf%2BddnchtK8ZU0x4m4n0VYakb29VN%2BD9PLTytUnImbstf7Jz16%2BsJH27N4g9hgnrgT%2BLAiNMRPUQb3qxZ81"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+
+ succeeded in 266ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jsp-api 2.0 javadoc (javax.servlet)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/javax.servlet">javax.servlet</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jsp-api
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/javax.servlet/javax.servlet-api" class="dropdown-item">
+							javax.servlet-api
+						</a>
+						
+						<a href="/doc/javax.servlet/jsp-api" class="dropdown-item">
+							jsp-api
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet/jsp-api/2.0/index.html | rg -n \"iframe|No JavaDoc|javadoc\\.io/static|docjar|javax.servlet.jsp|JspPage|package-list|allclasses\" | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 113ms:
+59:						<a href="/doc/javax.servlet/jsp-api" class="dropdown-item">
+78:						<a href="/doc/javax.servlet/jsp-api/latest/index.html" class="dropdown-item">
+83:						<a href="/doc/javax.servlet/jsp-api/2.0/index.html" class="dropdown-item">
+98:					<a class='nav-link' href='/task/sync_latest/javax.servlet/jsp-api'
+127:					<div>Latest version of <span class="text-monospace">javax.servlet:jsp-api</span></div>
+129:						https://javadoc.io/doc/javax.servlet/jsp-api
+130:						<a href="/doc/javax.servlet/jsp-api" target="_blank" class="float-right">
+136:						https://javadoc.io/doc/javax.servlet/jsp-api/2.0
+137:						<a href="/doc/javax.servlet/jsp-api/2.0" target="_blank" class="float-right">
+141:					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+143:						https://javadoc.io/doc/javax.servlet/jsp-api/2.0/package-list
+144:						<a href="/doc/javax.servlet/jsp-api/2.0/package-list" target="_blank" class="float-right">
+161:  No JavaDoc is released for artifact <span class="font-italic">javax.servlet:jsp-api:2.0</span>.
+169:      <a href='/retry/javax.servlet/jsp-api/2.0'>Retry</a> this version.
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.0/index.html | rg -n "No JavaDoc|package-list|javax.servlet.jsp:jsp-api|JspPage|src-html" | head -60' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 135ms:
+171:					<div>Latest version of <span class="text-monospace">javax.servlet.jsp:jsp-api</span></div>
+185:					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+187:						https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.0/package-list
+188:						<a href="/doc/javax.servlet.jsp/jsp-api/2.0/package-list" target="_blank" class="float-right">
+205:  No JavaDoc is released for artifact <span class="font-italic">javax.servlet.jsp:jsp-api:2.0</span>.
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.1/index.html | rg -n "No JavaDoc|javax.servlet.jsp:jsp-api|package-list" | head -20' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 203ms:
+171:					<div>Latest version of <span class="text-monospace">javax.servlet.jsp:jsp-api</span></div>
+185:					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+187:						https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.1/package-list
+188:						<a href="/doc/javax.servlet.jsp/jsp-api/2.1/package-list" target="_blank" class="float-right">
+205:  No JavaDoc is released for artifact <span class="font-italic">javax.servlet.jsp:jsp-api:2.1</span>.
+
+codex
+The legacy `javax.servlet:jsp-api:2.0` artifact itself only publishes a jar and POM on Maven Central; there are no `sources`, `javadoc`, `tests`, or `test-sources` classifier artifacts under that coordinate. I’m checking whether there is a trustworthy upstream source/docs location before falling back to `N/A` for fields that cannot be tied to this coordinate.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22javax.servlet%22%20AND%20a:%22jsp-api%22%20AND%20v:%222.0%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar.sha1; printf '\\n'; curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.pom.sha1" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22javax.servlet.jsp%22%20AND%20a:%22jsp-api%22%20AND%20v:%222.0%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 103ms:
+544d73877a165cc1ab777b3dbed8a9149a60a301  /home/projects/maven/repository-staging/to-ibiblio/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.pom
+
+ succeeded in 125ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"javax.servlet.jsp\" AND a:\"jsp-api\" AND v:\"2.0\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"javax.servlet.jsp:jsp-api:2.0","g":"javax.servlet.jsp","a":"jsp-api","v":"2.0","p":"jar","timestamp":1153134596000,"ec":["-sources.jar",".jar",".pom"]}]}}
+ succeeded in 144ms:
+{"responseHeader":{"status":0,"QTime":2,"params":{"q":"g:\"javax.servlet\" AND a:\"jsp-api\" AND v:\"2.0\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"javax.servlet:jsp-api:2.0","g":"javax.servlet","a":"jsp-api","v":"2.0","p":"jar","timestamp":1131487092000,"ec":[".jar",".pom"]}]}}
+exec
+/usr/bin/bash -lc "for u in \\
+  https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/package-summary.html \\
+  https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/JspPage.html \\
+  https://docs.oracle.com/javaee/1.4/tutorial/doc/JSPIntro.html; do printf '%s\\n' \""'$u"; curl -I -L -s "$u" | sed -n '"'1,10p'; done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -fsSL https://docs.oracle.com/javaee/1.4/tutorial/doc/JSPIntro.html | rg -n \"JavaServer Pages|JSP|2\\.0|technology\" | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+exec
+/usr/bin/bash -lc "curl -fsSL https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/package-summary.html | rg -n \"JavaServer Pages|JSP|2\\.0|Package javax.servlet.jsp|JspPage\" | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 585ms:
+8:    <title>JavaServer Pages Technology</title>
+13:    <link rel="Next" href="JSPIntro2.html" />
+48:				<a accesskey="p" href="Servlets13.html" title="Previous"><img id="LongDescNotReq1" src="images/previous.png" width="40" height="40" border="0" alt="Prev" /></a><a accesskey="c" href="J2EETutorialFront.html" title="Beginning"><img id="LongDescNotReq1" src="images/up.png" width="40" height="40" border="0" alt="Beginning" /></a><a accesskey="n" href="JSPIntro2.html" title="Next"><img id="LongDescNotReq3" src="images/next.png" width="40" height="40" border="0" alt="Next" /></a>
+57:JavaServer Pages Technology
+60:JavaServer Pages (JSP) technology allows you to easily create web content that has both static and dynamic components. JSP technology makes available all the dynamic capabilities of Java Servlet technology but provides a more natural approach to creating static content. The main features of JSP technology are as follows:
+63:<a name="wp65711"> </a><div class="pSmartList1"><li>A language for developing JSP pages, which are text-based documents that describe how to process a request and construct a response</li></div>
+65:<a name="wp65713"> </a><div class="pSmartList1"><li>Mechanisms for defining extensions to the JSP language</li></div>
+68:JSP technology also contains an API that is used by developers of web containers, but this API is not covered in this tutorial.
+75:				<a accesskey="p" href="Servlets13.html" title="Previous"><img id="LongDescNotReq1" src="images/previous.png" width="40" height="40" border="0" alt="Prev" /></a><a accesskey="c" href="J2EETutorialFront.html" title="Beginning"><img id="LongDescNotReq1" src="images/up.png" width="40" height="40" border="0" alt="Beginning" /></a><a accesskey="n" href="JSPIntro2.html" title="Next"><img id="LongDescNotReq3" src="images/next.png" width="40" height="40" border="0" alt="Next" /></a>
+
+ succeeded in 601ms:
+77:Package javax.servlet.jsp
+79:Classes and interfaces for the Core JSP 2.0 API.
+93:<TD WIDTH="15%"><B><A HREF="../../../javax/servlet/jsp/HttpJspPage.html" title="interface in javax.servlet.jsp">HttpJspPage</A></B></TD>
+94:<TD>The HttpJspPage interface describes the interaction that a JSP Page
+100:<TD WIDTH="15%"><B><A HREF="../../../javax/servlet/jsp/JspPage.html" title="interface in javax.servlet.jsp">JspPage</A></B></TD>
+101:<TD>The JspPage interface describes the generic interaction that a JSP Page
+103: are described by the HttpJspPage interface.
+132: current JSP engine.</TD>
+138: methods available to a JSP page at runtime for the purposes of creating
+139: instances of various interfaces and classes used to support the JSP 
+146: The actions and template data in a JSP page is written using the
+155: when JSP technology is used in a Servlet environment.
+170:<TD>A generic exception known to the JSP engine; uncaught
+190:Package javax.servlet.jsp Description
+194:Classes and interfaces for the Core JSP 2.0 API.
+197:interfaces that describe and define the contracts between a JSP page
+199:instance of such a class by a conforming JSP container.
+
+ succeeded in 939ms:
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 11055
+Content-Type: text/html
+ETag: "e647858035e9a4ba70b4f9a7a49bb3fc:1411328741"
+Last-Modified: Tue, 17 Aug 2010 18:36:40 GMT
+Server: AkamaiNetStorage
+Date: Sun, 03 May 2026 17:20:12 GMT
+Connection: keep-alive
+Akamai-GRN: 0.551b7b5c.1777828812.14a57e16
+https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/JspPage.html
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Type: text/html
+ETag: "fa6053819718f4ee710830db58e504f8:1411328741"
+Last-Modified: Tue, 17 Aug 2010 18:36:38 GMT
+Server: AkamaiNetStorage
+Content-Length: 12639
+Date: Sun, 03 May 2026 17:20:12 GMT
+Connection: keep-alive
+Akamai-GRN: 0.551b7b5c.1777828812.14a57ee6
+https://docs.oracle.com/javaee/1.4/tutorial/doc/JSPIntro.html
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Type: text/html
+ETag: "aa1f13a3e1be083c801abbcbf4ad720e:1411328854"
+Last-Modified: Tue, 17 Aug 2010 18:35:10 GMT
+Server: AkamaiNetStorage
+Content-Length: 6079
+Date: Sun, 03 May 2026 17:20:12 GMT
+Connection: keep-alive
+Akamai-GRN: 0.551b7b5c.1777828812.14a57fb6
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://docs.oracle.com|\"documentation-url\": \"https://docs.oracle.com' metadata build/discovered-artifact-metadata -g '*.json' | head -30" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+metadata/javax.el/el-api/index.json:8:    "documentation-url" : "https://docs.oracle.com/javaee/5/api/javax/el/package-summary.html",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/javax.el/el-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/uel-ri",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://docs.oracle.com/javaee/5/api/javax/el/package-summary.html",
+    "description" : "The Java Unified Expression Language API defines interfaces and base classes for parsing and evaluating value and method expressions used by JSP 2.1 and JSF 1.2. It provides pluggable contexts, resolvers, function mapping, and variable mapping so web frameworks and applications can access and manipulate model data through EL expressions.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "javax.el"
+    ]
+  }
+]
+
+codex
+I’m going to mark the source and tests as `N/A` because Maven Central reports only `.jar` and `.pom` classifiers for `javax.servlet:jsp-api:2.0`, and the POM has no SCM. The Oracle Java EE 1.4 API docs explicitly identify `javax.servlet.jsp` as the Core JSP 2.0 API, so I’ll use that as the documentation URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..0cd40f08cb82a96f873441968b6c3a61bb64a51d
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/package-summary.html",
++  "description" : "The JavaServer Pages API 2.0 defines the standard javax.servlet.jsp interfaces, classes, and tag extension contracts used by JSP containers and JSP-based applications. It provides compile-time and runtime API types for JSP pages, custom tag libraries, expression evaluation, page context access, and JSP engine integration."
+ }
+
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..0cd40f08cb82a96f873441968b6c3a61bb64a51d
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/package-summary.html",
++  "description" : "The JavaServer Pages API 2.0 defines the standard javax.servlet.jsp interfaces, classes, and tag extension contracts used by JSP containers and JSP-based applications. It provides compile-time and runtime API types for JSP pages, custom tag libraries, expression evaluation, page context access, and JSP engine integration."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.servlet:jsp-api:2.0",
+  "repository-url" : "N/A",
+  "source-code-url" : "N/A",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/package-summary.html",
+  "description" : "The JavaServer Pages API 2.0 defines the standard javax.servlet.jsp interfaces, classes, and tag extension contracts used by JSP containers and JSP-based applications. It provides compile-time and runtime API types for JSP pages, custom tag libraries, expression evaluation, page context access, and JSP engine integration."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'python -m json.tool build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..0cd40f08cb82a96f873441968b6c3a61bb64a51d
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/package-summary.html",
++  "description" : "The JavaServer Pages API 2.0 defines the standard javax.servlet.jsp interfaces, classes, and tag extension contracts used by JSP containers and JSP-based applications. It provides compile-time and runtime API types for JSP pages, custom tag libraries, expression evaluation, page context access, and JSP engine integration."
+ }
+
+ succeeded in 120ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f
+ succeeded in 166ms:
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..0cd40f08cb82a96f873441968b6c3a61bb64a51d
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/package-summary.html",
++  "description" : "The JavaServer Pages API 2.0 defines the standard javax.servlet.jsp interfaces, classes, and tag extension contracts used by JSP containers and JSP-based applications. It provides compile-time and runtime API types for JSP pages, custom tag libraries, expression evaluation, page context access, and JSP engine integration."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/
+web search: 
+web search: 
+codex
+Updated [javax.servlet-jsp-api-2.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json) with `repository-url`, source/test URLs, documentation, and a two-sentence description.
+
+I left `source-code-url` and `test-code-url` as `N/A` because the Maven Central entry for `javax.servlet:jsp-api:2.0` only publishes the jar and POM, with no source/test/javadoc classifiers. The documentation URL points to the Java EE 1.4 API docs, which explicitly describe `javax.servlet.jsp` as the Core JSP 2.0 API. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/))
+
+Validation: `python -m json.tool` passed. No `language` or `not-for-native-image` fields were added.
+diff --git a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+index 756f7b9fa4350a3481708c1c5c965d37055b5f80..0cd40f08cb82a96f873441968b6c3a61bb64a51d
+--- a/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
++++ b/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.servlet:jsp-api:2.0"
++  "coordinates" : "javax.servlet:jsp-api:2.0",
++  "repository-url" : "N/A",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://docs.oracle.com/javaee/1.4/api/javax/servlet/jsp/package-summary.html",
++  "description" : "The JavaServer Pages API 2.0 defines the standard javax.servlet.jsp interfaces, classes, and tag extension contracts used by JSP containers and JSP-based applications. It provides compile-time and runtime API types for JSP pages, custom tag libraries, expression evaluation, page context access, and JSP engine integration."
+ }
+
+tokens used
+84,933
+Updated [javax.servlet-jsp-api-2.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f/build/discovered-artifact-metadata/javax.servlet-jsp-api-2.0.json) with `repository-url`, source/test URLs, documentation, and a two-sentence description.
+
+I left `source-code-url` and `test-code-url` as `N/A` because the Maven Central entry for `javax.servlet:jsp-api:2.0` only publishes the jar and POM, with no source/test/javadoc classifiers. The documentation URL points to the Java EE 1.4 API docs, which explicitly describe `javax.servlet.jsp` as the Core JSP 2.0 API. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/))
+
+Validation: `python -m json.tool` passed. No `language` or `not-for-native-image` fields were added.
+Ran agent for javax.servlet:jsp-api:2.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f/build/agent-artifact-discovery-logs/javax.servlet-jsp-api-2.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2861-af756e3f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 6s
+9 actionable tasks: 4 executed, 5 from cache
