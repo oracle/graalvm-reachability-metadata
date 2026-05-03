@@ -44,7 +44,7 @@ public class Annotations_apiTest {
                 .getAnnotation(Resource.class);
         Resource configuredResource = method(FullyAnnotatedComponent.class, "configure")
                 .getAnnotation(Resource.class);
-        Resources resources = FullyAnnotatedComponent.class.getAnnotation(Resources.class);
+        Resources resources = FullyAnnotatedComponent.class.getAnnotationsByType(Resources.class)[0];
 
         assertThat(method(FullyAnnotatedComponent.class, "initialize")
                 .isAnnotationPresent(PostConstruct.class)).isTrue();
@@ -74,14 +74,14 @@ public class Annotations_apiTest {
 
     @Test
     void securityAnnotationsRetainRoleAndPolicyConfiguration() throws Exception {
-        DeclareRoles declareRoles = SecuredComponent.class.getAnnotation(DeclareRoles.class);
-        RunAs runAs = SecuredComponent.class.getAnnotation(RunAs.class);
+        DeclareRoles declareRoles = SecuredComponent.class.getAnnotationsByType(DeclareRoles.class)[0];
+        RunAs runAs = SecuredComponent.class.getAnnotationsByType(RunAs.class)[0];
         RolesAllowed rolesAllowed = method(SecuredComponent.class, "operatorOnly")
                 .getAnnotation(RolesAllowed.class);
 
         assertThat(declareRoles.value()).containsExactly("admin", "operator", "auditor");
         assertThat(runAs.value()).isEqualTo("system");
-        assertThat(SecuredComponent.class.isAnnotationPresent(DenyAll.class)).isTrue();
+        assertThat(SecuredComponent.class.getAnnotationsByType(DenyAll.class).length > 0).isTrue();
         assertThat(method(SecuredComponent.class, "openToAuthenticatedUsers").isAnnotationPresent(PermitAll.class))
                 .isTrue();
         assertThat(rolesAllowed.value()).containsExactly("admin", "operator");
@@ -89,7 +89,7 @@ public class Annotations_apiTest {
 
     @Test
     void arrayValuedAnnotationMembersReturnDefensiveCopies() throws Exception {
-        Resources resources = FullyAnnotatedComponent.class.getAnnotation(Resources.class);
+        Resources resources = FullyAnnotatedComponent.class.getAnnotationsByType(Resources.class)[0];
         Resource originalFirstResource = resources.value()[0];
         Resource[] mutableResourceCopy = resources.value();
         mutableResourceCopy[0] = resources.value()[1];
@@ -109,7 +109,7 @@ public class Annotations_apiTest {
     void ejbAnnotationsExposeSingleAndContainerValues() throws Exception {
         EJB fieldEjb = field(EnterpriseReferences.class, "catalogBean").getAnnotation(EJB.class);
         EJB methodEjb = method(EnterpriseReferences.class, "setAuditBean", Runnable.class).getAnnotation(EJB.class);
-        EJBs ejbs = EnterpriseReferences.class.getAnnotation(EJBs.class);
+        EJBs ejbs = EnterpriseReferences.class.getAnnotationsByType(EJBs.class)[0];
 
         assertThat(fieldEjb.name()).isEqualTo("ejb/catalog");
         assertThat(fieldEjb.description()).isEqualTo("Catalog service");
@@ -137,8 +137,8 @@ public class Annotations_apiTest {
                 .getAnnotation(PersistenceContext.class);
         PersistenceUnit unit = method(PersistenceReferences.class, "setEntityManagerFactory", Object.class)
                 .getAnnotation(PersistenceUnit.class);
-        PersistenceContexts contexts = PersistenceReferences.class.getAnnotation(PersistenceContexts.class);
-        PersistenceUnits units = MorePersistenceReferences.class.getAnnotation(PersistenceUnits.class);
+        PersistenceContexts contexts = PersistenceReferences.class.getAnnotationsByType(PersistenceContexts.class)[0];
+        PersistenceUnits units = MorePersistenceReferences.class.getAnnotationsByType(PersistenceUnits.class)[0];
 
         assertThat(context.name()).isEqualTo("persistence/orders");
         assertThat(context.unitName()).isEqualTo("ordersUnit");
@@ -175,7 +175,7 @@ public class Annotations_apiTest {
                 .getAnnotation(WebServiceRef.class);
         WebServiceRef methodRef = method(WebServiceReferences.class, "setNotificationPort", Object.class)
                 .getAnnotation(WebServiceRef.class);
-        WebServiceRefs refs = WebServiceReferences.class.getAnnotation(WebServiceRefs.class);
+        WebServiceRefs refs = WebServiceReferences.class.getAnnotationsByType(WebServiceRefs.class)[0];
 
         assertThat(fieldRef.name()).isEqualTo("service/payment");
         assertThat(fieldRef.type()).isEqualTo(CharSequence.class);
@@ -199,11 +199,11 @@ public class Annotations_apiTest {
 
     @Test
     void singleReferenceAnnotationsCanBeDeclaredOnTypes() {
-        Resource resource = TypeLevelReferences.class.getAnnotation(Resource.class);
-        EJB ejb = TypeLevelReferences.class.getAnnotation(EJB.class);
-        PersistenceContext context = TypeLevelReferences.class.getAnnotation(PersistenceContext.class);
-        PersistenceUnit unit = TypeLevelReferences.class.getAnnotation(PersistenceUnit.class);
-        WebServiceRef serviceRef = TypeLevelReferences.class.getAnnotation(WebServiceRef.class);
+        Resource resource = TypeLevelReferences.class.getAnnotationsByType(Resource.class)[0];
+        EJB ejb = TypeLevelReferences.class.getAnnotationsByType(EJB.class)[0];
+        PersistenceContext context = TypeLevelReferences.class.getAnnotationsByType(PersistenceContext.class)[0];
+        PersistenceUnit unit = TypeLevelReferences.class.getAnnotationsByType(PersistenceUnit.class)[0];
+        WebServiceRef serviceRef = TypeLevelReferences.class.getAnnotationsByType(WebServiceRef.class)[0];
 
         assertThat(resource.name()).isEqualTo("class/resource");
         assertThat(resource.type()).isEqualTo(Long.class);
@@ -238,8 +238,8 @@ public class Annotations_apiTest {
         assertRuntimeAnnotation(WebServiceRef.class, ElementType.TYPE, ElementType.METHOD, ElementType.FIELD);
         assertRuntimeAnnotation(WebServiceRefs.class, ElementType.TYPE);
 
-        assertThat(Generated.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.SOURCE);
-        assertThat(Generated.class.getAnnotation(Target.class).value())
+        assertThat(Generated.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.SOURCE);
+        assertThat(Generated.class.getAnnotationsByType(Target.class)[0].value())
                 .containsExactlyInAnyOrder(
                         ElementType.ANNOTATION_TYPE,
                         ElementType.CONSTRUCTOR,
@@ -249,7 +249,7 @@ public class Annotations_apiTest {
                         ElementType.PACKAGE,
                         ElementType.PARAMETER,
                         ElementType.TYPE);
-        assertThat(GeneratedType.class.getAnnotation(Generated.class)).isNull();
+        assertThat(GeneratedType.class.getAnnotationsByType(Generated.class)).isEmpty();
     }
 
     @Test
@@ -263,8 +263,8 @@ public class Annotations_apiTest {
     }
 
     private static void assertRuntimeAnnotation(Class<?> annotationType, ElementType... targets) {
-        assertThat(annotationType.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(annotationType.getAnnotation(Target.class).value()).containsExactlyInAnyOrder(targets);
+        assertThat(annotationType.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotationType.getAnnotationsByType(Target.class)[0].value()).containsExactlyInAnyOrder(targets);
     }
 
     private static Field field(Class<?> type, String name) throws NoSuchFieldException {
