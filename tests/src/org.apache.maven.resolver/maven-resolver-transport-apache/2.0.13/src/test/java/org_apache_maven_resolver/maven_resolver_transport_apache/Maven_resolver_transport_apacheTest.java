@@ -201,17 +201,78 @@ public class Maven_resolver_transport_apacheTest {
         }
     }
 
+    @Test
+    void putCreatesWebDavDirectoriesBeforeUploadingNestedArtifact() throws Exception {
+        List<String> methods = new ArrayList<>();
+        List<String> createdDirectories = new ArrayList<>();
+        AtomicReference<String> uploadedBody = new AtomicReference<>();
+
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            String method = exchange.getRequestMethod();
+            String path = exchange.getRequestURI().getPath();
+            methods.add(method + " " + path);
+            if ("OPTIONS".equals(method) && "/repo/releases/snapshots/metadata.xml".equals(path)) {
+                exchange.getResponseHeaders().add("Dav", "1,2");
+                exchange.sendResponseHeaders(200, -1);
+                return;
+            }
+            if ("MKCOL".equals(method) && "/repo/releases/snapshots/".equals(path)) {
+                if (createdDirectories.contains("/repo/releases/")) {
+                    createdDirectories.add(path);
+                    exchange.sendResponseHeaders(201, -1);
+                } else {
+                    exchange.sendResponseHeaders(409, -1);
+                }
+                return;
+            }
+            if ("MKCOL".equals(method) && "/repo/releases/".equals(path)) {
+                createdDirectories.add(path);
+                exchange.sendResponseHeaders(201, -1);
+                return;
+            }
+            if ("PUT".equals(method) && "/repo/releases/snapshots/metadata.xml".equals(path)) {
+                uploadedBody.set(new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8));
+                exchange.sendResponseHeaders(201, -1);
+                return;
+            }
+            exchange.sendResponseHeaders(404, -1);
+        })) {
+            Path uploadSource = tempDirectory.resolve("nested-metadata.xml");
+            Files.writeString(uploadSource, "<metadata>webdav</metadata>", StandardCharsets.UTF_8);
+            RepositorySystemSession session = newSession()
+                    .setConfigProperty("aether.transport.http.supportWebDav", true);
+
+            try (HttpTransporter transporter = newTransporter(server, session)) {
+                transporter.put(new PutTask(URI.create("releases/snapshots/metadata.xml")).setDataPath(uploadSource));
+
+                assertThat(uploadedBody.get()).isEqualTo("<metadata>webdav</metadata>");
+                assertThat(createdDirectories).containsExactly("/repo/releases/", "/repo/releases/snapshots/");
+                assertThat(methods).containsExactly(
+                        "OPTIONS /repo/releases/snapshots/metadata.xml",
+                        "MKCOL /repo/releases/snapshots/",
+                        "MKCOL /repo/releases/",
+                        "MKCOL /repo/releases/snapshots/",
+                        "PUT /repo/releases/snapshots/metadata.xml");
+            }
+        }
+    }
+
     private static ApacheTransporterFactory newFactory() {
         return new ApacheTransporterFactory(RESPONSE_CHECKSUMS, new SimplePathProcessor());
     }
 
     private static HttpTransporter newTransporter(TestHttpServer server) throws NoTransporterException {
-        RemoteRepository repository = new RemoteRepository.Builder(
-                "test-repository", "default", server.repositoryUrl()).build();
-        return newFactory().newInstance(newSession(), repository);
+        return newTransporter(server, newSession());
     }
 
-    private static RepositorySystemSession newSession() {
+    private static HttpTransporter newTransporter(TestHttpServer server, RepositorySystemSession session)
+            throws NoTransporterException {
+        RemoteRepository repository = new RemoteRepository.Builder(
+                "test-repository", "default", server.repositoryUrl()).build();
+        return newFactory().newInstance(session, repository);
+    }
+
+    private static DefaultRepositorySystemSession newSession() {
         return new DefaultRepositorySystemSession()
                 .setConfigProperty("aether.transport.http.connectTimeout", 2_000)
                 .setConfigProperty("aether.transport.http.requestTimeout", 2_000)
