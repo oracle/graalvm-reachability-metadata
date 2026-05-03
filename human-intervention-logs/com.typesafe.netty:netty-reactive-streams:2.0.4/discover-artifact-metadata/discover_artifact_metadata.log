@@ -1,0 +1,1667 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deb47-257b-74c2-a84e-1cd1e3e37e0e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.typesafe.netty:netty-reactive-streams:2.0.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.4" when "$version$" is replaced with "2.0.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+- Set "coordinates" to "com.typesafe.netty:netty-reactive-streams:2.0.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven/GitHub first, then update the JSON in place with version-templated URLs. I’ll avoid adding tests since this is metadata discovery only.
+web search: 
+web search: com.typesafe.netty netty-reactive-streams 2.0.4 Maven
+codex
+I found the Maven coordinates and the likely upstream GitHub repository (`playframework/netty-reactive-streams`). Next I’m checking the POM/source artifacts and tags so the URLs can point at the exact 2.0.4 release shape rather than just the project root.
+exec
+/usr/bin/zsh -lc 'pwd && ls -l build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 0ms:
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+-rw-rw-r-- 1 mihailo mihailo 72 May  3 02:40 build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-sources.jar && curl -fsI https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-test-sources.jar && curl -fsI https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.pom' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/playframework/netty-reactive-streams/tags?per_page=100' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ exited 1 in 132ms:
+zsh:1: no matches found: https://api.github.com/repos/playframework/netty-reactive-streams/tags?per_page=100
+
+ succeeded in 290ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.typesafe.netty</groupId>
+        <artifactId>netty-reactive-streams-parent</artifactId>
+        <version>2.0.4</version>
+    </parent>
+
+    <artifactId>netty-reactive-streams</artifactId>
+
+    <name>Netty Reactive Streams Implementation</name>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams-tck</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <archive combine.children="append">
+                                <manifestEntries>
+                                    <Automatic-Module-Name>com.typesafe.netty.core</Automatic-Module-Name>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+ exited 22 in 679ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:40:16 GMT
+content-type: application/java-archive
+content-length: 8397
+cf-ray: 9f5b369cce4ee295-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 639614
+etag: "16a54f600963383d9b65d5a085ed2f57"
+last-modified: Tue, 19 Nov 2019 03:47:08 GMT
+x-checksum-md5: 16a54f600963383d9b65d5a085ed2f57
+x-checksum-sha1: dea768fe806e1352d7b3c05fa94b6391f7468238
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Sun, 03 May 2026 00:40:16 GMT
+content-type: text/html
+cf-ray: 9f5b369dba98e292-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: com.typesafe.netty netty-reactive-streams 2.0.4 Maven Central
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/playframework/netty-reactive-streams/tags?per_page=100'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc "rg 'source-code-url|documentation-url|test-code-url|language|not-for-native-image' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'cat build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 0ms:
+{
+  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4"
+}
+
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 141ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:40:26 GMT
+content-type: application/java-archive
+content-length: 36925
+cf-ray: 9f5b36ddcc53e290-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1124662
+etag: "5afdae597f8661c2893a7b6662f74673"
+last-modified: Tue, 19 Nov 2019 03:47:09 GMT
+x-checksum-md5: 5afdae597f8661c2893a7b6662f74673
+x-checksum-sha1: b7e9bd2b5cac1d0bc7bcfd836807fddcbc81c746
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 174ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:40:26 GMT
+content-type: application/java-archive
+content-length: 21842
+cf-ray: 9f5b36ddfc90e290-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1953197
+etag: "a10a0d529ec175ec5d5401a394e785f0"
+last-modified: Tue, 19 Nov 2019 03:47:10 GMT
+x-checksum-md5: a10a0d529ec175ec5d5401a394e785f0
+x-checksum-sha1: 0f77c8eaa7d5e2f2160b6d21ba385cf726f164b2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 564ms:
+[
+  {
+    "name": "netty-reactive-streams-parent-3.1.0-M1",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.1.0-M1",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.1.0-M1",
+    "commit": {
+      "sha": "e0d76ce0ec9e4ea27f6a76c806b6b0f3213ff135",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/e0d76ce0ec9e4ea27f6a76c806b6b0f3213ff135"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMS4wLU0x"
+  },
+  {
+    "name": "netty-reactive-streams-parent-3.0.7",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.0.7",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.0.7",
+    "commit": {
+      "sha": "7f884e56039701a15aa8a96d2143abd912828c9b",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/7f884e56039701a15aa8a96d2143abd912828c9b"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMC43"
+  },
+  {
+    "name": "netty-reactive-streams-parent-3.0.6",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.0.6",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.0.6",
+    "commit": {
+      "sha": "d3ad82b40de2cc6883d9ac2bbf1331c72e601409",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/d3ad82b40de2cc6883d9ac2bbf1331c72e601409"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMC42"
+  },
+  {
+    "name": "netty-reactive-streams-parent-3.0.5",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.0.5",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.0.5",
+    "commit": {
+      "sha": "40a867d55de617fa9a14586849c93daceeb6f867",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/40a867d55de617fa9a14586849c93daceeb6f867"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMC41"
+  },
+  {
+    "name": "netty-reactive-streams-parent-3.0.4",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.0.4",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.0.4",
+    "commit": {
+      "sha": "127954038572a71c7bd1377a0333ec5d9167806a",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/127954038572a71c7bd1377a0333ec5d9167806a"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMC40"
+  },
+  {
+    "name": "netty-reactive-streams-parent-3.0.3",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.0.3",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.0.3",
+    "commit": {
+      "sha": "805a3e830f8d551c2f5e71edb114f8ad3b463333",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/805a3e830f8d551c2f5e71edb114f8ad3b463333"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMC4z"
+  },
+  {
+    "name": "netty-reactive-streams-parent-3.0.2",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.0.2",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.0.2",
+    "commit": {
+      "sha": "30be42c3d60f1c412ab1dbbfa87d31b7e2ff2113",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/30be42c3d60f1c412ab1dbbfa87d31b7e2ff2113"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMC4y"
+  },
+  {
+    "name": "netty-reactive-streams-parent-3.0.1",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.0.1",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.0.1",
+    "commit": {
+      "sha": "043d5f852493d901b58c0f52d8337f5fce3f73ca",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/043d5f852493d901b58c0f52d8337f5fce3f73ca"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMC4x"
+  },
+  {
+    "name": "netty-reactive-streams-parent-3.0.0",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.0.0",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.0.0",
+    "commit": {
+      "sha": "78275b6fb71010982e0b55a2cb31d251a8b72a15",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/78275b6fb71010982e0b55a2cb31d251a8b72a15"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMC4w"
+  },
+  {
+    "name": "netty-reactive-streams-parent-3.0.0-M1",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-3.0.0-M1",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-3.0.0-M1",
+    "commit": {
+      "sha": "30dabcc329e9b6a145dbe140641102accbcae9ee",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/30dabcc329e9b6a145dbe140641102accbcae9ee"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTMuMC4wLU0x"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.17",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.17",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.17",
+    "commit": {
+      "sha": "6ad437f745284e803b8f6975a3f1cf5609219dd1",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/6ad437f745284e803b8f6975a3f1cf5609219dd1"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4xNw=="
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.16",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.16",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.16",
+    "commit": {
+      "sha": "cf56849e9429bab9291fafe703b75b16cb356219",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/cf56849e9429bab9291fafe703b75b16cb356219"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4xNg=="
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.15",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.15",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.15",
+    "commit": {
+      "sha": "a0959736f5bcd06ea6f05dbb23f001f046c8897c",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/a0959736f5bcd06ea6f05dbb23f001f046c8897c"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4xNQ=="
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.14",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.14",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.14",
+    "commit": {
+      "sha": "1d0872185112b2ee30da74ef66bbe1e2f2d2990f",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/1d0872185112b2ee30da74ef66bbe1e2f2d2990f"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4xNA=="
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.13",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.13",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.13",
+    "commit": {
+      "sha": "94759b97361f82440c4006bf4d29ececfe8ecc86",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/94759b97361f82440c4006bf4d29ececfe8ecc86"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4xMw=="
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.12",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.12",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.12",
+    "commit": {
+      "sha": "153faf2d85c60c7d48b60d2310b3d26248e77ba2",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/153faf2d85c60c7d48b60d2310b3d26248e77ba2"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4xMg=="
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.11",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.11",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.11",
+    "commit": {
+      "sha": "19d8c9f78739993dd86988dba7018356f2c7a68f",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/19d8c9f78739993dd86988dba7018356f2c7a68f"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4xMQ=="
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.10",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.10",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.10",
+    "commit": {
+      "sha": "1657d09d69db2d7dee9bb083842969a447f0febd",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/1657d09d69db2d7dee9bb083842969a447f0febd"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4xMA=="
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.9",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.9",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.9",
+    "commit": {
+      "sha": "ebd2e51822cc139a1b1aebcffdbfa7ba047c33db",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/ebd2e51822cc139a1b1aebcffdbfa7ba047c33db"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC45"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.8",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.8",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.8",
+    "commit": {
+      "sha": "387017eb2e142f62692101c5e9045804439af327",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/387017eb2e142f62692101c5e9045804439af327"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC44"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.7",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.7",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.7",
+    "commit": {
+      "sha": "afbee3fef1a168ccaca7181fa4508c94883cf980",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/afbee3fef1a168ccaca7181fa4508c94883cf980"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC43"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.6",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.6",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.6",
+    "commit": {
+      "sha": "5233e0eb7f4ecb4b1126feb9f1f99b6f27a08db6",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/5233e0eb7f4ecb4b1126feb9f1f99b6f27a08db6"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC42"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.5",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.5",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.5",
+    "commit": {
+      "sha": "16dc3875605b30a661e422249509e9e653df0b77",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/16dc3875605b30a661e422249509e9e653df0b77"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC41"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.4",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.4",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.4",
+    "commit": {
+      "sha": "af188205ab514855a5773414bda326672d9a56a5",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/af188205ab514855a5773414bda326672d9a56a5"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC40"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.3",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.3",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.3",
+    "commit": {
+      "sha": "9c7fb9cc0656cd0537d44b066db6662b831a2f05",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/9c7fb9cc0656cd0537d44b066db6662b831a2f05"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4z"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.2",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.2",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.2",
+    "commit": {
+      "sha": "03f97a768d2107bbaccec7db789b69e5dea5cbc5",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/03f97a768d2107bbaccec7db789b69e5dea5cbc5"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4y"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.1",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.1",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.1",
+    "commit": {
+      "sha": "b28ab87d0f727d2cb3fa000d311139e695b92566",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/b28ab87d0f727d2cb3fa000d311139e695b92566"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4x"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.0",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.0",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.0",
+    "commit": {
+      "sha": "39f4f47856941ccf881d11e1c27605862c8d3f76",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/39f4f47856941ccf881d11e1c27605862c8d3f76"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4w"
+  },
+  {
+    "name": "netty-reactive-streams-parent-2.0.0-M1",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-2.0.0-M1",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-2.0.0-M1",
+    "commit": {
+      "sha": "5afdf9bd2e1e0ca1468c278290d834ac9d7a81cb",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/5afdf9bd2e1e0ca1468c278290d834ac9d7a81cb"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTIuMC4wLU0x"
+  },
+  {
+    "name": "netty-reactive-streams-parent-1.0.8",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-1.0.8",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-1.0.8",
+    "commit": {
+      "sha": "e9a88b3793cd39b7bdea07e1bb97b6e324061dfa",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/e9a88b3793cd39b7bdea07e1bb97b6e324061dfa"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTEuMC44"
+  },
+  {
+    "name": "netty-reactive-streams-parent-1.0.7",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-1.0.7",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-1.0.7",
+    "commit": {
+      "sha": "5567812d711d7fb110718e161cd9699b93ad1ba5",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/5567812d711d7fb110718e161cd9699b93ad1ba5"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTEuMC43"
+  },
+  {
+    "name": "netty-reactive-streams-parent-1.0.6",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-1.0.6",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-1.0.6",
+    "commit": {
+      "sha": "cb54e4a902c652f722b1934de63fb6ea8804faec",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/cb54e4a902c652f722b1934de63fb6ea8804faec"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTEuMC42"
+  },
+  {
+    "name": "netty-reactive-streams-parent-1.0.5",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-1.0.5",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-1.0.5",
+    "commit": {
+      "sha": "4cd2a0f865a12ce722c69f090a1b72bbaec3e32f",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/4cd2a0f865a12ce722c69f090a1b72bbaec3e32f"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTEuMC41"
+  },
+  {
+    "name": "netty-reactive-streams-parent-1.0.4",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-1.0.4",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-1.0.4",
+    "commit": {
+      "sha": "0ef0d6d42848846082da5aafbcf339bec2dd13f1",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/0ef0d6d42848846082da5aafbcf339bec2dd13f1"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTEuMC40"
+  },
+  {
+    "name": "netty-reactive-streams-parent-1.0.3",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-1.0.3",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-1.0.3",
+    "commit": {
+      "sha": "80d38f7b42ea1d2fa036697d2d2e88561d5d6091",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/80d38f7b42ea1d2fa036697d2d2e88561d5d6091"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTEuMC4z"
+  },
+  {
+    "name": "netty-reactive-streams-parent-1.0.2",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-1.0.2",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-1.0.2",
+    "commit": {
+      "sha": "d1cb7cd33680acfe4774117cb990dabb857f92e2",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/d1cb7cd33680acfe4774117cb990dabb857f92e2"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTEuMC4y"
+  },
+  {
+    "name": "netty-reactive-streams-parent-1.0.1",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-1.0.1",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-1.0.1",
+    "commit": {
+      "sha": "7f1e856aa4e9e5046ea3e8350450137280feb4fd",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/7f1e856aa4e9e5046ea3e8350450137280feb4fd"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTEuMC4x"
+  },
+  {
+    "name": "netty-reactive-streams-parent-1.0.0",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/netty-reactive-streams-parent-1.0.0",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/netty-reactive-streams-parent-1.0.0",
+    "commit": {
+      "sha": "a76c4643fb2c220a4ab0fc7e96549a43fbddf472",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/a76c4643fb2c220a4ab0fc7e96549a43fbddf472"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzL25ldHR5LXJlYWN0aXZlLXN0cmVhbXMtcGFyZW50LTEuMC4w"
+  },
+  {
+    "name": "2.0.9",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/2.0.9",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/2.0.9",
+    "commit": {
+      "sha": "054cba59f4add9cc0c56f237b3f172ccdb073444",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/054cba59f4add9cc0c56f237b3f172ccdb073444"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzLzIuMC45"
+  },
+  {
+    "name": "2.0.8",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/2.0.8",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/2.0.8",
+    "commit": {
+      "sha": "7b57610136cb246acd4e48e3edfa465ce9dc33cf",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/7b57610136cb246acd4e48e3edfa465ce9dc33cf"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzLzIuMC44"
+  },
+  {
+    "name": "1.0.7",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/1.0.7",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/1.0.7",
+    "commit": {
+      "sha": "bc95dc77ea31d5ce7139a436615efca4f136467f",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/bc95dc77ea31d5ce7139a436615efca4f136467f"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzLzEuMC43"
+  },
+  {
+    "name": "1.0.0-M2",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/1.0.0-M2",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/1.0.0-M2",
+    "commit": {
+      "sha": "4f041c9ebd7448dc8752c9be844979a4fa0edb6f",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/4f041c9ebd7448dc8752c9be844979a4fa0edb6f"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzLzEuMC4wLU0y"
+  },
+  {
+    "name": "1.0.0-M1",
+    "zipball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/zipball/refs/tags/1.0.0-M1",
+    "tarball_url": "https://api.github.com/repos/playframework/netty-reactive-streams/tarball/refs/tags/1.0.0-M1",
+    "commit": {
+      "sha": "c579b76c6b8c9aa2258060d9b3e5f7a66eada3af",
+      "url": "https://api.github.com/repos/playframework/netty-reactive-streams/commits/c579b76c6b8c9aa2258060d9b3e5f7a66eada3af"
+    },
+    "node_id": "MDM6UmVmMzgxNTM1MDM6cmVmcy90YWdzLzEuMC4wLU0x"
+  }
+]
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams/src?ref=netty-reactive-streams-parent-2.0.4' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ exited 1 in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams/src?ref=netty-reactive-streams-parent-2.0.4
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/playframework/netty-reactive-streams/contents?ref=netty-reactive-streams-parent-2.0.4' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ exited 1 in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/playframework/netty-reactive-streams/contents?ref=netty-reactive-streams-parent-2.0.4
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/README.md' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/netty-reactive-streams/pom.xml' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc "rg '\"repository-url\"' -g '*.json' . | head -40" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 0ms:
+./metadata/javax.transaction/transaction-api/index.json:    "repository-url" : "N/A",
+./metadata/org.antlr/antlr4-runtime/index.json:    "repository-url" : "https://github.com/antlr/antlr4",
+./metadata/javax.transaction/jta/index.json:    "repository-url" : "https://github.com/javaee/jta-spec",
+./metadata/org.antlr/antlr-runtime/index.json:    "repository-url" : "https://github.com/antlr/antlr3",
+./metadata/org.mockito/mockito-core/index.json:    "repository-url": "https://github.com/mockito/mockito",
+./metadata/org.mockito/mockito-core/index.json:    "repository-url": "https://github.com/mockito/mockito",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+./metadata/org.apache.xbean/xbean-reflect/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+./metadata/software.amazon.awssdk/s3/index.json:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+./metadata/aopalliance/aopalliance/index.json:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+./metadata/com.esotericsoftware/minlog/index.json:    "repository-url" : "https://github.com/EsotericSoftware/minlog",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/index.json:    "repository-url" : "https://github.com/jboss/jboss-transaction-api_spec",
+./metadata/org.apache.camel/spi-annotations/index.json:    "repository-url" : "https://github.com/apache/camel",
+./metadata/org.apache.camel/spi-annotations/index.json:    "repository-url" : "https://github.com/apache/camel",
+./metadata/org.apache.camel/spi-annotations/index.json:    "repository-url" : "https://github.com/apache/camel",
+./metadata/antlr/antlr/index.json:    "repository-url" : "https://www.antlr2.org",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:    "repository-url" : "https://github.com/google/j2objc",
+./metadata/io.smallrye.common/smallrye-common-process/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+./metadata/org.scala-sbt/compiler-interface/index.json:    "repository-url" : "https://github.com/sbt/zinc",
+./metadata/org.scala-sbt/compiler-interface/index.json:    "repository-url" : "https://github.com/sbt/zinc",
+./metadata/org.scala-sbt/compiler-interface/index.json:    "repository-url" : "https://github.com/sbt/zinc",
+./metadata/io.smallrye.common/smallrye-common-resource/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common/",
+./metadata/org.scala-sbt/test-interface/index.json:    "repository-url" : "https://github.com/sbt/test-interface",
+./metadata/org.scala-sbt/util-interface/index.json:    "repository-url" : "https://github.com/sbt/util",
+./metadata/io.smallrye.common/smallrye-common-ref/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+./metadata/io.smallrye.common/smallrye-common-os/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+./metadata/io.smallrye.common/smallrye-common-os/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+./metadata/javax.enterprise/cdi-api/index.json:    "repository-url" : "https://svn.jboss.org/repos/weld/api",
+./metadata/mysql/mysql-connector-java/index.json:    "repository-url": "https://github.com/mysql/mysql-connector-j",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+./metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+./metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:    "repository-url": "https://github.com/eclipse-paho/paho.mqtt.java",
+
+ succeeded in 321ms:
+# Netty Reactive Streams
+
+[![Build Status](https://travis-ci.org/playframework/netty-reactive-streams.svg?branch=master)](https://travis-ci.org/playframework/netty-reactive-streams)
+
+This provides a reactive streams implementation for Netty.  Essentially it comes in the form of two channel handlers, one that publishes inbound messages received on a channel to a `Publisher`, and another that writes messages received by a `Subscriber` outbound.
+
+Features include:
+
+* Full backpressure support, as long as the `AUTO_READ` channel option is disabled.
+* Publishers/subscribers can be dynamically added and removed from the pipeline.
+* Multiple publishers/subscribers can be inserted into the pipeline.
+* Customisable cancel/complete/failure handling.
+
+## Releasing a new version
+
+This project is released and published through Sonatype.  You must have Sonatype credentials installed, preferably in `$HOME/.m2/settings.xml` and a GPG key that is available to the standard GPG keyservers.  If your key is not on the server, you should add it to the keyserver as follows:
+
+```
+gpg --send-key <MY_KEYID> --keyserver pgp.mit.edu
+```
+
+After that, you can perform a release through the following commands:
+
+```
+mvn release:prepare -Darguments=-Dgpg.passphrase=thephrase
+mvn release:perform -Darguments=-Dgpg.passphrase=thephrase
+```
+
+This will push a release to the staging repository and automatically close and publish the staging repository to production.
+
+## Using the publisher/subscriber
+
+Here's an example of creating a client channel that publishes/subscribes to `ByteBuf`'s:
+
+```java
+EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+Bootstrap bootstrap = new Bootstrap()
+  .group(workerGroup)
+  .channel(NioSocketChannel.class)
+  .option(ChannelOption.SO_KEEPALIVE, true);
+  .handler(new ChannelInitializer<SocketChannel>() {
+    @Override
+    public void initChannel(SocketChannel ch) throws Exception {
+      HandlerPublisher<ByteBuf> publisher = new HandlerPublisher<>(ch.executor(),
+        ByteBuf.class);
+      HandlerSubscriber<ByteBuf> subscriber = new HandlerSubscriber<>(ch.executor());
+
+      // Here you can subscriber to the publisher, and pass the subscriber to a publisher.
+
+      ch.pipeline().addLast(publisher, subscriber);
+    }
+});
+```
+
+Notice that the channels executor is explicitly passed to the publisher and subscriber constructors.  `HandlerPublisher` and `HandlerSubscriber` use Netty's happens before guarantees made by its `EventExecutor` interface in order to handle asynchronous events from reactive streams, hence they need to have an executor to do this with.  This executor must also be the same executor that the handler is registered to use with the channel, so that all channel events are fired from the same context.  The publisher/subscriber will throw an exception if the handler is registered with a different executor.
+
+## A word of caution with ByteBuf's
+
+Reactive streams allows implementations to drop messages when a stream is cancelled or failed - Netty reactive streams does this itself.  This introduces a problem when those messages hold resources and must be cleaned up, for example, if they are `ByteBuf's` that need to be released.  While Netty reactive streams will call `ReferenceCountUtil.release()` on every message that it drops, other implementations that it's interacting with likely won't do this.
+
+For this reason, you should make sure you do one of the following:
+
+* Insert a handler in the pipeline that converts incoming `ByteBuf`'s to some non reference counted structure, for example `byte[]`, or some high level immutable message structure, and have the `HandlerPublisher` publish those.  Similarly, the `HandlerSubscriber` should subscribe to some non reference counted structure, and a handler should be placed in the pipeline to convert these structures to `ByteBuf`'s.
+* Write a wrapping `Publisher` and `Subscriber` that synchronously converts `ByteBuf`'s to/from a non reference counted structure.
+
+## Netty Reactive Streams HTTP
+
+In addition to raw reactive streams support, the `netty-reactive-streams-http` library provides some HTTP model abstractions and a handle for implementing HTTP servers/clients that use reactive streams to stream HTTP message bodies.  The `HttpStreamsServerHandler` and `HttpStreamsClientHandler` ensure that every `HttpRequest` and `HttpResponse` in the pipeline is either a `FullHttpRequest` or `FullHttpResponse`, for when the body can be worked with in memory, or `StreamedHttpRequest` or `StreamedHttpResponse`, which are messages that double as `Publisher<HttpContent>` for handling the request/response body.
+
+## Support
+
+The Netty Reactive Streams library is *[Supported][]*.
+
+[Supported]: https://developer.lightbend.com/docs/lightbend-platform/introduction/getting-help/support-terminology.html#supported
+
+ succeeded in 324ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.typesafe.netty</groupId>
+        <artifactId>netty-reactive-streams-parent</artifactId>
+        <version>2.0.4</version>
+    </parent>
+
+    <artifactId>netty-reactive-streams</artifactId>
+
+    <name>Netty Reactive Streams Implementation</name>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams-tck</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <archive combine.children="append">
+                                <manifestEntries>
+                                    <Automatic-Module-Name>com.typesafe.netty.core</Automatic-Module-Name>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+codex
+The Maven artifact has a normal JAR plus sources and javadoc JARs, and Maven does not publish a test-sources JAR for this version. I’m checking the tagged GitHub tree for the test path and whether the artifact is plain JVM Java so I don’t accidentally mark it as language-specific or not-for-native-image.
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/playframework/netty-reactive-streams/contents?ref=netty-reactive-streams-parent-2.0.4'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams/src?ref=netty-reactive-streams-parent-2.0.4'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/pom.xml'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/netty-reactive-streams-2.0.4.jar" https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.jar; jar tf "$tmp/netty-reactive-streams-2.0.4.jar" | head -60; rm -rf "$tmp"' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/netty-reactive-streams-2.0.4-sources.jar" https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-sources.jar; jar tf "$tmp/netty-reactive-streams-2.0.4-sources.jar" | head -80; rm -rf "$tmp"' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 418ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.typesafe.netty</groupId>
+    <artifactId>netty-reactive-streams-parent</artifactId>
+    <version>2.0.4</version>
+
+    <name>Netty Reactive Streams Parent POM</name>
+    <description>Reactive streams implementation for Netty.</description>
+    <inceptionYear>2015</inceptionYear>
+    <url>https://github.com/playframework/netty-reactive-streams</url>
+
+    <packaging>pom</packaging>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/playframework/netty-reactive-streams/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>James Roper</name>
+            <email>james@typesafe.com</email>
+            <organization>Typesafe</organization>
+            <organizationUrl>http://typesafe.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>Typesafe</name>
+        <url>http://typesafe.com/</url>
+    </organization>
+
+    <modules>
+        <module>netty-reactive-streams</module>
+        <module>netty-reactive-streams-http</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-handler</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.reactivestreams</groupId>
+                <artifactId>reactive-streams</artifactId>
+                <version>${reactive-streams.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.reactivestreams</groupId>
+                <artifactId>reactive-streams-tck</artifactId>
+                <version>${reactive-streams.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>7.0.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-stream_2.12</artifactId>
+                <version>${akka-stream.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <properties>
+        <netty.version>4.1.43.Final</netty.version>
+        <reactive-streams.version>1.0.3</reactive-streams.version>
+        <akka-stream.version>2.6.0</akka-stream.version>
+        <maven-bundle-plugin.version>3.5.1</maven-bundle-plugin.version>
+        <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
+    </properties>
+
+    <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.8.1</version>
+              <configuration>
+                  <source>1.7</source>
+                  <target>1.7</target>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.sonatype.plugins</groupId>
+              <artifactId>nexus-staging-maven-plugin</artifactId>
+              <version>1.6.7</version>
+              <extensions>true</extensions>
+              <configuration>
+                  <serverId>ossrh</serverId>
+                  <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                  <autoReleaseAfterClose>true</autoReleaseAfterClose>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-release-plugin</artifactId>
+              <version>2.5</version>
+              <configuration>
+                  <autoVersionSubmodules>true</autoVersionSubmodules>
+                  <useReleaseProfile>false</useReleaseProfile>
+                  <releaseProfiles>release</releaseProfiles>
+                  <goals>deploy</goals>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>${maven-jar-plugin.version}</version>
+              <configuration>
+                  <archive>
+                      <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                  </archive>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>maven-bundle-plugin</artifactId>
+              <version>${maven-bundle-plugin.version}</version>
+              <executions>
+                  <execution>
+                      <id>bundle-manifest</id>
+                      <phase>process-classes</phase>
+                      <goals>
+                          <goal>manifest</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin>
+      </plugins>
+  </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <scm>
+        <connection>scm:git:https://github.com/playframework/netty-reactive-streams.git</connection>
+        <developerConnection>scm:git:git@github.com:playframework/netty-reactive-streams.git</developerConnection>
+        <url>https://github.com/playframework/netty-reactive-streams</url>
+        <tag>netty-reactive-streams-parent-2.0.4</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
+
+ succeeded in 443ms:
+[
+  {
+    "name": "main",
+    "path": "netty-reactive-streams/src/main",
+    "sha": "2232535c102d2389a25bb18d66153487869554e0",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams/src/main?ref=netty-reactive-streams-parent-2.0.4",
+    "html_url": "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams/src/main",
+    "git_url": "https://api.github.com/repos/playframework/netty-reactive-streams/git/trees/2232535c102d2389a25bb18d66153487869554e0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams/src/main?ref=netty-reactive-streams-parent-2.0.4",
+      "git": "https://api.github.com/repos/playframework/netty-reactive-streams/git/trees/2232535c102d2389a25bb18d66153487869554e0",
+      "html": "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "netty-reactive-streams/src/test",
+    "sha": "e978262e5adea7b4a694a24a63c0115d4f7d1432",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams/src/test?ref=netty-reactive-streams-parent-2.0.4",
+    "html_url": "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams/src/test",
+    "git_url": "https://api.github.com/repos/playframework/netty-reactive-streams/git/trees/e978262e5adea7b4a694a24a63c0115d4f7d1432",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams/src/test?ref=netty-reactive-streams-parent-2.0.4",
+      "git": "https://api.github.com/repos/playframework/netty-reactive-streams/git/trees/e978262e5adea7b4a694a24a63c0115d4f7d1432",
+      "html": "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams/src/test"
+    }
+  }
+]
+
+ succeeded in 496ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "d3fedeb50b5069101232593069f7c1939db5a96f",
+    "size": 256,
+    "url": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/.gitignore?ref=netty-reactive-streams-parent-2.0.4",
+    "html_url": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/.gitignore",
+    "git_url": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/d3fedeb50b5069101232593069f7c1939db5a96f",
+    "download_url": "https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/.gitignore?ref=netty-reactive-streams-parent-2.0.4",
+      "git": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/d3fedeb50b5069101232593069f7c1939db5a96f",
+      "html": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/.gitignore"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "47556b86875c8a3d5832a91a9e418383771f573b",
+    "size": 288,
+    "url": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/.travis.yml?ref=netty-reactive-streams-parent-2.0.4",
+    "html_url": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/.travis.yml",
+    "git_url": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/47556b86875c8a3d5832a91a9e418383771f573b",
+    "download_url": "https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/.travis.yml?ref=netty-reactive-streams-parent-2.0.4",
+      "git": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/47556b86875c8a3d5832a91a9e418383771f573b",
+      "html": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/.travis.yml"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "size": 11358,
+    "url": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/LICENSE.txt?ref=netty-reactive-streams-parent-2.0.4",
+    "html_url": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "download_url": "https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/LICENSE.txt?ref=netty-reactive-streams-parent-2.0.4",
+      "git": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "html": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/LICENSE.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "e7ed97748fe6c2711a18837f688bc2082b629b99",
+    "size": 4826,
+    "url": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/README.md?ref=netty-reactive-streams-parent-2.0.4",
+    "html_url": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/README.md",
+    "git_url": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/e7ed97748fe6c2711a18837f688bc2082b629b99",
+    "download_url": "https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/README.md?ref=netty-reactive-streams-parent-2.0.4",
+      "git": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/e7ed97748fe6c2711a18837f688bc2082b629b99",
+      "html": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/README.md"
+    }
+  },
+  {
+    "name": "netty-reactive-streams-http",
+    "path": "netty-reactive-streams-http",
+    "sha": "e4ff1a64d61124d2289c492790086fc5ee7cb828",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams-http?ref=netty-reactive-streams-parent-2.0.4",
+    "html_url": "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams-http",
+    "git_url": "https://api.github.com/repos/playframework/netty-reactive-streams/git/trees/e4ff1a64d61124d2289c492790086fc5ee7cb828",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams-http?ref=netty-reactive-streams-parent-2.0.4",
+      "git": "https://api.github.com/repos/playframework/netty-reactive-streams/git/trees/e4ff1a64d61124d2289c492790086fc5ee7cb828",
+      "html": "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams-http"
+    }
+  },
+  {
+    "name": "netty-reactive-streams",
+    "path": "netty-reactive-streams",
+    "sha": "af3b552a28f674236081d8147b4dbd9f7d9ff2c3",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams?ref=netty-reactive-streams-parent-2.0.4",
+    "html_url": "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams",
+    "git_url": "https://api.github.com/repos/playframework/netty-reactive-streams/git/trees/af3b552a28f674236081d8147b4dbd9f7d9ff2c3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/netty-reactive-streams?ref=netty-reactive-streams-parent-2.0.4",
+      "git": "https://api.github.com/repos/playframework/netty-reactive-streams/git/trees/af3b552a28f674236081d8147b4dbd9f7d9ff2c3",
+      "html": "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "8dedb8c698a046ac226bb731da1464878831f8d2",
+    "size": 8408,
+    "url": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/pom.xml?ref=netty-reactive-streams-parent-2.0.4",
+    "html_url": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/pom.xml",
+    "git_url": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/8dedb8c698a046ac226bb731da1464878831f8d2",
+    "download_url": "https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/netty-reactive-streams/contents/pom.xml?ref=netty-reactive-streams-parent-2.0.4",
+      "git": "https://api.github.com/repos/playframework/netty-reactive-streams/git/blobs/8dedb8c698a046ac226bb731da1464878831f8d2",
+      "html": "https://github.com/playframework/netty-reactive-streams/blob/netty-reactive-streams-parent-2.0.4/pom.xml"
+    }
+  }
+]
+
+ succeeded in 534ms:
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/typesafe/
+com/typesafe/netty/
+META-INF/maven/
+META-INF/maven/com.typesafe.netty/
+META-INF/maven/com.typesafe.netty/netty-reactive-streams/
+com/typesafe/netty/HandlerSubscriber.java
+com/typesafe/netty/HandlerPublisher.java
+com/typesafe/netty/CancelledSubscriber.java
+META-INF/maven/com.typesafe.netty/netty-reactive-streams/pom.xml
+META-INF/maven/com.typesafe.netty/netty-reactive-streams/pom.properties
+
+ succeeded in 588ms:
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/typesafe/
+com/typesafe/netty/
+META-INF/maven/
+META-INF/maven/com.typesafe.netty/
+META-INF/maven/com.typesafe.netty/netty-reactive-streams/
+com/typesafe/netty/HandlerSubscriber$3.class
+com/typesafe/netty/HandlerPublisher$3.class
+com/typesafe/netty/HandlerSubscriber$1.class
+com/typesafe/netty/CancelledSubscriber.class
+com/typesafe/netty/HandlerPublisher$ChannelSubscription$1.class
+com/typesafe/netty/HandlerSubscriber.class
+com/typesafe/netty/HandlerPublisher$ChannelSubscription.class
+com/typesafe/netty/HandlerSubscriber$5.class
+com/typesafe/netty/HandlerPublisher$2.class
+com/typesafe/netty/HandlerSubscriber$2.class
+META-INF/maven/com.typesafe.netty/netty-reactive-streams/pom.xml
+com/typesafe/netty/HandlerPublisher.class
+META-INF/maven/com.typesafe.netty/netty-reactive-streams/pom.properties
+com/typesafe/netty/HandlerSubscriber$4.class
+com/typesafe/netty/HandlerSubscriber$State.class
+com/typesafe/netty/HandlerPublisher$ChannelSubscription$2.class
+com/typesafe/netty/HandlerPublisher$1.class
+com/typesafe/netty/HandlerPublisher$4.class
+com/typesafe/netty/HandlerPublisher$State.class
+
+web search: 
+web search: https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/README.md
+web search: 
+web search: repo1.maven.org com/typesafe/netty/netty-reactive-streams/2.0.4 netty-reactive-streams-2.0.4.pom
+web search: 
+web search: https://central.sonatype.com/artifact/com.typesafe.netty/netty-reactive-streams
+web search: 
+web search: site:github.com/playframework/netty-reactive-streams netty-reactive-streams-parent-2.0.4
+codex
+I’m going to write the metadata with Maven URLs for sources and javadocs, because those artifacts exist for 2.0.4, and use the exact GitHub release tag for the tests because Maven has no test-sources artifact. No `language` or `not-for-native-image` field is warranted: the artifact is a JVM JAR containing Java `.class` files.
+exec
+/usr/bin/zsh -lc "sed -n '1,80p' metadata/org.mockito/mockito-core/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.mockito"
+    ],
+    "metadata-version": "5.0.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+    "repository-url": "https://github.com/mockito/mockito",
+    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+    "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+    "tested-versions": [
+      "5.0.0",
+      "5.1.0",
+      "5.1.1",
+      "5.2.0",
+      "5.3.0",
+      "5.3.1",
+      "5.4.0",
+      "5.5.0",
+      "5.6.0",
+      "5.7.0",
+      "5.8.0",
+      "5.9.0",
+      "5.10.0",
+      "5.11.0",
+      "5.12.0",
+      "5.13.0",
+      "5.14.0",
+      "5.14.1",
+      "5.14.2",
+      "5.15.2",
+      "5.16.0",
+      "5.16.1",
+      "5.17.0",
+      "5.18.0",
+      "5.19.0",
+      "5.20.0",
+      "5.21.0",
+      "5.22.0",
+      "5.23.0"
+    ]
+  },
+  {
+    "allowed-packages": [
+      "org.mockito"
+    ],
+    "metadata-version": "4.8.1",
+    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+    "repository-url": "https://github.com/mockito/mockito",
+    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+    "documentation-url": "https://github.com/mockito/mockito/blob/v$version$/README.md",
+    "description": "Mockito Core is a Java mocking framework for creating and configuring mock objects in tests. It helps isolate code under test by stubbing behavior and verifying interactions.",
+    "tested-versions": [
+      "4.8.1",
+      "4.9.0",
+      "4.10.0",
+      "4.11.0"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc "rg '\"language\"' -g '*.json' . | head -30" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc "rg '\"not-for-native-image\"' -g '*.json' . | head -30" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc "rg '\"description\"' metadata -g 'index.json' | head -20" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 0ms:
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "description": "Provides the Jakarta Servlet 4.0 specification API as a JBoss-packaged artifact for Java web applications. It defines the standard server-side interfaces for handling HTTP requests, responses, and related web container interactions."
+metadata/javax.enterprise/cdi-api/index.json:    "description" : "CDI API provides the Java EE Contexts and Dependency Injection annotations and service provider interfaces defined by JSR-299. It lets applications and containers describe injectable beans, scopes, qualifiers, events, interceptors, decorators, and extension points without depending on a particular CDI implementation.",
+metadata/mysql/mysql-connector-java/index.json:    "description": "MySQL Connector/J is a JDBC Type 4 driver that lets Java applications connect to MySQL databases. It also includes support for MySQL X DevAPI for working with MySQL as a document store.",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:    "description": "Eclipse Paho MQTT v5 Client is a Java library for connecting JVM and Android applications to MQTT brokers using the MQTT 5 protocol. It provides asynchronous and synchronous client APIs for publishing, subscribing, and managing MQTT messaging workflows.",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "description" : "Jetty WebSocket Client provides Jetty 9's Java client implementation for opening, configuring, and managing WebSocket connections from applications. It builds on Jetty's HTTP client and WebSocket common runtime to perform handshakes, create sessions, and send or receive WebSocket messages asynchronously.",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "description" : "Jetty WebSocket Common provides the internal implementation classes used by Jetty 9's WebSocket API, including session handling, frame parsing and generation, message streams, and extension support. It is intended as the shared runtime layer behind Jetty's WebSocket client, server, and servlet integrations rather than as an application-facing API.",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "description" : "Jetty WebSocket API provides the public interfaces and annotations used to define WebSocket endpoints, sessions, frames, and message handling for Jetty 9. It is the standalone API layer for Jetty's WebSocket implementation and intentionally avoids depending on other Jetty modules for web application classloader isolation.",
+metadata/portlet-api/portlet-api/index.json:    "description" : "Portlet API 1.0 provides the Java interfaces and base classes defined by JSR 168 for building portal portlets. It defines the request, response, session, preferences, URL, mode, and lifecycle contracts that portal containers and portlet applications use to interact.",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:    "description" : "Thymeleaf Extras Spring Security 6 integrates Thymeleaf templates with Spring Security 6 by adding the SpringSecurityDialect and security expression utility objects. It lets views access authentication details and conditionally render content based on authorization expressions, URLs, and ACL permissions.",
+metadata/software.amazon.awssdk/s3/index.json:    "description" : "This module provides the AWS SDK for Java v2 client classes for Amazon S3. It lets Java applications interact with Amazon Simple Storage Service to manage buckets and objects.",
+metadata/org.iq80.leveldb/leveldb-api/index.json:    "description" : "leveldb-api provides the high-level Java API for interacting with LevelDB-style key-value databases. It defines the database, iterator, options, snapshot, and batch-write interfaces used by the iq80 pure-Java LevelDB implementation.",
+metadata/com.esotericsoftware/minlog/index.json:    "description" : "MinLog is a tiny Java logging library that provides concise static logging methods with runtime-configurable log levels. It is designed for minimal overhead, including fixed-level builds that let javac remove disabled logging statements at compile time.",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:    "description" : "Mysema Commons Lang is a small Java utility library that provides assertion helpers, typed pairs, closeable iterator abstractions, and iterator adapters. It also includes URI resolution and URL encoding utilities for common application code.",
+metadata/javax.interceptor/javax.interceptor-api/index.json:    "description" : "This library defines the Java Interceptors API in the `javax.interceptor` package, including interceptor bindings, interceptor declarations, and the invocation context contract. It is used by Java EE containers and compatible frameworks to apply cross-cutting behavior such as lifecycle, method, and timeout interception around application code.",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:    "description" : "Selenium API provides the core Java interfaces and exceptions used by Selenium WebDriver to automate browsers. It defines browser automation contracts such as WebDriver, WebElement, By, capabilities, and related support types that client libraries and drivers implement.",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:    "description" : "Selenium API provides the core Java interfaces and exceptions used by Selenium WebDriver to automate browsers. It defines browser automation contracts such as WebDriver, WebElement, By, capabilities, and related support types that client libraries and drivers implement.",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:    "description" : "Selenium JSON provides the JSON serialization and deserialization utilities used by Selenium's Java components. It reads and writes JSON values, maps, collections, and Selenium domain objects so WebDriver commands and responses can be converted between Java objects and wire-format JSON.",
+
+ succeeded in 123ms:
+./metadata/org.scala-sbt/compiler-interface/index.json:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:    "language" : {
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "language": {
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "language": {
+./metadata/org.scala-sbt/test-interface/index.json:    "language" : {
+./metadata/org.scala-sbt/util-interface/index.json:    "language" : {
+./metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:    "language" : {
+./metadata/com.github.ghik/silencer-lib_2.13/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:    "language" : {
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "language" : {
+./metadata/org.scala-lang/scala3-interfaces/index.json:    "language" : {
+
+ succeeded in 122ms:
+./metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:    "not-for-native-image": true,
+./metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:    "not-for-native-image": true,
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "not-for-native-image",
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "not-for-native-image": {
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "not-for-native-image": true,
+./metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:    "not-for-native-image": true,
+./metadata/io.netty/netty-resolver-dns-native-macos/index.json:    "not-for-native-image": true,
+./metadata/org.jboss.weld/weld-build-config/index.json:    "not-for-native-image": true,
+
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-sources.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-test-sources.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 159ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:41:10 GMT
+content-type: application/java-archive
+content-length: 36925
+cf-ray: 9f5b37ef2a595165-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 236120
+etag: "5afdae597f8661c2893a7b6662f74673"
+last-modified: Tue, 19 Nov 2019 03:47:09 GMT
+x-checksum-md5: 5afdae597f8661c2893a7b6662f74673
+x-checksum-sha1: b7e9bd2b5cac1d0bc7bcfd836807fddcbc81c746
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 160ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:41:10 GMT
+content-type: application/java-archive
+content-length: 8397
+cf-ray: 9f5b37ef49adb311-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1242732
+etag: "16a54f600963383d9b65d5a085ed2f57"
+last-modified: Tue, 19 Nov 2019 03:47:08 GMT
+x-checksum-md5: 16a54f600963383d9b65d5a085ed2f57
+x-checksum-sha1: dea768fe806e1352d7b3c05fa94b6391f7468238
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 369ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 00:41:10 GMT
+content-type: text/html
+cf-ray: 9f5b37ef1d67d814-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+apply patch
+patch: completed
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+diff --git a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+index 5d6eda94bc2b5bf88ed7a6a965502d47a9b91949..3be8b7a7fc7bace59f86b9af22c156e31fbd4e46
+--- a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
++++ b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4"
++  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4",
++  "repository-url" : "https://github.com/playframework/netty-reactive-streams",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-$version$/netty-reactive-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-javadoc.jar",
++  "description" : "Netty Reactive Streams provides Reactive Streams integration for Netty using channel handlers that publish inbound messages and subscribe to outbound messages. It supports backpressure and lets publishers and subscribers be added, removed, and combined in Netty channel pipelines."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+index 5d6eda94bc2b5bf88ed7a6a965502d47a9b91949..3be8b7a7fc7bace59f86b9af22c156e31fbd4e46
+--- a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
++++ b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4"
++  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4",
++  "repository-url" : "https://github.com/playframework/netty-reactive-streams",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-$version$/netty-reactive-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-javadoc.jar",
++  "description" : "Netty Reactive Streams provides Reactive Streams integration for Netty using channel handlers that publish inbound messages and subscribe to outbound messages. It supports backpressure and lets publishers and subscribers be added, removed, and combined in Netty channel pipelines."
+ }
+
+codex
+The file is updated. I’m doing a quick validation pass now: JSON syntax plus the three version-rendered URLs so any typo in the templating is caught before I hand it back.
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 0ms:
+{
+  "coordinates": "com.typesafe.netty:netty-reactive-streams:2.0.4",
+  "repository-url": "https://github.com/playframework/netty-reactive-streams",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-sources.jar",
+  "test-code-url": "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-$version$/netty-reactive-streams/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-javadoc.jar",
+  "description": "Netty Reactive Streams provides Reactive Streams integration for Netty using channel handlers that publish inbound messages and subscribe to outbound messages. It supports backpressure and lets publishers and subscribers be added, removed, and combined in Netty channel pipelines."
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-sources.jar && curl -fsI https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams/src/test && curl -fsI https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-javadoc.jar' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+diff --git a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+index 5d6eda94bc2b5bf88ed7a6a965502d47a9b91949..3be8b7a7fc7bace59f86b9af22c156e31fbd4e46
+--- a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
++++ b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4"
++  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4",
++  "repository-url" : "https://github.com/playframework/netty-reactive-streams",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-$version$/netty-reactive-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-javadoc.jar",
++  "description" : "Netty Reactive Streams provides Reactive Streams integration for Netty using channel handlers that publish inbound messages and subscribe to outbound messages. It supports backpressure and lets publishers and subscribers be added, removed, and combined in Netty channel pipelines."
+ }
+
+ succeeded in 1082ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:41:23 GMT
+content-type: application/java-archive
+content-length: 8397
+cf-ray: 9f5b38432d3a0380-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1242745
+etag: "16a54f600963383d9b65d5a085ed2f57"
+last-modified: Tue, 19 Nov 2019 03:47:08 GMT
+x-checksum-md5: 16a54f600963383d9b65d5a085ed2f57
+x-checksum-sha1: dea768fe806e1352d7b3c05fa94b6391f7468238
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 00:41:24 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2a7a604b227a5c7aef8b53e32c0466b4"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=o0ZkdbZ91xoZ3WOu3vr%2BFJXokUvAqc7%2BxbjYZ%2BQTW6IdQ5C4%2FSAoS5XZecc%2FIeO4xZN7TXxpuajOYBwDexq%2FbTzzNFUyTgh08dl0k5YDmnu0zAXUNfPrQa%2BxBsmJahZlSix8PGsrgfASijnVCtg9JQ%2Bpr0vX4GLNpeU%2BlO1k6WqiVpAOiLk9XWp2q58ify9lEjdxrUY2RZSylZ7iUnJBtzMuUYbsQ4tGhKa8CuccZeH1Miv%2BwOM%2FT6Q7s2KGXY%2FDTn16z%2FOsIwwcN5ZrKYn%2B9Q%3D%3D--fFAcx9VAd%2Br%2FDJDs--YO7JpqWNMiCbcPcmCevIHQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.570484895.1777768883; expires=Mon, 03 May 2027 00:41:23 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 00:41:23 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 191E:167D:102C26DE:C2582E5:69F699B3
+
+HTTP/2 200 
+date: Sun, 03 May 2026 00:41:24 GMT
+content-type: application/java-archive
+content-length: 36925
+cf-ray: 9f5b38491975e297-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 236135
+etag: "5afdae597f8661c2893a7b6662f74673"
+last-modified: Tue, 19 Nov 2019 03:47:09 GMT
+x-checksum-md5: 5afdae597f8661c2893a7b6662f74673
+x-checksum-sha1: b7e9bd2b5cac1d0bc7bcfd836807fddcbc81c746
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/README.md
+web search: 
+web search: repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.pom
+web search: 
+web search: https://central.sonatype.com/artifact/com.typesafe.netty/netty-reactive-streams
+web search: 
+web search: https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams/src/test
+exec
+/usr/bin/zsh -lc 'wc -l build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 0ms:
+8 build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+
+exec
+/usr/bin/zsh -lc 'git status --short --ignored build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d
+ succeeded in 237ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+index 5d6eda94bc2b5bf88ed7a6a965502d47a9b91949..3be8b7a7fc7bace59f86b9af22c156e31fbd4e46
+--- a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
++++ b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4"
++  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4",
++  "repository-url" : "https://github.com/playframework/netty-reactive-streams",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-$version$/netty-reactive-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-javadoc.jar",
++  "description" : "Netty Reactive Streams provides Reactive Streams integration for Netty using channel handlers that publish inbound messages and subscribe to outbound messages. It supports backpressure and lets publishers and subscribers be added, removed, and combined in Netty channel pipelines."
+ }
+
+web search: 
+web search: Netty Reactive Streams provides a reactive streams implementation for Netty
+web search: 
+web search: https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-2.0.4/netty-reactive-streams/src/test
+web search: 
+web search: https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/pom.xml
+codex
+Updated [com.typesafe.netty-netty-reactive-streams-2.0.4.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json). The repo and tag come from the upstream POM, and the test URL points at the tagged `netty-reactive-streams/src/test` directory. ([raw.githubusercontent.com](https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/pom.xml))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent: the artifact is a JVM JAR with Java class files. The two-sentence description follows the tagged README’s summary of Netty channel handlers and backpressure support. ([raw.githubusercontent.com](https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/README.md))
+
+Validated with `jq` and HEAD checks for the rendered source, test, and documentation URLs. No Gradle tests were run.
+diff --git a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+index 5d6eda94bc2b5bf88ed7a6a965502d47a9b91949..3be8b7a7fc7bace59f86b9af22c156e31fbd4e46
+--- a/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
++++ b/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4"
++  "coordinates" : "com.typesafe.netty:netty-reactive-streams:2.0.4",
++  "repository-url" : "https://github.com/playframework/netty-reactive-streams",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-$version$/netty-reactive-streams/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/netty/netty-reactive-streams/$version$/netty-reactive-streams-$version$-javadoc.jar",
++  "description" : "Netty Reactive Streams provides Reactive Streams integration for Netty using channel handlers that publish inbound messages and subscribe to outbound messages. It supports backpressure and lets publishers and subscribers be added, removed, and combined in Netty channel pipelines."
+ }
+
+2026-05-03T00:42:03.300381Z ERROR codex_core::session: failed to record rollout items: thread 019deb47-257b-74c2-a84e-1cd1e3e37e0e not found
+tokens used
+112,016
+Updated [com.typesafe.netty-netty-reactive-streams-2.0.4.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d/build/discovered-artifact-metadata/com.typesafe.netty-netty-reactive-streams-2.0.4.json). The repo and tag come from the upstream POM, and the test URL points at the tagged `netty-reactive-streams/src/test` directory. ([raw.githubusercontent.com](https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/pom.xml))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent: the artifact is a JVM JAR with Java class files. The two-sentence description follows the tagged README’s summary of Netty channel handlers and backpressure support. ([raw.githubusercontent.com](https://raw.githubusercontent.com/playframework/netty-reactive-streams/netty-reactive-streams-parent-2.0.4/README.md))
+
+Validated with `jq` and HEAD checks for the rendered source, test, and documentation URLs. No Gradle tests were run.
+Ran agent for com.typesafe.netty:netty-reactive-streams:2.0.4 (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d/build/agent-artifact-discovery-logs/com.typesafe.netty-netty-reactive-streams-2.0.4.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3887-0842d41d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 12s
+9 actionable tasks: 4 executed, 5 from cache

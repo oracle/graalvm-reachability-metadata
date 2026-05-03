@@ -81,6 +81,28 @@ public class Netty_reactive_streamsTest {
     }
 
     @Test
+    void handlerPublisherCancellationClosesChannelWithoutTerminalSignal() {
+        EmbeddedChannel channel = new EmbeddedChannel();
+        try {
+            HandlerPublisher<String> publisher = new HandlerPublisher<>(channel.eventLoop(), String.class);
+            channel.pipeline().addLast(publisher);
+            RecordingSubscriber<String> subscriber = new RecordingSubscriber<>();
+
+            publisher.subscribe(subscriber);
+            runPendingTasks(channel);
+            subscriber.cancel();
+            runPendingTasks(channel);
+
+            assertThat(channel.isOpen()).isFalse();
+            assertThat(subscriber.values()).isEmpty();
+            assertThat(subscriber.errors()).isEmpty();
+            assertThat(subscriber.completions()).isZero();
+        } finally {
+            channel.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void handlerPublisherRejectsInvalidDemandAndAdditionalSubscribers() {
         EmbeddedChannel channel = new EmbeddedChannel();
         try {
@@ -302,6 +324,11 @@ public class Netty_reactive_streamsTest {
         void request(long demand) {
             assertThat(subscription).isNotNull();
             subscription.request(demand);
+        }
+
+        void cancel() {
+            assertThat(subscription).isNotNull();
+            subscription.cancel();
         }
 
         List<T> values() {
