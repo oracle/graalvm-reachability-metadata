@@ -121,11 +121,22 @@ class Parboiled_3Test {
     assertThat(parsed).isEqualTo("Hello\n\"Scala\"\\3")
   }
 
+  @Test
+  def parsesSeparatedValueLists(): Unit = {
+    val multiValueQuery: IdQuery = new IdQueryParser(ParserInput("features?ids=3,5,8,13")).Query.run().get
+    val singleValueQuery: IdQuery = new IdQueryParser(ParserInput("feature_42?ids=21")).Query.run().get
+
+    assertThat(multiValueQuery).isEqualTo(IdQuery("features", Seq(3, 5, 8, 13)))
+    assertThat(singleValueQuery).isEqualTo(IdQuery("feature_42", Seq(21)))
+  }
+
   private def parseAssignment(input: String): scala.util.Try[Assignment] =
     new AssignmentParser(ParserInput(input)).InputLine.run()
 }
 
 final case class Assignment(name: String, value: Int)
+
+final case class IdQuery(resource: String, ids: Seq[Int])
 
 final class AssignmentParser(val input: ParserInput) extends Parser {
   def InputLine: Rule1[Assignment] = rule { Spacing ~ AssignmentRule ~ Spacing ~ EOI }
@@ -177,6 +188,16 @@ final class QuotedTextParser(val input: ParserInput) extends Parser with StringB
   }
 
   def PlainChar: Rule0 = rule { noneOf("\"\\") ~ appendSB() }
+}
+
+final class IdQueryParser(val input: ParserInput) extends Parser {
+  def Query: Rule1[IdQuery] = rule { Resource ~ "?ids=" ~ Ids ~ EOI ~> IdQuery.apply }
+
+  def Resource: Rule1[String] = rule { capture(oneOrMore(CharPredicate.AlphaNum ++ '_')) }
+
+  def Ids: Rule1[Seq[Int]] = rule { oneOrMore(Id).separatedBy(',') }
+
+  def Id: Rule1[Int] = rule { capture(oneOrMore(CharPredicate.Digit)) ~> ((digits: String) => digits.toInt) }
 }
 
 final class DynamicTokenParser(val input: ParserInput) extends Parser with DynamicRuleHandler[DynamicTokenParser, String :: HNil] {
