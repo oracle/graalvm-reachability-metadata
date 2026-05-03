@@ -27,7 +27,7 @@ import java.util.ServiceConfigurationError;
 import org.junit.jupiter.api.Test;
 
 public class Opentelemetry_commonTest {
-    private static final String SERVICE_RESOURCE = "META-INF/services/" + GreetingService.class.getName();
+    private static final String serviceResource = "META-INF/services/" + GreetingService.class.getName();
 
     @Test
     void componentLoaderUsesSuppliedClassLoaderToDiscoverAndInstantiateProviders() {
@@ -181,7 +181,7 @@ public class Opentelemetry_commonTest {
 
         @Override
         public Enumeration<URL> getResources(String name) throws IOException {
-            if (SERVICE_RESOURCE.equals(name)) {
+            if (serviceResource.equals(name)) {
                 return Collections.emptyEnumeration();
             }
             return super.getResources(name);
@@ -202,7 +202,7 @@ public class Opentelemetry_commonTest {
 
         @Override
         public URL getResource(String name) {
-            if (SERVICE_RESOURCE.equals(name)) {
+            if (serviceResource.equals(name)) {
                 return serviceResourceUrl(serviceFileContent, 0);
             }
             return super.getResource(name);
@@ -210,7 +210,7 @@ public class Opentelemetry_commonTest {
 
         @Override
         public Enumeration<URL> getResources(String name) throws IOException {
-            if (SERVICE_RESOURCE.equals(name)) {
+            if (serviceResource.equals(name)) {
                 return Collections.enumeration(List.of(serviceResourceUrl(serviceFileContent, 0)));
             }
             return super.getResources(name);
@@ -231,7 +231,7 @@ public class Opentelemetry_commonTest {
 
         @Override
         public URL getResource(String name) {
-            if (SERVICE_RESOURCE.equals(name)) {
+            if (serviceResource.equals(name)) {
                 return serviceResourceUrl(serviceFileContents.get(0), 0);
             }
             return super.getResource(name);
@@ -239,7 +239,7 @@ public class Opentelemetry_commonTest {
 
         @Override
         public Enumeration<URL> getResources(String name) throws IOException {
-            if (!SERVICE_RESOURCE.equals(name)) {
+            if (!serviceResource.equals(name)) {
                 return super.getResources(name);
             }
 
@@ -258,7 +258,7 @@ public class Opentelemetry_commonTest {
 
     private static URL serviceResourceUrl(String serviceFileContent, int index) {
         try {
-            return new URL(null, "memory:" + SERVICE_RESOURCE + "?" + index,
+            return new URL(null, "memory:" + serviceResource + "?" + index,
                     new InMemoryUrlStreamHandler(serviceFileContent));
         } catch (IOException e) {
             throw new IllegalStateException("Unable to create in-memory service resource URL", e);
