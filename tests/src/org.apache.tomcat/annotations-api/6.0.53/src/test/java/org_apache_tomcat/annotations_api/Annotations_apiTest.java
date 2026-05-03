@@ -180,6 +180,26 @@ public class Annotations_apiTest {
     }
 
     @Test
+    void singleReferenceAnnotationsCanBeDeclaredOnTypes() {
+        Resource resource = TypeLevelReferences.class.getAnnotation(Resource.class);
+        EJB ejb = TypeLevelReferences.class.getAnnotation(EJB.class);
+        PersistenceContext context = TypeLevelReferences.class.getAnnotation(PersistenceContext.class);
+        PersistenceUnit unit = TypeLevelReferences.class.getAnnotation(PersistenceUnit.class);
+        WebServiceRef serviceRef = TypeLevelReferences.class.getAnnotation(WebServiceRef.class);
+
+        assertThat(resource.name()).isEqualTo("class/resource");
+        assertThat(resource.type()).isEqualTo(Long.class);
+        assertThat(ejb.name()).isEqualTo("class/ejb");
+        assertThat(ejb.beanInterface()).isEqualTo(Runnable.class);
+        assertThat(context.name()).isEqualTo("class/context");
+        assertThat(context.unitName()).isEqualTo("classContextUnit");
+        assertThat(unit.name()).isEqualTo("class/unit");
+        assertThat(unit.unitName()).isEqualTo("classFactoryUnit");
+        assertThat(serviceRef.name()).isEqualTo("class/service");
+        assertThat(serviceRef.type()).isEqualTo(CharSequence.class);
+    }
+
+    @Test
     void annotationTypeContractsExposeRetentionAndTargets() {
         assertRuntimeAnnotation(Resource.class, ElementType.TYPE, ElementType.METHOD, ElementType.FIELD);
         assertRuntimeAnnotation(Resources.class, ElementType.TYPE);
@@ -325,6 +345,14 @@ public class Annotations_apiTest {
             @PersistenceUnit(name = "persistence/defaultUnit")
     })
     private static final class MorePersistenceReferences {
+    }
+
+    @Resource(name = "class/resource", type = Long.class)
+    @EJB(name = "class/ejb", beanInterface = Runnable.class)
+    @PersistenceContext(name = "class/context", unitName = "classContextUnit")
+    @PersistenceUnit(name = "class/unit", unitName = "classFactoryUnit")
+    @WebServiceRef(name = "class/service", type = CharSequence.class)
+    private static final class TypeLevelReferences {
     }
 
     @WebServiceRefs({
