@@ -59,6 +59,7 @@ import io.opentelemetry.extension.incubator.metrics.ExtendedLongUpDownCounterBui
 import io.opentelemetry.extension.incubator.metrics.LongGauge;
 import io.opentelemetry.extension.incubator.propagation.ExtendedContextPropagators;
 import io.opentelemetry.extension.incubator.propagation.PassThroughPropagator;
+import io.opentelemetry.extension.incubator.trace.ExtendedSpan;
 import io.opentelemetry.extension.incubator.trace.ExtendedSpanBuilder;
 import io.opentelemetry.extension.incubator.trace.ExtendedTracer;
 import java.nio.ByteBuffer;
@@ -251,6 +252,18 @@ public class Opentelemetry_extension_incubatorTest {
     }
 
     @Test
+    void extendedSpanAddLinkDefaultMethodsReturnTheCurrentSpan() {
+        RecordingSpan span = new RecordingSpan();
+        SpanContext linkContext = SpanContext.create(
+                TRACE_ID, SPAN_ID, TraceFlags.getSampled(), TraceState.getDefault());
+        Attributes linkAttributes = Attributes.of(AttributeKey.stringKey("link-type"), "follow-up");
+
+        assertThat(span.addLink(linkContext)).isSameAs(span);
+        assertThat(span.addLink(linkContext, linkAttributes)).isSameAs(span);
+        assertThat(span.ended).isFalse();
+    }
+
+    @Test
     void extendedSpanBuilderRecordsFailuresBeforeRethrowing() {
         RecordingTracer delegateTracer = new RecordingTracer();
         ExtendedSpanBuilder builder = ExtendedTracer.create(delegateTracer).spanBuilder("failing-operation");
@@ -433,7 +446,7 @@ public class Opentelemetry_extension_incubatorTest {
         }
     }
 
-    private static final class RecordingSpan implements Span {
+    private static final class RecordingSpan implements ExtendedSpan {
         private final List<Throwable> recordedExceptions = new ArrayList<>();
         private boolean ended;
         private StatusCode statusCode;
