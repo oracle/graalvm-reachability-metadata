@@ -39,6 +39,19 @@ public class AnnotationsTest {
     }
 
     @Test
+    void sdkAnnotationsCanDocumentRecordBasedConfigurationComponents() {
+        AnnotatedClientConfiguration configuration = new AnnotatedClientConfiguration("s3", "us-west-2", 3);
+
+        assertThat(configuration.service()).isEqualTo("s3");
+        assertThat(configuration.region()).isEqualTo("us-west-2");
+        assertThat(configuration.maxRetries()).isEqualTo(3);
+        assertThat(configuration.endpointPrefix()).isEqualTo("s3.us-west-2");
+        assertThat(configuration.retrySchedule()).containsExactly("retry-1", "retry-2", "retry-3");
+        assertThat(configuration.withRegion("eu-central-1"))
+                .isEqualTo(new AnnotatedClientConfiguration("s3", "eu-central-1", 3));
+    }
+
+    @Test
     void sdkAnnotationsCanDocumentMutablePreviewAndInternalComponents() {
         MutablePreviewRequest request = new MutablePreviewRequest("ListBuckets");
 
@@ -216,6 +229,46 @@ public class AnnotationsTest {
     @NotNull
     @Generated("metadata-contract")
     @interface MetadataContract {
+    }
+
+    @Immutable
+    @ThreadSafe
+    @SdkPublicApi
+    record AnnotatedClientConfiguration(
+            @NotNull @SdkPublicApi @Generated(value = "record-service", comments = "record component") String service,
+            @NotNull @SdkPublicApi String region,
+            @SdkInternalApi int maxRetries) {
+        @SdkPublicApi
+        AnnotatedClientConfiguration {
+            if (service.isBlank()) {
+                throw new IllegalArgumentException("service must not be blank");
+            }
+            if (region.isBlank()) {
+                throw new IllegalArgumentException("region must not be blank");
+            }
+            if (maxRetries < 0) {
+                throw new IllegalArgumentException("maxRetries must not be negative");
+            }
+        }
+
+        @SdkPublicApi
+        String endpointPrefix() {
+            return service + "." + region;
+        }
+
+        @SdkPublicApi
+        AnnotatedClientConfiguration withRegion(@NotNull String newRegion) {
+            return new AnnotatedClientConfiguration(service, newRegion, maxRetries);
+        }
+
+        @SdkInternalApi
+        List<String> retrySchedule() {
+            List<String> schedule = new ArrayList<>();
+            for (int retry = 1; retry <= maxRetries; retry++) {
+                schedule.add("retry-" + retry);
+            }
+            return List.copyOf(schedule);
+        }
     }
 
     @Immutable
