@@ -1,0 +1,2506 @@
+Starting a Gradle Daemon, 13 busy and 3 incompatible and 111 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deea4-4997-7a13-8fc1-5ff913326846
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: commons-beanutils:commons-beanutils-core:1.8.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.8.0" when "$version$" is replaced with "1.8.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+- Set "coordinates" to "commons-beanutils:commons-beanutils-core:1.8.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.8.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/Apache sources first, then update the JSON in place. After that I’ll quickly validate the file parses as JSON.
+web search: 
+web search: commons-beanutils commons-beanutils-core 1.8.0 Maven Central pom scm url
+codex
+The artifact is old enough that the Maven coordinates and project SCM have a few historical variants, so I’m checking the local metadata format before choosing URLs. The main decision is whether to point source/test URLs at Maven artifacts or at the Apache tag.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+{
+  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+web search: 
+web search: site:repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0 commons-beanutils-core-1.8.0-sources.jar
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>4</version>
+  </parent>
+  <groupId>commons-beanutils</groupId>
+  <artifactId>commons-beanutils-core</artifactId>
+  <version>1.8.0</version>
+  <name>Commons BeanUtils Core</name>
+  <url>http://commons.apache.org/beanutils/</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+  </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-parent</artifactId>
+    <version>11</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>commons-beanutils</groupId>
+  <artifactId>commons-beanutils</artifactId>
+  <version>1.8.0</version>
+  <name>Commons BeanUtils</name>
+
+  <inceptionYear>2000</inceptionYear>
+  <description>BeanUtils provides an easy-to-use but flexible wrapper around reflection and introspection.</description>
+
+  <url>http://commons.apache.org/beanutils/</url>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.apache.org/jira/browse/BEANUTILS</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/beanutils/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/beanutils/trunk/</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/proper/beanutils/trunk/</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Robert Burrell Donkin</name>
+      <id>rdonkin</id>
+      <email>rdonkin@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>dIon Gillard</name>
+      <id>dion</id>
+      <email>dion@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Craig McClanahan</name>
+      <id>craigmcc</id>
+      <email>craigmcc@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Geir Magnusson Jr.</name>
+      <id>geirm</id>
+      <email>geirm@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Scott Sanders</name>
+      <id>sanders</id>
+      <email>sanders@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>James Strachan</name>
+      <id>jstrachan</id>
+      <email>jstrachan@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Rodney Waldhoff</name>
+      <id>rwaldhoff</id>
+      <email>rwaldhoff@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Martin van den Bemt</name>
+      <id>mvdb</id>
+      <email>mvdb@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Yoav Shapira</name>
+      <id>yoavs</id>
+      <email>yoavs@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Niall Pemberton</name>
+      <id>niallp</id>
+      <email>niallp at apache dot org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Simon Kitching</name>
+      <id>skitching</id>
+      <email>skitching@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>James Carman</name>
+      <id>jcarman</id>
+      <email>jcarman@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Paul Jack</name>
+      <email></email>
+    </contributor>
+    <contributor>
+      <name>Stephen Colebourne</name>
+      <email></email>
+    </contributor>
+    <contributor>
+      <name>Berin Loritsch</name>
+      <email></email>
+    </contributor>    
+  </contributors>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId> 
+      <version>3.2.1</version> 
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections-testframework</artifactId> 
+      <version>3.2.1</version> 
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+      <sourceDirectory>src/java</sourceDirectory>
+      <testSourceDirectory>src/test</testSourceDirectory>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <forkMode>pertest</forkMode>
+              <!-- limit memory size see BEANUTILS-291 -->
+              <argLine>-Xmx25M</argLine>
+              <includes>
+                <include>**/*TestCase.java</include>
+              </includes>
+              <excludes>
+                <!-- This test case is known to fail, and there isn't any proposed fix
+                  -  so we will just exclude it until someone comes up with a solution.
+                -->
+                <exclude>**/*MemoryTestCase.java</exclude>
+              </excludes>
+
+              <!-- Configure Logging -->
+              <systemProperties>
+                  <property>
+                      <name>org.apache.commons.logging.LogFactory</name>
+                      <value>org.apache.commons.logging.impl.LogFactoryImpl</value>
+                  </property>
+                  <property>
+                      <name>org.apache.commons.logging.Log</name>
+                      <value>org.apache.commons.logging.impl.SimpleLog</value>
+                  </property>
+                  <property>
+                      <name>org.apache.commons.logging.simplelog.defaultlog</name>
+                      <value>WARN</value>
+                  </property>
+              </systemProperties>
+
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <configuration>
+                <tasks>
+                  <ant antfile="build-other-jars.xml" target="other-jars">
+                    <property name="component.version"    value="${project.version}"/>
+                    <property name="build.home"           value="${project.build.directory}"/>
+                    <property name="dist.home"            value="${project.build.directory}"/>
+                    <property name="maven.compile.source" value="${maven.compile.source}"/>
+                    <property name="maven.compile.target" value="${maven.compile.target}"/>
+                  </ant>
+                </tasks>
+              </configuration>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+                <descriptors>
+                    <descriptor>src/main/assembly/bin.xml</descriptor>
+                    <descriptor>src/main/assembly/src.xml</descriptor>
+                </descriptors>
+                <tarLongFileMode>gnu</tarLongFileMode>
+            </configuration>
+        </plugin>
+      </plugins>
+    </build>
+
+    <properties>
+        <maven.compile.source>1.3</maven.compile.source>
+        <maven.compile.target>1.3</maven.compile.target>
+        <commons.componentid>beanutils</commons.componentid>
+        <commons.release.version>1.8.0</commons.release.version>
+        <commons.jira.id>BEANUTILS</commons.jira.id>
+        <commons.jira.pid>12310460</commons.jira.pid>
+        <commons.osgi.export>
+             !org.apache.commons.collections,
+              org.apache.commons.beanutils.*;version=${pom.version}
+        </commons.osgi.export>
+    </properties> 
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <configLocation>${basedir}/checkstyle.xml</configLocation>
+                    <enableRulesSummary>false</enableRulesSummary>
+                    <headerFile>${basedir}/license-header.txt</headerFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>clirr-maven-plugin</artifactId>
+                <version>2.2.2</version>
+                <configuration>
+                    <comparisonVersion>1.8.0-BETA</comparisonVersion>
+                    <minSeverity>info</minSeverity>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <linksource>true</linksource>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.4.2/docs/api/</link>
+                        <link>http://commons.apache.org/collections/api-release/</link>
+                    </links>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: commons-beanutils/commons-beanutils-core/1.8.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>commons-beanutils/commons-beanutils-core/1.8.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="commons-beanutils-core-1.8.0.jar" title="commons-beanutils-core-1.8.0.jar">commons-beanutils-core-1.8.0.jar</a>                  2008-08-31 18:13    206035      
+<a href="commons-beanutils-core-1.8.0.jar.asc" title="commons-beanutils-core-1.8.0.jar.asc">commons-beanutils-core-1.8.0.jar.asc</a>              2008-08-31 18:13       226      
+<a href="commons-beanutils-core-1.8.0.jar.asc.md5" title="commons-beanutils-core-1.8.0.jar.asc.md5">commons-beanutils-core-1.8.0.jar.asc.md5</a>          2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.jar.asc.sha1" title="commons-beanutils-core-1.8.0.jar.asc.sha1">commons-beanutils-core-1.8.0.jar.asc.sha1</a>         2008-08-31 18:13        40      
+<a href="commons-beanutils-core-1.8.0.jar.md5" title="commons-beanutils-core-1.8.0.jar.md5">commons-beanutils-core-1.8.0.jar.md5</a>              2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.jar.sha1" title="commons-beanutils-core-1.8.0.jar.sha1">commons-beanutils-core-1.8.0.jar.sha1</a>             2008-08-31 18:13        40      
+<a href="commons-beanutils-core-1.8.0.pom" title="commons-beanutils-core-1.8.0.pom">commons-beanutils-core-1.8.0.pom</a>                  2008-08-31 18:13      1639      
+<a href="commons-beanutils-core-1.8.0.pom.asc" title="commons-beanutils-core-1.8.0.pom.asc">commons-beanutils-core-1.8.0.pom.asc</a>              2008-08-31 18:13       226      
+<a href="commons-beanutils-core-1.8.0.pom.asc.md5" title="commons-beanutils-core-1.8.0.pom.asc.md5">commons-beanutils-core-1.8.0.pom.asc.md5</a>          2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.pom.asc.sha1" title="commons-beanutils-core-1.8.0.pom.asc.sha1">commons-beanutils-core-1.8.0.pom.asc.sha1</a>         2008-08-31 18:13        40      
+<a href="commons-beanutils-core-1.8.0.pom.md5" title="commons-beanutils-core-1.8.0.pom.md5">commons-beanutils-core-1.8.0.pom.md5</a>              2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.pom.sha1" title="commons-beanutils-core-1.8.0.pom.sha1">commons-beanutils-core-1.8.0.pom.sha1</a>             2008-08-31 18:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: apache commons beanutils GitHub tag 1.8.0 BEANUTILS_1_8_0
+web search: 
+web search: https://svn-master.apache.org/repos/infra/websites/production/commons/content/proper/commons-beanutils/index.html
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/commons/proper/beanutils/tags/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/commons-beanutils.git '*1.8.0*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://javadoc.io/doc/commons-beanutils/commons-beanutils-core/1.8.0/index.html' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 168ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 223ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 16:21:06 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/commons-beanutils/commons-beanutils-core/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=AOXyAOq3uzV7FSnYyC54CMNWN%2FFpCQeGICzHHo4zJygxuV3deaUnMPtUjdGVL6%2F9hWXo8ftmfGoBvvoKj3lYsn7wYHjGSt7W6xVoHlmZKMSGuEl4fAAnIdEklEYl1Nai0j8jgFhFF9mm"}]}
+server: cloudflare
+cf-ray: 9f6098cc8d23bb08-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 330ms:
+codex
+Maven Central confirms this `commons-beanutils-core` release has the binary JAR and POM, but no `-sources.jar` or `-tests.jar`. That means the versioned source/test URLs need to use the project’s release tag instead of Maven side artifacts.
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/apache/commons-beanutils.git | tail -60' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/commons/beanutils/source/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/commons/proper/beanutils/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933773: /commons/proper/beanutils</title></head>
+<body>
+ <h2>asf - Revision 1933773: /commons/proper/beanutils</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="BEANUTILSnowUsesGit.txt">BEANUTILSnowUsesGit.txt</a></li>
+ </ul>
+</body></html>
+ succeeded in 184ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/commons/beanutils/source</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                          <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/commons/beanutils/">Parent Directory</a>                                                   -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="beanutils-1.5-src.tar.gz">beanutils-1.5-src.tar.gz</a>                      2002-12-27 08:30  125K  
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="beanutils-1.5-src.zip">beanutils-1.5-src.zip</a>                         2002-12-27 08:30  298K  
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.10.0-src.tar.gz">commons-beanutils-1.10.0-src.tar.gz</a>           2025-01-07 13:04  391K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.10.0-src.tar.gz.asc">commons-beanutils-1.10.0-src.tar.gz.asc</a>       2025-01-07 13:04  488   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.10.0-src.tar.gz.sha512">commons-beanutils-1.10.0-src.tar.gz.sha512</a>    2025-01-07 13:04  129   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.10.0-src.zip">commons-beanutils-1.10.0-src.zip</a>              2025-01-07 13:04  677K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.10.0-src.zip.asc">commons-beanutils-1.10.0-src.zip.asc</a>          2025-01-07 13:04  488   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.10.0-src.zip.sha512">commons-beanutils-1.10.0-src.zip.sha512</a>       2025-01-07 13:04  129   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.10.1-src.tar.gz">commons-beanutils-1.10.1-src.tar.gz</a>           2025-02-13 12:42  392K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.10.1-src.tar.gz.asc">commons-beanutils-1.10.1-src.tar.gz.asc</a>       2025-02-13 12:42  488   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.10.1-src.tar.gz.sha512">commons-beanutils-1.10.1-src.tar.gz.sha512</a>    2025-02-13 12:42  129   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.10.1-src.zip">commons-beanutils-1.10.1-src.zip</a>              2025-02-13 12:42  681K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.10.1-src.zip.asc">commons-beanutils-1.10.1-src.zip.asc</a>          2025-02-13 12:42  488   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.10.1-src.zip.sha512">commons-beanutils-1.10.1-src.zip.sha512</a>       2025-02-13 12:42  129   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.11.0-src.tar.gz">commons-beanutils-1.11.0-src.tar.gz</a>           2025-05-27 22:38  394K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.11.0-src.tar.gz.asc">commons-beanutils-1.11.0-src.tar.gz.asc</a>       2025-05-27 22:38  488   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.11.0-src.tar.gz.sha512">commons-beanutils-1.11.0-src.tar.gz.sha512</a>    2025-05-27 22:38  129   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.11.0-src.zip">commons-beanutils-1.11.0-src.zip</a>              2025-05-27 22:38  683K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.11.0-src.zip.asc">commons-beanutils-1.11.0-src.zip.asc</a>          2025-05-27 22:38  488   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.11.0-src.zip.sha512">commons-beanutils-1.11.0-src.zip.sha512</a>       2025-05-27 22:38  129   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.6-src.tar.gz">commons-beanutils-1.6-src.tar.gz</a>              2003-01-21 20:52  138K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.6-src.tar.gz.asc">commons-beanutils-1.6-src.tar.gz.asc</a>          2003-01-21 20:52   65   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.6-src.tar.gz.md5">commons-beanutils-1.6-src.tar.gz.md5</a>          2003-01-21 20:52   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.6-src.zip">commons-beanutils-1.6-src.zip</a>                 2003-01-21 20:52  340K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.6-src.zip.asc">commons-beanutils-1.6-src.zip.asc</a>             2003-01-21 20:52   65   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.6-src.zip.md5">commons-beanutils-1.6-src.zip.md5</a>             2003-01-21 20:52   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.6.1-src.tar.gz">commons-beanutils-1.6.1-src.tar.gz</a>            2003-02-18 20:55  145K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.6.1-src.tar.gz.asc">commons-beanutils-1.6.1-src.tar.gz.asc</a>        2003-02-18 21:00   65   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.6.1-src.tar.gz.md5">commons-beanutils-1.6.1-src.tar.gz.md5</a>        2003-02-18 20:57   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.6.1-src.zip">commons-beanutils-1.6.1-src.zip</a>               2003-02-18 20:56  345K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.6.1-src.zip.asc">commons-beanutils-1.6.1-src.zip.asc</a>           2003-02-18 21:00   65   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.6.1-src.zip.md5">commons-beanutils-1.6.1-src.zip.md5</a>           2003-02-18 20:57   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.7.0-src.tar.gz">commons-beanutils-1.7.0-src.tar.gz</a>            2004-08-01 21:04  253K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.7.0-src.tar.gz.asc">commons-beanutils-1.7.0-src.tar.gz.asc</a>        2004-08-01 21:16  189   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.7.0-src.tar.gz.md5">commons-beanutils-1.7.0-src.tar.gz.md5</a>        2004-08-01 21:10   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.7.0-src.zip">commons-beanutils-1.7.0-src.zip</a>               2004-08-01 21:04  442K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.7.0-src.zip.asc">commons-beanutils-1.7.0-src.zip.asc</a>           2004-08-01 21:15  189   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.7.0-src.zip.md5">commons-beanutils-1.7.0-src.zip.md5</a>           2004-08-01 21:10   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.0-BETA-src.tar.gz">commons-beanutils-1.8.0-BETA-src.tar.gz</a>       2007-08-04 09:43  358K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-BETA-src.tar.gz.asc">commons-beanutils-1.8.0-BETA-src.tar.gz.asc</a>   2007-08-04 09:43  226   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-BETA-src.tar.gz.md5">commons-beanutils-1.8.0-BETA-src.tar.gz.md5</a>   2007-08-04 09:43   73   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.0-BETA-src.zip">commons-beanutils-1.8.0-BETA-src.zip</a>          2007-08-04 09:43  620K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-BETA-src.zip.asc">commons-beanutils-1.8.0-BETA-src.zip.asc</a>      2007-08-04 09:43  226   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-BETA-src.zip.md5">commons-beanutils-1.8.0-BETA-src.zip.md5</a>      2007-08-04 09:43   70   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.0-src.tar.gz">commons-beanutils-1.8.0-src.tar.gz</a>            2008-08-28 16:21  371K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-src.tar.gz.asc">commons-beanutils-1.8.0-src.tar.gz.asc</a>        2008-08-28 16:21  194   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-src.tar.gz.md5">commons-beanutils-1.8.0-src.tar.gz.md5</a>        2008-08-28 16:21   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-src.tar.gz.sha1">commons-beanutils-1.8.0-src.tar.gz.sha1</a>       2008-08-28 16:21   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.0-src.zip">commons-beanutils-1.8.0-src.zip</a>               2008-08-28 16:21  636K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-src.zip.asc">commons-beanutils-1.8.0-src.zip.asc</a>           2008-08-28 16:21  194   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-src.zip.md5">commons-beanutils-1.8.0-src.zip.md5</a>           2008-08-28 16:21   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.0-src.zip.sha1">commons-beanutils-1.8.0-src.zip.sha1</a>          2008-08-28 16:21   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.1-src.tar.gz">commons-beanutils-1.8.1-src.tar.gz</a>            2009-10-16 21:20  375K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.1-src.tar.gz.asc">commons-beanutils-1.8.1-src.tar.gz.asc</a>        2009-10-16 21:20  202   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.1-src.tar.gz.md5">commons-beanutils-1.8.1-src.tar.gz.md5</a>        2009-10-16 21:20   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.1-src.tar.gz.sha">commons-beanutils-1.8.1-src.tar.gz.sha</a>        2009-10-16 21:20   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.1-src.zip">commons-beanutils-1.8.1-src.zip</a>               2009-10-16 21:20  647K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.1-src.zip.asc">commons-beanutils-1.8.1-src.zip.asc</a>           2009-10-16 21:20  202   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.1-src.zip.md5">commons-beanutils-1.8.1-src.zip.md5</a>           2009-10-16 21:20   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.1-src.zip.sha">commons-beanutils-1.8.1-src.zip.sha</a>           2009-10-16 21:20   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.2-src.tar.gz">commons-beanutils-1.8.2-src.tar.gz</a>            2009-11-09 14:05  375K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.2-src.tar.gz.asc">commons-beanutils-1.8.2-src.tar.gz.asc</a>        2009-11-09 14:05  202   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.2-src.tar.gz.md5">commons-beanutils-1.8.2-src.tar.gz.md5</a>        2009-11-09 14:05   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.2-src.tar.gz.sha1">commons-beanutils-1.8.2-src.tar.gz.sha1</a>       2009-11-09 14:05   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.2-src.zip">commons-beanutils-1.8.2-src.zip</a>               2009-11-09 14:05  648K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.2-src.zip.asc">commons-beanutils-1.8.2-src.zip.asc</a>           2009-11-09 14:05  202   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.2-src.zip.md5">commons-beanutils-1.8.2-src.zip.md5</a>           2009-11-09 14:05   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.2-src.zip.sha1">commons-beanutils-1.8.2-src.zip.sha1</a>          2009-11-09 14:05   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.3-src.tar.gz">commons-beanutils-1.8.3-src.tar.gz</a>            2013-03-03 21:07  374K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.3-src.tar.gz.asc">commons-beanutils-1.8.3-src.tar.gz.asc</a>        2013-03-03 21:07  203   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.3-src.tar.gz.md5">commons-beanutils-1.8.3-src.tar.gz.md5</a>        2013-03-03 21:07   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.3-src.tar.gz.sha1">commons-beanutils-1.8.3-src.tar.gz.sha1</a>       2013-03-03 21:07   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.8.3-src.zip">commons-beanutils-1.8.3-src.zip</a>               2013-03-03 21:07  644K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.3-src.zip.asc">commons-beanutils-1.8.3-src.zip.asc</a>           2013-03-03 21:07  203   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.3-src.zip.md5">commons-beanutils-1.8.3-src.zip.md5</a>           2013-03-03 21:07   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.8.3-src.zip.sha1">commons-beanutils-1.8.3-src.zip.sha1</a>          2013-03-03 21:07   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.9.0-src.tar.gz">commons-beanutils-1.9.0-src.tar.gz</a>            2013-12-10 21:28  381K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.0-src.tar.gz.asc">commons-beanutils-1.9.0-src.tar.gz.asc</a>        2013-12-10 21:28  203   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.0-src.tar.gz.md5">commons-beanutils-1.9.0-src.tar.gz.md5</a>        2013-12-10 21:28   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.0-src.tar.gz.sha1">commons-beanutils-1.9.0-src.tar.gz.sha1</a>       2013-12-10 21:28   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.9.0-src.zip">commons-beanutils-1.9.0-src.zip</a>               2013-12-10 21:28  661K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.0-src.zip.asc">commons-beanutils-1.9.0-src.zip.asc</a>           2013-12-10 21:28  203   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.0-src.zip.md5">commons-beanutils-1.9.0-src.zip.md5</a>           2013-12-10 21:28   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.0-src.zip.sha1">commons-beanutils-1.9.0-src.zip.sha1</a>          2013-12-10 21:28   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.9.1-src.tar.gz">commons-beanutils-1.9.1-src.tar.gz</a>            2014-01-11 15:57  384K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.1-src.tar.gz.asc">commons-beanutils-1.9.1-src.tar.gz.asc</a>        2014-01-11 15:57  203   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.1-src.tar.gz.md5">commons-beanutils-1.9.1-src.tar.gz.md5</a>        2014-01-11 15:57   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.1-src.tar.gz.sha1">commons-beanutils-1.9.1-src.tar.gz.sha1</a>       2014-01-11 15:57   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.9.1-src.zip">commons-beanutils-1.9.1-src.zip</a>               2014-01-11 15:57  667K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.1-src.zip.asc">commons-beanutils-1.9.1-src.zip.asc</a>           2014-01-11 15:57  203   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.1-src.zip.md5">commons-beanutils-1.9.1-src.zip.md5</a>           2014-01-11 15:57   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.1-src.zip.sha1">commons-beanutils-1.9.1-src.zip.sha1</a>          2014-01-11 15:57   40   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="commons-beanutils-1.9.2-src.tar.gz">commons-beanutils-1.9.2-src.tar.gz</a>            2014-05-29 19:41  388K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.2-src.tar.gz.asc">commons-beanutils-1.9.2-src.tar.gz.asc</a>        2014-05-29 19:41  203   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.2-src.tar.gz.md5">commons-beanutils-1.9.2-src.tar.gz.md5</a>        2014-05-29 19:41   32   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="commons-beanutils-1.9.2-src.tar.gz.sha1">commons-beanutils-1.9.2-src.tar.gz.sha1</a>       2014-05-29 19:41   40   
+
+ succeeded in 322ms:
+a686513a2022ada49b165a8fd105d66bce497ff0	refs/tags/BEANUTILS_1_9_0
+9c047b74f426e40b28f497c39572abcf48263650	refs/tags/BEANUTILS_1_9_0^{}
+29df67fabeda7c538c5e1025d4774957ed893701	refs/tags/BEANUTILS_1_9_0_RC1
+ccfc1a23128705db70f688828a99655127332a9b	refs/tags/BEANUTILS_1_9_0_RC1^{}
+86af6fb079f60a631abfb3e7cfbfb1cea3c1bf7c	refs/tags/BEANUTILS_1_9_1
+8897e1b7497fe9a134b1a2cd0fc1dadc280710f7	refs/tags/BEANUTILS_1_9_1^{}
+06acdea9cbf7a7ab6c9c16fafd484d72ccb1f5fc	refs/tags/BEANUTILS_1_9_1_RC1
+3d8855b12577fde3ac72c8aa1b4babddc045e4da	refs/tags/BEANUTILS_1_9_1_RC1^{}
+1ce1a282366d9a6acb8af448a3a7228c8dd83718	refs/tags/BEANUTILS_1_9_2
+0dbc77a2e036c5aa0ef48107f8e7b1e69bceab41	refs/tags/BEANUTILS_1_9_2^{}
+84fb65f601aeacd8a6f4435bd345fdf701e22b06	refs/tags/BEANUTILS_1_9_2_RC1
+c8414f03fbcd221f6d83d608ea9c5f809d85e389	refs/tags/BEANUTILS_1_9_2_RC1^{}
+b1004d219fc761a8502ad331a0a187dca52fdcee	refs/tags/BEANUTILS_1_9_3
+a83c1eae04c9c99360c3ba4e6a46fd89dc5407ef	refs/tags/BEANUTILS_1_9_3^{}
+3d10fbdd2aa5d6533ccec5cd3d286ecf19faf1f7	refs/tags/BEANUTILS_1_9_3_RC1
+253e02731665b17c525e1ccdd7590953ca724807	refs/tags/BEANUTILS_1_9_3_RC1^{}
+d156506192f6a10d97e52902565efd85ed9cab2b	refs/tags/BEANUTILS_1_9_3_RC2
+9da44a00067bb8282ecad34a3febffd1ea29444f	refs/tags/BEANUTILS_1_9_3_RC2^{}
+ab1e4e9fe5c5717d7f7651864f70db4a3f7f2f13	refs/tags/BEANUTILS_1_9_3_RC3
+7f27eb3ee202fe48cf67469603d72c541af9b5c5	refs/tags/BEANUTILS_1_9_3_RC3^{}
+83fb5074688f2b678c0865e6cb8a835990cd002c	refs/tags/RELEASE_BEANUTILS_1_7_0_START
+c6e4426c300fd9cd0ff0f32f2238d2cc9170e8b3	refs/tags/RELEASE_BEANUTILS_1_7_0_START^{}
+c1af28e7f29fb1c480adbce94d65e77ab006a88a	refs/tags/STRUTS_1_1_B1
+c6513231b7559406bf789876b4f758f5a7800046	refs/tags/STRUTS_1_1_B1^{}
+2e60551d6266f1e100ae32adbb66a883c28baeb8	refs/tags/STRUTS_1_1_B2
+3f21ca68b04ebab5dd0e56959e71d25160435247	refs/tags/STRUTS_1_1_B2^{}
+336d1ad06563c1a1720e3bd636c231ec1d48a981	refs/tags/STRUTS_1_1_B3
+71193cf5dcee23fcc8121c857c8c811511cc1d0d	refs/tags/STRUTS_1_1_B3^{}
+cf30478fc8ad161a5d689490770c474ffc6cc83c	refs/tags/STRUTS_1_1_RC1
+237fe9feb03bced91f980a9040f7083d4cbc2687	refs/tags/STRUTS_1_1_RC1^{}
+febd88df030443fe7740cb2a05e176c8369a8424	refs/tags/beanutils-1.9.3-RC1
+bd11a002782dd899ab735557f74a3ad9ea9afcc6	refs/tags/beanutils-1.9.3-RC1^{}
+d9981cd25435a302f9f9b1d76810ad8ab64651d6	refs/tags/commons-beanutils-1.10.0-RC1
+1a57099612f32e771943b26ff4407c0261ccf78a	refs/tags/commons-beanutils-1.10.0-RC1^{}
+f2b0b7b8d11c01d3f138d965b673a9aa80e496ea	refs/tags/commons-beanutils-1.10.1-RC1
+92dfc6cef8fadd7616f1fa97dfab57bc206aff23	refs/tags/commons-beanutils-1.10.1-RC1^{}
+741718994a528360330ea04cc5250794d8cbb298	refs/tags/commons-beanutils-1.11.0-RC1
+9c0b5cf007818c3fb1ac36d5ed394d56d0fd13c3	refs/tags/commons-beanutils-1.11.0-RC1^{}
+17da1a01d52459b44d5f51d37455540318988685	refs/tags/commons-beanutils-1.9.4
+32ceb2c92512d44f97638805e2f3fd9d70dfcfc6	refs/tags/commons-beanutils-1.9.4^{}
+c8260db6a5d277cff84562f1473dd4103194a928	refs/tags/commons-beanutils-1.9.4-RC1
+e55b3db346c3ae3c78a4622bb1141db381049911	refs/tags/commons-beanutils-1.9.4-RC1^{}
+8c8da385651920ee8aa2a9bc8c934c9dfbd3aa04	refs/tags/commons-beanutils-1.9.4-RC2
+32ceb2c92512d44f97638805e2f3fd9d70dfcfc6	refs/tags/commons-beanutils-1.9.4-RC2^{}
+d8ebff4d949b2353cad4aaebb9fe48b2f9413358	refs/tags/commons-beanutils-2.0.0-M1-RC1
+e4eb3568ab6076585cb51b4a6d3f329ae04d2efb	refs/tags/commons-beanutils-2.0.0-M1-RC1^{}
+a9320fb202e4458f8e26e60ab1921c34dfe1439e	refs/tags/commons-beanutils-2.0.0-M2-RC1
+5d09ef79376511519b0b4aafcb5bbe79a70bd3c7	refs/tags/commons-beanutils-2.0.0-M2-RC1^{}
+830d2740832df680cc895d652647aaa104063621	refs/tags/jwsdp_10_ea2_01
+db84c0ed4e3498624f1df5ec00bebd34508d17af	refs/tags/jwsdp_10_ea2_01^{}
+2169fb243d9bdd364e855de83c74d2c96cc1cf82	refs/tags/rel/commons-beanutils-1.10.0
+1a57099612f32e771943b26ff4407c0261ccf78a	refs/tags/rel/commons-beanutils-1.10.0^{}
+f45463d3bfc34dfd3b08a9b64b2f95acd64bd037	refs/tags/rel/commons-beanutils-1.10.1
+e124bdf7dc5d2f27ea2ea81702ff0bba227cb0d9	refs/tags/rel/commons-beanutils-1.10.1^{}
+de75acbfed7c343dd32c0a0cf522a176681ae1a6	refs/tags/rel/commons-beanutils-1.11.0
+9c0b5cf007818c3fb1ac36d5ed394d56d0fd13c3	refs/tags/rel/commons-beanutils-1.11.0^{}
+4b7bd5f714e21bef56d97f9c75480bcd86501e72	refs/tags/rel/commons-beanutils-2.0.0-M1
+e4eb3568ab6076585cb51b4a6d3f329ae04d2efb	refs/tags/rel/commons-beanutils-2.0.0-M1^{}
+534006d4358809e313f872ef75dfb386ffb8dc3f	refs/tags/rel/commons-beanutils-2.0.0-M2
+5d09ef79376511519b0b4aafcb5bbe79a70bd3c7	refs/tags/rel/commons-beanutils-2.0.0-M2^{}
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://svn.apache.org/viewvc/commons/proper/beanutils/tags/?pathrev=1933773' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://svn.apache.org/viewvc/commons/proper/beanutils/tags/?view=log' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/commons-beanutils/tags?per_page=100' | rg -n 'name|1.8.0|BEANUTILS_1_8'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 115ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 116ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 331ms:
+3:    "name": "rel/commons-beanutils-2.0.0-M2",
+13:    "name": "rel/commons-beanutils-2.0.0-M1",
+23:    "name": "rel/commons-beanutils-1.11.0",
+33:    "name": "rel/commons-beanutils-1.10.1",
+43:    "name": "rel/commons-beanutils-1.10.0",
+53:    "name": "jwsdp_10_ea2_01",
+63:    "name": "commons-beanutils-2.0.0-M2-RC1",
+73:    "name": "commons-beanutils-2.0.0-M1-RC1",
+83:    "name": "commons-beanutils-1.11.0-RC1",
+93:    "name": "commons-beanutils-1.10.1-RC1",
+103:    "name": "commons-beanutils-1.10.0-RC1",
+113:    "name": "commons-beanutils-1.9.4",
+123:    "name": "commons-beanutils-1.9.4-RC2",
+133:    "name": "commons-beanutils-1.9.4-RC1",
+143:    "name": "beanutils-1.9.3-RC1",
+153:    "name": "STRUTS_1_1_RC1",
+163:    "name": "STRUTS_1_1_B3",
+173:    "name": "STRUTS_1_1_B2",
+183:    "name": "STRUTS_1_1_B1",
+193:    "name": "RELEASE_BEANUTILS_1_7_0_START",
+203:    "name": "BEANUTILS_1_9_3",
+213:    "name": "BEANUTILS_1_9_3_RC3",
+223:    "name": "BEANUTILS_1_9_3_RC2",
+233:    "name": "BEANUTILS_1_9_3_RC1",
+243:    "name": "BEANUTILS_1_9_2",
+253:    "name": "BEANUTILS_1_9_2_RC1",
+263:    "name": "BEANUTILS_1_9_1",
+273:    "name": "BEANUTILS_1_9_1_RC1",
+283:    "name": "BEANUTILS_1_9_0",
+293:    "name": "BEANUTILS_1_9_0_RC1",
+297:      "sha": "ccfc1a23128705db70f688828a99655127332a9b",
+298:      "url": "https://api.github.com/repos/apache/commons-beanutils/commits/ccfc1a23128705db70f688828a99655127332a9b"
+303:    "name": "BEANUTILS_1_8_3",
+304:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_3",
+305:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_3",
+313:    "name": "BEANUTILS_1_8_3_RC1",
+314:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_3_RC1",
+315:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_3_RC1",
+323:    "name": "BEANUTILS_1_8_2",
+324:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_2",
+325:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_2",
+333:    "name": "BEANUTILS_1_8_2_RC1",
+334:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_2_RC1",
+335:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_2_RC1",
+343:    "name": "BEANUTILS_1_8_1",
+344:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_1",
+345:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_1",
+353:    "name": "BEANUTILS_1_8_1_RC2",
+354:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_1_RC2",
+355:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_1_RC2",
+363:    "name": "BEANUTILS_1_8_1_RC1",
+364:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_1_RC1",
+365:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_1_RC1",
+373:    "name": "BEANUTILS_1_8_0",
+374:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_0",
+375:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_0",
+383:    "name": "BEANUTILS_1_8_0_RC3",
+384:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_0_RC3",
+385:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_0_RC3",
+393:    "name": "BEANUTILS_1_8_0_RC2",
+394:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_0_RC2",
+395:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_0_RC2",
+403:    "name": "BEANUTILS_1_8_0_RC1",
+404:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_0_RC1",
+405:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_0_RC1",
+413:    "name": "BEANUTILS_1_8_0_BETA",
+414:    "zipball_url": "https://api.github.com/repos/apache/commons-beanutils/zipball/refs/tags/BEANUTILS_1_8_0_BETA",
+415:    "tarball_url": "https://api.github.com/repos/apache/commons-beanutils/tarball/refs/tags/BEANUTILS_1_8_0_BETA",
+423:    "name": "BEANUTILS_1_7_0",
+433:    "name": "BEANUTILS_1_7_0_RC1",
+443:    "name": "BEANUTILS_1_6_1",
+453:    "name": "BEANUTILS_1_6_1_RC1",
+463:    "name": "BEANUTILS_1_6",
+473:    "name": "BEANUTILS_1_5",
+483:    "name": "BEANUTILS_1_4_1",
+493:    "name": "BEANUTILS_1_4",
+503:    "name": "BEANUTILS_1_3",
+513:    "name": "BEANUTILS_1_2",
+523:    "name": "BEANUTILS_1_1",
+533:    "name": "BEANUTILS_1_0",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|not-for-native-image|language' metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-$version$/activemq-client/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:29:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:30:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:43:    "test-code-url" : "https://github.com/apache/activemq-artemis/tree/$version$/artemis-log-annotation-processor/src/test",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:44:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-openwire-legacy/$version$/activemq-openwire-legacy-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'javadoc.io/doc|archive.apache.org/dist|github.com/.*/tree/.*/src/test|raw.githubusercontent.com' . -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/dev.zio/zio-config_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-config/tree/v$version$/core/shared/src/test",
+./metadata/dev.zio/zio-stacktracer_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+./metadata/dev.zio/zio-http_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-http/tree/v$version$/zio-http/jvm/src/test",
+./metadata/org.javamoney.moneta/moneta-core/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+./metadata/org.javamoney.moneta/moneta-core/index.json:21:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/datatypes/src/test",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/datetime/src/test",
+./metadata/org.junit.platform/junit-platform-launcher/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.9.2/platform-tests/src/test/java/org/junit/platform/launcher",
+./metadata/org.junit.platform/junit-platform-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.10.4/platform-tests/src/test/java/org/junit/platform/engine",
+./metadata/org.junit.platform/junit-platform-reporting/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.9.2/platform-tests/src/test/java/org/junit/platform/reporting",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/$version$/mail/src/test",
+./metadata/org.dom4j/dom4j/index.json:7:    "test-code-url" : "https://github.com/dom4j/dom4j/tree/version-$version$/src/test",
+./metadata/org.latencyutils/LatencyUtils/index.json:7:    "test-code-url" : "https://github.com/LatencyUtils/LatencyUtils/tree/LatencyUtils-$version$/src/test",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+./metadata/com.github.ghik/silencer-lib_2.13/index.json:7:    "test-code-url" : "https://github.com/ghik/silencer/tree/v$version$/silencer-lib/src/test",
+./metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.arquillian.test/arquillian-test-api/$version$",
+./metadata/org.apache.santuario/xmlsec/index.json:10:    "test-code-url": "https://github.com/apache/santuario-xml-security-java/tree/xmlsec-$version$/src/test",
+./metadata/org.sonatype.aether/aether-util/index.json:21:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-util/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-api/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:21:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-api/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:40:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-api/src/test/java",
+./metadata/org.sonatype.aether/aether-api/index.json:55:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-api/src/test/java",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+./metadata/org.glassfish/javax.servlet/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.servlet/$version$",
+./metadata/org.glassfish/javax.annotation/index.json:22:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.annotation/$version$",
+./metadata/org.jboss/jandex/index.json:7:    "test-code-url" : "https://github.com/smallrye/jandex/tree/$version$/src/test/java",
+./metadata/javax.money/money-api/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-api/tree/$version$/src/test",
+./metadata/com.h2database/h2/index.json:7:    "test-code-url" : "https://github.com/h2database/h2database/tree/version-$version$/h2/src/test",
+./metadata/io.netty/netty-codec/index.json:7:    "test-code-url" : "https://github.com/netty/netty/tree/netty-$version$/codec/src/test/java",
+./metadata/io.netty/netty-transport-native-epoll/index.json:7:    "test-code-url" : "https://github.com/netty/netty/tree/netty-4.1.42.Final/transport-native-epoll/src/test",
+./metadata/io.netty/netty-tcnative-classes/index.json:7:    "test-code-url" : "https://github.com/netty/netty-tcnative/tree/netty-tcnative-parent-$version$/openssl-dynamic/src/test",
+./metadata/io.netty/netty-transport-classes-kqueue/index.json:7:    "test-code-url" : "https://github.com/netty/netty/tree/netty-$version$/transport-native-kqueue/src/test/java/io/netty/channel/kqueue",
+./metadata/org.opentest4j/opentest4j/index.json:7:    "test-code-url" : "https://github.com/ota4j-team/opentest4j/tree/r1.2.0/src/test",
+./metadata/io.github.x-stream/mxparser/index.json:7:    "test-code-url" : "https://github.com/x-stream/mxparser/tree/v-$version$/src/test/java",
+./metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/test/java/io/grpc",
+./metadata/io.grpc/grpc-context/index.json:65:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/context/src/test",
+./metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/netty/src/test",
+./metadata/io.grpc/grpc-core/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/core/src/test",
+./metadata/com.shapesecurity/salvation2/index.json:7:    "test-code-url" : "https://github.com/shapesecurity/salvation/tree/v$version$/src/test",
+./metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:7:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-transport-file/src/test/java",
+./metadata/org.apache.maven.resolver/maven-resolver-util/index.json:7:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-util/src/test",
+./metadata/org.apache.maven.resolver/maven-resolver-util/index.json:37:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-util/src/test",
+./metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:21:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-connector-basic/src/test",
+./metadata/com.github.java-json-tools/msg-simple/index.json:7:    "test-code-url" : "https://github.com/java-json-tools/msg-simple/tree/v$version$/src/test",
+./metadata/com.github.java-json-tools/jackson-coreutils/index.json:7:    "test-code-url" : "https://github.com/java-json-tools/jackson-coreutils/tree/v2.0/src/test",
+./metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:7:    "test-code-url" : "https://github.com/jmurty/java-xmlbuilder/tree/v$version$/src/test/java",
+./metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:23:    "test-code-url" : "https://github.com/jmurty/java-xmlbuilder/tree/v$version$/src/test/java",
+./metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:38:    "test-code-url" : "https://github.com/jmurty/java-xmlbuilder/tree/v$version$/src/test",
+./metadata/io.zipkin.reporter2/zipkin-reporter/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin-reporter-java/tree/$version$/core/src/test/java",
+./metadata/io.zipkin.reporter2/zipkin-reporter/index.json:27:    "test-code-url" : "https://github.com/openzipkin/zipkin-reporter-java/tree/$version$/core/src/test/java",
+./metadata/io.zipkin.reporter2/zipkin-reporter/index.json:48:    "test-code-url" : "https://github.com/openzipkin/zipkin-reporter-java/tree/$version$/core/src/test/java",
+./metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v$version$-build-plan/jib-build-plan/src/test",
+./metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/$version$",
+./metadata/io.quarkus/quarkus-bootstrap-json/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/json/src/test",
+./metadata/io.quarkus/quarkus-classloader-commons/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/classloader-commons/src/test/java",
+./metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/app-model/src/test",
+./metadata/io.quarkus/quarkus-fs-util/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus-fs-util/tree/$version$/src/test",
+./metadata/org.mariadb/r2dbc-mariadb/index.json:10:    "test-code-url": "https://github.com/mariadb-corporation/mariadb-connector-r2dbc/tree/$version$/src/test",
+./metadata/com.google.protobuf/protobuf-java-util/index.json:7:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v23.0/java/util/src/test",
+./metadata/com.google.protobuf/protobuf-java-util/index.json:24:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v$version$/java/util/src/test",
+./metadata/com.google.protobuf/protobuf-java-util/index.json:48:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v$version$/java/util/src/test",
+./metadata/com.google.protobuf/protobuf-java/index.json:7:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v$version$/java/src/test/java",
+./metadata/org.apache.james/apache-mime4j-dom/index.json:7:    "test-code-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-$version$/dom/src/test",
+./metadata/org.apache.james/apache-mime4j-dom/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.james/apache-mime4j-dom/$version$/",
+./metadata/io.netty.incubator/netty-incubator-codec-classes-quic/index.json:7:    "test-code-url" : "https://github.com/netty/netty-incubator-codec-quic/tree/netty-incubator-codec-parent-quic-$version$/codec-native-quic/src/test/java/io/netty/incubator/codec/quic",
+./metadata/io.netty.incubator/netty-incubator-codec-classes-quic/index.json:21:    "test-code-url" : "https://github.com/netty/netty-incubator-codec-quic/tree/netty-incubator-codec-parent-quic-$version$/codec-native-quic/src/test/java/io/netty/incubator/codec/quic",
+./metadata/io.netty.incubator/netty-incubator-transport-classes-io_uring/index.json:7:    "test-code-url" : "https://github.com/netty/netty-incubator-transport-io_uring/tree/netty-incubator-transport-parent-io_uring-$version$/transport-native-io_uring/src/test",
+./metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:7:    "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
+./metadata/org.thymeleaf/thymeleaf/index.json:22:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-$version$/lib/thymeleaf/src/test",
+./metadata/org.thymeleaf/thymeleaf/index.json:39:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-$version$/lib/thymeleaf/src/test",
+./metadata/tools.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-$version$/src/test",
+./metadata/com.thoughtworks.proxytoys/proxytoys/index.json:7:    "test-code-url" : "https://github.com/proxytoys/proxytoys/tree/$version$/proxytoys/src/test/java",
+./metadata/net.razorvine/serpent/index.json:7:    "test-code-url" : "https://github.com/irmen/Serpent/tree/serpent-$version$/java/src/test",
+./metadata/net.razorvine/serpent/index.json:22:    "test-code-url" : "https://github.com/irmen/Serpent/tree/serpent-$version$/java/src/test",
+./metadata/net.razorvine/pyrolite/index.json:7:    "test-code-url" : "https://github.com/irmen/Pyrolite/tree/pyrolite-$version$/java/src/test",
+./metadata/net.razorvine/pyrolite/index.json:22:    "test-code-url" : "https://github.com/irmen/Pyrolite/tree/pyrolite-$version$/java/src/test",
+./metadata/net.razorvine/pickle/index.json:7:    "test-code-url" : "https://github.com/irmen/pickle/tree/pickle-$version$/java/src/test",
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/commons-beanutils.git 'refs/tags/BEANUTILS_1_8_0*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 342ms:
+bd202800f2e6f548a34250bb0992b18da7fa1239	refs/tags/BEANUTILS_1_8_0
+8fb2285efd72d72a359d9012216260a75bec09b7	refs/tags/BEANUTILS_1_8_0^{}
+0bc9c0c19cc8c8ffbb006334ad8a0263f4d50283	refs/tags/BEANUTILS_1_8_0_BETA
+ab66d0d0921ebdd3f25d23c6be05ebf2c1c4e083	refs/tags/BEANUTILS_1_8_0_BETA^{}
+f8d46b423247c909f63b66795c5c13fe09aad770	refs/tags/BEANUTILS_1_8_0_RC1
+64f381f16fc67ba00bde865baa56c6ec25e4af05	refs/tags/BEANUTILS_1_8_0_RC1^{}
+ce7cd66ba525c4ce31e54abcd009d1837034da12	refs/tags/BEANUTILS_1_8_0_RC2
+399093f15dc0b7a63e85ade89dde8a5541936f07	refs/tags/BEANUTILS_1_8_0_RC2^{}
+0cdd12a17837f154a8472e9eece9d162c2ae422e	refs/tags/BEANUTILS_1_8_0_RC3
+0ee997ae7e1fa7e9f3bb0f27e3c3e5090399be05	refs/tags/BEANUTILS_1_8_0_RC3^{}
+
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|repository-url|source-code-url|test-code-url|documentation-url|not-for-native-image' -S . | head -160" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:249:            throw new GradleException("Cannot mark a new version latest for not-for-native-image artifact: " + newCoords.group() + ":" + newCoords.artifact());
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:307:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:308:                null, // repository-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:309:                null, // test-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:310:                null, // documentation-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:317:                null, // not-for-native-image
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:136:            throw new IllegalStateException("Cannot add tested versions to not-for-native-image artifact: " + coordinatesMetadataIndex);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:29:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:31:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("not-for-native-image")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:100:            throw new IllegalStateException("Artifact '%s:%s' is marked not-for-native-image. Remove the marker before scaffolding Native Image metadata.".formatted(coordinates.group(), coordinates.artifact()));
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:347:                null, // not-for-native-image
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - repository-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "source-code-url" to the selected source URL with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:357:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:358:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:359:                    - Set "test-code-url" to the selected test suite URL with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:360:                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:370:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:373:                - Set missing "source-code-url" to the selected source URL with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:374:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:375:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:376:                - Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:377:                - Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:378:                - When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+./forge/git_scripts/make_pr_not_for_native_image.py:46:        description="Create a PR that adds a not-for-native-image marker index.",
+./forge/git_scripts/make_pr_not_for_native_image.py:70:    branch = build_ai_branch_name(f"not-for-native-image-{group}-{artifact}", cwd=repo_path)
+./forge/git_scripts/make_pr_not_for_native_image.py:104:        raise ValueError(f"Missing not-for-native-image marker for {group}:{artifact}")
+./forge/git_scripts/make_pr_not_for_native_image.py:119:This PR records `{group}:{artifact}` as `not-for-native-image`, so automation and downstream tools know this artifact is intentionally not a GraalVM Native Image reachability metadata target.
+./forge/git_scripts/make_pr_not_for_native_image.py:140:        "--label", "not-for-native-image",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./forge/ai_workflows/add_new_library_support.py:438:        log_stage("native-image-eligibility", f"{package}:{artifact} is already marked not-for-native-image")
+./forge/ai_workflows/add_new_library_support.py:453:                f"Marked {package}:{artifact} as not-for-native-image in {os.path.relpath(marker_path, reachability_repo_path)}",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./docs/CONTRIBUTING.md:108:* `source-code-url`: URL to the metadata source code location for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+./docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+./docs/CONTRIBUTING.md:110:* `test-code-url`: URL to the test source code location for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+./docs/CONTRIBUTING.md:111:* `documentation-url`: URL to the project documentation for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/$version$",
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/$version$",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+./docs/FUNCTIONAL_SPEC.md:163:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.0.1` → `v2.0.2` or `v2.0.x` → `v2.1.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`); patch bumps refine validation of those same auxiliary fields. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+./forge/docs/dynamic-access-workflow.md:54:   `source-code-url`, `test-code-url`, and `documentation-url` as required.
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./forge/utility_scripts/metadata_index.py:14:NOT_FOR_NATIVE_IMAGE_FIELD = "not-for-native-image"
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./forge/utility_scripts/native_image_artifact.py:34:    return os.path.join(repo_path, "build", "discovered-artifact-metadata", f"{sanitized}.json")
+./forge/utility_scripts/native_image_artifact.py:38:    """Read not-for-native-image eligibility from the discovery file when present."""
+./forge/utility_scripts/native_image_artifact.py:47:    if metadata.get("not-for-native-image") is not True:
+./metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:6:    "repository-url": "https://github.com/googleapis/java-bigquerystorage",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+./forge/utility_scripts/source_context.py:25:    "main": "source-code-url",
+./forge/utility_scripts/source_context.py:26:    "test": "test-code-url",
+./forge/utility_scripts/source_context.py:27:    "documentation": "documentation-url",
+./forge/utility_scripts/source_context.py:225:        repository_url=normalize_url_value(index_entry.get("repository-url")),
+./forge/utility_scripts/source_context.py:253:            f"ERROR: {group}:{artifact} is marked not-for-native-image in {index_path_display}.",
+./metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+./metadata/dev.zio/zio-config_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-config",
+./metadata/dev.zio/zio-config_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-config/tree/v$version$/core/shared/src/test",
+./metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:6:    "repository-url" : "https://github.com/zio/zio",
+./metadata/dev.zio/zio-stacktracer_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+./metadata/dev.zio/zio-stacktracer_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+./metadata/dev.zio/zio-http_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-http",
+./metadata/dev.zio/zio-http_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-http/tree/v$version$/zio-http/jvm/src/test",
+./metadata/dev.zio/zio-http_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:6:    "repository-url" : "https://github.com/zio/zio",
+./metadata/dev.zio/zio-internal-macros_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+./metadata/dev.zio/zio-internal-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-schema-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-schema-macros_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-schema",
+./metadata/dev.zio/zio-schema-macros_3/index.json:7:    "test-code-url" : "N/A",
+./metadata/dev.zio/zio-schema-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+./metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:64:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:65:   - For pre-release promotions, verify the `source-code-url`, `test-code-url`, and `documentation-url` values were rendered from the old version to the promoted `metadata-version` or otherwise corrected to an exact-version URL. Do not accept stale URLs that still point at the old pre-release.
+./skills/review-library-bulk-update/SKILL.md:75:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:76:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+./skills/review-library-bulk-update/SKILL.md:77:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./forge/forge_metadata.py:154:LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
+./forge/forge_metadata.py:3386:        f"`{group}:{artifact}` is already tracked in the repository as `not-for-native-image`, "
+./forge/forge_metadata.py:3398:            f"ERROR: Failed to apply not-for-native-image follow-up to issue #{issue['number']}: {exc!r}",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:161:                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:162:                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:163:                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:173:                - Set "repository-url" to the discovered repository root URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:174:                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:177:                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ exited 22 in 0ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 16:21:35 GMT
+content-type: text/html
+cf-ray: 9f6099835f1a24c0-ZRH
+cf-cache-status: HIT
+age: 3559
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/commons-beanutils/BEANUTILS_1_8_0/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 196ms:
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-parent</artifactId>
+    <version>11</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>commons-beanutils</groupId>
+  <artifactId>commons-beanutils</artifactId>
+  <version>1.8.0</version>
+  <name>Commons BeanUtils</name>
+
+  <inceptionYear>2000</inceptionYear>
+  <description>BeanUtils provides an easy-to-use but flexible wrapper around reflection and introspection.</description>
+
+  <url>http://commons.apache.org/beanutils/</url>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.apache.org/jira/browse/BEANUTILS</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/beanutils/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/beanutils/trunk/</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/proper/beanutils/trunk/</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Robert Burrell Donkin</name>
+      <id>rdonkin</id>
+      <email>rdonkin@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>dIon Gillard</name>
+      <id>dion</id>
+      <email>dion@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Craig McClanahan</name>
+      <id>craigmcc</id>
+      <email>craigmcc@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Geir Magnusson Jr.</name>
+      <id>geirm</id>
+      <email>geirm@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Scott Sanders</name>
+      <id>sanders</id>
+      <email>sanders@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>James Strachan</name>
+      <id>jstrachan</id>
+      <email>jstrachan@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Rodney Waldhoff</name>
+      <id>rwaldhoff</id>
+      <email>rwaldhoff@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Martin van den Bemt</name>
+      <id>mvdb</id>
+      <email>mvdb@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Yoav Shapira</name>
+      <id>yoavs</id>
+      <email>yoavs@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Niall Pemberton</name>
+      <id>niallp</id>
+      <email>niallp at apache dot org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>Simon Kitching</name>
+      <id>skitching</id>
+      <email>skitching@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+    <developer>
+      <name>James Carman</name>
+      <id>jcarman</id>
+      <email>jcarman@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Paul Jack</name>
+      <email></email>
+    </contributor>
+    <contributor>
+      <name>Stephen Colebourne</name>
+      <email></email>
+    </contributor>
+    <contributor>
+      <name>Berin Loritsch</name>
+      <email></email>
+    </contributor>    
+  </contributors>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId> 
+      <version>3.2.1</version> 
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections-testframework</artifactId> 
+      <version>3.2.1</version> 
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+      <sourceDirectory>src/java</sourceDirectory>
+      <testSourceDirectory>src/test</testSourceDirectory>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <forkMode>pertest</forkMode>
+              <!-- limit memory size see BEANUTILS-291 -->
+              <argLine>-Xmx25M</argLine>
+              <includes>
+                <include>**/*TestCase.java</include>
+              </includes>
+              <excludes>
+                <!-- This test case is known to fail, and there isn't any proposed fix
+                  -  so we will just exclude it until someone comes up with a solution.
+                -->
+                <exclude>**/*MemoryTestCase.java</exclude>
+              </excludes>
+
+              <!-- Configure Logging -->
+              <systemProperties>
+                  <property>
+                      <name>org.apache.commons.logging.LogFactory</name>
+                      <value>org.apache.commons.logging.impl.LogFactoryImpl</value>
+                  </property>
+                  <property>
+                      <name>org.apache.commons.logging.Log</name>
+                      <value>org.apache.commons.logging.impl.SimpleLog</value>
+                  </property>
+                  <property>
+                      <name>org.apache.commons.logging.simplelog.defaultlog</name>
+                      <value>WARN</value>
+                  </property>
+              </systemProperties>
+
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <configuration>
+                <tasks>
+                  <ant antfile="build-other-jars.xml" target="other-jars">
+                    <property name="component.version"    value="${project.version}"/>
+                    <property name="build.home"           value="${project.build.directory}"/>
+                    <property name="dist.home"            value="${project.build.directory}"/>
+                    <property name="maven.compile.source" value="${maven.compile.source}"/>
+                    <property name="maven.compile.target" value="${maven.compile.target}"/>
+                  </ant>
+                </tasks>
+              </configuration>
+              <goals>
+
+web search: 
+web search: Commons BeanUtils 1.8.0 javadocs apidocs
+web search: 
+web search: https://commons.apache.org/beanutils/index
+web search: 
+web search: repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0 commons-beanutils-core-1.8.0.jar pom
+web search: 
+web search: https://commons.apache.org/beanutils/index
+web search: 
+web search: https://commons.apache.org/proper/commons-beanutils/scm.html
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"https://github.com/apache/commons-' metadata | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+metadata/commons-fileupload/commons-fileupload/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-compress/index.json:5:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:20:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-configuration2/index.json:6:    "repository-url" : "https://github.com/apache/commons-configuration",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:20:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:34:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:48:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-exec/index.json:6:    "repository-url" : "https://github.com/apache/commons-exec",
+metadata/org.apache.commons/commons-exec/index.json:20:    "repository-url" : "https://github.com/apache/commons-exec",
+metadata/org.apache.commons/commons-lang3/index.json:6:    "repository-url" : "https://github.com/apache/commons-lang",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:20:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:34:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-math/index.json:6:    "repository-url" : "https://github.com/apache/commons-math",
+metadata/org.apache.commons/commons-collections4/index.json:6:    "repository-url" : "https://github.com/apache/commons-collections",
+metadata/commons-io/commons-io/index.json:6:    "repository-url" : "https://github.com/apache/commons-io",
+metadata/commons-io/commons-io/index.json:25:    "repository-url" : "https://github.com/apache/commons-io",
+metadata/commons-cli/commons-cli/index.json:6:    "repository-url" : "https://github.com/apache/commons-cli",
+metadata/commons-logging/commons-logging-api/index.json:6:    "repository-url" : "https://github.com/apache/commons-logging",
+metadata/commons-net/commons-net/index.json:6:    "repository-url" : "https://github.com/apache/commons-net",
+metadata/commons-daemon/commons-daemon/index.json:6:    "repository-url" : "https://github.com/apache/commons-daemon",
+metadata/commons-codec/commons-codec/index.json:6:    "repository-url" : "https://github.com/apache/commons-codec",
+
+exec
+/usr/bin/bash -lc "rg -n 'gitbox.apache.org/repos/asf' metadata | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf/zookeeper.git",
+metadata/org.apache.commons/commons-text/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf?p=commons-text.git",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/ | rg 'sources|javadoc|tests|src|jar|pom'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+<a href="commons-beanutils-1.8.0-javadoc.jar" title="commons-beanutils-1.8.0-javadoc.jar">commons-beanutils-1.8.0-javadoc.jar</a>               2008-08-28 16:21   1324396      
+<a href="commons-beanutils-1.8.0-javadoc.jar.asc" title="commons-beanutils-1.8.0-javadoc.jar.asc">commons-beanutils-1.8.0-javadoc.jar.asc</a>           2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0-javadoc.jar.asc.md5" title="commons-beanutils-1.8.0-javadoc.jar.asc.md5">commons-beanutils-1.8.0-javadoc.jar.asc.md5</a>       2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-javadoc.jar.asc.sha1" title="commons-beanutils-1.8.0-javadoc.jar.asc.sha1">commons-beanutils-1.8.0-javadoc.jar.asc.sha1</a>      2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0-javadoc.jar.md5" title="commons-beanutils-1.8.0-javadoc.jar.md5">commons-beanutils-1.8.0-javadoc.jar.md5</a>           2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-javadoc.jar.sha1" title="commons-beanutils-1.8.0-javadoc.jar.sha1">commons-beanutils-1.8.0-javadoc.jar.sha1</a>          2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0-sources.jar" title="commons-beanutils-1.8.0-sources.jar">commons-beanutils-1.8.0-sources.jar</a>               2008-08-28 16:21    295368      
+<a href="commons-beanutils-1.8.0-sources.jar.asc" title="commons-beanutils-1.8.0-sources.jar.asc">commons-beanutils-1.8.0-sources.jar.asc</a>           2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0-sources.jar.asc.md5" title="commons-beanutils-1.8.0-sources.jar.asc.md5">commons-beanutils-1.8.0-sources.jar.asc.md5</a>       2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-sources.jar.asc.sha1" title="commons-beanutils-1.8.0-sources.jar.asc.sha1">commons-beanutils-1.8.0-sources.jar.asc.sha1</a>      2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0-sources.jar.md5" title="commons-beanutils-1.8.0-sources.jar.md5">commons-beanutils-1.8.0-sources.jar.md5</a>           2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-sources.jar.sha1" title="commons-beanutils-1.8.0-sources.jar.sha1">commons-beanutils-1.8.0-sources.jar.sha1</a>          2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.jar" title="commons-beanutils-1.8.0.jar">commons-beanutils-1.8.0.jar</a>                       2008-08-28 16:21    231320      
+<a href="commons-beanutils-1.8.0.jar.asc" title="commons-beanutils-1.8.0.jar.asc">commons-beanutils-1.8.0.jar.asc</a>                   2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0.jar.asc.md5" title="commons-beanutils-1.8.0.jar.asc.md5">commons-beanutils-1.8.0.jar.asc.md5</a>               2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.jar.asc.sha1" title="commons-beanutils-1.8.0.jar.asc.sha1">commons-beanutils-1.8.0.jar.asc.sha1</a>              2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.jar.md5" title="commons-beanutils-1.8.0.jar.md5">commons-beanutils-1.8.0.jar.md5</a>                   2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.jar.sha1" title="commons-beanutils-1.8.0.jar.sha1">commons-beanutils-1.8.0.jar.sha1</a>                  2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.pom" title="commons-beanutils-1.8.0.pom">commons-beanutils-1.8.0.pom</a>                       2008-08-28 16:21     10786      
+<a href="commons-beanutils-1.8.0.pom.asc" title="commons-beanutils-1.8.0.pom.asc">commons-beanutils-1.8.0.pom.asc</a>                   2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0.pom.asc.md5" title="commons-beanutils-1.8.0.pom.asc.md5">commons-beanutils-1.8.0.pom.asc.md5</a>               2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.pom.asc.sha1" title="commons-beanutils-1.8.0.pom.asc.sha1">commons-beanutils-1.8.0.pom.asc.sha1</a>              2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.pom.md5" title="commons-beanutils-1.8.0.pom.md5">commons-beanutils-1.8.0.pom.md5</a>                   2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.pom.sha1" title="commons-beanutils-1.8.0.pom.sha1">commons-beanutils-1.8.0.pom.sha1</a>                  2008-08-28 16:21        40      
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/commons-beanutils/BEANUTILS_1_8_0/build-other-jars.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/commons-beanutils/BEANUTILS_1_8_0/README.txt | sed -n '1,100p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc "curl -fsSL https://commons.apache.org/proper/commons-beanutils/ | sed -n '1,180p' | rg -n 'reflection|introspection|BeanUtils|Source|scm|github|gitbox|Javadoc|API'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 116ms:
+11:                    <title>Commons – Apache Commons BeanUtils</title>
+32:"  alt="Commons BeanUtils"/>
+39:          <a class="brand" href="https://commons.apache.org/proper/commons-beanutils/">Apache Commons BeanUtils &trade;</a>
+69:                           <li class="nav-header">Commons BeanUtils</li>
+91:                  <a href="scm.html" title="Sources">
+92:    Sources</a>
+111:                  <a href="" title="Javadoc">
+112:    Javadoc</a>
+115:                  <a href="apidocs/index.html" title="Javadoc Current">
+116:    Javadoc Current</a>
+119:                  <a href="https://javadoc.io/doc/org.apache.commons/commons-beanutils2" class="externalLink" title="Javadoc Archive">
+120:    Javadoc Archive</a>
+144:                  <a href="https://javadoc.io/doc/org.apache.commons/commons-beanutils2/2.0.0-M2/index.html" class="externalLink" title="API">
+145:    API</a>
+162:                  <a href="https://javadoc.io/doc/org.apache.commons/commons-beanutils2/2.0.0-M1/index.html" class="externalLink" title="API">
+163:    API</a>
+180:                  <a href="https://javadoc.io/doc/commons-beanutils/commons-beanutils/1.11.0/index.html" class="externalLink" title="API">
+
+ succeeded in 183ms:
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project name="Bean Utilities (Other jars)" default="other-jars" basedir=".">
+
+
+<!--
+        $Id$
+-->
+
+
+<!-- ========== Component Declarations ==================================== -->
+
+
+  <!-- The current version number of this component -->
+  <property name="component.version"       value=""/>
+
+  <!-- The base directory for compilation targets -->
+  <property name="build.home"              value="target"/>
+
+  <!-- The base directory for distribution targets -->
+  <property name="dist.home"               value="dist"/>
+
+  <!-- JDK versions -->
+  <property name="maven.compile.source"    value=""/>
+  <property name="maven.compile.target"    value=""/>
+
+
+<!-- ========== Executable Targets ======================================== -->
+
+  <target name="other-jars" depends="core-jar,bean-collections-jar">
+  </target>
+
+  <target name="core-jar" description="Create BeanUtils Core jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="LICENSE.txt" tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <copy      file="NOTICE.txt"  tofile="${build.home}/classes/META-INF/NOTICE.txt"/>
+    <jar    jarfile="${dist.home}/commons-beanutils-core-${component.version}.jar">
+        <manifest>
+            <attribute name="Specification-Title" value="Commons BeanUtils Core"/>
+            <attribute name="Specification-Version" value="${component.version}"/>
+            <attribute name="Specification-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Title" value="Commons BeanUtils Core"/>
+            <attribute name="Implementation-Version" value="${component.version}"/> 
+            <attribute name="Implementation-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Vendor-Id" value="org.apache"/>
+            <attribute name="X-Compile-Source-JDK" value="${maven.compile.source}"/>
+            <attribute name="X-Compile-Target-JDK" value="${maven.compile.target}"/>
+        </manifest>
+        <fileset dir="${build.home}/classes">
+            <include name="**/*.class"/>
+            <include name="**/LICENSE.txt"/>
+            <include name="**/NOTICE.txt"/>
+            <exclude name="**/BeanComparator*.class"/>
+            <exclude name="**/BeanMap*.class"/>
+            <exclude name="**/BeanPredicate*.class"/>
+            <exclude name="**/BeanPropertyValueChangeClosure*.class"/>
+            <exclude name="**/BeanPropertyValueEqualsPredicate*.class"/>
+            <exclude name="**/BeanToPropertyValueTransformer*.class"/>
+        </fileset>
+    </jar>
+  </target>
+
+  <target name="bean-collections-jar" description="Create Bean Collections jar">
+    <mkdir      dir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="LICENSE.txt" tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+    <copy      file="NOTICE.txt"  tofile="${build.home}/classes/META-INF/NOTICE.txt"/>
+    <jar    jarfile="${dist.home}/commons-beanutils-bean-collections-${component.version}.jar">
+        <manifest>
+            <attribute name="Specification-Title" value="Commons BeanUtils Bean Collections"/>
+            <attribute name="Specification-Version" value="${component.version}"/>
+            <attribute name="Specification-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Title" value="Commons BeanUtils Bean Collections"/>
+            <attribute name="Implementation-Version" value="${component.version}"/> 
+            <attribute name="Implementation-Vendor" value="The Apache Software Foundation"/>
+            <attribute name="Implementation-Vendor-Id" value="org.apache"/>
+            <attribute name="X-Compile-Source-JDK" value="${maven.compile.source}"/>
+            <attribute name="X-Compile-Target-JDK" value="${maven.compile.target}"/>
+        </manifest>
+        <fileset dir="${build.home}/classes">
+            <include name="**/LICENSE.txt"/>
+            <include name="**/NOTICE.txt"/>
+            <include name="**/BeanComparator*.class"/>
+            <include name="**/BeanMap*.class"/>
+            <include name="**/BeanPredicate*.class"/>
+            <include name="**/BeanPropertyValueChangeClosure*.class"/>
+            <include name="**/BeanPropertyValueEqualsPredicate*.class"/>
+            <include name="**/BeanToPropertyValueTransformer*.class"/>
+        </fileset>
+    </jar>
+  </target>
+
+</project>
+
+ succeeded in 209ms:
+README
+======
+
+Jars
+----
+
+BeanUtils now comes packaged (into jars) in two different ways: 
+
+    an all-in-one jar (commons-beanutils.jar);
+    and as modular component jars:
+	commons-beanutils-core.jar (core classes)
+	commons-beanutils-bean-collections.jar (additional dependency on commons-collections 3.0)
+
+Those who want it all should grab the all-in-one jar (and the optional dependencies) 
+whereas those who need minimal dependencies should use commons-beanutils-core.jar
+plus any optional jars they plan to use.
+
+All classes that were in the last release are in commons-beanutils-core except for BeanComparator. 
+
+Commons-Collections
+-------------------
+BeanUtils now ships with a small number of commons collections classes. 
+This is a temporary measure intended to allow BeanUtils core to be used with 
+either commons-collections 2 or commons-collections-3 without a dependency on either.
+It is intended that soon BeanUtils core will have no dependency on any commons collection
+packaged classes.
+exec
+/usr/bin/bash -lc "curl -fsSL https://commons.apache.org/proper/commons-beanutils/ | sed -n '170,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+                    <ul>
+                              <li class="none">
+                  <a href="https://dlcdn.apache.org/commons/beanutils/RELEASE-NOTES.txt" class="externalLink" title="Release Notes">
+    Release Notes</a>
+          </li>
+                                 <li class="none">
+                  <a href="https://javadoc.io/doc/commons-beanutils/commons-beanutils/1.11.0/org/apache/commons/beanutils/package-summary.html" class="externalLink" title="User Guide">
+    User Guide</a>
+          </li>
+                                 <li class="none">
+                  <a href="https://javadoc.io/doc/commons-beanutils/commons-beanutils/1.11.0/index.html" class="externalLink" title="API">
+    API</a>
+          </li>
+                   </ul>
+              </li>
+                                                                                                                         <li class="expanded active">
+                  <a href="index.html" title="1.10.1">
+    1.10.1</a>
+                    <ul>
+                              <li class="none">
+                  <a href="https://dlcdn.apache.org/commons/beanutils/RELEASE-NOTES.txt" class="externalLink" title="Release Notes">
+    Release Notes</a>
+          </li>
+                                 <li class="none">
+                  <a href="https://javadoc.io/doc/commons-beanutils/commons-beanutils/1.10.1/org/apache/commons/beanutils/package-summary.html" class="externalLink" title="User Guide">
+    User Guide</a>
+          </li>
+                                 <li class="none">
+                  <a href="https://javadoc.io/doc/commons-beanutils/commons-beanutils/1.10.1/index.html" class="externalLink" title="API">
+    API</a>
+          </li>
+                   </ul>
+              </li>
+                                                                                                                         <li class="expanded active">
+                  <a href="index.html" title="1.9.3">
+    1.9.3</a>
+                    <ul>
+                              <li class="none">
+                  <a href="../../beanutils/javadocs/v1.9.3/RELEASE-NOTES.txt" title="Release Notes">
+    Release Notes</a>
+          </li>
+                                 <li class="none">
+                  <a href="../../beanutils/javadocs/v1.9.3/apidocs/org/apache/commons/beanutils/package-summary.html#package_description" title="User Guide">
+    User Guide</a>
+          </li>
+                                 <li class="none">
+                  <a href="../../beanutils/javadocs/v1.9.3/apidocs/index.html" title="API">
+    API</a>
+          </li>
+                   </ul>
+              </li>
+                                                                                                                         <li class="expanded active">
+                  <a href="index.html" title="1.9.2">
+    1.9.2</a>
+                    <ul>
+                              <li class="none">
+                  <a href="../../beanutils/javadocs/v1.9.2/RELEASE-NOTES.txt" title="Release Notes">
+    Release Notes</a>
+          </li>
+                                 <li class="none">
+                  <a href="../../beanutils/javadocs/v1.9.2/apidocs/org/apache/commons/beanutils/package-summary.html#package_description" title="User Guide">
+    User Guide</a>
+          </li>
+                                 <li class="none">
+                  <a href="../../beanutils/javadocs/v1.9.2/apidocs/index.html" title="API">
+    API</a>
+          </li>
+                   </ul>
+              </li>
+                                                                                                                         <li class="expanded active">
+                  <a href="index.html" title="1.8.3">
+    1.8.3</a>
+                    <ul>
+                              <li class="none">
+                  <a href="../../beanutils/javadocs/v1.8.3/RELEASE-NOTES.txt" title="Release Notes">
+    Release Notes</a>
+          </li>
+                                 <li class="none">
+                  <a href="../../beanutils/javadocs/v1.8.3/apidocs/org/apache/commons/beanutils/package-summary.html#package_description" title="User Guide">
+    User Guide</a>
+          </li>
+                                 <li class="none">
+                  <a href="../../beanutils/javadocs/v1.8.3/apidocs/index.html" title="API">
+    API</a>
+          </li>
+                   </ul>
+              </li>
+                 </ul>
+      <ul class="nav nav-list">
+                                 <li class="nav-header">Project Documentation</li>
+                                                                                                                                                                                                                                                                                                          <li class="expanded">
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://commons.apache.org/proper/commons-beanutils/scm.html | sed -n '1,220p' | rg -n 'Git|github|gitbox|Repository|connection|Source|Browse|URL|https://'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+10:                        <title>Source Code Management – Apache Commons BeanUtils</title>
+25:                      <a href="https://commons.apache.org/" id="bannerLeft">
+38:          <a class="brand" href="https://commons.apache.org/proper/commons-beanutils/">Apache Commons BeanUtils &trade;</a>
+45:                  <a href="https://www.apachecon.com/" class="externalLink" title="ApacheCon">
+49:                  <a href="https://www.apache.org" class="externalLink" title="Apache">
+90:                  <a href="scm.html" title="Sources">
+91:    Sources</a>
+98:                  <a href="https://www.apache.org/licenses/LICENSE-2.0" class="externalLink" title="License">
+102:                  <a href="https://www.apache.org/foundation/policies/conduct.html" class="externalLink" title="Code of Conduct">
+118:                  <a href="https://javadoc.io/doc/org.apache.commons/commons-beanutils2" class="externalLink" title="Javadoc Archive">
+178:                  <a href="scm.html" title="Source Code Management">
+179:    Source Code Management</a>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.jar -o /tmp/commons-beanutils-core-1.8.0.jar && jar tf /tmp/commons-beanutils-core-1.8.0.jar | head -40' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 263ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/
+org/apache/
+org/apache/commons/
+org/apache/commons/beanutils/
+org/apache/commons/beanutils/BasicDynaBean.class
+org/apache/commons/beanutils/BasicDynaClass.class
+org/apache/commons/beanutils/BeanAccessLanguageException.class
+org/apache/commons/beanutils/BeanUtils.class
+org/apache/commons/beanutils/BeanUtilsBean$1.class
+org/apache/commons/beanutils/BeanUtilsBean.class
+org/apache/commons/beanutils/BeanUtilsBean2.class
+org/apache/commons/beanutils/ConstructorUtils.class
+org/apache/commons/beanutils/ContextClassLoaderLocal.class
+org/apache/commons/beanutils/ConversionException.class
+org/apache/commons/beanutils/ConvertUtils.class
+org/apache/commons/beanutils/ConvertUtilsBean.class
+org/apache/commons/beanutils/ConvertUtilsBean2.class
+org/apache/commons/beanutils/Converter.class
+org/apache/commons/beanutils/ConvertingWrapDynaBean.class
+org/apache/commons/beanutils/DynaBean.class
+org/apache/commons/beanutils/DynaBeanMapDecorator$MapEntry.class
+org/apache/commons/beanutils/DynaBeanMapDecorator.class
+org/apache/commons/beanutils/DynaClass.class
+org/apache/commons/beanutils/DynaProperty.class
+org/apache/commons/beanutils/JDBCDynaClass.class
+org/apache/commons/beanutils/LazyDynaBean.class
+org/apache/commons/beanutils/LazyDynaClass.class
+org/apache/commons/beanutils/LazyDynaList.class
+org/apache/commons/beanutils/LazyDynaMap.class
+org/apache/commons/beanutils/MappedPropertyDescriptor$MappedMethodReference.class
+org/apache/commons/beanutils/MappedPropertyDescriptor.class
+org/apache/commons/beanutils/MethodUtils$MethodDescriptor.class
+org/apache/commons/beanutils/MethodUtils.class
+org/apache/commons/beanutils/MutableDynaClass.class
+org/apache/commons/beanutils/NestedNullException.class
+org/apache/commons/beanutils/PropertyUtils.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-sources.jar -o /tmp/commons-beanutils-1.8.0-sources.jar && jar tf /tmp/commons-beanutils-1.8.0-sources.jar | rg 'BeanUtils.java|BeanComparator.java|src/test|TestCase' | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.zip -o /tmp/commons-beanutils-1.8.0-src.zip && zipinfo -1 /tmp/commons-beanutils-1.8.0-src.zip | rg 'src/test|src/java/org/apache/commons/beanutils/BeanUtils.java|build-other-jars.xml' | head -60" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 240ms:
+org/apache/commons/beanutils/BeanComparator.java
+org/apache/commons/beanutils/BeanUtils.java
+org/apache/commons/beanutils/locale/LocaleBeanUtils.java
+
+ exited 22 in 248ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 16:22:17 GMT
+content-type: text/html
+cf-ray: 9f609a83edbf23bc-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 452ms:
+commons-beanutils-1.8.0-src/src/test/
+commons-beanutils-1.8.0-src/src/test/org/
+commons-beanutils-1.8.0-src/src/test/org/apache/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/other/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/expression/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/locale/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/locale/converters/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/memoryleaktests/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/memoryleaktests/pojotests/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/priv/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/collections/
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/collections/keyvalue/
+commons-beanutils-1.8.0-src/build-other-jars.xml
+commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanUtils.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/A.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/AbstractChild.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/AbstractParent.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/AlphaBean.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BasicDynaBeanTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanComparatorTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanificationTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanMapTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanPredicateTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanPropertyValueChangeClosureTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanPropertyValueEqualsPredicateTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanToPropertyValueTransformerTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanUtils2TestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanUtilsBenchCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanUtilsTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BeanWithInnerBean.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BenchBean.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/BetaBean.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/Jira157TestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/Jira18TestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/Jira273TestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/Jira298TestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/Jira61TestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/Jira87TestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/Jira92TestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/other/Jira18BeanFactory.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/other/Jira273BeanFactory.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/other/Jira298BeanFactory.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/other/Jira61BeanFactory.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/other/Jira87BeanFactory.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/Child.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/ConstructorUtilsTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/ArrayConverterTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/BigDecimalConverterTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/BigIntegerConverterTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/BooleanArrayConverterTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/BooleanConverterTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/ByteConverterTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/CalendarConverterTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/CharacterConverterTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/ClassConverterTestCase.java
+commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/ClassReloader.java
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 16:22:21 GMT
+content-type: application/java-archive
+content-length: 1324396
+cf-ray: 9f609aa35cb77dd2-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1366008
+etag: "875d249e75934aa34600ed00c21ddd4c"
+last-modified: Thu, 28 Aug 2008 16:21:24 GMT
+x-checksum-md5: 875d249e75934aa34600ed00c21ddd4c
+x-checksum-sha1: a36b1b41ebcdb0b098e80d3d0e1a28cc08d58613
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 16:22:21 GMT
+content-type: application/java-archive
+content-length: 295368
+cf-ray: 9f609aa36b280d25-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1258284
+etag: "c4d07d647734e3272422e13959de3266"
+last-modified: Thu, 28 Aug 2008 16:21:24 GMT
+x-checksum-md5: c4d07d647734e3272422e13959de3266
+x-checksum-sha1: 2818502bbb50bbcbd3f57e92a2bfe4d496f37688
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+HTTP/1.1 200 OK
+Date: Sun, 03 May 2026 16:22:22 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Thu, 28 Aug 2008 16:21:24 GMT
+ETag: "9f0a7-4558787322900"
+Accept-Ranges: bytes
+Content-Length: 651431
+Content-Type: application/zip
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/
+web search: 
+web search: repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.jar
+web search: 
+web search: https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/
+web search: 
+web search: https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/
+web search: 
+web search: https://raw.githubusercontent.com/apache/commons-beanutils/BEANUTILS_1_8_0/README.txt
+exec
+/usr/bin/bash -lc "sed -n '200,310p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+                        entry.latest(),
+                        entry.override(),
+                        entry.defaultFor(),
+                        newVersion,
+                        entry.testVersion(),
+                        promotedUrls.sourceCodeUrl(),
+                        entry.repositoryUrl(),
+                        promotedUrls.testCodeUrl(),
+                        promotedUrls.documentationUrl(),
+                        entry.description(),
+                        entry.language(),
+                        entry.testedVersions(),
+                        entry.skippedVersions(),
+                        entry.allowedPackages(),
+                        entry.requires(),
+                        null,
+                        null,
+                        null
+                );
+            }
+        }
+
+        return entry;
+    }
+
+    private PromotedUrls promoteArtifactUrls(MetadataVersionsIndexEntry entry, String oldVersion, String newVersion) {
+        return new PromotedUrls(
+                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+        );
+    }
+
+    private String promoteUrl(String fieldName, String currentUrl, String oldVersion, String newVersion, UrlVerification verification) {
+        if (!hasText(currentUrl) || "N/A".equals(currentUrl)) {
+            return currentUrl;
+        }
+
+        String promotedUrl = renderVersionTemplate(currentUrl, oldVersion, newVersion);
+        verifyPromotedUrl(fieldName, promotedUrl, oldVersion, newVersion, verification);
+        return toStoredVersionTemplate(promotedUrl, newVersion);
+    }
+
+    private void verifyPromotedUrl(String fieldName, String promotedUrl, String oldVersion, String newVersion, UrlVerification verification) {
+        if (!promotedUrl.contains(newVersion)) {
+            throw staleUrlException(fieldName, promotedUrl, oldVersion, newVersion, "URL does not contain the promoted metadata version");
+        }
+        if (containsIgnoreCase(promotedUrl, oldVersion)) {
+            throw staleUrlException(fieldName, promotedUrl, oldVersion, newVersion, "URL still contains the old pre-release version");
+        }
+
+        try {
+            if (verification == UrlVerification.ARCHIVE_WITH_SOURCES) {
+                verifySourceUrl(promotedUrl);
+            } else if (verification == UrlVerification.TEST_CODE && isArchiveUrl(promotedUrl)) {
+                verifyArchiveContainsSourceFiles(promotedUrl);
+            } else {
+                verifyUrlResolves(promotedUrl);
+            }
+        } catch (IOException | InterruptedException | IllegalArgumentException e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw staleUrlException(fieldName, promotedUrl, oldVersion, newVersion, e.getMessage());
+        }
+    }
+
+    private static String renderVersionTemplate(String currentUrl, String oldVersion, String newVersion) {
+        if (currentUrl.contains(VERSION_PLACEHOLDER)) {
+            return currentUrl.replace(VERSION_PLACEHOLDER, newVersion);
+        }
+        if (containsIgnoreCase(currentUrl, oldVersion)) {
+            Pattern oldVersionPattern = Pattern.compile(Pattern.quote(oldVersion), Pattern.CASE_INSENSITIVE);
+            return oldVersionPattern.matcher(currentUrl).replaceAll(Matcher.quoteReplacement(newVersion));
+        }
+
+        String urlVersion = findTemplateVersionToken(currentUrl, newVersion);
+        if (urlVersion == null) {
+            return currentUrl;
+        }
+        Pattern urlVersionPattern = Pattern.compile(Pattern.quote(urlVersion), Pattern.CASE_INSENSITIVE);
+        return urlVersionPattern.matcher(currentUrl).replaceAll(Matcher.quoteReplacement(newVersion));
+    }
+
+    private static String findTemplateVersionToken(String currentUrl, String newVersion) {
+        Matcher newVersionMatcher = VERSION_PATTERN.matcher(newVersion);
+        if (!newVersionMatcher.matches() || newVersionMatcher.group(2) != null) {
+            return null;
+        }
+
+        String baseVersion = newVersionMatcher.group(1);
+        Matcher urlVersionMatcher = URL_VERSION_TOKEN_PATTERN.matcher(currentUrl);
+        while (urlVersionMatcher.find()) {
+            String urlVersion = urlVersionMatcher.group();
+            if (urlVersion.equalsIgnoreCase(newVersion)) {
+                continue;
+            }
+
+            Matcher candidateMatcher = VERSION_PATTERN.matcher(urlVersion);
+            if (candidateMatcher.matches() && candidateMatcher.group(2) != null && baseVersion.equals(candidateMatcher.group(1))) {
+                return urlVersion;
+            }
+        }
+        return null;
+    }
+
+    private static String toStoredVersionTemplate(String url, String version) {
+        Pattern versionPattern = Pattern.compile(Pattern.quote(version), Pattern.CASE_INSENSITIVE);
+        return versionPattern.matcher(url).replaceAll(Matcher.quoteReplacement(VERSION_PLACEHOLDER));
+    }
+
+
+exec
+/usr/bin/bash -lc "rg -n 'enum UrlVerification|ARCHIVE_WITH_SOURCES|TEST_CODE|promoteUrl' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java -C 3" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+224-
+225-    private PromotedUrls promoteArtifactUrls(MetadataVersionsIndexEntry entry, String oldVersion, String newVersion) {
+226-        return new PromotedUrls(
+227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+230-        );
+231-    }
+232-
+233:    private String promoteUrl(String fieldName, String currentUrl, String oldVersion, String newVersion, UrlVerification verification) {
+234-        if (!hasText(currentUrl) || "N/A".equals(currentUrl)) {
+235-            return currentUrl;
+236-        }
+--
+249-        }
+250-
+251-        try {
+252:            if (verification == UrlVerification.ARCHIVE_WITH_SOURCES) {
+253-                verifySourceUrl(promotedUrl);
+254:            } else if (verification == UrlVerification.TEST_CODE && isArchiveUrl(promotedUrl)) {
+255-                verifyArchiveContainsSourceFiles(promotedUrl);
+256-            } else {
+257-                verifyUrlResolves(promotedUrl);
+--
+626-        }
+627-    }
+628-
+629:    private enum UrlVerification {
+630:        ARCHIVE_WITH_SOURCES,
+631:        TEST_CODE,
+632-        RESOLVES
+633-    }
+634-
+
+exec
+/usr/bin/bash -lc "sed -n '430,560p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+            else if (lines.get(i).startsWith("library.coordinates")) lines.set(i, "library.coordinates = " + group + ":" + artifact + ":" + newVersion);
+            else if (lines.get(i).startsWith("metadata.dir"))
+                lines.set(i, "metadata.dir = " + group + "/" + artifact + "/" + newVersion + "/");
+        }
+        Files.write(gradleProps, lines);
+    }
+
+    /**
+     * Updates exploded stats when a pre-release metadata version is replaced by its full release.
+     */
+    private void updateStats(Path metadataBaseDir, String oldVersion, String newVersion) throws IOException {
+        String artifact = metadataBaseDir.getFileName().toString();
+        String group = metadataBaseDir.getParent().getFileName().toString();
+        Path repositoryRoot = metadataBaseDir.getParent().getParent().getParent();
+        Path statsRoot = repositoryRoot.resolve("stats");
+        Path oldStatsDir = statsRoot.resolve(group).resolve(artifact).resolve(oldVersion);
+        Path newStatsDir = statsRoot.resolve(group).resolve(artifact).resolve(newVersion);
+
+        Path oldStatsFile = LibraryStatsSupport.repositoryStatsFile(statsRoot, group, artifact, oldVersion);
+        if (Files.exists(oldStatsFile)) {
+            LibraryStatsModels.MetadataVersionStats metadataVersionStats = LibraryStatsSupport.loadMetadataVersionStats(oldStatsFile);
+            LibraryStatsModels.MetadataVersionStats updatedStats = new LibraryStatsModels.MetadataVersionStats(
+                    metadataVersionStats.versions().stream()
+                            .map(versionStats -> oldVersion.equals(versionStats.version())
+                                    ? new LibraryStatsModels.VersionStats(newVersion, versionStats.dynamicAccess(), versionStats.libraryCoverage())
+                                    : versionStats)
+                            .toList()
+            );
+
+            Path newStatsFile = LibraryStatsSupport.repositoryStatsFile(statsRoot, group, artifact, newVersion);
+            LibraryStatsSupport.writeMetadataVersionStats(newStatsFile, updatedStats);
+            if (!oldStatsFile.equals(newStatsFile)) {
+                Files.deleteIfExists(oldStatsFile);
+            }
+        }
+        updateExecutionMetrics(oldStatsDir, newStatsDir, group, artifact, oldVersion, newVersion);
+        updateExecutionMetricReferences(statsRoot.resolve(group).resolve(artifact), group, artifact, oldVersion, newVersion);
+
+        if (!oldStatsDir.equals(newStatsDir)) {
+            try {
+                Files.deleteIfExists(oldStatsDir);
+            } catch (DirectoryNotEmptyException ignored) {
+                // Keep the old directory when other stats artifacts still exist in it.
+            }
+        }
+    }
+
+    /**
+     * Updates committed Forge execution metrics when the metadata-version directory is promoted.
+     */
+    private void updateExecutionMetrics(Path oldStatsDir, Path newStatsDir, String group, String artifact, String oldVersion, String newVersion) throws IOException {
+        Path oldMetricsFile = oldStatsDir.resolve("execution-metrics.json");
+        if (!Files.exists(oldMetricsFile)) return;
+
+        ObjectMapper objectMapper = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        ObjectNode executionMetrics = (ObjectNode) objectMapper.readTree(oldMetricsFile.toFile());
+        executionMetrics.properties().forEach(entry -> updateRunMetrics(entry.getValue(), group, artifact, oldVersion, newVersion));
+
+        Files.createDirectories(newStatsDir);
+        Path newMetricsFile = newStatsDir.resolve("execution-metrics.json");
+        writeJsonWithTrailingNewline(objectMapper, newMetricsFile, executionMetrics);
+        if (!oldMetricsFile.equals(newMetricsFile)) {
+            Files.deleteIfExists(oldMetricsFile);
+        }
+    }
+
+    /**
+     * Updates committed Forge execution metrics in other versions for the same library.
+     */
+    private void updateExecutionMetricReferences(Path libraryStatsRoot, String group, String artifact, String oldVersion, String newVersion) throws IOException {
+        if (!Files.exists(libraryStatsRoot)) return;
+
+        ObjectMapper objectMapper = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        try (Stream<Path> paths = Files.find(
+                libraryStatsRoot,
+                2,
+                (path, attributes) -> attributes.isRegularFile() && "execution-metrics.json".equals(path.getFileName().toString())
+        )) {
+            for (Path metricsFile : paths.toList()) {
+                ObjectNode executionMetrics = (ObjectNode) objectMapper.readTree(metricsFile.toFile());
+                boolean changed = false;
+                for (Map.Entry<String, JsonNode> entry : executionMetrics.properties()) {
+                    changed |= updateRunMetrics(entry.getValue(), group, artifact, oldVersion, newVersion);
+                }
+                if (changed) {
+                    writeJsonWithTrailingNewline(objectMapper, metricsFile, executionMetrics);
+                }
+            }
+        }
+    }
+
+    private boolean updateRunMetrics(JsonNode runMetrics, String group, String artifact, String oldVersion, String newVersion) {
+        if (!(runMetrics instanceof ObjectNode objectNode)) return false;
+
+        boolean changed = false;
+        changed |= updateCoordinateField(objectNode, "library", group, artifact, oldVersion, newVersion);
+        changed |= updateCoordinateField(objectNode, "previous_library", group, artifact, oldVersion, newVersion);
+        changed |= updateStatsVersion(objectNode.get("stats"), oldVersion, newVersion);
+        changed |= updateStatsVersion(objectNode.get("previous_library_stats"), oldVersion, newVersion);
+        changed |= updateArtifactPaths(objectNode.get("artifacts"), oldVersion, newVersion);
+        return changed;
+    }
+
+    private boolean updateCoordinateField(ObjectNode runMetrics, String fieldName, String group, String artifact, String oldVersion, String newVersion) {
+        JsonNode coordinateNode = runMetrics.get(fieldName);
+        if (coordinateNode == null || !coordinateNode.isTextual()) return false;
+
+        String oldCoordinate = group + ":" + artifact + ":" + oldVersion;
+        if (oldCoordinate.equals(coordinateNode.asText())) {
+            runMetrics.put(fieldName, group + ":" + artifact + ":" + newVersion);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updateStatsVersion(JsonNode stats, String oldVersion, String newVersion) {
+        if (!(stats instanceof ObjectNode statsObject)) return false;
+
+        JsonNode versionNode = statsObject.get("version");
+        if (versionNode != null && versionNode.isTextual() && oldVersion.equals(versionNode.asText())) {
+            statsObject.put("version", newVersion);
+            return true;
+        }
+        return false;
+    }
+
+
+exec
+/usr/bin/bash -lc "sed -n '300,430p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+                return urlVersion;
+            }
+        }
+        return null;
+    }
+
+    private static String toStoredVersionTemplate(String url, String version) {
+        Pattern versionPattern = Pattern.compile(Pattern.quote(version), Pattern.CASE_INSENSITIVE);
+        return versionPattern.matcher(url).replaceAll(Matcher.quoteReplacement(VERSION_PLACEHOLDER));
+    }
+
+    private static boolean containsIgnoreCase(String value, String token) {
+        return value.toLowerCase(Locale.ROOT).contains(token.toLowerCase(Locale.ROOT));
+    }
+
+    private void verifySourceUrl(String url) throws IOException, InterruptedException {
+        if (isArchiveUrl(url)) {
+            verifyArchiveContainsSourceFiles(url);
+        } else {
+            verifyUrlResolves(url);
+        }
+    }
+
+    private GradleException staleUrlException(String fieldName, String promotedUrl, String oldVersion, String newVersion, String reason) {
+        return new GradleException(
+                "Cannot promote " + fieldName + " from " + oldVersion + " to " + newVersion + ". " +
+                        "Candidate URL failed verification: " + promotedUrl + ". Reason: " + reason
+        );
+    }
+
+    private void verifyUrlResolves(String url) throws IOException, InterruptedException {
+        HttpResponse<Void> response = sendRequest(url, "HEAD", HttpResponse.BodyHandlers.discarding());
+        if (response.statusCode() == 405 || response.statusCode() == 403) {
+            response = sendRequest(url, "GET", HttpResponse.BodyHandlers.discarding());
+        }
+        verifySuccessStatus(url, response.statusCode());
+    }
+
+    private void verifyArchiveContainsSourceFiles(String url) throws IOException, InterruptedException {
+        HttpResponse<byte[]> response = sendRequest(url, "GET", HttpResponse.BodyHandlers.ofByteArray());
+        verifySuccessStatus(url, response.statusCode());
+        byte[] archiveBytes = response.body();
+        if (archiveBytes.length > MAX_VERIFICATION_DOWNLOAD_BYTES) {
+            throw new IOException("archive is too large to verify (" + archiveBytes.length + " bytes)");
+        }
+
+        boolean hasSourceFiles = false;
+        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(archiveBytes))) {
+            ZipEntry zipEntry;
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                if (!zipEntry.isDirectory() && isSourceFile(zipEntry.getName())) {
+                    hasSourceFiles = true;
+                    break;
+                }
+            }
+        }
+
+        if (!hasSourceFiles) {
+            throw new IOException("archive does not contain .java, .kt, .scala, or .groovy source files");
+        }
+    }
+
+    private <T> HttpResponse<T> sendRequest(String url, String method, HttpResponse.BodyHandler<T> bodyHandler) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(url))
+                .timeout(URL_VERIFICATION_TIMEOUT)
+                .method(method, HttpRequest.BodyPublishers.noBody())
+                .build();
+        return HTTP_CLIENT.send(request, bodyHandler);
+    }
+
+    private void verifySuccessStatus(String url, int statusCode) throws IOException {
+        if (statusCode < 200 || statusCode >= 300) {
+            throw new IOException("URL did not resolve successfully: HTTP " + statusCode + " for " + url);
+        }
+    }
+
+    private static boolean isArchiveUrl(String url) {
+        String normalizedUrl = url.toLowerCase(Locale.ROOT);
+        return normalizedUrl.endsWith(".jar") || normalizedUrl.endsWith(".zip");
+    }
+
+    private static boolean isSourceFile(String path) {
+        return SOURCE_FILE_EXTENSIONS.stream().anyMatch(path::endsWith);
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
+    }
+
+    /**
+     * Updates the tests directory when a pre-release version is replaced by its corresponding
+     * full release.
+     * <p>
+     * This method performs two operations:
+     * <ol>
+     *   <li>Renames the test directory from {@code oldVersion} to {@code newVersion} under {@code tests/src/<group>/<artifact>/}.</li>
+     *   <li>Updates the {@code gradle.properties} file inside the renamed directory:
+     *     <ul>
+     *       <li>{@code library.version} is set to the new version,</li>
+     *       <li>{@code metadata.dir} is updated to point to the metadata directory for the new version.</li>
+     *     </ul>
+     *   </li>
+     * </ol>
+     */
+    private void updateTests(Path metadataBaseDir, MetadataVersionsIndexEntry entry, String oldVersion, String newVersion) throws IOException {
+        // metadataBaseDir points to metadata/<group>/<artifact>
+        String artifact = metadataBaseDir.getFileName().toString();
+        String group = metadataBaseDir.getParent().getFileName().toString();
+        Path testsRoot = metadataBaseDir.getParent().getParent().getParent()
+                .resolve("tests/src").resolve(group).resolve(artifact);
+
+        Path oldTestDir = testsRoot.resolve(oldVersion);
+        Path newTestDir = testsRoot.resolve(newVersion);
+
+        if (Files.exists(oldTestDir)) {
+            Files.move(oldTestDir, newTestDir);
+            updateGradleProperties(newTestDir, group, artifact, entry, newVersion);
+        }
+    }
+
+    /**
+     * Updates {@code gradle.properties} inside a given test directory to reflect the new version.
+     */
+    private void updateGradleProperties(Path testDir, String group, String artifact, MetadataVersionsIndexEntry entry, String newVersion) throws IOException {
+        Path gradleProps = testDir.resolve("gradle.properties");
+        if (!Files.exists(gradleProps)) return;
+
+        List<String> lines = Files.readAllLines(gradleProps);
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).startsWith("library.version")) lines.set(i, "library.version = " + newVersion);
+            else if (lines.get(i).startsWith("library.coordinates")) lines.set(i, "library.coordinates = " + group + ":" + artifact + ":" + newVersion);
+
+codex
+I’ve got enough evidence now: `commons-beanutils-core` is a JVM JAR with class files, so it should not be marked `not-for-native-image`, and it is not one of the Kotlin/Groovy/Scala language-specific artifacts. I’m going to use the Maven source and javadoc artifacts from the same BeanUtils 1.8.0 release, plus the Apache source distribution archive for tests because no tests JAR exists.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..21f7112f4e61536a8799e8c4e8d6f3d1f4b38d15
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..21f7112f4e61536a8799e8c4e8d6f3d1f4b38d15
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+{
+  "coordinates": "commons-beanutils:commons-beanutils-core:1.8.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/commons-beanutils",
+  "test-code-url": "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.zip",
+  "documentation-url": "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
+  "description": "Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 16:23:06 GMT
+content-type: application/java-archive
+content-length: 295368
+cf-ray: 9f609bb9ff40bbf4-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1258328
+etag: "c4d07d647734e3272422e13959de3266"
+last-modified: Thu, 28 Aug 2008 16:21:24 GMT
+x-checksum-md5: c4d07d647734e3272422e13959de3266
+x-checksum-sha1: 2818502bbb50bbcbd3f57e92a2bfe4d496f37688
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 16:23:06 GMT
+content-type: application/java-archive
+content-length: 1324396
+cf-ray: 9f609bb9fd0a03a5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1366052
+etag: "875d249e75934aa34600ed00c21ddd4c"
+last-modified: Thu, 28 Aug 2008 16:21:24 GMT
+x-checksum-md5: 875d249e75934aa34600ed00c21ddd4c
+x-checksum-sha1: a36b1b41ebcdb0b098e80d3d0e1a28cc08d58613
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 107ms:
+HTTP/1.1 200 OK
+Date: Sun, 03 May 2026 16:23:06 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Thu, 28 Aug 2008 16:21:24 GMT
+ETag: "9f0a7-4558787322900"
+Accept-Ranges: bytes
+Content-Length: 651431
+Content-Type: application/zip
+
+
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..21f7112f4e61536a8799e8c4e8d6f3d1f4b38d15
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..21f7112f4e61536a8799e8c4e8d6f3d1f4b38d15
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes."
+ }
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/
+codex
+Updated [commons-beanutils-commons-beanutils-core-1.8.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json) with repository, source, test, documentation, and two-sentence description fields. I used Maven’s 1.8.0 source/javadoc artifacts and Apache’s archived 1.8.0 source distribution; the README identifies `commons-beanutils-core.jar` as the core/minimal BeanUtils package. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/))
+
+I left `language` and `not-for-native-image` absent. Validation done: `jq` parsed the JSON successfully, and the rendered source/test/documentation URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+index 5cf2ddf5bbab4a0bd56126efe64f3aced8718e11..21f7112f4e61536a8799e8c4e8d6f3d1f4b38d15
+--- a/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
++++ b/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0"
++  "coordinates" : "commons-beanutils:commons-beanutils-core:1.8.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-beanutils",
++  "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
++  "description" : "Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes."
+ }
+
+tokens used
+144,672
+Updated [commons-beanutils-commons-beanutils-core-1.8.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/build/discovered-artifact-metadata/commons-beanutils-commons-beanutils-core-1.8.0.json) with repository, source, test, documentation, and two-sentence description fields. I used Maven’s 1.8.0 source/javadoc artifacts and Apache’s archived 1.8.0 source distribution; the README identifies `commons-beanutils-core.jar` as the core/minimal BeanUtils package. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/))
+
+I left `language` and `not-for-native-image` absent. Validation done: `jq` parsed the JSON successfully, and the rendered source/test/documentation URLs returned HTTP 200.
+Ran agent for commons-beanutils:commons-beanutils-core:1.8.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/build/agent-artifact-discovery-logs/commons-beanutils-commons-beanutils-core-1.8.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 7s
+9 actionable tasks: 4 executed, 5 from cache

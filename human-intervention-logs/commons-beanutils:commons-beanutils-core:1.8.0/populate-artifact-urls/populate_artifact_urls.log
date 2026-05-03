@@ -1,0 +1,541 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deea7-69fd-7f52-b235-b96f621de026
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: commons-beanutils:commons-beanutils-core:1.8.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.8.0" when "$version$" is replaced with "1.8.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/metadata/commons-beanutils/commons-beanutils-core/index.json
+- Entry selector: "metadata-version" = "1.8.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "1.8.0".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "1.8.0".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "1.8.0".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "1.8.0" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar
+- repository-url: https://github.com/apache/commons-beanutils
+- test-code-url: https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.zip
+- documentation-url: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar
+- description: Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.8.0
+- Entry metadata-version: 1.8.0
+- Entry test-version: 1.8.0
+codex
+I’ll inspect the metadata entry first, then verify the rendered 1.8.0 URLs against Maven/Apache sources before deciding whether the file actually needs an edit.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/commons-beanutils/commons-beanutils-core/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+4:    "metadata-version" : "1.8.0",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/apache/commons-beanutils",
+7:    "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.zip",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
+9:    "description" : "Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/commons-beanutils/commons-beanutils-core/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/commons-beanutils",
+    "test-code-url" : "https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-$version$-src.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/$version$/commons-beanutils-$version$-javadoc.jar",
+    "description" : "Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes.",
+    "tested-versions" : [
+      "1.8.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.commons"
+    ]
+  }
+]
+
+web search: 
+web search: commons-beanutils commons-beanutils 1.8.0 maven sources javadoc jar
+web search: 
+web search: Maven Central commons-beanutils commons-beanutils-core 1.8.0 sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/
+codex
+The file already has non-blank URL and description fields. I’m checking whether those templates are actually correct for the `commons-beanutils-core:1.8.0` artifact, because the current source and javadoc URLs point at the sibling `commons-beanutils` Maven artifact.
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ exited 22 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 16:24:24 GMT
+content-type: text/html
+cf-ray: 9f609d9eb956265f-ZRH
+cf-cache-status: HIT
+age: 1222
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-test-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  636k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 200 OK
+Date: Sun, 03 May 2026 16:24:24 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Thu, 28 Aug 2008 16:21:24 GMT
+ETag: "9f0a7-4558787322900"
+Accept-Ranges: bytes
+Content-Length: 651431
+Content-Type: application/zip
+
+
+ exited 22 in 229ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 16:24:24 GMT
+content-type: text/html
+cf-ray: 9f609d9ec8fbbb0a-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 251ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requesteHTTP/2 404 
+date: Sun, 03 May 2026 16:24:24 GMT
+content-type: text/html
+cf-ray: 9f609d9ec853c8a4-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+d URL returned error: 404
+
+ exited 22 in 259ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 16:24:24 GMT
+content-type: text/html
+cf-ray: 9f609d9eaf28bac0-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The artifact-specific Maven source/javadoc classifiers for `commons-beanutils-core` return 404, and I found the Apache 1.8.0 source archive is available. I’m now checking Maven metadata and the release archive contents to make sure the selected source/test/docs URLs point at the right version and not at a stale sibling artifact.
+exec
+/usr/bin/bash -lc "curl -L --fail https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  4714    0  4714    0     0  68721      0 --:--:-- --:--:-- --:--:-- 69323
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: commons-beanutils/commons-beanutils/1.8.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>commons-beanutils/commons-beanutils/1.8.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="commons-beanutils-1.8.0-javadoc.jar" title="commons-beanutils-1.8.0-javadoc.jar">commons-beanutils-1.8.0-javadoc.jar</a>               2008-08-28 16:21   1324396      
+<a href="commons-beanutils-1.8.0-javadoc.jar.asc" title="commons-beanutils-1.8.0-javadoc.jar.asc">commons-beanutils-1.8.0-javadoc.jar.asc</a>           2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0-javadoc.jar.asc.md5" title="commons-beanutils-1.8.0-javadoc.jar.asc.md5">commons-beanutils-1.8.0-javadoc.jar.asc.md5</a>       2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-javadoc.jar.asc.sha1" title="commons-beanutils-1.8.0-javadoc.jar.asc.sha1">commons-beanutils-1.8.0-javadoc.jar.asc.sha1</a>      2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0-javadoc.jar.md5" title="commons-beanutils-1.8.0-javadoc.jar.md5">commons-beanutils-1.8.0-javadoc.jar.md5</a>           2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-javadoc.jar.sha1" title="commons-beanutils-1.8.0-javadoc.jar.sha1">commons-beanutils-1.8.0-javadoc.jar.sha1</a>          2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0-sources.jar" title="commons-beanutils-1.8.0-sources.jar">commons-beanutils-1.8.0-sources.jar</a>               2008-08-28 16:21    295368      
+<a href="commons-beanutils-1.8.0-sources.jar.asc" title="commons-beanutils-1.8.0-sources.jar.asc">commons-beanutils-1.8.0-sources.jar.asc</a>           2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0-sources.jar.asc.md5" title="commons-beanutils-1.8.0-sources.jar.asc.md5">commons-beanutils-1.8.0-sources.jar.asc.md5</a>       2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-sources.jar.asc.sha1" title="commons-beanutils-1.8.0-sources.jar.asc.sha1">commons-beanutils-1.8.0-sources.jar.asc.sha1</a>      2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0-sources.jar.md5" title="commons-beanutils-1.8.0-sources.jar.md5">commons-beanutils-1.8.0-sources.jar.md5</a>           2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0-sources.jar.sha1" title="commons-beanutils-1.8.0-sources.jar.sha1">commons-beanutils-1.8.0-sources.jar.sha1</a>          2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.jar" title="commons-beanutils-1.8.0.jar">commons-beanutils-1.8.0.jar</a>                       2008-08-28 16:21    231320      
+<a href="commons-beanutils-1.8.0.jar.asc" title="commons-beanutils-1.8.0.jar.asc">commons-beanutils-1.8.0.jar.asc</a>                   2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0.jar.asc.md5" title="commons-beanutils-1.8.0.jar.asc.md5">commons-beanutils-1.8.0.jar.asc.md5</a>               2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.jar.asc.sha1" title="commons-beanutils-1.8.0.jar.asc.sha1">commons-beanutils-1.8.0.jar.asc.sha1</a>              2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.jar.md5" title="commons-beanutils-1.8.0.jar.md5">commons-beanutils-1.8.0.jar.md5</a>                   2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.jar.sha1" title="commons-beanutils-1.8.0.jar.sha1">commons-beanutils-1.8.0.jar.sha1</a>                  2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.pom" title="commons-beanutils-1.8.0.pom">commons-beanutils-1.8.0.pom</a>                       2008-08-28 16:21     10786      
+<a href="commons-beanutils-1.8.0.pom.asc" title="commons-beanutils-1.8.0.pom.asc">commons-beanutils-1.8.0.pom.asc</a>                   2008-08-28 16:21       194      
+<a href="commons-beanutils-1.8.0.pom.asc.md5" title="commons-beanutils-1.8.0.pom.asc.md5">commons-beanutils-1.8.0.pom.asc.md5</a>               2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.pom.asc.sha1" title="commons-beanutils-1.8.0.pom.asc.sha1">commons-beanutils-1.8.0.pom.asc.sha1</a>              2008-08-28 16:21        40      
+<a href="commons-beanutils-1.8.0.pom.md5" title="commons-beanutils-1.8.0.pom.md5">commons-beanutils-1.8.0.pom.md5</a>                   2008-08-28 16:21        32      
+<a href="commons-beanutils-1.8.0.pom.sha1" title="commons-beanutils-1.8.0.pom.sha1">commons-beanutils-1.8.0.pom.sha1</a>                  2008-08-28 16:21        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -L --fail https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  1639  100  1639    0     0  17011      0 --:--:-- --:--:-- --:--:-- 17072
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>4</version>
+  </parent>
+  <groupId>commons-beanutils</groupId>
+  <artifactId>commons-beanutils-core</artifactId>
+  <version>1.8.0</version>
+  <name>Commons BeanUtils Core</name>
+  <url>http://commons.apache.org/beanutils/</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+  </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -L --fail https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  2600    0  2600    0     0  23772      0 --:--:-- --:--:-- --:--:-- 23853
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: commons-beanutils/commons-beanutils-core/1.8.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>commons-beanutils/commons-beanutils-core/1.8.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="commons-beanutils-core-1.8.0.jar" title="commons-beanutils-core-1.8.0.jar">commons-beanutils-core-1.8.0.jar</a>                  2008-08-31 18:13    206035      
+<a href="commons-beanutils-core-1.8.0.jar.asc" title="commons-beanutils-core-1.8.0.jar.asc">commons-beanutils-core-1.8.0.jar.asc</a>              2008-08-31 18:13       226      
+<a href="commons-beanutils-core-1.8.0.jar.asc.md5" title="commons-beanutils-core-1.8.0.jar.asc.md5">commons-beanutils-core-1.8.0.jar.asc.md5</a>          2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.jar.asc.sha1" title="commons-beanutils-core-1.8.0.jar.asc.sha1">commons-beanutils-core-1.8.0.jar.asc.sha1</a>         2008-08-31 18:13        40      
+<a href="commons-beanutils-core-1.8.0.jar.md5" title="commons-beanutils-core-1.8.0.jar.md5">commons-beanutils-core-1.8.0.jar.md5</a>              2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.jar.sha1" title="commons-beanutils-core-1.8.0.jar.sha1">commons-beanutils-core-1.8.0.jar.sha1</a>             2008-08-31 18:13        40      
+<a href="commons-beanutils-core-1.8.0.pom" title="commons-beanutils-core-1.8.0.pom">commons-beanutils-core-1.8.0.pom</a>                  2008-08-31 18:13      1639      
+<a href="commons-beanutils-core-1.8.0.pom.asc" title="commons-beanutils-core-1.8.0.pom.asc">commons-beanutils-core-1.8.0.pom.asc</a>              2008-08-31 18:13       226      
+<a href="commons-beanutils-core-1.8.0.pom.asc.md5" title="commons-beanutils-core-1.8.0.pom.asc.md5">commons-beanutils-core-1.8.0.pom.asc.md5</a>          2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.pom.asc.sha1" title="commons-beanutils-core-1.8.0.pom.asc.sha1">commons-beanutils-core-1.8.0.pom.asc.sha1</a>         2008-08-31 18:13        40      
+<a href="commons-beanutils-core-1.8.0.pom.md5" title="commons-beanutils-core-1.8.0.pom.md5">commons-beanutils-core-1.8.0.pom.md5</a>              2008-08-31 18:13        32      
+<a href="commons-beanutils-core-1.8.0.pom.sha1" title="commons-beanutils-core-1.8.0.pom.sha1">commons-beanutils-core-1.8.0.pom.sha1</a>             2008-08-31 18:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-sources.jar && curl -I -L --fail https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 112ms:
+
+  0 1293k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Sun, 03 May 2026 16:24:30 GMT
+content-type: application/java-archive
+content-length: 1324396
+cf-ray: 9f609dc5faa80395-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1366136
+etag: "875d249e75934aa34600ed00c21ddd4c"
+last-modified: Thu, 28 Aug 2008 16:21:24 GMT
+x-checksum-md5: 875d249e75934aa34600ed00c21ddd4c
+x-checksum-sha1: a36b1b41ebcdb0b098e80d3d0e1a28cc08d58613
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/
+web search: 
+web search: site:repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils-core/1.8.0 commons-beanutils-core-1.8.0.pom
+codex
+The existing templates all render to version `1.8.0`; the source and javadoc templates resolve on Maven Central, and the test-suite template resolves to the Apache source archive. I’m doing one final content check so the final decision is based on the actual archive layout, not just HTTP status.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/commons-beanutils/commons-beanutils-core/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -L --fail -sS https://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-1.8.0-src.zip -o "$tmp/src.zip"; unzip -l "$tmp/src.zip" | rg '"'src/test|src/java|pom.xml|project.xml' | sed -n '1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -L --fail -sS https://repo.maven.apache.org/maven2/commons-beanutils/commons-beanutils/1.8.0/commons-beanutils-1.8.0-sources.jar -o "$tmp/sources.jar"; unzip -l "$tmp/sources.jar" | rg '"'org/apache/commons/beanutils/(BeanUtils|PropertyUtils|ConvertUtils|WrapDynaBean|BasicDynaBean)\\.java' | sed -n '1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+    15034  2008-08-28 15:45   org/apache/commons/beanutils/BasicDynaBean.java
+    19258  2008-08-28 15:45   org/apache/commons/beanutils/BeanUtils.java
+    12103  2008-08-28 15:45   org/apache/commons/beanutils/ConvertUtils.java
+    35241  2008-08-28 15:45   org/apache/commons/beanutils/PropertyUtils.java
+    13226  2008-08-28 15:45   org/apache/commons/beanutils/WrapDynaBean.java
+
+ succeeded in 481ms:
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/expression/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/locale/converters/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/collections/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/bugs/other/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/converters/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/expression/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/locale/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/locale/converters/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/memoryleaktests/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/memoryleaktests/pojotests/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/beanutils/priv/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/collections/
+        0  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/test/org/apache/commons/collections/keyvalue/
+    10786  2008-08-28 15:45   commons-beanutils-1.8.0-src/pom.xml
+    11505  2008-08-28 15:45   commons-beanutils-1.8.0-src/project.xml
+    15034  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BasicDynaBean.java
+     9717  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BasicDynaClass.java
+     1790  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanAccessLanguageException.java
+     7651  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanComparator.java
+    31040  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanMap.java
+     4633  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanPredicate.java
+    10871  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanPropertyValueChangeClosure.java
+    12786  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanPropertyValueEqualsPredicate.java
+     9964  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanToPropertyValueTransformer.java
+    19258  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanUtils.java
+    46575  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanUtilsBean.java
+     2993  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/BeanUtilsBean2.java
+    17463  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ConstructorUtils.java
+     9604  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ContextClassLoaderLocal.java
+     2623  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ConversionException.java
+     2136  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/Converter.java
+     7366  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/AbstractArrayConverter.java
+    16328  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/AbstractConverter.java
+    19548  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ArrayConverter.java
+     2541  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/BigDecimalConverter.java
+     2543  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/BigIntegerConverter.java
+     9718  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/BooleanArrayConverter.java
+     9929  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/BooleanConverter.java
+     4765  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ByteArrayConverter.java
+     2463  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ByteConverter.java
+     2459  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/CalendarConverter.java
+     4778  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/CharacterArrayConverter.java
+     3091  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/CharacterConverter.java
+     3713  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ClassConverter.java
+     2754  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ConverterFacade.java
+     2423  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/DateConverter.java
+    22571  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/DateTimeConverter.java
+     4793  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/DoubleArrayConverter.java
+     2477  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/DoubleConverter.java
+     2681  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/FileConverter.java
+     4787  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/FloatArrayConverter.java
+     2469  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/FloatConverter.java
+     4779  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/IntegerArrayConverter.java
+     2487  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/IntegerConverter.java
+     4773  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/LongArrayConverter.java
+     2463  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/LongConverter.java
+    19939  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/NumberConverter.java
+     1114  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/package.html
+     4787  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ShortArrayConverter.java
+     2471  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/ShortConverter.java
+     2512  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/SqlDateConverter.java
+     3197  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/SqlTimeConverter.java
+     3284  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/SqlTimestampConverter.java
+     5916  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/StringArrayConverter.java
+     3498  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/StringConverter.java
+     2653  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/converters/URLConverter.java
+     3149  2008-08-28 15:45   commons-beanutils-1.8.0-src/src/java/org/apache/commons/beanutils/ConvertingWrapDynaBean.java
+
+exec
+/usr/bin/bash -lc "jq -e '.[] | select(.\"metadata-version\" == \"1.8.0\") | .description' metadata/commons-beanutils/commons-beanutils-core/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 0ms:
+"Commons BeanUtils Core provides the core Apache Commons BeanUtils classes for JavaBean property access, conversion, reflection, and introspection. This modular core jar is the minimal BeanUtils package for applications that do not need the optional bean-collections classes."
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/commons-beanutils/commons-beanutils-core/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7
+ succeeded in 164ms:
+?? metadata/commons-beanutils/commons-beanutils-core/index.json
+
+web search: 
+web search: repo.maven.apache.org commons-beanutils commons-beanutils 1.8.0 sources javadoc
+web search: 
+web search: apache commons beanutils github repository
+codex
+Checked [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/metadata/commons-beanutils/commons-beanutils-core/index.json). No content changes were needed: all URL fields and the two-sentence description are already non-blank and render correctly for `1.8.0`; `language` remains absent because this is a Java library, not Kotlin/Groovy/Scala-specific.
+
+Verified the Maven source and javadoc artifacts exist for `commons-beanutils:commons-beanutils:1.8.0`, the Apache source archive contains the `1.8.0` source/test tree, and the repository root is the canonical Apache GitHub repository. ([repo1.maven.org](https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.8.0/?utm_source=openai))
+
+Also validated JSON with `jq`. No tests were run because the metadata file did not require an edit.
+tokens used
+60,566
+Checked [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/metadata/commons-beanutils/commons-beanutils-core/index.json). No content changes were needed: all URL fields and the two-sentence description are already non-blank and render correctly for `1.8.0`; `language` remains absent because this is a Java library, not Kotlin/Groovy/Scala-specific.
+
+Verified the Maven source and javadoc artifacts exist for `commons-beanutils:commons-beanutils:1.8.0`, the Apache source archive contains the `1.8.0` source/test tree, and the repository root is the canonical Apache GitHub repository. ([repo1.maven.org](https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.8.0/?utm_source=openai))
+
+Also validated JSON with `jq`. No tests were run because the metadata file did not require an edit.
+Ran agent for commons-beanutils:commons-beanutils-core:1.8.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/build/agent-url-discovery-logs/commons-beanutils-commons-beanutils-core-1.8.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2894-54f945f7/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 13s
+9 actionable tasks: 1 executed, 8 up-to-date
