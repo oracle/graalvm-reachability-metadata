@@ -62,6 +62,27 @@ public class Javax_elTest {
     }
 
     @Test
+    void expressionsEvaluateConditionalRelationalLogicalAndEmptyOperators() {
+        ExpressionFactory factory = ExpressionFactory.newInstance();
+        SimpleELContext context = newContext();
+        context.setVariable("person", factory.createValueExpression(new Person("Ada", "Lovelace", 17), Person.class));
+        context.setVariable("emptyItems", factory.createValueExpression(new ArrayList<>(), List.class));
+        context.setVariable("blank", factory.createValueExpression("", String.class));
+
+        ValueExpression categoryExpression = factory.createValueExpression(
+                context,
+                "${person.age lt 18 ? 'minor' : 'adult'}",
+                String.class);
+        assertThat(categoryExpression.getValue(context)).isEqualTo("minor");
+
+        ValueExpression predicateExpression = factory.createValueExpression(
+                context,
+                "${not (empty person.firstName) and empty emptyItems and empty blank and person.lastName eq 'Lovelace'}",
+                Boolean.class);
+        assertThat(predicateExpression.getValue(context)).isEqualTo(true);
+    }
+
+    @Test
     void valueExpressionsReadWriteNestedCollectionsAndExposeValueReferences() {
         ExpressionFactory factory = ExpressionFactory.newInstance();
         SimpleELContext context = newContext();
