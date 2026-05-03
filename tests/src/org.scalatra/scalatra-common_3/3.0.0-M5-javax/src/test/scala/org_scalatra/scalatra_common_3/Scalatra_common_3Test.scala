@@ -156,6 +156,21 @@ class Scalatra_common_3Test {
     assertEquals("async-ready", component.name)
   }
 
+  @Test
+  def configureMultipartHandlingUsesMostRecentConfiguration(): Unit = {
+    val context = new RecordingServletContext
+    val firstConfig: MultipartConfig = MultipartConfig(Some("/first"), Some(1L), Some(2L), Some(3))
+    val replacementConfig: MultipartConfig = MultipartConfig(Some("/replacement"), Some(10L), Some(20L), Some(4))
+    val aware = new MultipartAware(context)
+
+    aware.configureMultipartHandling(firstConfig)
+    aware.configureMultipartHandling(replacementConfig)
+    aware.initialize(TestConfig(context, Map.empty))
+
+    assertEquals(replacementConfig, aware.multipartConfig)
+    assertSame(replacementConfig, context.getAttribute(HasMultipartConfig.MultipartConfigKey))
+  }
+
   private final case class TestConfig(context: ServletContext, initParameters: Map[String, String])
 
   private abstract class BaseInitializable extends org.scalatra.Initializable {
