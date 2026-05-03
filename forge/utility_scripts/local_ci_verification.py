@@ -25,6 +25,8 @@ MAX_FIXUP_ATTEMPTS = 2
 CODEX_MODEL_NAME = "oca/gpt-5.4"
 CODEX_TIMEOUT_SECONDS = 1800
 DEFAULT_BASE_BRANCH = "master"
+SPRING_AOT_BRANCH = "main"
+SPRING_AOT_REPO_URL = "https://github.com/spring-projects/spring-aot-smoke-tests.git"
 
 
 @dataclass
@@ -137,20 +139,23 @@ def run_local_ci_verification(
 
 def fetch_pr_base_ref(repo_path: str, repo: str, base_branch: str = DEFAULT_BASE_BRANCH) -> str:
     """Fetch the upstream PR base and return a local ref suitable for diffing and rebasing."""
-    remote_url = subprocess.run(
-        ["git", "remote", "get-url", "upstream"],
-        cwd=repo_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        text=True,
-        check=False,
-    )
-    upstream_matches_target = (
-        remote_url.returncode == 0 and _github_repo_slug_from_url(remote_url.stdout.strip()) == repo.lower()
-    )
-    remote_name = "upstream" if upstream_matches_target else "origin"
-    subprocess.run(["git", "fetch", remote_name, base_branch], cwd=repo_path, check=True)
-    return f"{remote_name}/{base_branch}"
+    target_repo = repo.lower()
+    for remote_name in ("upstream", "origin"):
+        remote_url = subprocess.run(
+            ["git", "remote", "get-url", remote_name],
+            cwd=repo_path,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+            check=False,
+        )
+        remote_repo = _github_repo_slug_from_url(remote_url.stdout.strip()) if remote_url.returncode == 0 else None
+        if remote_repo == target_repo:
+            subprocess.run(["git", "fetch", remote_name, base_branch], cwd=repo_path, check=True)
+            return f"{remote_name}/{base_branch}"
+
+    subprocess.run(["git", "fetch", f"https://github.com/{target_repo}.git", base_branch], cwd=repo_path, check=True)
+    return "FETCH_HEAD"
 
 
 def _github_repo_slug_from_url(remote_url: str) -> str | None:
@@ -240,11 +245,28 @@ def _run_verification_once(
             result,
             "changed-tested-versions-matrix",
         )
+        changed_infrastructure_matrix = {}
+        if _should_run_infrastructure_tests(changed_files):
+            changed_infrastructure_matrix = _gradle_json_output(
+                repo_path,
+                "generateInfrastructureChangedCoordinatesMatrix",
+                base_commit,
+                result,
+                "changed-infrastructure-matrix",
+            )
     except _GradleOutputFailure as exc:
         return exc.record
 
     test_entries = _matrix_entries(changed_metadata_matrix) + _matrix_entries(changed_tested_versions_matrix)
     failed = _run_test_matrix_entries(repo_path, test_entries, result)
+    if failed is not None:
+        return failed
+
+    failed = _run_infrastructure_matrix_entries(repo_path, _matrix_entries(changed_infrastructure_matrix), result)
+    if failed is not None:
+        return failed
+
+    failed = _run_spring_aot_verification(repo_path, base_commit, changed_files, result)
     if failed is not None:
         return failed
 
@@ -350,6 +372,114 @@ def _run_test_matrix_entries(
     return first_failed or restore_failed
 
 
+def _run_infrastructure_matrix_entries(
+        repo_path: str,
+        entries: list[dict],
+        result: LocalCIVerificationResult,
+) -> CommandRecord | None:
+    for entry in entries:
+        coordinates = str(entry.get("coordinates") or "").strip()
+        if not coordinates:
+            continue
+        env = _matrix_env(entry)
+        failed = _run_recorded_command(
+            repo_path,
+            "infrastructure-pull-allowed-docker-images",
+            ["./gradlew", "pullAllowedDockerImages", f"-Pcoordinates={coordinates}"],
+            result,
+            env=env,
+        )
+        if failed is not None:
+            return failed
+        failed = _run_recorded_command(
+            repo_path,
+            "infrastructure-check-metadata-files",
+            ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={coordinates}"],
+            result,
+            env=env,
+        )
+        if failed is not None:
+            return failed
+        failed = _run_recorded_command(
+            repo_path,
+            "test-infra",
+            ["./gradlew", "testInfra", f"-Pcoordinates={coordinates}", "-Pparallelism=1", "--stacktrace"],
+            result,
+            env=env,
+        )
+        if failed is not None:
+            return failed
+    return None
+
+
+def _run_spring_aot_verification(
+        repo_path: str,
+        base_commit: str,
+        changed_files: list[str],
+        result: LocalCIVerificationResult,
+) -> CommandRecord | None:
+    if not _should_run_spring_aot_tests(changed_files):
+        return None
+
+    with tempfile.TemporaryDirectory(prefix="forge-spring-aot-") as spring_parent:
+        os.symlink(os.path.join(repo_path, "metadata"), os.path.join(spring_parent, "metadata"))
+        spring_path = os.path.join(spring_parent, "spring-aot-smoke-tests")
+        failed = _run_recorded_command(
+            repo_path,
+            "checkout-spring-aot-smoke-tests",
+            ["git", "clone", "--depth", "1", "--branch", SPRING_AOT_BRANCH, SPRING_AOT_REPO_URL, spring_path],
+            result,
+        )
+        if failed is not None:
+            return failed
+
+        try:
+            spring_matrix = _gradle_json_output(
+                repo_path,
+                "generateAffectedSpringTestMatrix",
+                base_commit,
+                result,
+                "affected-spring-aot-matrix",
+                extra_args=[
+                    f"-PspringAotBranch={SPRING_AOT_BRANCH}",
+                    f"-PspringAotPath={spring_path}",
+                ],
+            )
+        except _GradleOutputFailure as exc:
+            return exc.record
+
+        return _run_spring_aot_matrix_entries(repo_path, spring_path, _matrix_entries(spring_matrix), result)
+
+
+def _run_spring_aot_matrix_entries(
+        repo_path: str,
+        spring_path: str,
+        entries: list[dict],
+        result: LocalCIVerificationResult,
+) -> CommandRecord | None:
+    for entry in entries:
+        project = str(entry.get("project") or "").strip()
+        if not project:
+            continue
+        env = _spring_aot_env(entry)
+        failed = _run_recorded_command(
+            repo_path,
+            "spring-aot-smoke-test",
+            [
+                "bash",
+                ".github/workflows/scripts/run-spring-aot-triaged-test.sh",
+                spring_path,
+                project,
+                "4.1.x",
+            ],
+            result,
+            env=env,
+        )
+        if failed is not None:
+            return failed
+    return None
+
+
 def _restore_docker_networking(repo_path: str, result: LocalCIVerificationResult) -> CommandRecord | None:
     """Restore Docker networking after the CI-equivalent no-network test phase."""
     return _run_recorded_command(
@@ -431,8 +561,9 @@ def _gradle_json_output(
         base_commit: str,
         result: LocalCIVerificationResult,
         gate: str,
+        extra_args: list[str] | None = None,
 ) -> dict:
-    output = _gradle_output(repo_path, task_name, base_commit, result, gate)
+    output = _gradle_output(repo_path, task_name, base_commit, result, gate, extra_args=extra_args)
     raw_matrix = output.get("matrix")
     if raw_matrix is None:
         return {}
@@ -449,6 +580,7 @@ def _gradle_output(
         base_commit: str,
         result: LocalCIVerificationResult,
         gate: str,
+        extra_args: list[str] | None = None,
 ) -> dict[str, str]:
     with tempfile.NamedTemporaryFile("w+", encoding="utf-8", delete=False) as output_file:
         output_path = output_file.name
@@ -456,7 +588,7 @@ def _gradle_output(
         failed = _run_recorded_command(
             repo_path,
             gate,
-            ["./gradlew", task_name, f"-PbaseCommit={base_commit}", "-PnewCommit=HEAD"],
+            ["./gradlew", task_name, f"-PbaseCommit={base_commit}", "-PnewCommit=HEAD", *(extra_args or [])],
             result,
             env={"GITHUB_OUTPUT": output_path},
         )
@@ -495,6 +627,16 @@ def _matrix_env(entry: dict) -> dict[str, str]:
     if native_image_mode:
         env["GVM_TCK_NATIVE_IMAGE_MODE"] = native_image_mode
     java_version = str(entry.get("version") or "").strip()
+    graalvm_home = _graalvm_home_for_java_version(java_version)
+    if graalvm_home:
+        env["GRAALVM_HOME"] = graalvm_home
+        env["JAVA_HOME"] = graalvm_home
+    return env
+
+
+def _spring_aot_env(entry: dict) -> dict[str, str]:
+    env: dict[str, str] = {}
+    java_version = str(entry.get("java") or "").strip()
     graalvm_home = _graalvm_home_for_java_version(java_version)
     if graalvm_home:
         env["GRAALVM_HOME"] = graalvm_home
@@ -745,6 +887,21 @@ def _should_run_library_stats_validation(changed_files: list[str]) -> bool:
         if re.match(r"^metadata/[^/]+/[^/]+/[^/]+/", path):
             return True
     return False
+
+
+def _should_run_infrastructure_tests(changed_files: list[str]) -> bool:
+    return any(
+        path == "build.gradle"
+        or path == "settings.gradle"
+        or path == "gradle.properties"
+        or path.startswith("gradle/")
+        or path.startswith("tests/tck-build-logic/")
+        for path in changed_files
+    )
+
+
+def _should_run_spring_aot_tests(changed_files: list[str]) -> bool:
+    return any(path.startswith("metadata/") for path in changed_files)
 
 
 def _should_run_docker_scan(changed_files: list[str]) -> bool:

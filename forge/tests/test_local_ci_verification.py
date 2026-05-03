@@ -15,13 +15,17 @@ from utility_scripts.local_ci_verification import (
     LOCAL_CI_VERIFICATION_KEY,
     LocalCIVerificationResult,
     classify_repo_fix_paths,
+    fetch_pr_base_ref,
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
     run_local_ci_verification,
     _github_repo_slug_from_url,
     _graalvm_home_for_java_version,
+    _run_infrastructure_matrix_entries,
     _run_recorded_command,
+    _run_spring_aot_matrix_entries,
     _run_test_matrix_entries,
+    _run_verification_once,
 )
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 
@@ -45,6 +49,67 @@ def _commit_all(repo_path: str, message: str) -> str:
 
 
 class LocalCIVerificationTests(unittest.TestCase):
+    def test_fetch_pr_base_ref_falls_back_to_target_repo_when_origin_is_a_fork(self) -> None:
+        commands: list[list[str]] = []
+
+        def fake_run(
+                command: list[str],
+                cwd: str | None = None,
+                stdout=None,
+                stderr=None,
+                text: bool | None = None,
+                check: bool | None = None,
+        ) -> subprocess.CompletedProcess[str]:
+            del cwd, stdout, stderr, text, check
+            commands.append(command)
+            if command == ["git", "remote", "get-url", "upstream"]:
+                return subprocess.CompletedProcess(command, 1, stdout="")
+            if command == ["git", "remote", "get-url", "origin"]:
+                return subprocess.CompletedProcess(command, 0, stdout="git@github.com:contributor/fork.git\n")
+            if command[:2] == ["git", "fetch"]:
+                return subprocess.CompletedProcess(command, 0, stdout="")
+            raise AssertionError(f"unexpected command: {command}")
+
+        with patch("utility_scripts.local_ci_verification.subprocess.run", side_effect=fake_run):
+            base_ref = fetch_pr_base_ref("/repo", "oracle/graalvm-reachability-metadata")
+
+        self.assertEqual(base_ref, "FETCH_HEAD")
+        self.assertIn(
+            ["git", "fetch", "https://github.com/oracle/graalvm-reachability-metadata.git", "master"],
+            commands,
+        )
+
+    def test_fetch_pr_base_ref_uses_origin_only_when_origin_matches_target_repo(self) -> None:
+        commands: list[list[str]] = []
+
+        def fake_run(
+                command: list[str],
+                cwd: str | None = None,
+                stdout=None,
+                stderr=None,
+                text: bool | None = None,
+                check: bool | None = None,
+        ) -> subprocess.CompletedProcess[str]:
+            del cwd, stdout, stderr, text, check
+            commands.append(command)
+            if command == ["git", "remote", "get-url", "upstream"]:
+                return subprocess.CompletedProcess(command, 1, stdout="")
+            if command == ["git", "remote", "get-url", "origin"]:
+                return subprocess.CompletedProcess(
+                    command,
+                    0,
+                    stdout="git@github.com:oracle/graalvm-reachability-metadata.git\n",
+                )
+            if command[:2] == ["git", "fetch"]:
+                return subprocess.CompletedProcess(command, 0, stdout="")
+            raise AssertionError(f"unexpected command: {command}")
+
+        with patch("utility_scripts.local_ci_verification.subprocess.run", side_effect=fake_run):
+            base_ref = fetch_pr_base_ref("/repo", "oracle/graalvm-reachability-metadata")
+
+        self.assertEqual(base_ref, "origin/master")
+        self.assertIn(["git", "fetch", "origin", "master"], commands)
+
     def test_classify_repo_fix_paths_flags_only_files_outside_target_library_scope(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             _git(repo_path, "init")
@@ -169,6 +234,122 @@ class LocalCIVerificationTests(unittest.TestCase):
 
         self.assertIs(failed, failed_record)
         self.assertEqual(gates[-1], "restore-docker-networking")
+
+    def test_infrastructure_matrix_runs_test_infra_for_each_entry(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        calls: list[tuple[str, list[str], dict[str, str] | None]] = []
+
+        def fake_run_recorded_command(
+                repo_path: str,
+                gate: str,
+                command: list[str],
+                local_result: LocalCIVerificationResult,
+                env: dict[str, str] | None = None,
+                failure_output_pattern: str | None = None,
+        ) -> CommandRecord | None:
+            del repo_path, local_result, failure_output_pattern
+            calls.append((gate, command, env))
+            return None
+
+        with patch.dict(os.environ, {"GRAALVM_HOME_25_0": "/graalvm25"}, clear=True), \
+                patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
+            failed = _run_infrastructure_matrix_entries(
+                "/repo",
+                [{"coordinates": "org.example:demo:1.0.0", "version": "25", "nativeImageMode": "future-defaults-all"}],
+                result,
+            )
+
+        self.assertIsNone(failed)
+        self.assertEqual(
+            [call[0] for call in calls],
+            [
+                "infrastructure-pull-allowed-docker-images",
+                "infrastructure-check-metadata-files",
+                "test-infra",
+            ],
+        )
+        self.assertEqual(
+            calls[-1][1],
+            ["./gradlew", "testInfra", "-Pcoordinates=org.example:demo:1.0.0", "-Pparallelism=1", "--stacktrace"],
+        )
+        self.assertEqual(calls[-1][2]["GRAALVM_HOME"], "/graalvm25")
+        self.assertEqual(calls[-1][2]["GVM_TCK_NATIVE_IMAGE_MODE"], "future-defaults-all")
+
+    def test_spring_aot_matrix_runs_triaged_smoke_test(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        calls: list[tuple[str, list[str], dict[str, str] | None]] = []
+
+        def fake_run_recorded_command(
+                repo_path: str,
+                gate: str,
+                command: list[str],
+                local_result: LocalCIVerificationResult,
+                env: dict[str, str] | None = None,
+                failure_output_pattern: str | None = None,
+        ) -> CommandRecord | None:
+            del repo_path, local_result, failure_output_pattern
+            calls.append((gate, command, env))
+            return None
+
+        with patch.dict(os.environ, {"GRAALVM_HOME_25_0": "/graalvm25"}, clear=True), \
+                patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
+            failed = _run_spring_aot_matrix_entries(
+                "/repo",
+                "/tmp/spring-aot-smoke-tests",
+                [{"project": ":data:data-mongodb", "java": "25"}],
+                result,
+            )
+
+        self.assertIsNone(failed)
+        self.assertEqual(calls[0][0], "spring-aot-smoke-test")
+        self.assertEqual(
+            calls[0][1],
+            [
+                "bash",
+                ".github/workflows/scripts/run-spring-aot-triaged-test.sh",
+                "/tmp/spring-aot-smoke-tests",
+                ":data:data-mongodb",
+                "4.1.x",
+            ],
+        )
+        self.assertEqual(calls[0][2]["JAVA_HOME"], "/graalvm25")
+
+    def test_verification_once_runs_infrastructure_and_spring_lanes_when_triggered(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        gradle_tasks: list[str] = []
+
+        def fake_gradle_json_output(
+                repo_path: str,
+                task_name: str,
+                base_commit: str,
+                local_result: LocalCIVerificationResult,
+                gate: str,
+                extra_args: list[str] | None = None,
+        ) -> dict:
+            del repo_path, base_commit, local_result, gate, extra_args
+            gradle_tasks.append(task_name)
+            if task_name == "generateInfrastructureChangedCoordinatesMatrix":
+                return {"include": [{"coordinates": "org.example:demo:1.0.0"}]}
+            return {"include": []}
+
+        changed_files = [
+            "build.gradle",
+            "metadata/org.example/demo/1.0.0/reachability-metadata.json",
+        ]
+        with patch("utility_scripts.local_ci_verification.changed_files_for_ci", return_value=changed_files), \
+                patch("utility_scripts.local_ci_verification._gradle_json_output", side_effect=fake_gradle_json_output), \
+                patch("utility_scripts.local_ci_verification._run_test_matrix_entries", return_value=None), \
+                patch("utility_scripts.local_ci_verification._run_infrastructure_matrix_entries", return_value=None) as infra, \
+                patch("utility_scripts.local_ci_verification._run_spring_aot_verification", return_value=None) as spring, \
+                patch("utility_scripts.local_ci_verification._run_index_validation", return_value=None), \
+                patch("utility_scripts.local_ci_verification._run_style_validation", return_value=None), \
+                patch("utility_scripts.local_ci_verification._run_recorded_command", return_value=None):
+            failed = _run_verification_once("/repo", "base", result)
+
+        self.assertIsNone(failed)
+        self.assertIn("generateInfrastructureChangedCoordinatesMatrix", gradle_tasks)
+        infra.assert_called_once()
+        spring.assert_called_once_with("/repo", "base", changed_files, result)
 
     def test_latest_ea_requires_latest_ea_graalvm_home(self) -> None:
         with patch.dict(os.environ, {"GRAALVM_HOME": "/stable"}, clear=True):
