@@ -1,0 +1,1381 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deb23-ab68-7340-82b6-8eaca9c4f03d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.flywaydb:flyway-core:10.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "10.0.0" when "$version$" is replaced with "10.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+- Set "coordinates" to "org.flywaydb:flyway-core:10.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "10.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against primary sources first, then update the JSON in place. I’m going to check the current file shape and confirm the Maven/GitHub tag URLs before editing.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+{
+  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.flywaydb.*flyway-core|flyway-core' metadata tests build/discovered-artifact-metadata 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json:2:  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/TckExtension.java:199:     * @return List of coordinates (e.g., "org.flywaydb:flyway-core" or "org.example:library")
+metadata/org.flywaydb/flyway-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:94:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:128:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:145:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:162:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:165:    "documentation-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-javadoc.jar",
+tests/src/org.flywaydb/flyway-core/11.14.1/build.gradle:14:    testImplementation "org.flywaydb:flyway-core:$libraryVersion"
+tests/src/org.flywaydb/flyway-core/11.14.1/settings.gradle:20:rootProject.name = 'flyway-core-tests'
+tests/src/org.flywaydb/flyway-core/9.0.1/build.gradle:14:    testImplementation "org.flywaydb:flyway-core:$libraryVersion"
+tests/src/org.flywaydb/flyway-core/9.0.1/build.gradle:31:            outputDirectories.add("src/test/resources/META-INF/native-image/org.flywaydb/flyway-core")
+tests/src/org.flywaydb/flyway-core/10.10.0/build.gradle:14:    testImplementation "org.flywaydb:flyway-core:$libraryVersion"
+tests/src/org.flywaydb/flyway-core/9.0.1/settings.gradle:20:rootProject.name = 'flyway-core-tests'
+tests/src/org.flywaydb/flyway-core/10.10.0/settings.gradle:20:rootProject.name = 'flyway-core-tests'
+tests/src/org.flywaydb/flyway-core/10.20.0/build.gradle:14:    testImplementation "org.flywaydb:flyway-core:$libraryVersion"
+tests/src/org.flywaydb/flyway-core/11.14.1/gradle.properties:2:metadata.dir=org.flywaydb/flyway-core/11.14.1/
+tests/src/org.flywaydb/flyway-core/10.20.0/settings.gradle:20:rootProject.name = 'flyway-core-tests'
+tests/src/org.flywaydb/flyway-core/10.10.0/gradle.properties:2:metadata.dir=org.flywaydb/flyway-core/10.10.0/
+tests/src/org.flywaydb/flyway-core/9.0.1/gradle.properties:2:metadata.dir=org.flywaydb/flyway-core/9.0.1/
+tests/src/org.flywaydb/flyway-core/10.20.0/gradle.properties:2:metadata.dir=org.flywaydb/flyway-core/10.20.0/
+tests/src/org.flywaydb/flyway-core/10.15.0/build.gradle:14:    testImplementation "org.flywaydb:flyway-core:$libraryVersion"
+tests/src/org.flywaydb/flyway-core/10.15.0/settings.gradle:20:rootProject.name = 'org.flywaydb.flyway-core_tests'
+tests/src/org.flywaydb/flyway-core/10.20.1/build.gradle:14:    testImplementation "org.flywaydb:flyway-core:$libraryVersion"
+tests/src/org.flywaydb/flyway-core/10.20.1/settings.gradle:20:rootProject.name = 'flyway-core-tests'
+tests/src/org.flywaydb/flyway-core/10.20.1/gradle.properties:2:metadata.dir=org.flywaydb/flyway-core/10.20.1/
+tests/src/org.flywaydb/flyway-core/10.15.0/gradle.properties:2:metadata.dir = org.flywaydb/flyway-core/10.15.0/
+
+web search: 
+web search: Maven Central org.flywaydb flyway-core 10.0.0 pom scm url sources jar javadoc jar
+codex
+The repository already has Flyway entries for nearby versions, and Maven Central has published source and Javadoc artifacts for `10.0.0`. I’m checking whether a test-source artifact exists on Maven; if not, I’ll point the test URL at the matching upstream tag.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.flywaydb/flyway-core/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.3.0",
+    "test-version" : "11.14.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "12.3.0",
+      "12.4.0",
+      "12.5.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "metadata-version" : "11.14.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.20.1",
+      "10.21.0",
+      "10.22.0",
+      "11.0.0",
+      "11.0.1",
+      "11.1.0",
+      "11.1.1",
+      "11.2.0",
+      "11.3.0",
+      "11.3.1",
+      "11.3.2",
+      "11.3.3",
+      "11.3.4",
+      "11.4.0",
+      "11.4.1",
+      "11.5.0",
+      "11.6.0",
+      "11.7.0",
+      "11.7.1",
+      "11.7.2",
+      "11.8.0",
+      "11.8.2",
+      "11.9.0",
+      "11.9.1",
+      "11.9.2",
+      "11.10.0",
+      "11.10.1",
+      "11.10.2",
+      "11.10.3",
+      "11.10.4",
+      "11.10.5",
+      "11.11.0",
+      "11.11.1",
+      "11.11.2",
+      "11.14.1",
+      "11.15.0",
+      "11.16.0",
+      "11.17.0",
+      "11.17.1",
+      "11.17.2",
+      "11.18.0",
+      "11.19.0",
+      "11.19.1",
+      "11.20.0",
+      "11.20.1",
+      "11.20.2",
+      "11.20.3",
+      "12.0.0",
+      "12.0.1",
+      "12.0.2",
+      "12.0.3",
+      "12.1.0",
+      "12.1.1",
+      "12.2.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "10\\.20\\.1",
+    "metadata-version" : "10.20.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.20.1"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "10\\.20\\.0",
+    "metadata-version" : "10.20.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.20.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "10\\.(15|16|17|18|19)\\..*",
+    "metadata-version" : "10.15.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.15.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "10\\.(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14)\\..*",
+    "metadata-version" : "10.10.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.10.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "9\\..*",
+    "metadata-version" : "9.0.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-javadoc.jar",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "9.0.1"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/flywaydb/flyway-core/10.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/flywaydb/flyway-core/10.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="flyway-core-10.0.0-javadoc.jar" title="flyway-core-10.0.0-javadoc.jar">flyway-core-10.0.0-javadoc.jar</a>                    2023-10-31 13:22    591020      
+<a href="flyway-core-10.0.0-javadoc.jar.asc" title="flyway-core-10.0.0-javadoc.jar.asc">flyway-core-10.0.0-javadoc.jar.asc</a>                2023-10-31 13:22       488      
+<a href="flyway-core-10.0.0-javadoc.jar.asc.md5" title="flyway-core-10.0.0-javadoc.jar.asc.md5">flyway-core-10.0.0-javadoc.jar.asc.md5</a>            2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0-javadoc.jar.asc.sha1" title="flyway-core-10.0.0-javadoc.jar.asc.sha1">flyway-core-10.0.0-javadoc.jar.asc.sha1</a>           2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0-javadoc.jar.md5" title="flyway-core-10.0.0-javadoc.jar.md5">flyway-core-10.0.0-javadoc.jar.md5</a>                2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0-javadoc.jar.sha1" title="flyway-core-10.0.0-javadoc.jar.sha1">flyway-core-10.0.0-javadoc.jar.sha1</a>               2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0-sources.jar" title="flyway-core-10.0.0-sources.jar">flyway-core-10.0.0-sources.jar</a>                    2023-10-31 13:22    668260      
+<a href="flyway-core-10.0.0-sources.jar.asc" title="flyway-core-10.0.0-sources.jar.asc">flyway-core-10.0.0-sources.jar.asc</a>                2023-10-31 13:22       488      
+<a href="flyway-core-10.0.0-sources.jar.asc.md5" title="flyway-core-10.0.0-sources.jar.asc.md5">flyway-core-10.0.0-sources.jar.asc.md5</a>            2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0-sources.jar.asc.sha1" title="flyway-core-10.0.0-sources.jar.asc.sha1">flyway-core-10.0.0-sources.jar.asc.sha1</a>           2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0-sources.jar.md5" title="flyway-core-10.0.0-sources.jar.md5">flyway-core-10.0.0-sources.jar.md5</a>                2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0-sources.jar.sha1" title="flyway-core-10.0.0-sources.jar.sha1">flyway-core-10.0.0-sources.jar.sha1</a>               2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0.jar" title="flyway-core-10.0.0.jar">flyway-core-10.0.0.jar</a>                            2023-10-31 13:22    781255      
+<a href="flyway-core-10.0.0.jar.asc" title="flyway-core-10.0.0.jar.asc">flyway-core-10.0.0.jar.asc</a>                        2023-10-31 13:22       488      
+<a href="flyway-core-10.0.0.jar.asc.md5" title="flyway-core-10.0.0.jar.asc.md5">flyway-core-10.0.0.jar.asc.md5</a>                    2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0.jar.asc.sha1" title="flyway-core-10.0.0.jar.asc.sha1">flyway-core-10.0.0.jar.asc.sha1</a>                   2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0.jar.md5" title="flyway-core-10.0.0.jar.md5">flyway-core-10.0.0.jar.md5</a>                        2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0.jar.sha1" title="flyway-core-10.0.0.jar.sha1">flyway-core-10.0.0.jar.sha1</a>                       2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0.pom" title="flyway-core-10.0.0.pom">flyway-core-10.0.0.pom</a>                            2023-10-31 13:22      6270      
+<a href="flyway-core-10.0.0.pom.asc" title="flyway-core-10.0.0.pom.asc">flyway-core-10.0.0.pom.asc</a>                        2023-10-31 13:22       488      
+<a href="flyway-core-10.0.0.pom.asc.md5" title="flyway-core-10.0.0.pom.asc.md5">flyway-core-10.0.0.pom.asc.md5</a>                    2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0.pom.asc.sha1" title="flyway-core-10.0.0.pom.asc.sha1">flyway-core-10.0.0.pom.asc.sha1</a>                   2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0.pom.md5" title="flyway-core-10.0.0.pom.md5">flyway-core-10.0.0.pom.md5</a>                        2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0.pom.sha1" title="flyway-core-10.0.0.pom.sha1">flyway-core-10.0.0.pom.sha1</a>                       2023-10-31 13:22        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/flyway-core-10.0.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 0ms:
+<!--
+
+    Copyright (C) Red Gate Software Ltd 2010-2023
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-parent</artifactId>
+        <version>10.0.0</version>
+    </parent>
+    <artifactId>flyway-core</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <dependencies>
+        <!-- Optional loggers -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- Others -->
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-vfs</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-toml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws.secretsmanager</groupId>
+            <artifactId>aws-secretsmanager-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+
+
+
+
+
+
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-license</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>..</directory>
+                                    <includes>
+                                        <include>LICENSE.txt</include>
+                                        <include>README.txt</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <sourcepath>${project.basedir}/target/generated-sources/delombok</sourcepath>
+                    <sourceFileIncludes>
+                        <sourceFileInclude>**/core/Flyway.java</sourceFileInclude>
+                        <sourceFileInclude>**/core/api/**/*.java</sourceFileInclude>
+                    </sourceFileIncludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <sourcepath>${project.basedir}/target/generated-sources/delombok</sourcepath>
+                    <sourceFileIncludes>
+                        <sourceFileInclude>**/core/Flyway.java</sourceFileInclude>
+                        <sourceFileInclude>**/core/api/**/*.java</sourceFileInclude>
+                    </sourceFileIncludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</project>
+web search: 
+web search: Maven Central org.flywaydb flyway-core 10.0.0 jar sources javadoc
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/flyway/flyway/tree/flyway-10.0.0 | sed -n '1,40p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-parent/10.0.0/flyway-parent-10.0.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/flyway/flyway/tree/flyway-10.0.0/flyway-core/src/test | sed -n '1,40p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/flyway/flyway/tree/flyway-10.0.0/documentation | sed -n '1,40p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 341ms:
+<!--
+
+    Copyright (C) Red Gate Software Ltd 2010-2023
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--
+    Detailed information how to contribute: https://documentation.red-gate.com/fd/code-184127557.html
+
+    To build the OS-specific flyway-commandline assemblies you can run the build with one of the following commands:
+    mvn clean install -Pbuild-assemblies-windows
+    mvn clean install -Pbuild-assemblies-linux
+    mvn clean install -Pbuild-assemblies-mac
+    mvn clean install -Pbuild-assemblies-mac-arm64
+    mvn clean install -Pbuild-assemblies-no-jre
+    -->
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-parent</artifactId>
+    <version>10.0.0</version>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <description>Flyway: Database Migrations Made Easy.</description>
+    <url>https://flywaydb.org</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://flywaydb.org/licenses/flyway-oss</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+
+        <url>https://github.com/flyway/flyway</url>
+        <connection>scm:git:git@github.com:flyway/flyway.git</connection>
+        <developerConnection>scm:git:git@github.com:flyway/flyway.git</developerConnection>
+
+
+
+
+
+
+        <tag>HEAD</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>flyway</id>
+            <url>https://flywaydb.org/</url>
+            <organization>Redgate Software</organization>
+            <organizationUrl>https://www.red-gate.com/</organizationUrl>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>flyway-core</module>
+        <module>flyway-community-db-support</module>
+        <module>flyway-gradle-plugin</module>
+        <module>flyway-maven-plugin</module>
+        <module>flyway-commandline</module>
+        <module>flyway-database</module>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </modules>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>${snapshotRepository.id}</id>
+            <name>${snapshotRepository.name}</name>
+            <url>${snapshotRepository.url}</url>
+        </snapshotRepository>
+        <repository>
+            <id>${releaseRepository.id}</id>
+            <name>${releaseRepository.name}</name>
+            <url>${releaseRepository.url}</url>
+        </repository>
+    </distributionManagement>
+
+    <repositories>
+
+
+
+
+
+
+
+        <repository>
+            <id>maven-central</id>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+
+        <repository>
+            <id>repo.gradle.org</id>
+            <url>https://repo.gradle.org/gradle/libs-releases-local/</url>
+        </repository>
+        <repository>
+            <id>flyway-repo</id>
+            <url>https://nexus.flywaydb.org/repository/flyway/</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <version.ant>1.10.13</version.ant>
+        <version.appinsights>3.4.7</version.appinsights>
+        <version.aws-java-sdk>[2.20.162,2.21.0)</version.aws-java-sdk>
+        <version.aws-secretsmanager>2.0.0</version.aws-secretsmanager>
+        <version.byte-buddy-agent>1.11.18</version.byte-buddy-agent>
+        <version.commonslogging>1.2</version.commonslogging>
+        <version.commonstext>1.10.0</version.commonstext>
+        <version.db2>11.5.0.0</version.db2>
+        <version.derby>10.15.2.0</version.derby>
+        <version.equinox>3.15.200</version.equinox>
+        <version.equinoxcommon>3.10.600</version.equinoxcommon>
+        <version.gcs>2.22.5</version.gcs>
+        <version.gcsm>2.20.0</version.gcsm>
+        <version.gradle>6.1.1</version.gradle>
+        <version.gson>2.10.1</version.gson>
+        <version.h2>2.2.220</version.h2>
+        <version.hamcrest>2.2</version.hamcrest>
+        <version.hsqldb>2.7.1</version.hsqldb>
+        <version.ignite>2.13.0</version.ignite>
+        <version.informix>4.50.3</version.informix>
+        <version.jansi>1.18</version.jansi>
+        <version.jackson>2.15.2</version.jackson>
+        <version.jaxb>2.3.1</version.jaxb>
+        <version.jaybird>3.0.10</version.jaybird>
+        <version.jboss>3.2.15.Final</version.jboss>
+        <version.jna>4.5.2</version.jna>
+        <version.jtds>1.3.1</version.jtds>
+        <version.junit>5.9.0</version.junit>
+        <version.system-stubs>2.0.1</version.system-stubs>
+        <version.log4net2>2.17.1</version.log4net2>
+        <version.logback>1.2.3</version.logback>
+        <version.lombok>1.18.20</version.lombok>
+        <version.lombok-maven-plugin>1.18.20.0</version.lombok-maven-plugin>
+        <version.mariadb>2.7.10</version.mariadb>
+        <version.maven>3.9.4</version.maven>
+        <version.mockito>4.2.0</version.mockito>
+        <version.msal4j>1.13.8</version.msal4j>
+        <version.mssql>12.2.0</version.mssql>
+        <version.mssql-jdbc>${version.mssql}.jre8</version.mssql-jdbc>
+        <version.oracle>19.6.0.0</version.oracle>
+        <version.osgi>4.3.1</version.osgi>
+        <version.p6spy>3.9.1</version.p6spy>
+        <version.postgresql>42.4.3</version.postgresql>
+        <version.redshift>1.2.10.1009</version.redshift>
+        <version.sap>2.6.30</version.sap>
+        <version.singlestore>1.1.4</version.singlestore>
+        <version.slf4j>1.7.30</version.slf4j>
+        <version.snowflake>3.13.30</version.snowflake>
+        <version.spanner>2.11.1</version.spanner>
+        <version.springjdbc>5.3.19</version.springjdbc>
+        <version.sqlite>3.41.2.2</version.sqlite>
+        <version.testcontainers>1.15.3</version.testcontainers>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${version.commonslogging}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${version.commonstext}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-toml</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+
+ succeeded in 425ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 00:01:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=hZ9P68BI8LaIi6F8EWtDgXg5%2FVmIhwUnfwIGL0mXoX3ptOrxYumem9EJBcChUsEdkfNEhJFerh42FpFtHQ2owz9z7wKWPYSZ2dKQ%2B6KNLvPlZ%2FBxfnqJzSha5qCpLFnoVUFDxr2%2BjMktG0ZPs3TJlX%2BNdIRSnDhw92Pze33KnecS1X%2B4t6VlWEERDo1qTMp1Pxvw1cSmppmAAJSYDTJFJ55Ow20gCR%2FEk%2BE3sWgux%2BdHLNgpVLpTpXZ1HlC0ZTbTKQ3Jae4%2FKzr9dGWKEiU3bQ%3D%3D--NmMm3AVBPowhZp5P--dnwqofeRqHvjt7hCaTCV5A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.174532406.1777766497; expires=Mon, 03 May 2027 00:01:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 00:01:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5107:23DE51:FF4E50D:BF733E7:69F69061
+
+
+ succeeded in 504ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:01:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3dcbc018b14ece135d3be4753c52cb69"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=h35AzHL3GhvVZpDISQlVCV7vwi5VsjkEU9KXsPHLrX64RrSLLl9tdohU805cOWvE7bxJqQImD5EZwXBKaGokyf8HKLnpBSc32c5fUKu6fFxyBMvL4Wu0NwRzD7l8mU6Yb405KzjQLTgKXbtJKxrBDDOYG3%2BCXtCrUL6e8HGNa%2FswTYU0p1DjQDDJ6abfHqH5szQvdYyFUELFlW4B8gn7ZXWctFhJbDyxSApqAPMCvkpF4LZcShWgc0ztE3m0P7P%2BVzvGzL0X%2Fe1KYYjLYLr%2Biw%3D%3D--6tJSDMZ4byiKZmrl--mS%2Fkq6IYF8WAYr%2F3oW%2BWsA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.53995261.1777766497; expires=Mon, 03 May 2027 00:01:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 00:01:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:AA8D8:1061AE5F:C4D5548:69F69061
+
+
+ succeeded in 824ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:01:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"528e14b0eb166be013049516b68e6d46"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=w%2BlH8IbaPPtRCan452LghDFXdWeSQRvaH2M%2F1tdlBfrHSFLD3SRHrbaX%2FIwqbdeOzWvPU6NV6t%2FDfzpro8iDbcL7I2Ti%2FbbzXIsJi9UoUs2UNv5nGypikcdaMQzOYdf1Xjw80GfcMb%2F17h8DoRB5ZyJ0e0iGncAWuXCAw26SuHN%2Bxj2r6lAEKhF%2B4AGbusJc7a0c%2F3ERQBRbncWk9jDYsVFeyJjlXp3YDKYqR7EA2J9vZpHTfnYJBzPhgKKoOuNztZ8Cha6KC%2FDpUSZ8GAMbPQ%3D%3D--1n0iA4a458bfrMsZ--GZpq39nLvNuXu8L2jvrmQg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.722265232.1777766497; expires=Mon, 03 May 2027 00:01:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 00:01:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5103:3C4DFD:1023BD39:C19949D:69F69061
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/flyway/flyway/contents?ref=flyway-10.0.0 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/flyway/flyway/git/trees/flyway-10.0.0?recursive=1 | jq -r '.tree[]?.path' | rg '("'^|/)src/test|test/'"' | head -120" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/flyway/flyway/contents/flyway-core?ref=flyway-10.0.0 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 164ms:
+.gitattributes
+.github
+.gitignore
+.mvn
+CONTRIBUTING.md
+Dockerfile_tests
+ISSUE_TEMPLATE.md
+LICENSE.md
+LICENSE.txt
+README.md
+README.txt
+documentation
+flyway-commandline
+flyway-community-db-support
+flyway-core
+flyway-database
+flyway-gradle-plugin
+flyway-maven-plugin
+flyway-sqlserver
+lombok.config
+mvnw
+mvnw.cmd
+pom.xml
+
+ succeeded in 167ms:
+pom.xml
+src
+
+ succeeded in 401ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/flyway/flyway/contents/flyway-core/src?ref=flyway-10.0.0 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/flyway/flyway/contents/flyway-core/src/main?ref=flyway-10.0.0 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/flyway/flyway/git/trees/flyway-10.0.0?recursive=1 | jq -r '.tree[]?.path' | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/flyway/flyway/git/trees/flyway-10.0.0?recursive=1 | jq -r '.truncated, (.tree | length)'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 174ms:
+main
+
+ succeeded in 159ms:
+java
+resources
+
+ succeeded in 185ms:
+false
+1427
+
+ succeeded in 190ms:
+.gitattributes
+.github
+.github/workflows
+.github/workflows/build-pr.yml
+.github/workflows/build-release.yml
+.gitignore
+.mvn
+.mvn/wrapper
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+CONTRIBUTING.md
+Dockerfile_tests
+ISSUE_TEMPLATE.md
+LICENSE.md
+LICENSE.txt
+README.md
+README.txt
+documentation
+documentation/Flyway CLI and API
+documentation/Flyway CLI and API/Accessing Older Versions of Flyway.md
+documentation/Flyway CLI and API/Adding to the classpath.md
+documentation/Flyway CLI and API/Commands.md
+documentation/Flyway CLI and API/Commands
+documentation/Flyway CLI and API/Commands/Auth.md
+documentation/Flyway CLI and API/Commands/Baseline.md
+documentation/Flyway CLI and API/Commands/Check Command.md
+documentation/Flyway CLI and API/Commands/Clean.md
+documentation/Flyway CLI and API/Commands/Info.md
+documentation/Flyway CLI and API/Commands/Migrate.md
+documentation/Flyway CLI and API/Commands/Repair.md
+documentation/Flyway CLI and API/Commands/Snapshot.md
+documentation/Flyway CLI and API/Commands/Undo.md
+documentation/Flyway CLI and API/Commands/Validate.md
+documentation/Flyway CLI and API/Concepts.md
+documentation/Flyway CLI and API/Concepts
+documentation/Flyway CLI and API/Concepts/Baseline Migrations.md
+documentation/Flyway CLI and API/Concepts/Callback concept.md
+documentation/Flyway CLI and API/Concepts/Check concept.md
+documentation/Flyway CLI and API/Concepts/Dry Runs.md
+documentation/Flyway CLI and API/Concepts/Error Overrides.md
+documentation/Flyway CLI and API/Concepts/Migrations.md
+documentation/Flyway CLI and API/Configuration.md
+documentation/Flyway CLI and API/Configuration
+documentation/Flyway CLI and API/Configuration/Authentication.md
+documentation/Flyway CLI and API/Configuration/CLI Configuration Order.md
+documentation/Flyway CLI and API/Configuration/Configuration Files.md
+documentation/Flyway CLI and API/Configuration/Configuration from Standard Input.md
+documentation/Flyway CLI and API/Configuration/Environment Variables.md
+documentation/Flyway CLI and API/Configuration/License Permits.md
+documentation/Flyway CLI and API/Configuration/Parameters.md
+documentation/Flyway CLI and API/Configuration/Parameters
+documentation/Flyway CLI and API/Configuration/Parameters/Environments.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/Connect Retries Interval.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/Connect Retries.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/Driver.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/Init SQL.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/JDBC Properties.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/Password.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/Resolver.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/Schemas.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/URL.md
+documentation/Flyway CLI and API/Configuration/Parameters/Environments/User.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Baseline Description.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Baseline Migration Prefix.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Baseline On Migrate.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Baseline Version.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Batch.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Callbacks.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Check.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Check
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Check/Applied Migrations.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Check/Build Environment.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Check/Build Password.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Check/Build Url.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Check/Build User.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Check/Deployed Snapshot.md
+documentation/Flyway CLI and API/Configuration/Parameters/Flyway/Check/Fail On Drift.md
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/flyway/flyway/git/trees/flyway-10.0.0?recursive=1 | jq -r '.tree[]?.path' | rg 'Test\\.java"'$|/test/|src/test|tests'"' | head -200" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/flyway/flyway/git/trees/flyway-10.0.0?recursive=1 | jq -r '.tree[]?.path' | rg 'flyway-core/.+Test|flyway-core/.+IT|flyway-core/.+Assert|flyway-core/src' | head -200" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 157ms:
+Dockerfile_tests
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/flyway-core-10.0.0-test-sources.jar | sed -n '1,20p'; curl -fsI https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/flyway-core-10.0.0-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 146ms:
+flyway-core/src
+flyway-core/src/main
+flyway-core/src/main/java
+flyway-core/src/main/java/org
+flyway-core/src/main/java/org/flywaydb
+flyway-core/src/main/java/org/flywaydb/core
+flyway-core/src/main/java/org/flywaydb/core/Flyway.java
+flyway-core/src/main/java/org/flywaydb/core/FlywayExecutor.java
+flyway-core/src/main/java/org/flywaydb/core/FlywayTelemetryManager.java
+flyway-core/src/main/java/org/flywaydb/core/api
+flyway-core/src/main/java/org/flywaydb/core/api/ClassProvider.java
+flyway-core/src/main/java/org/flywaydb/core/api/CoreMigrationType.java
+flyway-core/src/main/java/org/flywaydb/core/api/ErrorCode.java
+flyway-core/src/main/java/org/flywaydb/core/api/ErrorDetails.java
+flyway-core/src/main/java/org/flywaydb/core/api/FlywayException.java
+flyway-core/src/main/java/org/flywaydb/core/api/InfoOutputProvider.java
+flyway-core/src/main/java/org/flywaydb/core/api/Location.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationFilter.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationInfo.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationInfoService.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationPattern.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationState.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationVersion.java
+flyway-core/src/main/java/org/flywaydb/core/api/ResourceProvider.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback
+flyway-core/src/main/java/org/flywaydb/core/api/callback/BaseCallback.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Callback.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Context.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Error.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Event.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Statement.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Warning.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/configuration
+flyway-core/src/main/java/org/flywaydb/core/api/configuration/ClassicConfiguration.java
+flyway-core/src/main/java/org/flywaydb/core/api/configuration/Configuration.java
+flyway-core/src/main/java/org/flywaydb/core/api/configuration/FluentConfiguration.java
+flyway-core/src/main/java/org/flywaydb/core/api/configuration/S3ClientFactory.java
+flyway-core/src/main/java/org/flywaydb/core/api/configuration/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/exception
+flyway-core/src/main/java/org/flywaydb/core/api/exception/FlywayValidateException.java
+flyway-core/src/main/java/org/flywaydb/core/api/executor
+flyway-core/src/main/java/org/flywaydb/core/api/executor/Context.java
+flyway-core/src/main/java/org/flywaydb/core/api/executor/MigrationExecutor.java
+flyway-core/src/main/java/org/flywaydb/core/api/executor/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/logging
+flyway-core/src/main/java/org/flywaydb/core/api/logging/Log.java
+flyway-core/src/main/java/org/flywaydb/core/api/logging/LogCreator.java
+flyway-core/src/main/java/org/flywaydb/core/api/logging/LogFactory.java
+flyway-core/src/main/java/org/flywaydb/core/api/logging/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration
+flyway-core/src/main/java/org/flywaydb/core/api/migration/BaseJavaMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/Context.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/JavaMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineAppliedMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineJavaMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineMigrationConfigurationExtension.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineMigrationResolver.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineMigrationType.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineResolvedMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineResourceTypeProvider.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/output
+flyway-core/src/main/java/org/flywaydb/core/api/output/BaselineResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/CleanResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/CommandResultFactory.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/CompositeResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/DashboardRenderer.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/DashboardResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/ErrorOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/HoldingRenderer.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/HoldingResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/HtmlResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/HtmlTableRenderer.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/InfoHtmlRenderer.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/InfoOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/InfoResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/MigrateErrorResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/MigrateHtmlRenderer.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/MigrateOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/MigrateResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/OperationResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/OperationResultBase.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/OperationResultJsonBase.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/RepairOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/RepairResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/ValidateOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/ValidateResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/pattern
+flyway-core/src/main/java/org/flywaydb/core/api/pattern/ValidatePattern.java
+flyway-core/src/main/java/org/flywaydb/core/api/resolver
+flyway-core/src/main/java/org/flywaydb/core/api/resolver/ChecksumMatcher.java
+flyway-core/src/main/java/org/flywaydb/core/api/resolver/MigrationResolver.java
+flyway-core/src/main/java/org/flywaydb/core/api/resolver/ResolvedMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/resolver/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/resource
+flyway-core/src/main/java/org/flywaydb/core/api/resource/LoadableResource.java
+flyway-core/src/main/java/org/flywaydb/core/api/resource/Resource.java
+flyway-core/src/main/java/org/flywaydb/core/api/resource/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility
+flyway-core/src/main/java/org/flywaydb/core/extensibility/AppliedMigration.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/CleanModePlugin.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/CommandExtension.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/ConfigurationExtension.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/ConfigurationParameter.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/ConfigurationProvider.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/EventTelemetryModel.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/FlywayExpiredLicenseKeyException.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/FlywayInvalidLicenseKeyException.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/FlywayRedgateLicenseKeyException.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/FlywayTrialExpiredException.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/HtmlRenderer.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/HtmlReportSummary.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/InfoTelemetryModel.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/LicenseGuard.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/MigrationType.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/Plugin.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/PluginMetadata.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/ResourceType.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/ResourceTypeProvider.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/RootTelemetryModel.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/TelemetryPlugin.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility/Tier.java
+flyway-core/src/main/java/org/flywaydb/core/internal
+flyway-core/src/main/java/org/flywaydb/core/internal/authentication
+flyway-core/src/main/java/org/flywaydb/core/internal/authentication/ExternalAuthFileReader.java
+flyway-core/src/main/java/org/flywaydb/core/internal/authentication/ExternalAuthPropertiesProvider.java
+flyway-core/src/main/java/org/flywaydb/core/internal/authentication/postgres
+flyway-core/src/main/java/org/flywaydb/core/internal/authentication/postgres/PgpassFileReader.java
+flyway-core/src/main/java/org/flywaydb/core/internal/callback
+flyway-core/src/main/java/org/flywaydb/core/internal/callback/ArbitraryScriptCallback.java
+flyway-core/src/main/java/org/flywaydb/core/internal/callback/CallbackExecutor.java
+flyway-core/src/main/java/org/flywaydb/core/internal/callback/DefaultCallbackExecutor.java
+flyway-core/src/main/java/org/flywaydb/core/internal/callback/NoopCallback.java
+flyway-core/src/main/java/org/flywaydb/core/internal/callback/NoopCallbackExecutor.java
+flyway-core/src/main/java/org/flywaydb/core/internal/callback/SimpleContext.java
+flyway-core/src/main/java/org/flywaydb/core/internal/callback/SqlScriptCallbackFactory.java
+flyway-core/src/main/java/org/flywaydb/core/internal/callback/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/internal/clazz
+flyway-core/src/main/java/org/flywaydb/core/internal/clazz/NoopClassProvider.java
+flyway-core/src/main/java/org/flywaydb/core/internal/clazz/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command
+flyway-core/src/main/java/org/flywaydb/core/internal/command/DbBaseline.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/DbInfo.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/DbMigrate.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/DbRepair.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/DbSchemas.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/DbValidate.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/clean
+flyway-core/src/main/java/org/flywaydb/core/internal/command/clean/CleanExecutor.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/clean/CleanModeConfigurationExtension.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/clean/CleanModel.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/clean/DbClean.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/clean/SchemaModel.java
+flyway-core/src/main/java/org/flywaydb/core/internal/command/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/ConfigUtils.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/ConfigurationValidator.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/ListDeserializer.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/TomlUtils.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/models
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/models/ConfigurationModel.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/models/EnvironmentModel.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/models/FlywayModel.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/models/PropertyResolver.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/models/ResolvedEnvironment.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/EnvironmentProvisioner.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/EnvironmentProvisionerClean.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/EnvironmentProvisionerClone.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/EnvironmentProvisionerDocker.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/EnvironmentProvisionerNone.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/EnvironmentResolver.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/EnvironmentVariableResolver.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/PropertyResolver.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/PropertyResolverContext.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/PropertyResolverContextImpl.java
+flyway-core/src/main/java/org/flywaydb/core/internal/configuration/resolvers/ProvisionerMode.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database
+flyway-core/src/main/java/org/flywaydb/core/internal/database/DatabaseExecutionStrategy.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/DatabaseType.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/DatabaseTypeRegister.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/DefaultExecutionStrategy.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/InsertRowLock.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/BaseDatabaseType.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/Connection.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/Database.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/Function.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/Schema.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/SchemaObject.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/Table.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/TestContainersDatabaseType.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/Type.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/internal/database/h2
+
+ succeeded in 523ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 00:01:54 GMT
+content-type: text/html
+cf-ray: 9f5afe6b1a4523bc-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/flywaydb/flyway-core/10.0.0/flyway-core-10.0.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Sun, 03 May 2026 00:01:54 GMT
+content-type: text/html
+cf-ray: 9f5afe6cced0bc6c-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/flywaydb/flyway-core/10.0.0/flyway-core-10.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+There is no Maven test-sources/tests artifact for `flyway-core:10.0.0`, and the public `flyway-10.0.0` tag does not expose a `flyway-core` test tree. I’m going to keep `test-code-url` as `N/A`, use Maven Central for the versioned sources artifact, and use the matching GitHub tag for Flyway documentation, consistent with the existing 10.x entries.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+web search: 
+web search: site:repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0 flyway-core-10.0.0-sources.jar
+web search: 
+web search: https://github.com/flyway/flyway/tree/flyway-10.0.0/documentation
+web search: 
+web search: "flyway-parent-10.0.0.pom" "https://github.com/flyway/flyway"
+web search: 
+web search: Flyway GitHub repository flyway/flyway official
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 0ms:
+{
+  "coordinates": "org.flywaydb:flyway-core:10.0.0",
+  "repository-url": "https://github.com/flyway/flyway",
+  "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+  "description": "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+ succeeded in 118ms:
+web search: 
+web search: https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/
+web search: 
+web search: 
+web search: 
+web search: api.github.com repos flyway flyway contents flyway-core src ref flyway-10.0.0
+web search: 
+web search: https://github.com/flyway/flyway
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
+     3	  "repository-url" : "https://github.com/flyway/flyway",
+     4	  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+     5	  "test-code-url" : "N/A",
+     6	  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+     7	  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+web search: 
+web search: Maven Central org.flywaydb flyway-core 10.0.0 sources javadoc jar
+web search: 
+web search: https://github.com/flyway/flyway/tree/flyway-10.0.0/documentation
+codex
+Updated [org.flywaydb-flyway-core-10.0.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json:1).
+
+I used Maven Central for the versioned sources URL and left `test-code-url` as `N/A` because the `10.0.0` Maven directory publishes the JAR, sources, Javadoc, and POM, but no tests/test-sources artifact. I used the `flyway-10.0.0` GitHub documentation tag URL and left `language` plus `not-for-native-image` absent because this is a JVM JAR with Java sources, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/?utm_source=openai))
+
+Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+tokens used
+102,112
+Updated [org.flywaydb-flyway-core-10.0.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json:1).
+
+I used Maven Central for the versioned sources URL and left `test-code-url` as `N/A` because the `10.0.0` Maven directory publishes the JAR, sources, Javadoc, and POM, but no tests/test-sources artifact. I used the `flyway-10.0.0` GitHub documentation tag URL and left `language` plus `not-for-native-image` absent because this is a JVM JAR with Java sources, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/?utm_source=openai))
+
+Validated the JSON with `jq`.
+Ran agent for org.flywaydb:flyway-core:10.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1/build/agent-artifact-discovery-logs/org.flywaydb-flyway-core-10.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-57adb0c1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 47s
+9 actionable tasks: 4 executed, 5 from cache
