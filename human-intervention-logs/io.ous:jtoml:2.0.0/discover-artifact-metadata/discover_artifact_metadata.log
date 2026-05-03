@@ -1,0 +1,1083 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dedc9-8610-7bc1-bccf-5b6cfa68256b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.ous:jtoml:2.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.0" when "$version$" is replaced with "2.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+- Set "coordinates" to "io.ous:jtoml:2.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream repo, then patch the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+{
+  "coordinates" : "io.ous:jtoml:2.0.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'io\\.ous|jtoml' -S ." in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ exited 1 in 0ms:
+web search: 
+web search: io.ous jtoml 2.0.0 Maven repository scm source
+codex
+Maven Central has the 2.0.0 binary, sources JAR, and javadoc JAR, so I’m checking the published POM and upstream tag layout before choosing the URL fields.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.ous</groupId>
+  <artifactId>jtoml</artifactId>
+  <version>2.0.0</version>
+  <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Java Parser for TOML</description>
+  <url>https://github.com/asafh/jtoml</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>scm:git:git@github.com:asafh/jtoml.git</url>
+        <connection>scm:git:git@github.com:asafh/jtoml.git</connection>
+        <developerConnection>scm:git:git@github.com:asafh/jtoml.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <name>Asaf Haddad</name>
+            <email>hello@ous.im</email>
+            <organization>ous.im</organization>
+            <organizationUrl>http://www.ous.im</organizationUrl>
+        </developer>
+    </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.9.13</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|not-for-native-image|language' build/discovered-artifact-metadata | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 248ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/ous/jtoml/2.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/ous/jtoml/2.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jtoml-2.0.0-javadoc.jar" title="jtoml-2.0.0-javadoc.jar">jtoml-2.0.0-javadoc.jar</a>                           2017-01-14 15:05     91364      
+<a href="jtoml-2.0.0-javadoc.jar.asc" title="jtoml-2.0.0-javadoc.jar.asc">jtoml-2.0.0-javadoc.jar.asc</a>                       2017-01-14 15:05       499      
+<a href="jtoml-2.0.0-javadoc.jar.asc.md5" title="jtoml-2.0.0-javadoc.jar.asc.md5">jtoml-2.0.0-javadoc.jar.asc.md5</a>                   2017-01-14 15:05        32      
+<a href="jtoml-2.0.0-javadoc.jar.asc.sha1" title="jtoml-2.0.0-javadoc.jar.asc.sha1">jtoml-2.0.0-javadoc.jar.asc.sha1</a>                  2017-01-14 15:05        40      
+<a href="jtoml-2.0.0-javadoc.jar.md5" title="jtoml-2.0.0-javadoc.jar.md5">jtoml-2.0.0-javadoc.jar.md5</a>                       2017-01-14 15:05        32      
+<a href="jtoml-2.0.0-javadoc.jar.sha1" title="jtoml-2.0.0-javadoc.jar.sha1">jtoml-2.0.0-javadoc.jar.sha1</a>                      2017-01-14 15:05        40      
+<a href="jtoml-2.0.0-sources.jar" title="jtoml-2.0.0-sources.jar">jtoml-2.0.0-sources.jar</a>                           2017-01-14 15:05     13382      
+<a href="jtoml-2.0.0-sources.jar.asc" title="jtoml-2.0.0-sources.jar.asc">jtoml-2.0.0-sources.jar.asc</a>                       2017-01-14 15:05       499      
+<a href="jtoml-2.0.0-sources.jar.asc.md5" title="jtoml-2.0.0-sources.jar.asc.md5">jtoml-2.0.0-sources.jar.asc.md5</a>                   2017-01-14 15:05        32      
+<a href="jtoml-2.0.0-sources.jar.asc.sha1" title="jtoml-2.0.0-sources.jar.asc.sha1">jtoml-2.0.0-sources.jar.asc.sha1</a>                  2017-01-14 15:05        40      
+<a href="jtoml-2.0.0-sources.jar.md5" title="jtoml-2.0.0-sources.jar.md5">jtoml-2.0.0-sources.jar.md5</a>                       2017-01-14 15:05        32      
+<a href="jtoml-2.0.0-sources.jar.sha1" title="jtoml-2.0.0-sources.jar.sha1">jtoml-2.0.0-sources.jar.sha1</a>                      2017-01-14 15:05        40      
+<a href="jtoml-2.0.0.jar" title="jtoml-2.0.0.jar">jtoml-2.0.0.jar</a>                                   2017-01-14 15:05     24744      
+<a href="jtoml-2.0.0.jar.asc" title="jtoml-2.0.0.jar.asc">jtoml-2.0.0.jar.asc</a>                               2017-01-14 15:05       499      
+<a href="jtoml-2.0.0.jar.asc.md5" title="jtoml-2.0.0.jar.asc.md5">jtoml-2.0.0.jar.asc.md5</a>                           2017-01-14 15:05        32      
+<a href="jtoml-2.0.0.jar.asc.sha1" title="jtoml-2.0.0.jar.asc.sha1">jtoml-2.0.0.jar.asc.sha1</a>                          2017-01-14 15:05        40      
+<a href="jtoml-2.0.0.jar.md5" title="jtoml-2.0.0.jar.md5">jtoml-2.0.0.jar.md5</a>                               2017-01-14 15:05        32      
+<a href="jtoml-2.0.0.jar.sha1" title="jtoml-2.0.0.jar.sha1">jtoml-2.0.0.jar.sha1</a>                              2017-01-14 15:05        40      
+<a href="jtoml-2.0.0.pom" title="jtoml-2.0.0.pom">jtoml-2.0.0.pom</a>                                   2017-01-14 15:05      3957      
+<a href="jtoml-2.0.0.pom.asc" title="jtoml-2.0.0.pom.asc">jtoml-2.0.0.pom.asc</a>                               2017-01-14 15:05       499      
+<a href="jtoml-2.0.0.pom.asc.md5" title="jtoml-2.0.0.pom.asc.md5">jtoml-2.0.0.pom.asc.md5</a>                           2017-01-14 15:05        32      
+<a href="jtoml-2.0.0.pom.asc.sha1" title="jtoml-2.0.0.pom.asc.sha1">jtoml-2.0.0.pom.asc.sha1</a>                          2017-01-14 15:05        40      
+<a href="jtoml-2.0.0.pom.md5" title="jtoml-2.0.0.pom.md5">jtoml-2.0.0.pom.md5</a>                               2017-01-14 15:05        32      
+<a href="jtoml-2.0.0.pom.sha1" title="jtoml-2.0.0.pom.sha1">jtoml-2.0.0.pom.sha1</a>                              2017-01-14 15:05        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: io.ous jtoml 2.0.0 Maven repository scm source
+web search: 
+web search: https://github.com/asafh/jtoml
+web search: 
+web search: https://github.com/asafh/jtoml/tags
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org|repo.maven.apache.org|sources.jar|javadoc.jar|test-code-url\" : \"N/A\"' build/discovered-artifact-metadata metadata -S | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 0ms:
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:39:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:40:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:128:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:131:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-graphite/$version$/metrics-graphite-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-graphite/$version$/metrics-graphite-$version$-javadoc.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:52:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:64:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:67:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.jline/jline-reader/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+metadata/org.jline/jline-reader/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/asafh/jtoml/tags' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/asafh/jtoml/master/pom.xml | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/asafh/jtoml/contents/src?ref=master' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 169ms:
+[
+  {
+    "name": "main",
+    "path": "src/main",
+    "sha": "3c828f86f82b9806a528975367b73a3e4fd00248",
+    "size": 0,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src/main?ref=master",
+    "html_url": "https://github.com/asafh/jtoml/tree/master/src/main",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/trees/3c828f86f82b9806a528975367b73a3e4fd00248",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src/main?ref=master",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/trees/3c828f86f82b9806a528975367b73a3e4fd00248",
+      "html": "https://github.com/asafh/jtoml/tree/master/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "src/test",
+    "sha": "d528f546e4d067739fffe85dccb5f6add226dc89",
+    "size": 0,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src/test?ref=master",
+    "html_url": "https://github.com/asafh/jtoml/tree/master/src/test",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/trees/d528f546e4d067739fffe85dccb5f6add226dc89",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src/test?ref=master",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/trees/d528f546e4d067739fffe85dccb5f6add226dc89",
+      "html": "https://github.com/asafh/jtoml/tree/master/src/test"
+    }
+  }
+]
+
+ succeeded in 226ms:
+[
+  {
+    "name": "jtoml-1.0.1",
+    "zipball_url": "https://api.github.com/repos/asafh/jtoml/zipball/refs/tags/jtoml-1.0.1",
+    "tarball_url": "https://api.github.com/repos/asafh/jtoml/tarball/refs/tags/jtoml-1.0.1",
+    "commit": {
+      "sha": "e2817c679b469145b5c1e5eb98f1d59d7837f0dc",
+      "url": "https://api.github.com/repos/asafh/jtoml/commits/e2817c679b469145b5c1e5eb98f1d59d7837f0dc"
+    },
+    "node_id": "MDM6UmVmODUwNjYwMjpyZWZzL3RhZ3MvanRvbWwtMS4wLjE="
+  },
+  {
+    "name": "jtoml-1.0.0",
+    "zipball_url": "https://api.github.com/repos/asafh/jtoml/zipball/refs/tags/jtoml-1.0.0",
+    "tarball_url": "https://api.github.com/repos/asafh/jtoml/tarball/refs/tags/jtoml-1.0.0",
+    "commit": {
+      "sha": "03059be8d7c96b598b03ba1e023916a32da1b39c",
+      "url": "https://api.github.com/repos/asafh/jtoml/commits/03059be8d7c96b598b03ba1e023916a32da1b39c"
+    },
+    "node_id": "MDM6UmVmODUwNjYwMjpyZWZzL3RhZ3MvanRvbWwtMS4wLjA="
+  },
+  {
+    "name": "1.0.0",
+    "zipball_url": "https://api.github.com/repos/asafh/jtoml/zipball/refs/tags/1.0.0",
+    "tarball_url": "https://api.github.com/repos/asafh/jtoml/tarball/refs/tags/1.0.0",
+    "commit": {
+      "sha": "a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c",
+      "url": "https://api.github.com/repos/asafh/jtoml/commits/a811d81e3ae9e8e0adebd3fe97b6eabf1c787d3c"
+    },
+    "node_id": "MDM6UmVmODUwNjYwMjpyZWZzL3RhZ3MvMS4wLjA="
+  }
+]
+
+ succeeded in 287ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.ous</groupId>
+  <artifactId>jtoml</artifactId>
+  <version>2.0.0</version>
+  <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Java Parser for TOML</description>
+  <url>https://github.com/asafh/jtoml</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>scm:git:git@github.com:asafh/jtoml.git</url>
+        <connection>scm:git:git@github.com:asafh/jtoml.git</connection>
+        <developerConnection>scm:git:git@github.com:asafh/jtoml.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <name>Asaf Haddad</name>
+            <email>hello@ous.im</email>
+            <organization>ous.im</organization>
+            <organizationUrl>http://www.ous.im</organizationUrl>
+        </developer>
+    </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.9.13</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jtoml-2.0.0.jar" https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar; unzip -l "$tmp/jtoml-2.0.0.jar" | sed -n '"'1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 0ms:
+Archive:  /tmp/tmp.xDyO2aXlLE/jtoml-2.0.0.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2017-01-14 17:04   META-INF/
+      124  2017-01-14 17:04   META-INF/MANIFEST.MF
+        0  2017-01-14 17:04   io/
+        0  2017-01-14 17:04   io/ous/
+        0  2017-01-14 17:04   io/ous/jtoml/
+        0  2017-01-14 17:04   io/ous/jtoml/impl/
+     5113  2017-01-14 17:04   io/ous/jtoml/impl/ObjectDeserializer.class
+      780  2017-01-14 17:04   io/ous/jtoml/impl/Parser$1.class
+     7945  2017-01-14 17:04   io/ous/jtoml/impl/Parser.class
+     3149  2017-01-14 17:04   io/ous/jtoml/impl/StringCharacterIterator.class
+     3213  2017-01-14 17:04   io/ous/jtoml/impl/SymbolToken.class
+     1498  2017-01-14 17:04   io/ous/jtoml/impl/Token$TokenType.class
+      249  2017-01-14 17:04   io/ous/jtoml/impl/Token.class
+     1124  2017-01-14 17:04   io/ous/jtoml/impl/Tokenizer$ParsedToken.class
+    10612  2017-01-14 17:04   io/ous/jtoml/impl/Tokenizer.class
+     3007  2017-01-14 17:04   io/ous/jtoml/impl/ValuedToken.class
+     1715  2017-01-14 17:04   io/ous/jtoml/JToml.class
+     1011  2017-01-14 17:04   io/ous/jtoml/ParseException.class
+      273  2017-01-14 17:04   io/ous/jtoml/Toml.class
+     4265  2017-01-14 17:04   io/ous/jtoml/TomlTable.class
+        0  2017-01-14 17:04   META-INF/maven/
+        0  2017-01-14 17:04   META-INF/maven/io.ous/
+        0  2017-01-14 17:04   META-INF/maven/io.ous/jtoml/
+     3957  2017-01-14 17:02   META-INF/maven/io.ous/jtoml/pom.xml
+      101  2017-01-14 17:04   META-INF/maven/io.ous/jtoml/pom.properties
+---------                     -------
+    48136                     25 files
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jtoml-2.0.0-sources.jar" https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar; unzip -l "$tmp/jtoml-2.0.0-sources.jar" | sed -n '"'1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jtoml-2.0.0-javadoc.jar" https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-javadoc.jar; unzip -l "$tmp/jtoml-2.0.0-javadoc.jar" | sed -n '"'1,60p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 191ms:
+Archive:  /tmp/tmp.U1wCMxd0aH/jtoml-2.0.0-javadoc.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2017-01-14 17:04   META-INF/
+      124  2017-01-14 17:04   META-INF/MANIFEST.MF
+        0  2017-01-14 17:04   io/
+        0  2017-01-14 17:04   io/ous/
+        0  2017-01-14 17:04   io/ous/jtoml/
+        0  2017-01-14 17:04   io/ous/jtoml/class-use/
+        0  2017-01-14 17:04   io/ous/jtoml/impl/
+        0  2017-01-14 17:04   io/ous/jtoml/impl/class-use/
+        0  2017-01-14 17:04   resources/
+     1796  2017-01-14 17:04   allclasses-frame.html
+     1596  2017-01-14 17:04   allclasses-noframe.html
+     3670  2017-01-14 17:04   constant-values.html
+     3620  2017-01-14 17:04   deprecated-list.html
+     8954  2017-01-14 17:04   help-doc.html
+    23804  2017-01-14 17:04   index-all.html
+     2844  2017-01-14 17:04   index.html
+     4198  2017-01-14 17:04   io/ous/jtoml/class-use/JToml.html
+     4297  2017-01-14 17:04   io/ous/jtoml/class-use/ParseException.html
+     7563  2017-01-14 17:04   io/ous/jtoml/class-use/Toml.html
+    12110  2017-01-14 17:04   io/ous/jtoml/class-use/TomlTable.html
+     6408  2017-01-14 17:04   io/ous/jtoml/impl/class-use/ObjectDeserializer.html
+     4309  2017-01-14 17:04   io/ous/jtoml/impl/class-use/Parser.html
+     7992  2017-01-14 17:04   io/ous/jtoml/impl/class-use/SymbolToken.html
+     6446  2017-01-14 17:04   io/ous/jtoml/impl/class-use/Token.html
+     8200  2017-01-14 17:04   io/ous/jtoml/impl/class-use/Token.TokenType.html
+    11010  2017-01-14 17:04   io/ous/jtoml/impl/class-use/ValuedToken.html
+    14472  2017-01-14 17:04   io/ous/jtoml/impl/ObjectDeserializer.html
+     1536  2017-01-14 17:04   io/ous/jtoml/impl/package-frame.html
+     6695  2017-01-14 17:04   io/ous/jtoml/impl/package-summary.html
+     6714  2017-01-14 17:04   io/ous/jtoml/impl/package-tree.html
+     6165  2017-01-14 17:04   io/ous/jtoml/impl/package-use.html
+    12628  2017-01-14 17:04   io/ous/jtoml/impl/Parser.html
+    24935  2017-01-14 17:04   io/ous/jtoml/impl/SymbolToken.html
+     8299  2017-01-14 17:04   io/ous/jtoml/impl/Token.html
+    19587  2017-01-14 17:04   io/ous/jtoml/impl/Token.TokenType.html
+    21254  2017-01-14 17:04   io/ous/jtoml/impl/ValuedToken.html
+    15116  2017-01-14 17:04   io/ous/jtoml/JToml.html
+     1189  2017-01-14 17:04   io/ous/jtoml/package-frame.html
+     5663  2017-01-14 17:04   io/ous/jtoml/package-summary.html
+     7009  2017-01-14 17:04   io/ous/jtoml/package-tree.html
+     6213  2017-01-14 17:04   io/ous/jtoml/package-use.html
+    14741  2017-01-14 17:04   io/ous/jtoml/ParseException.html
+    17985  2017-01-14 17:04   io/ous/jtoml/Toml.html
+    41213  2017-01-14 17:04   io/ous/jtoml/TomlTable.html
+      921  2017-01-14 17:04   overview-frame.html
+     4263  2017-01-14 17:04   overview-summary.html
+     8852  2017-01-14 17:04   overview-tree.html
+       33  2017-01-14 17:04   package-list
+     2313  2017-01-14 17:04   resources/background.gif
+      291  2017-01-14 17:04   resources/tab.gif
+    10701  2017-01-14 17:04   resources/titlebar.gif
+      849  2017-01-14 17:04   resources/titlebar_end.gif
+     5243  2017-01-14 17:04   serialized-form.html
+    11613  2017-01-14 17:04   stylesheet.css
+---------                     -------
+   395434                     54 files
+
+ succeeded in 286ms:
+Archive:  /tmp/tmp.TEk2hP02SR/jtoml-2.0.0-sources.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2017-01-14 17:04   META-INF/
+      124  2017-01-14 17:04   META-INF/MANIFEST.MF
+        0  2013-02-24 18:17   io/
+        0  2013-02-24 18:17   io/ous/
+        0  2015-03-06 23:26   io/ous/jtoml/
+        0  2017-01-14 16:04   io/ous/jtoml/impl/
+     3778  2015-03-06 23:11   io/ous/jtoml/impl/ObjectDeserializer.java
+     9056  2017-01-14 16:04   io/ous/jtoml/impl/Parser.java
+     2543  2015-03-05 12:50   io/ous/jtoml/impl/StringCharacterIterator.java
+     2131  2015-03-06 23:09   io/ous/jtoml/impl/SymbolToken.java
+      368  2015-03-05 01:22   io/ous/jtoml/impl/Token.java
+    14902  2017-01-14 15:59   io/ous/jtoml/impl/Tokenizer.java
+     1800  2015-03-06 21:46   io/ous/jtoml/impl/ValuedToken.java
+     1145  2015-03-06 23:12   io/ous/jtoml/JToml.java
+      407  2015-03-06 23:26   io/ous/jtoml/ParseException.java
+      179  2015-03-06 23:11   io/ous/jtoml/Toml.java
+     3905  2015-03-06 23:11   io/ous/jtoml/TomlTable.java
+---------                     -------
+    40338                     17 files
+
+web search: 
+web search: https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/
+web search: 
+web search: https://github.com/asafh/jtoml/tags
+web search: 
+web search: https://github.com/asafh/jtoml/tree/master/src/test
+web search: 
+web search: repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0.pom
+web search: 
+web search: https://central.sonatype.com/artifact/io.ous/jtoml
+exec
+/usr/bin/bash -lc "rg -n 'test-code-url\"\\s*:\\s*\"https://github.com/.*/tree/[0-9a-f]{7,}|source-code-url\"\\s*:\\s*\"https://github.com/.*/tree/[0-9a-f]{7,}' metadata build/discovered-artifact-metadata -S | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 0ms:
+metadata/org.slf4j/slf4j-simple/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/541e6f7d181ff3405ae9495724430825aefff6a9/slf4j-simple/src/test/java",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/9a4774328bb797b49fb2a2513fea69b1656089d1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:36:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/0eec4c8390943c7875840b99bfba800d546d52ca/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:51:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/11a7348c1f24cfe9d16a9e1fcee856387e49a93a/src/test",
+metadata/org.brotli/dec/index.json:7:    "test-code-url" : "https://github.com/google/brotli/tree/4363f2d74b8af198f78b08e10cd0b3ead48af590/java/org/brotli/dec",
+
+exec
+/usr/bin/bash -lc "rg -n 'test-code-url\"\\s*:\\s*\"https://github.com/.*/master|source-code-url\"\\s*:\\s*\"https://github.com/.*/master' metadata build/discovered-artifact-metadata -S | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/asafh/jtoml/commits/master | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 255ms:
+{
+  "sha": "954caf117074b409561da3788759b86d0b0e8bdb",
+  "node_id": "MDY6Q29tbWl0ODUwNjYwMjo5NTRjYWYxMTcwNzRiNDA5NTYxZGEzNzg4NzU5Yjg2ZDBiMGU4YmRi",
+  "commit": {
+    "author": {
+      "name": "Asafh",
+      "email": "asafh@users.noreply.github.com",
+      "date": "2017-01-14T15:08:12Z"
+    },
+    "committer": {
+      "name": "Asafh",
+      "email": "asafh@users.noreply.github.com",
+      "date": "2017-01-14T15:08:12Z"
+    },
+    "message": "Merge branch 'feat_support_v0.4.0'",
+    "tree": {
+      "sha": "ecd93f51560483475b742177f2ce06169a78b728",
+      "url": "https://api.github.com/repos/asafh/jtoml/git/trees/ecd93f51560483475b742177f2ce06169a78b728"
+    },
+    "url": "https://api.github.com/repos/asafh/jtoml/git/commits/954caf117074b409561da3788759b86d0b0e8bdb",
+    "comment_count": 0,
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "url": "https://api.github.com/repos/asafh/jtoml/commits/954caf117074b409561da3788759b86d0b0e8bdb",
+  "html_url": "https://github.com/asafh/jtoml/commit/954caf117074b409561da3788759b86d0b0e8bdb",
+  "comments_url": "https://api.github.com/repos/asafh/jtoml/commits/954caf117074b409561da3788759b86d0b0e8bdb/comments",
+  "author": {
+    "login": "asafh",
+    "id": 1410718,
+    "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/asafh",
+    "html_url": "https://github.com/asafh",
+    "followers_url": "https://api.github.com/users/asafh/followers",
+    "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+    "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+    "organizations_url": "https://api.github.com/users/asafh/orgs",
+    "repos_url": "https://api.github.com/users/asafh/repos",
+    "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/asafh/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "asafh",
+    "id": 1410718,
+    "node_id": "MDQ6VXNlcjE0MTA3MTg=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1410718?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/asafh",
+    "html_url": "https://github.com/asafh",
+    "followers_url": "https://api.github.com/users/asafh/followers",
+    "following_url": "https://api.github.com/users/asafh/following{/other_user}",
+    "gists_url": "https://api.github.com/users/asafh/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/asafh/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/asafh/subscriptions",
+    "organizations_url": "https://api.github.com/users/asafh/orgs",
+    "repos_url": "https://api.github.com/users/asafh/repos",
+    "events_url": "https://api.github.com/users/asafh/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/asafh/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98",
+      "url": "https://api.github.com/repos/asafh/jtoml/commits/c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98",
+      "html_url": "https://github.com/asafh/jtoml/commit/c65ca9b5d20303fc3852bcd5ccaf9ddadcfa1e98"
+    },
+    {
+      "sha": "efabdcff2a8b818b8c696104466d2c987c60787d",
+      "url": "https://api.github.com/repos/asafh/jtoml/commits/efabdcff2a8b818b8c696104466d2c987c60787d",
+      "html_url": "https://github.com/asafh/jtoml/commit/efabdcff2a8b818b8c696104466d2c987c60787d"
+    }
+  ],
+  "stats": {
+    "total": 74,
+    "additions": 66,
+    "deletions": 8
+  },
+  "files": [
+    {
+      "sha": "b4c25954fbed6145f24fcb82e0ba682c7a952b66",
+      "filename": "pom.xml",
+      "status": "modified",
+      "additions": 66,
+      "deletions": 8,
+      "changes": 74,
+      "blob_url": "https://github.com/asafh/jtoml/blob/954caf117074b409561da3788759b86d0b0e8bdb/pom.xml",
+      "raw_url": "https://github.com/asafh/jtoml/raw/954caf117074b409561da3788759b86d0b0e8bdb/pom.xml",
+      "contents_url": "https://api.github.com/repos/asafh/jtoml/contents/pom.xml?ref=954caf117074b409561da3788759b86d0b0e8bdb",
+      "patch": "@@ -1,17 +1,12 @@\n <project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n   <modelVersion>4.0.0</modelVersion>\n-    <parent>\n-        <groupId>org.sonatype.oss</groupId>\n-        <artifactId>oss-parent</artifactId>\n-        <version>7</version>\n-    </parent>\n   <groupId>io.ous</groupId>\n   <artifactId>jtoml</artifactId>\n-  <version>2.0.0-SNAPSHOT</version>\n+  <version>2.0.0</version>\n   <packaging>jar</packaging>\n \n-  <name>jtoml</name>\n-  <description>Java Parser for TOML</description>\n+    <name>${project.groupId}:${project.artifactId}</name>\n+    <description>Java Parser for TOML</description>\n   <url>https://github.com/asafh/jtoml</url>\n \n     <licenses>\n@@ -26,6 +21,14 @@\n         <connection>scm:git:git@github.com:asafh/jtoml.git</connection>\n         <developerConnection>scm:git:git@github.com:asafh/jtoml.git</developerConnection>\n     </scm>\n+    <developers>\n+        <developer>\n+            <name>Asaf Haddad</name>\n+            <email>hello@ous.im</email>\n+            <organization>ous.im</organization>\n+            <organizationUrl>http://www.ous.im</organizationUrl>\n+        </developer>\n+    </developers>\n \n   <properties>\n     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\n@@ -45,4 +48,59 @@\n       <scope>test</scope>\n     </dependency>\n   </dependencies>\n+    <build>\n+        <plugins>\n+            <plugin>\n+                <groupId>org.sonatype.plugins</groupId>\n+                <artifactId>nexus-staging-maven-plugin</artifactId>\n+                <version>1.6.7</version>\n+                <extensions>true</extensions>\n+                <configuration>\n+                    <serverId>ossrh</serverId>\n+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>\n+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>\n+                </configuration>\n+            </plugin>\n+            <plugin>\n+                <groupId>org.apache.maven.plugins</groupId>\n+                <artifactId>maven-source-plugin</artifactId>\n+                <version>2.2.1</version>\n+                <executions>\n+                    <execution>\n+                        <id>attach-sources</id>\n+                        <goals>\n+                            <goal>jar-no-fork</goal>\n+                        </goals>\n+                    </execution>\n+                </executions>\n+            </plugin>\n+            <plugin>\n+                <groupId>org.apache.maven.plugins</groupId>\n+                <artifactId>maven-javadoc-plugin</artifactId>\n+                <version>2.9.1</version>\n+                <executions>\n+                    <execution>\n+                        <id>attach-javadocs</id>\n+                        <goals>\n+                            <goal>jar</goal>\n+                        </goals>\n+                    </execution>\n+                </executions>\n+            </plugin>\n+            <plugin>\n+                <groupId>org.apache.maven.plugins</groupId>\n+                <artifactId>maven-gpg-plugin</artifactId>\n+                <version>1.5</version>\n+                <executions>\n+                    <execution>\n+                        <id>sign-artifacts</id>\n+                        <phase>verify</phase>\n+                        <goals>\n+                            <goal>sign</goal>\n+                        </goals>\n+                    </execution>\n+                </executions>\n+            </plugin>\n+        </plugins>\n+    </build>\n </project>"
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/asafh/jtoml/contents/src/test?ref=954caf117074b409561da3788759b86d0b0e8bdb' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/asafh/jtoml/954caf117074b409561da3788759b86d0b0e8bdb/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar; curl -I -fsSL https://repo.maven.apache.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-javadoc.jar; curl -I -fsSL https://repo.maven.apache.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 169ms:
+[
+  {
+    "name": "java",
+    "path": "src/test/java",
+    "sha": "a78b1de21be544207fa4b2ccb451fe25e057154b",
+    "size": 0,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java?ref=954caf117074b409561da3788759b86d0b0e8bdb",
+    "html_url": "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test/java",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/trees/a78b1de21be544207fa4b2ccb451fe25e057154b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src/test/java?ref=954caf117074b409561da3788759b86d0b0e8bdb",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/trees/a78b1de21be544207fa4b2ccb451fe25e057154b",
+      "html": "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "src/test/resources",
+    "sha": "789fccac7dcc988eb8c042870f29364299375c88",
+    "size": 0,
+    "url": "https://api.github.com/repos/asafh/jtoml/contents/src/test/resources?ref=954caf117074b409561da3788759b86d0b0e8bdb",
+    "html_url": "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test/resources",
+    "git_url": "https://api.github.com/repos/asafh/jtoml/git/trees/789fccac7dcc988eb8c042870f29364299375c88",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/asafh/jtoml/contents/src/test/resources?ref=954caf117074b409561da3788759b86d0b0e8bdb",
+      "git": "https://api.github.com/repos/asafh/jtoml/git/trees/789fccac7dcc988eb8c042870f29364299375c88",
+      "html": "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 165ms:
+jtoml
+=====
+
+[TOML](https://github.com/mojombo/toml) Parser for Java
+
+Using jtoml
+----
+
+## Parsing
+The JToml class has methods for parsing Toml from files, input streams, readers are just strings  
+jtoml does not load the entire toml file before parsing, only the current line being read is kept in memory
+
+```java
+Toml toml = JToml.parseString("foo = 42"); //Parsing a String
+toml = JToml.parse(ExampleTomlTest.class.getResourceAsStream("/example.toml")); //From an input stream
+toml = JToml.parse(new File("/example.toml")); //From a file
+toml = JToml.parse(new StringReader("foo = 42")); // From a reader
+```
+
+## Getting values
+Parsing a TOML file returns a Toml instance, which is the root toml table.
+TomlTables have accessor methods for each possible value type.
+The accessor receives a single name String parameter, and optionally any number of additional String or Integer values.
+Looking at the arguments [name, optional1,optional2,... optionalN], each specifies a way to traverse down out TOML.
+ String arguments travers down a TomlTable (hence the first is always a String) and Integers travers down a List.
+e.g. toml.getX("foo",3,"aa","z") will be in the JSON world "toml.foo[3].aa.z"
+
+```java
+toml.getValue("foo"); // Object
+toml.getString("foo"); // String
+toml.getBoolean("foo"); // Boolean
+toml.getDate("foo"); // Date
+toml.getDouble("foo"); // Double
+toml.getLong("foo"); // Long
+toml.getList("foo"); // List<?>
+toml.getTomlTable("foo"); // TomlTable
+
+```
+
+## Mapping to POJO
+You can create a POJO class instance, filling it with values for a given TomlTable.
+Any field that isn't a type of String, Date, List, Boolean, Double, Long is assumed to be a nested POJO type and is
+recursively mapped (it's value in the toml should be a TomlTable).
+```toml
+[foo]
+stringKey="a"
+longKey=42
+doubleKey=13.37
+booleanKey=true
+listKey=[1,2,3]
+[foo.bar]
+bazz="Hello"
+dummy=459
+```
+Retrieving 
+```java
+class Foo {
+	String stringKey;
+	Long longKey;
+	Double doubleKey;
+	Boolean booleanKey;
+	List<Object> listKey;
+	Bar bar;
+	Boolean awesome;
+}
+class Bar {
+  String bazz;
+  Long dummy;
+}
+Foo foo = toml.getTomlTable("foo").asObject(Foo.class);
+```
+
+License
+-----
+[Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
+
+ succeeded in 173ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 12:22:51 GMT
+content-type: application/java-archive
+content-length: 24744
+cf-ray: 9f5f3bce4ee5bc0e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 965986
+etag: "b2fc476ca20fa374faee258912a9c47e"
+last-modified: Sat, 14 Jan 2017 15:05:05 GMT
+x-checksum-md5: b2fc476ca20fa374faee258912a9c47e
+x-checksum-sha1: 2085505b2b173e14b2a7702edd703ce185fd6206
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I found no Maven test JAR, but the upstream repository has `src/test` at the commit that changes the POM to `2.0.0`, so I’ll use Maven-hosted sources/docs and that exact commit for tests. The binary JAR contains JVM `.class` files, so this remains a Native Image metadata target and needs no language or exclusion fields.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..a943ad5066e83c8d8399d07556f6635487dd6eed
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-sources.jar",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-javadoc.jar",
++  "description" : "JToml is a Java library for parsing TOML configuration documents. It exposes TOML data through table and value accessors and can map parsed TOML tables into Java objects."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..a943ad5066e83c8d8399d07556f6635487dd6eed
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-sources.jar",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-javadoc.jar",
++  "description" : "JToml is a Java library for parsing TOML configuration documents. It exposes TOML data through table and value accessors and can map parsed TOML tables into Java objects."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+ succeeded in 0ms:
+{
+  "coordinates" : "io.ous:jtoml:2.0.0",
+  "repository-url" : "https://github.com/asafh/jtoml",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-sources.jar",
+  "test-code-url" : "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-javadoc.jar",
+  "description" : "JToml is a Java library for parsing TOML configuration documents. It exposes TOML data through table and value accessors and can map parsed TOML tables into Java objects."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar >/dev/null && curl -I -fsSL https://repo.maven.apache.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-javadoc.jar >/dev/null && curl -I -fsSL https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test >/dev/null && echo 'URL checks passed'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..a943ad5066e83c8d8399d07556f6635487dd6eed
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-sources.jar",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-javadoc.jar",
++  "description" : "JToml is a Java library for parsing TOML configuration documents. It exposes TOML data through table and value accessors and can map parsed TOML tables into Java objects."
+ }
+
+ succeeded in 681ms:
+URL checks passed
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..a943ad5066e83c8d8399d07556f6635487dd6eed
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-sources.jar",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-javadoc.jar",
++  "description" : "JToml is a Java library for parsing TOML configuration documents. It exposes TOML data through table and value accessors and can map parsed TOML tables into Java objects."
+ }
+
+ succeeded in 190ms:
+web search: 
+web search: central sonatype io.ous jtoml 2.0.0 github jtoml
+web search: 
+web search: https://central.sonatype.com/artifact/io.ous/jtoml
+web search: 
+web search: 
+web search: 
+web search: https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test
+web search: 
+web search: https://github.com/asafh/jtoml/commit/954caf117074b409561da3788759b86d0b0e8bdb
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar
+codex
+Updated [io.ous-jtoml-2.0.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json:1).
+
+I set the repository to `https://github.com/asafh/jtoml`, used Maven-hosted sources and javadocs, and used the exact GitHub commit containing the `2.0.0` POM for the test suite. Maven Central identifies this as `io.ous:jtoml:2.0.0` with packaging `jar`, the upstream POM points to the GitHub repo and attaches sources/javadocs, and the selected test URL exists at commit `954caf1`. ([central.sonatype.com](https://central.sonatype.com/artifact/io.ous/jtoml))
+
+I left `language` absent and did not set `not-for-native-image`; the downloaded artifact contains JVM `.class` files. JSON syntax and all selected URLs were checked successfully.
+diff --git a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+index 7eceff4bb5464912b69fa0369af9ad772794449a..a943ad5066e83c8d8399d07556f6635487dd6eed
+--- a/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
++++ b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.ous:jtoml:2.0.0"
++  "coordinates" : "io.ous:jtoml:2.0.0",
++  "repository-url" : "https://github.com/asafh/jtoml",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-sources.jar",
++  "test-code-url" : "https://github.com/asafh/jtoml/tree/954caf117074b409561da3788759b86d0b0e8bdb/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/ous/jtoml/$version$/jtoml-$version$-javadoc.jar",
++  "description" : "JToml is a Java library for parsing TOML configuration documents. It exposes TOML data through table and value accessors and can map parsed TOML tables into Java objects."
+ }
+
+tokens used
+95,895
+Updated [io.ous-jtoml-2.0.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b/build/discovered-artifact-metadata/io.ous-jtoml-2.0.0.json:1).
+
+I set the repository to `https://github.com/asafh/jtoml`, used Maven-hosted sources and javadocs, and used the exact GitHub commit containing the `2.0.0` POM for the test suite. Maven Central identifies this as `io.ous:jtoml:2.0.0` with packaging `jar`, the upstream POM points to the GitHub repo and attaches sources/javadocs, and the selected test URL exists at commit `954caf1`. ([central.sonatype.com](https://central.sonatype.com/artifact/io.ous/jtoml))
+
+I left `language` absent and did not set `not-for-native-image`; the downloaded artifact contains JVM `.class` files. JSON syntax and all selected URLs were checked successfully.
+Ran agent for io.ous:jtoml:2.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b/build/agent-artifact-discovery-logs/io.ous-jtoml-2.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3841-fa0d1e4b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 52s
+9 actionable tasks: 4 executed, 5 from cache
