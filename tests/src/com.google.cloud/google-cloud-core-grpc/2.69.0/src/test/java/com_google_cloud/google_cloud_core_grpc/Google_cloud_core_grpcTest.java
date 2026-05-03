@@ -167,6 +167,25 @@ public class Google_cloud_core_grpcTest {
     }
 
     @Test
+    void credentialsProviderPreservesAlreadyScopedGoogleCredentials() throws IOException {
+        Set<String> credentialScopes =
+                Collections.singleton("https://www.googleapis.com/auth/devstorage.read_only");
+        Set<String> serviceScopes =
+                Collections.singleton("https://www.googleapis.com/auth/cloud-platform");
+        ScopingGoogleCredentials credentials = new ScopingGoogleCredentials(credentialScopes);
+        TestServiceOptions serviceOptions =
+                newTestOptions("example.googleapis.com:443", credentials, serviceScopes);
+
+        CredentialsProvider credentialsProvider =
+                GrpcTransportOptions.setUpCredentialsProvider(serviceOptions);
+
+        assertThat(credentialsProvider).isInstanceOf(FixedCredentialsProvider.class);
+        assertThat(credentialsProvider.getCredentials()).isSameAs(credentials);
+        assertThat(credentials.scopes()).containsExactlyElementsOf(credentialScopes);
+        assertThat(credentials.createScopedCalls()).isZero();
+    }
+
+    @Test
     void grpcServiceExceptionCopiesRetryableApiExceptionDetails() {
         Throwable cause = new IllegalStateException("backend unavailable");
         StatusCode statusCode = new FixedStatusCode(StatusCode.Code.UNAVAILABLE, "grpc-14");
