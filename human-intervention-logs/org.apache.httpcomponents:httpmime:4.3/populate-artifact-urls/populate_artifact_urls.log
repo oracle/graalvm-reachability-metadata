@@ -1,0 +1,519 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded39-a2ba-72b2-b75e-362c8f476aba
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.httpcomponents:httpmime:4.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.3" when "$version$" is replaced with "4.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f/metadata/org.apache.httpcomponents/httpmime/index.json
+- Entry selector: "metadata-version" = "4.3"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "4.3".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "4.3".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "4.3".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "4.3" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 4.3
+- Entry metadata-version: 4.3
+- Entry test-version: 4.3
+codex
+I’ll verify the artifact URLs before touching the metadata, then update only the blank fields for the `4.3` entry.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.httpcomponents/httpmime/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.3",
+    "tested-versions" : [
+      "4.3"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  },
+  {
+    "metadata-version" : "4.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/httpcomponents-client",
+    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+    "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/site/apt/index.apt",
+    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+    "tested-versions" : [
+      "4.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"description\"|\"language\"' metadata/org.apache.httpcomponents -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+ succeeded in 0ms:
+metadata/org.apache.httpcomponents/httpclient/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:5:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:8:    "description" : "Apache HttpClient is a client-side HTTP library for sending requests and handling responses in Java applications. It provides APIs for connection management, authentication, cookies, redirects, and other common HTTP features.",
+metadata/org.apache.httpcomponents/httpclient/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:23:    "description" : "Apache HttpClient is a client-side HTTP library for sending requests and handling responses in Java applications. It provides APIs for connection management, authentication, cookies, redirects, and other common HTTP features.",
+metadata/org.apache.httpcomponents/httpcore/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:6:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:9:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:23:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:34:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:37:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:48:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:50:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:51:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:62:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:63:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:64:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:65:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:75:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:76:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:77:    "test-code-url" : "https://github.com/apache/httpcomponents-core/tree/rel/v$version$/httpcore/src/test/java",
+metadata/org.apache.httpcomponents/httpcore/index.json:78:    "documentation-url" : "https://github.com/apache/httpcomponents-core/tree/rel/v$version$/src/docbkx",
+metadata/org.apache.httpcomponents/httpcore/index.json:79:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with classic blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:89:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:90:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:91:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:92:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:93:    "description" : "Apache HttpCore provides the low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:103:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:104:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:105:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:106:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:107:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:117:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:118:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents/httpcore/index.json:119:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:120:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:121:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpmime/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpmime/index.json:15:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpmime/index.json:16:    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+metadata/org.apache.httpcomponents/httpmime/index.json:17:    "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/site/apt/index.apt",
+metadata/org.apache.httpcomponents/httpmime/index.json:18:    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+
+web search: 
+web search: Maven Central org.apache.httpcomponents httpmime 4.3 sources tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3/
+codex
+The existing `4.1` entry already gives a useful pattern: Maven Central has source artifacts, but no Maven test artifact is listed for `httpmime`, so I’m checking the exact `4.3` test and docs paths under the Apache tag.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3/httpmime-4.3-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 09:44:54 GMT
+content-type: application/java-archive
+content-length: 36635
+cf-ray: 9f5e546d596d273b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 273991
+etag: "0246c2cf63ab80c483cf4d06fcddb183"
+last-modified: Wed, 04 Sep 2013 18:23:17 GMT
+x-checksum-md5: 0246c2cf63ab80c483cf4d06fcddb183
+x-checksum-sha1: c63e2141841cf16866a730f882951db0fd5f4ee6
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3/httpmime-4.3-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 09:44:54 GMT
+content-type: application/java-archive
+content-length: 129660
+cf-ray: 9f5e546ded0624c2-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 359773
+etag: "ca4a6ce4d8e53e7298237110837e50b4"
+last-modified: Wed, 04 Sep 2013 18:23:19 GMT
+x-checksum-md5: ca4a6ce4d8e53e7298237110837e50b4
+x-checksum-sha1: 2159420a9d553be0df6e5db5961722e4d1d714e2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3/httpmime-4.3-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+exec
+/usr/bin/bash -lc 'curl -fsSI https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3/httpmime/src/site/apt/index.apt' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+exec
+/usr/bin/bash -lc 'curl -fsSI https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3/httpmime/src/test/java/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+ exited 22 in 234ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 09:44:54 GMT
+content-type: text/html
+cf-ray: 9f5e546dd834b86b-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/httpcomponents/httpmime/4.3/httpmime-4.3-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 187ms:
+HTTP/1.1 200 OK
+Date: Sun, 03 May 2026 09:44:54 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Fri, 21 Jun 2013 12:28:58 GMT
+ETag: W/"1495409//httpcomponents/httpclient/tags/4.3/httpmime/src/test/java"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+ exited 22 in 189ms:
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 404 Not Found
+Date: Sun, 03 May 2026 09:44:54 GMT
+Server: Apache
+Content-Type: text/html; charset=iso-8859-1
+
+
+codex
+The `4.3` source and Javadoc jars exist on Maven Central; the expected Maven test jar does not. The old `src/site/apt/index.apt` docs path does not exist for the `4.3` tag, so I’m using the verified versioned Javadoc artifact for documentation rather than preserving that stale pattern.
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org apache httpcomponents httpmime 4.3 httpmime-4.3-javadoc.jar
+web search: 
+web search: Apache HttpComponents Client GitHub repository httpmime
+codex
+I’ve got enough verified data now: source and docs will use Maven Central templates, tests will use the Apache SVN `4.3` tag path, and no `language` field is needed because this is a Java library rather than Kotlin/Groovy/Scala-specific. I’m applying that narrowly to the first entry only.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f/metadata/org.apache.httpcomponents/httpmime/index.json
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 4be1f708c36f35767d86c3c2bf30d95c4516e049..cd04ab9fddb97788dd5a7e670c3359b09e5a91d1
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3"
+     ],
+
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 4be1f708c36f35767d86c3c2bf30d95c4516e049..cd04ab9fddb97788dd5a7e670c3359b09e5a91d1
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3"
+     ],
+
+codex
+The metadata file is patched. I’m doing a quick JSON parse and then running the repository’s metadata validation for the coordinate to catch schema or formatting issues.
+exec
+/usr/bin/bash -lc "jq '.' metadata/org.apache.httpcomponents/httpmime/index.json >/dev/null" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.httpcomponents:httpmime:4.3 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 4be1f708c36f35767d86c3c2bf30d95c4516e049..cd04ab9fddb97788dd5a7e670c3359b09e5a91d1
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3"
+     ],
+
+ succeeded in 1626ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+Metadata files check passed for org.apache.httpcomponents:httpmime:4.3
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 4be1f708c36f35767d86c3c2bf30d95c4516e049..cd04ab9fddb97788dd5a7e670c3359b09e5a91d1
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3"
+     ],
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.apache.httpcomponents/httpmime/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.3",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/httpcomponents-client",
+    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
+    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+    "tested-versions" : [
+      "4.3"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  },
+  {
+    "metadata-version" : "4.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/httpcomponents-client",
+    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+    "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/site/apt/index.apt",
+    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+    "tested-versions" : [
+      "4.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.httpcomponents/httpmime/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.httpcomponents/httpmime/index.json w/metadata/org.apache.httpcomponents/httpmime/index.json
+index 4be1f708c3..cd04ab9fdd 100644
+--- i/metadata/org.apache.httpcomponents/httpmime/index.json
++++ w/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3"
+     ],
+
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 4be1f708c36f35767d86c3c2bf30d95c4516e049..cd04ab9fddb97788dd5a7e670c3359b09e5a91d1
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3"
+     ],
+
+web search: 
+web search: org.apache.httpcomponents httpmime 4.3 Maven Central sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3/
+web search: 
+web search: 
+web search: 
+web search: svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3/httpmime/src/test/java
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f/metadata/org.apache.httpcomponents/httpmime/index.json:1) for `metadata-version` `4.3`.
+
+Filled:
+- `source-code-url`: Maven Central sources template
+- `repository-url`: canonical `apache/httpcomponents-client` root
+- `test-code-url`: Apache SVN `4.3` tag test path
+- `documentation-url`: Maven Central Javadoc template
+- `description`: exactly two sentences
+- `language`: left absent, since this is not Kotlin/Groovy/Scala-specific
+
+Maven Central lists the `4.3` sources and Javadoc artifacts, Apache SVN has the `4.3` tag with `httpmime/`, and GitHub identifies `apache/httpcomponents-client` as the Apache HttpClient mirror. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3/))
+
+Verified with:
+- `jq '.' metadata/org.apache.httpcomponents/httpmime/index.json >/dev/null`
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.httpcomponents:httpmime:4.3 --stacktrace`
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 4be1f708c36f35767d86c3c2bf30d95c4516e049..cd04ab9fddb97788dd5a7e670c3359b09e5a91d1
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3"
+     ],
+
+tokens used
+53,119
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f/metadata/org.apache.httpcomponents/httpmime/index.json:1) for `metadata-version` `4.3`.
+
+Filled:
+- `source-code-url`: Maven Central sources template
+- `repository-url`: canonical `apache/httpcomponents-client` root
+- `test-code-url`: Apache SVN `4.3` tag test path
+- `documentation-url`: Maven Central Javadoc template
+- `description`: exactly two sentences
+- `language`: left absent, since this is not Kotlin/Groovy/Scala-specific
+
+Maven Central lists the `4.3` sources and Javadoc artifacts, Apache SVN has the `4.3` tag with `httpmime/`, and GitHub identifies `apache/httpcomponents-client` as the Apache HttpClient mirror. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3/))
+
+Verified with:
+- `jq '.' metadata/org.apache.httpcomponents/httpmime/index.json >/dev/null`
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.httpcomponents:httpmime:4.3 --stacktrace`
+Ran agent for org.apache.httpcomponents:httpmime:4.3 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f/build/agent-url-discovery-logs/org.apache.httpcomponents-httpmime-4.3.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4261-0702e57f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 11s
+9 actionable tasks: 1 executed, 8 up-to-date
