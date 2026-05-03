@@ -56,6 +56,37 @@ public class CollectionBuilderDynamicAccessTest {
     }
 
     @Test
+    void inheritedArrayFactoryMethodsCreateArraysForConcreteBuilder() throws Exception {
+        CollectionBuilder builder = new PlainCollectionBuilder();
+        Class<ArrayElement> elementType = runtimeArrayElementType();
+
+        Object[] untypedEmpty = builder.emptyArray();
+        Object[] objectTypedEmpty = builder.emptyArray(Object.class);
+        Object[] untypedSingleton = builder.singletonArray(new ArrayElement("untyped"));
+        Object[] untypedMultiple = builder.start()
+                .add(new ArrayElement("first"))
+                .add(new ArrayElement("second"))
+                .buildArray();
+        ArrayElement[] empty = builder.emptyArray(elementType);
+        ArrayElement[] singleton = builder.singletonArray(elementType, new ArrayElement("solo"));
+        ArrayElement[] multiple = builder.start()
+                .add(new ArrayElement("left"))
+                .add(new ArrayElement("right"))
+                .buildArray(elementType);
+
+        assertThat(untypedEmpty).isEmpty();
+        assertThat(objectTypedEmpty).isEmpty();
+        assertThat(untypedSingleton).singleElement().isInstanceOf(ArrayElement.class);
+        assertThat(untypedMultiple).hasSize(2);
+        assertThat(empty).isEmpty();
+        assertThat(empty.getClass().getComponentType()).isSameAs(elementType);
+        assertThat(singleton).extracting(value -> value.name).containsExactly("solo");
+        assertThat(singleton.getClass().getComponentType()).isSameAs(elementType);
+        assertThat(multiple).extracting(value -> value.name).containsExactly("left", "right");
+        assertThat(multiple.getClass().getComponentType()).isSameAs(elementType);
+    }
+
+    @Test
     void readsEmptyTypedArraysThroughJsonApi() throws Exception {
         Class<String> elementType = runtimeStringType();
 
@@ -142,6 +173,47 @@ public class CollectionBuilderDynamicAccessTest {
 
         public ArrayElement(String name) {
             this.name = name;
+        }
+    }
+
+    static final class PlainCollectionBuilder extends CollectionBuilder {
+        private Collection<Object> current;
+
+        PlainCollectionBuilder() {
+            this(0, null);
+        }
+
+        private PlainCollectionBuilder(int features, Class<?> collectionType) {
+            super(features, collectionType);
+        }
+
+        @Override
+        public CollectionBuilder newBuilder(int features) {
+            return new PlainCollectionBuilder(features, _collectionType);
+        }
+
+        @Override
+        public CollectionBuilder newBuilder(Class<?> collectionType) {
+            return new PlainCollectionBuilder(_features, collectionType);
+        }
+
+        @Override
+        public CollectionBuilder start() {
+            current = new ArrayList<>();
+            return this;
+        }
+
+        @Override
+        public CollectionBuilder add(Object value) {
+            current.add(value);
+            return this;
+        }
+
+        @Override
+        public Collection<Object> buildCollection() {
+            Collection<Object> result = current;
+            current = null;
+            return result;
         }
     }
 

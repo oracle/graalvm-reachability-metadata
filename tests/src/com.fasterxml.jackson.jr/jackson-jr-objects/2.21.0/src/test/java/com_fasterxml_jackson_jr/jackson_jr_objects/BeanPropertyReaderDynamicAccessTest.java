@@ -19,7 +19,7 @@ public class BeanPropertyReaderDynamicAccessTest {
 
     @Test
     void setsFieldBackedValuesThroughBeanPropertyReader() throws Exception {
-        BeanPropertyReader reader = new BeanPropertyReader("x", FieldBackedReaderBean.class.getField("x"), null);
+        BeanPropertyReader reader = new BeanPropertyReader("x", FieldBackedReaderBean.class.getField("x"), null, -1);
         FieldBackedReaderBean bean = new FieldBackedReaderBean();
 
         reader.setValueFor(bean, new Object[]{3});
@@ -31,7 +31,7 @@ public class BeanPropertyReaderDynamicAccessTest {
     @Test
     void invokesSetterBackedValuesThroughBeanPropertyReader() throws Exception {
         BeanPropertyReader reader = new BeanPropertyReader("name", null,
-                PublicSetterBackedReaderBean.class.getMethod("setName", String.class));
+                PublicSetterBackedReaderBean.class.getMethod("setName", String.class), -1);
         PublicSetterBackedReaderBean bean = new PublicSetterBackedReaderBean();
 
         reader.setValueFor(bean, new Object[]{"Ada"});
@@ -42,7 +42,7 @@ public class BeanPropertyReaderDynamicAccessTest {
 
     @Test
     void reportsFieldBackedAssignmentFailuresFromBeanPropertyReader() throws Exception {
-        BeanPropertyReader reader = new BeanPropertyReader("x", FieldBackedReaderBean.class.getField("x"), null);
+        BeanPropertyReader reader = new BeanPropertyReader("x", FieldBackedReaderBean.class.getField("x"), null, -1);
         FieldBackedReaderBean bean = new FieldBackedReaderBean();
 
         assertThatThrownBy(() -> reader.setValueFor(bean, new Object[]{"not an int"}))
@@ -54,7 +54,7 @@ public class BeanPropertyReaderDynamicAccessTest {
     @Test
     void reportsSetterBackedInvocationFailuresFromBeanPropertyReader() throws Exception {
         BeanPropertyReader reader = new BeanPropertyReader("name", null,
-                PublicSetterBackedReaderBean.class.getMethod("setName", String.class));
+                PublicSetterBackedReaderBean.class.getMethod("setName", String.class), -1);
         PublicSetterBackedReaderBean bean = new PublicSetterBackedReaderBean();
 
         assertThatThrownBy(() -> reader.setValueFor(bean, new Object[]{13}))
