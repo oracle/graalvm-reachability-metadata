@@ -28,7 +28,7 @@ BENCHMARK_SUITE_PATH = Path(os.path.join(REPO_ROOT, "benchmarks", "benchmark_sui
 STRATEGIES_PATH = Path(os.path.join(REPO_ROOT, "strategies", "predefined_strategies.json"))
 BENCHMARK_WORKTREE_DIRNAME = "forge_benchmark_worktrees"
 
-from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
+from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.metrics_writer import count_metadata_entries
 from git_scripts.common_git import build_ai_branch_name
 
@@ -58,7 +58,6 @@ def parse_args(argv):
             "If omitted, the forge directory in the selected worktree is used."
         ),
     )
-    add_in_metadata_repo_argument(parser)
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
@@ -128,19 +127,18 @@ def resolve_benchmark_execution_paths(
         benchmark_name: str,
         explicit_reachability_path: str | None,
         explicit_metrics_repo_path: str | None,
-        in_metadata_repo: bool,
 ) -> tuple[Path, Path, Path | None, Path]:
     """Resolve the reachability worktree and durable metrics root for a benchmark run."""
     base_reachability_path = Path(reachability_root).resolve()
     metrics_repo_dir = Path(metrics_root).resolve()
     created_worktree_path = None
 
-    if in_metadata_repo and explicit_metrics_repo_path is None:
+    if explicit_metrics_repo_path is None:
         metrics_repo_dir = Path(REPO_ROOT).resolve()
         os.makedirs(os.path.join(metrics_repo_dir, "benchmark_run_metrics"), exist_ok=True)
 
     reachability_metadata_path = base_reachability_path
-    if in_metadata_repo and explicit_reachability_path is None:
+    if explicit_reachability_path is None:
         created_worktree_path = create_benchmark_worktree(base_reachability_path, benchmark_name)
         reachability_metadata_path = created_worktree_path.resolve()
 
@@ -202,7 +200,7 @@ def compute_original_metadata_entries(repo_path: Path, coords: str):
 
 def run_workflow_for_coords(coords: str, reachability_metadata_path: str, metrics_repo_path: str,
                             strategy_name: str, verbose: bool, keep_tests_without_dynamic_access: bool,
-                            in_metadata_repo: bool):
+                            ):
     """
     Execute ai_workflows/add_new_library_support.py for the given coordinates.
     On completion, validate that output/results.json exists and is valid JSON (array).
@@ -212,8 +210,6 @@ def run_workflow_for_coords(coords: str, reachability_metadata_path: str, metric
     cmd.extend(["--reachability-metadata-path", reachability_metadata_path])
     cmd.extend(["--metrics-repo-path", metrics_repo_path])
     cmd.extend(["--strategy-name", strategy_name])
-    if in_metadata_repo:
-        cmd.append("--in-metadata-repo")
 
     # Ensure benchmark runs are recorded under benchmark_run_metrics in the metrics repo
     cmd.append("--benchmark-mode")
@@ -308,7 +304,7 @@ def cleanup_and_commit_for_libraries(reachability_metadata_path: Path, libraries
 
 def run_workflow_for_libraries(libraries: List[str], reachability_metadata_path: Path,
                                metrics_repo_dir: Path, strategy_name: str, verbose: bool,
-                               keep_tests_without_dynamic_access: bool, in_metadata_repo: bool) -> None:
+                               keep_tests_without_dynamic_access: bool) -> None:
     for coords in libraries:
         print(f"[Executing AI workflow for {coords}...]")
         run_workflow_for_coords(
@@ -318,7 +314,6 @@ def run_workflow_for_libraries(libraries: List[str], reachability_metadata_path:
             strategy_name,
             verbose,
             keep_tests_without_dynamic_access,
-            in_metadata_repo,
         )
 
 
@@ -332,7 +327,6 @@ def main(argv: Optional[List[str]] = None):
     reachability_root, metrics_root = resolve_repo_roots(
         reachability_metadata_path_arg,
         metrics_repo_path_arg,
-        in_metadata_repo=args.in_metadata_repo,
     )
 
     reachability_metadata_path, metrics_repo_dir, created_worktree_path, base_reachability_path = (
@@ -342,7 +336,6 @@ def main(argv: Optional[List[str]] = None):
             benchmark_name=benchmark_name,
             explicit_reachability_path=reachability_metadata_path_arg,
             explicit_metrics_repo_path=metrics_repo_path_arg,
-            in_metadata_repo=args.in_metadata_repo,
         )
     )
     if not reachability_metadata_path.exists():
@@ -388,7 +381,6 @@ def main(argv: Optional[List[str]] = None):
             strategy_name,
             verbose,
             keep_tests_without_dynamic_access,
-            args.in_metadata_repo,
         )
     finally:
         print(f"[Restoring repository to original state...]")

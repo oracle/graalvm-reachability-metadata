@@ -87,7 +87,6 @@ from utility_scripts.metadata_index import (
 )
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import (
-    add_in_metadata_repo_argument,
     get_forge_subdir_name,
     get_repo_root,
     resolve_repo_roots,
@@ -214,7 +213,6 @@ class ClaimedIssue:
     base_reachability_metadata_path: str
     worktree_path: str
     scratch_metrics_repo_path: str
-    in_metadata_repo: bool
     issue_coordinates: str
     current_coordinates: str | None = None
     new_version: str | None = None
@@ -2738,8 +2736,6 @@ def invoke_pipeline(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
-        if claimed_issue.in_metadata_repo:
-            pipeline_argv.append("--in-metadata-repo")
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         if keep_tests_without_dynamic_access:
@@ -2768,8 +2764,6 @@ def invoke_pipeline(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
-        if claimed_issue.in_metadata_repo:
-            pipeline_argv.append("--in-metadata-repo")
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         rc = run_fix_javac_workflow(pipeline_argv)
@@ -2795,8 +2789,6 @@ def invoke_pipeline(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
-        if claimed_issue.in_metadata_repo:
-            pipeline_argv.append("--in-metadata-repo")
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         rc = run_fix_java_run_workflow(pipeline_argv)
@@ -2821,8 +2813,6 @@ def invoke_pipeline(
             "--new-version", claimed_issue.new_version,
             "--reachability-metadata-path", claimed_issue.worktree_path,
         ]
-        if claimed_issue.in_metadata_repo:
-            pipeline_argv.append("--in-metadata-repo")
         rc = run_fix_ni_run_workflow(pipeline_argv)
         if is_interrupt_exit_code(rc):
             mark_user_interrupt_requested()
@@ -2845,8 +2835,6 @@ def invoke_pipeline(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
-        if claimed_issue.in_metadata_repo:
-            pipeline_argv.append("--in-metadata-repo")
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         append_large_library_workflow_args(pipeline_argv, claimed_issue)
@@ -3220,10 +3208,8 @@ def create_issue_workspace(
         base_reachability_metadata_path: str,
         canonical_metrics_repo_path: str,
         issue_number: int,
-        in_metadata_repo: bool = True,
 ) -> tuple[str, str]:
     """Create isolated worktrees for reachability-metadata and metrics storage."""
-    _ = in_metadata_repo
     repo_root = get_repo_root()
     worktrees_root = os.path.join(repo_root, "local_repositories", SCRATCH_WORKTREE_DIRNAME)
     os.makedirs(worktrees_root, exist_ok=True)
@@ -3260,8 +3246,6 @@ def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_
         )
     else:
         remove_worktree(claimed_issue.base_reachability_metadata_path, claimed_issue.worktree_path)
-    if not claimed_issue.in_metadata_repo:
-        remove_worktree(canonical_metrics_repo_path, claimed_issue.scratch_metrics_repo_path)
 
 
 def build_claim_metadata(
@@ -3416,11 +3400,9 @@ def claim_issue_for_processing(
         base_reachability_metadata_path: str,
         canonical_metrics_repo_path: str,
         authenticated_user: str,
-        in_metadata_repo: bool = True,
         large_library_resume_artifact_override: str | None = None,
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace."""
-    in_metadata_repo = True
     print(format_issue_processing_message(issue))
 
     if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
@@ -3453,7 +3435,6 @@ def claim_issue_for_processing(
             base_reachability_metadata_path,
             canonical_metrics_repo_path,
             issue["number"],
-            in_metadata_repo=in_metadata_repo,
         )
         if large_library_resume_artifact:
             large_library_state = LargeLibraryProgressState.load(large_library_resume_artifact)
@@ -3478,7 +3459,6 @@ def claim_issue_for_processing(
         base_reachability_metadata_path=base_reachability_metadata_path,
         worktree_path=worktree_path,
         scratch_metrics_repo_path=scratch_metrics_repo_path,
-        in_metadata_repo=in_metadata_repo,
         issue_coordinates=issue_coordinates,
         current_coordinates=current_coordinates,
         new_version=new_version,
@@ -3619,7 +3599,6 @@ def finalize_successful_issue(
                 [
                     "--coordinates", claimed_issue.issue_coordinates,
                     "--reachability-metadata-path", claimed_issue.worktree_path,
-                    *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
                 ]
             )
             return
@@ -3629,7 +3608,6 @@ def finalize_successful_issue(
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 *large_library_pr_args,
-                *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
             ]
         )
         return
@@ -3641,7 +3619,6 @@ def finalize_successful_issue(
                 "--new-version", claimed_issue.new_version,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-                *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
             ]
         )
         return
@@ -3653,7 +3630,6 @@ def finalize_successful_issue(
                 "--new-version", claimed_issue.new_version,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-                *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
             ]
         )
         return
@@ -3664,7 +3640,7 @@ def finalize_successful_issue(
                 "--coordinates", claimed_issue.current_coordinates,
                 "--new-version", claimed_issue.new_version,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
-                *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
         )
         return
@@ -3676,7 +3652,6 @@ def finalize_successful_issue(
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 *large_library_pr_args,
-                *(["--in-metadata-repo"] if claimed_issue.in_metadata_repo else []),
             ]
         )
         return
@@ -4473,7 +4448,6 @@ def process_issues_with_label(
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str | None,
         parallelism: int,
-        in_metadata_repo: bool = True,
         environment_already_validated: bool = False,
 ) -> int:
     """
@@ -4482,7 +4456,6 @@ def process_issues_with_label(
     The scan advances through the issue list using `offset`, but the returned count
     reflects only issues that were successfully claimed for processing.
     """
-    in_metadata_repo = True
     if is_shutdown_requested():
         log_stage(
             "shutdown",
@@ -4575,7 +4548,6 @@ def process_issues_with_label(
                         base_reachability_metadata_path,
                         canonical_metrics_repo_path,
                         authenticated_user,
-                        in_metadata_repo=in_metadata_repo,
                     )
                     if not claimed_issue:
                         continue
@@ -4641,11 +4613,9 @@ def process_work_queues(
         work_strategy_name_override: str | None = None,
         keep_tests_without_dynamic_access_override: bool = False,
         parallelism_default: int = DEFAULT_PARALLELISM,
-        in_metadata_repo: bool = True,
         random_offset_override: bool | None = None,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
-    in_metadata_repo = True
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
     review_queue_configs = get_review_queue_configs_from_environment()
     validate_work_queue_strategies(queue_configs)
@@ -4703,7 +4673,6 @@ def process_work_queues(
             keep_tests_without_dynamic_access,
             authenticated_user,
             parallelism,
-            in_metadata_repo=in_metadata_repo,
             environment_already_validated=True,
         )
 
@@ -4777,7 +4746,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
-    add_in_metadata_repo_argument(parser)
     parser.add_argument(
         "--strategy-name",
         help="Workflow strategy name to pass to the pipeline. If omitted, the pipeline default is used.",
@@ -4848,10 +4816,8 @@ def process_single_issue(
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str,
-        in_metadata_repo: bool = True,
 ) -> bool:
     """Fetch, claim, and process a single issue by number."""
-    in_metadata_repo = True
     validate_issue_processing_environment()
 
     issue, label = get_issue_by_number(issue_number)
@@ -4864,7 +4830,6 @@ def process_single_issue(
         base_reachability_metadata_path,
         canonical_metrics_repo_path,
         authenticated_user,
-        in_metadata_repo=in_metadata_repo,
     )
     if not claimed_issue:
         print(f"ERROR: Could not claim issue #{issue_number}.", file=sys.stderr)
@@ -4885,7 +4850,6 @@ def process_large_library_continuation(
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str,
-        in_metadata_repo: bool = True,
 ) -> bool:
     """Resume a large-library issue from a durable progress artifact."""
     state = LargeLibraryProgressState.load(resume_artifact)
@@ -4899,7 +4863,6 @@ def process_large_library_continuation(
         base_reachability_metadata_path,
         canonical_metrics_repo_path,
         authenticated_user,
-        in_metadata_repo=in_metadata_repo,
         large_library_resume_artifact_override=resume_artifact,
     )
     if not claimed_issue:
@@ -4927,7 +4890,6 @@ def main() -> None:
         reachability_metadata_path, metrics_repo_path = resolve_repo_roots(
             args.reachability_metadata_path,
             None,
-            in_metadata_repo=args.in_metadata_repo,
         )
 
         if not PROJECT_NUMBER:
@@ -4942,7 +4904,6 @@ def main() -> None:
                 args.strategy_name,
                 args.keep_tests_without_dynamic_access,
                 args.parallelism,
-                in_metadata_repo=args.in_metadata_repo,
                 random_offset_override=args.random_offset,
             )
         elif args.review_pr is not None:
@@ -4964,7 +4925,6 @@ def main() -> None:
                 args.strategy_name,
                 args.keep_tests_without_dynamic_access,
                 authenticated_user,
-                in_metadata_repo=args.in_metadata_repo,
             )
         elif args.continue_large_library_artifact is not None:
             authenticated_user = resolve_authenticated_user()
@@ -4975,7 +4935,6 @@ def main() -> None:
                 args.strategy_name,
                 args.keep_tests_without_dynamic_access,
                 authenticated_user,
-                in_metadata_repo=args.in_metadata_repo,
             )
         else:
             authenticated_user = resolve_authenticated_user()
@@ -4994,7 +4953,6 @@ def main() -> None:
                 args.keep_tests_without_dynamic_access,
                 authenticated_user,
                 args.parallelism,
-                in_metadata_repo=args.in_metadata_repo,
             )
     except KeyboardInterrupt:
         if is_shutdown_requested():

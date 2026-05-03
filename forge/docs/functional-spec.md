@@ -130,15 +130,47 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 - **Pull request** (only when invoked through `complete_pipelines/` or
   `git_scripts/make_pr_*.py`).
 
-## 6. Failure Semantics
+## 6. Local CI-Equivalent Verification
+
+Every Forge task must be fully tested locally in the same way it will be
+tested by CI before it is allowed to produce a PR-eligible result. This is a
+hard requirement, not an optimization or best-effort check.
+
+For the task's affected coordinate set, Forge must run the same validation
+surface that the corresponding CI workflow will run, including metadata
+validation, style checks, compilation, JVM tests, native-image build/run
+tests, Docker image pre-pull requirements, vulnerability checks when Docker
+images change, stats validation, and any workflow-specific gates. The local
+commands, coordinates filter, native-image mode, JDK/GraalVM selection, and
+Docker/image setup must be derived from the same repo configuration that CI
+uses, including `ci.json` and the Gradle task contracts.
+
+Forge must record the exact local verification commands and their outcomes in
+the run metrics and PR description. A task must not open a PR, mark a project
+item `Done`, return `RUN_STATUS_SUCCESS`, return
+`SUCCESS_WITH_INTERVENTION_STATUS`, or return `RUN_STATUS_CHUNK_READY` until
+that local CI-equivalent verification has passed. If Forge cannot reproduce
+the CI-equivalent validation locally, the workflow must return
+`RUN_STATUS_FAILURE` and preserve enough diagnostics for human follow-up.
+
+If local CI-equivalent verification fails, Forge may run a bounded fixup step
+before retrying the full verification. The fixup may repair generated
+library-scoped files or shared repository files when the failure is caused by
+the repository itself. After verification passes, Forge must algorithmically
+compare the final PR diff with the expected library-scoped paths. If any
+shared repository file changed, the PR must be labeled `human-intervention`
+and the verification metrics and PR description must list the repository-level
+paths that require maintainer review.
+
+## 7. Failure Semantics
 
 Every workflow records one of these statuses:
 
 | Status | Meaning |
 | --- | --- |
-| `RUN_STATUS_SUCCESS` | All gates passed; metadata and tests committed. |
-| `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the configured `PostGenerationIntervention` modified the working tree (e.g. `codex_then_pi` removing failing tests via Pi). The intervention's record is included in the run-metrics and PR description. PR-eligible. |
-| `RUN_STATUS_CHUNK_READY` | A large-library series reached a reviewable chunk boundary. The current part is PR-eligible and the issue remains labeled for continuation. |
+| `RUN_STATUS_SUCCESS` | All generation gates and the local CI-equivalent verification passed; metadata and tests committed. |
+| `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the configured `PostGenerationIntervention` modified the working tree (e.g. `codex_then_pi` removing failing tests via Pi), and the local CI-equivalent verification passed. The intervention's record is included in the run-metrics and PR description. PR-eligible. |
+| `RUN_STATUS_CHUNK_READY` | A large-library series reached a reviewable chunk boundary and the local CI-equivalent verification passed for the current part. The current part is PR-eligible and the issue remains labeled for continuation. |
 | `RUN_STATUS_FAILURE` | The workflow could not converge or a quality gate failed; the feature branch is reset to the scaffold checkpoint and no PR is opened. |
 
 The exit code is `0` for PR-eligible statuses and `1` for failure.
@@ -150,7 +182,7 @@ workflow creates a durable progress state, returns `RUN_STATUS_CHUNK_READY`
 at the first chunk boundary, and Forge applies the large-library continuation
 labels after publishing the part PR.
 
-## 7. Workflow Specifications
+## 8. Workflow Specifications
 
 - [Workflow strategies](workflow-strategies.md) — registry of strategies
   and post-generation interventions, including the

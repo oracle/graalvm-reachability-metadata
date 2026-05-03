@@ -28,29 +28,28 @@ from git_scripts.common_git import (
     get_configured_reviewers,
 )
 from utility_scripts.library_stats import stats_artifact_dir
-from utility_scripts.metrics_writer import commit_run_metrics_with_retry, read_pending_metrics
-from utility_scripts.repo_path_resolver import (
-    add_in_metadata_repo_argument,
-    resolve_repo_roots,
+from utility_scripts.local_ci_verification import (
+    HUMAN_INTERVENTION_LABEL,
+    LOCAL_CI_VERIFICATION_KEY,
+    fetch_pr_base_ref,
+    format_local_ci_verification_pr_section,
+    local_ci_requires_human_intervention,
+    run_local_ci_verification,
 )
+from utility_scripts.metrics_writer import read_pending_metrics
+from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 REPO = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = 'master'
 REVIEWERS = get_configured_reviewers()
-SCRIPT_RUN_METRICS_DIR = "script_run_metrics"
-FIX_JAVAC_METRICS_FILE = "fix_javac_fail.json"
-
-
 def resolve_repo_paths(
         explicit_repo_path: str | None,
         explicit_metrics_repo_path: str | None,
-        in_metadata_repo: bool = True,
 ):
     """Resolve repo and metrics paths using provided values or local defaults."""
     return resolve_repo_roots(
         explicit_repo_path,
         explicit_metrics_repo_path,
-        in_metadata_repo=in_metadata_repo,
     )
 
 
@@ -237,6 +236,7 @@ Summary:
             f"- Intervention file: `{post_generation_intervention.get('intervention_file', 'unknown')}`\n\n"
             f"{str(post_generation_intervention.get('analysis_markdown', '')).strip()}\n"
         )
+    body += format_local_ci_verification_pr_section(metrics_entry.get(LOCAL_CI_VERIFICATION_KEY))
     cmd = [
         "gh",
         "pr",
@@ -256,6 +256,8 @@ Summary:
         "--label",
         "GenAI",
     ]
+    if local_ci_requires_human_intervention(metrics_entry.get(LOCAL_CI_VERIFICATION_KEY)):
+        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
     if REVIEWERS:
         for reviewer in REVIEWERS:
             cmd.extend(["--reviewer", reviewer])
@@ -307,7 +309,6 @@ def build_parser():
             "If omitted, the forge directory in the selected worktree is used."
         ),
     )
-    add_in_metadata_repo_argument(parser)
     return parser
 
 
@@ -318,9 +319,8 @@ def parse_flags(argv_list):
     repo_path, metrics_repo_path = resolve_repo_paths(
         explicit_repo_path=flags.reachability_metadata_path,
         explicit_metrics_repo_path=flags.metrics_repo_path,
-        in_metadata_repo=flags.in_metadata_repo,
     )
-    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.in_metadata_repo
+    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path
 
 
 def push_current_branch_to_origin(
@@ -353,6 +353,14 @@ def push_current_branch_to_origin(
         metrics_repo_path=metrics_repo_path,
         include_in_repo_metrics=include_in_repo_metrics,
     )
+    base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
+    subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
+    run_local_ci_verification(
+        repo_path=repo_path,
+        coordinates=new_coordinates,
+        base_commit=base_ref,
+        metrics_repo_path=metrics_repo_path,
+    )
 
     subprocess.run(
         ["git", "push", "origin", branch],
@@ -363,23 +371,10 @@ def push_current_branch_to_origin(
     return branch, group, artifact, old_version, new_coordinates
 
 
-def metrics_commit_and_push(metrics_repo_root: str, old_coordinates: str, new_coordinates: str):
-    """Read pending metrics and push with retry logic."""
-    run_metrics = read_pending_metrics(metrics_repo_root)
-    metrics_json_relative_path = os.path.join(SCRIPT_RUN_METRICS_DIR, FIX_JAVAC_METRICS_FILE)
-
-    commit_run_metrics_with_retry(
-        metrics_repo_root=metrics_repo_root,
-        metrics_json_relative_path=metrics_json_relative_path,
-        run_metrics=run_metrics,
-        commit_message=f"Run metrics: fix_javac_fail.py for {new_coordinates}",
-    )
-
-
 def main(argv=None):
     ensure_gh_authenticated()
 
-    old_coordinates, new_version, repo_path, metrics_repo_path, in_metadata_repo = parse_flags(
+    old_coordinates, new_version, repo_path, metrics_repo_path = parse_flags(
         argv if argv is not None else sys.argv[1:]
     )
 
@@ -388,7 +383,6 @@ def main(argv=None):
         new_version=new_version,
         repo_path=repo_path,
         metrics_repo_path=metrics_repo_path,
-        include_in_repo_metrics=in_metadata_repo,
     )
     create_pull_request(
         branch=branch,
@@ -401,9 +395,6 @@ def main(argv=None):
         metrics_repo_root=metrics_repo_path,
         repo_path=repo_path,
     )
-    if not in_metadata_repo:
-        metrics_commit_and_push(metrics_repo_path, old_coordinates, new_coordinates)
-
 
 if __name__ == "__main__":
     if any(a in ("-h", "--help") for a in sys.argv[1:]):

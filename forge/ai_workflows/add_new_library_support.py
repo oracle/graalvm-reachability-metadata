@@ -36,7 +36,7 @@ from utility_scripts import metrics_writer
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
-from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
+from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics, validate_benchmark_run_metrics
 from utility_scripts.source_context import (
     discover_artifact_metadata,
@@ -110,7 +110,6 @@ def build_parser():
             "If omitted, the forge directory in the selected worktree is used."
         ),
     )
-    add_in_metadata_repo_argument(parser)
     parser.add_argument(
         "--docs-path",
         default=None,
@@ -204,7 +203,6 @@ def parse_flags(argv_list):
         flags.metrics_repo_path,
         flags.benchmark_mode,
         flags.keep_tests_without_dynamic_access,
-        flags.in_metadata_repo,
         flags.large_library_series,
         flags.chunk_class_limit,
         flags.chunk_call_limit,
@@ -217,14 +215,12 @@ def resolve_repo_paths(
         explicit_repo_path: str | None,
         explicit_metrics_repo_path: str | None,
         benchmark_mode: bool,
-        in_metadata_repo: bool = True,
 ):
     """Resolve paths for reachability-metadata and metrics-metadata-forge repositories."""
 
     res_reachability_repo, res_metrics_repo = resolve_repo_roots(
         explicit_repo_path,
         explicit_metrics_repo_path,
-        in_metadata_repo=in_metadata_repo,
     )
 
     subdir_name = "benchmark_run_metrics" if benchmark_mode else "script_run_metrics"
@@ -399,7 +395,6 @@ def main(argv=None):
         explicit_metrics_repo_path,
         is_benchmark_mode,
         keep_tests_without_dynamic_access,
-        in_metadata_repo,
         large_library_series,
         chunk_class_limit,
         chunk_call_limit,
@@ -414,7 +409,6 @@ def main(argv=None):
         explicit_repo_path,
         explicit_metrics_repo_path,
         is_benchmark_mode,
-        in_metadata_repo=in_metadata_repo,
     )
     resolve_graalvm_java_home()
 

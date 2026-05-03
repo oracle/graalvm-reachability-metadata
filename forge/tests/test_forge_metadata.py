@@ -105,7 +105,6 @@ def _claimed_issue(
         base_reachability_metadata_path="/tmp/reachability",
         worktree_path="/tmp/reachability-worktree",
         scratch_metrics_repo_path="/tmp/metrics-worktree",
-        in_metadata_repo=False,
         issue_coordinates="org.example:lib:1.0.0",
         large_library_resume_artifact=large_library_resume_artifact,
         large_library_part=large_library_part,
@@ -600,7 +599,6 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "/tmp/reachability",
             "/tmp/metrics",
             "automation-user",
-            in_metadata_repo=True,
         )
         get_open_blocking_issue_numbers.assert_not_called()
         get_issue_assignees.assert_not_called()
@@ -718,7 +716,6 @@ class SingleIssueProcessingTests(unittest.TestCase):
             "/tmp/reachability",
             "/tmp/metrics",
             "automation-user",
-            in_metadata_repo=True,
         )
 
     def test_process_large_library_continuation_passes_explicit_artifact_to_claim(self) -> None:
@@ -769,7 +766,6 @@ class SingleIssueProcessingTests(unittest.TestCase):
             "/tmp/reachability",
             "/tmp/metrics",
             "automation-user",
-            in_metadata_repo=True,
             large_library_resume_artifact_override=resume_artifact,
         )
         claimed_issue = process_claimed_issue_lifecycle.call_args.args[0]
@@ -913,7 +909,6 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             False,
             "automation-user",
             forge_metadata.DEFAULT_PARALLELISM,
-            in_metadata_repo=True,
             environment_already_validated=True,
         )
         process_reviews.assert_not_called()
@@ -955,7 +950,6 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             False,
             "automation-user",
             forge_metadata.DEFAULT_PARALLELISM,
-            in_metadata_repo=True,
             environment_already_validated=True,
         )
         process_reviews.assert_not_called()
@@ -1274,7 +1268,6 @@ class IssueClaimCacheTests(unittest.TestCase):
                     "/tmp/reachability",
                     "/tmp/metrics",
                     "automation-user",
-                    in_metadata_repo=True,
                 )
                 for issue in issues
             ],

@@ -38,7 +38,7 @@ from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if
 from utility_scripts import metrics_writer
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
-from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
+from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.source_context import (
     normalize_source_context_types,
@@ -92,7 +92,6 @@ def build_parser() -> argparse.ArgumentParser:
             "If omitted, the forge directory in the selected worktree is used."
         ),
     )
-    add_in_metadata_repo_argument(parser)
     parser.add_argument(
         "--strategy-name",
         dest="strategy_name",
@@ -155,7 +154,6 @@ def parse_flags(argv_list: list[str]):
         flags.verbose,
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
-        flags.in_metadata_repo,
         flags.large_library_series,
         flags.chunk_class_limit,
         flags.chunk_call_limit,
@@ -167,13 +165,11 @@ def parse_flags(argv_list: list[str]):
 def resolve_repo_paths(
         explicit_repo_path: str | None,
         explicit_metrics_repo_path: str | None,
-        in_metadata_repo: bool = True,
 ) -> tuple[str, str, str]:
     """Resolve repository paths for code and metrics outputs."""
     resolved_reachability_repo, resolved_metrics_repo = resolve_repo_roots(
         explicit_repo_path,
         explicit_metrics_repo_path,
-        in_metadata_repo=in_metadata_repo,
     )
     resolved_metrics_dir = os.path.join(resolved_metrics_repo, "script_run_metrics")
     os.makedirs(resolved_metrics_dir, exist_ok=True)
@@ -213,7 +209,6 @@ def main(argv=None) -> int:
         is_verbose,
         explicit_repo_path,
         explicit_metrics_repo_path,
-        in_metadata_repo,
         large_library_series,
         chunk_class_limit,
         chunk_call_limit,
@@ -226,7 +221,6 @@ def main(argv=None) -> int:
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
-        in_metadata_repo=in_metadata_repo,
     )
     ensure_gh_authenticated()
     resolve_graalvm_java_home()

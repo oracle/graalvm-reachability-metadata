@@ -23,8 +23,6 @@ Usage:
 import argparse
 import sys
 
-from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument
-
 DEFAULT_JAVAC_STRATEGY = "javac_iterative_with_coverage_sources_pi_gpt-5.5"
 DEFAULT_JAVA_RUN_STRATEGY = "java_run_iterative_with_coverage_sources_pi_gpt-5.5"
 
@@ -72,7 +70,6 @@ def build_parser():
             "If omitted, the forge directory in the selected worktree is used."
         ),
     )
-    add_in_metadata_repo_argument(parser)
     parser.add_argument(
         "--strategy-name",
         metavar="NAME",
@@ -99,8 +96,6 @@ def _workflow_argv(flags):
         workflow_argv.extend(["--reachability-metadata-path", flags.reachability_metadata_path])
     if flags.metrics_repo_path:
         workflow_argv.extend(["--metrics-repo-path", flags.metrics_repo_path])
-    if flags.in_metadata_repo:
-        workflow_argv.append("--in-metadata-repo")
     if flags.strategy_name:
         workflow_argv.extend(["--strategy-name", flags.strategy_name])
     if flags.docs_path:

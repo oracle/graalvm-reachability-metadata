@@ -27,21 +27,18 @@ from utility_scripts.metrics_writer import (
     collect_version_coverage_metrics,
 )
 from utility_scripts.library_stats import stats_artifact_dir
-from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
+from utility_scripts.local_ci_verification import (
+    HUMAN_INTERVENTION_LABEL,
+    LocalCIVerificationResult,
+    fetch_pr_base_ref,
+    format_local_ci_verification_pr_section,
+    run_local_ci_verification,
+)
+from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 REPO = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = 'master'
 REVIEWERS = get_configured_reviewers()
-
-
-def resolve_repo_path(explicit_repo_path: str | None, in_metadata_repo: bool = True) -> str:
-    """Resolve repo path using provided value or local default."""
-    repo_path, _ = resolve_repo_roots(
-        explicit_repo_path,
-        None,
-        in_metadata_repo=in_metadata_repo,
-    )
-    return repo_path
 
 
 def stage_and_commit(
@@ -80,6 +77,7 @@ def create_pull_request(
         group: str,
         artifact: str,
         repo_path: str,
+        local_ci_verification: LocalCIVerificationResult | None = None,
 ):
     """Create a GitHub pull request for the current branch."""
     origin_owner = get_origin_owner(cwd=repo_path)
@@ -132,6 +130,8 @@ def create_pull_request(
         f"\n\n{format_forge_revision_section()}"
         f"{stats_section}"
     )
+    if local_ci_verification is not None:
+        body += format_local_ci_verification_pr_section(local_ci_verification.to_metrics())
 
     cmd = [
         "gh", "pr", "create",
@@ -142,6 +142,8 @@ def create_pull_request(
         "--head", f"{origin_owner}:{branch}",
         "--label", "fixes-native-image-run-fail",
     ]
+    if local_ci_verification is not None and local_ci_verification.human_intervention_required:
+        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
     for r in REVIEWERS:
         cmd.extend(["--reviewer", r])
     gh(*cmd[1:])
@@ -183,7 +185,11 @@ def build_parser():
             "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
-    add_in_metadata_repo_argument(parser)
+    parser.add_argument(
+        "--metrics-repo-path",
+        dest="metrics_repo_path",
+        help="Path to the metrics repository root.",
+    )
     return parser
 
 
@@ -191,14 +197,18 @@ def parse_flags(argv_list):
     """Parse CLI flags and resolve repository path."""
     parser = build_parser()
     flags = parser.parse_args(argv_list)
-    repo_path = resolve_repo_path(flags.reachability_metadata_path, in_metadata_repo=flags.in_metadata_repo)
-    return flags.coordinates, flags.new_version, repo_path
+    repo_path, metrics_repo_path = resolve_repo_roots(
+        flags.reachability_metadata_path,
+        flags.metrics_repo_path,
+    )
+    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path
 
 
 def push_current_branch_to_origin(
         old_coordinates: str,
         new_version: str,
         repo_path: str,
+        metrics_repo_path: str | None = None,
 ):
     """
     Switch to the feature branch, stage and commit changes,
@@ -225,6 +235,14 @@ def push_current_branch_to_origin(
         coordinates=new_coordinates,
         repo_path=repo_path,
     )
+    base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
+    subprocess.run(["git", "rebase", base_ref], cwd=repo_path, check=True)
+    local_ci_verification = run_local_ci_verification(
+        repo_path=repo_path,
+        coordinates=new_coordinates,
+        base_commit=base_ref,
+        metrics_repo_path=metrics_repo_path,
+    )
 
     subprocess.run(
         ["git", "push", "origin", branch],
@@ -232,18 +250,19 @@ def push_current_branch_to_origin(
         check=True,
     )
 
-    return branch, group, artifact, new_coordinates
+    return branch, group, artifact, new_coordinates, local_ci_verification
 
 
 def main(argv=None):
     ensure_gh_authenticated()
 
-    old_coordinates, new_version, repo_path = parse_flags(argv if argv is not None else sys.argv[1:])
+    old_coordinates, new_version, repo_path, metrics_repo_path = parse_flags(argv if argv is not None else sys.argv[1:])
 
-    branch, group, artifact, new_coordinates = push_current_branch_to_origin(
+    branch, group, artifact, new_coordinates, local_ci_verification = push_current_branch_to_origin(
         old_coordinates=old_coordinates,
         new_version=new_version,
         repo_path=repo_path,
+        metrics_repo_path=metrics_repo_path,
     )
     create_pull_request(
         branch=branch,
@@ -252,6 +271,7 @@ def main(argv=None):
         group=group,
         artifact=artifact,
         repo_path=repo_path,
+        local_ci_verification=local_ci_verification,
     )
 
 

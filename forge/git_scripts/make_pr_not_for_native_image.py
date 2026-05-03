@@ -23,7 +23,7 @@ from git_scripts.common_git import (
     stage_and_commit,
 )
 from utility_scripts.metadata_index import get_not_for_native_image_marker
-from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
+from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 
 REPO = "oracle/graalvm-reachability-metadata"
@@ -39,7 +39,6 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--coordinates", required=True, help="Coordinates in group:artifact:version form")
     parser.add_argument("--reachability-metadata-path", help="Path to the reachability-metadata checkout")
-    add_in_metadata_repo_argument(parser)
     return parser
 
 
@@ -135,7 +134,6 @@ def main(argv=None) -> None:
     repo_path, _metrics_path = resolve_repo_roots(
         args.reachability_metadata_path,
         None,
-        in_metadata_repo=args.in_metadata_repo,
     )
     ensure_gh_authenticated()
     branch = push_marker_branch(args.coordinates, repo_path)

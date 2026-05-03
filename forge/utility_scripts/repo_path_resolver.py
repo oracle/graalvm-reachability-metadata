@@ -8,7 +8,6 @@ import subprocess
 import sys
 
 REACHABILITY_REPO_CLONE_URL = "git@github.com:oracle/graalvm-reachability-metadata.git"
-IN_METADATA_REPO_FLAG = "--in-metadata-repo"
 
 
 def get_repo_root():
@@ -18,19 +17,6 @@ def get_repo_root():
 def get_forge_subdir_name() -> str:
     """Return the Forge directory name inside the reachability metadata repo."""
     return os.path.basename(get_repo_root())
-
-
-def add_in_metadata_repo_argument(parser) -> None:
-    """Add a deprecated compatibility flag for older commands."""
-    parser.add_argument(
-        IN_METADATA_REPO_FLAG,
-        action="store_true",
-        default=True,
-        help=(
-            "Deprecated no-op. Forge now always runs from a graalvm-reachability-metadata "
-            "checkout and stores metrics under its in-repo forge directory."
-        ),
-    )
 
 
 def _run_git(cmd: list[str], cwd: str) -> None:
@@ -189,11 +175,8 @@ def metrics_json_repo_relative_path(
 def resolve_repo_roots(
         explicit_reachability_path: str | None,
         explicit_metrics_repo_path: str | None,
-        in_metadata_repo: bool = False,
 ):
     """Resolve root paths for the target reachability repository and metrics storage."""
-    _ = in_metadata_repo
-
     # graalvm-reachability-metadata repo root
     print("[Resolving graalvm-reachability-metadata root path...]")
     if explicit_reachability_path:

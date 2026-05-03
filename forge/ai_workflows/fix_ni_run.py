@@ -10,7 +10,7 @@ import sys
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts.library_finalization import run_library_finalization
-from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
+from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.source_context import populate_artifact_urls
 
 
@@ -44,7 +44,6 @@ def build_parser():
             "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
-    add_in_metadata_repo_argument(parser)
     return parser
 
 
@@ -95,7 +94,6 @@ def main(argv=None) -> int:
     reachability_metadata_path, _ = resolve_repo_roots(
         args.reachability_metadata_path,
         None,
-        in_metadata_repo=args.in_metadata_repo,
     )
 
     current_coordinates = args.coordinates

@@ -22,7 +22,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
-from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
+from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.source_context import (
     normalize_source_context_types,
@@ -119,7 +119,6 @@ def build_parser(config: JavaFailWorkflowConfig):
             "If omitted, the forge directory in the selected worktree is used."
         ),
     )
-    add_in_metadata_repo_argument(parser)
     parser.add_argument(
         "--strategy-name",
         dest="strategy_name",
@@ -162,16 +161,14 @@ def parse_flags(config: JavaFailWorkflowConfig, argv_list):
         flags.verbose,
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
-        flags.in_metadata_repo,
     )
 
 
-def resolve_repo_paths(explicit_repo_path, explicit_metrics_repo_path, in_metadata_repo: bool = True):
+def resolve_repo_paths(explicit_repo_path, explicit_metrics_repo_path):
     """Resolve repository paths for code and metrics outputs."""
     resolved_reachability_repo, resolved_metrics_repo = resolve_repo_roots(
         explicit_repo_path,
         explicit_metrics_repo_path,
-        in_metadata_repo=in_metadata_repo,
     )
 
     resolved_metrics_dir = os.path.join(resolved_metrics_repo, "script_run_metrics")
@@ -349,14 +346,12 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         is_verbose,
         explicit_repo_path,
         explicit_metrics_repo_path,
-        in_metadata_repo,
     ) = parse_flags(config, argv if argv is not None else sys.argv[1:])
 
     strategy = require_strategy_by_name(strategy_name)
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
-        in_metadata_repo=in_metadata_repo,
     )
     ensure_gh_authenticated()
     resolve_graalvm_java_home()

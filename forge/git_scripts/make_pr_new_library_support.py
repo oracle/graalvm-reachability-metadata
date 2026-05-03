@@ -28,20 +28,22 @@ from git_scripts.common_git import (
 )
 from utility_scripts.metrics_writer import (
     collect_new_library_support_quality_issues,
-    commit_run_metrics_with_retry,
     read_pending_metrics,
 )
 from utility_scripts.large_library_progress import LABEL_LARGE_LIBRARY_PART, LargeLibraryProgressState
 from utility_scripts.library_stats import stats_artifact_dir
-from utility_scripts.repo_path_resolver import (
-    add_in_metadata_repo_argument,
-    resolve_repo_roots,
+from utility_scripts.local_ci_verification import (
+    HUMAN_INTERVENTION_LABEL,
+    LOCAL_CI_VERIFICATION_KEY,
+    format_local_ci_verification_pr_section,
+    local_ci_requires_human_intervention,
+    run_local_ci_verification,
 )
+from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 REPO = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = 'master'
 REVIEWERS = get_configured_reviewers()
-SCRIPT_RUN_METRICS_DIR = "script_run_metrics"
 
 
 def build_pull_request_body(
@@ -58,6 +60,7 @@ def build_pull_request_body(
         is_final_large_library_part=True,
         large_library_part=None,
         series_id=None,
+        local_ci_verification=None,
 ):
     """Build the PR body with metrics, strategy name, and optional stats."""
     input_tokens_used = metrics.get("input_tokens_used", 0)
@@ -110,6 +113,7 @@ Summary:
         body += f"- Stage: `{post_generation_intervention.get('stage', 'unknown')}`\n\n"
         body += f"- Intervention file: `{post_generation_intervention.get('intervention_file', 'unknown')}`\n\n"
         body += str(post_generation_intervention.get("analysis_markdown", "")).strip() + "\n"
+    body += format_local_ci_verification_pr_section(local_ci_verification)
 
     return body
 
@@ -203,6 +207,7 @@ def create_pull_request(
         metrics=metrics,
         library_stats=library_stats,
         post_generation_intervention=matched.get("post_generation_intervention"),
+        local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
         is_large_library_part=large_library_part is not None,
         is_final_large_library_part=is_final_large_library_part,
         large_library_part=large_library_part,
@@ -219,6 +224,8 @@ def create_pull_request(
         "--label", "GenAI",
         "--label", "library-new-request",
     ]
+    if local_ci_requires_human_intervention(matched.get(LOCAL_CI_VERIFICATION_KEY)):
+        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
     if large_library_part is not None:
         cmd.extend(["--label", LABEL_LARGE_LIBRARY_PART])
     if REVIEWERS:
@@ -276,15 +283,12 @@ def build_parser():
     )
     parser.add_argument("--series-id", help="Large-library series identifier for the PR body.")
     parser.add_argument("--large-library-state-path", help="Progress state JSON path to update after publishing.")
-    add_in_metadata_repo_argument(parser)
-
     return parser
 
 
 def resolve_repo_paths(
         explicit_repo_path: str | None,
         explicit_metrics_repo_path: str | None,
-        in_metadata_repo: bool = True,
 ):
     """Resolve repo and metrics paths similar to add_new_library_support.
 
@@ -295,7 +299,6 @@ def resolve_repo_paths(
     return resolve_repo_roots(
         explicit_repo_path,
         explicit_metrics_repo_path,
-        in_metadata_repo=in_metadata_repo,
     )
 
 
@@ -308,14 +311,12 @@ def parse_flags(argv_list):
     resolved_repo_path, resolved_metrics_repo_path = resolve_repo_paths(
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
-        in_metadata_repo=flags.in_metadata_repo,
     )
 
     return (
         coordinates,
         resolved_repo_path,
         resolved_metrics_repo_path,
-        flags.in_metadata_repo,
         flags.issue_number,
         flags.large_library_part,
         flags.large_library_final,
@@ -353,6 +354,12 @@ def push_current_branch_to_origin(
 
     base_ref = _fetch_pr_base(repo_path)
     subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
+    run_local_ci_verification(
+        repo_path=repo_path,
+        coordinates=coordinates,
+        base_commit=base_ref,
+        metrics_repo_path=metrics_repo_path,
+    )
     subprocess.run(
         ["git", "push", "origin", new_branch],
         check=True,
@@ -386,34 +393,6 @@ def update_large_library_state_after_publish(
     state.save(state_path)
 
 
-def _large_library_extra_paths(
-        state_path: str | None,
-        metrics_repo_root: str,
-) -> list[str] | None:
-    """Return the series progress dir relative to the metrics root, when state is present."""
-    if not state_path:
-        return None
-    return [os.path.relpath(os.path.dirname(state_path), metrics_repo_root)]
-
-
-def metrics_commit_and_push(
-        metrics_repo_root: str,
-        coordinates: str,
-        extra_paths_to_stage: list[str] | None = None,
-):
-    """Read pending metrics and push with retry logic."""
-    run_metrics = read_pending_metrics(metrics_repo_root)
-    metrics_json_path = os.path.join(SCRIPT_RUN_METRICS_DIR, "add_new_library_support.json")
-
-    commit_run_metrics_with_retry(
-        metrics_repo_root=metrics_repo_root,
-        metrics_json_relative_path=metrics_json_path,
-        run_metrics=run_metrics,
-        commit_message=f"Run metrics: add_new_library_support.py for {coordinates}",
-        extra_paths_to_stage=extra_paths_to_stage,
-    )
-
-
 def validate_run_quality(coordinates: str, metrics_repo_path: str) -> None:
     """Raise ValueError if the run metrics are not good enough for a PR."""
     matched = read_pending_metrics(metrics_repo_path)
@@ -428,7 +407,6 @@ def main(argv=None):
         coordinates,
         repo_path,
         metrics_repo_path,
-        in_metadata_repo,
         issue_number,
         large_library_part,
         large_library_final,
@@ -443,7 +421,6 @@ def main(argv=None):
         coordinates=coordinates,
         repo_path=repo_path,
         metrics_repo_path=metrics_repo_path,
-        include_in_repo_metrics=in_metadata_repo,
         large_library_part=large_library_part,
     )
     pr_number = create_pull_request(
@@ -463,12 +440,6 @@ def main(argv=None):
         pr_number,
         large_library_final or large_library_part is None,
     )
-    if not in_metadata_repo:
-        metrics_commit_and_push(
-            metrics_repo_path,
-            coordinates,
-            extra_paths_to_stage=_large_library_extra_paths(large_library_state_path, metrics_repo_path),
-        )
 
 
 if __name__ == "__main__":
