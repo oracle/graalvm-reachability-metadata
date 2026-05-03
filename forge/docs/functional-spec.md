@@ -145,6 +145,18 @@ commands, coordinates filter, native-image mode, JDK/GraalVM selection, and
 Docker/image setup must be derived from the same repo configuration that CI
 uses, including `ci.json` and the Gradle task contracts.
 
+Local verification runs must be non-privileged. Forge must not invoke `sudo`,
+must not run scripts that invoke `sudo`, and must not prompt for an
+administrator password during local automation. CI-only host mutation steps
+that require elevated privileges, such as changing system Docker networking,
+must be replaced by no-sudo local gates or omitted from local execution while
+preserving the rest of the CI-equivalent validation surface. A command that
+would require `sudo` is a local verification failure, not an interactive
+prompt. For Docker-backed tests, local verification must fail if tests create
+Docker images after the `pullAllowedDockerImages` gate, because that indicates
+the local run may have passed by pulling images that CI's disabled-network
+phase would reject.
+
 Forge must record the exact local verification commands and their outcomes in
 the run metrics and PR description. A task must not open a PR, mark a project
 item `Done`, return `RUN_STATUS_SUCCESS`, return

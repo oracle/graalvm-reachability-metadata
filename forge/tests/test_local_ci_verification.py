@@ -23,6 +23,7 @@ from utility_scripts.local_ci_verification import (
     _graalvm_home_for_java_version,
     _run_infrastructure_matrix_entries,
     _run_recorded_command,
+    _run_recorded_command_without_new_docker_images,
     _run_spring_aot_matrix_entries,
     _run_test_matrix_entries,
     _run_verification_once,
@@ -225,7 +226,11 @@ class LocalCIVerificationTests(unittest.TestCase):
                 return failed_record
             return None
 
-        with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
+        with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command), \
+                patch(
+                    "utility_scripts.local_ci_verification._run_recorded_command_without_new_docker_images",
+                    side_effect=fake_run_recorded_command,
+                ):
             failed = _run_test_matrix_entries(
                 "/repo",
                 [{"coordinates": "org.example:demo:1.0.0", "versions": ["1.0.0"]}],
@@ -237,7 +242,7 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertNotIn("disable-docker-networking", gates)
         self.assertNotIn("restore-docker-networking", gates)
 
-    def test_test_matrix_isolates_docker_networking_for_coordinates_that_declare_docker_images(self) -> None:
+    def test_test_matrix_prepulls_docker_images_without_privileged_network_scripts(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             docker_test_dir = os.path.join(repo_path, "tests", "src", "org.example", "docker-demo", "1.0.0")
             os.makedirs(docker_test_dir)
@@ -259,7 +264,11 @@ class LocalCIVerificationTests(unittest.TestCase):
                 calls.append((gate, command))
                 return None
 
-            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
+            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command), \
+                    patch(
+                        "utility_scripts.local_ci_verification._run_recorded_command_without_new_docker_images",
+                        side_effect=fake_run_recorded_command,
+                    ):
                 failed = _run_test_matrix_entries(
                     repo_path,
                     [
@@ -279,8 +288,9 @@ class LocalCIVerificationTests(unittest.TestCase):
                     ),
                 ],
             )
-            self.assertIn("disable-docker-networking", [call[0] for call in calls])
-            self.assertEqual(calls[-1][0], "restore-docker-networking")
+            self.assertNotIn("disable-docker-networking", [call[0] for call in calls])
+            self.assertNotIn("restore-docker-networking", [call[0] for call in calls])
+            self.assertEqual([call[0] for call in calls].count("run-consecutive-tests"), 2)
 
     def test_test_matrix_resolves_docker_declaration_from_index_test_version(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
@@ -314,7 +324,11 @@ class LocalCIVerificationTests(unittest.TestCase):
                 calls.append((gate, command))
                 return None
 
-            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
+            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command), \
+                    patch(
+                        "utility_scripts.local_ci_verification._run_recorded_command_without_new_docker_images",
+                        side_effect=fake_run_recorded_command,
+                    ):
                 failed = _run_test_matrix_entries(
                     repo_path,
                     [{"coordinates": "org.example:demo:2.0.1", "versions": ["2.0.1"]}],
@@ -331,7 +345,115 @@ class LocalCIVerificationTests(unittest.TestCase):
                     ),
                 ],
             )
-            self.assertIn("disable-docker-networking", [call[0] for call in calls])
+            self.assertNotIn("disable-docker-networking", [call[0] for call in calls])
+            self.assertNotIn("restore-docker-networking", [call[0] for call in calls])
+
+    def test_run_recorded_command_rejects_sudo_command_without_running_it(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+            with patch(
+                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    return_value=os.path.join(log_path, "command.log"),
+            ), patch("utility_scripts.local_ci_verification.subprocess.run") as run:
+                failed = _run_recorded_command(
+                    repo_path,
+                    "privileged-command",
+                    ["sudo", "systemctl", "restart", "docker"],
+                    result,
+                )
+
+            self.assertIsNotNone(failed)
+            run.assert_not_called()
+            self.assertEqual(result.commands[0].returncode, 1)
+            self.assertIn("must not invoke sudo", result.commands[0].output_excerpt)
+
+    def test_run_recorded_command_rejects_sudo_script_without_running_it(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
+            script_path = os.path.join(repo_path, "needs-sudo.sh")
+            with open(script_path, "w", encoding="utf-8") as file:
+                file.write("#!/bin/bash\nsudo systemctl restart docker\n")
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+            with patch(
+                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    return_value=os.path.join(log_path, "command.log"),
+            ), patch("utility_scripts.local_ci_verification.subprocess.run") as run:
+                failed = _run_recorded_command(
+                    repo_path,
+                    "privileged-script",
+                    ["bash", "./needs-sudo.sh"],
+                    result,
+                )
+
+            self.assertIsNotNone(failed)
+            run.assert_not_called()
+            self.assertEqual(result.commands[0].returncode, 1)
+            self.assertIn("needs-sudo.sh", result.commands[0].output_excerpt)
+
+    def test_run_recorded_command_rejects_repo_local_script_without_suffix(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
+            script_path = os.path.join(repo_path, "gradlew")
+            with open(script_path, "w", encoding="utf-8") as file:
+                file.write("#!/bin/bash\nsudo systemctl restart docker\n")
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+            with patch(
+                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    return_value=os.path.join(log_path, "command.log"),
+            ), patch("utility_scripts.local_ci_verification.subprocess.run") as run:
+                failed = _run_recorded_command(
+                    repo_path,
+                    "gradle-wrapper",
+                    ["./gradlew", "test"],
+                    result,
+                )
+
+            self.assertIsNotNone(failed)
+            run.assert_not_called()
+            self.assertEqual(result.commands[0].returncode, 1)
+            self.assertIn("gradlew", result.commands[0].output_excerpt)
+
+    def test_run_recorded_command_without_new_docker_images_fails_when_test_pulls_image(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+            docker_outputs = [
+                "postgres:16 image-a\n",
+                "postgres:16 image-a\nredis:7 image-b\n",
+            ]
+
+            def fake_run(
+                    command: list[str],
+                    cwd: str | None = None,
+                    env: dict[str, str] | None = None,
+                    stdout=None,
+                    stderr=None,
+                    text: bool | None = None,
+                    check: bool | None = None,
+            ) -> subprocess.CompletedProcess[str]:
+                del cwd, env, stdout, stderr, text, check
+                if command[:3] == ["docker", "image", "ls"]:
+                    return subprocess.CompletedProcess(command, 0, stdout=docker_outputs.pop(0))
+                if command == ["bash", "run-tests"]:
+                    return subprocess.CompletedProcess(command, 0, stdout="tests passed\n")
+                raise AssertionError(f"unexpected command: {command}")
+
+            log_paths = [
+                os.path.join(log_path, "run.log"),
+                os.path.join(log_path, "docker.log"),
+            ]
+            with patch(
+                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    side_effect=log_paths,
+            ), patch("utility_scripts.local_ci_verification.subprocess.run", side_effect=fake_run):
+                failed = _run_recorded_command_without_new_docker_images(
+                    repo_path,
+                    "run-consecutive-tests",
+                    ["bash", "run-tests"],
+                    result,
+                )
+
+            self.assertIsNotNone(failed)
+            self.assertEqual(failed.gate, "unexpected-docker-image-pull")
+            self.assertEqual(result.commands[-1].returncode, 1)
+            self.assertIn("redis:7 image-b", result.commands[-1].output_excerpt)
 
     def test_infrastructure_matrix_runs_test_infra_for_each_entry(self) -> None:
         result = LocalCIVerificationResult(status="running", base_commit="base")

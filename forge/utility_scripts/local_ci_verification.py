@@ -27,6 +27,11 @@ CODEX_TIMEOUT_SECONDS = 1800
 DEFAULT_BASE_BRANCH = "master"
 SPRING_AOT_BRANCH = "main"
 SPRING_AOT_REPO_URL = "https://github.com/spring-projects/spring-aot-smoke-tests.git"
+NO_SUDO_FAILURE_MESSAGE = "ERROR: Local CI verification runs must not invoke sudo."
+UNEXPECTED_DOCKER_IMAGE_FAILURE_MESSAGE = (
+    "ERROR: Local CI verification detected Docker images created during the no-network-equivalent test gate."
+)
+DOCKER_IMAGE_LIST_COMMAND = ["docker", "image", "ls", "--format", "{{.Repository}}:{{.Tag}} {{.ID}}"]
 
 
 @dataclass
@@ -309,14 +314,12 @@ def _run_test_matrix_entries(
         return None
 
     pulled_coordinates: set[str] = set()
-    docker_coordinates: set[str] = set()
     for entry in entries:
         coordinates = str(entry.get("coordinates") or "").strip()
         if not coordinates or coordinates in pulled_coordinates:
             continue
         if not _coordinate_uses_docker(repo_path, coordinates):
             continue
-        docker_coordinates.add(coordinates)
         failed = _run_recorded_command(
             repo_path,
             "pull-allowed-docker-images",
@@ -327,55 +330,37 @@ def _run_test_matrix_entries(
             return failed
         pulled_coordinates.add(coordinates)
 
-    if docker_coordinates:
+    for entry in entries:
+        coordinates = str(entry.get("coordinates") or "").strip()
+        versions = entry.get("versions")
+        if not coordinates or not isinstance(versions, list):
+            continue
+        env = _matrix_env(entry)
         failed = _run_recorded_command(
             repo_path,
-            "disable-docker-networking",
-            ["bash", "./.github/workflows/scripts/disable-docker.sh"],
+            "check-metadata-files",
+            ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={coordinates}"],
             result,
+            env=env,
         )
         if failed is not None:
             return failed
-
-    first_failed: CommandRecord | None = None
-    restore_failed: CommandRecord | None = None
-    try:
-        for entry in entries:
-            coordinates = str(entry.get("coordinates") or "").strip()
-            versions = entry.get("versions")
-            if not coordinates or not isinstance(versions, list):
-                continue
-            env = _matrix_env(entry)
-            failed = _run_recorded_command(
-                repo_path,
-                "check-metadata-files",
-                ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={coordinates}"],
-                result,
-                env=env,
-            )
-            if failed is not None:
-                first_failed = failed
-                break
-            failed = _run_recorded_command(
-                repo_path,
-                "run-consecutive-tests",
-                [
-                    "bash",
-                    "./.github/workflows/scripts/run-consecutive-tests.sh",
-                    coordinates,
-                    json.dumps([str(version) for version in versions]),
-                ],
-                result,
-                env=env,
-                failure_output_pattern=r"^FAILED",
-            )
-            if failed is not None:
-                first_failed = failed
-                break
-    finally:
-        if docker_coordinates:
-            restore_failed = _restore_docker_networking(repo_path, result)
-    return first_failed or restore_failed
+        failed = _run_recorded_command_without_new_docker_images(
+            repo_path,
+            "run-consecutive-tests",
+            [
+                "bash",
+                "./.github/workflows/scripts/run-consecutive-tests.sh",
+                coordinates,
+                json.dumps([str(version) for version in versions]),
+            ],
+            result,
+            env=env,
+            failure_output_pattern=r"^FAILED",
+        )
+        if failed is not None:
+            return failed
+    return None
 
 
 def _run_infrastructure_matrix_entries(
@@ -485,16 +470,6 @@ def _run_spring_aot_matrix_entries(
         if failed is not None:
             return failed
     return None
-
-
-def _restore_docker_networking(repo_path: str, result: LocalCIVerificationResult) -> CommandRecord | None:
-    """Restore Docker networking after a Docker-backed test phase."""
-    return _run_recorded_command(
-        repo_path,
-        "restore-docker-networking",
-        ["bash", "./.github/workflows/scripts/restore-docker.sh"],
-        result,
-    )
 
 
 def _run_index_validation(
@@ -743,6 +718,22 @@ def _run_recorded_command(
     display_env = dict(env or {})
     command_env.update(display_env)
     log_path = build_timestamped_task_log_path("local-ci", gate, Path(command[0]).name)
+    sudo_reason = _sudo_usage_reason(repo_path, command)
+    if sudo_reason:
+        output = f"{NO_SUDO_FAILURE_MESSAGE} {sudo_reason}\n"
+        with open(log_path, "w", encoding="utf-8") as log_file:
+            log_file.write(output)
+        record = CommandRecord(
+            gate=gate,
+            command=command,
+            returncode=1,
+            env=display_env,
+            log_path=display_log_path(log_path),
+            output_excerpt=output,
+        )
+        result.commands.append(record)
+        return record
+
     completed = subprocess.run(
         command,
         cwd=repo_path,
@@ -769,6 +760,154 @@ def _run_recorded_command(
     result.commands.append(record)
     if returncode != 0:
         return record
+    return None
+
+
+def _run_recorded_command_without_new_docker_images(
+        repo_path: str,
+        gate: str,
+        command: list[str],
+        result: LocalCIVerificationResult,
+        env: dict[str, str] | None = None,
+        failure_output_pattern: str | None = None,
+) -> CommandRecord | None:
+    try:
+        before_images = _docker_image_ids(repo_path)
+    except RuntimeError as exc:
+        output = f"ERROR: Cannot run local CI no-network-equivalent Docker validation. {exc}\n"
+        return _record_synthetic_failure(repo_path, "docker-image-baseline", command, result, env, output)
+
+    failed = _run_recorded_command(
+        repo_path,
+        gate,
+        command,
+        result,
+        env=env,
+        failure_output_pattern=failure_output_pattern,
+    )
+    if failed is not None:
+        return failed
+
+    try:
+        after_images = _docker_image_ids(repo_path)
+    except RuntimeError as exc:
+        output = f"ERROR: Cannot complete local CI no-network-equivalent Docker validation. {exc}\n"
+        return _record_synthetic_failure(repo_path, "docker-image-after-test", command, result, env, output)
+
+    new_images = sorted(after_images - before_images)
+    if not new_images:
+        return None
+
+    output = "\n".join([
+        UNEXPECTED_DOCKER_IMAGE_FAILURE_MESSAGE,
+        "CI disables Docker networking after `pullAllowedDockerImages`; local verification must not pass by pulling images on demand.",
+        "New Docker images:",
+        *[f"- {image}" for image in new_images],
+        "",
+    ])
+    return _record_synthetic_failure(repo_path, "unexpected-docker-image-pull", command, result, env, output)
+
+
+def _docker_image_ids(repo_path: str) -> set[str]:
+    try:
+        completed = subprocess.run(
+            DOCKER_IMAGE_LIST_COMMAND,
+            cwd=repo_path,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+    except OSError as exc:
+        raise RuntimeError(str(exc)) from exc
+    if completed.returncode != 0:
+        output = (completed.stdout or "").strip()
+        details = f" Output: {output}" if output else ""
+        raise RuntimeError(f"Cannot list Docker images for local CI no-network-equivalent verification.{details}")
+    images: set[str] = set()
+    for line in completed.stdout.splitlines():
+        stripped = line.strip()
+        if stripped and not stripped.startswith("<none>:<none>"):
+            images.add(stripped)
+    return images
+
+
+def _record_synthetic_failure(
+        repo_path: str,
+        gate: str,
+        command: list[str],
+        result: LocalCIVerificationResult,
+        env: dict[str, str] | None,
+        output: str,
+) -> CommandRecord:
+    log_path = build_timestamped_task_log_path("local-ci", gate, Path(command[0]).name)
+    with open(log_path, "w", encoding="utf-8") as log_file:
+        log_file.write(output)
+    record = CommandRecord(
+        gate=gate,
+        command=command,
+        returncode=1,
+        env=dict(env or {}),
+        log_path=display_log_path(log_path),
+        output_excerpt=_tail(output),
+    )
+    result.commands.append(record)
+    return record
+
+
+def _sudo_usage_reason(repo_path: str, command: list[str]) -> str | None:
+    """Return why a local command would require sudo, or None if it is allowed."""
+    if _contains_sudo_token(command):
+        return "The command line contains `sudo`."
+
+    script_path = _shell_script_path(repo_path, command)
+    if script_path is None or not os.path.isfile(script_path):
+        return None
+    sudo_line = _script_sudo_line(script_path)
+    if sudo_line is None:
+        return None
+    return f"The script `{os.path.relpath(script_path, repo_path)}` invokes `sudo`: {sudo_line}"
+
+
+def _contains_sudo_token(values: list[str]) -> bool:
+    return any(re.search(r"(?<![\w.-])sudo(?![\w.-])", value) for value in values)
+
+
+def _shell_script_path(repo_path: str, command: list[str]) -> str | None:
+    if not command:
+        return None
+    executable = os.path.basename(command[0])
+    if executable in {"bash", "sh"}:
+        for arg in command[1:]:
+            if arg == "-c":
+                return None
+            if arg.startswith("-"):
+                continue
+            return _resolve_command_path(repo_path, arg)
+        return None
+    if command[0].endswith(".sh") or _is_repo_local_path(command[0]):
+        return _resolve_command_path(repo_path, command[0])
+    return None
+
+
+def _is_repo_local_path(path: str) -> bool:
+    return not os.path.isabs(path) and (path.startswith("./") or path.startswith("../") or os.sep in path)
+
+
+def _resolve_command_path(repo_path: str, path: str) -> str:
+    if os.path.isabs(path):
+        return path
+    return os.path.normpath(os.path.join(repo_path, path))
+
+
+def _script_sudo_line(script_path: str) -> str | None:
+    with open(script_path, "r", encoding="utf-8", errors="ignore") as file:
+        for line in file:
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            if re.search(r"(?<![\w.-])sudo(?![\w.-])", stripped):
+                return stripped
     return None
 
 

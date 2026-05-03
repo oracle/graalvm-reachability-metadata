@@ -69,6 +69,10 @@ Required local tools depend on the work queue being processed:
 - `codex` for Codex-agent strategies and metadata fixups.
 - GraalVM available through `GRAALVM_HOME` or `JAVA_HOME`.
 
+Local Forge automation must run without `sudo`. Local CI verification fails
+fast instead of prompting for an administrator password if a command or script
+would require elevated privileges.
+
 ## Manual Workflows
 
 The top-level worker delegates to these lower-level entry points. Use them
