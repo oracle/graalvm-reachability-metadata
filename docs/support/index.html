@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GraalVM Reachability Metadata Support Checker</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7f9;
+        --panel: #ffffff;
+        --panel-strong: #f0f7f4;
+        --text: #16202a;
+        --muted: #5c6773;
+        --line: #d8dee6;
+        --brand: #0f8f6f;
+        --brand-dark: #09664f;
+        --accent: #bd5a00;
+        --danger: #b42318;
+        --shadow: 0 16px 45px rgba(22, 32, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(135deg, rgba(15, 143, 111, 0.14), rgba(189, 90, 0, 0.09) 46%, transparent 46%),
+          var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      a {
+        color: var(--brand-dark);
+      }
+
+      .shell {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 34px 0 48px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 48px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .mark {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--text);
+        color: #ffffff;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .brand-text {
+        display: grid;
+        gap: 1px;
+        min-width: 0;
+      }
+
+      .brand-title {
+        font-size: 15px;
+        font-weight: 780;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .brand-subtitle {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .toplink {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 9px 12px;
+        background: rgba(255, 255, 255, 0.72);
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 680;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(380px, 1.05fr);
+        gap: 28px;
+        align-items: start;
+      }
+
+      .copy {
+        padding-top: 24px;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 760px;
+        font-size: clamp(42px, 6vw, 76px);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .lede {
+        margin: 22px 0 0;
+        max-width: 620px;
+        color: var(--muted);
+        font-size: 19px;
+      }
+
+      .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 32px;
+      }
+
+      .quick-actions a {
+        min-height: 96px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.76);
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      .quick-actions strong {
+        display: block;
+        font-size: 14px;
+      }
+
+      .quick-actions span {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .checker {
+        border: 1px solid rgba(22, 32, 42, 0.08);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .checker-head {
+        padding: 22px 24px;
+        background: var(--panel-strong);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .checker-head h2 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .checker-head p {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .form {
+        display: grid;
+        gap: 16px;
+        padding: 24px;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        font-weight: 720;
+      }
+
+      input {
+        width: 100%;
+        min-height: 50px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0 14px;
+        color: var(--text);
+        font: inherit;
+        font-weight: 560;
+        background: #ffffff;
+      }
+
+      input:focus {
+        outline: 3px solid rgba(15, 143, 111, 0.22);
+        border-color: var(--brand);
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      button,
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        padding: 0 16px;
+        font: inherit;
+        font-weight: 760;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      button {
+        background: var(--brand);
+        color: #ffffff;
+      }
+
+      button:hover,
+      button:focus-visible {
+        background: var(--brand-dark);
+      }
+
+      .button.secondary {
+        border-color: var(--line);
+        background: #ffffff;
+        color: var(--text);
+      }
+
+      .button.primary {
+        background: var(--brand);
+        color: #ffffff;
+      }
+
+      .button.warning {
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .result {
+        display: none;
+        margin: 0 24px 24px;
+        border: 1px solid var(--line);
+        border-left: 5px solid var(--brand);
+        border-radius: 8px;
+        padding: 18px;
+        background: #ffffff;
+      }
+
+      .result[data-state="warning"] {
+        border-left-color: var(--accent);
+      }
+
+      .result[data-state="error"] {
+        border-left-color: var(--danger);
+      }
+
+      .result.is-visible {
+        display: block;
+      }
+
+      .result h3 {
+        margin: 0;
+        font-size: 22px;
+      }
+
+      .result p {
+        margin: 8px 0 0;
+        color: var(--muted);
+      }
+
+      .meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .meta div {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        min-width: 0;
+      }
+
+      .meta strong {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+
+      .meta span {
+        display: block;
+        margin-top: 4px;
+        overflow-wrap: anywhere;
+        font-weight: 720;
+      }
+
+      .result-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .command {
+        margin-top: 24px;
+        border-top: 1px solid var(--line);
+        padding-top: 20px;
+      }
+
+      code {
+        border-radius: 5px;
+        padding: 2px 5px;
+        background: rgba(21, 27, 35, 0.08);
+        color: var(--text);
+        font: 0.92em ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      }
+
+      .command code {
+        display: block;
+        overflow-x: auto;
+        border-radius: 8px;
+        padding: 13px;
+        background: #151b23;
+        color: #f6f8fa;
+        font: 13px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      }
+
+      footer {
+        margin-top: 52px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 880px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .copy {
+          padding-top: 0;
+        }
+
+        .quick-actions {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .shell {
+          width: min(100% - 20px, 1120px);
+          padding-top: 18px;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+          margin-bottom: 28px;
+        }
+
+        h1 {
+          font-size: 42px;
+        }
+
+        .lede {
+          font-size: 16px;
+        }
+
+        .checker-head,
+        .form {
+          padding: 18px;
+        }
+
+        .result {
+          margin: 0 18px 18px;
+        }
+
+        .meta {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="topbar" aria-label="Repository navigation">
+        <a class="brand" id="repositoryBrand" href="https://github.com/oracle/graalvm-reachability-metadata">
+          <span class="mark" aria-hidden="true">RM</span>
+          <span class="brand-text">
+            <span class="brand-title">GraalVM Reachability Metadata</span>
+            <span class="brand-subtitle" id="repositoryName">oracle/graalvm-reachability-metadata</span>
+          </span>
+        </a>
+        <a class="toplink" id="readmeLink" href="https://github.com/oracle/graalvm-reachability-metadata#readme">View README</a>
+      </nav>
+
+      <section class="hero">
+        <div class="copy">
+          <h1>Check Native Image metadata support.</h1>
+          <p class="lede">Enter Maven coordinates to see whether this repository already tests reachability metadata for that library version.</p>
+          <div class="quick-actions" aria-label="Ticket shortcuts">
+            <a id="newLibraryLink" href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml">
+              <strong>New library</strong>
+              <span>Request metadata for a library that is not supported yet.</span>
+            </a>
+            <a id="updateLibraryLink" href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml">
+              <strong>Existing library</strong>
+              <span>Report a failing version or missing metadata.</span>
+            </a>
+            <a id="contributeLink" href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml">
+              <strong>Contribute</strong>
+              <span>Open the tracking ticket before sending a focused fix.</span>
+            </a>
+          </div>
+        </div>
+
+        <section class="checker" aria-labelledby="checkerTitle">
+          <div class="checker-head">
+            <h2 id="checkerTitle">Support checker</h2>
+            <p>Use the standard <code>groupId:artifactId:version</code> format.</p>
+          </div>
+
+          <form class="form" id="supportForm">
+            <label>
+              Maven coordinates
+              <input id="coordinates" name="coordinates" autocomplete="off" spellcheck="false" placeholder="org.postgresql:postgresql:42.7.3" required>
+              <span class="hint">Example: org.postgresql:postgresql:42.7.3</span>
+            </label>
+            <div class="buttons">
+              <button type="submit" id="submitButton">Check support</button>
+              <a class="button secondary" id="browseLink" href="https://www.graalvm.org/native-image/libraries-and-frameworks/">Browse library list</a>
+            </div>
+          </form>
+
+          <section class="result" id="result" aria-live="polite">
+            <h3 id="resultTitle"></h3>
+            <p id="resultMessage"></p>
+            <div class="meta" id="resultMeta"></div>
+            <div class="result-actions" id="resultActions"></div>
+          </section>
+
+          <div class="form command">
+            <span class="hint">Terminal equivalent</span>
+            <code id="commandSnippet">curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "&lt;groupId&gt;:&lt;artifactId&gt;:&lt;version&gt;"</code>
+          </div>
+        </section>
+      </section>
+
+      <footer>
+        This page reads metadata indexes directly from the selected GitHub repository branch.
+      </footer>
+    </main>
+
+    <script>
+      const defaultRepository = {
+        owner: "oracle",
+        repo: "graalvm-reachability-metadata",
+        branch: "master"
+      };
+
+      const elements = {
+        form: document.getElementById("supportForm"),
+        coordinates: document.getElementById("coordinates"),
+        submitButton: document.getElementById("submitButton"),
+        result: document.getElementById("result"),
+        resultTitle: document.getElementById("resultTitle"),
+        resultMessage: document.getElementById("resultMessage"),
+        resultMeta: document.getElementById("resultMeta"),
+        resultActions: document.getElementById("resultActions"),
+        repositoryBrand: document.getElementById("repositoryBrand"),
+        repositoryName: document.getElementById("repositoryName"),
+        readmeLink: document.getElementById("readmeLink"),
+        newLibraryLink: document.getElementById("newLibraryLink"),
+        updateLibraryLink: document.getElementById("updateLibraryLink"),
+        contributeLink: document.getElementById("contributeLink"),
+        commandSnippet: document.getElementById("commandSnippet")
+      };
+
+      function repositoryFromLocation() {
+        const githubPagesSuffix = ".github.io";
+        const pathParts = window.location.pathname.split("/").filter(Boolean);
+
+        if (window.location.hostname.endsWith(githubPagesSuffix) && pathParts.length > 0) {
+          return {
+            owner: window.location.hostname.slice(0, -githubPagesSuffix.length),
+            repo: pathParts[0],
+            branch: defaultRepository.branch
+          };
+        }
+
+        return defaultRepository;
+      }
+
+      const repository = repositoryFromLocation();
+      const repositoryUrl = `https://github.com/${repository.owner}/${repository.repo}`;
+      const rawBaseUrl = `https://raw.githubusercontent.com/${repository.owner}/${repository.repo}/${repository.branch}`;
+
+      function setupRepositoryLinks() {
+        elements.repositoryBrand.href = repositoryUrl;
+        elements.repositoryName.textContent = `${repository.owner}/${repository.repo}`;
+        elements.readmeLink.href = `${repositoryUrl}#readme`;
+        elements.newLibraryLink.href = issueUrl("01_support_new_library.yml");
+        elements.updateLibraryLink.href = issueUrl("02_update_existing_library.yml");
+        elements.contributeLink.href = issueUrl("02_update_existing_library.yml");
+        elements.commandSnippet.textContent = `curl -sSL ${rawBaseUrl}/check-library-support.sh | bash -s "<groupId>:<artifactId>:<version>"`;
+      }
+
+      function issueUrl(template, title) {
+        const params = new URLSearchParams({ template });
+        if (title) {
+          params.set("title", title);
+        }
+        return `${repositoryUrl}/issues/new?${params.toString()}`;
+      }
+
+      function parseCoordinates(value) {
+        const trimmed = value.trim();
+        const parts = trimmed.split(":");
+        if (parts.length !== 3 || parts.some((part) => part.trim().length === 0 || /\s/.test(part))) {
+          const error = new Error("Use the format groupId:artifactId:version with no spaces.");
+          error.name = "InvalidCoordinatesError";
+          throw error;
+        }
+        return {
+          gav: trimmed,
+          group: parts[0],
+          artifact: parts[1],
+          version: parts[2]
+        };
+      }
+
+      function metadataIndexUrl(group, artifact) {
+        return `${rawBaseUrl}/metadata/${encodeURIComponent(group)}/${encodeURIComponent(artifact)}/index.json`;
+      }
+
+      async function fetchIndex(coordinates) {
+        const response = await fetch(metadataIndexUrl(coordinates.group, coordinates.artifact), {
+          cache: "no-store"
+        });
+
+        if (response.status === 404) {
+          return null;
+        }
+
+        if (!response.ok) {
+          throw new Error(`GitHub returned ${response.status} while reading metadata.`);
+        }
+
+        return response.json();
+      }
+
+      function testedVersions(entries) {
+        const versions = new Set();
+        for (const entry of entries) {
+          for (const version of entry["tested-versions"] || []) {
+            versions.add(version);
+          }
+          if (entry["metadata-version"]) {
+            versions.add(entry["metadata-version"]);
+          }
+        }
+        return Array.from(versions).sort((left, right) => left.localeCompare(right, undefined, { numeric: true }));
+      }
+
+      function latestEntry(entries) {
+        return entries.find((entry) => entry.latest === true) || entries[0] || {};
+      }
+
+      function metadataValue(label, value) {
+        if (!value) {
+          return "";
+        }
+        return `<div><strong>${label}</strong><span>${value}</span></div>`;
+      }
+
+      function action(label, href, className) {
+        const link = document.createElement("a");
+        link.className = `button ${className}`;
+        link.href = href;
+        link.textContent = label;
+        return link;
+      }
+
+      function showResult(state, title, message, metadata, actions) {
+        elements.result.dataset.state = state;
+        elements.resultTitle.textContent = title;
+        elements.resultMessage.textContent = message;
+        elements.resultMeta.innerHTML = metadata.filter(Boolean).join("");
+        elements.resultActions.replaceChildren(...actions);
+        elements.result.classList.add("is-visible");
+      }
+
+      function showInvalid(message) {
+        showResult("error", "Invalid coordinates", message, [], []);
+      }
+
+      function showUnsupported(coordinates) {
+        showResult(
+          "warning",
+          "No metadata index found",
+          `${coordinates.gav} is not currently listed in this repository.`,
+          [
+            metadataValue("Group", coordinates.group),
+            metadataValue("Artifact", coordinates.artifact)
+          ],
+          [
+            action("Request new metadata", issueUrl("01_support_new_library.yml", `Support for ${coordinates.gav}`), "warning")
+          ]
+        );
+      }
+
+      function showKnownButUntested(coordinates, entries) {
+        const versions = testedVersions(entries);
+        const latest = latestEntry(entries);
+        const preview = versions.slice(-8).join(", ");
+        showResult(
+          "warning",
+          "Library found, version not tested",
+          `${coordinates.group}:${coordinates.artifact} exists here, but ${coordinates.version} is not in the tested version list.`,
+          [
+            metadataValue("Latest metadata", latest["metadata-version"]),
+            metadataValue("Recent tested versions", preview || "None listed")
+          ],
+          [
+            action("Request a version update", issueUrl("02_update_existing_library.yml", `Update metadata for ${coordinates.gav}`), "warning"),
+            action("View metadata index", metadataIndexUrl(coordinates.group, coordinates.artifact), "secondary")
+          ]
+        );
+      }
+
+      function showSupported(coordinates, entries) {
+        const latest = latestEntry(entries);
+        showResult(
+          "ok",
+          "Supported",
+          `${coordinates.gav} is covered by tested reachability metadata in this repository.`,
+          [
+            metadataValue("Metadata version", latest["metadata-version"]),
+            metadataValue("Allowed packages", (latest["allowed-packages"] || []).join(", "))
+          ],
+          [
+            action("Report a metadata problem", issueUrl("02_update_existing_library.yml", `Update metadata for ${coordinates.gav}`), "secondary"),
+            action("View metadata index", metadataIndexUrl(coordinates.group, coordinates.artifact), "secondary")
+          ]
+        );
+      }
+
+      async function handleSubmit(event) {
+        event.preventDefault();
+        elements.submitButton.disabled = true;
+        elements.submitButton.textContent = "Checking...";
+
+        try {
+          const coordinates = parseCoordinates(elements.coordinates.value);
+          const entries = await fetchIndex(coordinates);
+          const url = new URL(window.location.href);
+          url.searchParams.set("coordinates", coordinates.gav);
+          window.history.replaceState({}, "", url);
+
+          if (!entries) {
+            showUnsupported(coordinates);
+            return;
+          }
+
+          const normalizedEntries = Array.isArray(entries) ? entries : [];
+          const versions = testedVersions(normalizedEntries);
+          if (versions.includes(coordinates.version)) {
+            showSupported(coordinates, normalizedEntries);
+          } else {
+            showKnownButUntested(coordinates, normalizedEntries);
+          }
+        } catch (error) {
+          if (error.name === "InvalidCoordinatesError") {
+            showInvalid(error.message);
+          } else {
+            showResult("error", "Could not check metadata", error.message, [], []);
+          }
+        } finally {
+          elements.submitButton.disabled = false;
+          elements.submitButton.textContent = "Check support";
+        }
+      }
+
+      function loadCoordinatesFromQuery() {
+        const params = new URLSearchParams(window.location.search);
+        const value = params.get("coordinates") || params.get("q");
+        if (value) {
+          elements.coordinates.value = value;
+          elements.form.requestSubmit();
+        }
+      }
+
+      setupRepositoryLinks();
+      elements.form.addEventListener("submit", handleSubmit);
+      loadCoordinatesFromQuery();
+    </script>
+  </body>
+</html>
