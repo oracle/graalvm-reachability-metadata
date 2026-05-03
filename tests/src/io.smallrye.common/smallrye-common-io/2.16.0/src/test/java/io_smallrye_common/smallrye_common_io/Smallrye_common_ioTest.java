@@ -126,6 +126,31 @@ public class Smallrye_common_ioTest {
     }
 
     @Test
+    void recursiveDeletionRemovesDirectorySymbolicLinksWithoutFollowingThem(@TempDir Path tempDir) throws IOException {
+        Path externalTarget = tempDir.resolve("external-target");
+        Files.createDirectories(externalTarget);
+        Path externalFile = externalTarget.resolve("preserved.txt");
+        Files.writeString(externalFile, "preserved");
+
+        Path root = tempDir.resolve("root");
+        Files.createDirectories(root);
+        Files.writeString(root.resolve("ordinary.txt"), "ordinary");
+        Path symbolicLink = root.resolve("linked-target");
+        Files.createSymbolicLink(symbolicLink, externalTarget);
+
+        DeleteStats stats = Files2.deleteRecursivelyQuietlyEvenIfInsecure(root);
+
+        assertThat(root).doesNotExist();
+        assertThat(Files.exists(symbolicLink, LinkOption.NOFOLLOW_LINKS)).isFalse();
+        assertThat(externalTarget).isDirectory();
+        assertThat(externalFile).hasContent("preserved");
+        assertThat(stats.directoriesFound()).isEqualTo(1);
+        assertThat(stats.directoriesRemoved()).isEqualTo(1);
+        assertThat(stats.filesFound()).isEqualTo(2);
+        assertThat(stats.filesRemoved()).isEqualTo(2);
+    }
+
+    @Test
     void secureDirectoryUtilitiesOperateOnPathAndStreamOverloads(@TempDir Path tempDir) throws IOException {
         Path secureRoot = tempDir.resolve("secure-root");
         Files.createDirectories(secureRoot);
