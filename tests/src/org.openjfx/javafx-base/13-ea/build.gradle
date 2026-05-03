@@ -9,11 +9,12 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String dependencyVersion = libraryVersion == "13-ea" ? "13-ea+1" : libraryVersion
 String osName = System.getProperty("os.name").toLowerCase()
 String javafxPlatform = osName.contains("win") ? "win" : osName.contains("mac") ? "mac" : "linux"
 
 dependencies {
-    testImplementation "org.openjfx:javafx-base:$libraryVersion:$javafxPlatform"
+    testImplementation "org.openjfx:javafx-base:$dependencyVersion:$javafxPlatform"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
