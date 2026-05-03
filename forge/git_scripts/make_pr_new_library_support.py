@@ -44,6 +44,40 @@ from utility_scripts.repo_path_resolver import resolve_repo_roots
 REPO = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = 'master'
 REVIEWERS = get_configured_reviewers()
+DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
+
+
+def _extract_covered_dynamic_access_calls(library_stats: dict | None) -> int | None:
+    """Return the total covered dynamic-access call count from library stats."""
+    if not isinstance(library_stats, dict):
+        return None
+
+    dynamic_access = library_stats.get("dynamicAccess")
+    if not isinstance(dynamic_access, dict):
+        return None
+
+    covered_calls = dynamic_access.get("coveredCalls")
+    if not isinstance(covered_calls, int):
+        return None
+    return covered_calls
+
+
+def format_dynamic_access_metadata_entry_note(metadata_entries: int, library_stats: dict | None) -> str:
+    """Explain large dynamic-access/metadata-entry count differences in generated PR bodies."""
+    covered_calls = _extract_covered_dynamic_access_calls(library_stats)
+    if metadata_entries <= 0 or covered_calls is None:
+        return ""
+    if covered_calls < metadata_entries * DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO:
+        return ""
+
+    return (
+        "\n### Metadata/dynamic-access evidence\n\n"
+        f"- Covered dynamic-access calls: {covered_calls}\n"
+        f"- Metadata entries: {metadata_entries}\n"
+        "- These counts are different dimensions: covered dynamic-access calls count observed call sites, "
+        "while metadata entries count generated reachability-config items. A single metadata entry can cover "
+        "multiple observed call sites when they require the same reachability rule.\n"
+    )
 
 
 def build_pull_request_body(
@@ -66,7 +100,7 @@ def build_pull_request_body(
     input_tokens_used = metrics.get("input_tokens_used", 0)
     output_tokens_used = metrics.get("output_tokens_used", 0)
     cached_input_tokens_used = metrics.get("cached_input_tokens_used", 0)
-    entries_found = metrics.get("metadata_entries", 0)
+    entries_found = int(metrics.get("metadata_entries", 0) or 0)
     test_only_metadata_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
     iterations = metrics.get("iterations", 0)
     code_coverage_percent = metrics.get("code_coverage_percent", 0)
@@ -105,6 +139,7 @@ Summary:
 - Generated lines of code: {generated_loc}
 - Tested library lines of code: {tested_library_loc}
 """
+    body += format_dynamic_access_metadata_entry_note(entries_found, library_stats)
     body += "\n" + format_forge_revision_section() + "\n"
     if library_stats:
         body += "\n" + format_stats_section(library_stats) + "\n"

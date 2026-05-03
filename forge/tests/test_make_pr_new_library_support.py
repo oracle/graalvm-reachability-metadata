@@ -1,0 +1,65 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+import unittest
+from unittest.mock import patch
+
+from git_scripts.make_pr_new_library_support import build_pull_request_body
+
+
+class MakePrNewLibrarySupportTests(unittest.TestCase):
+    def test_build_pull_request_body_explains_large_dynamic_access_metadata_count_gap(self) -> None:
+        body = build_pull_request_body(
+            issue_no=4527,
+            coordinates="software.amazon.awssdk:utils:2.34.0",
+            model_display_name="gpt-5.5",
+            agent_name="pi",
+            strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+            run_status="success",
+            metrics={
+                "metadata_entries": 2,
+            },
+            library_stats={
+                "dynamicAccess": {
+                    "coveredCalls": 5,
+                    "totalCalls": 5,
+                    "coverageRatio": 1.0,
+                    "breakdown": {},
+                },
+            },
+        )
+
+        self.assertIn("### Metadata/dynamic-access evidence", body)
+        self.assertIn("- Covered dynamic-access calls: 5", body)
+        self.assertIn("- Metadata entries: 2", body)
+        self.assertIn("A single metadata entry can cover multiple observed call sites", body)
+
+    def test_build_pull_request_body_omits_count_gap_note_for_close_counts(self) -> None:
+        with patch("git_scripts.make_pr_new_library_support.format_forge_revision_section", return_value="Forge"):
+            body = build_pull_request_body(
+                issue_no=1,
+                coordinates="org.example:demo:1.0.0",
+                model_display_name="gpt-5.5",
+                agent_name="pi",
+                strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+                run_status="success",
+                metrics={
+                    "metadata_entries": 3,
+                },
+                library_stats={
+                    "dynamicAccess": {
+                        "coveredCalls": 5,
+                        "totalCalls": 5,
+                        "coverageRatio": 1.0,
+                        "breakdown": {},
+                    },
+                },
+            )
+
+        self.assertNotIn("### Metadata/dynamic-access evidence", body)
+
+
+if __name__ == "__main__":
+    unittest.main()
