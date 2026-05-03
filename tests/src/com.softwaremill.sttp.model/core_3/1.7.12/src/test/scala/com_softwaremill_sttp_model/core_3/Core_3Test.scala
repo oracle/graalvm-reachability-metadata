@@ -91,6 +91,31 @@ class Core_3Test {
   }
 
   @Test
+  def uriInterpolatorExpandsCollectionsAndOmitsMissingQueryValues(): Unit = {
+    val pathSegments: List[String] = List("team a", "report/42")
+    val optionalMode: Option[String] = Some("fast")
+    val queryPairs: Seq[(String, Option[String])] = Seq(
+      "lang" -> Some("scala 3"),
+      "debug" -> None,
+      "mode" -> optionalMode
+    )
+    val repeatedParams: QueryParams = QueryParams
+      .fromSeq(Seq("tag" -> "a+b", "tag" -> "x/y"))
+      .param("flag", Seq.empty)
+
+    val interpolated: Uri = uri"https://api.example.com/$pathSegments?fixed=1&$queryPairs&$repeatedParams"
+
+    assertEquals("https://api.example.com/team%20a/report%2F42?fixed=1&lang=scala+3&mode=fast&tag=a%2Bb&tag=x/y&flag", interpolated.toString)
+    assertEquals(List("team a", "report/42"), interpolated.path)
+    assertEquals(Some("1"), interpolated.params.get("fixed"))
+    assertEquals(Some("scala 3"), interpolated.params.get("lang"))
+    assertEquals(None, interpolated.params.get("debug"))
+    assertEquals(Some("fast"), interpolated.params.get("mode"))
+    assertEquals(Some(Seq("a+b", "x/y")), interpolated.params.getMulti("tag"))
+    assertEquals(Some(Seq.empty[String]), interpolated.params.getMulti("flag"))
+  }
+
+  @Test
   def queryParamsPreserveOrderMultiValuesAndEmptyValues(): Unit = {
     val queryParams: QueryParams = QueryParams
       .fromSeq(Seq("a" -> "1", "b" -> "two words", "a" -> "3"))
