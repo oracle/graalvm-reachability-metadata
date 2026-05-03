@@ -1,0 +1,1493 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dec4c-bcbc-74a3-9804-48c830d18d4c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.flywaydb:flyway-core:10.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "10.0.0" when "$version$" is replaced with "10.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+- Set "coordinates" to "org.flywaydb:flyway-core:10.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "10.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/GitHub first, then update the JSON in place with version-tokenized URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+{
+  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'flyway-core|org.flywaydb' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json:2:  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:7:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:12:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:14:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:35:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:37:      "type": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:41:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:43:      "type": "org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:47:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:49:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:63:            "org.flywaydb.core.internal.command.clean.CleanModel"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:70:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:72:      "type": "org.flywaydb.core.internal.command.clean.CleanModel",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:77:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:79:      "type": "org.flywaydb.core.internal.command.clean.SchemaModel",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:84:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:86:      "type": "org.flywaydb.core.internal.configuration.extensions.DeployScriptFilenameConfigurationExtension",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:107:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:109:      "type": "org.flywaydb.core.internal.configuration.extensions.PrepareScriptFilenameConfigurationExtension",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:140:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:142:      "type": "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:152:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:154:      "type": "org.flywaydb.core.internal.logging.log4j2.Log4j2LogCreator",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:164:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:166:      "type": "org.flywaydb.core.internal.logging.slf4j.Slf4jLogCreator",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:176:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:178:      "type": "org.flywaydb.core.internal.proprietaryStubs.LicensingConfigurationExtensionStub",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:183:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:185:      "type": "org.flywaydb.core.internal.proprietaryStubs.PATTokenConfigurationExtensionStub",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:190:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:192:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:197:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:199:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:232:        "typeReached": "org.flywaydb.core.internal.license.VersionPrinter"
+metadata/org.flywaydb/flyway-core/11.14.1/reachability-metadata.json:234:      "glob": "org/flywaydb/core/internal/version.txt"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:7:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:12:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:14:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:35:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:37:      "type": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:41:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:43:      "type": "org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:47:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:49:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:63:            "org.flywaydb.core.internal.command.clean.CleanModel"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:70:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:72:      "type": "org.flywaydb.core.internal.command.clean.CleanModel",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:77:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:79:      "type": "org.flywaydb.core.internal.command.clean.SchemaModel",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:84:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:86:      "type": "org.flywaydb.core.internal.configuration.extensions.DeployScriptFilenameConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:107:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:109:      "type": "org.flywaydb.core.internal.configuration.extensions.PrepareScriptFilenameConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:130:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:132:      "type": "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:142:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:144:      "type": "org.flywaydb.core.internal.logging.log4j2.Log4j2LogCreator",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:154:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:156:      "type": "org.flywaydb.core.internal.logging.slf4j.Slf4jLogCreator",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:166:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:168:      "type": "org.flywaydb.core.internal.proprietaryStubs.LicensingConfigurationExtensionStub",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:173:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:175:      "type": "org.flywaydb.core.internal.proprietaryStubs.PATTokenConfigurationExtensionStub",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:180:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:182:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:187:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:189:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:212:        "typeReached": "org.flywaydb.core.internal.license.VersionPrinter"
+metadata/org.flywaydb/flyway-core/10.20.0/reachability-metadata.json:214:      "glob": "org/flywaydb/core/internal/version.txt"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:5:        "typeReached" : "org.flywaydb.core.internal.jdbc.JdbcConnectionFactory"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:11:        "typeReached" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:17:        "typeReached" : "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:23:        "typeReached" : "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:35:        "typeReached" : "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:47:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:53:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:59:        "typeReached" : "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:65:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:67:      "type" : "org.flywaydb.core.api.migration.baseline.BaselineAppliedMigration"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:71:        "typeReached" : "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:73:      "type" : "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:77:        "typeReached" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:79:      "type" : "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:99:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:101:      "type" : "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:105:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:107:      "type" : "org.flywaydb.core.api.migration.baseline.BaselineMigrationResolver"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:111:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:113:      "type" : "org.flywaydb.core.api.migration.baseline.BaselineResourceTypeProvider"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:117:        "typeReached" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:119:      "type" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:123:        "typeReached" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:125:      "type" : "org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:129:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:131:      "type" : "org.flywaydb.core.internal.NullFlywayTelemetryManager"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:135:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:137:      "type" : "org.flywaydb.core.internal.configuration.resolvers.EnvironmentProvisionerNone"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:141:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:143:      "type" : "org.flywaydb.core.internal.configuration.resolvers.EnvironmentVariableResolver"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:147:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:149:      "type" : "org.flywaydb.core.internal.configuration.resolvers.PlaceholderPropertyResolver"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:153:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:155:      "type" : "org.flywaydb.core.internal.database.base.TestContainersDatabaseType"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:159:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:161:      "type" : "org.flywaydb.core.internal.database.h2.H2DatabaseType"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:165:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:167:      "type" : "org.flywaydb.core.internal.database.sqlite.SQLiteDatabaseType"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:171:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:173:      "type" : "org.flywaydb.core.internal.jdbc.ErrorOverrideInitializerStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:177:        "typeReached" : "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:179:      "type" : "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator",
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:189:        "typeReached" : "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:191:      "type" : "org.flywaydb.core.internal.logging.log4j2.Log4j2LogCreator",
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:201:        "typeReached" : "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:203:      "type" : "org.flywaydb.core.internal.logging.slf4j.Slf4jLogCreator",
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:213:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:215:      "type" : "org.flywaydb.core.internal.proprietaryStubs.AuthCommandExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:219:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:221:      "type" : "org.flywaydb.core.internal.proprietaryStubs.CheckCommandExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:225:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:227:      "type" : "org.flywaydb.core.internal.proprietaryStubs.DeployCommandExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:231:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:233:      "type" : "org.flywaydb.core.internal.proprietaryStubs.DiffCommandExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:237:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:239:      "type" : "org.flywaydb.core.internal.proprietaryStubs.DiffTextCommandExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:243:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:245:      "type" : "org.flywaydb.core.internal.proprietaryStubs.GenerateCommandExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:249:        "typeReached" : "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:251:      "type" : "org.flywaydb.core.internal.proprietaryStubs.LicensingConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:255:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:257:      "type" : "org.flywaydb.core.internal.proprietaryStubs.LicensingConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:261:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:263:      "type" : "org.flywaydb.core.internal.proprietaryStubs.ModelCommandExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:267:        "typeReached" : "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:269:      "type" : "org.flywaydb.core.internal.proprietaryStubs.OfflinePermitConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:273:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:275:      "type" : "org.flywaydb.core.internal.proprietaryStubs.OfflinePermitConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:279:        "typeReached" : "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:281:      "type" : "org.flywaydb.core.internal.proprietaryStubs.PATTokenConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:285:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:287:      "type" : "org.flywaydb.core.internal.proprietaryStubs.PATTokenConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:291:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:293:      "type" : "org.flywaydb.core.internal.proprietaryStubs.PrepareCommandExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:297:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:299:      "type" : "org.flywaydb.core.internal.proprietaryStubs.UndoCommandExtensionStub"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:303:        "typeReached" : "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:305:      "type" : "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:309:        "typeReached" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:311:      "type" : "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:341:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:343:      "type" : "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:347:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:349:      "type" : "org.flywaydb.core.internal.resource.CoreResourceTypeProvider"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:353:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:355:      "type" : "org.flywaydb.core.internal.scanner.classpath.ClasspathLocationHandlerImpl"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:359:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:361:      "type" : "org.flywaydb.core.internal.scanner.filesystem.FilesystemLocationHandler"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:365:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:367:      "type" : "org.flywaydb.core.internal.schemahistory.BaseAppliedMigration"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:371:        "typeReached" : "org.flywaydb.core.internal.jdbc.JdbcConnectionFactory"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:377:        "typeReached" : "org.flywaydb.core.internal.jdbc.JdbcConnectionFactory"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:383:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:389:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:395:        "typeReached" : "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:407:        "typeReached" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:413:        "typeReached" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:419:        "typeReached" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:425:        "typeReached" : "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:433:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:439:        "typeReached" : "org.flywaydb.core.internal.util.FlywayDbWebsiteLinks"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:445:        "typeReached" : "org.flywaydb.core.internal.jdbc.JdbcConnectionFactory"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:451:        "typeReached" : "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:457:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:463:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:469:        "typeReached" : "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:471:      "glob" : "META-INF/services/org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:475:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:481:        "typeReached" : "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:487:        "typeReached" : "org.flywaydb.core.internal.scanner.ClasspathClassScanner"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:493:        "typeReached" : "org.flywaydb.core.internal.scanner.classpath.ClasspathLocationHandlerImpl"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:499:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:505:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:511:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:517:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:523:        "typeReached" : "org.flywaydb.core.internal.license.VersionPrinter"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:525:      "glob" : "org/flywaydb/core/internal/version.txt"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:529:        "typeReached" : "org.flywaydb.core.extensibility.LicenseGuard"
+metadata/org.flywaydb/flyway-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:18:      "org.flywaydb",
+metadata/org.flywaydb/flyway-core/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:87:      "org.flywaydb",
+metadata/org.flywaydb/flyway-core/index.json:94:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:104:      "org.flywaydb",
+metadata/org.flywaydb/flyway-core/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:121:      "org.flywaydb",
+metadata/org.flywaydb/flyway-core/index.json:128:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:138:      "org.flywaydb",
+metadata/org.flywaydb/flyway-core/index.json:145:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:155:      "org.flywaydb",
+metadata/org.flywaydb/flyway-core/index.json:162:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:165:    "documentation-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-javadoc.jar",
+metadata/org.flywaydb/flyway-core/index.json:172:      "org.flywaydb",
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:7:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:13:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:15:      "type": "org.flywaydb.core.extensibility.ConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:20:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:22:      "type": "org.flywaydb.core.extensibility.Plugin",
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:27:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:29:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:37:      "type": "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator",
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:44:      "type": "org.flywaydb.core.internal.logging.log4j2.Log4j2LogCreator",
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:51:      "type": "org.flywaydb.core.internal.logging.slf4j.Slf4jLogCreator",
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:56:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:70:        "typeReached": "org.flywaydb.core.internal.license.VersionPrinter"
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:72:      "glob": "org/flywaydb/core/internal/version.txt"
+metadata/org.flywaydb/flyway-core/9.0.1/reachability-metadata.json:7:      "type": "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator",
+metadata/org.flywaydb/flyway-core/9.0.1/reachability-metadata.json:14:      "type": "org.flywaydb.core.internal.logging.log4j2.Log4j2LogCreator",
+metadata/org.flywaydb/flyway-core/9.0.1/reachability-metadata.json:21:      "type": "org.flywaydb.core.internal.logging.slf4j.Slf4jLogCreator",
+metadata/org.flywaydb/flyway-core/9.0.1/reachability-metadata.json:26:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-core/9.0.1/reachability-metadata.json:40:        "typeReached": "org.flywaydb.core.internal.license.VersionPrinter"
+metadata/org.flywaydb/flyway-core/9.0.1/reachability-metadata.json:42:      "glob": "org/flywaydb/core/internal/version.txt"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:7:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:12:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:14:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:35:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:37:      "type": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:41:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:43:      "type": "org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:47:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:49:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:63:            "org.flywaydb.core.internal.command.clean.CleanModel"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:70:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:72:      "type": "org.flywaydb.core.internal.command.clean.CleanModel",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:77:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:79:      "type": "org.flywaydb.core.internal.command.clean.SchemaModel",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:84:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:86:      "type": "org.flywaydb.core.internal.configuration.extensions.DeployScriptFilenameConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:107:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:109:      "type": "org.flywaydb.core.internal.configuration.extensions.PrepareScriptFilenameConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:130:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:132:      "type": "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:142:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:144:      "type": "org.flywaydb.core.internal.logging.log4j2.Log4j2LogCreator",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:154:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:156:      "type": "org.flywaydb.core.internal.logging.slf4j.Slf4jLogCreator",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:166:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:168:      "type": "org.flywaydb.core.internal.proprietaryStubs.LicensingConfigurationExtensionStub",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:173:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:175:      "type": "org.flywaydb.core.internal.proprietaryStubs.PATTokenConfigurationExtensionStub",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:180:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:182:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:187:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:189:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:222:        "typeReached": "org.flywaydb.core.internal.license.VersionPrinter"
+metadata/org.flywaydb/flyway-core/10.20.1/reachability-metadata.json:224:      "glob": "org/flywaydb/core/internal/version.txt"
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:7:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:13:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:15:      "type": "org.flywaydb.core.extensibility.ConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:20:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:22:      "type": "org.flywaydb.core.extensibility.Plugin",
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:27:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:29:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:37:      "type": "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator",
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:44:      "type": "org.flywaydb.core.internal.logging.log4j2.Log4j2LogCreator",
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:51:      "type": "org.flywaydb.core.internal.logging.slf4j.Slf4jLogCreator",
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:56:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:58:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:63:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:77:        "typeReached": "org.flywaydb.core.internal.license.VersionPrinter"
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:79:      "glob": "org/flywaydb/core/internal/version.txt"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:17:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:29:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:41:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:53:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:65:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:71:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:77:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:92:        "typeReached": "org.flywaydb.core.internal.util.FeatureDetector"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:98:        "typeReached": "org.flywaydb.core.internal.util.FeatureDetector"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:104:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:106:      "type": "org.flywaydb.clean.CleanModeCommandExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:110:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:112:      "type": "org.flywaydb.clean.database.SQLServerCleanModePlugin"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:116:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:118:      "type": "org.flywaydb.core.api.migration.baseline.BaselineAppliedMigration"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:122:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:124:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:128:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:130:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:150:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:152:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:156:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:158:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationResolver"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:162:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:164:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationTypeResolver"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:168:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:170:      "type": "org.flywaydb.core.api.migration.baseline.BaselineResourceTypeProvider"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:174:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:176:      "type": "org.flywaydb.core.experimental.migration.CoreMigrationTypeResolver"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:180:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:182:      "type": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:186:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:188:      "type": "org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:192:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:194:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension",
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:207:            "org.flywaydb.core.internal.command.clean.CleanModel"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:214:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:216:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:220:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:222:      "type": "org.flywaydb.core.internal.command.clean.CleanModel"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:226:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:228:      "type": "org.flywaydb.core.internal.command.clean.SchemaModel"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:232:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:234:      "type": "org.flywaydb.core.internal.configuration.extensions.DeployScriptConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:238:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:240:      "type": "org.flywaydb.core.internal.configuration.extensions.DeployScriptConfigurationExtension",
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:260:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:262:      "type": "org.flywaydb.core.internal.configuration.extensions.DeployScriptConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:266:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:268:      "type": "org.flywaydb.core.internal.configuration.resolvers.EnvironmentProvisionerNone"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:272:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:274:      "type": "org.flywaydb.core.internal.configuration.resolvers.EnvironmentVariableResolver"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:278:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:280:      "type": "org.flywaydb.core.internal.database.base.TestContainersDatabaseType"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:284:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:286:      "type": "org.flywaydb.core.internal.database.h2.H2DatabaseType"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:290:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:292:      "type": "org.flywaydb.core.internal.database.sqlite.SQLiteDatabaseType"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:296:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:298:      "type": "org.flywaydb.core.internal.proprietaryStubs.AuthCommandExtensionStub"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:302:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:304:      "type": "org.flywaydb.core.internal.proprietaryStubs.CommandExtensionStub"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:308:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:310:      "type": "org.flywaydb.core.internal.proprietaryStubs.LicensingConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:314:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:316:      "type": "org.flywaydb.core.internal.proprietaryStubs.LicensingConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:320:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:322:      "type": "org.flywaydb.core.internal.proprietaryStubs.PATTokenConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:326:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:328:      "type": "org.flywaydb.core.internal.proprietaryStubs.PATTokenConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:332:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:334:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:338:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:340:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:360:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:362:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:366:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:368:      "type": "org.flywaydb.core.internal.resource.CoreResourceTypeProvider"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:372:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:374:      "type": "org.flywaydb.core.internal.schemahistory.BaseAppliedMigration"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:378:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:380:      "type": "org.flywaydb.database.sqlserver.KerberosModel",
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:393:            "org.flywaydb.database.sqlserver.LoginModel"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:400:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:402:      "type": "org.flywaydb.database.sqlserver.LoginModel",
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:422:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:424:      "type": "org.flywaydb.database.sqlserver.SQLServerConfigurationExtension",
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:441:            "org.flywaydb.core.internal.command.clean.CleanModel"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:447:            "org.flywaydb.database.sqlserver.KerberosModel"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:454:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:456:      "type": "org.flywaydb.database.sqlserver.SQLServerConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:460:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:462:      "type": "org.flywaydb.database.sqlserver.SQLServerDatabaseType"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:466:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:468:      "type": "org.flywaydb.database.sqlserver.synapse.SynapseDatabaseType"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:472:        "typeReached": "org.flywaydb.core.internal.util.FeatureDetector"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:478:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:484:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:498:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcTemplate"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:510:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:522:        "typeReached": "org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:534:        "typeReached": "org.flywaydb.database.sqlserver.SQLServerConnection"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:546:        "typeReached": "org.flywaydb.database.sqlserver.synapse.SynapseDatabaseType"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:558:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:570:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:582:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:596:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:598:      "glob": "META-INF/services/org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:602:        "typeReached": "org.flywaydb.core.internal.scanner.ClasspathClassScanner"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:608:        "typeReached": "org.flywaydb.core.internal.scanner.Scanner"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:614:        "typeReached": "org.flywaydb.core.internal.resource.classpath.ClassPathResource"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:620:        "typeReached": "org.flywaydb.core.internal.resource.classpath.ClassPathResource"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:626:        "typeReached": "org.flywaydb.core.internal.license.VersionPrinter"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:628:      "glob": "org/flywaydb/core/internal/version.txt"
+metadata/org.flywaydb/flyway-sqlserver/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+metadata/org.flywaydb/flyway-sqlserver/index.json:37:      "org.flywaydb"
+metadata/org.flywaydb/flyway-sqlserver/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+metadata/org.flywaydb/flyway-sqlserver/index.json:63:      "org.flywaydb"
+metadata/org.flywaydb/flyway-sqlserver/index.json:68:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+metadata/org.flywaydb/flyway-sqlserver/index.json:80:      "org.flywaydb"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:7:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:13:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:15:      "type": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:19:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:21:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension",
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:27:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:29:      "type": "org.flywaydb.core.internal.command.clean.CleanModel",
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:35:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:37:      "type": "org.flywaydb.core.internal.command.clean.SchemaModel",
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:43:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:45:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:51:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:53:      "type": "org.flywaydb.database.sqlserver.KerberosModel",
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:59:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:61:      "type": "org.flywaydb.database.sqlserver.LoginModel",
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:67:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-sqlserver/10.13.0/reachability-metadata.json:69:      "type": "org.flywaydb.database.sqlserver.SQLServerConfigurationExtension",
+metadata/org.flywaydb/flyway-sqlserver/10.10.0/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.10.0/reachability-metadata.json:7:      "type": "org.flywaydb.core.internal.command.clean.CleanModel",
+metadata/org.flywaydb/flyway-sqlserver/10.10.0/reachability-metadata.json:13:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.10.0/reachability-metadata.json:15:      "type": "org.flywaydb.database.sqlserver.KerberosModel",
+metadata/org.flywaydb/flyway-sqlserver/10.10.0/reachability-metadata.json:21:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.10.0/reachability-metadata.json:23:      "type": "org.flywaydb.database.sqlserver.LoginModel",
+metadata/org.flywaydb/flyway-sqlserver/10.10.0/reachability-metadata.json:29:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-sqlserver/10.10.0/reachability-metadata.json:31:      "type": "org.flywaydb.database.sqlserver.SQLServerConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:17:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:29:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:41:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:47:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:53:        "typeReached": "org.flywaydb.core.internal.util.FeatureDetector"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:59:        "typeReached": "org.flywaydb.core.internal.util.FeatureDetector"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:65:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:67:      "type": "org.flywaydb.core.api.migration.baseline.BaselineAppliedMigration"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:71:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:73:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:77:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:79:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:99:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:101:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:105:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:107:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationResolver"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:111:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:113:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationTypeResolver"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:117:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:119:      "type": "org.flywaydb.core.api.migration.baseline.BaselineResourceTypeProvider"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:123:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:125:      "type": "org.flywaydb.core.experimental.migration.CoreMigrationTypeResolver"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:129:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:131:      "type": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:135:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:137:      "type": "org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:141:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:143:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:156:            "org.flywaydb.core.internal.command.clean.CleanModel"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:163:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:165:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:169:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:171:      "type": "org.flywaydb.core.internal.command.clean.CleanModel"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:175:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:177:      "type": "org.flywaydb.core.internal.command.clean.SchemaModel"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:181:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:183:      "type": "org.flywaydb.core.internal.configuration.extensions.DeployScriptConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:187:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:189:      "type": "org.flywaydb.core.internal.configuration.extensions.DeployScriptConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:209:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:211:      "type": "org.flywaydb.core.internal.configuration.extensions.DeployScriptConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:215:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:217:      "type": "org.flywaydb.core.internal.configuration.resolvers.EnvironmentProvisionerNone"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:221:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:223:      "type": "org.flywaydb.core.internal.configuration.resolvers.EnvironmentVariableResolver"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:227:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:229:      "type": "org.flywaydb.core.internal.database.base.TestContainersDatabaseType"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:233:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:235:      "type": "org.flywaydb.core.internal.database.h2.H2DatabaseType"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:239:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:241:      "type": "org.flywaydb.core.internal.database.sqlite.SQLiteDatabaseType"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:245:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:247:      "type": "org.flywaydb.core.internal.proprietaryStubs.AuthCommandExtensionStub"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:251:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:253:      "type": "org.flywaydb.core.internal.proprietaryStubs.CommandExtensionStub"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:257:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:259:      "type": "org.flywaydb.core.internal.proprietaryStubs.LicensingConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:263:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:265:      "type": "org.flywaydb.core.internal.proprietaryStubs.LicensingConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:269:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:271:      "type": "org.flywaydb.core.internal.proprietaryStubs.PATTokenConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:275:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:277:      "type": "org.flywaydb.core.internal.proprietaryStubs.PATTokenConfigurationExtensionStub"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:281:        "typeReached": "org.flywaydb.core.api.configuration.ClassicConfiguration"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:283:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:287:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:289:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:309:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:311:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:315:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:317:      "type": "org.flywaydb.core.internal.resource.CoreResourceTypeProvider"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:321:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:323:      "type": "org.flywaydb.core.internal.schemahistory.BaseAppliedMigration"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:327:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:329:      "type": "org.flywaydb.database.cockroachdb.CockroachDBDatabaseType"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:333:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:335:      "type": "org.flywaydb.database.postgresql.PostgreSQLConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:352:            "org.flywaydb.database.postgresql.TransactionalModel"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:365:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:367:      "type": "org.flywaydb.database.postgresql.PostgreSQLConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:371:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:373:      "type": "org.flywaydb.database.postgresql.PostgreSQLDatabaseType"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:377:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:379:      "type": "org.flywaydb.database.postgresql.TransactionalModel",
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:399:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:405:        "typeReached": "org.flywaydb.core.internal.database.base.BaseDatabaseType"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:411:        "typeReached": "org.flywaydb.core.internal.util.FeatureDetector"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:417:        "typeReached": "org.flywaydb.core.internal.util.ClassUtils"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:423:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:437:        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:451:        "typeReached": "org.flywaydb.core.internal.logging.javautil.JavaUtilLog"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:457:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:459:      "glob": "META-INF/services/org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:463:        "typeReached": "org.flywaydb.core.internal.scanner.ClasspathClassScanner"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:469:        "typeReached": "org.flywaydb.core.internal.scanner.Scanner"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:475:        "typeReached": "org.flywaydb.core.internal.resource.classpath.ClassPathResource"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:481:        "typeReached": "org.flywaydb.core.internal.resource.classpath.ClassPathResource"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:487:        "typeReached": "org.flywaydb.core.internal.license.VersionPrinter"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:489:      "glob": "org/flywaydb/core/internal/version.txt"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:493:        "typeReached": "org.flywaydb.core.internal.logging.javautil.JavaUtilLog"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:500:        "typeReached": "org.flywaydb.core.internal.logging.javautil.JavaUtilLog"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:7:      "type": "org.flywaydb.core.api.migration.baseline.BaselineMigrationConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:28:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:30:      "type": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:34:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:36:      "type": "org.flywaydb.core.extensibility.Plugin"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:40:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:42:      "type": "org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:56:            "org.flywaydb.core.internal.command.clean.CleanModel"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:63:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:65:      "type": "org.flywaydb.core.internal.command.clean.CleanModel",
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:70:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:72:      "type": "org.flywaydb.core.internal.command.clean.SchemaModel",
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:77:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:79:      "type": "org.flywaydb.core.internal.publishing.PublishingConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:100:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:102:      "type": "org.flywaydb.database.postgresql.PostgreSQLConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:120:            "org.flywaydb.database.postgresql.TransactionalModel"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:133:        "typeReached": "org.flywaydb.core.extensibility.ConfigurationExtension"
+metadata/org.flywaydb/flyway-database-postgresql/10.13.0/reachability-metadata.json:135:      "type": "org.flywaydb.database.postgresql.TransactionalModel",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:5:      "org.flywaydb"
+metadata/org.flywaydb/flyway-database-postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/$version$/flyway-database-postgresql-$version$-sources.jar",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:31:      "org.flywaydb"
+metadata/org.flywaydb/flyway-database-postgresql/index.json:34:    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/$version$/flyway-database-postgresql-$version$-sources.jar",
+metadata/org.flywaydb/flyway-database-postgresql/10.10.0/reachability-metadata.json:5:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.10.0/reachability-metadata.json:7:      "type": "org.flywaydb.database.postgresql.PostgreSQLConfigurationExtension",
+metadata/org.flywaydb/flyway-database-postgresql/10.10.0/reachability-metadata.json:13:        "typeReached": "org.flywaydb.core.internal.plugin.PluginRegister"
+metadata/org.flywaydb/flyway-database-postgresql/10.10.0/reachability-metadata.json:15:      "type": "org.flywaydb.database.postgresql.TransactionalModel",
+
+codex
+The local tree already has Flyway reachability metadata for later versions, so I’m checking whether the project has established URL patterns I should reuse before touching the discovered artifact file.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.flywaydb/flyway-core/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.3.0",
+    "test-version" : "11.14.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "12.3.0",
+      "12.4.0",
+      "12.5.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "metadata-version" : "11.14.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.20.1",
+      "10.21.0",
+      "10.22.0",
+      "11.0.0",
+      "11.0.1",
+      "11.1.0",
+      "11.1.1",
+      "11.2.0",
+      "11.3.0",
+      "11.3.1",
+      "11.3.2",
+      "11.3.3",
+      "11.3.4",
+      "11.4.0",
+      "11.4.1",
+      "11.5.0",
+      "11.6.0",
+      "11.7.0",
+      "11.7.1",
+      "11.7.2",
+      "11.8.0",
+      "11.8.2",
+      "11.9.0",
+      "11.9.1",
+      "11.9.2",
+      "11.10.0",
+      "11.10.1",
+      "11.10.2",
+      "11.10.3",
+      "11.10.4",
+      "11.10.5",
+      "11.11.0",
+      "11.11.1",
+      "11.11.2",
+      "11.14.1",
+      "11.15.0",
+      "11.16.0",
+      "11.17.0",
+      "11.17.1",
+      "11.17.2",
+      "11.18.0",
+      "11.19.0",
+      "11.19.1",
+      "11.20.0",
+      "11.20.1",
+      "11.20.2",
+      "11.20.3",
+      "12.0.0",
+      "12.0.1",
+      "12.0.2",
+      "12.0.3",
+      "12.1.0",
+      "12.1.1",
+      "12.2.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "10\\.20\\.1",
+    "metadata-version" : "10.20.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.20.1"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "10\\.20\\.0",
+    "metadata-version" : "10.20.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.20.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.flywaydb/flyway-database-postgresql/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.flywaydb"
+    ],
+    "metadata-version": "10.13.0",
+    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/$version$/flyway-database-postgresql-$version$-sources.jar",
+    "repository-url": "https://github.com/flyway/flyway",
+    "test-code-url": "https://github.com/flyway/flyway/tree/flyway-$version$/flyway-database/flyway-database-postgresql",
+    "documentation-url": "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description": "This Flyway module adds PostgreSQL and CockroachDB database support by providing database type detection, SQL parsing, and JDBC integration for PostgreSQL-compatible systems. It enables Flyway migrations to run with PostgreSQL-specific connection handling, schema support, table operations, and advisory locking behavior.",
+    "test-version": "10.10.0",
+    "tested-versions": [
+      "10.13.0",
+      "10.14.0",
+      "10.15.0",
+      "10.15.2",
+      "10.16.0",
+      "10.17.0",
+      "10.17.1",
+      "10.17.2",
+      "10.17.3",
+      "10.18.0",
+      "10.18.1",
+      "10.18.2"
+    ]
+  },
+  {
+    "allowed-packages": [
+      "org.flywaydb"
+    ],
+    "metadata-version": "10.10.0",
+    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/$version$/flyway-database-postgresql-$version$-sources.jar",
+    "repository-url": "https://github.com/flyway/flyway",
+    "test-code-url": "https://github.com/flyway/flyway/tree/flyway-$version$/flyway-database/flyway-database-postgresql",
+    "documentation-url": "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "tested-versions": [
+      "10.10.0",
+      "10.11.0",
+      "10.11.1",
+      "10.12.0"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name '*.json' | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+
+exec
+/usr/bin/bash -lc "sed -n '120,260p' metadata/org.flywaydb/flyway-core/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "10\\.(15|16|17|18|19)\\..*",
+    "metadata-version" : "10.15.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.15.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "10\\.(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14)\\..*",
+    "metadata-version" : "10.10.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.10.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "default-for" : "9\\..*",
+    "metadata-version" : "9.0.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-javadoc.jar",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "9.0.1"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  }
+]
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/
+web search: 
+web search: https://github.com/flyway/flyway/tree/flyway-10.0.0/flyway-core
+codex
+Maven Central publishes the main jar, sources jar, and javadoc jar for 10.0.0, but I do not see a test jar there. The tagged GitHub tree for `flyway-core` also only exposes `src/main`, so I’m treating the test suite URL as not confidently available.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/flyway-core-10.0.0.pom | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+<!--
+
+    Copyright (C) Red Gate Software Ltd 2010-2023
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-parent</artifactId>
+        <version>10.0.0</version>
+    </parent>
+    <artifactId>flyway-core</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <dependencies>
+        <!-- Optional loggers -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- Others -->
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-vfs</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-toml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws.secretsmanager</groupId>
+            <artifactId>aws-secretsmanager-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+
+
+
+
+
+
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-license</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>..</directory>
+                                    <includes>
+                                        <include>LICENSE.txt</include>
+                                        <include>README.txt</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <sourcepath>${project.basedir}/target/generated-sources/delombok</sourcepath>
+                    <sourceFileIncludes>
+                        <sourceFileInclude>**/core/Flyway.java</sourceFileInclude>
+                        <sourceFileInclude>**/core/api/**/*.java</sourceFileInclude>
+                    </sourceFileIncludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <sourcepath>${project.basedir}/target/generated-sources/delombok</sourcepath>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/flyway-core-10.0.0-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:26:15 GMT
+content-type: application/java-archive
+content-length: 668260
+cf-ray: 9f5cd98b3f76dc8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 19371
+etag: "14d663611d383b273b89056b5f75f66a"
+last-modified: Tue, 31 Oct 2023 13:23:01 GMT
+x-checksum-md5: 14d663611d383b273b89056b5f75f66a
+x-checksum-sha1: 2d91ac6fceedb05255775043efbb715b954aea0e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/flyway-core-10.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:26:15 GMT
+content-type: application/java-archive
+content-length: 591020
+cf-ray: 9f5cd98b8a4924c4-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 19355
+etag: "c22c60f1c1ca840da4f39f631c8d58a1"
+last-modified: Tue, 31 Oct 2023 13:23:03 GMT
+x-checksum-md5: c22c60f1c1ca840da4f39f631c8d58a1
+x-checksum-sha1: a084eb2bb95f6141fdda45f9d87d9d894c4ab2eb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/flyway/flyway/contents/flyway-core?ref=flyway-10.0.0' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 172ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "flyway-core/pom.xml",
+    "sha": "c80b301b30a15b446defaa8a5b5b108ba84c1a97",
+    "size": 6270,
+    "url": "https://api.github.com/repos/flyway/flyway/contents/flyway-core/pom.xml?ref=flyway-10.0.0",
+    "html_url": "https://github.com/flyway/flyway/blob/flyway-10.0.0/flyway-core/pom.xml",
+    "git_url": "https://api.github.com/repos/flyway/flyway/git/blobs/c80b301b30a15b446defaa8a5b5b108ba84c1a97",
+    "download_url": "https://raw.githubusercontent.com/flyway/flyway/flyway-10.0.0/flyway-core/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/flyway/flyway/contents/flyway-core/pom.xml?ref=flyway-10.0.0",
+      "git": "https://api.github.com/repos/flyway/flyway/git/blobs/c80b301b30a15b446defaa8a5b5b108ba84c1a97",
+      "html": "https://github.com/flyway/flyway/blob/flyway-10.0.0/flyway-core/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "flyway-core/src",
+    "sha": "5fc2a35ec32276fdd5b6e6cd236f3ec600cad53f",
+    "size": 0,
+    "url": "https://api.github.com/repos/flyway/flyway/contents/flyway-core/src?ref=flyway-10.0.0",
+    "html_url": "https://github.com/flyway/flyway/tree/flyway-10.0.0/flyway-core/src",
+    "git_url": "https://api.github.com/repos/flyway/flyway/git/trees/5fc2a35ec32276fdd5b6e6cd236f3ec600cad53f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/flyway/flyway/contents/flyway-core/src?ref=flyway-10.0.0",
+      "git": "https://api.github.com/repos/flyway/flyway/git/trees/5fc2a35ec32276fdd5b6e6cd236f3ec600cad53f",
+      "html": "https://github.com/flyway/flyway/tree/flyway-10.0.0/flyway-core/src"
+    }
+  }
+]
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.flywaydb flyway-core 10.0.0 sources javadoc
+web search: 
+web search: site:github.com/flyway/flyway flyway-10.0.0 flyway-core src
+web search: 
+web search: https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/flyway/flyway/contents/flyway-core/src?ref=flyway-10.0.0' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 161ms:
+[
+  {
+    "name": "main",
+    "path": "flyway-core/src/main",
+    "sha": "b34078e023c9a93d0f941c03d7ca58d7a7d73fa5",
+    "size": 0,
+    "url": "https://api.github.com/repos/flyway/flyway/contents/flyway-core/src/main?ref=flyway-10.0.0",
+    "html_url": "https://github.com/flyway/flyway/tree/flyway-10.0.0/flyway-core/src/main",
+    "git_url": "https://api.github.com/repos/flyway/flyway/git/trees/b34078e023c9a93d0f941c03d7ca58d7a7d73fa5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/flyway/flyway/contents/flyway-core/src/main?ref=flyway-10.0.0",
+      "git": "https://api.github.com/repos/flyway/flyway/git/trees/b34078e023c9a93d0f941c03d7ca58d7a7d73fa5",
+      "html": "https://github.com/flyway/flyway/tree/flyway-10.0.0/flyway-core/src/main"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/ | rg 'test|sources|javadoc|jar'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+<a href="flyway-core-10.0.0-javadoc.jar" title="flyway-core-10.0.0-javadoc.jar">flyway-core-10.0.0-javadoc.jar</a>                    2023-10-31 13:22    591020      
+<a href="flyway-core-10.0.0-javadoc.jar.asc" title="flyway-core-10.0.0-javadoc.jar.asc">flyway-core-10.0.0-javadoc.jar.asc</a>                2023-10-31 13:22       488      
+<a href="flyway-core-10.0.0-javadoc.jar.asc.md5" title="flyway-core-10.0.0-javadoc.jar.asc.md5">flyway-core-10.0.0-javadoc.jar.asc.md5</a>            2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0-javadoc.jar.asc.sha1" title="flyway-core-10.0.0-javadoc.jar.asc.sha1">flyway-core-10.0.0-javadoc.jar.asc.sha1</a>           2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0-javadoc.jar.md5" title="flyway-core-10.0.0-javadoc.jar.md5">flyway-core-10.0.0-javadoc.jar.md5</a>                2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0-javadoc.jar.sha1" title="flyway-core-10.0.0-javadoc.jar.sha1">flyway-core-10.0.0-javadoc.jar.sha1</a>               2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0-sources.jar" title="flyway-core-10.0.0-sources.jar">flyway-core-10.0.0-sources.jar</a>                    2023-10-31 13:22    668260      
+<a href="flyway-core-10.0.0-sources.jar.asc" title="flyway-core-10.0.0-sources.jar.asc">flyway-core-10.0.0-sources.jar.asc</a>                2023-10-31 13:22       488      
+<a href="flyway-core-10.0.0-sources.jar.asc.md5" title="flyway-core-10.0.0-sources.jar.asc.md5">flyway-core-10.0.0-sources.jar.asc.md5</a>            2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0-sources.jar.asc.sha1" title="flyway-core-10.0.0-sources.jar.asc.sha1">flyway-core-10.0.0-sources.jar.asc.sha1</a>           2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0-sources.jar.md5" title="flyway-core-10.0.0-sources.jar.md5">flyway-core-10.0.0-sources.jar.md5</a>                2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0-sources.jar.sha1" title="flyway-core-10.0.0-sources.jar.sha1">flyway-core-10.0.0-sources.jar.sha1</a>               2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0.jar" title="flyway-core-10.0.0.jar">flyway-core-10.0.0.jar</a>                            2023-10-31 13:22    781255      
+<a href="flyway-core-10.0.0.jar.asc" title="flyway-core-10.0.0.jar.asc">flyway-core-10.0.0.jar.asc</a>                        2023-10-31 13:22       488      
+<a href="flyway-core-10.0.0.jar.asc.md5" title="flyway-core-10.0.0.jar.asc.md5">flyway-core-10.0.0.jar.asc.md5</a>                    2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0.jar.asc.sha1" title="flyway-core-10.0.0.jar.asc.sha1">flyway-core-10.0.0.jar.asc.sha1</a>                   2023-10-31 13:22        40      
+<a href="flyway-core-10.0.0.jar.md5" title="flyway-core-10.0.0.jar.md5">flyway-core-10.0.0.jar.md5</a>                        2023-10-31 13:22        32      
+<a href="flyway-core-10.0.0.jar.sha1" title="flyway-core-10.0.0.jar.sha1">flyway-core-10.0.0.jar.sha1</a>                       2023-10-31 13:22        40      
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-parent/10.0.0/flyway-parent-10.0.0.pom | sed -n '1,140p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+<!--
+
+    Copyright (C) Red Gate Software Ltd 2010-2023
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--
+    Detailed information how to contribute: https://documentation.red-gate.com/fd/code-184127557.html
+
+    To build the OS-specific flyway-commandline assemblies you can run the build with one of the following commands:
+    mvn clean install -Pbuild-assemblies-windows
+    mvn clean install -Pbuild-assemblies-linux
+    mvn clean install -Pbuild-assemblies-mac
+    mvn clean install -Pbuild-assemblies-mac-arm64
+    mvn clean install -Pbuild-assemblies-no-jre
+    -->
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-parent</artifactId>
+    <version>10.0.0</version>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <description>Flyway: Database Migrations Made Easy.</description>
+    <url>https://flywaydb.org</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://flywaydb.org/licenses/flyway-oss</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+
+        <url>https://github.com/flyway/flyway</url>
+        <connection>scm:git:git@github.com:flyway/flyway.git</connection>
+        <developerConnection>scm:git:git@github.com:flyway/flyway.git</developerConnection>
+
+
+
+
+
+
+        <tag>HEAD</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>flyway</id>
+            <url>https://flywaydb.org/</url>
+            <organization>Redgate Software</organization>
+            <organizationUrl>https://www.red-gate.com/</organizationUrl>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>flyway-core</module>
+        <module>flyway-community-db-support</module>
+        <module>flyway-gradle-plugin</module>
+        <module>flyway-maven-plugin</module>
+        <module>flyway-commandline</module>
+        <module>flyway-database</module>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </modules>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>${snapshotRepository.id}</id>
+            <name>${snapshotRepository.name}</name>
+            <url>${snapshotRepository.url}</url>
+        </snapshotRepository>
+        <repository>
+            <id>${releaseRepository.id}</id>
+            <name>${releaseRepository.name}</name>
+            <url>${releaseRepository.url}</url>
+        </repository>
+    </distributionManagement>
+
+    <repositories>
+
+
+
+
+
+
+
+        <repository>
+            <id>maven-central</id>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+
+        <repository>
+            <id>repo.gradle.org</id>
+            <url>https://repo.gradle.org/gradle/libs-releases-local/</url>
+        </repository>
+        <repository>
+            <id>flyway-repo</id>
+            <url>https://nexus.flywaydb.org/repository/flyway/</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <version.ant>1.10.13</version.ant>
+        <version.appinsights>3.4.7</version.appinsights>
+        <version.aws-java-sdk>[2.20.162,2.21.0)</version.aws-java-sdk>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/flyway/flyway/tree/flyway-10.0.0/documentation' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/flyway/flyway/tree/flyway-10.0.0/flyway-core/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/flyway/flyway' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ exited 22 in 405ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 05:26:47 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=boXThSgbrz0gf8lIgiCxo0uI8AqBSXNXPNNZryiaOZSifyGj9zkWpXX26nH3mp6oMSqGHQ98AQogoSBjPl1HG0UUF1VhM%2FTxPanI1VGfB7pPPF4Wmnkljvg1a7TcG3dEfUeD5BbowByyh4Tp9pblsYFdgfFJnL9vzgD4psLuqns3eG3vDK%2BYZvjmPoNMROBmAKVVcvXc5S0vvJe9UB7U9e2w6d6xHF%2FmDjiHUL%2BmMVB4MY%2FaTSPWMbNjbyJ4NoQxIpsgEnROHE3FW5JQ6MMCUA%3D%3D--ce8Ze9JiyS1tsRog--5%2FVjxFGwrLfUHj%2BOBiHlmg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.640260891.1777786007; expires=Mon, 03 May 2027 05:26:47 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:26:47 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:79934:8F5428:7070A5:69F6DC97
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 508ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:26:48 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"854dc56b326559ebee92c64a50640241"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kKpq3rNaa0dxDgpAl0FK66sYxyKMq6dleYOD4ph%2FVvUJOo7lTcISOqiSu9aAaPKUwaTTkNwmwmLNRWosaBlgpgb7kD6yoQIE%2FW2tHABYaQnsUUpECPSYfSUc6BszcOSwgHGW%2BsYtrFKbuysHP%2B66jQGUnnAC2xy%2FGBEuDtj5wpGjIQdQn4gprdRdMCnzv4R0jn0PqLHJrtFDE8vI79voxX7Ji0PXYmaYf0kqQ%2FkrgSLckp2Bn%2FNA4NqVmZvrCD0%2FA8S7MjWVP6x8%2BcDxvhBzWA%3D%3D--L1zCdDff8elo9J6g--4559j28rc0w3wC4T%2FUjCLA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1492636479.1777786007; expires=Mon, 03 May 2027 05:26:47 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:26:47 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5112:17BC2E:8BB07F:6D8529:69F6DC97
+
+
+ succeeded in 522ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:26:48 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"9463bc48a7c20850cf0dcab71bd3cc94"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=t%2BLYw%2F6MqVPYCNnJqp%2FfawIFIpPGsmSSrkw%2Ftj0IulZsqRx73jeNSNqU8IAM4Ka%2BQzEXSNxRmuZ0NFd4i3LdkMBO3pgkxdCsVRYCs8NHRLt5w5F8CBcjF8gfzprV7H8aPns84hGEOxGgHgOHWShLfbTg02bZjJHSC5hSK14muOlzRYK3NofJIkcaj2PfVNkPS9GgdP2RT4Aqok5gIWZ8NKYQDuUaGy0bzRf60ocVNjWiclOxVAfgn2X3HGRfDgxXwuIb%2BCPAFjGUONpx66i%2FAg%3D%3D--NDrmpYRU%2Bn%2FSQ55g--QkHRrL1Z5EvjBo9XCqYT8A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1750050740.1777786007; expires=Mon, 03 May 2027 05:26:47 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:26:47 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5113:438C9:8F13E0:704686:69F6DC97
+
+
+codex
+I’m going to write the discovered metadata now: Maven Central for sources, the Flyway repository root, tagged Flyway docs, and `N/A` for tests because neither Maven nor the 10.0.0 `flyway-core` tree exposes a test suite path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+{
+  "coordinates": "org.flywaydb:flyway-core:10.0.0",
+  "repository-url": "https://github.com/flyway/flyway",
+  "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+  "description": "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+ succeeded in 126ms:
+web search: 
+web search: repo1.maven.org maven2 org flywaydb flyway-core 10.0.0 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/
+codex
+Updated [org.flywaydb-flyway-core-10.0.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json).
+
+I used the Maven Central sources artifact, the Flyway GitHub repository root, tagged GitHub documentation, and `N/A` for tests because Maven Central lists the jar/sources/javadoc artifacts but no test artifact for `10.0.0`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/)) I left `language` absent and did not set `not-for-native-image`, since this is a JVM jar artifact rather than Kotlin/Groovy/Scala-specific or a non-JVM artifact. Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+index d18614b969d2b41227b5f0a9a379c4f20799ebfa..8bdaa3589f8baba6504162d6db9f713f1679b089
+--- a/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
++++ b/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.flywaydb:flyway-core:10.0.0"
++  "coordinates" : "org.flywaydb:flyway-core:10.0.0",
++  "repository-url" : "https://github.com/flyway/flyway",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
++  "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases."
+ }
+
+tokens used
+72,624
+Updated [org.flywaydb-flyway-core-10.0.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d/build/discovered-artifact-metadata/org.flywaydb-flyway-core-10.0.0.json).
+
+I used the Maven Central sources artifact, the Flyway GitHub repository root, tagged GitHub documentation, and `N/A` for tests because Maven Central lists the jar/sources/javadoc artifacts but no test artifact for `10.0.0`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.0.0/)) I left `language` absent and did not set `not-for-native-image`, since this is a JVM jar artifact rather than Kotlin/Groovy/Scala-specific or a non-JVM artifact. Validated the JSON with `jq`.
+Ran agent for org.flywaydb:flyway-core:10.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d/build/agent-artifact-discovery-logs/org.flywaydb-flyway-core-10.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/424-1a3a006d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 30s
+9 actionable tasks: 4 executed, 5 from cache
