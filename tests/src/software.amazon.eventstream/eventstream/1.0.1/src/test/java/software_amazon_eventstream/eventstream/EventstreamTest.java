@@ -171,6 +171,52 @@ public class EventstreamTest {
     }
 
     @Test
+    void headerEncodingAcceptsEventStreamBoundarySizedNamesStringsAndByteArrays() {
+        String maximumName = "n".repeat(255);
+        String maximumString = "s".repeat(32_767);
+        byte[] maximumBytes = new byte[32_767];
+        Arrays.fill(maximumBytes, (byte) 0x5a);
+        Map<String, HeaderValue> headers = new LinkedHashMap<>();
+        headers.put(maximumName, HeaderValue.fromString("name-limit"));
+        headers.put("max-string", HeaderValue.fromString(maximumString));
+        headers.put("max-bytes", HeaderValue.fromByteArray(maximumBytes));
+
+        Message decoded = Message.decode(new Message(headers, new byte[0]).toByteBuffer());
+
+        assertThat(decoded.getHeaders().get(maximumName).getString()).isEqualTo("name-limit");
+        assertThat(decoded.getHeaders().get("max-string").getString()).isEqualTo(maximumString);
+        assertThat(decoded.getHeaders().get("max-bytes").getByteArray()).containsExactly(maximumBytes);
+    }
+
+    @Test
+    void headerEncodingRejectsNamesStringsAndByteArraysOutsideEventStreamBounds() {
+        HeaderValue validValue = HeaderValue.fromString("ok");
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new Message(Map.of("", validValue), new byte[0]).toByteBuffer())
+                .withMessageContaining("Strings may not be empty");
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new Message(Map.of("n".repeat(256), validValue), new byte[0]).toByteBuffer())
+                .withMessageContaining("Illegal string length");
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new Message(Map.of("empty-string", HeaderValue.fromString("")), new byte[0])
+                        .toByteBuffer())
+                .withMessageContaining("Strings may not be empty");
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new Message(Map.of("long-string", HeaderValue.fromString("s".repeat(32_768))),
+                        new byte[0]).toByteBuffer())
+                .withMessageContaining("Illegal string length");
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new Message(Map.of("empty-bytes", HeaderValue.fromByteArray(new byte[0])),
+                        new byte[0]).toByteBuffer())
+                .withMessageContaining("Byte arrays may not be empty");
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new Message(Map.of("long-bytes", HeaderValue.fromByteArray(new byte[32_768])),
+                        new byte[0]).toByteBuffer())
+                .withMessageContaining("Illegal byte array length");
+    }
+
+    @Test
     void decodeHonorsCurrentByteBufferPositionAndAdvancesToMessageEnd() {
         Message message = new Message(Map.of("offset", HeaderValue.fromLong(55L)), new byte[] {1, 3, 5});
         byte[] encoded = toBytes(message.toByteBuffer());
