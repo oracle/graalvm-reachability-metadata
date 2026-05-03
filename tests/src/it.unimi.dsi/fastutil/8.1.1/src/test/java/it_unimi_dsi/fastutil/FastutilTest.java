@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
 import it.unimi.dsi.fastutil.ints.IntArrayFIFOQueue;
+import it.unimi.dsi.fastutil.ints.IntArrayFrontCodedList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntBidirectionalIterator;
@@ -37,6 +38,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -318,6 +320,31 @@ public class FastutilTest {
         IntList unmodifiable = IntLists.unmodifiable(new IntArrayList(new int[] {7, 8}));
         assertThat(unmodifiable.toIntArray()).containsExactly(7, 8);
         assertThatThrownBy(() -> unmodifiable.add(9)).isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void frontCodedListsStoreSharedPrimitiveArrayPrefixesAndIterateByIndex() {
+        IntArrayFrontCodedList sequences = new IntArrayFrontCodedList(Arrays.asList(
+                new int[] {1, 2, 3, 4},
+                new int[] {1, 2, 3, 5},
+                new int[] {1, 2, 4, 0, 9},
+                new int[] {8, 13}), 2);
+
+        assertThat(sequences.size()).isEqualTo(4);
+        assertThat(sequences.ratio()).isEqualTo(2);
+        assertThat(sequences.arrayLength(2)).isEqualTo(5);
+        assertThat(sequences.getArray(0)).containsExactly(1, 2, 3, 4);
+        assertThat(sequences.get(3)).containsExactly(8, 13);
+
+        ObjectListIterator<int[]> iterator = sequences.listIterator(1);
+        assertThat(iterator.next()).containsExactly(1, 2, 3, 5);
+        assertThat(iterator.next()).containsExactly(1, 2, 4, 0, 9);
+        assertThat(iterator.previous()).containsExactly(1, 2, 4, 0, 9);
+        assertThat(iterator.previous()).containsExactly(1, 2, 3, 5);
+
+        IntArrayFrontCodedList clone = sequences.clone();
+        assertThat(clone.size()).isEqualTo(sequences.size());
+        assertThat(clone.get(2)).containsExactly(1, 2, 4, 0, 9);
     }
 
     @Test
