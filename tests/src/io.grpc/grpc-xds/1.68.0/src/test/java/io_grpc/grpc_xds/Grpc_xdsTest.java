@@ -7,6 +7,7 @@
 package io_grpc.grpc_xds;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Supplier;
@@ -18,6 +19,7 @@ import io.grpc.InsecureServerCredentials;
 import io.grpc.LoadBalancerProvider;
 import io.grpc.MethodDescriptor;
 import io.grpc.NameResolver.ConfigOrError;
+import io.grpc.Server;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.Status;
 import io.grpc.services.MetricRecorder;
@@ -35,6 +37,8 @@ import io.grpc.xds.WeightedTargetLoadBalancerProvider;
 import io.grpc.xds.WrrLocalityLoadBalancerProvider;
 import io.grpc.xds.XdsChannelCredentials;
 import io.grpc.xds.XdsNameResolverProvider;
+import io.grpc.xds.XdsServerBuilder;
+import io.grpc.xds.XdsServerBuilder.XdsServingStatusListener;
 import io.grpc.xds.XdsServerCredentials;
 import io.grpc.xds.client.Bootstrapper.AuthorityInfo;
 import io.grpc.xds.client.Bootstrapper.BootstrapInfo;
@@ -81,6 +85,8 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 public class Grpc_xdsTest {
@@ -174,6 +180,52 @@ public class Grpc_xdsTest {
             assertThat(OrcaPerRequestUtil.getInstance().newOrcaClientStreamTracerFactory(report -> { })).isNotNull();
         } finally {
             executor.shutdownNow();
+        }
+    }
+
+    @Test
+    void xdsServerBuilderCreatesConfiguredServerAndEnforcesSingleUse() {
+        assertThatThrownBy(() -> XdsServerBuilder.forPort(0))
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessageContaining("use forPort(int, ServerCredentials)");
+
+        XdsServerBuilder invalidBuilder = XdsServerBuilder.forPort(
+                0, XdsServerCredentials.create(InsecureServerCredentials.create()));
+        assertThatThrownBy(() -> invalidBuilder.drainGraceTime(-1L, TimeUnit.SECONDS))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("drain grace time must be non-negative");
+
+        AtomicBoolean serving = new AtomicBoolean();
+        AtomicReference<Throwable> notServingCause = new AtomicReference<>();
+        XdsServingStatusListener listener = new XdsServingStatusListener() {
+            @Override
+            public void onServing() {
+                serving.set(true);
+            }
+
+            @Override
+            public void onNotServing(Throwable cause) {
+                notServingCause.set(cause);
+            }
+        };
+        XdsServerBuilder builder = XdsServerBuilder.forPort(
+                        0, XdsServerCredentials.create(InsecureServerCredentials.create()))
+                .drainGraceTime(50L, TimeUnit.MILLISECONDS)
+                .xdsServingStatusListener(listener);
+
+        builder.addService(() -> ServerServiceDefinition.builder("reachability.XdsServerBuilderService").build());
+        assertThat(builder.transportBuilder()).isNotNull();
+
+        Server server = builder.build();
+        try {
+            assertThat(server).isNotNull();
+            assertThat(serving.get()).isFalse();
+            assertThat(notServingCause.get()).isNull();
+            assertThatThrownBy(builder::build)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("Server already built");
+        } finally {
+            server.shutdownNow();
         }
     }
 
