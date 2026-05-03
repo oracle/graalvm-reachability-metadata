@@ -1,0 +1,1117 @@
+Starting a Gradle Daemon, 2 busy and 5 incompatible and 72 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019def0a-5f6a-7da0-b214-1216b6f19370
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.clickhouse:clickhouse-data:0.9.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "0.9.0" when "$version$" is replaced with "0.9.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+- Set "coordinates" to "com.clickhouse:clickhouse-data:0.9.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.9.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and the upstream project tags, then update the JSON in place with URLs that resolve for `0.9.0`.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 0ms:
+{
+  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.clickhouse-clickhouse-data-0\\.9\\.0\\.json"'$'"'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+
+exec
+/usr/bin/bash -lc "rg -n 'clickhouse-data|com.clickhouse' metadata tests build/discovered-artifact-metadata -g '*.json' -g '*.java' -g '*.toml'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json:2:  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0"
+metadata/com.clickhouse/org.roaringbitmap/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/org.roaringbitmap/$version$/org.roaringbitmap-$version$-sources.jar",
+metadata/com.clickhouse/org.roaringbitmap/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/org.roaringbitmap/$version$/org.roaringbitmap-$version$-javadoc.jar",
+tests/src/com.clickhouse/org.roaringbitmap/1.9.2/src/test/java/com_clickhouse/org_roaringbitmap/Org_roaringbitmapTest.java:7:package com_clickhouse.org_roaringbitmap;
+
+web search: 
+web search: com.clickhouse clickhouse-data 0.9.0 Maven POM repository url scm tag
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/
+web search: 
+web search: https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/
+web search: 
+web search: 
+codex
+Maven Central has the artifact JAR, sources JAR, and javadoc JAR for `0.9.0`; I’m checking the POM and upstream tag now to avoid guessing the repository path.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0.jar -o /tmp/clickhouse-data-0.9.0.jar && jar tf /tmp/clickhouse-data-0.9.0.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-sources.jar -o /tmp/clickhouse-data-0.9.0-sources.jar && jar tf /tmp/clickhouse-data-0.9.0-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 119ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/versions/
+META-INF/versions/11/
+META-INF/versions/11/com/
+META-INF/versions/11/com/clickhouse/
+META-INF/versions/11/com/clickhouse/data/
+META-INF/native-image/
+META-INF/native-image/com.clickhouse/
+META-INF/native-image/com.clickhouse/clickhouse-data/
+com/
+com/clickhouse/
+com/clickhouse/logging/
+com/clickhouse/data/
+com/clickhouse/data/cache/
+com/clickhouse/data/format/
+com/clickhouse/data/format/tsv/
+com/clickhouse/data/value/
+com/clickhouse/data/value/array/
+com/clickhouse/data/compress/
+com/clickhouse/data/stream/
+com/clickhouse/data/mapper/
+com/clickhouse/config/
+META-INF/versions/11/com/clickhouse/data/ByteUtils.class
+META-INF/native-image/com.clickhouse/clickhouse-data/native-image.properties
+com/clickhouse/logging/package-info.class
+com/clickhouse/logging/JdkLoggerFactory.class
+com/clickhouse/logging/Logger.class
+com/clickhouse/logging/Slf4jLogger.class
+com/clickhouse/logging/LogMessage.class
+com/clickhouse/logging/JdkLogger.class
+com/clickhouse/logging/LoggerFactory.class
+com/clickhouse/logging/Slf4jLoggerFactory.class
+com/clickhouse/data/ClickHouseDeserializer.class
+com/clickhouse/data/ClickHouseUtils.class
+com/clickhouse/data/ClickHouseDataType$IntervalKind.class
+com/clickhouse/data/ClickHouseChecker.class
+com/clickhouse/data/cache/JdkLruCache.class
+com/clickhouse/data/cache/JdkLruCache$LruCacheMap.class
+com/clickhouse/data/cache/CaffeineCache.class
+com/clickhouse/data/ClickHouseDataType.class
+com/clickhouse/data/ClickHouseByteBuffer.class
+com/clickhouse/data/ClickHouseColumn$DefaultValue.class
+com/clickhouse/data/ClickHouseExternalTable$Builder.class
+com/clickhouse/data/ClickHouseDataConfig$Wrapped.class
+com/clickhouse/data/ClickHouseDataProcessor$UseObjectConfig.class
+com/clickhouse/data/format/BinaryDataProcessor$DateSerDe.class
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor$TupleSerializer.class
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor$VariantSerializer.class
+com/clickhouse/data/format/ClickHouseTabSeparatedProcessor.class
+com/clickhouse/data/format/tsv/ByteFragment.class
+com/clickhouse/data/format/tsv/StreamSplitter.class
+com/clickhouse/data/format/tsv/package-info.class
+com/clickhouse/data/format/tsv/ArrayByteFragment.class
+com/clickhouse/data/format/tsv/FastByteArrayOutputStream.class
+com/clickhouse/data/format/tsv/FastByteArrayInputStream.class
+com/clickhouse/data/format/ClickHouseBinaryFormatProcessor.class
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor.class
+com/clickhouse/data/format/BinaryDataProcessor$Decimal128SerDe.class
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor$VariantDeserializer.class
+com/clickhouse/data/format/JsonStreamUtils.class
+com/clickhouse/data/format/BinaryDataProcessor$Decimal64SerDe.class
+com/clickhouse/data/format/BinaryDataProcessor$Decimal256SerDe.class
+com/clickhouse/data/format/TextDataProcessor$1.class
+com/clickhouse/data/format/BinaryDataProcessor$FixedBytesSerDe.class
+com/clickhouse/data/format/BinaryDataProcessor$DateTime32SerDe.class
+com/clickhouse/data/format/TextDataProcessor$TextSerDe.class
+com/clickhouse/data/format/TextDataProcessor.class
+com/clickhouse/data/format/BinaryDataProcessor$ArraySerializer.class
+com/clickhouse/data/format/BinaryDataProcessor$NullableSerializer.class
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor$NestedSerializer.class
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor$1.class
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor$BitmapSerDe.class
+com/clickhouse/data/format/BinaryDataProcessor$FixedStringSerDe.class
+com/clickhouse/data/format/BinaryDataProcessor$Date32SerDe.class
+com/clickhouse/data/format/BinaryStreamUtils.class
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor$MapSerializer.class
+com/clickhouse/data/format/BinaryDataProcessor$NullableDeserializer.class
+com/clickhouse/data/format/BinaryDataProcessor$ArrayDeserializer.class
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor$MapDeserializer.class
+
+ succeeded in 292ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.clickhouse</groupId>
+  <artifactId>clickhouse-data</artifactId>
+  <version>0.9.0</version>
+  <name>ClickHouse Data Processing Utilities</name>
+  <description>Data processing utilities for ClickHouse</description>
+  <url>https://github.com/ClickHouse/clickhouse-java/tree/main/clickhouse-data</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>zhicwu</id>
+      <name>Zhichun Wu</name>
+      <email>zhicwu@gmail.com</email>
+      <timezone>+8</timezone>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git@github.com:ClickHouse/clickhouse-java.git/clickhouse-data</connection>
+    <developerConnection>scm:git@github.com:ClickHouse/clickhouse-java.git/clickhouse-data</developerConnection>
+    <url>https://github.com/ClickHouse/clickhouse-java/clickhouse-data</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.clickhouse</groupId>
+      <artifactId>org.roaringbitmap</artifactId>
+      <version>1.9.2</version>
+      <scope>provided</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.27.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.github.luben</groupId>
+          <artifactId>zstd-jni</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.brotli</groupId>
+          <artifactId>dec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.tukaani</groupId>
+          <artifactId>xz</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.osgi</groupId>
+          <artifactId>org.osgi.core</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.17.1</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.16.1</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.16.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-text</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 477ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/clickhouse/
+com/clickhouse/logging/
+com/clickhouse/data/
+com/clickhouse/data/cache/
+com/clickhouse/data/format/
+com/clickhouse/data/format/tsv/
+com/clickhouse/data/value/
+com/clickhouse/data/value/array/
+com/clickhouse/data/compress/
+com/clickhouse/data/stream/
+com/clickhouse/data/mapper/
+com/clickhouse/config/
+META-INF/native-image/
+META-INF/native-image/com.clickhouse/
+META-INF/native-image/com.clickhouse/clickhouse-data/
+META-INF/maven/
+META-INF/maven/com.clickhouse/
+META-INF/maven/com.clickhouse/clickhouse-data/
+com/clickhouse/logging/Slf4jLoggerFactory.java
+com/clickhouse/logging/LoggerFactory.java
+com/clickhouse/logging/package-info.java
+com/clickhouse/logging/JdkLogger.java
+com/clickhouse/logging/LogMessage.java
+com/clickhouse/logging/JdkLoggerFactory.java
+com/clickhouse/logging/Slf4jLogger.java
+com/clickhouse/logging/Logger.java
+com/clickhouse/data/ClickHouseFreezableMap.java
+com/clickhouse/data/ClickHouseCityHash.java
+com/clickhouse/data/ClickHouseByteUtils.java
+com/clickhouse/data/ClickHouseDataStreamFactory.java
+com/clickhouse/data/cache/JdkLruCache.java
+com/clickhouse/data/cache/CaffeineCache.java
+com/clickhouse/data/ClickHouseDeserializer.java
+com/clickhouse/data/format/ClickHouseTabSeparatedProcessor.java
+com/clickhouse/data/format/ClickHouseRowBinaryProcessor.java
+com/clickhouse/data/format/tsv/FastByteArrayOutputStream.java
+com/clickhouse/data/format/tsv/StreamSplitter.java
+com/clickhouse/data/format/tsv/ByteFragment.java
+com/clickhouse/data/format/tsv/package-info.java
+com/clickhouse/data/format/tsv/FastByteArrayInputStream.java
+com/clickhouse/data/format/tsv/ArrayByteFragment.java
+com/clickhouse/data/format/BinaryDataProcessor.java
+com/clickhouse/data/format/TextDataProcessor.java
+com/clickhouse/data/format/JsonStreamUtils.java
+com/clickhouse/data/format/BinaryStreamUtils.java
+com/clickhouse/data/format/ClickHouseBinaryFormatProcessor.java
+com/clickhouse/data/value/ClickHouseGeoPointValue.java
+com/clickhouse/data/value/ClickHouseBigIntegerValue.java
+com/clickhouse/data/value/ClickHouseTupleValue.java
+com/clickhouse/data/value/ClickHouseBitmap.java
+com/clickhouse/data/value/ClickHouseGeoMultiPolygonValue.java
+com/clickhouse/data/value/ClickHouseGeoRingValue.java
+com/clickhouse/data/value/ClickHouseDateTimeValue.java
+com/clickhouse/data/value/ClickHouseUuidValue.java
+com/clickhouse/data/value/UnsignedLong.java
+com/clickhouse/data/value/ClickHouseEnumValue.java
+com/clickhouse/data/value/ClickHouseShortValue.java
+com/clickhouse/data/value/ClickHouseBigDecimalValue.java
+com/clickhouse/data/value/package-info.java
+com/clickhouse/data/value/ClickHouseByteValue.java
+com/clickhouse/data/value/ClickHouseObjectValue.java
+com/clickhouse/data/value/ClickHouseFloatValue.java
+com/clickhouse/data/value/ClickHouseBitmapValue.java
+com/clickhouse/data/value/ClickHouseBoolValue.java
+com/clickhouse/data/value/ClickHouseInstantValue.java
+com/clickhouse/data/value/ClickHouseGeoPolygonValue.java
+com/clickhouse/data/value/ClickHouseIntegerValue.java
+com/clickhouse/data/value/UnsignedInteger.java
+com/clickhouse/data/value/ClickHouseNestedValue.java
+com/clickhouse/data/value/ClickHouseLongValue.java
+com/clickhouse/data/value/UnsignedShort.java
+com/clickhouse/data/value/ClickHouseEmptyValue.java
+com/clickhouse/data/value/ClickHouseArrayValue.java
+com/clickhouse/data/value/ClickHouseDateValue.java
+com/clickhouse/data/value/ClickHouseIpv4Value.java
+com/clickhouse/data/value/ClickHouseDoubleValue.java
+com/clickhouse/data/value/ClickHouseStringValue.java
+com/clickhouse/data/value/array/ClickHouseBoolArrayValue.java
+com/clickhouse/data/value/array/ClickHouseByteArrayValue.java
+com/clickhouse/data/value/array/ClickHouseLongArrayValue.java
+com/clickhouse/data/value/array/ClickHouseFloatArrayValue.java
+com/clickhouse/data/value/array/ClickHouseShortArrayValue.java
+com/clickhouse/data/value/array/ClickHouseDoubleArrayValue.java
+com/clickhouse/data/value/array/ClickHouseIntArrayValue.java
+com/clickhouse/data/value/ClickHouseOffsetDateTimeValue.java
+com/clickhouse/data/value/ClickHouseMapValue.java
+com/clickhouse/data/value/UnsignedByte.java
+com/clickhouse/data/value/ClickHouseIpv6Value.java
+com/clickhouse/data/ClickHouseChecker.java
+com/clickhouse/data/ClickHouseAggregateFunction.java
+com/clickhouse/data/ClickHouseWriter.java
+com/clickhouse/data/ClickHouseEnum.java
+com/clickhouse/data/ClickHouseCompressionAlgorithm.java
+com/clickhouse/data/ClickHouseValues.java
+com/clickhouse/data/ClickHouseRecordMapper.java
+com/clickhouse/data/compress/DeflateSupport.java
+com/clickhouse/data/compress/XzSupport.java
+com/clickhouse/data/compress/BrotliSupport.java
+com/clickhouse/data/compress/ZstdSupport.java
+com/clickhouse/data/compress/Bz2Support.java
+com/clickhouse/data/compress/GzipSupport.java
+com/clickhouse/data/compress/Lz4Support.java
+com/clickhouse/data/compress/SnappySupport.java
+com/clickhouse/data/compress/NoneSupport.java
+com/clickhouse/data/ClickHouseThreadFactory.java
+com/clickhouse/data/ClickHouseArraySequence.java
+com/clickhouse/data/ClickHouseDataUpdater.java
+com/clickhouse/data/ClickHouseOutputStream.java
+com/clickhouse/data/ClickHouseDataConfig.java
+com/clickhouse/data/ClickHousePipedOutputStream.java
+com/clickhouse/data/ClickHouseStreamConfig.java
+com/clickhouse/data/stream/ByteArrayQueueInputStream.java
+com/clickhouse/data/stream/BlockingInputStream.java
+com/clickhouse/data/stream/Lz4InputStream.java
+com/clickhouse/data/stream/WrappedInputStream.java
+com/clickhouse/data/stream/WrappedOutputStream.java
+com/clickhouse/data/stream/AdaptiveQueue.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/ClickHouse/clickhouse-java/git/matching-refs/tags/ | rg '0\\.9\\.0|v0\\.9|clickhouse|name' -n" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 258ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/clickhouse/clickhouse-data/0.9.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/clickhouse/clickhouse-data/0.9.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="clickhouse-data-0.9.0-javadoc.jar" title="clickhouse-data-0.9.0-javadoc.jar">clickhouse-data-0.9.0-javadoc.jar</a>                 2025-06-12 03:22    912535      
+<a href="clickhouse-data-0.9.0-javadoc.jar.asc" title="clickhouse-data-0.9.0-javadoc.jar.asc">clickhouse-data-0.9.0-javadoc.jar.asc</a>             2025-06-12 03:22       488      
+<a href="clickhouse-data-0.9.0-javadoc.jar.md5" title="clickhouse-data-0.9.0-javadoc.jar.md5">clickhouse-data-0.9.0-javadoc.jar.md5</a>             2025-06-12 03:22        32      
+<a href="clickhouse-data-0.9.0-javadoc.jar.sha1" title="clickhouse-data-0.9.0-javadoc.jar.sha1">clickhouse-data-0.9.0-javadoc.jar.sha1</a>            2025-06-12 03:22        40      
+<a href="clickhouse-data-0.9.0-sources.jar" title="clickhouse-data-0.9.0-sources.jar">clickhouse-data-0.9.0-sources.jar</a>                 2025-06-12 03:22    272175      
+<a href="clickhouse-data-0.9.0-sources.jar.asc" title="clickhouse-data-0.9.0-sources.jar.asc">clickhouse-data-0.9.0-sources.jar.asc</a>             2025-06-12 03:22       488      
+<a href="clickhouse-data-0.9.0-sources.jar.md5" title="clickhouse-data-0.9.0-sources.jar.md5">clickhouse-data-0.9.0-sources.jar.md5</a>             2025-06-12 03:22        32      
+<a href="clickhouse-data-0.9.0-sources.jar.sha1" title="clickhouse-data-0.9.0-sources.jar.sha1">clickhouse-data-0.9.0-sources.jar.sha1</a>            2025-06-12 03:22        40      
+<a href="clickhouse-data-0.9.0.jar" title="clickhouse-data-0.9.0.jar">clickhouse-data-0.9.0.jar</a>                         2025-06-12 03:22    585629      
+<a href="clickhouse-data-0.9.0.jar.asc" title="clickhouse-data-0.9.0.jar.asc">clickhouse-data-0.9.0.jar.asc</a>                     2025-06-12 03:22       488      
+<a href="clickhouse-data-0.9.0.jar.md5" title="clickhouse-data-0.9.0.jar.md5">clickhouse-data-0.9.0.jar.md5</a>                     2025-06-12 03:22        32      
+<a href="clickhouse-data-0.9.0.jar.sha1" title="clickhouse-data-0.9.0.jar.sha1">clickhouse-data-0.9.0.jar.sha1</a>                    2025-06-12 03:22        40      
+<a href="clickhouse-data-0.9.0.pom" title="clickhouse-data-0.9.0.pom">clickhouse-data-0.9.0.pom</a>                         2025-06-12 03:22      3657      
+<a href="clickhouse-data-0.9.0.pom.asc" title="clickhouse-data-0.9.0.pom.asc">clickhouse-data-0.9.0.pom.asc</a>                     2025-06-12 03:22       488      
+<a href="clickhouse-data-0.9.0.pom.md5" title="clickhouse-data-0.9.0.pom.md5">clickhouse-data-0.9.0.pom.md5</a>                     2025-06-12 03:22        32      
+<a href="clickhouse-data-0.9.0.pom.sha1" title="clickhouse-data-0.9.0.pom.sha1">clickhouse-data-0.9.0.pom.sha1</a>                    2025-06-12 03:22        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 245ms:
+5:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/0.2.2",
+9:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/25f22dd1186f201e448382f1200431f3f52093f3"
+15:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/pre-commit",
+19:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/tags/94ade8559d8f036c03cbf4f1b76813dba2e8ca0b"
+25:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.13",
+29:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a57169195747e6ce029c1d5ab9243a569cbdb090"
+35:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.14",
+39:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/160d166092d39c365f527eb35935d14c632b6e77"
+45:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.15",
+49:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/f562bc81b6609a9b3838489bff4db064deffeaff"
+55:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.16",
+59:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/07afe06471e13fd2481f7e359bb2daa07d2e4edf"
+65:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.17",
+69:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/fbfa1d69ef019011836d679bbab7c3b2a08eb250"
+75:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.18",
+79:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/c9322beda229e37ca4010eb64e57d31a850eebd8"
+85:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.19",
+89:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5a1b31c2b95b6243659fde09c473738f592891ac"
+95:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.20",
+99:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1b8bcb77c3d88168a083377bde78d8144ef6658d"
+105:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.21",
+109:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/64b9f20e253cdf5dbaf0a1bc1fe0c6e871fb879c"
+115:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.22",
+119:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/0b5a6130e3455fce6b36220a4eb35b8f42811abb"
+125:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.23",
+129:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/09fdd96f9b63980ab73e00195600bce4f37f4159"
+135:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.24",
+139:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/fe1eeb5f53909902ffe43a0a389548d36473acfe"
+145:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.25",
+149:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/2e528b14b96fb064f3d6bbe8f79ea30e3b794fa7"
+155:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.26",
+159:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a54348c4ee22d58a44e789a77d69e39007cf7914"
+165:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.27",
+169:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/7d7d1b91c611d9102238e5912215486997da171c"
+175:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.28",
+179:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5c7b998386df93685778afb111f38a0f1b492d9f"
+185:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.29",
+189:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5f5cc1c92735d812df4447e861475083ff1fbd2f"
+195:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.30",
+199:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/2c2db09576fe48af88da32b53758488434c606be"
+205:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.31",
+209:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5e1532f9a5faf946c26ededa61042d7687ec95be"
+215:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.32",
+219:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a415bf2fb75f2d4c05c8cd9a384525803e1453be"
+225:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.33",
+229:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/779bc4dd0af8b80f0f339e8c7973c803a914de57"
+235:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.34",
+239:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/b36523d932db5864194bb0608078fa2beac6ad69"
+245:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.36",
+249:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/cd4f9ce25360a645222a2ce8a2fba78256888e6c"
+255:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.37",
+259:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/41afdd5d1625cca7334d7e2c1e85920759e6a73a"
+265:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.38",
+269:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3ceb77c29f4978891ad71f46b8fc403dec9385eb"
+275:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.39",
+279:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/585b3fdde070073287ab246d04b0b985055b0e18"
+285:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.40",
+289:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/043abd5c2b1c6829fbe401688b961151e60b469b"
+295:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.41",
+299:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/9b94fd48483153a034722d98f6bf803009f8f5c5"
+305:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.42",
+309:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/af2a24a130dcf5ce8b3ba8f2a37632629e4c6f80"
+315:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.43",
+319:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/7de16676b5be92510978b321e4d6e0a34686e5a8"
+325:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.44",
+329:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/d9547f0b8f8869c264fc00e83f2063f5a62e705f"
+335:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.45",
+339:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/74a52b2d1cf1f8b4b4f06e0f8d24d1b9bd655268"
+345:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.46",
+349:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3483b885bffa568a76ce0384870eb6d332d6bfe4"
+355:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.47",
+359:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/c56c0d7c1cf2ff51b416d4a94dec0f7d41492c32"
+365:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.48",
+369:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/188b1c1bec951a564349d03452ad0320aa22e09c"
+375:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.49",
+379:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/82480ecbad60689597ed0a156c8fdc2ff99533cc"
+385:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.50",
+389:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/d04fc7c278aee3f26cf5a509f7c8384a9e44ddad"
+395:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.51",
+399:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/8d3201979744632ea2b6259c78f886ecfad4fa86"
+405:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.52",
+409:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3135a689f4d1df76f1f612e3d65d0976207ff771"
+415:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.53",
+419:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/c1f175ab9555e405a8276fa70e39a84f76656d62"
+425:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.54",
+429:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/f420781b4b4b51605f1d94f1b58db6f5392a8ec6"
+435:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.55",
+439:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a480447d29dddd24594c9bf710a93f72f3baba08"
+445:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.2",
+449:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/ad7cd047dc81e44f27938fbaca72f1ffb4d37924"
+455:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.2.3",
+459:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/6a0c2bf848321904dda4450d6840a806e4297fb6"
+465:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.2.4",
+469:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/15916271617c7a23b080129a0fa254744fa2bb5b"
+475:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.2.5",
+479:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/66ccd8c2725902ef11143165a6b7c5c270adf738"
+485:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.2.6",
+489:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/d6acab2bc583568433383c1328dc151969fa05b9"
+495:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.0",
+499:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/549a62f180fbc21d30a6a0dbfed376013669d2f9"
+505:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.1",
+509:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/9b72c8afc3ead981bb62b998ff64280095ceb317"
+515:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.1-patch",
+519:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/537d7ece1c7dc8214b074b71da2a2971c6618771"
+525:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2",
+529:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/179527258d8456f10d9ea96512c0345500325eb5"
+535:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch1",
+539:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/75a6aa66c63dd389ccabd4b6ede125ef57986f8f"
+545:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch10",
+549:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/aebad1636b09b98ba8ace1791050160e0e8a48cd"
+555:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch11",
+559:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/27f8951cdc380bf1799f76efc21fc377fc6d5981"
+565:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch2",
+569:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/fbe7d71fdf9bae6df3cad4567c27d200a0f3e99f"
+575:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch3",
+579:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1f83b42860a6d4fe3364a410eb90dda002d97a1b"
+585:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch4",
+589:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/95b4807fcd9dda13f2be6611b655d95fd66c6efc"
+595:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch5",
+599:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3d921d444e7945859d674c736c2e3c3399ec6f02"
+605:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch6",
+609:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1d6257c51a1d5db0a4732441fc3c1c7dba7b5316"
+615:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch7",
+619:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/058596195ce1dc24fed2cf20a669459c8eec43d0"
+625:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch8",
+629:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/b76a2eefb97802eefe02f7cae83c591d285610d3"
+635:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch9",
+639:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/afa6cdd8c46d540e6b92188e2f108d8d34b2c1fa"
+645:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-test1",
+649:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/8a4aee2081607c032bdef671778e2e10e07e8026"
+655:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-test2",
+659:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/4acc1b3e6662625ce3ef8aa3337947a8337a177d"
+665:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-test3",
+669:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/48a6281ff348e5ca6ba80a3fdec6b9823ace905b"
+675:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.0",
+679:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3a53cf125350562b438d48f515e265e00b8e962e"
+685:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.1",
+689:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/4a6940b7de33c87e6ddc65de1c1aad258f3270fb"
+695:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.2",
+699:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1513b276a7171f031bf8bf7f6cce3cf36816e14e"
+705:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.3",
+709:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a1ef19615f97fd272a13b6bbba879733d81e0027"
+715:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.4",
+719:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/887b686fbf577121944760854c9044b1a7241e21"
+725:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.5",
+729:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/e369681c67d32f02c1e337642de220b7317bba46"
+735:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.6",
+739:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/dd91e1776b94a30e32fecf9c82354685295169a6"
+745:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.5.0",
+749:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/d3844444273ca391aa4a42decd5e325ff560ccc7"
+755:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.5.1-SNAPSHOT",
+759:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a930f6205bd810607c867ed4c19b1f95eac8e551"
+765:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0",
+769:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/cb8e198c7f1f0fcb8568f04690110dc23b40990a"
+775:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch1",
+779:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/c63a34d24742d840b0057dcaaeafc3ac0b5fa49e"
+785:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch2",
+789:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/be064396e02be2a6c482f122acd1eb02c8eca886"
+795:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch3",
+799:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/4c3e0ebb57391ce50c569de6cf09d84d880d27bd"
+805:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch4",
+809:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/6a4ffc4ae0b76a6f65a57ee0db3246d45fbc78c1"
+815:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch5",
+819:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/067ae0b0006174c46b6e79d445c179aa2ea94b96"
+825:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.1",
+829:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5be856ee40fd2c7ab75e50cfd906d30a0be9491f"
+835:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.2",
+839:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/287919a54b1e0c60c6b93910929cc1c0ec3161df"
+845:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.3",
+849:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a6a8a22a2727f32b40f1297f54255ea4846b48df"
+855:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.4",
+859:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/fc8d92e84305f978d9f8b08f28f81f4266261128"
+865:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.5",
+869:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/cbdbab0e2811ab6c27e9ddd01265a9e668e806ab"
+875:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.7.0",
+879:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a499238766df89e2e26a6d3cbf8d546d336e0df5"
+885:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.7.1",
+889:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3667f7d4f0db2dc641726d97533be1d8c8f09575"
+895:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.7.1-patch1",
+899:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/b704b9523592e473522eb416c241fc55f0e5f443"
+905:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.7.2",
+909:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/33b1fad03298947c4685b9eb536bdf2b286a26a7"
+915:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.0",
+919:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5b5ac2ee1ca1dfbb6687c3c65cc100aacd82c86e"
+925:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.1",
+929:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/25af97d2d0f3dddbed8251216673d3135ce5d945"
+935:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.2",
+939:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1414421a11bcf1d96c0ad6c38de863f732923242"
+945:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.3",
+949:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5758ec51f944dc1daaac4a85084346ee5f8e93bb"
+955:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.4",
+959:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/63be1b935cba4368d6e862fb54198829172a6dcb"
+965:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.5",
+969:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/547e3521c7b038c220ba06e13dde7dfb9f56a148"
+975:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.6",
+979:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/2d305b75e704146c2a515edf751a57c4350eaca0"
+983:    "ref": "refs/tags/v0.9.0",
+985:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.0",
+989:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/27ccb8e525670cb58aa808d31bb1cd7fb98afc3d"
+993:    "ref": "refs/tags/v0.9.1",
+995:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.1",
+999:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/9f19d829a92144d8e1c286679150fc2cc053989d"
+1003:    "ref": "refs/tags/v0.9.2",
+1005:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.2",
+1009:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/84c080b724fc75039954eccc0e22b664859a7146"
+1013:    "ref": "refs/tags/v0.9.3",
+1015:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.3",
+1019:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/cce8ddd7e9faaa32dd0ff6a9f16a05cb73fb8c71"
+1023:    "ref": "refs/tags/v0.9.4",
+1025:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.4",
+1029:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/39bd998120e034f3fb190551cbffee3fb7eb30a3"
+1033:    "ref": "refs/tags/v0.9.5",
+1035:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.5",
+1039:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/ae3a110b402a7a33498d888e8999fae692f3568c"
+1043:    "ref": "refs/tags/v0.9.6",
+1045:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.6",
+1049:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5777f5aea32cb079520dc505308c1c84d134585b"
+1053:    "ref": "refs/tags/v0.9.7",
+1055:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.7",
+1059:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/b1cc01e189e17c47a354d67f90ded34f809b1257"
+1063:    "ref": "refs/tags/v0.9.8",
+1065:    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.8",
+1069:      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/8a3e33a280cd6bcb0371c9281c01e94134db97d0"
+
+ succeeded in 409ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:12:30 GMT
+content-type: application/java-archive
+content-length: 912535
+cf-ray: 9f613bf929fd265f-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "6c75d11270f97d52340bf753b9c20be4"
+last-modified: Thu, 12 Jun 2025 03:22:26 GMT
+x-checksum-md5: 6c75d11270f97d52340bf753b9c20be4
+x-checksum-sha1: 441b6e4597d184887f67c5aae52cfe92a8c29044
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/ClickHouse/clickhouse-java/contents/clickhouse-data/src/test?ref=v0.9.0 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ClickHouse/clickhouse-java/v0.9.0/clickhouse-data/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 163ms:
+[
+  {
+    "name": "java",
+    "path": "clickhouse-data/src/test/java",
+    "sha": "e4cab2514801859cd6ced822dd74114ac81934fc",
+    "size": 0,
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/clickhouse-data/src/test/java?ref=v0.9.0",
+    "html_url": "https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-data/src/test/java",
+    "git_url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/e4cab2514801859cd6ced822dd74114ac81934fc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/clickhouse-data/src/test/java?ref=v0.9.0",
+      "git": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/e4cab2514801859cd6ced822dd74114ac81934fc",
+      "html": "https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-data/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "clickhouse-data/src/test/resources",
+    "sha": "113ab157ec3d889047bb4614fc14e1d54a75497d",
+    "size": 0,
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/clickhouse-data/src/test/resources?ref=v0.9.0",
+    "html_url": "https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-data/src/test/resources",
+    "git_url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/113ab157ec3d889047bb4614fc14e1d54a75497d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/clickhouse-data/src/test/resources?ref=v0.9.0",
+      "git": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/113ab157ec3d889047bb4614fc14e1d54a75497d",
+      "html": "https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-data/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 201ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.clickhouse</groupId>
+        <artifactId>clickhouse-java</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>clickhouse-data</artifactId>
+    <packaging>jar</packaging>
+
+    <name>ClickHouse Data Processing Utilities</name>
+    <description>Data processing utilities for ClickHouse</description>
+    <url>https://github.com/ClickHouse/clickhouse-java/tree/main/clickhouse-data</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>org.roaringbitmap</artifactId>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Compression -->
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${compress.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aayushatharva.brotli4j</groupId>
+            <artifactId>brotli4j</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.luben</groupId>
+            <artifactId>zstd-jni</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.brotli</groupId>
+            <artifactId>dec</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- other -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+<!--           for adaptive queue-->
+            <groupId>org.jctools</groupId>
+            <artifactId>jctools-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+<!--        Test containers -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <CHC_STR>env_str</CHC_STR>
+                        <CHC_INT>416</CHC_INT>
+                        <CHC_BOOL>false</CHC_BOOL>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+ succeeded in 224ms:
+curl: (22) The requestHTTP/2 404 
+date: Sun, 03 May 2026 18:12:40 GMT
+content-type: text/html
+cf-ray: 9f613c378c9f862a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+ed URL returned error: 404
+
+ succeeded in 289ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 18:12:40 GMT
+content-type: text/html
+cf-ray: 9f613c377e142ff1-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The artifact is a regular JVM JAR with class files and native-image metadata, so I’ll leave the `not-for-native-image` fields absent. There is no Maven tests JAR/test-sources JAR, so the test URL will use the `v$version$` tag in the upstream repository.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+index 3d32524d5984b93937fc4bbe838b8a45d8357d51..e63ccb56ef8274c33ae7f2580db1de66258e0562
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-data/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-javadoc.jar",
++  "description" : "ClickHouse Data provides core Java utilities for ClickHouse client libraries, including type modeling, value classes, serialization, compression, and data stream handling. It supports reading and writing ClickHouse data formats such as RowBinary and tab-separated formats for JVM applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+index 3d32524d5984b93937fc4bbe838b8a45d8357d51..e63ccb56ef8274c33ae7f2580db1de66258e0562
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-data/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-javadoc.jar",
++  "description" : "ClickHouse Data provides core Java utilities for ClickHouse client libraries, including type modeling, value classes, serialization, compression, and data stream handling. It supports reading and writing ClickHouse data formats such as RowBinary and tab-separated formats for JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 0ms:
+{
+  "coordinates": "com.clickhouse:clickhouse-data:0.9.0",
+  "repository-url": "https://github.com/ClickHouse/clickhouse-java",
+  "source-code-url": "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-sources.jar",
+  "test-code-url": "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-data/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-javadoc.jar",
+  "description": "ClickHouse Data provides core Java utilities for ClickHouse client libraries, including type modeling, value classes, serialization, compression, and data stream handling. It supports reading and writing ClickHouse data formats such as RowBinary and tab-separated formats for JVM applications."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:12:50 GMT
+content-type: application/java-archive
+content-length: 912535
+cf-ray: 9f613c760b38cb74-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 19
+etag: "6c75d11270f97d52340bf753b9c20be4"
+last-modified: Thu, 12 Jun 2025 03:22:26 GMT
+x-checksum-md5: 6c75d11270f97d52340bf753b9c20be4
+x-checksum-sha1: 441b6e4597d184887f67c5aae52cfe92a8c29044
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/0.9.0/clickhouse-data-0.9.0-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:12:50 GMT
+content-type: application/java-archive
+content-length: 272175
+cf-ray: 9f613c760c372830-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 25
+etag: "95b24fb139318326b0d2081ded348394"
+last-modified: Thu, 12 Jun 2025 03:22:25 GMT
+x-checksum-md5: 95b24fb139318326b0d2081ded348394
+x-checksum-sha1: 0afe315d9ca8c71f5eaee6f8c8a26760c8cdb491
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://github.com/ClickHouse/clickhouse-java/tree/v0.9.0/clickhouse-data/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+index 3d32524d5984b93937fc4bbe838b8a45d8357d51..e63ccb56ef8274c33ae7f2580db1de66258e0562
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-data/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-javadoc.jar",
++  "description" : "ClickHouse Data provides core Java utilities for ClickHouse client libraries, including type modeling, value classes, serialization, compression, and data stream handling. It supports reading and writing ClickHouse data formats such as RowBinary and tab-separated formats for JVM applications."
+ }
+
+ succeeded in 533ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:12:50 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ab82fe3ffd80a525d577bd1b34150e99"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=txfLvhZm29vnXwxde0QRs1dxj%2F1TWpMnlCEiyHMcjp0j2mImN5PggKX7XxMkDkL3ygo28izsd2pIp67GMD6RvZf1AOGnJObH4pq32CaiS5dlaGwc9yMoPxbApojoLo5Zi1pMMhkLra5XRTht9wn5oYH9OzoQmr%2B9%2B5wFdfNl%2Fvb2CRAT18tdCeA3OnxzE2ps2JwTuu7wFhWDpCw4z75H5a11VEfg8xW%2F6sYPCBahBP3O5jLLmhWjltYszgiylwkR6sngpzvO6oa9XFZ%2BIz7d%2FA%3D%3D--X6JyC3L17p3uraXC--0PGa85cJO9Jg%2FbpDA6M0Bw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.764447644.1777831970; expires=Mon, 03 May 2027 18:12:50 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:12:50 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5116:CCC67:7F02D5A:5E2175C:69F79022
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+index 3d32524d5984b93937fc4bbe838b8a45d8357d51..e63ccb56ef8274c33ae7f2580db1de66258e0562
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-data/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-javadoc.jar",
++  "description" : "ClickHouse Data provides core Java utilities for ClickHouse client libraries, including type modeling, value classes, serialization, compression, and data stream handling. It supports reading and writing ClickHouse data formats such as RowBinary and tab-separated formats for JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json && git status --short --ignored build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+index 3d32524d5984b93937fc4bbe838b8a45d8357d51..e63ccb56ef8274c33ae7f2580db1de66258e0562
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-data/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-javadoc.jar",
++  "description" : "ClickHouse Data provides core Java utilities for ClickHouse client libraries, including type modeling, value classes, serialization, compression, and data stream handling. It supports reading and writing ClickHouse data formats such as RowBinary and tab-separated formats for JVM applications."
+ }
+
+ succeeded in 130ms:
+!! build/
+
+codex
+Updated [com.clickhouse-clickhouse-data-0.9.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json).
+
+I verified the Maven sources and javadoc JARs resolve for `0.9.0`, confirmed the GitHub `v0.9.0` test tree exists, and validated the JSON with `jq`. I left `language` absent because this is a Java/JVM artifact, and left `not-for-native-image` absent because the artifact contains JVM class files and native-image metadata.
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+index 3d32524d5984b93937fc4bbe838b8a45d8357d51..e63ccb56ef8274c33ae7f2580db1de66258e0562
+--- a/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0"
++  "coordinates" : "com.clickhouse:clickhouse-data:0.9.0",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ClickHouse/clickhouse-java/tree/v$version$/clickhouse-data/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/clickhouse/clickhouse-data/$version$/clickhouse-data-$version$-javadoc.jar",
++  "description" : "ClickHouse Data provides core Java utilities for ClickHouse client libraries, including type modeling, value classes, serialization, compression, and data stream handling. It supports reading and writing ClickHouse data formats such as RowBinary and tab-separated formats for JVM applications."
+ }
+
+tokens used
+49,583
+Updated [com.clickhouse-clickhouse-data-0.9.0.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1/build/discovered-artifact-metadata/com.clickhouse-clickhouse-data-0.9.0.json).
+
+I verified the Maven sources and javadoc JARs resolve for `0.9.0`, confirmed the GitHub `v0.9.0` test tree exists, and validated the JSON with `jq`. I left `language` absent because this is a Java/JVM artifact, and left `not-for-native-image` absent because the artifact contains JVM class files and native-image metadata.
+Ran agent for com.clickhouse:clickhouse-data:0.9.0 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1/build/agent-artifact-discovery-logs/com.clickhouse-clickhouse-data-0.9.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4750-2dd266a1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 56s
+9 actionable tasks: 4 executed, 5 from cache
