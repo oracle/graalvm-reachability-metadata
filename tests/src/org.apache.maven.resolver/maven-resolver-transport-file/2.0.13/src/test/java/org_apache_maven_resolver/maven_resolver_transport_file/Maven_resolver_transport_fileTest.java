@@ -162,6 +162,31 @@ public class Maven_resolver_transport_fileTest {
     }
 
     @Test
+    void linkRepositoryUrlReadsContentIntoMemoryWhenNoTargetFileIsProvided() throws Exception {
+        String content = "in-memory linked artifact";
+        byte[] data = content.getBytes(StandardCharsets.UTF_8);
+        Path repositoryBase = temporaryDirectory.resolve("repository");
+        Path artifact = repositoryBase.resolve(ARTIFACT_URI.getPath());
+        Files.createDirectories(artifact.getParent());
+        Files.write(artifact, data);
+
+        Transporter transporter = newTransporter("hardlink", "hardlink+" + repositoryBase.toUri().toASCIIString());
+        try {
+            RecordingTransportListener listener = new RecordingTransportListener();
+            GetTask getTask = new GetTask(ARTIFACT_URI).setListener(listener);
+            transporter.get(getTask);
+
+            assertThat(getTask.getDataString()).isEqualTo(content);
+            assertThat(getTask.getDataBytes()).containsExactly(data);
+            assertThat(listener.startedOffset).isZero();
+            assertThat(listener.startedLength).isEqualTo(data.length);
+            assertThat(listener.progressedBytes).isEqualTo(data.length);
+        } finally {
+            transporter.close();
+        }
+    }
+
+    @Test
     void symlinkRepositoryUrlCanMaterializeDownloadedFilesAsSymbolicLinks() throws Exception {
         byte[] data = "symbolic artifact".getBytes(StandardCharsets.UTF_8);
         Path repositoryBase = temporaryDirectory.resolve("repository");
