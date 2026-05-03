@@ -22,6 +22,7 @@ case class Many(
     label: String = "many")
     extends TestTree
 case class Special(child: TestTree, weight: Int, name: String) extends TestTree
+case class Box(child: TestTree, width: Int, height: Int, label: String) extends TestTree
 
 class Macro_visit_3Test {
   @Test
@@ -79,6 +80,18 @@ class Macro_visit_3Test {
       ),
       transformed
     )
+  }
+
+  @Test
+  def visitAnyFieldTransformsAllMatchingFieldsWithoutFieldNames(): Unit = {
+    val root: TestTree = Box(Leaf(1), width = 2, height = 3, label = "wide")
+
+    val transformed: TestTree = visit[TestTree](
+      root,
+      VisitAnyField[Box, Int]((box, value) => Transform(value + box.label.length))
+    )
+
+    assertEquals(Box(Leaf(1), width = 6, height = 7, label = "wide"), transformed)
   }
 
   @Test
