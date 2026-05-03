@@ -47,6 +47,36 @@ public class HpackTest {
     }
 
     @Test
+    void dynamicTableEntriesCanBeReusedAcrossHeaderBlocks() throws IOException {
+        Encoder encoder = new Encoder(DEFAULT_TABLE_SIZE);
+        Decoder decoder = new Decoder(MAX_HEADER_SIZE, DEFAULT_TABLE_SIZE);
+        byte[] name = ascii("x-cross-block");
+        byte[] value = ascii("persistent");
+
+        ByteArrayOutputStream firstHeaderBlock = new ByteArrayOutputStream();
+        encoder.encodeHeader(firstHeaderBlock, name, value, false);
+        CapturingHeaderListener firstListener = new CapturingHeaderListener();
+        decoder.decode(new ByteArrayInputStream(firstHeaderBlock.toByteArray()), firstListener);
+        boolean firstBlockExceededHeaderSize = decoder.endHeaderBlock();
+
+        ByteArrayOutputStream secondHeaderBlock = new ByteArrayOutputStream();
+        encoder.encodeHeader(secondHeaderBlock, name, value, false);
+        CapturingHeaderListener secondListener = new CapturingHeaderListener();
+        decoder.decode(new ByteArrayInputStream(secondHeaderBlock.toByteArray()), secondListener);
+        boolean secondBlockExceededHeaderSize = decoder.endHeaderBlock();
+
+        assertThat(firstBlockExceededHeaderSize).isFalse();
+        assertThat(secondBlockExceededHeaderSize).isFalse();
+        assertThat(secondHeaderBlock.toByteArray())
+                .as("the second header block should reference the dynamic table with one indexed field")
+                .hasSize(1);
+        assertThat(firstListener.headers())
+                .containsExactly(new DecodedHeader("x-cross-block", "persistent", false));
+        assertThat(secondListener.headers())
+                .containsExactly(new DecodedHeader("x-cross-block", "persistent", false));
+    }
+
+    @Test
     void decoderReadsStaticTableIndexesAndLiteralValuesWithIndexedNames() throws IOException {
         ByteArrayOutputStream headerBlock = new ByteArrayOutputStream();
         headerBlock.write(0x82); // Indexed Header Field: `:method: GET`.
