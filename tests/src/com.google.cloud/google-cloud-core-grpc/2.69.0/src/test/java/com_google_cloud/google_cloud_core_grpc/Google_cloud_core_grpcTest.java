@@ -17,6 +17,7 @@ import com.google.api.gax.rpc.ApiExceptionFactory;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.Service;
 import com.google.cloud.ServiceDefaults;
@@ -29,7 +30,9 @@ import com.google.cloud.grpc.GrpcTransportOptions;
 import com.google.cloud.spi.ServiceRpcFactory;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -143,6 +146,27 @@ public class Google_cloud_core_grpcTest {
     }
 
     @Test
+    void credentialsProviderScopesGoogleCredentialsBeforeWrapping() throws IOException {
+        Set<String> scopes =
+                Collections.singleton("https://www.googleapis.com/auth/cloud-platform");
+        ScopingGoogleCredentials credentials = new ScopingGoogleCredentials();
+        TestServiceOptions serviceOptions =
+                newTestOptions("example.googleapis.com:443", credentials, scopes);
+
+        CredentialsProvider credentialsProvider =
+                GrpcTransportOptions.setUpCredentialsProvider(serviceOptions);
+
+        assertThat(credentialsProvider).isInstanceOf(FixedCredentialsProvider.class);
+        assertThat(credentialsProvider.getCredentials())
+                .isInstanceOf(ScopingGoogleCredentials.class);
+        ScopingGoogleCredentials scopedCredentials =
+                (ScopingGoogleCredentials) credentialsProvider.getCredentials();
+        assertThat(scopedCredentials).isNotSameAs(credentials);
+        assertThat(scopedCredentials.scopes()).containsExactlyElementsOf(scopes);
+        assertThat(credentials.createScopedCalls()).isEqualTo(1);
+    }
+
+    @Test
     void grpcServiceExceptionCopiesRetryableApiExceptionDetails() {
         Throwable cause = new IllegalStateException("backend unavailable");
         StatusCode statusCode = new FixedStatusCode(StatusCode.Code.UNAVAILABLE, "grpc-14");
@@ -176,10 +200,16 @@ public class Google_cloud_core_grpcTest {
     }
 
     private static TestServiceOptions newTestOptions(String host, Credentials credentials) {
+        return newTestOptions(host, credentials, Collections.emptySet());
+    }
+
+    private static TestServiceOptions newTestOptions(
+            String host, Credentials credentials, Set<String> scopes) {
         return TestServiceOptions.newBuilder()
                 .setProjectId("test-project")
                 .setHost(host)
                 .setCredentials(credentials)
+                .setScopes(scopes)
                 .build();
     }
 
@@ -264,6 +294,40 @@ public class Google_cloud_core_grpcTest {
         }
     }
 
+    private static final class ScopingGoogleCredentials extends GoogleCredentials {
+        private static final long serialVersionUID = 1L;
+        private final Set<String> scopes;
+        private int createScopedCalls;
+
+        private ScopingGoogleCredentials() {
+            this(Collections.emptySet());
+        }
+
+        private ScopingGoogleCredentials(Collection<String> scopes) {
+            super();
+            this.scopes = Collections.unmodifiableSet(new LinkedHashSet<>(scopes));
+        }
+
+        @Override
+        public boolean createScopedRequired() {
+            return scopes.isEmpty();
+        }
+
+        @Override
+        public GoogleCredentials createScoped(Collection<String> scopes) {
+            createScopedCalls++;
+            return new ScopingGoogleCredentials(scopes);
+        }
+
+        Set<String> scopes() {
+            return scopes;
+        }
+
+        int createScopedCalls() {
+            return createScopedCalls;
+        }
+    }
+
     private interface TestService extends Service<TestServiceOptions> {
     }
 
@@ -322,6 +386,7 @@ public class Google_cloud_core_grpcTest {
     public static final class TestServiceOptions
             extends ServiceOptions<TestService, TestServiceOptions> {
         private static final long serialVersionUID = 1L;
+        private final Set<String> scopes;
 
         private TestServiceOptions(Builder builder) {
             super(
@@ -329,6 +394,7 @@ public class Google_cloud_core_grpcTest {
                     TestServiceRpcFactory.class,
                     builder,
                     TestServiceDefaults.INSTANCE);
+            this.scopes = builder.scopes;
         }
 
         static Builder newBuilder() {
@@ -342,7 +408,7 @@ public class Google_cloud_core_grpcTest {
 
         @Override
         protected Set<String> getScopes() {
-            return Collections.emptySet();
+            return scopes;
         }
 
         @Override
@@ -352,11 +418,19 @@ public class Google_cloud_core_grpcTest {
 
         public static final class Builder
                 extends ServiceOptions.Builder<TestService, TestServiceOptions, Builder> {
+            private Set<String> scopes = Collections.emptySet();
+
             private Builder() {
             }
 
             private Builder(TestServiceOptions options) {
                 super(options);
+                this.scopes = options.scopes;
+            }
+
+            private Builder setScopes(Set<String> scopes) {
+                this.scopes = Collections.unmodifiableSet(new LinkedHashSet<>(scopes));
+                return this;
             }
 
             @Override
