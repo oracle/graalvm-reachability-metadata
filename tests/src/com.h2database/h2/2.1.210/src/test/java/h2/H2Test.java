@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Moritz Halbritter
  */
-class H2Test {
+public class H2Test {
     @ParameterizedTest
     @ValueSource(strings = {"jdbc:h2:./data/test", "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1"})
     void test(String url) throws Exception {
