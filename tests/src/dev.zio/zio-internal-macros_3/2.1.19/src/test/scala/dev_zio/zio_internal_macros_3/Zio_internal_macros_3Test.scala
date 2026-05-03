@@ -42,6 +42,15 @@ class Zio_internal_macros_3Test {
   }
 
   @Test
+  def customAnsiCodeCanStyleStringsThroughPublicAnsiCodeTrait(): Unit = {
+    val brightPurple: AnsiCode = new AnsiCode {
+      override val code: String = "\u001b[95m"
+    }
+
+    assertThat("highlight".withAnsi(brightPurple)).isEqualTo("\u001b[95mhighlight\u001b[0m")
+  }
+
+  @Test
   def terminalStringExtensionsIndentAndCenterMultilineText(): Unit = {
     assertThat("dependency".center(2)).isEqualTo("  dependency  ")
     val indented: String = "first\nsecond".indent(3)
