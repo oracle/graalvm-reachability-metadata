@@ -5,11 +5,30 @@
 
 from dataclasses import dataclass
 import os
+import re
 import subprocess
 
 
 SCAFFOLD_PLACEHOLDER_TEXT = "This is just a placeholder, implement your test"
 TEST_SOURCE_EXTENSIONS = (".java", ".kt", ".scala")
+SCAFFOLD_PLACEHOLDER_TEST_PATTERNS = (
+    re.compile(
+        r"@Test\s+(?:public\s+)?void\s+test\s*\(\s*\)\s+throws\s+Exception\s*\{\s*"
+        + re.escape(f'System.out.println("{SCAFFOLD_PLACEHOLDER_TEXT}");')
+        + r"\s*\}"
+    ),
+    re.compile(
+        r"@Test\s+fun\s+test\s*\(\s*\)\s*\{\s*"
+        + re.escape(f'println("{SCAFFOLD_PLACEHOLDER_TEXT}")')
+        + r"\s*\}"
+    ),
+    re.compile(
+        r"@Test\s+def\s+test\s*\(\s*\)\s*:\s*Unit\s*=\s*\{\s*"
+        + re.escape(f'println("{SCAFFOLD_PLACEHOLDER_TEXT}")')
+        + r"\s*\}"
+    ),
+)
+TEST_ANNOTATION_PATTERN = re.compile(r"(?m)^\s*@Test\b")
 
 
 @dataclass(frozen=True)
@@ -29,7 +48,7 @@ def cleanup_scaffold_placeholder_tests(
         repo_path: str,
         scaffold_commit_hash: str,
 ) -> ScaffoldPlaceholderCleanupResult:
-    """Remove placeholder test files that are unchanged since the scaffold commit."""
+    """Remove scaffold placeholder test files that do not contain additional tests."""
     if not os.path.isdir(test_source_root):
         return ScaffoldPlaceholderCleanupResult([], [])
 
@@ -40,7 +59,7 @@ def cleanup_scaffold_placeholder_tests(
     ]
     scaffold_files = [
         file_path for file_path in placeholder_files
-        if _is_unchanged_since_commit(file_path, repo_path, scaffold_commit_hash)
+        if _contains_only_scaffold_junit_placeholder_test(file_path)
     ]
 
     removed_files: list[str] = []
@@ -115,11 +134,13 @@ def _placeholder_occurrences(file_path: str) -> list[PlaceholderOccurrence]:
     return occurrences
 
 
-def _is_unchanged_since_commit(file_path: str, repo_path: str, commit_hash: str) -> bool:
-    relative_path = os.path.relpath(file_path, repo_path)
-    result = subprocess.run(
-        ["git", "diff", "--quiet", commit_hash, "--", relative_path],
-        cwd=repo_path,
-        check=False,
+def _contains_only_scaffold_junit_placeholder_test(file_path: str) -> bool:
+    try:
+        with open(file_path, "r", encoding="utf-8") as source_file:
+            source = source_file.read()
+    except OSError:
+        return False
+    return (
+        any(pattern.search(source) for pattern in SCAFFOLD_PLACEHOLDER_TEST_PATTERNS)
+        and len(TEST_ANNOTATION_PATTERN.findall(source)) == 1
     )
-    return result.returncode == 0

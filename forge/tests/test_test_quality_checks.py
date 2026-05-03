@@ -74,6 +74,48 @@ class ExampleTest {
             self.assertFalse(os.path.exists(placeholder_file))
             self.assertEqual(result.remaining_placeholders, [])
 
+    def test_removes_changed_scaffold_when_only_test_is_placeholder(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            self._init_git_repo(tmp_dir)
+            placeholder_file = os.path.join(tmp_dir, "ExampleTest.java")
+            self._write_file(
+                placeholder_file,
+                """
+package org.example;
+
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void test() throws Exception {
+        System.out.println("This is just a placeholder, implement your test");
+    }
+}
+""",
+            )
+            scaffold_commit = self._commit_all(tmp_dir, "scaffold")
+            self._write_file(
+                placeholder_file,
+                """
+package org.example;
+
+import org.junit.jupiter.api.Test;
+
+public class ExampleTest {
+    @Test
+    void test() throws Exception {
+        System.out.println("This is just a placeholder, implement your test");
+    }
+}
+""",
+            )
+
+            result = cleanup_scaffold_placeholder_tests(tmp_dir, tmp_dir, scaffold_commit)
+
+            self.assertEqual(result.removed_files, [placeholder_file])
+            self.assertFalse(os.path.exists(placeholder_file))
+            self.assertEqual(result.remaining_placeholders, [])
+
     def test_reports_placeholder_when_scaffold_file_changed_but_placeholder_remains(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             self._init_git_repo(tmp_dir)
@@ -102,6 +144,48 @@ class MixedTest {{
 """,
             )
             self._write_file(real_test_file, "class RealTest\n")
+
+            result = cleanup_scaffold_placeholder_tests(tmp_dir, tmp_dir, scaffold_commit)
+
+            self.assertEqual(result.removed_files, [])
+            self.assertTrue(os.path.exists(placeholder_file))
+            self.assertEqual(len(result.remaining_placeholders), 1)
+
+    def test_reports_placeholder_when_only_test_is_not_scaffold_method(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            self._init_git_repo(tmp_dir)
+            placeholder_file = os.path.join(tmp_dir, "ExampleTest.java")
+            self._write_file(
+                placeholder_file,
+                """
+package org.example;
+
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void test() throws Exception {
+        System.out.println("This is just a placeholder, implement your test");
+    }
+}
+""",
+            )
+            scaffold_commit = self._commit_all(tmp_dir, "scaffold")
+            self._write_file(
+                placeholder_file,
+                """
+package org.example;
+
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void exercisesLibrary() {
+        System.out.println("This is just a placeholder, implement your test");
+    }
+}
+""",
+            )
 
             result = cleanup_scaffold_placeholder_tests(tmp_dir, tmp_dir, scaffold_commit)
 
