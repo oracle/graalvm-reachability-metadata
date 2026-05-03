@@ -1,0 +1,861 @@
+Starting a Gradle Daemon, 11 busy and 4 incompatible and 171 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019defa9-52ca-7b00-aa9b-d6c3d24b18b2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sourceforge.htmlunit:htmlunit-xpath:2.70.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.70.0" when "$version$" is replaced with "2.70.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+- Set "coordinates" to "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.70.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing JSON and the artifact metadata, then verify the upstream Maven/GitHub links so the URLs point at the exact `2.70.0` release.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 0ms:
+{
+  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "htmlunit-xpath|net.sourceforge.htmlunit" metadata tests build/discovered-artifact-metadata -S' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json:2:  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0"
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:5:        "typeReached": "net.sourceforge.htmlunit.xerces.parsers.AbstractDOMParser"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:7:      "type": "net.sourceforge.htmlunit.xerces.dom.DocumentImpl",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:19:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:25:        "typeReached": "net.sourceforge.htmlunit.cyberneko.HTMLConfiguration$ErrorReporter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:27:      "glob": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:31:        "typeReached": "net.sourceforge.htmlunit.cyberneko.HTMLConfiguration$ErrorReporter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:33:      "glob": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:37:        "typeReached": "net.sourceforge.htmlunit.cyberneko.HTMLConfiguration$ErrorReporter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:39:      "glob": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:43:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:45:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:49:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:51:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:55:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:57:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:61:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:63:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:67:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:69:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:73:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:75:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:79:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:81:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:85:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:87:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:91:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:93:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:96:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.DOMMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:99:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.SAXMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:102:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.XMLMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:105:      "bundle": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:14:      "net.sourceforge.htmlunit"
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/build.gradle:14:    testImplementation "net.sourceforge.htmlunit:htmlunit-cssparser:$libraryVersion"
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/settings.gradle:20:rootProject.name = 'net.sourceforge.htmlunit.htmlunit-cssparser_tests'
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/src/test/java/net_sourceforge_htmlunit/htmlunit_cssparser/CSSStyleSheetImplTest.java:7:package net_sourceforge_htmlunit.htmlunit_cssparser;
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/src/test/java/net_sourceforge_htmlunit/htmlunit_cssparser/CSSMediaRuleImplTest.java:7:package net_sourceforge_htmlunit.htmlunit_cssparser;
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/gradle.properties:4:library.coordinates = net.sourceforge.htmlunit:htmlunit-cssparser:1.14.0
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/gradle.properties:6:metadata.dir = net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/build.gradle:14:    testImplementation "net.sourceforge.htmlunit:neko-htmlunit:$libraryVersion"
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/settings.gradle:20:rootProject.name = 'net.sourceforge.htmlunit.neko-htmlunit_tests'
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/XMLMessageFormatterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/XMLMessageFormatterTest.java:9:import net.sourceforge.htmlunit.xerces.impl.msg.XMLMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/SAXMessageFormatterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/SAXMessageFormatterTest.java:11:import net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:9:import net.sourceforge.htmlunit.cyberneko.HTMLConfiguration;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:10:import net.sourceforge.htmlunit.cyberneko.HTMLErrorReporter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:11:import net.sourceforge.htmlunit.xerces.xni.parser.XMLConfigurationException;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/DOMMessageFormatterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/DOMMessageFormatterTest.java:9:import net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:11:import net.sourceforge.htmlunit.cyberneko.parsers.DOMParser;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:12:import net.sourceforge.htmlunit.xerces.dom.DocumentImpl;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/gradle.properties:4:library.coordinates = net.sourceforge.htmlunit:neko-htmlunit:2.70.0
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/gradle.properties:6:metadata.dir = net.sourceforge.htmlunit/neko-htmlunit/2.70.0/
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/user-code-filter.json:7:      "includeClasses" : "net.sourceforge.htmlunit.**"
+
+web search: 
+web search: Maven Central net.sourceforge.htmlunit htmlunit-xpath 2.70.0 pom scm url
+codex
+Maven Central exposes sources, tests, and javadoc classifiers for this exact version, which lets the metadata use Maven URLs for all three preferred fields. I’m checking the POM and jar contents next to confirm the repository root and whether it is a normal JVM artifact.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/htmlunit-xpath-2.70.0.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sourceforge.htmlunit</groupId>
+  <artifactId>htmlunit-xpath</artifactId>
+  <version>2.70.0</version>
+  <name>HtmlUnit-XPath</name>
+  <packaging>jar</packaging>
+  <description>
+    The XPath engine used by HtmlUnit.
+  </description>
+  <url>http://htmlunit.sourceforge.net</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+
+    <checkstyle.version>9.3</checkstyle.version>
+    <spotbugs.version>4.7.3</spotbugs.version>
+    <pmd.version>6.50.0</pmd.version>
+    <spotless.version>2.27.0</spotless.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.9.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.10.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <manifestEntries>
+              <Url>${project.url}</Url>
+              <Build-Time>${maven.build.timestamp}</Build-Time>
+            </manifestEntries>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <quiet>true</quiet>
+          <doclint>none</doclint>
+          <additionalparam>--allow-script-in-comments</additionalparam>
+          <links>
+            <link>https://docs.oracle.com/javase/8/docs/api/</link>
+          </links>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+          <suppressionsLocation>checkstyle_suppressions.xml</suppressionsLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>4.7.3.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs</artifactId>
+            <version>${spotbugs.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.19.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>${pmd.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>${pmd.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <rulesets>
+            <ruleset>${basedir}/pmd-ruleset.xml</ruleset>
+          </rulesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless.version}</version>
+        <configuration>
+          <java>
+            <googleJavaFormat>
+              <version>1.7</version>
+            </googleJavaFormat>
+          </java>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/HtmlUnit/htmlunit-xpath/issues/</url>
+  </issueManagement>
+  <inceptionYear>2022</inceptionYear>
+  <scm>
+    <connection>scm:git:https://github.com/HtmlUnit/htmlunit-xpath</connection>
+    <developerConnection>scm:git:https://github.com/HtmlUnit/htmlunit-xpath</developerConnection>
+    <url>https://github.com/HtmlUnit/htmlunit-xpath</url>
+  </scm>
+
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://jenkins.wetator.org/view/HtmlUnit/</url>
+  </ciManagement>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+  </distributionManagement>
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <id>OSS Sonatype snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
+
+  <developers>
+    <developer>
+      <name>Ronald Brill</name>
+      <id>rbri</id>
+      <email>rbri@rbri.de</email>
+      <url>http://www.wetator.org/</url>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/htmlunit-xpath-2.70.0.jar && curl -fsI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/htmlunit-xpath-2.70.0-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/htmlunit-xpath-2.70.0-tests.jar && curl -fsI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/htmlunit-xpath-2.70.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 211ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:05:59 GMT
+content-type: application/java-archive
+content-length: 36896
+cf-ray: 9f623a1a496e03a5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 76161
+etag: "49e90d9fab95e5d8c3dc7154890da33a"
+last-modified: Sun, 22 Jan 2023 10:54:52 GMT
+x-checksum-md5: 49e90d9fab95e5d8c3dc7154890da33a
+x-checksum-sha1: c0a02d209cc812c49e6d6a30be579bfa3cd57de1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 21:05:59 GMT
+content-type: application/java-archive
+content-length: 1179351
+cf-ray: 9f623a1aae3d8628-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 107641
+etag: "f5c94c68cb410b531640803c3d5f2358"
+last-modified: Sun, 22 Jan 2023 10:54:54 GMT
+x-checksum-md5: f5c94c68cb410b531640803c3d5f2358
+x-checksum-sha1: 5b65b280c5cde82025a14c3966bd8dadab843556
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/htmlunit-xpath-2.70.0.pom
+web search: 
+web search: site:github.com/HtmlUnit/htmlunit-xpath 2.70.0 tag
+web search: 
+web search: https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/HtmlUnit/htmlunit-xpath.git '*2.70.0*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/htmlunit-xpath-2.70.0.jar -o "$tmp/htmlunit-xpath.jar"; jar tf "$tmp/htmlunit-xpath.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/HtmlUnit/htmlunit-xpath/htmlunit-xpath-2.70.0/pom.xml | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 192ms:
+META-INF/
+META-INF/MANIFEST.MF
+net/
+net/sourceforge/
+net/sourceforge/htmlunit/
+net/sourceforge/htmlunit/xpath/
+net/sourceforge/htmlunit/xpath/axes/
+net/sourceforge/htmlunit/xpath/compiler/
+net/sourceforge/htmlunit/xpath/functions/
+net/sourceforge/htmlunit/xpath/objects/
+net/sourceforge/htmlunit/xpath/operations/
+net/sourceforge/htmlunit/xpath/patterns/
+net/sourceforge/htmlunit/xpath/res/
+net/sourceforge/htmlunit/xpath/xml/
+net/sourceforge/htmlunit/xpath/xml/dtm/
+net/sourceforge/htmlunit/xpath/xml/dtm/ref/
+net/sourceforge/htmlunit/xpath/xml/dtm/ref/dom2dtm/
+net/sourceforge/htmlunit/xpath/xml/utils/
+net/sourceforge/htmlunit/xpath/axes/AttributeIterator.class
+net/sourceforge/htmlunit/xpath/axes/AxesWalker.class
+net/sourceforge/htmlunit/xpath/axes/BasicTestIterator.class
+net/sourceforge/htmlunit/xpath/axes/ChildIterator.class
+net/sourceforge/htmlunit/xpath/axes/ChildTestIterator.class
+net/sourceforge/htmlunit/xpath/axes/DescendantIterator.class
+net/sourceforge/htmlunit/xpath/axes/FilterExprWalker.class
+net/sourceforge/htmlunit/xpath/axes/HasPositionalPredChecker.class
+net/sourceforge/htmlunit/xpath/axes/IteratorPool.class
+net/sourceforge/htmlunit/xpath/axes/LocPathIterator.class
+net/sourceforge/htmlunit/xpath/axes/NodeSequence$IteratorCache.class
+net/sourceforge/htmlunit/xpath/axes/NodeSequence.class
+net/sourceforge/htmlunit/xpath/axes/OneStepIterator.class
+net/sourceforge/htmlunit/xpath/axes/OneStepIteratorForward.class
+net/sourceforge/htmlunit/xpath/axes/PathComponent.class
+net/sourceforge/htmlunit/xpath/axes/PredicatedNodeTest.class
+net/sourceforge/htmlunit/xpath/axes/ReverseAxesWalker.class
+net/sourceforge/htmlunit/xpath/axes/SelfIteratorNoPredicate.class
+net/sourceforge/htmlunit/xpath/axes/SubContextList.class
+net/sourceforge/htmlunit/xpath/axes/UnionChildIterator.class
+net/sourceforge/htmlunit/xpath/axes/UnionPathIterator.class
+net/sourceforge/htmlunit/xpath/axes/WalkerFactory.class
+net/sourceforge/htmlunit/xpath/axes/WalkingIterator.class
+net/sourceforge/htmlunit/xpath/axes/WalkingIteratorSorted.class
+net/sourceforge/htmlunit/xpath/compiler/Compiler.class
+net/sourceforge/htmlunit/xpath/compiler/FunctionTable.class
+net/sourceforge/htmlunit/xpath/compiler/Keywords.class
+net/sourceforge/htmlunit/xpath/compiler/Lexer.class
+net/sourceforge/htmlunit/xpath/compiler/OpCodes.class
+net/sourceforge/htmlunit/xpath/compiler/OpMap.class
+net/sourceforge/htmlunit/xpath/compiler/OpMapVector.class
+net/sourceforge/htmlunit/xpath/compiler/PseudoNames.class
+net/sourceforge/htmlunit/xpath/compiler/XPathParser.class
+net/sourceforge/htmlunit/xpath/Expression.class
+net/sourceforge/htmlunit/xpath/ExpressionNode.class
+net/sourceforge/htmlunit/xpath/functions/FuncBoolean.class
+net/sourceforge/htmlunit/xpath/functions/FuncCeiling.class
+net/sourceforge/htmlunit/xpath/functions/FuncConcat.class
+net/sourceforge/htmlunit/xpath/functions/FuncContains.class
+net/sourceforge/htmlunit/xpath/functions/FuncCount.class
+net/sourceforge/htmlunit/xpath/functions/FuncFalse.class
+net/sourceforge/htmlunit/xpath/functions/FuncFloor.class
+net/sourceforge/htmlunit/xpath/functions/FuncId.class
+net/sourceforge/htmlunit/xpath/functions/FuncLang.class
+net/sourceforge/htmlunit/xpath/functions/FuncLast.class
+net/sourceforge/htmlunit/xpath/functions/FuncLocalPart.class
+net/sourceforge/htmlunit/xpath/functions/FuncNamespace.class
+net/sourceforge/htmlunit/xpath/functions/FuncNormalizeSpace.class
+net/sourceforge/htmlunit/xpath/functions/FuncNot.class
+net/sourceforge/htmlunit/xpath/functions/FuncNumber.class
+net/sourceforge/htmlunit/xpath/functions/FuncPosition.class
+net/sourceforge/htmlunit/xpath/functions/FuncQname.class
+net/sourceforge/htmlunit/xpath/functions/FuncRound.class
+net/sourceforge/htmlunit/xpath/functions/FuncStartsWith.class
+net/sourceforge/htmlunit/xpath/functions/FuncString.class
+net/sourceforge/htmlunit/xpath/functions/FuncStringLength.class
+net/sourceforge/htmlunit/xpath/functions/FuncSubstring.class
+net/sourceforge/htmlunit/xpath/functions/FuncSubstringAfter.class
+net/sourceforge/htmlunit/xpath/functions/FuncSubstringBefore.class
+net/sourceforge/htmlunit/xpath/functions/FuncSum.class
+net/sourceforge/htmlunit/xpath/functions/Function.class
+net/sourceforge/htmlunit/xpath/functions/Function2Args.class
+
+ succeeded in 201ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 336ms:
+d059fee745ab6f8c5481c76bf7a1767e20a5e561	refs/tags/2.70.0
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.70.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+    "description" : "NekoHtmlUnit is HtmlUnit's adaptation of NekoHTML, a tolerant HTML parser for Java. It preserves NekoHTML-style parsing while exposing HTML element classes in a way HtmlUnit can override and integrate into its browser simulation stack.",
+    "tested-versions" : [
+      "2.70.0"
+    ],
+    "allowed-packages" : [
+      "net.sourceforge.htmlunit"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.14.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+    "description" : "HtmlUnit CSS Parser is a Java library that parses CSS for the HtmlUnit browser automation project. It provides CSS syntax parsing components used to read and process stylesheets in Java applications.",
+    "tested-versions" : [
+      "1.14.0"
+    ],
+    "allowed-packages" : [
+      "com.gargoylesoftware.css"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/HtmlUnit/htmlunit-xpath/2.70.0/pom.xml | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 207ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sourceforge.htmlunit</groupId>
+  <artifactId>htmlunit-xpath</artifactId>
+  <version>2.70.0</version>
+  <name>HtmlUnit-XPath</name>
+  <packaging>jar</packaging>
+  <description>
+    The XPath engine used by HtmlUnit.
+  </description>
+  <url>http://htmlunit.sourceforge.net</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+
+    <checkstyle.version>9.3</checkstyle.version>
+    <spotbugs.version>4.7.3</spotbugs.version>
+    <pmd.version>6.50.0</pmd.version>
+    <spotless.version>2.27.0</spotless.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.9.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.10.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <manifestEntries>
+              <Url>${project.url}</Url>
+              <Build-Time>${maven.build.timestamp}</Build-Time>
+            </manifestEntries>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <quiet>true</quiet>
+          <doclint>none</doclint>
+          <additionalparam>--allow-script-in-comments</additionalparam>
+          <links>
+            <link>https://docs.oracle.com/javase/8/docs/api/</link>
+          </links>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+
+codex
+The artifact is a regular JVM jar with `.class` files and Java 8 bytecode settings in the release POM, so I’m leaving the language and `not-for-native-image` fields absent. I’m updating the discovered metadata with Maven classifier URLs and the GitHub SCM root from the release POM.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+index 7a34a0b4f9a4d64f8878f1b12b23e0a2b353f651..31790e408652f9cec643543d62af4bd2f57c8aba
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
++  "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like XML and HTML structures. It packages HtmlUnit's Java XPath implementation so JVM applications can parse, compile, and execute XPath queries without depending on the full HtmlUnit browser simulation stack."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+index 7a34a0b4f9a4d64f8878f1b12b23e0a2b353f651..31790e408652f9cec643543d62af4bd2f57c8aba
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
++  "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like XML and HTML structures. It packages HtmlUnit's Java XPath implementation so JVM applications can parse, compile, and execute XPath queries without depending on the full HtmlUnit browser simulation stack."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 0ms:
+{
+  "coordinates": "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+  "repository-url": "https://github.com/HtmlUnit/htmlunit-xpath",
+  "test-code-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+  "description": "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like XML and HTML structures. It packages HtmlUnit's Java XPath implementation so JVM applications can parse, compile, and execute XPath queries without depending on the full HtmlUnit browser simulation stack."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+index 7a34a0b4f9a4d64f8878f1b12b23e0a2b353f651..31790e408652f9cec643543d62af4bd2f57c8aba
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
++  "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like XML and HTML structures. It packages HtmlUnit's Java XPath implementation so JVM applications can parse, compile, and execute XPath queries without depending on the full HtmlUnit browser simulation stack."
+ }
+
+codex
+The JSON parses cleanly. I’m checking the worktree status as a sanity check because this metadata file may be generated or untracked, which can make `git diff` silent.
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json && git ls-files --stage build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+index 7a34a0b4f9a4d64f8878f1b12b23e0a2b353f651..31790e408652f9cec643543d62af4bd2f57c8aba
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
++  "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like XML and HTML structures. It packages HtmlUnit's Java XPath implementation so JVM applications can parse, compile, and execute XPath queries without depending on the full HtmlUnit browser simulation stack."
+ }
+
+ succeeded in 204ms:
+web search: 
+web search: Maven Central htmlunit-xpath 2.70.0 net.sourceforge.htmlunit
+web search: 
+web search: https://github.com/HtmlUnit/htmlunit-xpath
+web search: 
+web search: https://raw.githubusercontent.com/HtmlUnit/htmlunit-xpath/2.70.0/pom.xml
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0",
+     3	  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+     4	  "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+     5	  "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+     7	  "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like XML and HTML structures. It packages HtmlUnit's Java XPath implementation so JVM applications can parse, compile, and execute XPath queries without depending on the full HtmlUnit browser simulation stack."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+index 7a34a0b4f9a4d64f8878f1b12b23e0a2b353f651..31790e408652f9cec643543d62af4bd2f57c8aba
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
++  "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like XML and HTML structures. It packages HtmlUnit's Java XPath implementation so JVM applications can parse, compile, and execute XPath queries without depending on the full HtmlUnit browser simulation stack."
+ }
+
+web search: 
+web search: Maven Central net.sourceforge.htmlunit htmlunit-xpath 2.70.0
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/
+web search: 
+web search: 
+web search: 
+web search: raw.githubusercontent.com HtmlUnit htmlunit-xpath 2.70.0 pom.xml scm
+web search: 
+web search: GitHub HtmlUnit htmlunit-xpath repository
+web search: 
+web search: https://github.com/HtmlUnit/htmlunit-xpath
+codex
+Updated [net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json:1).
+
+I used Maven Central URLs for sources, tests, and javadocs because all three classifiers exist for `2.70.0`; the artifact page also confirms the HtmlUnit-XPath description as the XPath engine used by HtmlUnit. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/))
+
+I left `language` absent and did not set `not-for-native-image`: this is a normal JVM jar, and local jar inspection showed Java `.class` files. Validation run: `jq .` passed.
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+index 7a34a0b4f9a4d64f8878f1b12b23e0a2b353f651..31790e408652f9cec643543d62af4bd2f57c8aba
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-xpath:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
++  "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like XML and HTML structures. It packages HtmlUnit's Java XPath implementation so JVM applications can parse, compile, and execute XPath queries without depending on the full HtmlUnit browser simulation stack."
+ }
+
+tokens used
+73,102
+Updated [net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.json:1).
+
+I used Maven Central URLs for sources, tests, and javadocs because all three classifiers exist for `2.70.0`; the artifact page also confirms the HtmlUnit-XPath description as the XPath engine used by HtmlUnit. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/2.70.0/))
+
+I left `language` absent and did not set `not-for-native-image`: this is a normal JVM jar, and local jar inspection showed Java `.class` files. Validation run: `jq .` passed.
+Ran agent for net.sourceforge.htmlunit:htmlunit-xpath:2.70.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783/build/agent-artifact-discovery-logs/net.sourceforge.htmlunit-htmlunit-xpath-2.70.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3830-fe2b0783/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 37s
+9 actionable tasks: 4 executed, 5 from cache
