@@ -183,6 +183,42 @@ public class Maven_resolver_transport_apacheTest {
     }
 
     @Test
+    void getFollowsConfiguredRedirectsToDownloadRelocatedResource() throws Exception {
+        byte[] payload = "relocated resolver payload".getBytes(StandardCharsets.UTF_8);
+        List<String> methods = new ArrayList<>();
+
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            String method = exchange.getRequestMethod();
+            String path = exchange.getRequestURI().getPath();
+            methods.add(method + " " + path);
+            if ("GET".equals(method) && "/repo/redirected.txt".equals(path)) {
+                exchange.getResponseHeaders().add("Location", "/repo/relocated/artifact.txt");
+                exchange.sendResponseHeaders(302, -1);
+                return;
+            }
+            if ("GET".equals(method) && "/repo/relocated/artifact.txt".equals(path)) {
+                exchange.sendResponseHeaders(200, payload.length);
+                exchange.getResponseBody().write(payload);
+                return;
+            }
+            exchange.sendResponseHeaders(404, -1);
+        })) {
+            RepositorySystemSession session = newSession()
+                    .setConfigProperty(ApacheTransporterConfigurationKeys.CONFIG_PROP_FOLLOW_REDIRECTS, true)
+                    .setConfigProperty(ApacheTransporterConfigurationKeys.CONFIG_PROP_MAX_REDIRECTS, 2);
+
+            try (HttpTransporter transporter = newTransporter(server, session)) {
+                GetTask getTask = new GetTask(URI.create("redirected.txt"));
+                transporter.get(getTask);
+
+                assertThat(getTask.getDataString()).isEqualTo("relocated resolver payload");
+                assertThat(methods).containsExactly(
+                        "GET /repo/redirected.txt", "GET /repo/relocated/artifact.txt");
+            }
+        }
+    }
+
+    @Test
     void classifyDistinguishesMissingHttpResourcesFromOtherErrors() throws Exception {
         try (TestHttpServer server = TestHttpServer.create(exchange -> {
             if ("/repo/missing.txt".equals(exchange.getRequestURI().getPath())) {
