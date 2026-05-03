@@ -13,6 +13,7 @@ import sttp.model.Uri.UriContext
 import sttp.model.headers.*
 import sttp.model.sse.ServerSentEvent
 
+import java.net.URI as JavaUri
 import java.time.Instant
 import scala.concurrent.duration.*
 
@@ -53,6 +54,26 @@ class Core_3Test {
     val relative: Uri = Uri.pathRelative(Seq("child"), Seq(Uri.QuerySegment.KeyValue("x", "1")), Some("frag"))
     assertEquals("child?x=1#frag", relative.toString)
     assertEquals("https://user:secret@example.com:8443/api/v1/child?x=1#frag", parsed.resolve(relative).toString)
+  }
+
+  @Test
+  def javaUriInteroperabilityPreservesEncodedModelSemantics(): Unit = {
+    val modelUri: Uri = Uri("https", "example.com", Seq("a b", "c/d"))
+      .withParam("q", "hello world")
+      .fragment("frag ment")
+    val javaUri: JavaUri = modelUri.toJavaUri
+
+    assertEquals("https", javaUri.getScheme)
+    assertEquals("example.com", javaUri.getHost)
+    assertEquals("/a%20b/c%2Fd", javaUri.getRawPath)
+    assertEquals("q=hello+world", javaUri.getRawQuery)
+    assertEquals("frag%20ment", javaUri.getRawFragment)
+
+    val roundTripped: Uri = Uri(javaUri)
+    assertEquals(modelUri.toString, roundTripped.toString)
+    assertEquals(List("a b", "c/d"), roundTripped.path)
+    assertEquals(Some("hello world"), roundTripped.params.get("q"))
+    assertEquals(Some("frag ment"), roundTripped.fragment)
   }
 
   @Test
