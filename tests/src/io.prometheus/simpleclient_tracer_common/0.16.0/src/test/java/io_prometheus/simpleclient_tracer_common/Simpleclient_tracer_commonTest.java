@@ -78,6 +78,25 @@ public class Simpleclient_tracer_commonTest {
                         Map.entry("span_id", SPAN_ID));
     }
 
+    @Test
+    void sameSupplierInstanceCanRepresentChangingCurrentSpan() {
+        MutableSpanContextSupplier supplier = new MutableSpanContextSupplier();
+
+        supplier.setCurrentSpan(TRACE_ID, SPAN_ID, true);
+
+        assertThat(supplier.getTraceId()).isEqualTo(TRACE_ID);
+        assertThat(supplier.getSpanId()).isEqualTo(SPAN_ID);
+        assertThat(supplier.isSampled()).isTrue();
+
+        String nextTraceId = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        String nextSpanId = "bbbbbbbbbbbbbbbb";
+        supplier.setCurrentSpan(nextTraceId, nextSpanId, false);
+
+        assertThat(supplier.getTraceId()).isEqualTo(nextTraceId);
+        assertThat(supplier.getSpanId()).isEqualTo(nextSpanId);
+        assertThat(supplier.isSampled()).isFalse();
+    }
+
     private static Map<String, String> exemplarLabelsFor(SpanContextSupplier supplier) {
         if (supplier.getTraceId() == null || supplier.getSpanId() == null || !supplier.isSampled()) {
             return Map.of();
@@ -95,6 +114,33 @@ public class Simpleclient_tracer_commonTest {
         private final boolean sampled;
 
         private FixedSpanContextSupplier(String traceId, String spanId, boolean sampled) {
+            this.traceId = traceId;
+            this.spanId = spanId;
+            this.sampled = sampled;
+        }
+
+        @Override
+        public String getTraceId() {
+            return traceId;
+        }
+
+        @Override
+        public String getSpanId() {
+            return spanId;
+        }
+
+        @Override
+        public boolean isSampled() {
+            return sampled;
+        }
+    }
+
+    private static final class MutableSpanContextSupplier implements SpanContextSupplier {
+        private String traceId;
+        private String spanId;
+        private boolean sampled;
+
+        private void setCurrentSpan(String traceId, String spanId, boolean sampled) {
             this.traceId = traceId;
             this.spanId = spanId;
             this.sampled = sampled;
