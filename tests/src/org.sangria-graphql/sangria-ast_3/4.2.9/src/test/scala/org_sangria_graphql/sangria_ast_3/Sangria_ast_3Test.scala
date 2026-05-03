@@ -209,6 +209,80 @@ class Sangria_ast_3Test {
   }
 
   @Test
+  def typeSystemExtensionDefinitionsPreserveExtendedMembers(): Unit = {
+    val schemaExtension: SchemaExtensionDefinition = SchemaExtensionDefinition(
+      operationTypes = Vector(OperationTypeDefinition(OperationType.Subscription, NamedType("Subscription"))),
+      directives = Vector(Directive("link", Vector(Argument("url", StringValue("https://specs.example/graphql"))))),
+      comments = Vector(Comment("schema extension")),
+      trailingComments = Vector(Comment("schema extension end"))
+    )
+    val objectExtension: ObjectTypeExtensionDefinition = ObjectTypeExtensionDefinition(
+      name = "User",
+      interfaces = Vector(NamedType("Timestamped")),
+      fields = Vector(FieldDefinition("lastSeen", NamedType("DateTime"), Vector.empty)),
+      directives = Vector(Directive("key", Vector(Argument("fields", StringValue("id"))))),
+      comments = Vector(Comment("adds audit fields")),
+      trailingComments = Vector(Comment("user extension end"))
+    )
+    val interfaceExtension: InterfaceTypeExtensionDefinition = InterfaceTypeExtensionDefinition(
+      name = "Resource",
+      interfaces = Vector(NamedType("Node")),
+      fields = Vector(FieldDefinition("updatedAt", NotNullType(NamedType("DateTime")), Vector.empty)),
+      directives = Vector(Directive("tag", Vector(Argument("name", StringValue("resource")))))
+    )
+    val unionExtension: UnionTypeExtensionDefinition = UnionTypeExtensionDefinition(
+      name = "SearchResult",
+      types = Vector(NamedType("Issue"), NamedType("PullRequest")),
+      directives = Vector(Directive("searchable"))
+    )
+    val enumExtension: EnumTypeExtensionDefinition = EnumTypeExtensionDefinition(
+      name = "Role",
+      values = Vector(EnumValueDefinition(
+        name = "AUDITOR",
+        directives = Vector.empty,
+        description = Some(StringValue("Can audit accounts"))
+      )),
+      directives = Vector.empty,
+      comments = Vector.empty,
+      trailingComments = Vector(Comment("role extension end"))
+    )
+    val inputExtension: InputObjectTypeExtensionDefinition = InputObjectTypeExtensionDefinition(
+      name = "UserFilter",
+      fields = Vector(InputValueDefinition("includeInactive", NamedType("Boolean"), Some(BooleanValue(false)))),
+      directives = Vector(Directive("oneOf"))
+    )
+    val scalarExtension: ScalarTypeExtensionDefinition = ScalarTypeExtensionDefinition(
+      name = "DateTime",
+      directives = Vector(Directive("specifiedBy", Vector(Argument("url", StringValue("https://www.rfc-editor.org/rfc/rfc3339")))))
+    )
+    val document: Document = Document(Vector(
+      schemaExtension,
+      objectExtension,
+      interfaceExtension,
+      unionExtension,
+      enumExtension,
+      inputExtension,
+      scalarExtension
+    ))
+
+    assertEquals(Vector(OperationType.Subscription), schemaExtension.operationTypes.map(_.operation))
+    assertEquals(Vector("User", "Resource", "SearchResult", "Role", "UserFilter", "DateTime"), document.definitions.collect {
+      case extension: TypeExtensionDefinition => extension.name
+    })
+    assertEquals(Vector("Timestamped"), objectExtension.interfaces.map(_.name))
+    assertEquals(Vector("lastSeen"), objectExtension.fields.map(_.name))
+    assertEquals(Vector("Node"), interfaceExtension.interfaces.map(_.name))
+    assertEquals(Vector("Issue", "PullRequest"), unionExtension.types.map(_.name))
+    assertEquals(Some(StringValue("Can audit accounts")), enumExtension.values.head.description)
+    assertEquals(Some(BooleanValue(false)), inputExtension.fields.head.defaultValue)
+    assertEquals("specifiedBy", scalarExtension.directives.head.name)
+    assertEquals("schema extension", schemaExtension.comments.head.text)
+    assertEquals("schema extension end", schemaExtension.trailingComments.head.text)
+    assertEquals("user extension end", objectExtension.trailingComments.head.text)
+    assertEquals("role extension end", enumExtension.trailingComments.head.text)
+  }
+
+  @Test
   def copyEqualityAndCacheKeysReactToAstContentChanges(): Unit = {
     val original: Field = Field(
       alias = Some("node"),
