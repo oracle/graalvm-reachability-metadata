@@ -17,6 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SingletonProviderTest {
+    private static final String SINGLETON_ID = "test-deployment";
+
     @BeforeEach
     void resetBeforeTest() {
         SingletonProvider.reset();
@@ -34,16 +36,16 @@ public class SingletonProviderTest {
         assertThat(provider).isInstanceOf(IsolatedStaticSingletonProvider.class);
 
         Singleton<String> singleton = provider.create(String.class);
-        assertThat(singleton.isSet()).isFalse();
-        assertThatThrownBy(singleton::get)
+        assertThat(singleton.isSet(SINGLETON_ID)).isFalse();
+        assertThatThrownBy(() -> singleton.get(SINGLETON_ID))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Singleton is not set");
 
-        singleton.set("stored value");
-        assertThat(singleton.isSet()).isTrue();
-        assertThat(singleton.get()).isEqualTo("stored value");
+        singleton.set(SINGLETON_ID, "stored value");
+        assertThat(singleton.isSet(SINGLETON_ID)).isTrue();
+        assertThat(singleton.get(SINGLETON_ID)).isEqualTo("stored value");
 
-        singleton.clear();
-        assertThat(singleton.isSet()).isFalse();
+        singleton.clear(SINGLETON_ID);
+        assertThat(singleton.isSet(SINGLETON_ID)).isFalse();
     }
 }
