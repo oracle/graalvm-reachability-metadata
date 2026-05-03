@@ -122,6 +122,34 @@ class Sangria_marshalling_api_3Test {
   }
 
   @Test
+  def inputUnmarshallerVariableMapFactoriesCreateTaggedScalaInputs(): Unit = {
+    val unmarshaller: InputUnmarshaller[Any @@ ScalaInput] = InputUnmarshaller.scalaInputUnmarshaller[Any]
+    val variablesFromPairs: Any @@ ScalaInput = InputUnmarshaller.mapVars(
+      "id" -> 42,
+      "name" -> "Ada"
+    )
+    val variablesFromMap: Any @@ ScalaInput = InputUnmarshaller.mapVars(Map[String, Any](
+      "enabled" -> true,
+      "limit" -> 10
+    ))
+    val emptyVariables: Any @@ ScalaInput = InputUnmarshaller.emptyMapVars
+
+    assertTrue(unmarshaller.isMapNode(variablesFromPairs))
+    assertEquals(Set("id", "name"), unmarshaller.getMapKeys(variablesFromPairs).toSet)
+    assertEquals(Some(42), unmarshaller.getRootMapValue(variablesFromPairs, "id"))
+    assertEquals(Some("Ada"), unmarshaller.getRootMapValue(variablesFromPairs, "name"))
+    assertEquals(None, unmarshaller.getRootMapValue(variablesFromPairs, "missing"))
+
+    assertTrue(unmarshaller.isMapNode(variablesFromMap))
+    assertEquals(Some(true), unmarshaller.getRootMapValue(variablesFromMap, "enabled"))
+    assertEquals(Some(10), unmarshaller.getRootMapValue(variablesFromMap, "limit"))
+
+    assertTrue(unmarshaller.isMapNode(emptyVariables))
+    assertEquals(Nil, unmarshaller.getMapKeys(emptyVariables).toList)
+    assertEquals(None, unmarshaller.getRootMapValue(emptyVariables, "id"))
+  }
+
+  @Test
   def toInputInstancesExposeScalarsThroughScalaInputUnmarshaller(): Unit = {
     assertScalarToInput(ToInput.intInput, 42)
     assertScalarToInput(ToInput.longInput, 42L)
