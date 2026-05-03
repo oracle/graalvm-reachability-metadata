@@ -40,6 +40,7 @@ import org.eclipse.aether.spi.connector.ArtifactUpload;
 import org.eclipse.aether.spi.connector.MetadataDownload;
 import org.eclipse.aether.spi.connector.MetadataUpload;
 import org.eclipse.aether.spi.connector.RepositoryConnector;
+import org.eclipse.aether.spi.connector.checksum.ChecksumAlgorithm;
 import org.eclipse.aether.spi.connector.checksum.ChecksumAlgorithmFactory;
 import org.eclipse.aether.spi.connector.checksum.ChecksumPolicy;
 import org.eclipse.aether.spi.connector.checksum.ChecksumPolicyProvider;
@@ -167,6 +168,50 @@ public class Maven_resolver_connector_basicTest {
     }
 
     @Test
+    void uploadsGeneratedChecksumsWhenLayoutProvidesChecksumLocations() throws Exception {
+        InMemoryTransporter transporter = new InMemoryTransporter();
+        Artifact artifact = artifact();
+        Metadata metadata = metadata();
+        Path artifactSource = tempDirectory.resolve("checksummed-artifact.jar");
+        Path metadataSource = tempDirectory.resolve("checksummed-metadata.xml");
+        Files.writeString(artifactSource, "artifact-payload");
+        Files.writeString(metadataSource, "metadata-payload");
+
+        RepositoryConnector connector = configuredFactory(
+                        (session, repository) -> transporter,
+                        (session, repository) -> new SimpleRepositoryLayout(
+                                List.of(LengthChecksumAlgorithmFactory.INSTANCE)),
+                        Collections.emptyMap())
+                .newInstance(session(), repository());
+        try {
+            ArtifactUpload artifactUpload = new ArtifactUpload(artifact, artifactSource.toFile());
+            MetadataUpload metadataUpload = new MetadataUpload(metadata, metadataSource.toFile());
+
+            connector.put(List.of(artifactUpload), List.of(metadataUpload));
+
+            URI artifactLocation = SimpleRepositoryLayout.locationFor(artifact);
+            URI artifactChecksumLocation = SimpleRepositoryLayout.checksumLocationFor(
+                    artifactLocation, LengthChecksumAlgorithmFactory.INSTANCE);
+            URI metadataLocation = SimpleRepositoryLayout.locationFor(metadata);
+            URI metadataChecksumLocation = SimpleRepositoryLayout.checksumLocationFor(
+                    metadataLocation, LengthChecksumAlgorithmFactory.INSTANCE);
+            assertThat(artifactUpload.getException()).isNull();
+            assertThat(metadataUpload.getException()).isNull();
+            assertThat(transporter.putLocations()).containsExactly(
+                    artifactLocation,
+                    artifactChecksumLocation,
+                    metadataLocation,
+                    metadataChecksumLocation);
+            assertThat(transporter.content(artifactChecksumLocation))
+                    .isEqualTo(Long.toString(Files.size(artifactSource)));
+            assertThat(transporter.content(metadataChecksumLocation))
+                    .isEqualTo(Long.toString(Files.size(metadataSource)));
+        } finally {
+            connector.close();
+        }
+    }
+
+    @Test
     void transportNotFoundIsReportedOnArtifactDownload() throws Exception {
         InMemoryTransporter transporter = new InMemoryTransporter();
         ArtifactDownload download = new ArtifactDownload(
@@ -281,6 +326,16 @@ public class Maven_resolver_connector_basicTest {
     }
 
     private static final class SimpleRepositoryLayout implements RepositoryLayout {
+        private final List<ChecksumAlgorithmFactory> checksumAlgorithmFactories;
+
+        SimpleRepositoryLayout() {
+            this(Collections.emptyList());
+        }
+
+        SimpleRepositoryLayout(List<ChecksumAlgorithmFactory> checksumAlgorithmFactories) {
+            this.checksumAlgorithmFactories = List.copyOf(checksumAlgorithmFactories);
+        }
+
         static URI locationFor(Artifact artifact) {
             return URI.create("artifacts/"
                     + artifact.getGroupId().replace('.', '/') + "/"
@@ -301,14 +356,18 @@ public class Maven_resolver_connector_basicTest {
             return URI.create(path.append('/').append(metadata.getType()).toString());
         }
 
+        static URI checksumLocationFor(URI location, ChecksumAlgorithmFactory checksumAlgorithmFactory) {
+            return URI.create(location + "." + checksumAlgorithmFactory.getFileExtension());
+        }
+
         @Override
         public List<ChecksumAlgorithmFactory> getChecksumAlgorithmFactories() {
-            return Collections.emptyList();
+            return checksumAlgorithmFactories;
         }
 
         @Override
         public boolean hasChecksums(Artifact artifact) {
-            return false;
+            return !checksumAlgorithmFactories.isEmpty();
         }
 
         @Override
@@ -323,12 +382,51 @@ public class Maven_resolver_connector_basicTest {
 
         @Override
         public List<ChecksumLocation> getChecksumLocations(Artifact artifact, boolean upload, URI location) {
-            return Collections.emptyList();
+            return checksumLocationsFor(location);
         }
 
         @Override
         public List<ChecksumLocation> getChecksumLocations(Metadata metadata, boolean upload, URI location) {
-            return Collections.emptyList();
+            return checksumLocationsFor(location);
+        }
+
+        private List<ChecksumLocation> checksumLocationsFor(URI location) {
+            return checksumAlgorithmFactories.stream()
+                    .map(factory -> ChecksumLocation.forLocation(location, factory))
+                    .toList();
+        }
+    }
+
+    private static final class LengthChecksumAlgorithmFactory implements ChecksumAlgorithmFactory {
+        private static final LengthChecksumAlgorithmFactory INSTANCE = new LengthChecksumAlgorithmFactory();
+
+        @Override
+        public String getName() {
+            return "length";
+        }
+
+        @Override
+        public String getFileExtension() {
+            return "len";
+        }
+
+        @Override
+        public ChecksumAlgorithm getAlgorithm() {
+            return new LengthChecksumAlgorithm();
+        }
+    }
+
+    private static final class LengthChecksumAlgorithm implements ChecksumAlgorithm {
+        private long byteCount;
+
+        @Override
+        public void update(ByteBuffer buffer) {
+            byteCount += buffer.remaining();
+        }
+
+        @Override
+        public String checksum() {
+            return Long.toString(byteCount);
         }
     }
 
