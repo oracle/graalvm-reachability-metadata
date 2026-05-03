@@ -249,20 +249,6 @@ class WorkflowStrategy(ABC):
         if future_defaults_status == SUCCESS_WITH_INTERVENTION_STATUS:
             final_status = SUCCESS_WITH_INTERVENTION_STATUS
 
-        graalvm_25_home = os.environ["GRAALVM_HOME_25_0"]
-        graalvm_25_env = dict(os.environ)
-        graalvm_25_env["GRAALVM_HOME"] = graalvm_25_home
-        graalvm_25_env["JAVA_HOME"] = graalvm_25_home
-        graalvm_25_status = run_lane(
-            "current-defaults GRAALVM_25_0 test",
-            lambda: self._run_command_with_env(test_cmd, graalvm_25_env),
-            f"GRAALVM_HOME=$GRAALVM_HOME_25_0 JAVA_HOME=$GRAALVM_HOME_25_0 {test_cmd}",
-        )
-        if graalvm_25_status == RUN_STATUS_FAILURE:
-            return RUN_STATUS_FAILURE
-        if graalvm_25_status == SUCCESS_WITH_INTERVENTION_STATUS:
-            final_status = SUCCESS_WITH_INTERVENTION_STATUS
-
         return final_status
 
     def _run_gradle_command_with_output(self, command: list[str]) -> subprocess.CompletedProcess[str]:

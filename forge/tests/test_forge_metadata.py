@@ -1464,6 +1464,17 @@ class IssueClaimLockTests(unittest.TestCase):
         clear_issue_assignees.assert_called_once_with(1412)
 
 
+class EnvironmentValidationTests(unittest.TestCase):
+    def test_issue_processing_requires_dev_and_ci_graalvm_homes(self) -> None:
+        with patch.object(forge_metadata, "require_graalvm_home_env") as require_graalvm_home:
+            forge_metadata.validate_issue_processing_environment()
+
+        require_graalvm_home.assert_has_calls([
+            call(forge_metadata.DEV_GRAALVM_ENV_VAR),
+            call(forge_metadata.POST_GENERATION_GRAALVM_ENV_VAR),
+        ])
+
+
 class InterruptHandlingTests(unittest.TestCase):
     def setUp(self) -> None:
         forge_metadata.clear_user_interrupt_requested()

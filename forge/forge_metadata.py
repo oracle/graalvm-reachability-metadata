@@ -195,6 +195,7 @@ DEFAULT_REVIEW_MODEL = "gpt-5.4"
 DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.5"
 CODEX_REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
+DEV_GRAALVM_ENV_VAR = "GRAALVM_HOME"
 POST_GENERATION_GRAALVM_ENV_VAR = "GRAALVM_HOME_25_0"
 INTERRUPT_EXIT_CODES = {130, -int(signal.SIGINT)}
 INTERRUPT_REASON_CTRL_C = "Ctrl+C interrupt"
@@ -363,6 +364,7 @@ def _handle_sigint(_signum, _frame) -> None:
 
 def validate_issue_processing_environment() -> None:
     """Validate environment required before issue processing can start."""
+    require_graalvm_home_env(DEV_GRAALVM_ENV_VAR)
     require_graalvm_home_env(POST_GENERATION_GRAALVM_ENV_VAR)
 
 
