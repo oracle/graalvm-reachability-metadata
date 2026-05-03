@@ -49,6 +49,26 @@ public class Simpleclient_tracer_otel_agentTest {
     }
 
     @Test
+    void availabilityCheckDoesNotMutateConfiguredOtelExemplarsProperty() {
+        Properties properties = System.getProperties();
+        boolean hadPreviousValue = properties.containsKey(OTEL_EXEMPLARS_PROPERTY);
+        String previousValue = properties.getProperty(OTEL_EXEMPLARS_PROPERTY);
+        try {
+            System.setProperty(OTEL_EXEMPLARS_PROPERTY, "custom");
+
+            OpenTelemetryAgentSpanContextSupplier.isAvailable();
+
+            assertThat(System.getProperty(OTEL_EXEMPLARS_PROPERTY)).isEqualTo("custom");
+        } finally {
+            if (hadPreviousValue) {
+                System.setProperty(OTEL_EXEMPLARS_PROPERTY, previousValue);
+            } else {
+                System.clearProperty(OTEL_EXEMPLARS_PROPERTY);
+            }
+        }
+    }
+
+    @Test
     void spanContextMethodsRequireAgentShadedOpenTelemetryApiOnClasspath() {
         SpanContextSupplier supplier = new OpenTelemetryAgentSpanContextSupplier();
 
