@@ -9,6 +9,7 @@ package org_yaml.snakeyaml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -19,7 +20,7 @@ public class TypeDescriptionTest {
     void constructsRootBeanUsingConfiguredImplementationDeclaredConstructor() {
         TypeDescription rootType =
                 new TypeDescription(AbstractConfiguredBean.class, DeclaredConstructorBean.class);
-        Yaml yaml = new Yaml(new Constructor(rootType));
+        Yaml yaml = new Yaml(new Constructor(rootType, new LoaderOptions()));
 
         AbstractConfiguredBean bean = yaml.load(
                 """

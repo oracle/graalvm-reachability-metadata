@@ -8,9 +8,12 @@ package org_yaml.snakeyaml;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
+import org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector;
 
 public class CustomClassLoaderConstructorTest {
 
@@ -22,7 +25,10 @@ public class CustomClassLoaderConstructorTest {
         ClassLoader rejectingContextClassLoader = new RejectingClassLoader(
                 CustomClassLoaderConstructorTest.class.getClassLoader(),
                 TaggedBean.class.getName());
-        Yaml yaml = new Yaml(new CustomClassLoaderConstructor(resolvingClassLoader));
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setTagInspector(
+                new TrustedPrefixesTagInspector(List.of(TaggedBean.class.getName())));
+        Yaml yaml = new Yaml(new CustomClassLoaderConstructor(resolvingClassLoader, loaderOptions));
 
         Thread.currentThread().setContextClassLoader(rejectingContextClassLoader);
         try {
