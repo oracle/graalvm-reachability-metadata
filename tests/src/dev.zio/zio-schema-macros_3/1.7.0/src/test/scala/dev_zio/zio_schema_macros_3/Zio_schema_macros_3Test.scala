@@ -131,4 +131,15 @@ class Zio_schema_macros_3Test {
     assertThat(location.line).isPositive()
     assertThat(location.col).isPositive()
   }
+
+  @Test
+  def generateSourceLocationMacroExpandsAtEachIndividualCallSite(): Unit = {
+    val firstLocation = generatedSourceLocation
+    val secondLocation = generatedSourceLocation
+
+    assertThat(secondLocation.path).isEqualTo(firstLocation.path)
+    assertThat(secondLocation.line).isGreaterThan(firstLocation.line)
+    assertThat(firstLocation.col).isPositive()
+    assertThat(secondLocation.col).isPositive()
+  }
 }
