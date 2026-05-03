@@ -94,7 +94,7 @@ from utility_scripts.repo_path_resolver import (
     require_complete_reachability_repo,
     resolve_repo_roots,
 )
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_failure_banner, log_stage, log_success_banner
 from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
 from utility_scripts.task_logs import (
@@ -383,7 +383,8 @@ def gh(
     """Run a gh CLI command and return the completed process."""
     cmd = ["gh", *args]
     env = {**os.environ, "GH_PROMPT_DISABLED": "1", "GH_PAGER": ""}
-    log_github_query(args)
+    if not quiet:
+        log_github_query(args)
     result = subprocess.run(
         cmd,
         capture_output=True,
@@ -3403,7 +3404,6 @@ def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metad
             reason=ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
         )
     ])
-    log_stage("issue-claim", f"Issue #{issue['number']} targets not-for-native-image artifact {group}:{artifact}. Skipping.")
     return True
 
 
@@ -3416,8 +3416,6 @@ def claim_issue_for_processing(
         large_library_resume_artifact_override: str | None = None,
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace."""
-    print(format_issue_processing_message(issue))
-
     if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
         return None
 
@@ -3782,6 +3780,21 @@ def process_claimed_issue_lifecycle(
             raise KeyboardInterrupt
         handled = handle_completed_run(run_result)
         lifecycle_completed = True
+        if handled:
+            log_success_banner(
+                format_issue_result_message(
+                    claimed_issue,
+                    "Workflow finished, follow-up completed, and the issue was finalized.",
+                )
+            )
+        else:
+            log_failure_banner(
+                format_issue_result_message(
+                    claimed_issue,
+                    "Workflow failed; failure follow-up was attempted. Check prior errors for follow-up and claim status.",
+                ),
+                file=sys.stderr,
+            )
         return handled
     except BaseException as exc:
         if not lifecycle_completed:
@@ -3794,6 +3807,16 @@ def process_claimed_issue_lifecycle(
                         claimed_issue,
                         f"unhandled lifecycle failure ({type(exc).__name__})",
                         started_at=started_at,
+                    )
+                    log_failure_banner(
+                        format_issue_result_message(
+                            claimed_issue,
+                            (
+                                "Workflow failed with an unhandled lifecycle error; failure follow-up "
+                                "was attempted and the issue claim was reverted."
+                            ),
+                        ),
+                        file=sys.stderr,
                     )
                 except KeyboardInterrupt:
                     mark_user_interrupt_requested()
@@ -4170,18 +4193,12 @@ def should_skip_issue_from_preflight(
     number = issue["number"]
 
     if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
-        print()
-        log_stage("issue-claim", f"Issue #{number} has label '{LABEL_HUMAN_INTERVENTION}'. Skipping.")
         return True
     if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
-        print()
-        log_stage("issue-claim", f"Issue #{number} has label '{LABEL_NOT_FOR_NATIVE_IMAGE}'. Skipping.")
         return True
 
     payload_assignees = get_issue_payload_assignees(issue)
     if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
-        print()
-        log_stage("issue-claim", f"Issue #{number} already assigned to {payload_assignees}. Skipping.")
         return True
 
     cached_large_library_continuation = (
@@ -4194,22 +4211,15 @@ def should_skip_issue_from_preflight(
             and not cached_large_library_continuation
             and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user)
     ):
-        print()
-        log_stage("issue-claim", f"Issue #{number} {format_cached_issue_claim_skip(cached_skip)}. Skipping.")
         return True
 
     if preflight is None or not preflight.complete:
         return False
 
     if preflight.assignees and not is_assigned_only_to_authenticated_user(preflight.assignees, authenticated_user):
-        print()
-        log_stage("issue-claim", f"Issue #{number} already assigned to {list(preflight.assignees)}. Skipping.")
         return True
 
     if preflight.open_blockers:
-        blockers_text = ", ".join(f"#{blocker}" for blocker in preflight.open_blockers)
-        print()
-        log_stage("issue-claim", f"Issue #{number} is blocked by open issue(s) {blockers_text}. Skipping.")
         return True
 
     if not preflight.item_id:
@@ -4224,8 +4234,6 @@ def should_skip_issue_from_preflight(
         and preflight.project_status == STATUS_IN_PROGRESS
     )
     if preflight.project_status != STATUS_TODO and not large_library_continuation:
-        print()
-        log_stage("issue-claim", f"Issue #{number} is not Todo (it is '{preflight.project_status}'). Skipping.")
         return True
 
     return False
@@ -4272,8 +4280,6 @@ def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
     number = issue["number"]
 
     if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
-        print()
-        log_stage("issue-claim", f"Issue #{number} has label '{LABEL_HUMAN_INTERVENTION}'. Skipping.")
         record_issue_claim_cache_observations([
             IssueClaimCacheObservation(
                 issue_number=number,
@@ -4282,8 +4288,6 @@ def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
         ])
         return None
     if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
-        print()
-        log_stage("issue-claim", f"Issue #{number} has label '{LABEL_NOT_FOR_NATIVE_IMAGE}'. Skipping.")
         record_issue_claim_cache_observations([
             IssueClaimCacheObservation(
                 issue_number=number,
@@ -4294,8 +4298,6 @@ def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
 
     claim_lock = try_acquire_issue_claim_lock(number)
     if claim_lock is None:
-        print()
-        log_stage("issue-claim", f"Issue #{number} is already being claimed by another local runner. Skipping.")
         return None
 
     try:
@@ -4311,9 +4313,6 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
     # Skip if blocked by another issue
     open_blockers = get_open_blocking_issue_numbers(number)
     if open_blockers:
-        blockers_text = ", ".join(f"#{blocker}" for blocker in open_blockers)
-        print()
-        log_stage("issue-claim", f"Issue #{number} is blocked by open issue(s) {blockers_text}. Skipping.")
         record_issue_claim_cache_observations([
             IssueClaimCacheObservation(
                 issue_number=number,
@@ -4327,8 +4326,6 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
     # the same issue as the same GitHub user, so always re-read after the lock.
     assignees = get_issue_assignees(number)
     if assignees and not is_assigned_only_to_authenticated_user(assignees, authenticated_user):
-        print()
-        log_stage("issue-claim", f"Issue #{number} already assigned to {assignees}. Skipping.")
         record_issue_claim_cache_observations([
             IssueClaimCacheObservation(
                 issue_number=number,
@@ -4357,8 +4354,6 @@ def try_claim_issue_with_local_lock(issue: dict, authenticated_user: str) -> Opt
         and current_status == STATUS_IN_PROGRESS
     )
     if current_status != STATUS_TODO and not large_library_continuation:
-        print()
-        log_stage("issue-claim", f"Issue #{number} is not Todo (it is '{current_status}'). Skipping.")
         reason = (
             ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
             if current_status == STATUS_IN_PROGRESS
@@ -4430,11 +4425,13 @@ def get_issue_url(issue: dict) -> str:
     return f"https://github.com/{REPO}/issues/{issue['number']}"
 
 
-def format_issue_processing_message(issue: dict) -> str:
-    """Return a readable processing banner for an issue."""
+def format_issue_result_message(claimed_issue: ClaimedIssue, result: str) -> str:
+    """Return a concise multiline issue result message for a status banner."""
+    issue = claimed_issue.issue
     return (
-        f"\n[issue-processing] Starting processing for issue #{issue['number']}: {issue['title']} | "
-        f"Ticket: {get_issue_url(issue)}"
+        f"Issue #{issue['number']}: {issue['title']}\n"
+        f"Ticket: {get_issue_url(issue)}\n"
+        f"{result}"
     )
 
 
@@ -4846,7 +4843,7 @@ def process_single_issue(
         authenticated_user,
     )
     if not claimed_issue:
-        print(f"ERROR: Could not claim issue #{issue_number}.", file=sys.stderr)
+        log_failure_banner(f"Could not claim issue #{issue_number}.", file=sys.stderr)
         sys.exit(1)
 
     return process_claimed_issue_lifecycle(
@@ -4880,7 +4877,7 @@ def process_large_library_continuation(
         large_library_resume_artifact_override=resume_artifact,
     )
     if not claimed_issue:
-        print(f"ERROR: Could not claim issue #{state.issue_number}.", file=sys.stderr)
+        log_failure_banner(f"Could not claim issue #{state.issue_number}.", file=sys.stderr)
         sys.exit(1)
     return process_claimed_issue_lifecycle(
         claimed_issue,
@@ -4982,12 +4979,12 @@ def main() -> None:
         print("\nERROR: Run interrupted by Ctrl+C.", file=sys.stderr)
         sys.exit(130)
     except GitHubRateLimitExceeded as exc:
-        print(f"ERROR: {exc}. Stop current run and retry after reset.", file=sys.stderr)
+        log_failure_banner(f"{exc}. Stop current run and retry after reset.", file=sys.stderr)
         sys.exit(GITHUB_RATE_LIMIT_EXIT_CODE)
     finally:
         signal.signal(signal.SIGINT, previous_sigint_handler)
 
-    log_stage("run", "Run complete")
+    log_success_banner("Run complete.")
 
 
 if __name__ == "__main__":

@@ -119,6 +119,7 @@ GITHUB_LOG_REDACTED_FLAGS = {
 GITHUB_LOG_REDACTED_KEYS = {
     "body",
 }
+GITHUB_QUERY_LOG_ENV_VAR = "FORGE_LOG_GITHUB_QUERIES"
 
 
 def is_github_rate_limit_text(text: str) -> bool:
@@ -245,8 +246,15 @@ def _format_github_log_args(args: Iterable[str]) -> list[str]:
     return formatted_args
 
 
+def should_log_github_queries() -> bool:
+    """Return True when GitHub CLI query tracing is explicitly enabled."""
+    return os.environ.get(GITHUB_QUERY_LOG_ENV_VAR) == "1"
+
+
 def log_github_query(args: Iterable[str]) -> None:
     """Print one console line for a GitHub CLI query."""
+    if not should_log_github_queries():
+        return
     formatted_args = _format_github_log_args(args)
     print(f"[github-query] gh {' '.join(formatted_args)}")
 
@@ -261,7 +269,8 @@ def gh(
     """Run a gh CLI command and return the completed process."""
     cmd = ["gh", *args]
     env = {**os.environ, "GH_PROMPT_DISABLED": "1", "GH_PAGER": ""}
-    log_github_query(args)
+    if not quiet:
+        log_github_query(args)
     result = subprocess.run(
         cmd,
         capture_output=True,

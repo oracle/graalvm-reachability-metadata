@@ -47,7 +47,7 @@ class RemoteBranchDeletionTests(unittest.TestCase):
 
 
 class GitHubRateLimitTests(unittest.TestCase):
-    def test_common_gh_logs_github_query_to_console(self) -> None:
+    def test_common_gh_does_not_log_github_query_by_default(self) -> None:
         completed_process = subprocess.CompletedProcess(
             ["gh"],
             0,
@@ -56,6 +56,27 @@ class GitHubRateLimitTests(unittest.TestCase):
         )
 
         with patch.object(common_git.subprocess, "run", return_value=completed_process), \
+                patch.dict(os.environ, {common_git.GITHUB_QUERY_LOG_ENV_VAR: ""}), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            common_git.gh(
+                "api",
+                "graphql",
+                "-f",
+                "query=query { viewer { login } }",
+            )
+
+        self.assertEqual("", stdout.getvalue())
+
+    def test_common_gh_logs_github_query_when_enabled(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="{}",
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", return_value=completed_process), \
+                patch.dict(os.environ, {common_git.GITHUB_QUERY_LOG_ENV_VAR: "1"}), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
             common_git.gh(
                 "api",
@@ -78,6 +99,7 @@ class GitHubRateLimitTests(unittest.TestCase):
         )
 
         with patch.object(common_git.subprocess, "run", return_value=completed_process), \
+                patch.dict(os.environ, {common_git.GITHUB_QUERY_LOG_ENV_VAR: "1"}), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
             common_git.gh(
                 "issue",

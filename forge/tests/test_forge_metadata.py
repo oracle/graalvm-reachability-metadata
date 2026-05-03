@@ -130,7 +130,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
 
 class IssueClaimPreflightTests(unittest.TestCase):
-    def test_forge_gh_logs_github_query_to_console(self) -> None:
+    def test_forge_gh_does_not_log_github_query_by_default(self) -> None:
         completed_process = subprocess.CompletedProcess(
             ["gh"],
             0,
@@ -139,6 +139,29 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
         with patch.object(forge_metadata.subprocess, "run", return_value=completed_process), \
+                patch.dict(os.environ, {common_git.GITHUB_QUERY_LOG_ENV_VAR: ""}), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            forge_metadata.gh(
+                "api",
+                "--method",
+                "GET",
+                "/search/issues",
+                "-f",
+                "q=repo:oracle/graalvm-reachability-metadata is:issue",
+            )
+
+        self.assertEqual("", stdout.getvalue())
+
+    def test_forge_gh_logs_github_query_when_enabled(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="{}",
+            stderr="",
+        )
+
+        with patch.object(forge_metadata.subprocess, "run", return_value=completed_process), \
+                patch.dict(os.environ, {common_git.GITHUB_QUERY_LOG_ENV_VAR: "1"}), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
             forge_metadata.gh(
                 "api",
