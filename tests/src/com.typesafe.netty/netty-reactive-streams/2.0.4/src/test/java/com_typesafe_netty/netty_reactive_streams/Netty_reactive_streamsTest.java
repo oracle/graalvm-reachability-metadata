@@ -139,6 +139,28 @@ public class Netty_reactive_streamsTest {
     }
 
     @Test
+    void handlerPublisherDeliversStoredChannelFailureToLateSubscriber() {
+        EmbeddedChannel channel = new EmbeddedChannel();
+        try {
+            HandlerPublisher<String> publisher = new HandlerPublisher<>(channel.eventLoop(), String.class);
+            channel.pipeline().addLast(publisher);
+            RuntimeException failure = new RuntimeException("channel failed before subscription");
+            RecordingSubscriber<String> subscriber = new RecordingSubscriber<>();
+
+            channel.pipeline().fireExceptionCaught(failure);
+            publisher.subscribe(subscriber);
+            runPendingTasks(channel);
+
+            assertThat(subscriber.subscription()).isNotNull();
+            assertThat(subscriber.values()).isEmpty();
+            assertThat(subscriber.errors()).containsExactly(failure);
+            assertThat(subscriber.completions()).isZero();
+        } finally {
+            channel.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void handlerSubscriberRequestsDemandAndWritesOutboundMessages() {
         EmbeddedChannel channel = new EmbeddedChannel();
         try {
