@@ -77,6 +77,17 @@ public class Org_osgi_util_functionTest {
     }
 
     @Test
+    void functionCanUseConstructorReferencesAsFactories() throws Exception {
+        Function<Integer, List<String>> newListWithCapacity = ArrayList::new;
+
+        List<String> values = newListWithCapacity.apply(2);
+        values.add("osgi");
+        values.add("function");
+
+        assertThat(values).containsExactly("osgi", "function");
+    }
+
+    @Test
     void checkedExceptionsPropagateFromImplementations() {
         InvalidInputException consumerFailure = new InvalidInputException("consumer failure");
         InvalidInputException functionFailure = new InvalidInputException("function failure");
