@@ -10,7 +10,7 @@ import sys
 REACHABILITY_REPO_CLONE_URL = "git@github.com:oracle/graalvm-reachability-metadata.git"
 
 
-def get_repo_root():
+def get_repo_root() -> str:
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -54,7 +54,7 @@ def _is_git_checkout(repo_root: str) -> bool:
 def ensure_local_reachability_repo(reachability_root: str) -> str:
     """Clone the default reachability-metadata repository when it does not already exist."""
     if _is_git_checkout(reachability_root):
-        return reachability_root
+        return require_complete_reachability_repo(reachability_root)
 
     if os.path.exists(reachability_root) and os.listdir(reachability_root):
         print(
@@ -68,7 +68,7 @@ def ensure_local_reachability_repo(reachability_root: str) -> str:
 
     print(f"[Cloning graalvm-reachability-metadata into {reachability_root}...]")
     _run_git(["git", "clone", REACHABILITY_REPO_CLONE_URL, reachability_root], cwd=parent_dir)
-    return reachability_root
+    return require_complete_reachability_repo(reachability_root)
 
 
 def ensure_local_metrics_repo(metrics_root: str) -> str:
@@ -123,14 +123,56 @@ def ensure_in_repo_metrics_root(metrics_root: str) -> str:
     return metrics_root
 
 
+def _missing_reachability_repo_requirements(repo_root: str) -> list[str]:
+    """Return missing requirements for a complete reachability-metadata checkout."""
+    missing: list[str] = []
+    if not os.path.isdir(repo_root):
+        return ["directory"]
+    if not _is_git_checkout(repo_root):
+        missing.append("git checkout or worktree")
+    if not os.path.isfile(os.path.join(repo_root, "gradlew")):
+        missing.append("gradlew")
+    if not (
+            os.path.isfile(os.path.join(repo_root, "settings.gradle"))
+            or os.path.isfile(os.path.join(repo_root, "settings.gradle.kts"))
+    ):
+        missing.append("settings.gradle or settings.gradle.kts")
+    if not (
+            os.path.isfile(os.path.join(repo_root, "build.gradle"))
+            or os.path.isfile(os.path.join(repo_root, "build.gradle.kts"))
+    ):
+        missing.append("build.gradle or build.gradle.kts")
+    for directory in (get_forge_subdir_name(), "metadata", "tests", "gradle"):
+        if not os.path.isdir(os.path.join(repo_root, directory)):
+            missing.append(f"{directory}/")
+    for file_path in (
+            os.path.join("gradle", "wrapper", "gradle-wrapper.jar"),
+            os.path.join("gradle", "wrapper", "gradle-wrapper.properties"),
+    ):
+        if not os.path.isfile(os.path.join(repo_root, file_path)):
+            missing.append(file_path)
+    return missing
+
+
 def _looks_like_reachability_metadata_repo(repo_root: str) -> bool:
     """Return True when the path has the expected reachability-metadata repo shape."""
-    return (
-        _is_git_checkout(repo_root)
-        and os.path.isdir(os.path.join(repo_root, get_forge_subdir_name()))
-        and os.path.isdir(os.path.join(repo_root, "metadata"))
-        and os.path.isdir(os.path.join(repo_root, "tests"))
-    )
+    return not _missing_reachability_repo_requirements(repo_root)
+
+
+def require_complete_reachability_repo(repo_root: str) -> str:
+    """Require a complete reachability-metadata checkout or linked worktree."""
+    missing = _missing_reachability_repo_requirements(repo_root)
+    if missing:
+        print(
+            (
+                "ERROR: Reachability metadata path must be a complete "
+                f"graalvm-reachability-metadata checkout or worktree: {repo_root}. "
+                f"Missing: {', '.join(missing)}."
+            ),
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
+    return repo_root
 
 
 def resolve_parent_reachability_repo() -> str:
@@ -183,6 +225,7 @@ def resolve_repo_roots(
         resolved_reachability_root = explicit_reachability_path
     else:
         resolved_reachability_root = resolve_parent_reachability_repo()
+    require_complete_reachability_repo(resolved_reachability_root)
 
     # metrics root
     print("[Resolving Forge metrics root path...]")

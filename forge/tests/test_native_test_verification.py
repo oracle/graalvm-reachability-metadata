@@ -222,6 +222,7 @@ class GateRoutingTests(unittest.TestCase):
     def setUp(self) -> None:
         self.repo = tempfile.mkdtemp(prefix="repo-")
         self.addCleanup(_rmtree, self.repo)
+        _make_complete_reachability_repo(self.repo)
         self.output_dir = os.path.join(
             tempfile.mkdtemp(prefix="output-"),
             "natively-collected",
@@ -470,6 +471,20 @@ class GateRoutingTests(unittest.TestCase):
 def _rmtree(path: str) -> None:
     import shutil
     shutil.rmtree(path, ignore_errors=True)
+
+
+def _make_complete_reachability_repo(path: str) -> None:
+    subprocess.run(["git", "init", "-b", "master"], cwd=path, check=True, stdout=subprocess.PIPE)
+    for directory in ("forge", "metadata", "tests", os.path.join("gradle", "wrapper")):
+        os.makedirs(os.path.join(path, directory), exist_ok=True)
+    Path(path, "gradlew").write_text("#!/usr/bin/env sh\n", encoding="utf-8")
+    Path(path, "settings.gradle").write_text("rootProject.name = 'test'\n", encoding="utf-8")
+    Path(path, "build.gradle").write_text("plugins { id 'java' }\n", encoding="utf-8")
+    Path(path, "gradle", "wrapper", "gradle-wrapper.jar").write_text("wrapper jar\n", encoding="utf-8")
+    Path(path, "gradle", "wrapper", "gradle-wrapper.properties").write_text(
+        "distributionUrl=https\\://services.gradle.org/distributions/gradle-bin.zip\n",
+        encoding="utf-8",
+    )
 
 
 if __name__ == "__main__":

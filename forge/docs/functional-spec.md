@@ -119,6 +119,24 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 - `FORGE_DO_WORK_STOP_FILE` overrides the shared stop marker path used by
   `do-work` loops. The default is `~/.metadata-forge-stop`.
 
+### 4.5 Repository availability for test and metadata artifacts
+
+- Every Forge workflow artifact that runs reachability-repo Gradle tasks for
+  testing, dynamic-access reporting, native metadata exploration, metadata
+  generation, or final verification must have the whole reachability repo
+  available. The runnable artifact must be rooted in a complete
+  `graalvm-reachability-metadata` checkout or worktree, not in a copied
+  per-library directory, extracted dependency artifact, or otherwise partial
+  tree.
+- Complete repo availability includes access to the repo root, `gradlew`,
+  Gradle build logic, shared test infrastructure, `metadata/`, `tests/`, and
+  `forge/` when the workflow records metrics, logs, or resumable state.
+- If Forge creates isolated worktrees, resumable artifacts, archives, or other
+  execution contexts for parallel work, tests, or metadata collection, each
+  context must preserve the complete reachability repo before running any
+  Gradle-backed test or metadata collection step. Missing repo context is a
+  hard setup failure.
+
 ## 5. Outputs
 
 - **Per-run metrics record** appended to

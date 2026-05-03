@@ -31,6 +31,7 @@ import subprocess
 from dataclasses import dataclass, field
 from typing import Any
 
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import (
     build_timestamped_task_log_path,
@@ -86,6 +87,7 @@ def run_native_metadata_exploration(
 
     See ``forge/docs/native-metadata-exploration.md`` for the full contract.
     """
+    require_complete_reachability_repo(reachability_repo_path)
     if max_iterations < 1:
         raise ValueError("max_iterations must be >= 1")
     if not os.path.isabs(output_dir):

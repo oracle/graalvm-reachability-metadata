@@ -10,7 +10,7 @@ import sys
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts.library_finalization import run_library_finalization
-from utility_scripts.repo_path_resolver import resolve_repo_roots
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.source_context import populate_artifact_urls
 
 
@@ -53,6 +53,7 @@ def run_fix_test_native_image_run(
         new_version: str,
 ) -> subprocess.CompletedProcess[str]:
     """Run the fixTestNativeImageRun Gradle task."""
+    require_complete_reachability_repo(reachability_metadata_path)
     return subprocess.run(
         [
             "./gradlew", "fixTestNativeImageRun",
@@ -66,8 +67,9 @@ def run_fix_test_native_image_run(
 def run_gradle_test(
         reachability_metadata_path: str,
         coordinates: str,
-):
+) -> subprocess.CompletedProcess[str]:
     """Run Gradle tests for the provided coordinates."""
+    require_complete_reachability_repo(reachability_metadata_path)
     return subprocess.run(
         [
             "./gradlew", "test",

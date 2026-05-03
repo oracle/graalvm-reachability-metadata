@@ -21,6 +21,7 @@ from ai_workflows.fix_post_generation_pi import (
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_persistent_instructions, load_prompt_template
 
@@ -135,6 +136,8 @@ class WorkflowStrategy(ABC):
     @staticmethod
     def _run_command(cmd: str) -> str:
         """Execute a shell command and return its combined stdout/stderr."""
+        if cmd.startswith("./gradlew"):
+            require_complete_reachability_repo(os.getcwd())
         result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         return result.stdout
 
@@ -255,6 +258,7 @@ class WorkflowStrategy(ABC):
 
     def _run_gradle_command_with_output(self, command: list[str]) -> subprocess.CompletedProcess[str]:
         """Run a Gradle command in the reachability repo and capture combined output."""
+        require_complete_reachability_repo(self.reachability_repo_path)
         return subprocess.run(
             command,
             cwd=self.reachability_repo_path,

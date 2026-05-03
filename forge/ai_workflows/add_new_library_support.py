@@ -36,7 +36,7 @@ from utility_scripts import metrics_writer
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
-from utility_scripts.repo_path_resolver import resolve_repo_roots
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics, validate_benchmark_run_metrics
 from utility_scripts.source_context import (
     discover_artifact_metadata,
@@ -270,6 +270,7 @@ def _metadata_already_exists(scaffold_proc: subprocess.CompletedProcess) -> bool
 
 
 def run_scaffold(library: str) -> bool:
+    require_complete_reachability_repo(os.getcwd())
     log_stage("scaffold", f"Running scaffold for {library}")
     # Run scaffold for the given coordinates
     scaffold_proc = subprocess.run(

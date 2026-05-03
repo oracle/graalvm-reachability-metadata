@@ -16,6 +16,7 @@ import time
 
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 
 
 DEFAULT_GRADLE_TEST_TIMEOUT_SECONDS = 30 * 60
@@ -40,6 +41,7 @@ def run_gradle_test_command(
         timeout_seconds: int | None = None,
 ) -> str:
     """Run a Gradle test command and return output suitable for agent repair prompts."""
+    require_complete_reachability_repo(working_dir)
     resolved_library = library or _extract_coordinates(test_cmd)
     resolved_timeout = timeout_seconds or _timeout_from_environment()
     log_path = build_timestamped_task_log_path("gradle-test", resolved_library, "gradle-test")

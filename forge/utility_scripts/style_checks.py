@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 from utility_scripts.pi_logs import build_pi_log_path
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.task_logs import display_log_path
 
 DEFAULT_PI_MODEL_NAME = "oca/gpt-5.4"
@@ -17,6 +18,7 @@ MAX_PI_CHECKSTYLE_ATTEMPTS = 3
 
 
 def _run_gradle_task(repo_path: str, command: list[str]) -> bool:
+    require_complete_reachability_repo(repo_path)
     result = subprocess.run(
         command,
         cwd=repo_path,
@@ -34,6 +36,7 @@ def _run_gradle_task(repo_path: str, command: list[str]) -> bool:
 
 def _run_checkstyle(repo_path: str, coordinate_arg: str) -> subprocess.CompletedProcess:
     """Run the checkstyle Gradle task and return the CompletedProcess."""
+    require_complete_reachability_repo(repo_path)
     return subprocess.run(
         ["./gradlew", "checkstyle", coordinate_arg],
         cwd=repo_path,
@@ -46,6 +49,7 @@ def _run_checkstyle(repo_path: str, coordinate_arg: str) -> subprocess.Completed
 
 def _run_test(repo_path: str, coordinate_arg: str) -> subprocess.CompletedProcess:
     """Run the test Gradle task and return the CompletedProcess."""
+    require_complete_reachability_repo(repo_path)
     return subprocess.run(
         ["./gradlew", "test", coordinate_arg],
         cwd=repo_path,

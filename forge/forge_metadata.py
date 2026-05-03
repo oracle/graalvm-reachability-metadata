@@ -89,6 +89,7 @@ from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import (
     get_forge_subdir_name,
     get_repo_root,
+    require_complete_reachability_repo,
     resolve_repo_roots,
 )
 from utility_scripts.stage_logger import log_stage
@@ -3190,6 +3191,11 @@ def create_review_workspace(base_reachability_metadata_path: str, pr_number: int
         remove_worktree(base_reachability_metadata_path, review_worktree_path)
         print(f"ERROR: Failed to check out PR #{pr_number} in review worktree: {exc.stdout}", file=sys.stderr)
         raise
+    try:
+        require_complete_reachability_repo(review_worktree_path)
+    except SystemExit:
+        remove_worktree(base_reachability_metadata_path, review_worktree_path)
+        raise
     return review_worktree_path
 
 
@@ -3227,6 +3233,11 @@ def create_issue_workspace(
         DEFAULT_WORKTREE_BASE_REF,
         f"Failed to create worktree for issue #{issue_number}",
     )
+    try:
+        require_complete_reachability_repo(worktree_path)
+    except SystemExit:
+        remove_worktree(base_reachability_metadata_path, worktree_path)
+        raise
 
     scratch_metrics_repo_path = os.path.join(worktree_path, get_forge_subdir_name())
     copy_progress_artifacts(canonical_metrics_repo_path, scratch_metrics_repo_path, issue_number)

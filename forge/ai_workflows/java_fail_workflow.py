@@ -22,7 +22,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
-from utility_scripts.repo_path_resolver import resolve_repo_roots
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.source_context import (
     normalize_source_context_types,
@@ -222,8 +222,9 @@ def copy_and_prepare_project_dir(
             file.write(gradle_props_content_updated)
 
 
-def run_gradle_task(task, coordinates):
+def run_gradle_task(task: str, coordinates: str) -> None:
     """Run a Gradle task for the provided dependency coordinates."""
+    require_complete_reachability_repo(os.getcwd())
     command = f"./gradlew {task} -Pcoordinates={coordinates}"
     subprocess.run(command, shell=True, check=True)
 

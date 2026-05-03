@@ -17,6 +17,7 @@ from email.message import Message
 from typing import Any
 
 from utility_scripts.metadata_index import is_not_for_native_image_entry
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import build_task_log_path, display_log_path
 
@@ -132,6 +133,7 @@ def normalize_source_context_types(raw_value: Any) -> list[str]:
 
 
 def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND) -> None:
+    require_complete_reachability_repo(reachability_repo_path)
     log_path = build_task_log_path("populate-artifact-urls", coordinate, "populate_artifact_urls.log")
     log_path_display = display_log_path(log_path)
     log_stage("populate-artifact-urls", f"Populating artifact URLs for {coordinate}; output: {log_path_display}")
@@ -165,6 +167,7 @@ def discover_artifact_metadata(
         coordinate: str,
         agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND,
 ) -> None:
+    require_complete_reachability_repo(reachability_repo_path)
     log_path = build_task_log_path("discover-artifact-metadata", coordinate, "discover_artifact_metadata.log")
     log_path_display = display_log_path(log_path)
     log_stage("discover-artifact-metadata", f"Discovering artifact metadata for {coordinate}; output: {log_path_display}")

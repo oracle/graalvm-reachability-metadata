@@ -9,6 +9,7 @@ import sys
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 
 
@@ -76,6 +77,7 @@ def build_graalvm_environment(graalvm_home: str, base_env: dict[str, str] | None
 
 def run_gradle_test_with_graalvm(repo_path: str, library: str, graalvm_home: str) -> subprocess.CompletedProcess[str]:
     """Run the library test task with a specific GraalVM/JAVA_HOME."""
+    require_complete_reachability_repo(repo_path)
     return subprocess.run(
         ["./gradlew", "test", f"-Pcoordinates={library}"],
         cwd=repo_path,
@@ -143,12 +145,10 @@ def run_metadata_fix_until_tests_pass(
     return False
 
 
-def validate_repo_paths(reachability_repo_path: str, metrics_repo_path: str):
+def validate_repo_paths(reachability_repo_path: str, metrics_repo_path: str) -> None:
     """Validate required repository paths for workflow execution."""
-    if not os.path.exists(reachability_repo_path):
-        print(f"ERROR: Repository path does not exist: {os.path.relpath(reachability_repo_path)}")
-        sys.exit(1)
+    require_complete_reachability_repo(reachability_repo_path)
 
     if not os.path.exists(metrics_repo_path):
-        print(f"ERROR: Metrics repository path does not exist: {os.path.relpath(metrics_repo_path)}")
+        print(f"ERROR: Metrics repository path does not exist: {os.path.relpath(metrics_repo_path)}", file=sys.stderr)
         sys.exit(1)
