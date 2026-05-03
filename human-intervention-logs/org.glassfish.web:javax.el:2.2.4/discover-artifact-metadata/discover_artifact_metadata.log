@@ -1,0 +1,927 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deee6-a8dd-7520-b19c-715d9d9d898b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish.web:javax.el:2.2.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.2.4" when "$version$" is replaced with "2.2.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+- Set "coordinates" to "org.glassfish.web:javax.el:2.2.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.2.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources, then patch the JSON directly with the most specific versioned URLs I can confirm.
+web search: 
+web search: Maven Central org.glassfish.web javax.el 2.2.4 pom scm url
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/
+codex
+Maven Central confirms the 2.2.4 release has both `-sources.jar` and `-javadoc.jar`, so I’m going to prefer those for source and documentation as requested. I’m checking the POM/SCM now to avoid guessing the repository and test-suite locations.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+-rw-rw-r-- 1 vjovanov vjovanov 57 May  3 19:33 build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>net.java</groupId>
+        <artifactId>jvnet-parent</artifactId>
+        <version>1</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.glassfish.web</groupId>
+    <artifactId>javax.el</artifactId>
+    <version>2.2.4</version>
+    <packaging>jar</packaging>
+    <name>Expression Language 2.2 Implementation</name>
+
+    <url>http://uel.java.net</url>
+    <organization>
+        <name>GlassFish Community</name>
+        <url>http://glassfish.org</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>CDDL + GPLv2 with classpath exception</name>
+            <url>http://glassfish.dev.java.net/nonav/public/CDDL+GPL.html</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://java.net/jira/browse/UEL</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>EL Developer</name>
+            <archive>dev@uel.java.net</archive>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>scm:svn:https://svn.java.net/svn/uel~svn/tags/javax.el-2.2.4</connection>
+        <developerConnection>scm:svn:https://svn.java.net/svn/uel~svn/tags/javax.el-2.2.4</developerConnection>
+        <url>http://java.net/projects/uel/sources/svn/show/tags/javax.el-2.2.4</url>
+    </scm>
+
+    <properties>
+        <spec.version>2.2</spec.version>
+        <extensionName>javax.el</extensionName>
+        <bundle.symbolicName>org.glassfish.web.javax.el</bundle.symbolicName>
+        <vendorName>Oracle Corporation</vendorName>
+        <findbugs.version>2.4.0</findbugs.version>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+        <findbugs.threshold>High</findbugs.threshold>
+    </properties>
+
+    <developers>
+        <developer>
+            <id>kchung</id>
+            <name>Kin-man Chung</name>
+            <url>http://blogs.sun.com/kchung/</url>
+            <organization>Sun Microsystems, Inc.</organization>
+            <roles>
+                <role>lead</role>
+            </roles>
+        </developer>
+    </developers>  
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>
+                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
+                        </manifestFile>
+                        <manifestEntries>
+                            <Extension-Name>${extensionName}</Extension-Name>
+                            <!--Specification-Title>${specificationTitle}</Specification-Title-->
+                            <Specification-Version>${spec.version}</Specification-Version>
+                            <Specification-Vendor>${vendorName}</Specification-Vendor>
+                            <!--Implementation-Title>${implementationTitle}</Implementation-Title-->
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${vendorName}</Implementation-Vendor>
+                            <!--Implementation-Vendor-Id>com.sun</Implementation-Vendor-Id-->
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Configure maven-bundle-plugin to generate OSGi manifest.
+                 Please note: we use the manifest goal only and not the bundle goal.
+                  The bundle goal can lead to very surprising results if the
+                  package names are not correctly specified. So,
+                  we use the jar plugin to generate the jar.-->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.3</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Export-Package>
+                            com.sun.el
+                        </Export-Package>
+                        <Private-Package>
+                            com.sun.el.lang,
+                            com.sun.el.parser,
+                            com.sun.el.util
+                        </Private-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                        <compilerArgument>-Xlint:unchecked</compilerArgument>
+                    </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version> 2.1 </version>
+                <configuration>
+                    <includePom>true</includePom>
+                </configuration>
+                <executions>
+                    <execution>
+                       <id>attach-sources</id>
+                       <goals>
+                           <goal>jar-no-fork</goal>
+                       </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        <configuration>
+                            <groups>
+                                <group>
+                                    <title>Expresion Language API Documentation</title>
+                                    <packages>javax.el</packages>
+                                </group>
+                            </groups>
+                            <bottom> Copyright (c) 1999-2011 Oracle and/or its affiliates. All Rights Reserved. Use is subject to license terms. </bottom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs.version}</version>
+                <configuration>
+                    <threshold>${findbugs.threshold}</threshold>
+                    <excludeFilterFile>${findbugs.exclude}</excludeFilterFile>
+                    <findbugsXmlOutput>true</findbugsXmlOutput>
+                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>                           
+                <artifactId>maven-release-plugin</artifactId>                         
+                <configuration>                                                       
+                    <mavenExecutorId>forked-path</mavenExecutorId>                
+                    <useReleaseProfile>false</useReleaseProfile>                  
+                    <arguments>${release.arguments}</arguments>
+                </configuration>                                                      
+            </plugin>                    
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs.version}</version>
+                <configuration>
+                    <threshold>${findbugs.threshold}</threshold>
+                    <excludeFilterFile>${findbugs.exclude}</excludeFilterFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <repositories>
+        <repository>
+            <id>jvnet-nexus-release</id>
+            <url>https://maven.java.net/content/repositories/releases</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+    </dependencies>
+</project>
+
+web search: 
+web search: 
+web search: 
+web search: "javax.el-2.2.4" "svn" "uel"
+web search: 
+web search: GitHub uel javax.el-2.2.4 tag
+web search: 
+web search: "org.glassfish.web" "javax.el" "src/test/java"
+web search: 
+web search: "uel.java.net" GitHub "Expression Language"
+codex
+The old POM points at the original `uel.java.net` SVN tag, while later releases identify the migrated `javaee/uel-ri` repository. I’m checking whether that GitHub mirror has a 2.2.4 tag before deciding whether the test-suite URL is usable or should be `N/A`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/glassfish/web/javax.el/2.2.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/glassfish/web/javax.el/2.2.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="javax.el-2.2.4-javadoc.jar" title="javax.el-2.2.4-javadoc.jar">javax.el-2.2.4-javadoc.jar</a>                        2012-07-10 17:30    402480      
+<a href="javax.el-2.2.4-javadoc.jar.asc" title="javax.el-2.2.4-javadoc.jar.asc">javax.el-2.2.4-javadoc.jar.asc</a>                    2012-07-10 17:30       485      
+<a href="javax.el-2.2.4-javadoc.jar.asc.md5" title="javax.el-2.2.4-javadoc.jar.asc.md5">javax.el-2.2.4-javadoc.jar.asc.md5</a>                2012-07-10 17:30        32      
+<a href="javax.el-2.2.4-javadoc.jar.asc.sha1" title="javax.el-2.2.4-javadoc.jar.asc.sha1">javax.el-2.2.4-javadoc.jar.asc.sha1</a>               2012-07-10 17:30        40      
+<a href="javax.el-2.2.4-javadoc.jar.md5" title="javax.el-2.2.4-javadoc.jar.md5">javax.el-2.2.4-javadoc.jar.md5</a>                    2012-07-10 17:30        32      
+<a href="javax.el-2.2.4-javadoc.jar.sha1" title="javax.el-2.2.4-javadoc.jar.sha1">javax.el-2.2.4-javadoc.jar.sha1</a>                   2012-07-10 17:30        40      
+<a href="javax.el-2.2.4-sources.jar" title="javax.el-2.2.4-sources.jar">javax.el-2.2.4-sources.jar</a>                        2012-07-10 17:30    135184      
+<a href="javax.el-2.2.4-sources.jar.asc" title="javax.el-2.2.4-sources.jar.asc">javax.el-2.2.4-sources.jar.asc</a>                    2012-07-10 17:30       485      
+<a href="javax.el-2.2.4-sources.jar.asc.md5" title="javax.el-2.2.4-sources.jar.asc.md5">javax.el-2.2.4-sources.jar.asc.md5</a>                2012-07-10 17:30        32      
+<a href="javax.el-2.2.4-sources.jar.asc.sha1" title="javax.el-2.2.4-sources.jar.asc.sha1">javax.el-2.2.4-sources.jar.asc.sha1</a>               2012-07-10 17:30        40      
+<a href="javax.el-2.2.4-sources.jar.md5" title="javax.el-2.2.4-sources.jar.md5">javax.el-2.2.4-sources.jar.md5</a>                    2012-07-10 17:30        32      
+<a href="javax.el-2.2.4-sources.jar.sha1" title="javax.el-2.2.4-sources.jar.sha1">javax.el-2.2.4-sources.jar.sha1</a>                   2012-07-10 17:30        40      
+<a href="javax.el-2.2.4.jar" title="javax.el-2.2.4.jar">javax.el-2.2.4.jar</a>                                2012-07-10 17:30    117583      
+<a href="javax.el-2.2.4.jar.asc" title="javax.el-2.2.4.jar.asc">javax.el-2.2.4.jar.asc</a>                            2012-07-10 17:30       485      
+<a href="javax.el-2.2.4.jar.asc.md5" title="javax.el-2.2.4.jar.asc.md5">javax.el-2.2.4.jar.asc.md5</a>                        2012-07-10 17:30        32      
+<a href="javax.el-2.2.4.jar.asc.sha1" title="javax.el-2.2.4.jar.asc.sha1">javax.el-2.2.4.jar.asc.sha1</a>                       2012-07-10 17:30        40      
+<a href="javax.el-2.2.4.jar.md5" title="javax.el-2.2.4.jar.md5">javax.el-2.2.4.jar.md5</a>                            2012-07-10 17:30        32      
+<a href="javax.el-2.2.4.jar.sha1" title="javax.el-2.2.4.jar.sha1">javax.el-2.2.4.jar.sha1</a>                           2012-07-10 17:30        40      
+<a href="javax.el-2.2.4.pom" title="javax.el-2.2.4.pom">javax.el-2.2.4.pom</a>                                2012-07-10 17:30     11702      
+<a href="javax.el-2.2.4.pom.asc" title="javax.el-2.2.4.pom.asc">javax.el-2.2.4.pom.asc</a>                            2012-07-10 17:30       485      
+<a href="javax.el-2.2.4.pom.asc.md5" title="javax.el-2.2.4.pom.asc.md5">javax.el-2.2.4.pom.asc.md5</a>                        2012-07-10 17:30        32      
+<a href="javax.el-2.2.4.pom.asc.sha1" title="javax.el-2.2.4.pom.asc.sha1">javax.el-2.2.4.pom.asc.sha1</a>                       2012-07-10 17:30        40      
+<a href="javax.el-2.2.4.pom.md5" title="javax.el-2.2.4.pom.md5">javax.el-2.2.4.pom.md5</a>                            2012-07-10 17:30        32      
+<a href="javax.el-2.2.4.pom.sha1" title="javax.el-2.2.4.pom.sha1">javax.el-2.2.4.pom.sha1</a>                           2012-07-10 17:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javaee/uel-ri.git | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-test-sources.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-tests.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 302ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 17:33:41 GMT
+content-type: text/html
+cf-ray: 9f61031b9c76931a-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 355ms:
+88f3d6ab72d8d4bbf5a113638a0f888d4824f6e4	refs/tags/2.1.2-b02
+70710b03c2e97d9b5d1284f06f7e08b3ca3379a2	refs/tags/2.1.2-b03
+008d21ba79f74548060f589b4fd83fdfa3815f91	refs/tags/2.1.2-b04
+0e025db4a7ae80f527fe6fcfbd5fd34c4efd7370	refs/tags/2.1.2-b05
+7caad837a21bed42cd4780a9f96defe28ef8fc19	refs/tags/2.2
+fc9bb5e1ee121df2a29a7a624916c3c05c819de8	refs/tags/javax.el-1.1.2
+d51885df03484971149a6f8a083cd4cdf2c6e84c	refs/tags/javax.el-1.1.3
+4eeabb78532dc45960378fb3604798e54d98a034	refs/tags/javax.el-1.1.3^{}
+3f9d2291b90823173a7840c1d494b79c0813b7c9	refs/tags/javax.el-2.2.1
+891c988531376faed62bbcf78387720fbbcaea50	refs/tags/javax.el-2.2.2
+c08acdc4c7e47617c386a24529edf1d847373673	refs/tags/javax.el-2.2.3
+6d18a71c03b476b60c7dc71b352a873fd1cebcfb	refs/tags/javax.el-2.2.4
+a0a920b766b98ffd73ab363000b14ffcff74a81b	refs/tags/javax.el-2.2.5
+96bdcd392350a4b41f94d3d34a528b5270092ac8	refs/tags/javax.el-2.2.6
+c23729e2c8e00b3bc2759d7a80bf4bbe2800139d	refs/tags/javax.el-3.0.1-b01
+ee0bb8e623e4c5ab148665b2d81b1d397a06d95d	refs/tags/javax.el-3.0.1-b02
+167cd1e7f338836b797582d7ccdf488de447ba61	refs/tags/javax.el-3.0.1-b03
+9b0f636085ba7103593f570e84d5c847189f50f8	refs/tags/javax.el-3.0.1-b04
+b2119f4523a307827a057ecf160fc490dac5f6f6	refs/tags/javax.el-3.0.1-b05
+dcd3531246e7c50e773996fe80254fd08b84988a	refs/tags/javax.el-3.0.1-b06
+7e56d0927d31b2484a723d8602605c34fa9b4b9f	refs/tags/javax.el-3.0.1-b07
+3db30bd3a76056b1fdcc49388f7ef8a5f08706d0	refs/tags/javax.el-3.0.1-b08
+879650ef69aa6c2fd602d77f3008a8f8751b4add	refs/tags/javax.el-3.0.1-b09
+5e6346e5e5a991ee1cd66643a955c89509d06165	refs/tags/javax.el-3.0.1-b09^{}
+907ff87e36e5c8e2fc48a42ecaf4ae61812b828a	refs/tags/javax.el-3.0.1-b10
+2a0ef6e757529d2a5816be535c63fb7c5a01e25c	refs/tags/javax.el-3.0.1-b10^{}
+03c31d7f5971804a801c265a4e126ac50232fcaa	refs/tags/javax.el-3.0.1-b11
+717f483bcd10c09e4900b70d3e2cb8ddf0587944	refs/tags/javax.el-3.0.1-b11^{}
+4cd206ba940c645182592575b0457e4c48ab9c4c	refs/tags/javax.el-3.0.1-b12
+92a1f7cd18ccb1287953a45e3f48771cb8c45517	refs/tags/javax.el-3.0.1-b12^{}
+9dde20de8fcbe6166648b80a5521401fafc99728	refs/tags/javax.el-api-1.1.2
+ea9b0d2b74075e0d6a1517a636ee6a353a56f7ca	refs/tags/javax.el-api-2.2.1
+d625f5f5ffe86633a52e46b8ce73e297e9380fb6	refs/tags/javax.el-api-2.2.2
+7e04ee79924c6ed60ba848b004c8d8e659bac028	refs/tags/javax.el-api-2.2.3
+69601d77f35a4018e0190eae15a9fec8d6ebb4d0	refs/tags/javax.el-api-2.2.4
+80e7111daadf1fc340dc9b529744d65ded7b51e4	refs/tags/javax.el-api-2.2.5
+a3ee6c9f9b1d6ac053f0843c899c9d59a9f2f4fa	refs/tags/javax.el-api-3.0.1-b01
+c57b7eb165d0a2536c182f80d14afe987a44d158	refs/tags/javax.el-api-3.0.1-b02
+4cb8052fc29ef0a42167269eb449b8da93b16952	refs/tags/javax.el-api-3.0.1-b03
+6bb9b964fcbb236701603d929da64f6550b21c40	refs/tags/javax.el-api-3.0.1-b04
+993e3dd9bf04d5b949ccf07b92d222d4a8268012	refs/tags/javax.el-api-3.0.1-b05
+0f35dcd2faab2c7f215ef7a9e8fd7a04458ec286	refs/tags/javax.el-api-3.0.1-b06
+3a25b1a8a6379e4136e716f5af65bcd562f8e78c	refs/tags/javax.el-api-3.0.1-b06^{}
+2fce6859bfc471bce1c5851a4fe449460cc9272e	refs/tags/uel-api-2.2.1-b01
+aa11d2488777db2e908a9e9188c235c4b50b20fb	refs/tags/uel-api-2.2.1-b02
+1f0f15979574f5b7b5669b30ef854f2ce0116f7f	refs/tags/uel-api-2.2.1-b03
+fc4040f851ae5b38fcde1d9c8e5419716688f88f	refs/tags/uel-api-2.2.1-b04
+7afe935c5cc3e7493cb7f76f05499e03b38d6a30	refs/tags/uel-impl-2.2.1-b01
+5a3e109abc8f3ceec625d50507a13af818e0abc1	refs/tags/uel-impl-2.2.1-b02
+c81469e9d6e0a5ae08fdb00a6ee438c097b0552f	refs/tags/uel-impl-2.2.1-b03
+16ba29f9ea8a045781479121d118b7c72f209a69	refs/tags/uel-impl-2.2.1-b04
+cbfc18214139449391633fc949a59a7bb132949d	refs/tags/uel-impl-2.2.1-b05
+9918c4705ca99cbd56fc82d4184dda511f8fe2cf	refs/tags/uel-pom-2.2.1-b01
+9fa3c170e7993fd25109dfefb3ac428cc1738e5d	refs/tags/uel-pom-2.2.1-b02
+40b3b36a5e50311ba088afc6c63c54ede27e07b5	refs/tags/uel-pom-2.2.1-b03
+
+ succeeded in 271ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 17:33:41 GMT
+content-type: text/html
+cf-ray: 9f61031c086cfcc9-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'rm -rf /tmp/uel-ri-javax.el-2.2.4 && git clone --depth 1 --branch javax.el-2.2.4 https://github.com/javaee/uel-ri.git /tmp/uel-ri-javax.el-2.2.4' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar -o /tmp/javax.el-2.2.4-sources.jar && jar tf /tmp/javax.el-2.2.4-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4.jar -o /tmp/javax.el-2.2.4.jar && jar tf /tmp/javax.el-2.2.4.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 159ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/sun/
+com/sun/el/
+com/sun/el/lang/
+com/sun/el/parser/
+com/sun/el/util/
+com/sun/el/Messages.properties
+com/sun/el/lang/ELSupport.class
+com/sun/el/lang/EvaluationContext.class
+com/sun/el/lang/ExpressionBuilder$NodeSoftReference.class
+com/sun/el/lang/ExpressionBuilder$SoftConcurrentHashMap.class
+com/sun/el/lang/ExpressionBuilder$1.class
+com/sun/el/lang/ExpressionBuilder.class
+com/sun/el/lang/ELArithmetic$BigDecimalDelegate.class
+com/sun/el/lang/ELArithmetic$BigIntegerDelegate.class
+com/sun/el/lang/ELArithmetic$DoubleDelegate.class
+com/sun/el/lang/ELArithmetic$LongDelegate.class
+com/sun/el/lang/ELArithmetic.class
+com/sun/el/lang/FunctionMapperFactory.class
+com/sun/el/lang/FunctionMapperImpl$Function.class
+com/sun/el/lang/FunctionMapperImpl.class
+com/sun/el/lang/VariableMapperImpl.class
+com/sun/el/lang/VariableMapperFactory.class
+com/sun/el/parser/Node.class
+com/sun/el/parser/NodeVisitor.class
+com/sun/el/parser/JJTELParserState.class
+com/sun/el/parser/Token.class
+com/sun/el/parser/ELParserConstants.class
+com/sun/el/parser/SimpleCharStream.class
+com/sun/el/parser/TokenMgrError.class
+com/sun/el/parser/ELParserTreeConstants.class
+com/sun/el/parser/ELParserTokenManager.class
+com/sun/el/parser/ELParser$LookaheadSuccess.class
+com/sun/el/parser/ELParser$JJCalls.class
+com/sun/el/parser/ELParser$1.class
+com/sun/el/parser/ELParser.class
+com/sun/el/parser/ParseException.class
+com/sun/el/parser/AstChoice.class
+com/sun/el/parser/SimpleNode.class
+com/sun/el/parser/AstNotEqual.class
+com/sun/el/parser/BooleanNode.class
+com/sun/el/parser/AstDiv.class
+com/sun/el/parser/ArithmeticNode.class
+com/sun/el/parser/AstInteger.class
+com/sun/el/parser/AstDynamicExpression.class
+com/sun/el/parser/AstMinus.class
+com/sun/el/parser/AstString.class
+com/sun/el/parser/AstCompositeExpression.class
+com/sun/el/parser/AstLessThan.class
+com/sun/el/parser/AstBracketSuffix.class
+com/sun/el/parser/AstEmpty.class
+com/sun/el/parser/AstGreaterThanEqual.class
+com/sun/el/parser/AstPlus.class
+com/sun/el/parser/AstAnd.class
+com/sun/el/parser/AstEqual.class
+com/sun/el/parser/AstFloatingPoint.class
+com/sun/el/parser/AstValue.class
+com/sun/el/parser/AstValue$Target.class
+com/sun/el/parser/AstMethodArguments.class
+com/sun/el/parser/AstNegative.class
+com/sun/el/parser/AstNot.class
+com/sun/el/parser/AstMod.class
+com/sun/el/parser/AstGreaterThan.class
+com/sun/el/parser/AstTrue.class
+com/sun/el/parser/AstNull.class
+com/sun/el/parser/AstMult.class
+com/sun/el/parser/AstLiteralExpression.class
+com/sun/el/parser/AstIdentifier.class
+com/sun/el/parser/AstDotSuffix.class
+com/sun/el/parser/AstFalse.class
+com/sun/el/parser/AstLessThanEqual.class
+com/sun/el/parser/AstFunction.class
+com/sun/el/parser/AstDeferredExpression.class
+com/sun/el/parser/AstOr.class
+com/sun/el/ValueExpressionImpl.class
+com/sun/el/util/ReflectionUtil.class
+com/sun/el/util/MessageFactory.class
+com/sun/el/MethodExpressionImpl.class
+
+ succeeded in 195ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/sun/
+com/sun/el/
+com/sun/el/lang/
+com/sun/el/parser/
+com/sun/el/util/
+pom.xml
+com/sun/el/lang/FunctionMapperFactory.java
+com/sun/el/lang/VariableMapperFactory.java
+com/sun/el/lang/ExpressionBuilder.java
+com/sun/el/lang/ELArithmetic.java
+com/sun/el/lang/EvaluationContext.java
+com/sun/el/lang/FunctionMapperImpl.java
+com/sun/el/lang/VariableMapperImpl.java
+com/sun/el/lang/ELSupport.java
+com/sun/el/parser/SimpleNode.java
+com/sun/el/parser/AstGreaterThanEqual.java
+com/sun/el/parser/AstNot.java
+com/sun/el/parser/ELParserTokenManager.java
+com/sun/el/parser/AstNegative.java
+com/sun/el/parser/AstAnd.java
+com/sun/el/parser/ELParserConstants.java
+com/sun/el/parser/AstDynamicExpression.java
+com/sun/el/parser/ELParser.java
+com/sun/el/parser/AstString.java
+com/sun/el/parser/AstEqual.java
+com/sun/el/parser/AstNull.java
+com/sun/el/parser/AstDotSuffix.java
+com/sun/el/parser/AstLiteralExpression.java
+com/sun/el/parser/Node.java
+com/sun/el/parser/AstFloatingPoint.java
+com/sun/el/parser/BooleanNode.java
+com/sun/el/parser/JJTELParserState.java
+com/sun/el/parser/AstTrue.java
+com/sun/el/parser/AstMod.java
+com/sun/el/parser/AstOr.java
+com/sun/el/parser/ParseException.java
+com/sun/el/parser/AstMult.java
+com/sun/el/parser/AstCompositeExpression.java
+com/sun/el/parser/AstIdentifier.java
+com/sun/el/parser/AstPlus.java
+com/sun/el/parser/ArithmeticNode.java
+com/sun/el/parser/TokenMgrError.java
+com/sun/el/parser/AstNotEqual.java
+com/sun/el/parser/AstFalse.java
+com/sun/el/parser/AstChoice.java
+com/sun/el/parser/AstMinus.java
+com/sun/el/parser/SimpleCharStream.java
+com/sun/el/parser/AstInteger.java
+com/sun/el/parser/NodeVisitor.java
+com/sun/el/parser/AstEmpty.java
+com/sun/el/parser/AstBracketSuffix.java
+com/sun/el/parser/AstDeferredExpression.java
+com/sun/el/parser/AstGreaterThan.java
+com/sun/el/parser/AstMethodArguments.java
+com/sun/el/parser/Token.java
+com/sun/el/parser/AstLessThanEqual.java
+com/sun/el/parser/ELParser.jjt
+com/sun/el/parser/AstValue.java
+com/sun/el/parser/AstLessThan.java
+com/sun/el/parser/AstDiv.java
+com/sun/el/parser/ELParserTreeConstants.java
+com/sun/el/parser/AstFunction.java
+com/sun/el/util/ReflectionUtil.java
+com/sun/el/util/MessageFactory.java
+com/sun/el/Messages.properties
+com/sun/el/MethodExpressionImpl.java
+com/sun/el/ExpressionFactoryImpl.java
+com/sun/el/ValueExpressionLiteral.java
+com/sun/el/MethodExpressionLiteral.java
+com/sun/el/ValueExpressionImpl.java
+
+ succeeded in 569ms:
+Note: switching to '6d18a71c03b476b60c7dc71b352a873fd1cebcfb'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+
+exec
+/usr/bin/bash -lc "find /tmp/uel-ri-javax.el-2.2.4 -maxdepth 3 -type d | sort | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+exec
+/usr/bin/bash -lc "find /tmp/uel-ri-javax.el-2.2.4 -maxdepth 5 -type f | sed 's#/tmp/uel-ri-javax.el-2.2.4/##' | sort | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+/tmp/uel-ri-javax.el-2.2.4
+/tmp/uel-ri-javax.el-2.2.4/.git
+/tmp/uel-ri-javax.el-2.2.4/.git/branches
+/tmp/uel-ri-javax.el-2.2.4/.git/hooks
+/tmp/uel-ri-javax.el-2.2.4/.git/info
+/tmp/uel-ri-javax.el-2.2.4/.git/logs
+/tmp/uel-ri-javax.el-2.2.4/.git/objects
+/tmp/uel-ri-javax.el-2.2.4/.git/objects/info
+/tmp/uel-ri-javax.el-2.2.4/.git/objects/pack
+/tmp/uel-ri-javax.el-2.2.4/.git/refs
+/tmp/uel-ri-javax.el-2.2.4/.git/refs/heads
+/tmp/uel-ri-javax.el-2.2.4/.git/refs/tags
+/tmp/uel-ri-javax.el-2.2.4/src
+/tmp/uel-ri-javax.el-2.2.4/src/main
+/tmp/uel-ri-javax.el-2.2.4/src/main/java
+
+ succeeded in 0ms:
+.git/HEAD
+.git/config
+.git/description
+.git/hooks/applypatch-msg.sample
+.git/hooks/commit-msg.sample
+.git/hooks/fsmonitor-watchman.sample
+.git/hooks/post-update.sample
+.git/hooks/pre-applypatch.sample
+.git/hooks/pre-commit.sample
+.git/hooks/pre-merge-commit.sample
+.git/hooks/pre-push.sample
+.git/hooks/pre-rebase.sample
+.git/hooks/pre-receive.sample
+.git/hooks/prepare-commit-msg.sample
+.git/hooks/push-to-checkout.sample
+.git/hooks/sendemail-validate.sample
+.git/hooks/update.sample
+.git/index
+.git/info/exclude
+.git/logs/HEAD
+.git/objects/pack/pack-bebf93af816b33ccdee1dcad98622893417178e8.idx
+.git/objects/pack/pack-bebf93af816b33ccdee1dcad98622893417178e8.pack
+.git/objects/pack/pack-bebf93af816b33ccdee1dcad98622893417178e8.rev
+.git/packed-refs
+.git/shallow
+build.xml
+exclude.xml
+pom.xml
+
+exec
+/usr/bin/bash -lc "find /tmp/uel-ri-javax.el-2.2.4 -type d \\( -name test -o -name tests -o -name testsrc -o -name src \\) -print" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+/tmp/uel-ri-javax.el-2.2.4/src
+
+exec
+/usr/bin/bash -lc "git -C /tmp/uel-ri-javax.el-2.2.4 remote -v && git -C /tmp/uel-ri-javax.el-2.2.4 show --no-patch --format='%H%n%D%n%s' HEAD" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+origin	https://github.com/javaee/uel-ri.git (fetch)
+origin	https://github.com/javaee/uel-ri.git (push)
+6d18a71c03b476b60c7dc71b352a873fd1cebcfb
+grafted, HEAD, tag: javax.el-2.2.4
+[maven-release-plugin]  copy for tag javax.el-2.2.4
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/
+web search: 
+web search: https://raw.githubusercontent.com/javaee/uel-ri/javax.el-2.2.4/pom.xml
+codex
+The exact `javax.el-2.2.4` tag exists in the archived `javaee/uel-ri` repository, but that tag contains only main sources and no test tree; Maven Central also has no test artifact. I’m updating the metadata with Maven source/javadoc URLs, the GitHub repository root, and `N/A` for the test-suite URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..107dd1a39e36340d39277d856957c8223ebb0c99
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-javadoc.jar",
++  "description" : "javax.el is the GlassFish reference implementation of Java Unified Expression Language 2.2, providing expression parsing and evaluation used by JSP and JSF-style Java web applications. It implements the expression factory, value expression, method expression, parser, and supporting runtime classes for resolving variables, properties, methods, and functions."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..107dd1a39e36340d39277d856957c8223ebb0c99
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-javadoc.jar",
++  "description" : "javax.el is the GlassFish reference implementation of Java Unified Expression Language 2.2, providing expression parsing and evaluation used by JSP and JSF-style Java web applications. It implements the expression factory, value expression, method expression, parser, and supporting runtime classes for resolving variables, properties, methods, and functions."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+{
+  "coordinates": "org.glassfish.web:javax.el:2.2.4",
+  "repository-url": "https://github.com/javaee/uel-ri",
+  "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-javadoc.jar",
+  "description": "javax.el is the GlassFish reference implementation of Java Unified Expression Language 2.2, providing expression parsing and evaluation used by JSP and JSF-style Java web applications. It implements the expression factory, value expression, method expression, parser, and supporting runtime classes for resolving variables, properties, methods, and functions."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-sources.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 17:34:13 GMT
+content-type: application/java-archive
+content-length: 135184
+cf-ray: 9f6103e50f16cd00-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 800700
+etag: "1a9d8fe0b280439fdec92026ff91e244"
+last-modified: Tue, 10 Jul 2012 17:30:56 GMT
+x-checksum-md5: 1a9d8fe0b280439fdec92026ff91e244
+x-checksum-sha1: 8fc376c408ccbdd533b70c4144fed08741f1ca4f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/javax.el-2.2.4-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 17:34:13 GMT
+content-type: application/java-archive
+content-length: 402480
+cf-ray: 9f6103e50fe51a65-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 320575
+etag: "fb73883c348943dce8569cabb0aad570"
+last-modified: Tue, 10 Jul 2012 17:30:59 GMT
+x-checksum-md5: fb73883c348943dce8569cabb0aad570
+x-checksum-sha1: bde0490fb730e2dedca35d589131ecc1bb2ac7d9
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..107dd1a39e36340d39277d856957c8223ebb0c99
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-javadoc.jar",
++  "description" : "javax.el is the GlassFish reference implementation of Java Unified Expression Language 2.2, providing expression parsing and evaluation used by JSP and JSF-style Java web applications. It implements the expression factory, value expression, method expression, parser, and supporting runtime classes for resolving variables, properties, methods, and functions."
+ }
+
+exec
+/usr/bin/bash -lc 'git ls-files -- build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..107dd1a39e36340d39277d856957c8223ebb0c99
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-javadoc.jar",
++  "description" : "javax.el is the GlassFish reference implementation of Java Unified Expression Language 2.2, providing expression parsing and evaluation used by JSP and JSF-style Java web applications. It implements the expression factory, value expression, method expression, parser, and supporting runtime classes for resolving variables, properties, methods, and functions."
+ }
+
+ succeeded in 129ms:
+web search: 
+web search: site:mvnrepository.com/artifact/org.glassfish.web/javax.el/2.2.4 org.glassfish.web javax.el 2.2.4
+web search: 
+web search: github javaee uel-ri javax.el-2.2.4
+web search: 
+web search: https://github.com/javaee/uel-ri/tree/javax.el-2.2.4
+codex
+Updated [org.glassfish.web-javax.el-2.2.4.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json:1).
+
+I set the GitHub repository root, Maven Central source and javadoc artifact URLs, and `test-code-url` to `N/A` because the 2.2.4 tag exposes main sources but no test tree, and Maven Central has no test artifact for this release. ([repo1.maven.org](https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; this is a Java/JVM jar with class files. Validation completed with `jq`, and the source/javadoc URLs return HTTP 200 when `$version$` is replaced with `2.2.4`.
+diff --git a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+index 739ad1aa7d4326b85f9adcd16766cd89731b1eac..107dd1a39e36340d39277d856957c8223ebb0c99
+--- a/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.web:javax.el:2.2.4"
++  "coordinates" : "org.glassfish.web:javax.el:2.2.4",
++  "repository-url" : "https://github.com/javaee/uel-ri",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-javadoc.jar",
++  "description" : "javax.el is the GlassFish reference implementation of Java Unified Expression Language 2.2, providing expression parsing and evaluation used by JSP and JSF-style Java web applications. It implements the expression factory, value expression, method expression, parser, and supporting runtime classes for resolving variables, properties, methods, and functions."
+ }
+
+tokens used
+77,768
+Updated [org.glassfish.web-javax.el-2.2.4.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b/build/discovered-artifact-metadata/org.glassfish.web-javax.el-2.2.4.json:1).
+
+I set the GitHub repository root, Maven Central source and javadoc artifact URLs, and `test-code-url` to `N/A` because the 2.2.4 tag exposes main sources but no test tree, and Maven Central has no test artifact for this release. ([repo1.maven.org](https://repo1.maven.org/maven2/org/glassfish/web/javax.el/2.2.4/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; this is a Java/JVM jar with class files. Validation completed with `jq`, and the source/javadoc URLs return HTTP 200 when `$version$` is replaced with `2.2.4`.
+Ran agent for org.glassfish.web:javax.el:2.2.4 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b/build/agent-artifact-discovery-logs/org.glassfish.web-javax.el-2.2.4.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3713-1ddb480b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 29s
+9 actionable tasks: 4 executed, 5 from cache
