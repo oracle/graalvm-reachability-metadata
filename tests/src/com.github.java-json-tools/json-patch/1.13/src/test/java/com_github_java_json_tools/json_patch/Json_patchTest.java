@@ -156,6 +156,37 @@ public class Json_patchTest {
     }
 
     @Test
+    public void patchPathsUseJsonPointerEscapingForSpecialObjectMemberNames() throws Exception {
+        JsonNode source = json("""
+                {
+                  "a/b": { "tilde~key": "old" },
+                  "copy/from": "source value",
+                  "regular": true
+                }
+                """);
+        JsonNode patchJson = json("""
+                [
+                  { "op": "test", "path": "/a~1b/tilde~0key", "value": "old" },
+                  { "op": "replace", "path": "/a~1b/tilde~0key", "value": "new" },
+                  { "op": "copy", "from": "/copy~1from", "path": "/a~1b/copied~0value" },
+                  { "op": "remove", "path": "/copy~1from" }
+                ]
+                """);
+
+        JsonNode patched = JsonPatch.fromJson(patchJson).apply(source);
+
+        assertThat(patched).isEqualTo(json("""
+                {
+                  "a/b": {
+                    "tilde~key": "new",
+                    "copied~value": "source value"
+                  },
+                  "regular": true
+                }
+                """));
+    }
+
+    @Test
     public void mergePatchUpdatesObjectsAndDeletesNullMembers() throws Exception {
         JsonNode source = json("""
                 {
