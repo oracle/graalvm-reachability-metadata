@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.logs.LogRecordBuilder;
+import io.opentelemetry.api.logs.Severity;
 import io.opentelemetry.api.metrics.DoubleCounter;
 import io.opentelemetry.api.metrics.DoubleCounterBuilder;
 import io.opentelemetry.api.metrics.DoubleHistogram;
@@ -46,6 +48,7 @@ import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.extension.incubator.logs.AnyValue;
 import io.opentelemetry.extension.incubator.logs.AnyValueType;
+import io.opentelemetry.extension.incubator.logs.ExtendedLogRecordBuilder;
 import io.opentelemetry.extension.incubator.logs.KeyAnyValue;
 import io.opentelemetry.extension.incubator.metrics.DoubleGauge;
 import io.opentelemetry.extension.incubator.metrics.ExtendedDoubleCounterBuilder;
@@ -150,6 +153,36 @@ public class Opentelemetry_extension_incubatorTest {
         map.put("first", AnyValue.of("one"));
         map.put("second", AnyValue.of(2L));
         assertThat(AnyValue.of(map)).isEqualTo(keyValueList);
+    }
+
+    @Test
+    void extendedLogRecordBuilderAcceptsStructuredAnyValueBody() {
+        RecordingLogRecordBuilder logRecordBuilder = new RecordingLogRecordBuilder();
+        Context context = Context.current().with(REQUEST_ID, "log-request");
+        AnyValue<?> body = AnyValue.of(
+                KeyAnyValue.of("event.name", AnyValue.of("checkout")),
+                KeyAnyValue.of("attempt", AnyValue.of(2L)),
+                KeyAnyValue.of("successful", AnyValue.of(true)));
+        AttributeKey<String> sourceKey = AttributeKey.stringKey("log.source");
+
+        assertThat(logRecordBuilder.setTimestamp(123L, TimeUnit.MILLISECONDS)).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setTimestamp(Instant.ofEpochSecond(4, 5))).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setObservedTimestamp(456L, TimeUnit.MILLISECONDS)).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setObservedTimestamp(Instant.ofEpochSecond(7, 8))).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setContext(context)).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setSeverity(Severity.INFO)).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setSeverityText("INFO")).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setBody(body)).isSameAs(logRecordBuilder);
+        assertThat(logRecordBuilder.setAttribute(sourceKey, "test-source")).isSameAs(logRecordBuilder);
+
+        logRecordBuilder.emit();
+
+        assertThat(logRecordBuilder.context).isSameAs(context);
+        assertThat(logRecordBuilder.severity).isEqualTo(Severity.INFO);
+        assertThat(logRecordBuilder.severityText).isEqualTo("INFO");
+        assertThat(logRecordBuilder.body).isSameAs(body);
+        assertThat(logRecordBuilder.attributes).containsEntry(sourceKey, "test-source");
+        assertThat(logRecordBuilder.emitted).isTrue();
     }
 
     @Test
@@ -313,6 +346,75 @@ public class Opentelemetry_extension_incubatorTest {
         doubleGauge.set(2.5D, Attributes.empty());
         assertThat(doubleGaugeBuilder.setAttributesAdvice(advice)).isSameAs(doubleGaugeBuilder);
         assertThat(((RecordingDoubleGauge) doubleGauge).recordedValues).containsExactly(1.5D, 2.5D);
+    }
+
+    private static final class RecordingLogRecordBuilder implements ExtendedLogRecordBuilder {
+        private final Map<AttributeKey<?>, Object> attributes = new LinkedHashMap<>();
+        private Context context;
+        private Severity severity;
+        private String severityText;
+        private AnyValue<?> body;
+        private boolean emitted;
+
+        @Override
+        public LogRecordBuilder setTimestamp(long timestamp, TimeUnit unit) {
+            return this;
+        }
+
+        @Override
+        public LogRecordBuilder setTimestamp(Instant timestamp) {
+            return this;
+        }
+
+        @Override
+        public LogRecordBuilder setObservedTimestamp(long timestamp, TimeUnit unit) {
+            return this;
+        }
+
+        @Override
+        public LogRecordBuilder setObservedTimestamp(Instant timestamp) {
+            return this;
+        }
+
+        @Override
+        public LogRecordBuilder setContext(Context context) {
+            this.context = context;
+            return this;
+        }
+
+        @Override
+        public LogRecordBuilder setSeverity(Severity severity) {
+            this.severity = severity;
+            return this;
+        }
+
+        @Override
+        public LogRecordBuilder setSeverityText(String severityText) {
+            this.severityText = severityText;
+            return this;
+        }
+
+        @Override
+        public LogRecordBuilder setBody(String body) {
+            return this;
+        }
+
+        @Override
+        public LogRecordBuilder setBody(AnyValue<?> body) {
+            this.body = body;
+            return this;
+        }
+
+        @Override
+        public <T> LogRecordBuilder setAttribute(AttributeKey<T> key, T value) {
+            attributes.put(key, value);
+            return this;
+        }
+
+        @Override
+        public void emit() {
+            emitted = true;
+        }
     }
 
     private static final class RequestIdPropagator implements TextMapPropagator {
