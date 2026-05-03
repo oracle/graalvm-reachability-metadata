@@ -18,6 +18,7 @@ import tempfile
 import utility_scripts.count_reachability_entries as reachability_metadata_count
 import utility_scripts.count_native_image_config_entries as legacy_metadata_count
 from utility_scripts.library_stats import load_library_stats_entry
+from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.source_context import resolve_test_source_layout
 from utility_scripts.strategy_loader import load_strategy_by_name
 from git_scripts.common_git import git_remote_exists
@@ -222,7 +223,8 @@ def count_generated_loc(root_dir: str) -> int:
 
 
 def count_metadata_entries(repo_path: str, package: str, artifact: str, library_version: str):
-    metadata_dir = os.path.join(repo_path, "metadata", package, artifact, library_version)
+    metadata_version = resolve_metadata_version(repo_path, package, artifact, library_version)
+    metadata_dir = os.path.join(repo_path, "metadata", package, artifact, metadata_version)
     reach_json = os.path.join(metadata_dir, "reachability-metadata.json")
 
     if os.path.isfile(reach_json):
@@ -267,34 +269,7 @@ def _get_repo_root() -> str:
 
 def _resolve_test_version_dir(repo_path: str, package: str, artifact: str, library_version: str) -> str:
     """Resolve the tests/src directory name for a library version using metadata index.json."""
-    index_path = os.path.join(repo_path, "metadata", package, artifact, "index.json")
-    if os.path.isfile(index_path):
-        try:
-            with open(index_path, "r", encoding="utf-8") as f:
-                entries = json.load(f)
-            for entry in entries:
-                tested = entry.get("tested-versions") or []
-                metadata_version = entry.get("metadata-version")
-                if library_version != metadata_version and library_version not in tested:
-                    continue
-
-                test_version = entry.get("test-version") or metadata_version
-                if not test_version:
-                    break
-
-                indexed_module_dir = os.path.join(repo_path, "tests", "src", package, artifact, str(test_version))
-                if os.path.isdir(indexed_module_dir):
-                    return str(test_version)
-
-                print(
-                    f"ERROR: Test directory specified in index.json (`{indexed_module_dir}`) is missing for "
-                    f"{package}:{artifact}:{library_version}.",
-                    file=sys.stderr,
-                )
-                break
-        except Exception:
-            pass
-    return library_version
+    return resolve_test_version(repo_path, package, artifact, library_version)
 
 
 def collect_version_coverage_metrics(repo_path: str, package: str, artifact: str, library_version: str):
@@ -479,12 +454,13 @@ def resolve_artifact_paths(repo_path, package, artifact, library_version, tests_
             break
 
     # Determine metadata_file path (either reachability-metadata.json or the metadata dir)
-    reach_json = os.path.join(repo_path, "metadata", package, artifact, library_version, "reachability-metadata.json")
+    metadata_version = resolve_metadata_version(repo_path, package, artifact, library_version)
+    reach_json = os.path.join(repo_path, "metadata", package, artifact, metadata_version, "reachability-metadata.json")
     if os.path.isfile(reach_json):
         metadata_file_path = os.path.relpath(reach_json, repo_path)
     else:
         metadata_file_path = os.path.relpath(
-            os.path.join(repo_path, "metadata", package, artifact, library_version),
+            os.path.join(repo_path, "metadata", package, artifact, metadata_version),
             repo_path,
         )
 

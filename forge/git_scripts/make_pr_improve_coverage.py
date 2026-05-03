@@ -28,6 +28,7 @@ from git_scripts.common_git import (
     get_configured_reviewers,
 )
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.metrics_writer import (
     commit_run_metrics_with_retry,
     count_metadata_entries,
@@ -128,7 +129,8 @@ Summary:
 
 def load_and_remove_baseline_snapshot(repo_path: str, group: str, artifact: str, version: str) -> dict | None:
     """Load baseline snapshot written by improve_library_coverage.py and delete the file."""
-    baseline_path = os.path.join(repo_path, "tests", "src", group, artifact, version, BASELINE_STATS_FILENAME)
+    test_version = resolve_test_version(repo_path, group, artifact, version)
+    baseline_path = os.path.join(repo_path, "tests", "src", group, artifact, test_version, BASELINE_STATS_FILENAME)
     if not os.path.isfile(baseline_path):
         return None
     try:
@@ -148,16 +150,18 @@ def stage_and_commit(
         repo_path: str,
 ) -> None:
     """Stage the expected files/directories and commit."""
+    test_version = resolve_test_version(repo_path, group, artifact, library_version)
+    metadata_version = resolve_metadata_version(repo_path, group, artifact, library_version)
     # Remove baseline stats snapshot before staging so it is not committed
     baseline_path = os.path.join(
-        repo_path, "tests", "src", group, artifact, library_version, BASELINE_STATS_FILENAME,
+        repo_path, "tests", "src", group, artifact, test_version, BASELINE_STATS_FILENAME,
     )
     if os.path.isfile(baseline_path):
         os.remove(baseline_path)
     candidate_paths = [
-        str(os.path.join("tests", "src", group, artifact, library_version)),
+        str(os.path.join("tests", "src", group, artifact, test_version)),
         str(os.path.join("metadata", group, artifact, "index.json")),
-        str(os.path.join("metadata", group, artifact, library_version)),
+        str(os.path.join("metadata", group, artifact, metadata_version)),
         str(os.path.relpath(stats_artifact_dir(repo_path, group, artifact), repo_path)),
     ]
     candidate_paths = [path for path in candidate_paths if os.path.exists(os.path.join(repo_path, path))]

@@ -84,6 +84,8 @@ from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
     is_not_for_native_image,
+    resolve_metadata_version,
+    resolve_test_dir,
 )
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import (
@@ -1860,12 +1862,7 @@ def _resolve_dynamic_access_report_path(claimed_issue: ClaimedIssue) -> str:
     """Resolve the dynamic-access coverage report path for a new-library issue."""
     group, artifact, version = claimed_issue.issue_coordinates.split(":")
     return os.path.join(
-        claimed_issue.worktree_path,
-        "tests",
-        "src",
-        group,
-        artifact,
-        version,
+        resolve_test_dir(claimed_issue.worktree_path, group, artifact, version),
         "build",
         "reports",
         "dynamic-access",
@@ -1961,10 +1958,11 @@ def resolve_human_intervention_candidate(
 def _collect_human_intervention_read_only_files(claimed_issue: ClaimedIssue) -> list[str]:
     """Collect the key generated files that help the analysis agent explain the gap."""
     group, artifact, version = claimed_issue.issue_coordinates.split(":")
+    metadata_version = resolve_metadata_version(claimed_issue.worktree_path, group, artifact, version)
     candidate_paths = [
-        os.path.join(claimed_issue.worktree_path, "tests", "src", group, artifact, version),
+        resolve_test_dir(claimed_issue.worktree_path, group, artifact, version),
         os.path.join(claimed_issue.worktree_path, "metadata", group, artifact, "index.json"),
-        os.path.join(claimed_issue.worktree_path, "metadata", group, artifact, version),
+        os.path.join(claimed_issue.worktree_path, "metadata", group, artifact, metadata_version),
         resolve_stats_file_path(claimed_issue.worktree_path, group, artifact, version),
         _resolve_dynamic_access_report_path(claimed_issue),
     ]

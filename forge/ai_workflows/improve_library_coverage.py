@@ -37,6 +37,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
+from utility_scripts.metadata_index import resolve_test_dir, resolve_test_version
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
@@ -251,7 +252,27 @@ def main(argv=None) -> int:
     subprocess.run(["git", "switch", "-C", new_branch], check=True)
 
     # Commit existing state as checkpoint
-    tests_dir = os.path.join(reachability_repo_path, "tests", "src", group, artifact, version)
+    test_version = resolve_test_version(reachability_repo_path, group, artifact, version)
+    tests_dir = resolve_test_dir(reachability_repo_path, group, artifact, version)
+    if not os.path.isdir(tests_dir):
+        print(
+            "ERROR: Test directory for {library} does not exist: {path}".format(
+                library=library,
+                path=os.path.relpath(tests_dir, reachability_repo_path),
+            ),
+            file=sys.stderr,
+        )
+        return 1
+    if test_version != version:
+        log_stage(
+            "setup",
+            "Using indexed test directory tests/src/{group}/{artifact}/{test_version} for {library}".format(
+                group=group,
+                artifact=artifact,
+                test_version=test_version,
+                library=library,
+            ),
+        )
     index_json = os.path.join(reachability_repo_path, "metadata", group, artifact, "index.json")
     subprocess.run(["git", "add", tests_dir, index_json], check=False)
     subprocess.run(
@@ -302,6 +323,7 @@ def main(argv=None) -> int:
         strategy_obj=strategy,
         reachability_repo_path=reachability_repo_path,
         library=library,
+        test_version=test_version,
         build_gradle_file=build_gradle_file,
         source_context_overview=prepared_source_context.to_prompt_overview(),
         source_context_available=prepared_source_context.is_available,

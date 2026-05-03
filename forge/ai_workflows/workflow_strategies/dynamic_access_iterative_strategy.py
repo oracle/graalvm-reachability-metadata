@@ -19,6 +19,7 @@ from utility_scripts.dynamic_access_report import (
     load_dynamic_access_coverage_report,
 )
 from utility_scripts.large_library_progress import LargeLibraryProgressState
+from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.native_test_verification import (
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
     per_class_output_dir,
@@ -51,6 +52,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         self.keep_tests_without_dynamic_access = bool(self.context.get("keep_tests_without_dynamic_access", False))
         self._last_dynamic_access_report_issue = "not_run"
         self.group, self.artifact, self.version = self.library.split(":")
+        self.test_version = str(
+            self.context.get("test_version")
+            or resolve_test_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
         self.package = self.group
         self.max_class_iterations = self.parameters["max-iterations"]
         self.max_class_test_iterations = self.parameters["max-class-test-iterations"]
@@ -75,7 +80,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             "src",
             self.group,
             self.artifact,
-            self.version,
+            self.test_version,
             "build",
             "reports",
             "dynamic-access",
@@ -429,7 +434,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
     def _run_native_test_verification_gate(self, class_name: str) -> bool:
         """Run the per-class native-test verification gate; return True if PASSED."""
         output_dir = per_class_output_dir(
-            self.reachability_repo_path, self.group, self.artifact, self.version, class_name,
+            self.reachability_repo_path, self.group, self.artifact, self.test_version, class_name,
         )
         self._print_dynamic_access_detail(
             f"native-test gate: starting class={class_name} output_dir={output_dir} "
@@ -618,7 +623,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
     def _library_test_change_signature(self) -> str:
         """Capture tracked and untracked changes under the generated library test tree."""
-        test_dir = os.path.join("tests", "src", self.group, self.artifact, self.version)
+        test_dir = os.path.join("tests", "src", self.group, self.artifact, self.test_version)
         tracked_diff = subprocess.run(
             ["git", "diff", "--no-ext-diff", "HEAD", "--", test_dir],
             cwd=self.reachability_repo_path,
@@ -641,7 +646,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         """Stage and commit test sources so the next class has a clean checkpoint."""
         tests_dir = os.path.join(
             self.reachability_repo_path, "tests", "src",
-            self.group, self.artifact, self.version,
+            self.group, self.artifact, self.test_version,
         )
         subprocess.run(
             ["git", "add", "-A", tests_dir],

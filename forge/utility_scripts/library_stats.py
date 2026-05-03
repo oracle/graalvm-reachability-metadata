@@ -10,43 +10,12 @@ Helpers for working with exploded library stats files under `stats/<group>/<arti
 import json
 import os
 
-
-def _load_index_entries(repo_path: str, group: str, artifact: str) -> list[dict] | None:
-    """Load `metadata/<group>/<artifact>/index.json` when present and valid."""
-    index_path = os.path.join(repo_path, "metadata", group, artifact, "index.json")
-    if not os.path.isfile(index_path):
-        return None
-
-    try:
-        with open(index_path, "r", encoding="utf-8") as index_file:
-            index_entries = json.load(index_file)
-    except (OSError, json.JSONDecodeError):
-        return None
-
-    if not isinstance(index_entries, list):
-        return None
-    return index_entries
+from utility_scripts.metadata_index import resolve_metadata_version
 
 
 def resolve_stats_metadata_version(repo_path: str, group: str, artifact: str, library_version: str) -> str:
     """Resolve the metadata-version directory that owns stats for a requested library version."""
-    index_entries = _load_index_entries(repo_path, group, artifact)
-    if not index_entries:
-        return library_version
-
-    for entry in index_entries:
-        metadata_version = str(entry.get("metadata-version") or "")
-        if metadata_version == library_version:
-            return metadata_version
-
-    for entry in index_entries:
-        tested_versions = entry.get("tested-versions") or []
-        if library_version in tested_versions:
-            metadata_version = str(entry.get("metadata-version") or "")
-            if metadata_version:
-                return metadata_version
-
-    return library_version
+    return resolve_metadata_version(repo_path, group, artifact, library_version)
 
 
 def stats_artifact_dir(repo_path: str, group: str, artifact: str) -> str:

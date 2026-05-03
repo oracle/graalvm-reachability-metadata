@@ -4,6 +4,8 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import io
+import json
+import os
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -99,6 +101,31 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         )
 
         self.assertEqual(strategy._initial_part_covered_calls(report), 67)
+
+    def test_report_path_uses_indexed_test_version_for_reused_test_project(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            metadata_dir = os.path.join(tmpdir, "metadata", "org.example", "lib")
+            os.makedirs(metadata_dir)
+            with open(os.path.join(metadata_dir, "index.json"), "w", encoding="utf-8") as index_file:
+                json.dump(
+                    [
+                        {
+                            "metadata-version": "1.0.0",
+                            "tested-versions": ["1.0.0", "1.0.1"],
+                        }
+                    ],
+                    index_file,
+                )
+
+            strategy = self._strategy(
+                library="org.example:lib:1.0.1",
+                reachability_repo_path=tmpdir,
+            )
+
+        self.assertIn(
+            os.path.join("tests", "src", "org.example", "lib", "1.0.0", "build", "reports"),
+            strategy.dynamic_access_report_path,
+        )
 
     def test_partially_covered_exhausted_class_is_persisted_for_continuation(self) -> None:
         class FakeAgent:
@@ -381,6 +408,8 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
 
     @staticmethod
     def _strategy(**context) -> DynamicAccessIterativeStrategy:
+        library = context.pop("library", "org.example:lib:1.0.0")
+        reachability_repo_path = context.pop("reachability_repo_path", "/tmp/reachability")
         return DynamicAccessIterativeStrategy(
             {
                 "model": "test-model",
@@ -390,8 +419,8 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                     "max-class-test-iterations": 1,
                 },
             },
-            library="org.example:lib:1.0.0",
-            reachability_repo_path="/tmp/reachability",
+            library=library,
+            reachability_repo_path=reachability_repo_path,
             **context,
         )
 
