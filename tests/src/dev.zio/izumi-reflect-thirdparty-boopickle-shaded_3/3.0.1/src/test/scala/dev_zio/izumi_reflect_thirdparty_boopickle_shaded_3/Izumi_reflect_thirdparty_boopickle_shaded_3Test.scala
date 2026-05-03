@@ -16,6 +16,18 @@ import org.junit.jupiter.api.Test
 
 class Izumi_reflect_thirdparty_boopickle_shaded_3Test {
   @Test
+  def xmapDerivedPicklerRoundTripsDomainValue(): Unit = {
+    final case class Label(value: String)
+
+    implicit val labelPickler: Pickler[Label] = stringPickler.xmap[Label](Label.apply)((label: Label) => label.value)
+    val value: Label = Label("xmap-derived domain value")
+
+    val decoded: Label = roundTrip(value)
+
+    assertEquals(value, decoded)
+  }
+
+  @Test
   def nestedCollectionPicklersRoundTripOptionsAndTuples(): Unit = {
     val value: Map[String, List[Option[(Int, Boolean)]]] = Map(
       "enabled" -> List(Some(1 -> true), None, Some(127 -> false)),
