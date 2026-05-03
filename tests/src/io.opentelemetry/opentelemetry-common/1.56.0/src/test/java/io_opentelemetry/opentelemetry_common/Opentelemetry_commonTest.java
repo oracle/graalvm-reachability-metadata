@@ -59,6 +59,27 @@ public class Opentelemetry_commonTest {
     }
 
     @Test
+    void componentLoaderLazilyInstantiatesAndCachesProvidersWithinOneLoadCall() {
+        CountingGreetingService.createdInstances = 0;
+        ComponentLoader componentLoader = ComponentLoader.forClassLoader(new ServiceResourceClassLoader(
+                CountingGreetingService.class.getName() + "\n"));
+
+        Iterable<GreetingService> services = componentLoader.load(GreetingService.class);
+        assertThat(CountingGreetingService.createdInstances).isZero();
+
+        Iterator<GreetingService> firstIterator = services.iterator();
+        assertThat(CountingGreetingService.createdInstances).isZero();
+
+        GreetingService firstService = firstIterator.next();
+        GreetingService cachedService = services.iterator().next();
+
+        assertThat(firstService).isInstanceOf(CountingGreetingService.class);
+        assertThat(cachedService).isSameAs(firstService);
+        assertThat(CountingGreetingService.createdInstances).isEqualTo(1);
+        assertThat(firstService.greet("cached")).isEqualTo("instance-1:cached");
+    }
+
+    @Test
     void componentLoaderCreatesFreshServiceLoaderForEachLoadCall() {
         CountingGreetingService.createdInstances = 0;
         ComponentLoader componentLoader = ComponentLoader.forClassLoader(new ServiceResourceClassLoader(
