@@ -10,6 +10,7 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.api.trace.TraceState;
+import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.prometheus.client.exemplars.tracer.common.SpanContextSupplier;
 import io.prometheus.client.exemplars.tracer.otel.OpenTelemetrySpanContextSupplier;
@@ -17,6 +18,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -117,6 +122,35 @@ public class Simpleclient_tracer_otelTest {
         assertThat(supplier.getTraceId()).isNull();
         assertThat(supplier.getSpanId()).isNull();
         assertThat(supplier.isSampled()).isFalse();
+    }
+
+    @Test
+    void supplierReadsSpanFromWrappedOpenTelemetryContextOnWorkerThread() throws Exception {
+        OpenTelemetrySpanContextSupplier supplier = new OpenTelemetrySpanContextSupplier();
+        Span span = span(TRACE_ID, SPAN_ID, TraceFlags.getSampled());
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        try {
+            executor.submit(() -> {
+            }).get(5, TimeUnit.SECONDS);
+
+            try (Scope scope = span.makeCurrent()) {
+                assertThat(executor.submit(() -> exemplarLabelsFor(supplier)).get(5, TimeUnit.SECONDS)).isEmpty();
+
+                Callable<Map<String, String>> readPropagatedSpan = Context.current()
+                        .wrap(() -> exemplarLabelsFor(supplier));
+
+                assertThat(executor.submit(readPropagatedSpan).get(5, TimeUnit.SECONDS))
+                        .containsExactly(
+                                Map.entry("trace_id", TRACE_ID),
+                                Map.entry("span_id", SPAN_ID));
+            }
+
+            assertThat(executor.submit(() -> exemplarLabelsFor(supplier)).get(5, TimeUnit.SECONDS)).isEmpty();
+        } finally {
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     @Test
