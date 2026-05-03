@@ -29,14 +29,19 @@ import io.opentelemetry.api.incubator.metrics.ExtendedDefaultMeterProvider;
 import io.opentelemetry.api.incubator.metrics.ExtendedDoubleCounter;
 import io.opentelemetry.api.incubator.metrics.ExtendedDoubleCounterBuilder;
 import io.opentelemetry.api.incubator.metrics.ExtendedDoubleGauge;
+import io.opentelemetry.api.incubator.metrics.ExtendedDoubleGaugeBuilder;
 import io.opentelemetry.api.incubator.metrics.ExtendedDoubleHistogram;
+import io.opentelemetry.api.incubator.metrics.ExtendedDoubleHistogramBuilder;
 import io.opentelemetry.api.incubator.metrics.ExtendedDoubleUpDownCounter;
+import io.opentelemetry.api.incubator.metrics.ExtendedDoubleUpDownCounterBuilder;
 import io.opentelemetry.api.incubator.metrics.ExtendedLongCounter;
 import io.opentelemetry.api.incubator.metrics.ExtendedLongCounterBuilder;
 import io.opentelemetry.api.incubator.metrics.ExtendedLongGauge;
 import io.opentelemetry.api.incubator.metrics.ExtendedLongGaugeBuilder;
 import io.opentelemetry.api.incubator.metrics.ExtendedLongHistogram;
+import io.opentelemetry.api.incubator.metrics.ExtendedLongHistogramBuilder;
 import io.opentelemetry.api.incubator.metrics.ExtendedLongUpDownCounter;
+import io.opentelemetry.api.incubator.metrics.ExtendedLongUpDownCounterBuilder;
 import io.opentelemetry.api.incubator.propagation.ExtendedContextPropagators;
 import io.opentelemetry.api.incubator.propagation.PassThroughPropagator;
 import io.opentelemetry.api.incubator.trace.ExtendedDefaultTracerProvider;
@@ -390,6 +395,41 @@ public class Opentelemetry_api_incubatorTest {
         doubleGauge.set(10.5D);
         doubleGauge.set(11.5D, attributes);
         doubleGauge.set(12.5D, attributes, context);
+    }
+
+    @Test
+    void noopMeterProviderAcceptsAttributesAdviceOnAdditionalInstrumentBuilders() {
+        Meter meter = noopExtendedMeter();
+        List<AttributeKey<?>> advisedKeys = List.of(
+                        AttributeKey.stringKey("route"),
+                        AttributeKey.longKey("status.code"));
+
+        ExtendedLongUpDownCounterBuilder longUpDownCounterBuilder =
+                        (ExtendedLongUpDownCounterBuilder) meter.upDownCounterBuilder("advised.long.updown");
+        assertThat(longUpDownCounterBuilder.setAttributesAdvice(advisedKeys)).isSameAs(longUpDownCounterBuilder);
+        assertThat(longUpDownCounterBuilder.build()).isInstanceOf(ExtendedLongUpDownCounter.class);
+
+        ExtendedDoubleUpDownCounterBuilder doubleUpDownCounterBuilder =
+                        (ExtendedDoubleUpDownCounterBuilder) meter.upDownCounterBuilder("advised.double.updown")
+                                        .ofDoubles();
+        assertThat(doubleUpDownCounterBuilder.setAttributesAdvice(advisedKeys)).isSameAs(doubleUpDownCounterBuilder);
+        assertThat(doubleUpDownCounterBuilder.build()).isInstanceOf(ExtendedDoubleUpDownCounter.class);
+
+        ExtendedLongHistogramBuilder longHistogramBuilder =
+                        (ExtendedLongHistogramBuilder) meter.histogramBuilder("advised.long.histogram")
+                                        .ofLongs();
+        assertThat(longHistogramBuilder.setAttributesAdvice(advisedKeys)).isSameAs(longHistogramBuilder);
+        assertThat(longHistogramBuilder.build()).isInstanceOf(ExtendedLongHistogram.class);
+
+        ExtendedDoubleHistogramBuilder doubleHistogramBuilder =
+                        (ExtendedDoubleHistogramBuilder) meter.histogramBuilder("advised.double.histogram");
+        assertThat(doubleHistogramBuilder.setAttributesAdvice(advisedKeys)).isSameAs(doubleHistogramBuilder);
+        assertThat(doubleHistogramBuilder.build()).isInstanceOf(ExtendedDoubleHistogram.class);
+
+        ExtendedDoubleGaugeBuilder doubleGaugeBuilder =
+                        (ExtendedDoubleGaugeBuilder) meter.gaugeBuilder("advised.double.gauge");
+        assertThat(doubleGaugeBuilder.setAttributesAdvice(advisedKeys)).isSameAs(doubleGaugeBuilder);
+        assertThat(doubleGaugeBuilder.build()).isInstanceOf(ExtendedDoubleGauge.class);
     }
 
     @Test
