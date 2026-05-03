@@ -97,6 +97,38 @@ public class Org_osgi_service_repositoryTest {
     }
 
     @Test
+    void requirementBuilderSetMethodsReplacePreviousState() {
+        SimpleRepository repository = new SimpleRepository();
+        ContentResource firstResource = contentResource(
+                "bundle-a",
+                "hash-a",
+                "https://example.invalid/a.jar",
+                "application/java-archive",
+                "a");
+        ContentResource secondResource = contentResource(
+                "bundle-b",
+                "hash-b",
+                "https://example.invalid/b.jar",
+                "application/java-archive",
+                "b");
+
+        Requirement requirement = repository.newRequirementBuilder(ContentNamespace.CONTENT_NAMESPACE)
+                .addAttribute("stale", "attribute")
+                .addDirective("stale", "directive")
+                .setResource(firstResource)
+                .setAttributes(Map.of("current", "attribute"))
+                .setDirectives(Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE, "(osgi.content=hash-b)"))
+                .setResource(secondResource)
+                .build();
+
+        assertThat(requirement.getAttributes())
+                .containsExactly(Map.entry("current", "attribute"));
+        assertThat(requirement.getDirectives())
+                .containsExactly(Map.entry(Namespace.REQUIREMENT_FILTER_DIRECTIVE, "(osgi.content=hash-b)"));
+        assertThat(requirement.getResource()).isSameAs(secondResource);
+    }
+
+    @Test
     void expressionCombinerBuildsImmutableOrderedExpressionTrees() {
         SimpleRepository repository = new SimpleRepository();
         ExpressionCombiner combiner = repository.getExpressionCombiner();
