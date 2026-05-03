@@ -8,6 +8,10 @@ package io_undertow.undertow_servlet;
 
 import io.undertow.Handlers;
 import io.undertow.Undertow;
+import io.undertow.security.idm.Account;
+import io.undertow.security.idm.Credential;
+import io.undertow.security.idm.IdentityManager;
+import io.undertow.security.idm.PasswordCredential;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.PathResourceManager;
 import io.undertow.servlet.Servlets;
@@ -46,8 +50,12 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.Principal;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -250,6 +258,38 @@ public class Undertow_servletTest {
         }
     }
 
+    @Test
+    void basicAuthenticationProtectsServletResourcesAndExposesPrincipal() throws Exception {
+        DeploymentInfo deploymentInfo = baseDeployment("/security")
+                .setIdentityManager(new SimpleIdentityManager())
+                .setLoginConfig(Servlets.loginConfig(HttpServletRequest.BASIC_AUTH, "Undertow Servlet Test"))
+                .addSecurityRole("admin")
+                .addSecurityConstraint(Servlets.securityConstraint()
+                        .addRoleAllowed("admin")
+                        .addWebResourceCollection(Servlets.webResourceCollection().addUrlPattern("/protected/*")))
+                .addServlet(Servlets.servlet("secured", SecuredServlet.class,
+                                new ImmediateInstanceFactory<>(new SecuredServlet()))
+                        .addMapping("/protected/data"));
+
+        try (ManagedServer server = start(deploymentInfo); HttpClient client = newHttpClient()) {
+            HttpResponse<String> unauthenticatedResponse = client.send(get(server.uri("/protected/data")).build(),
+                    HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> authenticatedResponse = client.send(get(server.uri("/protected/data"))
+                            .header("Authorization", basicCredentials("alice", "secret"))
+                            .build(),
+                    HttpResponse.BodyHandlers.ofString());
+
+            String authenticateHeader = unauthenticatedResponse.headers().firstValue("WWW-Authenticate")
+                    .orElseThrow(() -> new AssertionError("Expected BASIC challenge header"));
+
+            assertThat(unauthenticatedResponse.statusCode()).isEqualTo(401);
+            assertThat(authenticateHeader).contains("Basic", "Undertow Servlet Test");
+            assertThat(authenticatedResponse.statusCode()).isEqualTo(200);
+            assertThat(authenticatedResponse.body())
+                    .isEqualTo("user=alice;role=true;auth=" + HttpServletRequest.BASIC_AUTH);
+        }
+    }
+
     private static DeploymentInfo baseDeployment(String contextPath) {
         return Servlets.deployment()
                 .setClassLoader(Undertow_servletTest.class.getClassLoader())
@@ -282,6 +322,11 @@ public class Undertow_servletTest {
         return HttpRequest.newBuilder(uri)
                 .timeout(REQUEST_TIMEOUT)
                 .GET();
+    }
+
+    private static String basicCredentials(String username, String password) {
+        String credentials = username + ":" + password;
+        return "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
     }
 
     private static void deleteRecursively(Path path) throws IOException {
@@ -483,6 +528,57 @@ public class Undertow_servletTest {
                     request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE),
                     request.getAttribute(RequestDispatcher.ERROR_MESSAGE),
                     request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
+        }
+    }
+
+    public static class SecuredServlet extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            response.setContentType("text/plain; charset=UTF-8");
+            response.getWriter().printf("user=%s;role=%s;auth=%s",
+                    request.getRemoteUser(),
+                    request.isUserInRole("admin"),
+                    request.getAuthType());
+        }
+    }
+
+    public static class SimpleIdentityManager implements IdentityManager {
+        @Override
+        public Account verify(Account account) {
+            return account;
+        }
+
+        @Override
+        public Account verify(String id, Credential credential) {
+            if (!(credential instanceof PasswordCredential passwordCredential)) {
+                return null;
+            }
+            boolean validUser = "alice".equals(id);
+            boolean validPassword = Arrays.equals("secret".toCharArray(), passwordCredential.getPassword());
+            return validUser && validPassword ? new SimpleAccount(id) : null;
+        }
+
+        @Override
+        public Account verify(Credential credential) {
+            return null;
+        }
+    }
+
+    public static class SimpleAccount implements Account {
+        private final String name;
+
+        public SimpleAccount(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public Principal getPrincipal() {
+            return () -> name;
+        }
+
+        @Override
+        public Set<String> getRoles() {
+            return Set.of("admin");
         }
     }
 }
