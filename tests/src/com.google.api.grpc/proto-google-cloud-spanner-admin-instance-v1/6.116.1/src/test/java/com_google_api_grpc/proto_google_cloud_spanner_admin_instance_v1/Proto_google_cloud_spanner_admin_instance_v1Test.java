@@ -363,6 +363,45 @@ public class Proto_google_cloud_spanner_admin_instance_v1Test {
     }
 
     @Test
+    void buildsProcessingUnitInstancePartitionWithAutoscalingAndBackupReferences() {
+        AutoscalingConfig autoscalingConfig = AutoscalingConfig.newBuilder()
+                .setAutoscalingLimits(AutoscalingConfig.AutoscalingLimits.newBuilder()
+                        .setMinProcessingUnits(300)
+                        .setMaxProcessingUnits(1_200))
+                .setAutoscalingTargets(AutoscalingConfig.AutoscalingTargets.newBuilder()
+                        .setHighPriorityCpuUtilizationPercent(60)
+                        .setStorageUtilizationPercent(85))
+                .build();
+        String backup = "projects/sample-project/instances/test-instance/backups/nightly";
+
+        InstancePartition partition = InstancePartition.newBuilder()
+                .setName(InstancePartitionName.format(PROJECT, INSTANCE_ID, PARTITION_ID))
+                .setConfig(InstanceConfigName.format(PROJECT, CONFIG_ID))
+                .setDisplayName("Autoscaled Partition")
+                .setProcessingUnits(600)
+                .setAutoscalingConfig(autoscalingConfig)
+                .setState(InstancePartition.State.READY)
+                .addReferencingBackups(backup)
+                .build();
+        InstancePartition capacityCleared = partition.toBuilder().clearProcessingUnits().build();
+
+        assertThat(partition.getComputeCapacityCase())
+                .isEqualTo(InstancePartition.ComputeCapacityCase.PROCESSING_UNITS);
+        assertThat(partition.hasProcessingUnits()).isTrue();
+        assertThat(partition.hasNodeCount()).isFalse();
+        assertThat(partition.getProcessingUnits()).isEqualTo(600);
+        assertThat(partition.hasAutoscalingConfig()).isTrue();
+        assertThat(partition.getAutoscalingConfig().getAutoscalingLimits().getMaxLimitCase())
+                .isEqualTo(AutoscalingConfig.AutoscalingLimits.MaxLimitCase.MAX_PROCESSING_UNITS);
+        assertThat(partition.getAutoscalingConfig().getAutoscalingTargets().getStorageUtilizationPercent())
+                .isEqualTo(85);
+        assertThat(partition.getReferencingBackupsList()).containsExactly(backup);
+        assertThat(capacityCleared.getComputeCapacityCase())
+                .isEqualTo(InstancePartition.ComputeCapacityCase.COMPUTECAPACITY_NOT_SET);
+        assertThat(capacityCleared.hasAutoscalingConfig()).isTrue();
+    }
+
+    @Test
     void createsInstancePartitionMessagesAndMoveInstanceMetadata() {
         FieldMask partitionMask = FieldMask.newBuilder().addPaths("display_name").addPaths("node_count").build();
         Timestamp startTime = Timestamp.newBuilder().setSeconds(1_700_000_000L).build();
