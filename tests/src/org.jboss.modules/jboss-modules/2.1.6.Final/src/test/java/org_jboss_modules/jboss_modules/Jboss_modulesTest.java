@@ -15,6 +15,9 @@ import java.math.BigInteger;
 import java.util.NoSuchElementException;
 
 import org.jboss.modules.Version;
+import org.jboss.modules.filter.MultiplePathFilterBuilder;
+import org.jboss.modules.filter.PathFilter;
+import org.jboss.modules.filter.PathFilters;
 import org.junit.jupiter.api.Test;
 
 public class Jboss_modulesTest {
@@ -107,5 +110,36 @@ public class Jboss_modulesTest {
         assertThrows(IllegalArgumentException.class, () -> Version.parse(""));
         assertThrows(IllegalArgumentException.class, () -> Version.parse("1."));
         assertThrows(IllegalArgumentException.class, () -> Version.parse("1#2"));
+    }
+
+    @Test
+    void combinesPathFiltersUsingOrderedRulesAndDefaultDecision() {
+        MultiplePathFilterBuilder builder = PathFilters.multiplePathFilterBuilder(false);
+        builder.addFilter(PathFilters.isChildOf("public/internal"), false);
+        builder.addFilter(PathFilters.is("module.xml"), true);
+        builder.addFilter(PathFilters.isChildOf("public"), true);
+
+        PathFilter filter = builder.create();
+
+        assertTrue(filter.accept("module.xml"));
+        assertTrue(filter.accept("public/api/Service.class"));
+        assertFalse(filter.accept("public/internal/Hidden.class"));
+        assertFalse(filter.accept("private/Implementation.class"));
+    }
+
+    @Test
+    void distinguishesDefaultImportFiltersForMetaInfServices() {
+        PathFilter defaultImportFilter = PathFilters.getDefaultImportFilter();
+        PathFilter importFilterWithServices = PathFilters.getDefaultImportFilterWithServices();
+
+        assertTrue(defaultImportFilter.accept("org/example/Service.class"));
+        assertFalse(defaultImportFilter.accept("META-INF"));
+        assertFalse(defaultImportFilter.accept("META-INF/MANIFEST.MF"));
+        assertFalse(defaultImportFilter.accept("META-INF/services/org.example.Service"));
+
+        assertTrue(importFilterWithServices.accept("org/example/Service.class"));
+        assertTrue(importFilterWithServices.accept("META-INF/services"));
+        assertTrue(importFilterWithServices.accept("META-INF/services/org.example.Service"));
+        assertFalse(importFilterWithServices.accept("META-INF/MANIFEST.MF"));
     }
 }
