@@ -1,0 +1,752 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded10-69de-7d42-8e1a-97b46c56417f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.graphql-java:graphql-java-extended-scalars:21.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "21.0" when "$version$" is replaced with "21.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+- Entry selector: "metadata-version" = "21.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "21.0".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "21.0".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "21.0".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "21.0" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 21.0
+- Entry metadata-version: 21.0
+- Entry test-version: 21.0
+codex
+I’ll verify the existing metadata entry first, then check Maven and the upstream repository/tag so the URLs render correctly for `21.0` before editing.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.graphql-java/graphql-java-extended-scalars/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "21.0",
+    "tested-versions" : [
+      "21.0"
+    ],
+    "allowed-packages" : [
+      "graphql.scalars"
+    ]
+  },
+  {
+    "metadata-version" : "19.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+    "tested-versions" : [
+      "19.0",
+      "19.1",
+      "20.0",
+      "20.1",
+      "20.2"
+    ],
+    "allowed-packages" : [
+      "graphql.scalars"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'rg -n "graphql-java-extended-scalars|graphql-java" metadata/com.graphql-java -S' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+ succeeded in 0ms:
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:6:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/9a4774328bb797b49fb2a2513fea69b1656089d1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:20:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:21:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.0.1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:35:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:36:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/0eec4c8390943c7875840b99bfba800d546d52ca/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:49:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:50:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:51:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/11a7348c1f24cfe9d16a9e1fcee856387e49a93a/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:52:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:63:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:64:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:65:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:66:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:81:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:82:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:83:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:84:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:9:    "repository-url": "https://github.com/graphql-java/graphql-java",
+metadata/com.graphql-java/graphql-java/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java/tree/v$version$/src/test",
+metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:15:    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:16:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/$version$/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:17:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:18:    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:9:    "repository-url": "https://github.com/graphql-java/graphql-java-extended-validation",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v$version$/src/test",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:12:    "description": "This library adds extended validation for fields, arguments, and input values in graphql-java schemas. It provides directive-based constraints and validation rules that enforce allowable values during GraphQL execution.",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:17:      "com.graphql-java:graphql-java",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:30:      "com.graphql-java:graphql-java",
+
+web search: 
+web search: com.graphql-java graphql-java-extended-scalars 21.0 Maven sources javadoc tests jar
+web search: 
+web search: https://github.com/graphql-java/graphql-java-extended-scalars/tree/v21.0/src/test
+codex
+The local entry has only the version, tested version, and allowed package. The older `19.0` entry already uses Maven Central for sources and Javadocs, so I’m checking whether those same templates exist for `21.0` and whether a Maven test artifact exists before falling back to GitHub tests.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/21.0/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/graphql-java/graphql-java-extended-scalars/tree/v21.0/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/graphql-java/graphql-java-extended-scalars/tree/21.0/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+ succeeded in 263ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/graphql-java/graphql-java-extended-scalars/21.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/graphql-java/graphql-java-extended-scalars/21.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar" title="graphql-java-extended-scalars-21.0-javadoc.jar">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28    426227      
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar.asc" title="graphql-java-extended-scalars-21.0-javadoc.jar.asc">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28       475      
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar.asc.md5" title="graphql-java-extended-scalars-21.0-javadoc.jar.asc.md5">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar.asc.sha1" title="graphql-java-extended-scalars-21.0-javadoc.jar.asc.sha1">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar.asc.sha256" title="graphql-java-extended-scalars-21.0-javadoc.jar.asc.sha256">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar.asc.sha512" title="graphql-java-extended-scalars-21.0-javadoc.jar.asc.sha512">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28       128      
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar.md5" title="graphql-java-extended-scalars-21.0-javadoc.jar.md5">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar.sha1" title="graphql-java-extended-scalars-21.0-javadoc.jar.sha1">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar.sha256" title="graphql-java-extended-scalars-21.0-javadoc.jar.sha256">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0-javadoc.jar.sha512" title="graphql-java-extended-scalars-21.0-javadoc.jar.sha512">graphql-java-extended-scalars-21.0-javadoc.ja...</a>  2023-08-21 05:28       128      
+<a href="graphql-java-extended-scalars-21.0-sources.jar" title="graphql-java-extended-scalars-21.0-sources.jar">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28     27555      
+<a href="graphql-java-extended-scalars-21.0-sources.jar.asc" title="graphql-java-extended-scalars-21.0-sources.jar.asc">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28       475      
+<a href="graphql-java-extended-scalars-21.0-sources.jar.asc.md5" title="graphql-java-extended-scalars-21.0-sources.jar.asc.md5">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0-sources.jar.asc.sha1" title="graphql-java-extended-scalars-21.0-sources.jar.asc.sha1">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0-sources.jar.asc.sha256" title="graphql-java-extended-scalars-21.0-sources.jar.asc.sha256">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0-sources.jar.asc.sha512" title="graphql-java-extended-scalars-21.0-sources.jar.asc.sha512">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28       128      
+<a href="graphql-java-extended-scalars-21.0-sources.jar.md5" title="graphql-java-extended-scalars-21.0-sources.jar.md5">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0-sources.jar.sha1" title="graphql-java-extended-scalars-21.0-sources.jar.sha1">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0-sources.jar.sha256" title="graphql-java-extended-scalars-21.0-sources.jar.sha256">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0-sources.jar.sha512" title="graphql-java-extended-scalars-21.0-sources.jar.sha512">graphql-java-extended-scalars-21.0-sources.ja...</a>  2023-08-21 05:28       128      
+<a href="graphql-java-extended-scalars-21.0.jar" title="graphql-java-extended-scalars-21.0.jar">graphql-java-extended-scalars-21.0.jar</a>            2023-08-21 05:28     75906      
+<a href="graphql-java-extended-scalars-21.0.jar.asc" title="graphql-java-extended-scalars-21.0.jar.asc">graphql-java-extended-scalars-21.0.jar.asc</a>        2023-08-21 05:28       475      
+<a href="graphql-java-extended-scalars-21.0.jar.asc.md5" title="graphql-java-extended-scalars-21.0.jar.asc.md5">graphql-java-extended-scalars-21.0.jar.asc.md...</a>  2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0.jar.asc.sha1" title="graphql-java-extended-scalars-21.0.jar.asc.sha1">graphql-java-extended-scalars-21.0.jar.asc.sh...</a>  2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0.jar.asc.sha256" title="graphql-java-extended-scalars-21.0.jar.asc.sha256">graphql-java-extended-scalars-21.0.jar.asc.sh...</a>  2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0.jar.asc.sha512" title="graphql-java-extended-scalars-21.0.jar.asc.sha512">graphql-java-extended-scalars-21.0.jar.asc.sh...</a>  2023-08-21 05:28       128      
+<a href="graphql-java-extended-scalars-21.0.jar.md5" title="graphql-java-extended-scalars-21.0.jar.md5">graphql-java-extended-scalars-21.0.jar.md5</a>        2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0.jar.sha1" title="graphql-java-extended-scalars-21.0.jar.sha1">graphql-java-extended-scalars-21.0.jar.sha1</a>       2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0.jar.sha256" title="graphql-java-extended-scalars-21.0.jar.sha256">graphql-java-extended-scalars-21.0.jar.sha256</a>     2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0.jar.sha512" title="graphql-java-extended-scalars-21.0.jar.sha512">graphql-java-extended-scalars-21.0.jar.sha512</a>     2023-08-21 05:28       128      
+<a href="graphql-java-extended-scalars-21.0.module" title="graphql-java-extended-scalars-21.0.module">graphql-java-extended-scalars-21.0.module</a>         2023-08-21 05:28      2174      
+<a href="graphql-java-extended-scalars-21.0.module.asc" title="graphql-java-extended-scalars-21.0.module.asc">graphql-java-extended-scalars-21.0.module.asc</a>     2023-08-21 05:28       475      
+<a href="graphql-java-extended-scalars-21.0.module.asc.md5" title="graphql-java-extended-scalars-21.0.module.asc.md5">graphql-java-extended-scalars-21.0.module.asc...</a>  2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0.module.asc.sha1" title="graphql-java-extended-scalars-21.0.module.asc.sha1">graphql-java-extended-scalars-21.0.module.asc...</a>  2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0.module.asc.sha256" title="graphql-java-extended-scalars-21.0.module.asc.sha256">graphql-java-extended-scalars-21.0.module.asc...</a>  2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0.module.asc.sha512" title="graphql-java-extended-scalars-21.0.module.asc.sha512">graphql-java-extended-scalars-21.0.module.asc...</a>  2023-08-21 05:28       128      
+<a href="graphql-java-extended-scalars-21.0.module.md5" title="graphql-java-extended-scalars-21.0.module.md5">graphql-java-extended-scalars-21.0.module.md5</a>     2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0.module.sha1" title="graphql-java-extended-scalars-21.0.module.sha1">graphql-java-extended-scalars-21.0.module.sha...</a>  2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0.module.sha256" title="graphql-java-extended-scalars-21.0.module.sha256">graphql-java-extended-scalars-21.0.module.sha...</a>  2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0.module.sha512" title="graphql-java-extended-scalars-21.0.module.sha512">graphql-java-extended-scalars-21.0.module.sha...</a>  2023-08-21 05:28       128      
+<a href="graphql-java-extended-scalars-21.0.pom" title="graphql-java-extended-scalars-21.0.pom">graphql-java-extended-scalars-21.0.pom</a>            2023-08-21 05:28      1886      
+<a href="graphql-java-extended-scalars-21.0.pom.asc" title="graphql-java-extended-scalars-21.0.pom.asc">graphql-java-extended-scalars-21.0.pom.asc</a>        2023-08-21 05:28       475      
+<a href="graphql-java-extended-scalars-21.0.pom.asc.md5" title="graphql-java-extended-scalars-21.0.pom.asc.md5">graphql-java-extended-scalars-21.0.pom.asc.md...</a>  2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0.pom.asc.sha1" title="graphql-java-extended-scalars-21.0.pom.asc.sha1">graphql-java-extended-scalars-21.0.pom.asc.sh...</a>  2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0.pom.asc.sha256" title="graphql-java-extended-scalars-21.0.pom.asc.sha256">graphql-java-extended-scalars-21.0.pom.asc.sh...</a>  2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0.pom.asc.sha512" title="graphql-java-extended-scalars-21.0.pom.asc.sha512">graphql-java-extended-scalars-21.0.pom.asc.sh...</a>  2023-08-21 05:28       128      
+<a href="graphql-java-extended-scalars-21.0.pom.md5" title="graphql-java-extended-scalars-21.0.pom.md5">graphql-java-extended-scalars-21.0.pom.md5</a>        2023-08-21 05:28        32      
+<a href="graphql-java-extended-scalars-21.0.pom.sha1" title="graphql-java-extended-scalars-21.0.pom.sha1">graphql-java-extended-scalars-21.0.pom.sha1</a>       2023-08-21 05:28        40      
+<a href="graphql-java-extended-scalars-21.0.pom.sha256" title="graphql-java-extended-scalars-21.0.pom.sha256">graphql-java-extended-scalars-21.0.pom.sha256</a>     2023-08-21 05:28        64      
+<a href="graphql-java-extended-scalars-21.0.pom.sha512" title="graphql-java-extended-scalars-21.0.pom.sha512">graphql-java-extended-scalars-21.0.pom.sha512</a>     2023-08-21 05:28       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 353ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 08:59:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=O6ih4gHcuiSMfcMbsITwTwMmXs1y7kZ1IWKxuByAdFCOX1HVOU1PVAlCuqvVAixBsevstQ5h2xJW%2BCXsvY1AgRbRQZC%2B%2BtShyhHajwZl2spIGmSoxEtPkdELcuNxEupnBn2scdHhvRpsD6xSSQp3rhZOU%2ByqyYdY2B4j03OUYjDMG2677owc66l5ns%2Fc82WVnewoYMoWdzE%2FKWOF7XkQK3S%2F1HVmSJe3dx9%2FClZn8NjlJlpFlBM80Tk9FdO5N1bLn2Y3l7iQLUlJccM6fScIuQ%3D%3D--YhA5st%2FhSlRis%2Foz--Qxe9DswqLKqjYKAvJBMUHQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1981682762.1777798784; expires=Mon, 03 May 2027 08:59:44 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 08:59:44 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5106:7BC10:26ADD9A:1CF7F9D:69F70E80
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 518ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 08:59:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1b16a2b82000f5c7f9b703d67b981ac2"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=yDlXDSzU6C%2FlNNOAYghPxI6CzwjbHFjEC6JDXMuQ3RKNsQwG6bLgqZSNGDsUnbX4HGU9gCDpPo0LquR0t6ryuMrih5OuDBc9a52x0MuMRJrwNT6gHoesuE%2BIU%2FsbUK83GMqztmmOTa%2FTzVX3VW6bdNxxglsYXo%2FPuT5xdW5XaY%2FrCCdUIwABs5kEv7ThO%2Btgsdj%2BAQWB%2FUCHcfV1yk2lYpG9zXSTgFkgzTRAXkbPIyxnCc8DrD5D8UyX%2FYrqTisr05FTUUZ5l7OLYXvD9DMSSw%3D%3D--P2FAEjNDHy8%2BGIuU--XtKUVgZlMuUgHICKhD5Uyg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1630872410.1777798784; expires=Mon, 03 May 2027 08:59:44 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 08:59:44 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5105:4DDBD:256142B:1C0700B:69F70E80
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+web search: 
+web search: https://github.com/graphql-java/graphql-java-extended-scalars/tree/v21.0/src/test
+web search: 
+web search: repo1.maven.org maven2 com graphql-java graphql-java-extended-scalars 21.0
+web search: 
+web search: https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/
+web search: 
+web search: https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/21.0/
+codex
+Maven Central has `21.0` sources and Javadocs, but no test JAR in that artifact directory, so the test URL should use the verified GitHub tag path `v21.0`. I’m going to add only the missing fields to the `21.0` entry and leave `language` absent because this artifact is not Kotlin, Groovy, or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+diff --git a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+index f0e03cd1703966e4ef0079e3b5d0d9e30a01427e..273dce1f7ea23550f76f8b869017948373995899
+--- a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
++++ b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
++    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
++    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
++    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+     "tested-versions" : [
+       "21.0"
+     ],
+
+diff --git a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+index f0e03cd1703966e4ef0079e3b5d0d9e30a01427e..273dce1f7ea23550f76f8b869017948373995899
+--- a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
++++ b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
++    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
++    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
++    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+     "tested-versions" : [
+       "21.0"
+     ],
+
+codex
+The metadata entry is updated. I’m doing a quick validity check and rendering the templates for `21.0` one more time so the final state matches the URL rules.
+exec
+/usr/bin/bash -lc "jq '.' metadata/com.graphql-java/graphql-java-extended-scalars/index.json >/dev/null && sed -n '1,40p' metadata/com.graphql-java/graphql-java-extended-scalars/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "21.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+    "tested-versions" : [
+      "21.0"
+    ],
+    "allowed-packages" : [
+      "graphql.scalars"
+    ]
+  },
+  {
+    "metadata-version" : "19.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
+    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
+    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+    "tested-versions" : [
+      "19.0",
+      "19.1",
+      "20.0",
+      "20.1",
+      "20.2"
+    ],
+    "allowed-packages" : [
+      "graphql.scalars"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/graphql-java/graphql-java-extended-scalars/tree/v21.0/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Sun, 03 May 2026 08:59:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1b16a2b82000f5c7f9b703d67b981ac2"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=0VpDVhHS36ZUPuzgGtJFxS8J8g0NFvBcVuhEOssNA%2FCD%2FNlE%2FHkzkqrnhHMM7VXpiHVZU%2FCgkZVIfik%2FgL9S9890o9ASYUnR1k4A96b8kwOFFDB5sdjCwXT8sX0TyxMrSmcO0PORi90LwhceHEEy5Z%2BWUd3vHhcivTwPk00Se9xfnx6bFzghXipxLSYN39Zjtn0c7DC6%2Bq8tF352cjwMusRUfBLs2NqQxjtluC34BammN4cR3CSxGf9kTPygyAfpCach6gYLAVXLVgKAPXpNgg%3D%3D--3sievIVtXG1UAmXP--34Z7CD%2BC29vjqE9Oz%2FaNzw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.609480454.1777798806; expires=Mon, 03 May 2027 09:00:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 09:00:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5106:7BC10:26BCD73:1D0346C:69F70E96
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/21.0/graphql-java-extended-scalars-21.0-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  416k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Sun, 03 May 2026 09:00:06 GMT
+content-type: application/java-archive
+content-length: 426227
+cf-ray: 9f5e12ca7ffc343e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 524634
+etag: "22078235c813b4b5043eb4bdab588e36"
+last-modified: Mon, 21 Aug 2023 05:28:34 GMT
+x-checksum-md5: 22078235c813b4b5043eb4bdab588e36
+x-checksum-sha1: 13be8e36b6d8068ee06a2f859b7b7da903940b21
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/21.0/graphql-java-extended-scalars-21.0-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Sun, 03 May 2026 09:00:06 GMT
+content-type: application/java-archive
+content-length: 27555
+cf-ray: 9f5e12ca7840bb0d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 524634
+etag: "9261ca532c17e88651ee85bc3f6090ec"
+last-modified: Mon, 21 Aug 2023 05:28:34 GMT
+x-checksum-md5: 9261ca532c17e88651ee85bc3f6090ec
+x-checksum-sha1: 865eab28a856c27b6ae917db197706d91e60ba93
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0 27555    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+diff --git a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+index f0e03cd1703966e4ef0079e3b5d0d9e30a01427e..273dce1f7ea23550f76f8b869017948373995899
+--- a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
++++ b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
++    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
++    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
++    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+     "tested-versions" : [
+       "21.0"
+     ],
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.graphql-java/graphql-java-extended-scalars/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+ succeeded in 0ms:
+diff --git i/metadata/com.graphql-java/graphql-java-extended-scalars/index.json w/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+index f0e03cd170..273dce1f7e 100644
+--- i/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
++++ w/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
++    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
++    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
++    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+     "tested-versions" : [
+       "21.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.graphql-java:graphql-java-extended-scalars:21.0 --stacktrace' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488
+diff --git a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+index f0e03cd1703966e4ef0079e3b5d0d9e30a01427e..273dce1f7ea23550f76f8b869017948373995899
+--- a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
++++ b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
++    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
++    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
++    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+     "tested-versions" : [
+       "21.0"
+     ],
+
+ exited 1 in 1014ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for com.graphql-java:graphql-java-extended-scalars:21.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/metadata/com.graphql-java/graphql-java-extended-scalars/21.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - com.graphql-java:graphql-java-extended-scalars:21.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/metadata/com.graphql-java/graphql-java-extended-scalars/21.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - com.graphql-java:graphql-java-extended-scalars:21.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/metadata/com.graphql-java/graphql-java-extended-scalars/21.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 913ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/21.0/graphql-java-extended-scalars-21.0-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/
+web search: 
+web search: https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/21.0/
+web search: 
+web search: https://github.com/graphql-java/graphql-java-extended-scalars/tree/v21.0/src/test
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/metadata/com.graphql-java/graphql-java-extended-scalars/index.json:3) for `metadata-version` `21.0`.
+
+Added:
+```json
+"source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar"
+"repository-url": "https://github.com/graphql-java/graphql-java-extended-scalars"
+"test-code-url": "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test"
+"documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar"
+```
+
+Maven Central has the `21.0` sources and Javadocs, and the GitHub `v21.0/src/test` path exists; I left `language` absent because this is a Java/graphql-java extension, not a Kotlin/Groovy/Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/21.0/))
+
+Verification: `jq` passed, and the rendered source, Javadoc, and test URLs returned HTTP 200. `./gradlew checkMetadataFiles -Pcoordinates=com.graphql-java:graphql-java-extended-scalars:21.0 --stacktrace` failed because `metadata/.../21.0/reachability-metadata.json` is missing, which is outside the requested index-field update.
+diff --git a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+index f0e03cd1703966e4ef0079e3b5d0d9e30a01427e..273dce1f7ea23550f76f8b869017948373995899
+--- a/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
++++ b/metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
++    "repository-url" : "https://github.com/graphql-java/graphql-java-extended-scalars",
++    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar",
++    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+     "tested-versions" : [
+       "21.0"
+     ],
+
+tokens used
+78,518
+Updated [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/metadata/com.graphql-java/graphql-java-extended-scalars/index.json:3) for `metadata-version` `21.0`.
+
+Added:
+```json
+"source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar"
+"repository-url": "https://github.com/graphql-java/graphql-java-extended-scalars"
+"test-code-url": "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test"
+"documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-javadoc.jar"
+```
+
+Maven Central has the `21.0` sources and Javadocs, and the GitHub `v21.0/src/test` path exists; I left `language` absent because this is a Java/graphql-java extension, not a Kotlin/Groovy/Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/21.0/))
+
+Verification: `jq` passed, and the rendered source, Javadoc, and test URLs returned HTTP 200. `./gradlew checkMetadataFiles -Pcoordinates=com.graphql-java:graphql-java-extended-scalars:21.0 --stacktrace` failed because `metadata/.../21.0/reachability-metadata.json` is missing, which is outside the requested index-field update.
+Ran agent for com.graphql-java:graphql-java-extended-scalars:21.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/build/agent-url-discovery-logs/com.graphql-java-graphql-java-extended-scalars-21.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2096-09b20488/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 3s
+9 actionable tasks: 1 executed, 8 up-to-date
