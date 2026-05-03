@@ -1,0 +1,833 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded55-ffbe-7cc3-bee4-96c97c4fec22
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.playframework:play-build-link:3.1.0-M1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.1.0-M1" when "$version$" is replaced with "3.1.0-M1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/metadata/org.playframework/play-build-link/index.json
+- Entry selector: "metadata-version" = "3.1.0-M1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "3.1.0-M1".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "3.1.0-M1".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "3.1.0-M1".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "3.1.0-M1" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 3.1.0-M1
+- Entry metadata-version: 3.1.0-M1
+- Entry test-version: 3.1.0-M1
+codex
+I’ll inspect the existing metadata entry first, then verify candidate source/test/docs URLs against the exact `3.1.0-M1` version before editing only the missing fields.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.playframework/play-build-link/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+4:    "metadata-version" : "3.1.0-M1",
+13:    "metadata-version" : "3.0.0",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+15:    "repository-url" : "https://github.com/playframework/playframework",
+16:    "test-code-url" : "N/A",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+18:    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.playframework/play-build-link/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1.0-M1",
+    "tested-versions" : [
+      "3.1.0-M1"
+    ],
+    "allowed-packages" : [
+      "play"
+    ]
+  },
+  {
+    "metadata-version" : "3.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+    "tested-versions" : [
+      "3.0.0",
+      "3.0.1",
+      "3.0.2",
+      "3.0.3",
+      "3.0.4",
+      "3.0.5",
+      "3.0.6",
+      "3.0.7",
+      "3.0.8",
+      "3.0.9",
+      "3.0.10"
+    ],
+    "allowed-packages" : [
+      "play"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'play-build-link' metadata/org.playframework -g 'index.json'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+metadata/org.playframework/play-build-link/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:17:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+
+web search: 
+web search: org.playframework play-build-link 3.1.0-M1 maven
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/playframework/play-build-link/3.1.0-M1/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/playframework/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/playframework/play-build-link/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/
+web search: 
+web search: 
+web search: 
+web search: github playframework playframework play-build-link test 3.1.0-M1
+codex
+The previous `3.0.0` entry already has Maven source and javadoc URL templates, and Maven Central has a `3.1.0-M1` directory for this artifact. I’m checking the published files and the upstream repo paths now so the new entry does not inherit a stale or unverified URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.playframework</groupId>
+    <artifactId>play-build-link</artifactId>
+    <packaging>jar</packaging>
+    <description>Play-Build-Link</description>
+    <url>https://github.com/playframework/playframework</url>
+    <version>3.1.0-M1</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Play-Build-Link</name>
+    <organization>
+        <name>The Play Framework Project</name>
+        <url>https://playframework.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/playframework/playframework</url>
+        <connection>scm:git:https://github.com/playframework/playframework.git</connection>
+        <developerConnection>scm:git:git@github.com:playframework/playframework.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>playframework</id>
+            <name>The Play Framework Contributors</name>
+            <url>https://github.com/playframework</url>
+            <email>contact@playframework.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.playframework.com/documentation/3.1.0-M1/api/scala/index.html</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.playframework</groupId>
+            <artifactId>play-exceptions</artifactId>
+            <version>3.1.0-M1</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp) && curl -fsSL -o "$tmp" https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-sources.jar && jar tf "$tmp" && rm -f "$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+play/
+play/core/
+play/core/server/
+play/TemplateImports.java
+play/core/Build.java
+play/core/BuildDocHandler.java
+play/core/BuildLink.java
+play/core/server/ReloadableServer.java
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-test-sources.jar \\
+  https://github.com/playframework/playframework/tree/3.1.0-M1; do printf '%s -> ' \""'$u"; curl -fsSI -L "$u" | awk '"'NR==1{print "'$2}'"'; done" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 1058ms:
+curl: (22) The requested URL returned error: 404
+404
+https://github.com/playframework/playframework/tree/3.1.0-M1 -> 200
+
+web search: 
+web search: https://github.com/playframework/playframework/tree/3.1.0-M1
+web search: 
+web search: repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/playframework/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/playframework/play-build-link/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/playframework/playframework/git/trees/3.1.0-M1?recursive=1' | rg 'play-build-link|BuildLink|BuildDocHandler|ReloadableServer|TemplateImports'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/playframework/playframework/git/ref/tags/3.1.0-M1'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/playframework/playframework/3.1.0-M1/build.sbt | rg -n 'play-build-link|build-link|playBuildLink|BuildLink'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 164ms:
+36:lazy val PlayBuildLinkProject = PlayNonCrossBuiltProject("Play-Build-Link", "dev-mode/play-build-link")
+48:  .dependsOn(PlayBuildLinkProject)
+122:    PlayBuildLinkProject,
+448:  PlayBuildLinkProject,
+
+ succeeded in 190ms:
+{
+  "ref": "refs/tags/3.1.0-M1",
+  "node_id": "MDM6UmVmMjM0MDU0OTpyZWZzL3RhZ3MvMy4xLjAtTTE=",
+  "url": "https://api.github.com/repos/playframework/playframework/git/refs/tags/3.1.0-M1",
+  "object": {
+    "sha": "c44a8abe91cc555b797a97ea343a6b2addd791bb",
+    "type": "tag",
+    "url": "https://api.github.com/repos/playframework/playframework/git/tags/c44a8abe91cc555b797a97ea343a6b2addd791bb"
+  }
+}
+
+ succeeded in 497ms:
+      "path": "dev-mode/play-build-link",
+      "path": "dev-mode/play-build-link/src",
+      "path": "dev-mode/play-build-link/src/main",
+      "path": "dev-mode/play-build-link/src/main/java",
+      "path": "dev-mode/play-build-link/src/main/java/play",
+      "path": "dev-mode/play-build-link/src/main/java/play/TemplateImports.java",
+      "path": "dev-mode/play-build-link/src/main/java/play/core",
+      "path": "dev-mode/play-build-link/src/main/java/play/core/Build.java",
+      "path": "dev-mode/play-build-link/src/main/java/play/core/BuildDocHandler.java",
+      "path": "dev-mode/play-build-link/src/main/java/play/core/BuildLink.java",
+      "path": "dev-mode/play-build-link/src/main/java/play/core/server",
+      "path": "dev-mode/play-build-link/src/main/java/play/core/server/ReloadableServer.java",
+      "path": "dev-mode/play-docs/src/main/java/play/docs/BuildDocHandlerFactory.java",
+
+codex
+The `3.1.0-M1` source and javadoc jars both return 200 from Maven Central, while the `test-sources` classifier returns 404. Upstream’s exact tag contains the module under `dev-mode/play-build-link`, but the module tree has no own test source directory, so `test-code-url` should remain `N/A`.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d) && curl -fsSL -o "$tmp/src.jar" https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-sources.jar && (cd "$tmp" && jar xf src.jar && sed -n '"'1,220p' play/core/BuildLink.java && sed -n '1,180p' play/core/Build.java && sed -n '1,160p' play/core/server/ReloadableServer.java) && rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+/*
+ * Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package play.core;
+
+import java.io.File;
+import java.util.Map;
+
+/**
+ * Interface used by the Play build plugin to communicate with an embedded Play server. BuildLink
+ * objects are created by the plugin's run command and provided to Play's NettyServer devMode
+ * methods.
+ *
+ * <p>This interface is written in Java and uses only Java types so that communication can work even
+ * when the plugin and embedded Play server are built with different versions of Scala.
+ */
+public interface BuildLink {
+
+  /**
+   * Check if anything has changed, and if so, return an updated classloader.
+   *
+   * <p>This method is called multiple times on every request, so it is advised that change
+   * detection happens asynchronously to this call, and that this call just check a boolean.
+   *
+   * @return Either
+   *     <ul>
+   *       <li>Throwable - If something went wrong (eg, a compile error). {@link
+   *           play.api.PlayException} and its sub types can be used to provide specific details on
+   *           compile errors or other exceptions.
+   *       <li>ClassLoader - If the classloader has changed, and the application should be reloaded.
+   *       <li>null - If nothing changed.
+   *     </ul>
+   */
+  Object reload();
+
+  /**
+   * Find the original source file for the given class name and line number.
+   *
+   * <p>When the application throws an exception, this will be called for every element in the stack
+   * trace from top to bottom until a source file may be found, so that the browser can render the
+   * line of code that threw the exception.
+   *
+   * <p>If the class is generated (eg a template), then the original source file should be returned,
+   * and the line number should be mapped back to the line number in the original source file, if
+   * possible.
+   *
+   * @param className The name of the class to find the source for.
+   * @param line The line number the exception was thrown at.
+   * @return Either:
+   *     <ul>
+   *       <li>[File, Integer] - The source file, and the passed in line number, if the source
+   *           wasn't generated, or if it was generated, and the line number could be mapped, then
+   *           the original source file and the mapped line number.
+   *       <li>[File, null] - If the source was generated but the line number couldn't be mapped,
+   *           then just the original source file and null for the unmappable line number.
+   *       <li>null - If no source file could be found for the class name.
+   *     </ul>
+   */
+  Object[] findSource(String className, Integer line);
+
+  /**
+   * Get the path of the project. This is used by methods such as {@code
+   * play.api.Application#getFile}.
+   *
+   * @return The path of the project.
+   */
+  File projectPath();
+
+  /**
+   * Force the application to reload on the next invocation of reload.
+   *
+   * <p>This is invoked by plugins for example that change something on the classpath or something
+   * about the application that requires a reload, for example, the evolutions plugin.
+   */
+  void forceReload();
+
+  /**
+   * Returns a list of application settings configured in the build system, usually via {@code
+   * PlayKeys.devSettings}.
+   *
+   * @return The settings.
+   */
+  Map<String, String> settings();
+}
+/*
+ * Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package play.core;
+
+import java.util.List;
+
+public class Build {
+
+  public static final List<String> sharedClasses =
+      List.of(
+          play.core.BuildLink.class.getName(),
+          play.core.BuildDocHandler.class.getName(),
+          play.core.server.ReloadableServer.class.getName(),
+          play.api.UsefulException.class.getName(),
+          play.api.PlayException.class.getName(),
+          play.api.PlayException.InterestingLines.class.getName(),
+          play.api.PlayException.RichDescription.class.getName(),
+          play.api.PlayException.ExceptionSource.class.getName(),
+          play.api.PlayException.ExceptionAttachment.class.getName());
+}
+/*
+ * Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package play.core.server;
+
+/** A server that can be reloaded or stopped. */
+public interface ReloadableServer {
+
+  /** Stop the server. */
+  void stop();
+
+  /** Reload the server if necessary. */
+  void reload();
+}
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp) && curl -fsSL -o "$tmp" https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-javadoc.jar && jar tf "$tmp" | sed -n '"'1,120p' && rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+legal/
+play/
+play/core/
+play/core/server/
+resources/
+script-dir/
+allclasses-index.html
+allpackages-index.html
+element-list
+help-doc.html
+index-all.html
+index.html
+jquery-ui.overrides.css
+legal/ADDITIONAL_LICENSE_INFO
+legal/ASSEMBLY_EXCEPTION
+legal/LICENSE
+legal/jquery.md
+legal/jqueryUI.md
+member-search-index.js
+module-search-index.js
+overview-summary.html
+overview-tree.html
+package-search-index.js
+play/TemplateImports.html
+play/core/Build.html
+play/core/BuildDocHandler.html
+play/core/BuildLink.html
+play/core/package-summary.html
+play/core/package-tree.html
+play/core/server/ReloadableServer.html
+play/core/server/package-summary.html
+play/core/server/package-tree.html
+play/package-summary.html
+play/package-tree.html
+resources/glass.png
+resources/x.png
+script-dir/jquery-3.7.1.min.js
+script-dir/jquery-ui.min.css
+script-dir/jquery-ui.min.js
+script.js
+search.js
+stylesheet.css
+tag-search-index.js
+type-search-index.js
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/playframework/playframework/git/trees/3.1.0-M1?recursive=1' | rg 'dev-mode/play-build-link/src/test|dev-mode/play-build-link/test|play-build-link/.*/test'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ exited 1 in 182ms:
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo1.maven.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-sources.jar \\
+  https://repo1.maven.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-javadoc.jar; do printf '%s -> ' \""'$u"; curl -fsSI -L "$u" | awk '"'NR==1{print "'$2}'"'; done" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+https://repo1.maven.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-sources.jar -> 200
+https://repo1.maven.org/maven2/org/playframework/play-build-link/3.1.0-M1/play-build-link-3.1.0-M1-javadoc.jar -> 200
+
+exec
+/usr/bin/bash -lc "curl -fsSI -L https://github.com/playframework/playframework/tree/3.1.0-M1/dev-mode/play-build-link | awk 'NR==1{print "'$2}'"'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 507ms:
+200
+
+codex
+I’m going to add the verified Maven templates, the canonical GitHub repository root, `N/A` for tests, and the two-sentence description to only the `3.1.0-M1` entry. Since this artifact is Java API classes without a Scala/Kotlin/Groovy binary coordinate, I’m leaving `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/metadata/org.playframework/play-build-link/index.json
+diff --git a/metadata/org.playframework/play-build-link/index.json b/metadata/org.playframework/play-build-link/index.json
+index a61a3a6ba29bcf98be49dd56916b46f1ec51bded..bd995718d1760f319a30f765605292f35ba2501d
+--- a/metadata/org.playframework/play-build-link/index.json
++++ b/metadata/org.playframework/play-build-link/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0-M1",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
++    "repository-url" : "https://github.com/playframework/playframework",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
++    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+     "tested-versions" : [
+       "3.1.0-M1"
+     ],
+
+diff --git a/metadata/org.playframework/play-build-link/index.json b/metadata/org.playframework/play-build-link/index.json
+index a61a3a6ba29bcf98be49dd56916b46f1ec51bded..bd995718d1760f319a30f765605292f35ba2501d
+--- a/metadata/org.playframework/play-build-link/index.json
++++ b/metadata/org.playframework/play-build-link/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0-M1",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
++    "repository-url" : "https://github.com/playframework/playframework",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
++    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+     "tested-versions" : [
+       "3.1.0-M1"
+     ],
+
+codex
+The metadata entry is updated. I’m running a JSON parse plus the repository’s metadata-file check for this coordinate so we catch formatting or schema issues before I wrap up.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.playframework/play-build-link/index.json >/dev/null' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.playframework/play-build-link/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+diff --git i/metadata/org.playframework/play-build-link/index.json w/metadata/org.playframework/play-build-link/index.json
+index a61a3a6ba2..bd995718d1 100644
+--- i/metadata/org.playframework/play-build-link/index.json
++++ w/metadata/org.playframework/play-build-link/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0-M1",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
++    "repository-url" : "https://github.com/playframework/playframework",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
++    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+     "tested-versions" : [
+       "3.1.0-M1"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.playframework:play-build-link:3.1.0-M1 --stacktrace' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+diff --git a/metadata/org.playframework/play-build-link/index.json b/metadata/org.playframework/play-build-link/index.json
+index a61a3a6ba29bcf98be49dd56916b46f1ec51bded..bd995718d1760f319a30f765605292f35ba2501d
+--- a/metadata/org.playframework/play-build-link/index.json
++++ b/metadata/org.playframework/play-build-link/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0-M1",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
++    "repository-url" : "https://github.com/playframework/playframework",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
++    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+     "tested-versions" : [
+       "3.1.0-M1"
+     ],
+
+ exited 1 in 868ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.playframework:play-build-link:3.1.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/metadata/org.playframework/play-build-link/3.1.0-M1/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.playframework:play-build-link:3.1.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/metadata/org.playframework/play-build-link/3.1.0-M1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.playframework:play-build-link:3.1.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/metadata/org.playframework/play-build-link/3.1.0-M1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 861ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: org.playframework play-build-link 3.1.0-M1 Maven Central
+web search: 
+web search: https://github.com/playframework/playframework/tree/3.1.0-M1/dev-mode/play-build-link
+web search: 
+web search: 
+web search: 
+web search: "org/playframework/play-build-link/3.1.0-M1" "sources.jar" "javadoc.jar"
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/org.playframework/play-build-link/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.playframework/play-build-link/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff
+ succeeded in 0ms:
+ M metadata/org.playframework/play-build-link/index.json
+
+diff --git a/metadata/org.playframework/play-build-link/index.json b/metadata/org.playframework/play-build-link/index.json
+index a61a3a6ba29bcf98be49dd56916b46f1ec51bded..bd995718d1760f319a30f765605292f35ba2501d
+--- a/metadata/org.playframework/play-build-link/index.json
++++ b/metadata/org.playframework/play-build-link/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0-M1",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
++    "repository-url" : "https://github.com/playframework/playframework",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
++    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+     "tested-versions" : [
+       "3.1.0-M1"
+     ],
+
+web search: 
+web search: Maven Central org.playframework play-build-link 3.1.0-M1
+web search: 
+web search: https://central.sonatype.com/artifact/org.playframework/play-build-link
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/playframework/play-build-link/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/
+web search: 
+web search: https://github.com/playframework/playframework/tree/3.1.0-M1/dev-mode/play-build-link
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/metadata/org.playframework/play-build-link/index.json) for `metadata-version` `3.1.0-M1`.
+
+Filled:
+- `source-code-url`: Maven sources jar template
+- `repository-url`: canonical `playframework/playframework` root
+- `test-code-url`: `N/A`
+- `documentation-url`: Maven javadoc jar template
+- `description`: exactly two sentences
+- `language`: left absent because this artifact is not Scala/Kotlin/Groovy-specific; the exact tag’s module contains Java sources under `dev-mode/play-build-link`. ([github.com](https://github.com/playframework/playframework/tree/3.1.0-M1/dev-mode/play-build-link))
+
+Verified Maven Central lists the `3.1.0-M1` source and javadoc jars, with no test-sources jar listed. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/))
+
+Validation:
+- `jq` parse: passed
+- `git diff --check`: passed
+- `./gradlew checkMetadataFiles -Pcoordinates=org.playframework:play-build-link:3.1.0-M1 --stacktrace`: failed because `metadata/org.playframework/play-build-link/3.1.0-M1/reachability-metadata.json` is missing, unrelated to the index fields changed here.
+diff --git a/metadata/org.playframework/play-build-link/index.json b/metadata/org.playframework/play-build-link/index.json
+index a61a3a6ba29bcf98be49dd56916b46f1ec51bded..bd995718d1760f319a30f765605292f35ba2501d
+--- a/metadata/org.playframework/play-build-link/index.json
++++ b/metadata/org.playframework/play-build-link/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0-M1",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
++    "repository-url" : "https://github.com/playframework/playframework",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
++    "description" : "Play Build Link defines the Java interfaces used by the Play build plugin to communicate with an embedded Play server during development. It supports application reloading, source lookup for error reporting, project path discovery, forced reloads, and build-provided settings while avoiding Scala-version coupling between the plugin and server.",
+     "tested-versions" : [
+       "3.1.0-M1"
+     ],
+
+tokens used
+100,099
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/metadata/org.playframework/play-build-link/index.json) for `metadata-version` `3.1.0-M1`.
+
+Filled:
+- `source-code-url`: Maven sources jar template
+- `repository-url`: canonical `playframework/playframework` root
+- `test-code-url`: `N/A`
+- `documentation-url`: Maven javadoc jar template
+- `description`: exactly two sentences
+- `language`: left absent because this artifact is not Scala/Kotlin/Groovy-specific; the exact tag’s module contains Java sources under `dev-mode/play-build-link`. ([github.com](https://github.com/playframework/playframework/tree/3.1.0-M1/dev-mode/play-build-link))
+
+Verified Maven Central lists the `3.1.0-M1` source and javadoc jars, with no test-sources jar listed. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/playframework/play-build-link/3.1.0-M1/))
+
+Validation:
+- `jq` parse: passed
+- `git diff --check`: passed
+- `./gradlew checkMetadataFiles -Pcoordinates=org.playframework:play-build-link:3.1.0-M1 --stacktrace`: failed because `metadata/org.playframework/play-build-link/3.1.0-M1/reachability-metadata.json` is missing, unrelated to the index fields changed here.
+Ran agent for org.playframework:play-build-link:3.1.0-M1 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/build/agent-url-discovery-logs/org.playframework-play-build-link-3.1.0-M1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4114-2e8e46ff/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 55s
+9 actionable tasks: 1 executed, 8 up-to-date
