@@ -168,6 +168,38 @@ public class Netty_reactive_streamsTest {
     }
 
     @Test
+    void handlerPublisherEmitsBufferedMessagesBeforeCompletingClosedChannel() throws Exception {
+        EmbeddedChannel channel = new EmbeddedChannel();
+        try {
+            HandlerPublisher<String> publisher = new HandlerPublisher<>(channel.eventLoop(), String.class);
+            channel.pipeline().addLast(publisher);
+
+            RecordingSubscriber<String> subscriber = new RecordingSubscriber<>();
+            publisher.subscribe(subscriber);
+            runPendingTasks(channel);
+            subscriber.awaitSubscription();
+
+            channel.writeInbound("queued-before-close");
+            channel.close().syncUninterruptibly();
+            runPendingTasks(channel);
+
+            assertThat(subscriber.items()).isEmpty();
+            assertThat(subscriber.completed()).isFalse();
+            assertThat(subscriber.error()).isNull();
+
+            subscriber.request(2);
+            runPendingTasks(channel);
+            subscriber.awaitTerminal();
+
+            assertThat(subscriber.items()).containsExactly("queued-before-close");
+            assertThat(subscriber.completed()).isTrue();
+            assertThat(subscriber.error()).isNull();
+        } finally {
+            channel.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void handlerSubscriberWritesPublisherElementsAndRefreshesDemand() {
         EmbeddedChannel channel = new EmbeddedChannel();
         try {
