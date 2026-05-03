@@ -9,6 +9,7 @@ package org_neo4j_bolt.neo4j_bolt_connection;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.net.InetAddress;
 import java.net.URI;
 import java.time.DateTimeException;
 import java.time.Duration;
@@ -44,6 +45,7 @@ import org.neo4j.bolt.connection.BoltServerAddress;
 import org.neo4j.bolt.connection.ClusterComposition;
 import org.neo4j.bolt.connection.DatabaseName;
 import org.neo4j.bolt.connection.DatabaseNameUtil;
+import org.neo4j.bolt.connection.DefaultDomainNameResolver;
 import org.neo4j.bolt.connection.GqlStatusError;
 import org.neo4j.bolt.connection.NotificationClassification;
 import org.neo4j.bolt.connection.NotificationConfig;
@@ -210,6 +212,17 @@ public class Neo4j_bolt_connectionTest {
         assertThat(DatabaseNameUtil.database(null)).isSameAs(defaultDatabase);
         assertThat(DatabaseNameUtil.systemDatabase().databaseName()).contains(DatabaseNameUtil.SYSTEM_DATABASE_NAME);
         assertThat(DatabaseNameUtil.database("customers").databaseName()).contains("customers");
+    }
+
+    @Test
+    void defaultDomainNameResolverResolvesLiteralAddresses() throws Exception {
+        DefaultDomainNameResolver resolver = DefaultDomainNameResolver.getInstance();
+
+        InetAddress[] addresses = resolver.resolve("127.0.0.1");
+
+        assertThat(DefaultDomainNameResolver.getInstance()).isSameAs(resolver);
+        assertThat(addresses).hasSize(1);
+        assertThat(addresses[0].isLoopbackAddress()).isTrue();
     }
 
     @Test
