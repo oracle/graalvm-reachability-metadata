@@ -206,7 +206,7 @@ class LocalCIVerificationTests(unittest.TestCase):
             self.assertEqual(result.commands[0].returncode, 1)
             self.assertIn("FAILED[javaTest]", result.commands[0].output_excerpt)
 
-    def test_test_matrix_restores_docker_after_test_failure(self) -> None:
+    def test_test_matrix_skips_docker_networking_for_non_docker_coordinate(self) -> None:
         result = LocalCIVerificationResult(status="running", base_commit="base")
         failed_record = CommandRecord(gate="run-consecutive-tests", command=["bash"], returncode=1)
         gates: list[str] = []
@@ -233,7 +233,105 @@ class LocalCIVerificationTests(unittest.TestCase):
             )
 
         self.assertIs(failed, failed_record)
-        self.assertEqual(gates[-1], "restore-docker-networking")
+        self.assertEqual(gates, ["check-metadata-files", "run-consecutive-tests"])
+        self.assertNotIn("disable-docker-networking", gates)
+        self.assertNotIn("restore-docker-networking", gates)
+
+    def test_test_matrix_isolates_docker_networking_for_coordinates_that_declare_docker_images(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            docker_test_dir = os.path.join(repo_path, "tests", "src", "org.example", "docker-demo", "1.0.0")
+            os.makedirs(docker_test_dir)
+            with open(os.path.join(docker_test_dir, "required-docker-images.txt"), "w", encoding="utf-8") as file:
+                file.write("nginx:1-alpine-slim\n")
+
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+            calls: list[tuple[str, list[str]]] = []
+
+            def fake_run_recorded_command(
+                    repo_path_arg: str,
+                    gate: str,
+                    command: list[str],
+                    local_result: LocalCIVerificationResult,
+                    env: dict[str, str] | None = None,
+                    failure_output_pattern: str | None = None,
+            ) -> CommandRecord | None:
+                del repo_path_arg, local_result, env, failure_output_pattern
+                calls.append((gate, command))
+                return None
+
+            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
+                failed = _run_test_matrix_entries(
+                    repo_path,
+                    [
+                        {"coordinates": "org.example:plain-demo:1.0.0", "versions": ["1.0.0"]},
+                        {"coordinates": "org.example:docker-demo:1.0.0", "versions": ["1.0.0"]},
+                    ],
+                    result,
+                )
+
+            self.assertIsNone(failed)
+            self.assertEqual(
+                [call for call in calls if call[0] == "pull-allowed-docker-images"],
+                [
+                    (
+                        "pull-allowed-docker-images",
+                        ["./gradlew", "pullAllowedDockerImages", "-Pcoordinates=org.example:docker-demo:1.0.0"],
+                    ),
+                ],
+            )
+            self.assertIn("disable-docker-networking", [call[0] for call in calls])
+            self.assertEqual(calls[-1][0], "restore-docker-networking")
+
+    def test_test_matrix_resolves_docker_declaration_from_index_test_version(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            metadata_dir = os.path.join(repo_path, "metadata", "org.example", "demo")
+            docker_test_dir = os.path.join(repo_path, "tests", "src", "org.example", "demo", "1.0.0")
+            os.makedirs(metadata_dir)
+            os.makedirs(docker_test_dir)
+            with open(os.path.join(metadata_dir, "index.json"), "w", encoding="utf-8") as file:
+                json.dump([
+                    {
+                        "metadata-version": "2.0.0",
+                        "test-version": "1.0.0",
+                        "tested-versions": ["2.0.1"],
+                    },
+                ], file)
+            with open(os.path.join(docker_test_dir, "required-docker-images.txt"), "w", encoding="utf-8") as file:
+                file.write("# comment\n\nnginx:1-alpine-slim\n")
+
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+            calls: list[tuple[str, list[str]]] = []
+
+            def fake_run_recorded_command(
+                    repo_path_arg: str,
+                    gate: str,
+                    command: list[str],
+                    local_result: LocalCIVerificationResult,
+                    env: dict[str, str] | None = None,
+                    failure_output_pattern: str | None = None,
+            ) -> CommandRecord | None:
+                del repo_path_arg, local_result, env, failure_output_pattern
+                calls.append((gate, command))
+                return None
+
+            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
+                failed = _run_test_matrix_entries(
+                    repo_path,
+                    [{"coordinates": "org.example:demo:2.0.1", "versions": ["2.0.1"]}],
+                    result,
+                )
+
+            self.assertIsNone(failed)
+            self.assertEqual(
+                [call for call in calls if call[0] == "pull-allowed-docker-images"],
+                [
+                    (
+                        "pull-allowed-docker-images",
+                        ["./gradlew", "pullAllowedDockerImages", "-Pcoordinates=org.example:demo:2.0.1"],
+                    ),
+                ],
+            )
+            self.assertIn("disable-docker-networking", [call[0] for call in calls])
 
     def test_infrastructure_matrix_runs_test_infra_for_each_entry(self) -> None:
         result = LocalCIVerificationResult(status="running", base_commit="base")
@@ -263,7 +361,6 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertEqual(
             [call[0] for call in calls],
             [
-                "infrastructure-pull-allowed-docker-images",
                 "infrastructure-check-metadata-files",
                 "test-infra",
             ],
@@ -274,6 +371,45 @@ class LocalCIVerificationTests(unittest.TestCase):
         )
         self.assertEqual(calls[-1][2]["GRAALVM_HOME"], "/graalvm25")
         self.assertEqual(calls[-1][2]["GVM_TCK_NATIVE_IMAGE_MODE"], "future-defaults-all")
+
+    def test_infrastructure_matrix_pulls_docker_images_when_coordinate_declares_them(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            docker_test_dir = os.path.join(repo_path, "tests", "src", "org.example", "demo", "1.0.0")
+            os.makedirs(docker_test_dir)
+            with open(os.path.join(docker_test_dir, "required-docker-images.txt"), "w", encoding="utf-8") as file:
+                file.write("nginx:1-alpine-slim\n")
+
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+            gates: list[str] = []
+
+            def fake_run_recorded_command(
+                    repo_path_arg: str,
+                    gate: str,
+                    command: list[str],
+                    local_result: LocalCIVerificationResult,
+                    env: dict[str, str] | None = None,
+                    failure_output_pattern: str | None = None,
+            ) -> CommandRecord | None:
+                del repo_path_arg, command, local_result, env, failure_output_pattern
+                gates.append(gate)
+                return None
+
+            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
+                failed = _run_infrastructure_matrix_entries(
+                    repo_path,
+                    [{"coordinates": "org.example:demo:1.0.0"}],
+                    result,
+                )
+
+            self.assertIsNone(failed)
+            self.assertEqual(
+                gates,
+                [
+                    "infrastructure-pull-allowed-docker-images",
+                    "infrastructure-check-metadata-files",
+                    "test-infra",
+                ],
+            )
 
     def test_spring_aot_matrix_runs_triaged_smoke_test(self) -> None:
         result = LocalCIVerificationResult(status="running", base_commit="base")

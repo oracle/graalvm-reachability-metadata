@@ -309,10 +309,14 @@ def _run_test_matrix_entries(
         return None
 
     pulled_coordinates: set[str] = set()
+    docker_coordinates: set[str] = set()
     for entry in entries:
         coordinates = str(entry.get("coordinates") or "").strip()
         if not coordinates or coordinates in pulled_coordinates:
             continue
+        if not _coordinate_uses_docker(repo_path, coordinates):
+            continue
+        docker_coordinates.add(coordinates)
         failed = _run_recorded_command(
             repo_path,
             "pull-allowed-docker-images",
@@ -323,14 +327,15 @@ def _run_test_matrix_entries(
             return failed
         pulled_coordinates.add(coordinates)
 
-    failed = _run_recorded_command(
-        repo_path,
-        "disable-docker-networking",
-        ["bash", "./.github/workflows/scripts/disable-docker.sh"],
-        result,
-    )
-    if failed is not None:
-        return failed
+    if docker_coordinates:
+        failed = _run_recorded_command(
+            repo_path,
+            "disable-docker-networking",
+            ["bash", "./.github/workflows/scripts/disable-docker.sh"],
+            result,
+        )
+        if failed is not None:
+            return failed
 
     first_failed: CommandRecord | None = None
     restore_failed: CommandRecord | None = None
@@ -368,7 +373,8 @@ def _run_test_matrix_entries(
                 first_failed = failed
                 break
     finally:
-        restore_failed = _restore_docker_networking(repo_path, result)
+        if docker_coordinates:
+            restore_failed = _restore_docker_networking(repo_path, result)
     return first_failed or restore_failed
 
 
@@ -382,15 +388,16 @@ def _run_infrastructure_matrix_entries(
         if not coordinates:
             continue
         env = _matrix_env(entry)
-        failed = _run_recorded_command(
-            repo_path,
-            "infrastructure-pull-allowed-docker-images",
-            ["./gradlew", "pullAllowedDockerImages", f"-Pcoordinates={coordinates}"],
-            result,
-            env=env,
-        )
-        if failed is not None:
-            return failed
+        if _coordinate_uses_docker(repo_path, coordinates):
+            failed = _run_recorded_command(
+                repo_path,
+                "infrastructure-pull-allowed-docker-images",
+                ["./gradlew", "pullAllowedDockerImages", f"-Pcoordinates={coordinates}"],
+                result,
+                env=env,
+            )
+            if failed is not None:
+                return failed
         failed = _run_recorded_command(
             repo_path,
             "infrastructure-check-metadata-files",
@@ -481,7 +488,7 @@ def _run_spring_aot_matrix_entries(
 
 
 def _restore_docker_networking(repo_path: str, result: LocalCIVerificationResult) -> CommandRecord | None:
-    """Restore Docker networking after the CI-equivalent no-network test phase."""
+    """Restore Docker networking after a Docker-backed test phase."""
     return _run_recorded_command(
         repo_path,
         "restore-docker-networking",
@@ -632,6 +639,68 @@ def _matrix_env(entry: dict) -> dict[str, str]:
         env["GRAALVM_HOME"] = graalvm_home
         env["JAVA_HOME"] = graalvm_home
     return env
+
+
+def _coordinate_uses_docker(repo_path: str, coordinates: str) -> bool:
+    """Return whether the coordinate declares Docker images for its tests."""
+    required_images_path = _required_docker_images_path(repo_path, coordinates)
+    if required_images_path is None:
+        return False
+    with open(required_images_path, "r", encoding="utf-8") as required_images_file:
+        return any(_is_required_docker_image_line(line) for line in required_images_file)
+
+
+def _required_docker_images_path(repo_path: str, coordinates: str) -> str | None:
+    """Return the Docker declaration path for the coordinate's resolved test version."""
+    group, artifact, _version = parse_coordinate_parts(coordinates)
+    test_version = _resolve_coordinate_test_version(repo_path, coordinates)
+    if test_version is None:
+        return None
+    required_images_path = os.path.join(
+        repo_path,
+        "tests",
+        "src",
+        group,
+        artifact,
+        test_version,
+        "required-docker-images.txt",
+    )
+    if not os.path.isfile(required_images_path):
+        return None
+    return required_images_path
+
+
+def _resolve_coordinate_test_version(repo_path: str, coordinates: str) -> str | None:
+    """Resolve the test-version used by pullAllowedDockerImages for a coordinate."""
+    group, artifact, version = parse_coordinate_parts(coordinates)
+    index_path = os.path.join(repo_path, "metadata", group, artifact, "index.json")
+    if not os.path.isfile(index_path):
+        return version
+
+    with open(index_path, "r", encoding="utf-8") as index_file:
+        index_entries = json.load(index_file)
+    if not isinstance(index_entries, list):
+        return version
+
+    for entry in index_entries:
+        if not isinstance(entry, dict):
+            continue
+        tested_versions = entry.get("tested-versions")
+        if isinstance(tested_versions, list) and version in [str(tested_version) for tested_version in tested_versions]:
+            return str(entry.get("test-version") or entry.get("metadata-version") or version)
+
+    for entry in index_entries:
+        if not isinstance(entry, dict):
+            continue
+        if version == str(entry.get("metadata-version") or ""):
+            return str(entry.get("test-version") or entry.get("metadata-version") or version)
+
+    return version
+
+
+def _is_required_docker_image_line(line: str) -> bool:
+    stripped = line.strip()
+    return bool(stripped and not stripped.startswith("#"))
 
 
 def _spring_aot_env(entry: dict) -> dict[str, str]:
