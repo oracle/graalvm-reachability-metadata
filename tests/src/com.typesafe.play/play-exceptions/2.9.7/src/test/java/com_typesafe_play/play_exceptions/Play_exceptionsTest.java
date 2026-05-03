@@ -6,6 +6,10 @@
  */
 package com_typesafe_play.play_exceptions;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+
 import org.junit.jupiter.api.Test;
 
 import play.api.PlayException;
@@ -210,6 +214,23 @@ public class Play_exceptionsTest {
     }
 
     @Test
+    void interestingLinesReturnsNullWhenSourceContentCannotBeRead() {
+        UnreadableSourceException exception = new UnreadableSourceException(
+                "Source error",
+                "Source content failed to load");
+        PrintStream originalErr = System.err;
+        ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
+
+        try (PrintStream replacementErr = new PrintStream(capturedErr, true, StandardCharsets.UTF_8)) {
+            System.setErr(replacementErr);
+
+            assertThat(exception.interestingLines(2)).isNull();
+        } finally {
+            System.setErr(originalErr);
+        }
+    }
+
+    @Test
     void interestingLinesCanBeConstructedDirectlyForPrecomputedFocus() {
         String[] focus = {"line 5", "line 6", "line 7"};
 
@@ -356,6 +377,32 @@ public class Play_exceptionsTest {
         @Override
         public String sourceName() {
             return sourceName;
+        }
+    }
+
+    private static final class UnreadableSourceException extends PlayException.ExceptionSource {
+        private UnreadableSourceException(String title, String description) {
+            super(title, description);
+        }
+
+        @Override
+        public Integer line() {
+            return 1;
+        }
+
+        @Override
+        public Integer position() {
+            return 1;
+        }
+
+        @Override
+        public String input() {
+            throw new IllegalStateException("source content unavailable");
+        }
+
+        @Override
+        public String sourceName() {
+            return "unreadable.conf";
         }
     }
 
