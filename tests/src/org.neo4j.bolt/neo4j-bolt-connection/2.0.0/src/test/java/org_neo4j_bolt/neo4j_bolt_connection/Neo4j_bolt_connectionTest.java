@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.nio.file.Files;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ import java.time.OffsetTime;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -34,6 +36,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import org.junit.jupiter.api.Test;
 import org.neo4j.bolt.connection.AuthToken;
@@ -60,7 +64,9 @@ import org.neo4j.bolt.connection.exception.BoltFailureException;
 import org.neo4j.bolt.connection.exception.BoltGqlErrorException;
 import org.neo4j.bolt.connection.exception.BoltProtocolException;
 import org.neo4j.bolt.connection.exception.MinVersionAcquisitionException;
+import org.neo4j.bolt.connection.ssl.RevocationCheckingStrategy;
 import org.neo4j.bolt.connection.ssl.SSLContexts;
+import org.neo4j.bolt.connection.ssl.TrustManagerFactories;
 import org.neo4j.bolt.connection.summary.BeginSummary;
 import org.neo4j.bolt.connection.summary.CommitSummary;
 import org.neo4j.bolt.connection.summary.DiscardSummary;
@@ -286,6 +292,50 @@ public class Neo4j_bolt_connectionTest {
         SecurityPlan unencrypted = SecurityPlans.unencrypted();
         assertThat(unencrypted.requiresEncryption()).isFalse();
         assertThat(unencrypted.sslContext()).isNull();
+    }
+
+    @Test
+    void trustManagerFactoriesLoadCustomCertificateAuthorities() throws Exception {
+        String certificatePem = """
+                -----BEGIN CERTIFICATE-----
+                MIIDKzCCAhOgAwIBAgIUGsyFet7bJQ6KSUw7HZdF5rkpjAQwDQYJKoZIhvcNAQEL
+                BQAwJTEjMCEGA1UEAwwabmVvNGotYm9sdC1jb25uZWN0aW9uLXRlc3QwHhcNMjYw
+                NTAzMjMxMjU1WhcNMzYwNDMwMjMxMjU1WjAlMSMwIQYDVQQDDBpuZW80ai1ib2x0
+                LWNvbm5lY3Rpb24tdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
+                AN3z6Hu5f8wMJ4BD87Tcvzqrhf5MEwoeZiHF4ad3O2oxDxhekCszwIcunSZuI8jy
+                ZyQ5/CZCl7bYiZIPIXUOvM19/BstekKMTb1ExsagHjow+BuX4Rd5bHaHxdFKTil1
+                G30LLJoL6HzwQPCQSe7Vi6Yx03Gc+HKIcDx6K0VuYnHUltvVVFmsrN+DTZAwd7lf
+                bYS71oBBP6ryyJFVLAfdwnRgBDLaCjjR+lLk2bE2pDnGTNVxzcRcK4V7cBUbnbE7
+                5cNMMydcKWD77tmvdkGLGstRkYENLvN2ARmCirrDbxvmKxm459Th/Mtd+Ijh8vpr
+                Nq6igWTYF94ZnxyablXmFmMCAwEAAaNTMFEwHQYDVR0OBBYEFDbgBGqdLYFKgPun
+                4WwGIQVpzEGJMB8GA1UdIwQYMBaAFDbgBGqdLYFKgPun4WwGIQVpzEGJMA8GA1Ud
+                EwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAAYl0rKViicYuieyYHqHf2Aj
+                p7UPJEvjeiCQmadclOMPkeZowhn8hgWSC8jnPivSLqA+G0UKRl68wKQZdQvTB8pw
+                mrUO9J4X+VIPbw1cVrIoQ27okBNqiDXI8R0tJcHvOi9KxvXEv2/qxZN5lX7s6EFv
+                LEQwH7ODHoItbovuzOtXTQ5pgb11oFZcIjgQqWBEYHzhA2FmVMBrILNWTUf89tn4
+                o3y/5hZ1nQFUZwZmQTJFA9fTeopQJX85y0OoLA+YGwpLUToniQD+ylyjOw/J0nlE
+                MFpIGAupm6xVOrbHPoidV1uaEX7YoaDUYq5FEqh1Fclbl/BIOsbmtUIO7rT+BF8=
+                -----END CERTIFICATE-----
+                """;
+        java.nio.file.Path certificateFile = Files.createTempFile("neo4j-bolt-connection-ca", ".pem");
+        try {
+            Files.writeString(certificateFile, certificatePem);
+
+            TrustManagerFactory factory = TrustManagerFactories.forCertificates(
+                    List.of(certificateFile.toFile()), RevocationCheckingStrategy.NO_CHECKS);
+            Optional<X509TrustManager> trustManager = Arrays.stream(factory.getTrustManagers())
+                    .filter(candidate -> candidate instanceof X509TrustManager)
+                    .map(candidate -> (X509TrustManager) candidate)
+                    .findFirst();
+
+            assertThat(trustManager).isPresent();
+            assertThat(Arrays.stream(trustManager.orElseThrow().getAcceptedIssuers())
+                            .map(certificate -> certificate.getSubjectX500Principal().getName())
+                            .toList())
+                    .anyMatch(subject -> subject.contains("CN=neo4j-bolt-connection-test"));
+        } finally {
+            Files.deleteIfExists(certificateFile);
+        }
     }
 
     @Test
