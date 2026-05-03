@@ -9,6 +9,8 @@ package org_apache_camel.apt;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -20,6 +22,7 @@ import java.util.Set;
 import javax.annotation.processing.Processor;
 import javax.lang.model.SourceVersion;
 
+import org.apache.camel.tools.apt.DocumentationHelper;
 import org.apache.camel.tools.apt.EipAnnotationProcessor;
 import org.apache.camel.tools.apt.EndpointAnnotationProcessor;
 import org.apache.camel.tools.apt.helper.CollectionStringBuffer;
@@ -296,6 +299,41 @@ public class AptTest {
                 .containsEntry("optionalPrefix", "opt.")
                 .containsEntry("prefix", "prefix.")
                 .containsEntry("multiValue", "true");
+    }
+
+    @Test
+    void documentationHelperFindsDescriptionsInGeneratedComponentJson() throws IOException {
+        Path schemaFile = Path.of(
+                "..", "camel-jms", "target", "classes", "org", "apache", "camel", "component", "jms", "jms.json");
+        String originalContent = Files.exists(schemaFile) ? Files.readString(schemaFile, StandardCharsets.UTF_8) : null;
+
+        try {
+            Files.createDirectories(schemaFile.getParent());
+            Files.writeString(schemaFile, """
+                    {
+                      "componentProperties": {
+                        "connectionFactory": { "kind": "property", "description": "Creates JMS connections." },
+                        "cacheLevel": { "kind": "property", "description": "Caches JMS resources." }
+                      },
+                      "properties": {
+                        "destinationName": { "kind": "path", "description": "Name of the JMS destination." },
+                        "replyTo": { "kind": "parameter", "description": "Reply destination for messages." }
+                      }
+                    }
+                    """, StandardCharsets.UTF_8);
+
+            assertThat(DocumentationHelper.findComponentJavaDoc("camel-jms", "jms", "connectionFactory"))
+                    .isEqualTo("Creates JMS connections.");
+            assertThat(DocumentationHelper.findEndpointJavaDoc("camel-jms", "jms", "destinationName"))
+                    .isEqualTo("Name of the JMS destination.");
+            assertThat(DocumentationHelper.findEndpointJavaDoc("camel-jms", "jms", "unknownOption")).isNull();
+        } finally {
+            if (originalContent == null) {
+                Files.deleteIfExists(schemaFile);
+            } else {
+                Files.writeString(schemaFile, originalContent, StandardCharsets.UTF_8);
+            }
+        }
     }
 
     @Test
