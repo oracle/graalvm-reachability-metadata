@@ -275,9 +275,10 @@ def _run_verification_once(
     if failed is not None:
         return failed
 
-    failed = _run_spring_aot_verification(repo_path, base_commit, changed_files, result)
-    if failed is not None:
-        return failed
+    if _should_run_spring_aot_tests(changed_files):
+        failed = _run_spring_aot_verification(repo_path, base_commit, changed_files, result)
+        if failed is not None:
+            return failed
 
     failed = _run_index_validation(repo_path, base_commit, changed_files, result)
     if failed is not None:
@@ -764,18 +765,23 @@ def _run_recorded_command(
         result.commands.append(record)
         return record
 
-    completed = subprocess.run(
-        command,
-        cwd=repo_path,
-        env=command_env,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
-    )
-    output = completed.stdout or ""
-    with open(log_path, "w", encoding="utf-8") as log_file:
-        log_file.write(output)
+    with open(log_path, "w+", encoding="utf-8") as log_file:
+        completed = subprocess.run(
+            command,
+            cwd=repo_path,
+            env=command_env,
+            stdin=subprocess.DEVNULL,
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+        log_file.flush()
+        log_file.seek(0)
+        output = log_file.read()
+        if not output and completed.stdout:
+            output = completed.stdout
+            log_file.write(output)
     returncode = completed.returncode
     if returncode == 0 and failure_output_pattern and re.search(failure_output_pattern, output, re.MULTILINE):
         returncode = 1
@@ -1156,7 +1162,8 @@ def _should_run_infrastructure_tests(changed_files: list[str]) -> bool:
 
 
 def _should_run_spring_aot_tests(changed_files: list[str]) -> bool:
-    return any(path.startswith("metadata/") for path in changed_files)
+    del changed_files
+    return False
 
 
 def _should_run_docker_scan(changed_files: list[str]) -> bool:

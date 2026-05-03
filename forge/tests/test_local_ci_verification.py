@@ -28,6 +28,7 @@ from utility_scripts.local_ci_verification import (
     _run_spring_aot_matrix_entries,
     _run_test_matrix_entries,
     _run_verification_once,
+    _should_run_spring_aot_tests,
 )
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 
@@ -215,12 +216,13 @@ class LocalCIVerificationTests(unittest.TestCase):
                 command: list[str],
                 cwd: str | None = None,
                 env: dict[str, str] | None = None,
+                stdin=None,
                 stdout=None,
                 stderr=None,
                 text: bool | None = None,
                 check: bool | None = None,
         ) -> subprocess.CompletedProcess[str]:
-            del cwd, stdout, stderr, text, check
+            del cwd, stdin, stdout, stderr, text, check
             captured_env.update(env or {})
             return subprocess.CompletedProcess(command, 0, stdout="ok\n")
 
@@ -504,15 +506,17 @@ class LocalCIVerificationTests(unittest.TestCase):
                     command: list[str],
                     cwd: str | None = None,
                     env: dict[str, str] | None = None,
+                    stdin=None,
                     stdout=None,
                     stderr=None,
                     text: bool | None = None,
                     check: bool | None = None,
             ) -> subprocess.CompletedProcess[str]:
-                del cwd, env, stdout, stderr, text, check
+                del cwd, env, stdin, stderr, text, check
                 if command[:3] == ["docker", "image", "ls"]:
                     return subprocess.CompletedProcess(command, 0, stdout=docker_outputs.pop(0))
                 if command == ["bash", "run-tests"]:
+                    stdout.write("tests passed\n")
                     return subprocess.CompletedProcess(command, 0, stdout="tests passed\n")
                 raise AssertionError(f"unexpected command: {command}")
 
@@ -653,7 +657,7 @@ class LocalCIVerificationTests(unittest.TestCase):
         )
         self.assertEqual(calls[0][2]["JAVA_HOME"], "/graalvm25")
 
-    def test_verification_once_runs_infrastructure_and_spring_lanes_when_triggered(self) -> None:
+    def test_verification_once_runs_infrastructure_but_skips_spring_lane(self) -> None:
         result = LocalCIVerificationResult(status="running", base_commit="base")
         gradle_tasks: list[str] = []
 
@@ -673,7 +677,7 @@ class LocalCIVerificationTests(unittest.TestCase):
 
         changed_files = [
             "build.gradle",
-            "metadata/org.example/demo/1.0.0/reachability-metadata.json",
+            "metadata/org.springframework/spring-jcl/6.0.0/reachability-metadata.json",
         ]
         with patch("utility_scripts.local_ci_verification.changed_files_for_ci", return_value=changed_files), \
                 patch("utility_scripts.local_ci_verification._gradle_json_output", side_effect=fake_gradle_json_output), \
@@ -688,7 +692,13 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertIsNone(failed)
         self.assertIn("generateInfrastructureChangedCoordinatesMatrix", gradle_tasks)
         infra.assert_called_once()
-        spring.assert_called_once_with("/repo", "base", changed_files, result)
+        spring.assert_not_called()
+
+    def test_spring_aot_tests_are_left_to_ci(self) -> None:
+        self.assertFalse(_should_run_spring_aot_tests([
+            "metadata/org.springframework/spring-jcl/6.0.0/reachability-metadata.json",
+            ".github/workflows/scripts/run-spring-aot-triaged-test.sh",
+        ]))
 
     def test_latest_ea_requires_latest_ea_graalvm_home(self) -> None:
         with patch.dict(os.environ, {"GRAALVM_HOME": "/stable"}, clear=True):
