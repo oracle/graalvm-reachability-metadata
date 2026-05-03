@@ -1,0 +1,394 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded86-330b-73b1-8e14-d967118ca1ff
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:org.osgi.namespace.contract:1.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.0" when "$version$" is replaced with "1.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+- Set "coordinates" to "org.osgi:org.osgi.namespace.contract:1.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact details from Maven/OSGi sources first, then update the JSON in place with the version-tokenized URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.osgi\\.namespace\\.contract|org.osgi.namespace\" metadata build/discovered-artifact-metadata || true" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json:2:  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:9:    "description" : "org.osgi.namespace.implementation provides the OSGi ImplementationNamespace constants used to declare and require implementation capabilities in OSGi resource metadata. It is a small companion API package for naming the osgi.implementation namespace and its version attribute, not a runtime implementation.",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:14:      "org.osgi.namespace.implementation"
+metadata/org.osgi/org.osgi.namespace.extender/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/$version$/org.osgi.namespace.extender-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/$version$/org.osgi.namespace.extender-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:9:    "description" : "org.osgi.namespace.extender provides the OSGi ExtenderNamespace constants used to declare and require extender capabilities in OSGi resource metadata. It is a small companion API package for naming the osgi.extender namespace and its version attribute, not an extender implementation.",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:14:      "org.osgi.namespace.extender"
+metadata/org.osgi/org.osgi.namespace.service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.namespace.service/index.json:14:      "org.osgi.namespace.service"
+
+web search: 
+web search: Maven Central org.osgi org.osgi.namespace.contract 1.0.0 sources jar javadoc pom
+web search: 
+web search: https://central.sonatype.com/artifact/org.osgi/org.osgi.namespace.contract
+codex
+The existing file only has coordinates. Maven Central exposes source and javadoc JARs for this version, and I’m checking whether there is any test artifact or authoritative tagged source tree before deciding on `N/A` for tests.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.osgi/org.osgi.namespace.implementation/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-javadoc.jar",
+    "description" : "org.osgi.namespace.implementation provides the OSGi ImplementationNamespace constants used to declare and require implementation capabilities in OSGi resource metadata. It is a small companion API package for naming the osgi.implementation namespace and its version attribute, not a runtime implementation.",
+    "tested-versions" : [
+      "1.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi.namespace.implementation"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.osgi/org.osgi.namespace.extender/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/$version$/org.osgi.namespace.extender-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/$version$/org.osgi.namespace.extender-$version$-javadoc.jar",
+    "description" : "org.osgi.namespace.extender provides the OSGi ExtenderNamespace constants used to declare and require extender capabilities in OSGi resource metadata. It is a small companion API package for naming the osgi.extender namespace and its version attribute, not an extender implementation.",
+    "tested-versions" : [
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "org.osgi.namespace.extender"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.osgi/org.osgi.namespace.service/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-javadoc.jar",
+    "description" : "This artifact defines the OSGi service namespace constants used to describe service capabilities and requirements in OSGi resource metadata. It provides the ServiceNamespace API for expressing service object class attributes and matching metadata rather than a runtime service implementation.",
+    "tested-versions" : [
+      "1.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi.namespace.service"
+    ]
+  }
+]
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0 org.osgi.namespace.contract-1.0.0
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0
+codex
+The closest in-repo OSGi metadata entries use Maven-hosted source/javadoc artifacts and `N/A` for tests, with `https://github.com/osgi/osgi` as the repository root. I’m going to verify the actual artifact contains JVM class files before leaving the Native Image exclusion fields absent.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>org.osgi.namespace.contract</artifactId>
+  <version>1.0.0</version>
+  <description>OSGi Companion Code for org.osgi.namespace.contract Version 1.0.0.</description>
+  <name>org.osgi:org.osgi.namespace.contract</name>
+  <url>http://www.osgi.org/</url>
+  <organization>
+    <name>OSGi Alliance</name>
+    <url>http://www.osgi.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://opensource.org/licenses/apache2.0.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://osgi.org/git/build.git</url>
+    <connection>scm:git:https://osgi.org/git/build.git</connection>
+    <developerConnection>scm:git:https://osgi.org/git/build.git</developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <id>osgi</id>
+      <email>info@osgi.org</email>
+      <name>OSGi Alliance</name>
+      <organization>OSGi Alliance</organization>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-tests.jar || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d) && curl -fsSL -o "$tmp/artifact.jar" https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0.jar && jar tf "$tmp/artifact.jar" | sed -n '"'1,80p' && rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+ succeeded in 115ms:
+META-INF/MANIFEST.MF
+LICENSE
+META-INF/
+META-INF/maven/
+META-INF/maven/org.osgi/
+META-INF/maven/org.osgi/org.osgi.namespace.contract/
+META-INF/maven/org.osgi/org.osgi.namespace.contract/pom.xml
+OSGI-OPT/
+OSGI-OPT/src/
+OSGI-OPT/src/org/
+OSGI-OPT/src/org/osgi/
+OSGI-OPT/src/org/osgi/namespace/
+OSGI-OPT/src/org/osgi/namespace/contract/
+OSGI-OPT/src/org/osgi/namespace/contract/ContractNamespace.java
+OSGI-OPT/src/org/osgi/namespace/contract/package-info.java
+OSGI-OPT/src/org/osgi/namespace/contract/packageinfo
+about.html
+org/
+org/osgi/
+org/osgi/namespace/
+org/osgi/namespace/contract/
+org/osgi/namespace/contract/ContractNamespace.class
+org/osgi/namespace/contract/package-info.class
+org/osgi/namespace/contract/packageinfo
+
+ succeeded in 232ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 11:08:39 GMT
+content-type: text/html
+cf-ray: 9f5ecf188e140396-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: "org.osgi.namespace.contract-1.0.0.pom" "https://github.com/osgi/osgi"
+web search: 
+web search: https://docs.osgi.org/specification/osgi.cmpn/7.0.0/service.namespaces.html
+web search: 
+web search: https://github.com/osgi/osgi
+codex
+I’ve confirmed the published JAR contains `.class` files, so this remains a normal JVM artifact and I’m leaving the Native Image exclusion fields out. Next I’ll fill the metadata object using Maven source/javadoc URLs and `N/A` for the missing test artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+index dfdabb759c2426fe4732681d418fe4ae92249909..16f0dd7b148235975a41af4bf3a458a17b646c30
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
++  "description" : "org.osgi.namespace.contract provides the OSGi ContractNamespace constants for declaring and requiring contract capabilities in OSGi resource metadata. It is a small companion API package that names the osgi.contract namespace and its version attribute rather than providing a runtime implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+index dfdabb759c2426fe4732681d418fe4ae92249909..16f0dd7b148235975a41af4bf3a458a17b646c30
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
++  "description" : "org.osgi.namespace.contract provides the OSGi ContractNamespace constants for declaring and requiring contract capabilities in OSGi resource metadata. It is a small companion API package that names the osgi.contract namespace and its version attribute rather than providing a runtime implementation."
+ }
+
+codex
+The JSON has been patched. I’m doing a quick validity check and HEAD-checking the Maven URLs so the tokenized URLs resolve for `1.0.0`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+ succeeded in 0ms:
+{
+  "coordinates": "org.osgi:org.osgi.namespace.contract:1.0.0",
+  "repository-url": "https://github.com/osgi/osgi",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
+  "description": "org.osgi.namespace.contract provides the OSGi ContractNamespace constants for declaring and requiring contract capabilities in OSGi resource metadata. It is a small companion API package that names the osgi.contract namespace and its version attribute rather than providing a runtime implementation."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:08:57 GMT
+content-type: application/java-archive
+content-length: 7681
+cf-ray: 9f5ecf8b1da223f7-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 59466
+etag: "03cd052ff92a0874059056a7189c38b9"
+last-modified: Tue, 18 Aug 2015 13:17:41 GMT
+x-checksum-md5: 03cd052ff92a0874059056a7189c38b9
+x-checksum-sha1: a5739540fd9fb496593cebf3a1120b6e307e9899
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0/org.osgi.namespace.contract-1.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+index dfdabb759c2426fe4732681d418fe4ae92249909..16f0dd7b148235975a41af4bf3a458a17b646c30
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
++  "description" : "org.osgi.namespace.contract provides the OSGi ContractNamespace constants for declaring and requiring contract capabilities in OSGi resource metadata. It is a small companion API package that names the osgi.contract namespace and its version attribute rather than providing a runtime implementation."
+ }
+
+ succeeded in 332ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:08:57 GMT
+content-type: application/java-archive
+content-length: 42016
+cf-ray: 9f5ecf8b294ebc65-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "8b1b727d70f9ab7e8b2deee4816a11be"
+last-modified: Tue, 18 Aug 2015 13:17:41 GMT
+x-checksum-md5: 8b1b727d70f9ab7e8b2deee4816a11be
+x-checksum-sha1: 074939b490d7c29a185e1b4a39604047e28a9e1f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Maven Central org.osgi namespace contract 1.0.0 sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0
+codex
+Updated [org.osgi-org.osgi.namespace.contract-1.0.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json) with the discovered metadata.
+
+I used Maven Central for the source and javadoc URLs, set tests to `N/A` because no test artifact is present for `1.0.0`, and used the OSGi GitHub repository root. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0))
+
+No `language` field was added. I also left `not-for-native-image` absent because the artifact is a JVM JAR and contains class files.
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+index dfdabb759c2426fe4732681d418fe4ae92249909..16f0dd7b148235975a41af4bf3a458a17b646c30
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.namespace.contract:1.0.0",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/$version$/org.osgi.namespace.contract-$version$-javadoc.jar",
++  "description" : "org.osgi.namespace.contract provides the OSGi ContractNamespace constants for declaring and requiring contract capabilities in OSGi resource metadata. It is a small companion API package that names the osgi.contract namespace and its version attribute rather than providing a runtime implementation."
+ }
+
+tokens used
+69,111
+Updated [org.osgi-org.osgi.namespace.contract-1.0.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d/build/discovered-artifact-metadata/org.osgi-org.osgi.namespace.contract-1.0.0.json) with the discovered metadata.
+
+I used Maven Central for the source and javadoc URLs, set tests to `N/A` because no test artifact is present for `1.0.0`, and used the OSGi GitHub repository root. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.contract/1.0.0))
+
+No `language` field was added. I also left `not-for-native-image` absent because the artifact is a JVM JAR and contains class files.
+Ran agent for org.osgi:org.osgi.namespace.contract:1.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d/build/agent-artifact-discovery-logs/org.osgi-org.osgi.namespace.contract-1.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4804-4db3067d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 4s
+9 actionable tasks: 4 executed, 5 from cache
