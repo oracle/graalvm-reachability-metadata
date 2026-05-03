@@ -1,0 +1,315 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deda1-3cdd-7721-a82e-2a4b92869854
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: it.unimi.dsi:fastutil:8.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "8.1.1" when "$version$" is replaced with "8.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/metadata/it.unimi.dsi/fastutil/index.json
+- Entry selector: "metadata-version" = "8.1.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "8.1.1".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "8.1.1".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "8.1.1".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "8.1.1" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar
+- repository-url: https://github.com/vigna/fastutil
+- test-code-url: https://github.com/vigna/fastutil/tree/$version$/test
+- documentation-url: https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar
+- description: fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion.
+- language: <missing>
+
+Context:
+- Coordinate version: 8.1.1
+- Entry metadata-version: 8.1.1
+- Entry test-version: 8.1.1
+codex
+I’ll inspect the metadata entry first, then verify the rendered Maven and GitHub URLs for the exact `8.1.1` version before deciding whether any field needs to change.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"8.1.1\")' metadata/it.unimi.dsi/fastutil/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "8.1.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
+  "repository-url": "https://github.com/vigna/fastutil",
+  "test-code-url": "https://github.com/vigna/fastutil/tree/$version$/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
+  "description": "fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion.",
+  "tested-versions": [
+    "8.1.1"
+  ],
+  "allowed-packages": [
+    "it.unimi.dsi.fastutil"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/it.unimi.dsi/fastutil/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.1.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
+    "repository-url" : "https://github.com/vigna/fastutil",
+    "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
+    "description" : "fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion.",
+    "tested-versions" : [
+      "8.1.1"
+    ],
+    "allowed-packages" : [
+      "it.unimi.dsi.fastutil"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+?? metadata/it.unimi.dsi/
+?? tests/src/it.unimi.dsi/
+
+web search: 
+web search: https://github.com/vigna/fastutil/tree/8.1.1/test
+web search: 
+web search: repo.maven.apache.org maven2 it.unimi.dsi fastutil 8.1.1 sources jar javadoc jar
+codex
+The entry already has populated URL and description fields, so I’m treating those URL values as templates and checking the exact rendered `8.1.1` artifacts. I also need to confirm whether there is any Maven-hosted test artifact before keeping the GitHub test directory.
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/vigna/fastutil/tree/8.1.1/test" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 193ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: it/unimi/dsi/fastutil/8.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>it/unimi/dsi/fastutil/8.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="fastutil-8.1.1-javadoc.jar" title="fastutil-8.1.1-javadoc.jar">fastutil-8.1.1-javadoc.jar</a>                        2017-11-21 23:45  21352792      
+<a href="fastutil-8.1.1-javadoc.jar.asc" title="fastutil-8.1.1-javadoc.jar.asc">fastutil-8.1.1-javadoc.jar.asc</a>                    2017-11-21 23:45       455      
+<a href="fastutil-8.1.1-javadoc.jar.asc.md5" title="fastutil-8.1.1-javadoc.jar.asc.md5">fastutil-8.1.1-javadoc.jar.asc.md5</a>                2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-javadoc.jar.asc.sha1" title="fastutil-8.1.1-javadoc.jar.asc.sha1">fastutil-8.1.1-javadoc.jar.asc.sha1</a>               2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-javadoc.jar.md5" title="fastutil-8.1.1-javadoc.jar.md5">fastutil-8.1.1-javadoc.jar.md5</a>                    2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-javadoc.jar.sha1" title="fastutil-8.1.1-javadoc.jar.sha1">fastutil-8.1.1-javadoc.jar.sha1</a>                   2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-sources.jar" title="fastutil-8.1.1-sources.jar">fastutil-8.1.1-sources.jar</a>                        2017-11-21 23:45   8979447      
+<a href="fastutil-8.1.1-sources.jar.asc" title="fastutil-8.1.1-sources.jar.asc">fastutil-8.1.1-sources.jar.asc</a>                    2017-11-21 23:45       455      
+<a href="fastutil-8.1.1-sources.jar.asc.md5" title="fastutil-8.1.1-sources.jar.asc.md5">fastutil-8.1.1-sources.jar.asc.md5</a>                2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-sources.jar.asc.sha1" title="fastutil-8.1.1-sources.jar.asc.sha1">fastutil-8.1.1-sources.jar.asc.sha1</a>               2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-sources.jar.md5" title="fastutil-8.1.1-sources.jar.md5">fastutil-8.1.1-sources.jar.md5</a>                    2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-sources.jar.sha1" title="fastutil-8.1.1-sources.jar.sha1">fastutil-8.1.1-sources.jar.sha1</a>                   2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.jar" title="fastutil-8.1.1.jar">fastutil-8.1.1.jar</a>                                2017-11-21 23:45  18827847      
+<a href="fastutil-8.1.1.jar.asc" title="fastutil-8.1.1.jar.asc">fastutil-8.1.1.jar.asc</a>                            2017-11-21 23:45       455      
+<a href="fastutil-8.1.1.jar.asc.md5" title="fastutil-8.1.1.jar.asc.md5">fastutil-8.1.1.jar.asc.md5</a>                        2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.jar.asc.sha1" title="fastutil-8.1.1.jar.asc.sha1">fastutil-8.1.1.jar.asc.sha1</a>                       2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.jar.md5" title="fastutil-8.1.1.jar.md5">fastutil-8.1.1.jar.md5</a>                            2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.jar.sha1" title="fastutil-8.1.1.jar.sha1">fastutil-8.1.1.jar.sha1</a>                           2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.pom" title="fastutil-8.1.1.pom">fastutil-8.1.1.pom</a>                                2017-11-21 23:45      1400      
+<a href="fastutil-8.1.1.pom.asc" title="fastutil-8.1.1.pom.asc">fastutil-8.1.1.pom.asc</a>                            2017-11-21 23:45       455      
+<a href="fastutil-8.1.1.pom.asc.md5" title="fastutil-8.1.1.pom.asc.md5">fastutil-8.1.1.pom.asc.md5</a>                        2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.pom.asc.sha1" title="fastutil-8.1.1.pom.asc.sha1">fastutil-8.1.1.pom.asc.sha1</a>                       2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.pom.md5" title="fastutil-8.1.1.pom.md5">fastutil-8.1.1.pom.md5</a>                            2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.pom.sha1" title="fastutil-8.1.1.pom.sha1">fastutil-8.1.1.pom.sha1</a>                           2017-11-21 23:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 415ms:
+200 https://github.com/vigna/fastutil/tree/8.1.1/test
+
+web search: 
+web search: site:github.com/vigna/fastutil fastutil 8.1.1
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1
+codex
+The Maven directory contains sources and javadoc jars for `8.1.1`, but no test classifier. The GitHub `8.1.1` tag’s `test` directory renders successfully, so the current test URL is the appropriate versioned fallback.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>it.unimi.dsi</groupId>
+  <artifactId>fastutil</artifactId>
+  <packaging>jar</packaging>
+  <name>fastutil</name>
+  <version>8.1.1</version>
+  <description>fastutil extends the Java Collections Framework by providing type-specific maps, sets, lists and priority queues with a small memory footprint and fast access and insertion; provides also big (64-bit) arrays, sets and lists, and fast, practical I/O classes for binary and text files.</description>
+  <url>http://fasutil.di.unimi.it/</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git://github.com/vigna/fastutil.git</connection>
+    <url>https://github.com/vigna/fastutil</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>vigna</id>
+      <name>Sebastiano Vigna</name>
+      <email>vigna@di.unimi.it</email>
+    </developer>
+  </developers>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/vigna/fastutil/tree/8.1.1/src" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/git/ref/tags/8.1.1 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 174ms:
+{
+  "ref": "refs/tags/8.1.1",
+  "node_id": "MDM6UmVmMzU0MzczOTc6cmVmcy90YWdzLzguMS4x",
+  "url": "https://api.github.com/repos/vigna/fastutil/git/refs/tags/8.1.1",
+  "object": {
+    "sha": "902a91a955deabb09e8a524d49cc09a56d05852d",
+    "type": "commit",
+    "url": "https://api.github.com/repos/vigna/fastutil/git/commits/902a91a955deabb09e8a524d49cc09a56d05852d"
+  }
+}
+
+ succeeded in 426ms:
+200 https://github.com/vigna/fastutil/tree/8.1.1/src
+
+codex
+The POM’s SCM root matches `https://github.com/vigna/fastutil`, and the artifact is ordinary Java, not Kotlin/Groovy/Scala-specific, so `language` should remain absent. Since every requested field is already present and correct for `8.1.1`, I’m doing a final JSON validity check without changing populated fields.
+exec
+/usr/bin/bash -lc 'jq empty metadata/it.unimi.dsi/fastutil/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/it.unimi.dsi/fastutil/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/it.unimi.dsi/fastutil/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+?? metadata/it.unimi.dsi/fastutil/index.json
+
+web search: 
+web search: it.unimi.dsi fastutil 8.1.1 Maven Central
+codex
+Verified [metadata/it.unimi.dsi/fastutil/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/metadata/it.unimi.dsi/fastutil/index.json): no edit was needed.
+
+The existing `8.1.1` entry already has the correct Maven sources jar, Maven javadoc jar, canonical GitHub repository root, and versioned GitHub test directory. Maven Central has no test artifact for this version, so the GitHub test URL is the right fallback. fastutil is not Kotlin/Groovy/Scala-specific, so `language` remains absent. ([central.sonatype.com](https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1?utm_source=openai))
+
+Validation run: `jq empty metadata/it.unimi.dsi/fastutil/index.json`.
+tokens used
+41,917
+Verified [metadata/it.unimi.dsi/fastutil/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/metadata/it.unimi.dsi/fastutil/index.json): no edit was needed.
+
+The existing `8.1.1` entry already has the correct Maven sources jar, Maven javadoc jar, canonical GitHub repository root, and versioned GitHub test directory. Maven Central has no test artifact for this version, so the GitHub test URL is the right fallback. fastutil is not Kotlin/Groovy/Scala-specific, so `language` remains absent. ([central.sonatype.com](https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1?utm_source=openai))
+
+Validation run: `jq empty metadata/it.unimi.dsi/fastutil/index.json`.
+Ran agent for it.unimi.dsi:fastutil:8.1.1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/build/agent-url-discovery-logs/it.unimi.dsi-fastutil-8.1.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 57s
+9 actionable tasks: 1 executed, 8 up-to-date

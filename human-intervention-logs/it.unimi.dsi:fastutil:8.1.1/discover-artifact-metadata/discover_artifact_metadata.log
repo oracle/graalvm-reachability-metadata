@@ -1,0 +1,623 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded9f-a82c-7253-aa86-4c21f0e8f218
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: it.unimi.dsi:fastutil:8.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "8.1.1" when "$version$" is replaced with "8.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+- Set "coordinates" to "it.unimi.dsi:fastutil:8.1.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "8.1.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources, then update the JSON directly. I’ll also check whether the jar contains JVM classes before deciding on any Native Image exclusion fields.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+-rw-rw-r-- 1 vjovanov vjovanov 52 May  3 13:35 build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+{
+  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'it\\.unimi\\.dsi.*fastutil|fastutil' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json:2:  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
+
+web search: 
+web search: Maven Central it.unimi.dsi fastutil 8.1.1 pom sources jar
+codex
+The current metadata file only has coordinates. I found the Central page and am checking the actual published artifacts now, because this repo prefers Maven-hosted source/test artifacts when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: it/unimi/dsi/fastutil/8.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>it/unimi/dsi/fastutil/8.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="fastutil-8.1.1-javadoc.jar" title="fastutil-8.1.1-javadoc.jar">fastutil-8.1.1-javadoc.jar</a>                        2017-11-21 23:45  21352792      
+<a href="fastutil-8.1.1-javadoc.jar.asc" title="fastutil-8.1.1-javadoc.jar.asc">fastutil-8.1.1-javadoc.jar.asc</a>                    2017-11-21 23:45       455      
+<a href="fastutil-8.1.1-javadoc.jar.asc.md5" title="fastutil-8.1.1-javadoc.jar.asc.md5">fastutil-8.1.1-javadoc.jar.asc.md5</a>                2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-javadoc.jar.asc.sha1" title="fastutil-8.1.1-javadoc.jar.asc.sha1">fastutil-8.1.1-javadoc.jar.asc.sha1</a>               2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-javadoc.jar.md5" title="fastutil-8.1.1-javadoc.jar.md5">fastutil-8.1.1-javadoc.jar.md5</a>                    2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-javadoc.jar.sha1" title="fastutil-8.1.1-javadoc.jar.sha1">fastutil-8.1.1-javadoc.jar.sha1</a>                   2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-sources.jar" title="fastutil-8.1.1-sources.jar">fastutil-8.1.1-sources.jar</a>                        2017-11-21 23:45   8979447      
+<a href="fastutil-8.1.1-sources.jar.asc" title="fastutil-8.1.1-sources.jar.asc">fastutil-8.1.1-sources.jar.asc</a>                    2017-11-21 23:45       455      
+<a href="fastutil-8.1.1-sources.jar.asc.md5" title="fastutil-8.1.1-sources.jar.asc.md5">fastutil-8.1.1-sources.jar.asc.md5</a>                2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-sources.jar.asc.sha1" title="fastutil-8.1.1-sources.jar.asc.sha1">fastutil-8.1.1-sources.jar.asc.sha1</a>               2017-11-21 23:45        40      
+<a href="fastutil-8.1.1-sources.jar.md5" title="fastutil-8.1.1-sources.jar.md5">fastutil-8.1.1-sources.jar.md5</a>                    2017-11-21 23:45        32      
+<a href="fastutil-8.1.1-sources.jar.sha1" title="fastutil-8.1.1-sources.jar.sha1">fastutil-8.1.1-sources.jar.sha1</a>                   2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.jar" title="fastutil-8.1.1.jar">fastutil-8.1.1.jar</a>                                2017-11-21 23:45  18827847      
+<a href="fastutil-8.1.1.jar.asc" title="fastutil-8.1.1.jar.asc">fastutil-8.1.1.jar.asc</a>                            2017-11-21 23:45       455      
+<a href="fastutil-8.1.1.jar.asc.md5" title="fastutil-8.1.1.jar.asc.md5">fastutil-8.1.1.jar.asc.md5</a>                        2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.jar.asc.sha1" title="fastutil-8.1.1.jar.asc.sha1">fastutil-8.1.1.jar.asc.sha1</a>                       2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.jar.md5" title="fastutil-8.1.1.jar.md5">fastutil-8.1.1.jar.md5</a>                            2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.jar.sha1" title="fastutil-8.1.1.jar.sha1">fastutil-8.1.1.jar.sha1</a>                           2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.pom" title="fastutil-8.1.1.pom">fastutil-8.1.1.pom</a>                                2017-11-21 23:45      1400      
+<a href="fastutil-8.1.1.pom.asc" title="fastutil-8.1.1.pom.asc">fastutil-8.1.1.pom.asc</a>                            2017-11-21 23:45       455      
+<a href="fastutil-8.1.1.pom.asc.md5" title="fastutil-8.1.1.pom.asc.md5">fastutil-8.1.1.pom.asc.md5</a>                        2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.pom.asc.sha1" title="fastutil-8.1.1.pom.asc.sha1">fastutil-8.1.1.pom.asc.sha1</a>                       2017-11-21 23:45        40      
+<a href="fastutil-8.1.1.pom.md5" title="fastutil-8.1.1.pom.md5">fastutil-8.1.1.pom.md5</a>                            2017-11-21 23:45        32      
+<a href="fastutil-8.1.1.pom.sha1" title="fastutil-8.1.1.pom.sha1">fastutil-8.1.1.pom.sha1</a>                           2017-11-21 23:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>it.unimi.dsi</groupId>
+  <artifactId>fastutil</artifactId>
+  <packaging>jar</packaging>
+  <name>fastutil</name>
+  <version>8.1.1</version>
+  <description>fastutil extends the Java Collections Framework by providing type-specific maps, sets, lists and priority queues with a small memory footprint and fast access and insertion; provides also big (64-bit) arrays, sets and lists, and fast, practical I/O classes for binary and text files.</description>
+  <url>http://fasutil.di.unimi.it/</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git://github.com/vigna/fastutil.git</connection>
+    <url>https://github.com/vigna/fastutil</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>vigna</id>
+      <name>Sebastiano Vigna</name>
+      <email>vigna@di.unimi.it</email>
+    </developer>
+  </developers>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 177ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:36:11 GMT
+content-type: application/java-archive
+content-length: 8979447
+cf-ray: 9f5ef7708c0c9808-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "13e99ef8e6be2080a7039c9fab63b3cc"
+last-modified: Tue, 21 Nov 2017 23:45:47 GMT
+x-checksum-md5: 13e99ef8e6be2080a7039c9fab63b3cc
+x-checksum-sha1: f24fed4c7dc724ba851d441a7b8552d55bbca02d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central it.unimi.dsi fastutil 8.1.1
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\".*sources.jar|\"test-code-url\".*github|\"documentation-url\".*javadoc.jar|\\"'$version'"\\"'$'"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-$version$/activemq-client/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+metadata/dev.zio/zio-config_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-config/tree/v$version$/core/shared/src/test",
+metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-javadoc.jar",
+metadata/javax.el/el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/vigna/fastutil.git | rg '8\\.1\\.1|v8\\.1\\.1|fastutil'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/tags?per_page=100 | rg '\"name\": \"(8\\.1\\.1|v8\\.1\\.1|fastutil-8\\.1\\.1)' -n -C 2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 278ms:
+902a91a955deabb09e8a524d49cc09a56d05852d	refs/tags/8.1.1
+
+ succeeded in 217ms:
+271-  },
+272-  {
+273:    "name": "8.1.1",
+274-    "zipball_url": "https://api.github.com/repos/vigna/fastutil/zipball/refs/tags/8.1.1",
+275-    "tarball_url": "https://api.github.com/repos/vigna/fastutil/tarball/refs/tags/8.1.1",
+
+codex
+The artifact publishes `jar`, `sources.jar`, and `javadoc.jar` on Maven Central, but no Maven test jar in that version directory. The upstream repository has a matching `8.1.1` tag, so I’m using that for the test suite path.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/contents/test?ref=8.1.1 | rg '\"name\":|\"path\":|\"type\":'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vigna/fastutil/contents/?ref=8.1.1 | rg '\"name\":|\"path\":|\"type\":'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-tests.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-test-sources.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 159ms:
+    "name": "it",
+    "path": "test/it",
+    "type": "dir",
+
+ succeeded in 196ms:
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "type": "file",
+    "name": ".svnignore",
+    "path": ".svnignore",
+    "type": "file",
+    "name": "CHANGES",
+    "path": "CHANGES",
+    "type": "file",
+    "name": "LICENSE-2.0",
+    "path": "LICENSE-2.0",
+    "type": "file",
+    "name": "README.md",
+    "path": "README.md",
+    "type": "file",
+    "name": "REVISION.md",
+    "path": "REVISION.md",
+    "type": "file",
+    "name": "TODO",
+    "path": "TODO",
+    "type": "file",
+    "name": "build.properties",
+    "path": "build.properties",
+    "type": "file",
+    "name": "build.xml",
+    "path": "build.xml",
+    "type": "file",
+    "name": "drv",
+    "path": "drv",
+    "type": "dir",
+    "name": "fastutil.bnd",
+    "path": "fastutil.bnd",
+    "type": "file",
+    "name": "gencsource.sh",
+    "path": "gencsource.sh",
+    "type": "file",
+    "name": "ivy.xml",
+    "path": "ivy.xml",
+    "type": "file",
+    "name": "makefile",
+    "path": "makefile",
+    "type": "file",
+    "name": "pom-model.xml",
+    "path": "pom-model.xml",
+    "type": "file",
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "type": "file",
+    "name": "src",
+    "path": "src",
+    "type": "dir",
+    "name": "test.sh",
+    "path": "test.sh",
+    "type": "file",
+    "name": "test",
+    "path": "test",
+    "type": "dir",
+
+ succeeded in 243ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 11:36:28 GMT
+content-type: text/html
+cf-ray: 9f5ef7d8f9cabe68-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 231ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 11:36:28 GMT
+content-type: text/html
+cf-ray: 9f5ef7d91b8bbac8-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Maven Central it.unimi.dsi fastutil 8.1.1
+web search: 
+web search: https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1
+web search: 
+web search: https://github.com/vigna/fastutil/tree/8.1.1/test
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:36:42 GMT
+content-type: application/java-archive
+content-length: 8979447
+cf-ray: 9f5ef8347ce075ff-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 578957
+etag: "13e99ef8e6be2080a7039c9fab63b3cc"
+last-modified: Tue, 21 Nov 2017 23:45:47 GMT
+x-checksum-md5: 13e99ef8e6be2080a7039c9fab63b3cc
+x-checksum-sha1: f24fed4c7dc724ba851d441a7b8552d55bbca02d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:36:43 GMT
+content-type: application/java-archive
+content-length: 21352792
+cf-ray: 9f5ef834bdaccb74-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 488272
+etag: "68e15f6a43a68effe3cb20be72bd3c11"
+last-modified: Tue, 21 Nov 2017 23:45:51 GMT
+x-checksum-md5: 68e15f6a43a68effe3cb20be72bd3c11
+x-checksum-sha1: 9d78bbadd2bf32afb63b5b42bd9b2b8f0ef08faf
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/vigna/fastutil/tree/8.1.1/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d) && curl -fsSL -o "$tmp/fastutil-8.1.1.jar" https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/8.1.1/fastutil-8.1.1.jar && jar tf "$tmp/fastutil-8.1.1.jar" | rg '"'\\.class"'$'"' | head -5; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 371ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:36:43 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"01044089bfbe7d40c344dbe5293abe8c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=gFz5m3CCLjFB%2B1rfrQPJFjJHOps0Y7AN4oFNgHi162zCJghasn02tHG33jUrDPYaK%2BUJY5dasoT7%2F5mH3iA%2B18brvlPHfQqB5zod%2FyM7FZBZ5UggWTHu0sFfmRegKtQBNaPmUIiydkP5ZZKoXbWTmKqFiEiZBdIlzU6bh%2BXH4STgUno3dwhAGgFiq23QYjCYcFAlxSa5PzYzT2kGIUNe4YF6SNgFs0h27O%2BFeSdUz4QJs%2FEDQ7d%2B0ISbzClu1TlwjA5BzV9KGQ3J2%2BtAu4WEFg%3D%3D--dbY34G%2B4k%2BdTeFg0--SSlho8zJfPrCIU6tynFWvw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2026978304.1777808202; expires=Mon, 03 May 2027 11:36:42 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 11:36:42 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FD:CCC67:3DF56DE:2E1FF12:69F7334A
+
+
+ succeeded in 1005ms:
+it/unimi/dsi/fastutil/AbstractIndirectPriorityQueue.class
+it/unimi/dsi/fastutil/AbstractPriorityQueue.class
+it/unimi/dsi/fastutil/AbstractStack.class
+it/unimi/dsi/fastutil/Arrays$ForkJoinGenericQuickSort.class
+it/unimi/dsi/fastutil/Arrays.class
+
+codex
+I have enough evidence now: this is a normal JVM jar with `.class` files and it is not Kotlin, Groovy, or Scala-specific. I’m updating only the discovered metadata JSON with the Maven Central source/javadoc URLs and the GitHub tag test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..1c2214bad03c600bc33a054147929dc04b914b80
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion."
+ }
+
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..1c2214bad03c600bc33a054147929dc04b914b80
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+{
+  "coordinates": "it.unimi.dsi:fastutil:8.1.1",
+  "repository-url": "https://github.com/vigna/fastutil",
+  "source-code-url": "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
+  "test-code-url": "https://github.com/vigna/fastutil/tree/$version$/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
+  "description": "fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..1c2214bad03c600bc33a054147929dc04b914b80
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion."
+ }
+
+codex
+The JSON parses cleanly. I’m doing one final status check because the file is under `build/`, so Git may ignore it even though the requested file has been changed.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 0ms:
+{
+  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
+  "repository-url" : "https://github.com/vigna/fastutil",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
+  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
+  "description" : "fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb
+ succeeded in 138ms:
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..1c2214bad03c600bc33a054147929dc04b914b80
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion."
+ }
+
+web search: 
+web search: Maven Central it.unimi.dsi fastutil 8.1.1
+web search: 
+web search: https://github.com/vigna/fastutil/tree/8.1.1/test
+web search: 
+web search: https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/
+web search: 
+web search: https://repo1.maven.org/maven2/it/unimi/dsi/fastutil/8.1.1/
+web search: 
+web search: https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1
+codex
+Updated [it.unimi.dsi-fastutil-8.1.1.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json:1).
+
+I set the repository from the POM SCM URL, used Maven Central `sources.jar` and `javadoc.jar`, and used the GitHub `8.1.1` tag’s `test` tree for tests. I left `language` and `not-for-native-image` absent because this is a normal Java/JVM jar, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([central.sonatype.com](https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1))
+
+Validation: `jq . build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json` passed.
+diff --git a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+index 495e1ecb55e691ee503e2467492e492eef3adb41..1c2214bad03c600bc33a054147929dc04b914b80
+--- a/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
++++ b/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "it.unimi.dsi:fastutil:8.1.1"
++  "coordinates" : "it.unimi.dsi:fastutil:8.1.1",
++  "repository-url" : "https://github.com/vigna/fastutil",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vigna/fastutil/tree/$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/it/unimi/dsi/fastutil/$version$/fastutil-$version$-javadoc.jar",
++  "description" : "fastutil extends the Java Collections Framework with type-specific collections such as maps, sets, lists, and priority queues for primitive and object types. It also provides big arrays and practical I/O utilities aimed at low memory use and fast access or insertion."
+ }
+
+tokens used
+72,254
+Updated [it.unimi.dsi-fastutil-8.1.1.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json:1).
+
+I set the repository from the POM SCM URL, used Maven Central `sources.jar` and `javadoc.jar`, and used the GitHub `8.1.1` tag’s `test` tree for tests. I left `language` and `not-for-native-image` absent because this is a normal Java/JVM jar, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([central.sonatype.com](https://central.sonatype.com/artifact/it.unimi.dsi/fastutil/8.1.1))
+
+Validation: `jq . build/discovered-artifact-metadata/it.unimi.dsi-fastutil-8.1.1.json` passed.
+Ran agent for it.unimi.dsi:fastutil:8.1.1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/build/agent-artifact-discovery-logs/it.unimi.dsi-fastutil-8.1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2976-7299cbcb/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 21s
+9 actionable tasks: 4 executed, 5 from cache
