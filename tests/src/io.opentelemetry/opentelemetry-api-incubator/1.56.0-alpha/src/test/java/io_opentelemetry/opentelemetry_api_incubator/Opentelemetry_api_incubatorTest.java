@@ -21,6 +21,7 @@ import io.opentelemetry.api.incubator.config.ConfigProvider;
 import io.opentelemetry.api.incubator.config.DeclarativeConfigException;
 import io.opentelemetry.api.incubator.config.DeclarativeConfigProperties;
 import io.opentelemetry.api.incubator.config.GlobalConfigProvider;
+import io.opentelemetry.api.incubator.config.InstrumentationConfigUtil;
 import io.opentelemetry.api.incubator.logs.ExtendedDefaultLoggerProvider;
 import io.opentelemetry.api.incubator.logs.ExtendedLogRecordBuilder;
 import io.opentelemetry.api.incubator.logs.ExtendedLogger;
@@ -554,6 +555,48 @@ public class Opentelemetry_api_incubatorTest {
                         .containsEntry("string.list", List.of("a", "b"));
         assertThat(propertyMap.get("structured")).isEqualTo(Map.of("inner", "value"));
         assertThat(propertyMap.get("structured.list")).isEqualTo(List.of(Map.of("inner", "value")));
+    }
+
+    @Test
+    void instrumentationConfigUtilReadsKnownInstrumentationSettings() {
+        DeclarativeConfigProperties clientHttp = new MapBackedDeclarativeConfigProperties(Map.of(
+                        "request_captured_headers", List.of("x-client-request"),
+                        "response_captured_headers", List.of("x-client-response")));
+        DeclarativeConfigProperties serverHttp = new MapBackedDeclarativeConfigProperties(Map.of(
+                        "request_captured_headers", List.of("x-server-request"),
+                        "response_captured_headers", List.of("x-server-response")));
+        DeclarativeConfigProperties peer = new MapBackedDeclarativeConfigProperties(Map.of("service_mapping", List.of(
+                        new MapBackedDeclarativeConfigProperties(Map.of("peer", "db.example", "service", "database")),
+                        new MapBackedDeclarativeConfigProperties(Map.of("peer", "cache.example")),
+                        new MapBackedDeclarativeConfigProperties(
+                                        Map.of("peer", "queue.example", "service", "queue")))));
+        DeclarativeConfigProperties general = new MapBackedDeclarativeConfigProperties(Map.of(
+                        "peer", peer,
+                        "http", new MapBackedDeclarativeConfigProperties(Map.of(
+                                        "client", clientHttp,
+                                        "server", serverHttp))));
+        DeclarativeConfigProperties java = new MapBackedDeclarativeConfigProperties(Map.of(
+                        "http-client", new MapBackedDeclarativeConfigProperties(Map.of("enabled", true))));
+        ConfigProvider provider = () -> new MapBackedDeclarativeConfigProperties(Map.of(
+                        "general", general,
+                        "java", java));
+
+        assertThat(InstrumentationConfigUtil.peerServiceMapping(provider))
+                        .containsExactly(Map.entry("db.example", "database"), Map.entry("queue.example", "queue"));
+        assertThat(InstrumentationConfigUtil.httpClientRequestCapturedHeaders(provider))
+                        .containsExactly("x-client-request");
+        assertThat(InstrumentationConfigUtil.httpClientResponseCapturedHeaders(provider))
+                        .containsExactly("x-client-response");
+        assertThat(InstrumentationConfigUtil.httpServerRequestCapturedHeaders(provider))
+                        .containsExactly("x-server-request");
+        assertThat(InstrumentationConfigUtil.httpServerResponseCapturedHeaders(provider))
+                        .containsExactly("x-server-response");
+        assertThat(InstrumentationConfigUtil.javaInstrumentationConfig(provider, "http-client").getBoolean("enabled"))
+                        .isTrue();
+        String missingSetting = InstrumentationConfigUtil.getOrNull(provider,
+                        properties -> properties.getString("missing"), "general", "peer");
+        assertThat(missingSetting).isNull();
+        assertThat(InstrumentationConfigUtil.peerServiceMapping(ConfigProvider.noop())).isNull();
     }
 
     @Test
