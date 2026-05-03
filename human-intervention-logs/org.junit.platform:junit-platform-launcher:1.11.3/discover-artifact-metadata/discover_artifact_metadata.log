@@ -1,0 +1,1617 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dec6a-b828-75b0-899f-f8abf6f082a4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.junit.platform:junit-platform-launcher:1.11.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.11.3" when "$version$" is replaced with "1.11.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+- Set "coordinates" to "org.junit.platform:junit-platform-launcher:1.11.3".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.11.3".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata conventions first, then verify the JUnit artifact’s upstream URLs and update the JSON in place.
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json && sed -n '1,220p' build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 74 May  3 07:58 build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+{
+  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"\\\"repository-url\\\"|\\\"source-code-url\\\"|\\\"test-code-url\\\"|\\\"documentation-url\\\"|not-for-native-image|language\" build/discovered-artifact-metadata metadata repository -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+rg: repository: No such file or directory (os error 2)
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:6:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:21:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:6:    "repository-url": "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:6:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:9:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/org.apache.thrift/libthrift/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:20:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:21:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:23:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.w3c.css/sac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/w3c/css/sac/$version$/sac-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n \"junit-platform-launcher|junit-platform|org.junit.platform\" . -g '*.json' -g '*.gradle' -g '*.java' | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+./tests/tck-test-support/build.gradle:25:    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+./tests/tck-build-logic/build.gradle:40:    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle:262:    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+./metadata/org.junit.platform/junit-platform-engine/1.8.2/reachability-metadata.json:5:        "typeReached" : "org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService"
+./metadata/org.junit.platform/junit-platform-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-sources.jar",
+./metadata/org.junit.platform/junit-platform-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-javadoc.jar",
+./metadata/org.junit.platform/junit-platform-engine/index.json:14:      "org.junit.platform.engine"
+./stats/org.junit.platform/junit-platform-engine/1.8.2/execution-metrics.json:4:    "library": "org.junit.platform:junit-platform-engine:1.8.2",
+./stats/org.junit.platform/junit-platform-engine/1.8.2/execution-metrics.json:59:      "test_file": "tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/java/org_junit_platform/junit_platform_engine/ForkJoinPoolHierarchicalTestExecutorServiceTest.java",
+./stats/org.junit.platform/junit-platform-engine/1.8.2/execution-metrics.json:60:      "metadata_file": "metadata/org.junit.platform/junit-platform-engine/1.8.2/reachability-metadata.json"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:5:        "typeReached" : "org.junit.platform.commons.util.ModuleUtils$ModuleReferenceScanner"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:11:        "typeReached" : "org.junit.platform.commons.util.RuntimeUtils"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:23:        "typeReached" : "org.junit.platform.commons.util.RuntimeUtils"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:35:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:41:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:47:        "typeReached" : "org.junit.platform.commons.util.ModuleUtils$ModuleReferenceScanner"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:59:        "typeReached" : "org.junit.platform.commons.util.RuntimeUtils"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:94:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:100:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:106:        "typeReached" : "org.junit.platform.commons.util.ClasspathScanner"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:108:      "glob" : "org_junit_platform/junit_platform_commons"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:112:        "typeReached" : "org.junit.platform.commons.util.ModuleUtils$ModuleReferenceScanner"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:119:        "typeReached" : "org.junit.platform.commons.util.ClassLoaderUtils"
+./metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json:121:      "glob" : "org_junit_platform/junit_platform_commons/ClassLoaderUtilsTest$LocationSubject.class"
+./metadata/org.junit.platform/junit-platform-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-sources.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-javadoc.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:24:      "org.junit.platform.commons"
+./stats/org.junit.platform/junit-platform-commons/1.8.2/execution-metrics.json:4:    "library": "org.junit.platform:junit-platform-commons:1.8.2",
+./stats/org.junit.platform/junit-platform-commons/1.8.2/execution-metrics.json:64:      "test_file": "tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/ClassLoaderUtilsTest.java",
+./stats/org.junit.platform/junit-platform-commons/1.8.2/execution-metrics.json:65:      "metadata_file": "metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json"
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/build.gradle:14:    testImplementation "org.junit.platform:junit-platform-engine:$libraryVersion"
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/settings.gradle:20:rootProject.name = 'org.junit.platform.junit-platform-engine_tests'
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.junit.platform.engine.support.discovery.EngineDiscoveryRequestResolution"
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "org_junit_platform.junit_platform_engine.ForkJoinPoolHierarchicalTestExecutorServiceTest"
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:11:        "typeReached" : "org.junit.platform.engine.support.discovery.SelectorResolver$Match"
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:13:      "type" : "org_junit_platform.junit_platform_engine.ForkJoinPoolHierarchicalTestExecutorServiceTest"
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/java/org_junit_platform/junit_platform_engine/ForkJoinPoolHierarchicalTestExecutorServiceTest.java:7:package org_junit_platform.junit_platform_engine;
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/java/org_junit_platform/junit_platform_engine/ForkJoinPoolHierarchicalTestExecutorServiceTest.java:10:import static org.junit.platform.engine.support.hierarchical.Node.ExecutionMode.CONCURRENT;
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/java/org_junit_platform/junit_platform_engine/ForkJoinPoolHierarchicalTestExecutorServiceTest.java:17:import org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService;
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/java/org_junit_platform/junit_platform_engine/ForkJoinPoolHierarchicalTestExecutorServiceTest.java:18:import org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutorService.TestTask;
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/java/org_junit_platform/junit_platform_engine/ForkJoinPoolHierarchicalTestExecutorServiceTest.java:19:import org.junit.platform.engine.support.hierarchical.Node.ExecutionMode;
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/java/org_junit_platform/junit_platform_engine/ForkJoinPoolHierarchicalTestExecutorServiceTest.java:20:import org.junit.platform.engine.support.hierarchical.ParallelExecutionConfiguration;
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/src/test/java/org_junit_platform/junit_platform_engine/ForkJoinPoolHierarchicalTestExecutorServiceTest.java:21:import org.junit.platform.engine.support.hierarchical.ResourceLock;
+./tests/src/org.junit.platform/junit-platform-engine/1.8.2/user-code-filter.json:7:      "includeClasses" : "org.junit.platform.engine.**"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/build.gradle:14:    testImplementation "org.junit.platform:junit-platform-commons:$libraryVersion"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/settings.gradle:20:rootProject.name = 'org.junit.platform.junit-platform-commons_tests'
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.junit.platform.commons.support.ReflectionSupport"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "org_junit_platform.junit_platform_commons.AnnotationUtilsTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:11:        "typeReached" : "org.junit.platform.commons.util.AnnotationUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:13:      "type" : "org_junit_platform.junit_platform_commons.AnnotationUtilsTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:19:      "type" : "org_junit_platform.junit_platform_commons.AnnotationUtilsTest",
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:29:        "typeReached" : "org.junit.platform.commons.util.AnnotationUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:31:      "type" : "org_junit_platform.junit_platform_commons.AnnotationUtilsTest$AnnotatedFieldSubject"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:35:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:37:      "type" : "org_junit_platform.junit_platform_commons.AnnotationUtilsTest$AnnotatedFieldSubject"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:41:        "typeReached" : "org.junit.platform.commons.support.ReflectionSupport"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:43:      "type" : "org_junit_platform.junit_platform_commons.ClassLoaderUtilsTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:47:        "typeReached" : "org.junit.platform.commons.util.AnnotationUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:49:      "type" : "org_junit_platform.junit_platform_commons.ClassLoaderUtilsTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:53:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:55:      "type" : "org_junit_platform.junit_platform_commons.ClassLoaderUtilsTest",
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:65:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:67:      "type" : "org_junit_platform.junit_platform_commons.ClassLoaderUtilsTest$LocationSubject"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:71:        "typeReached" : "org.junit.platform.commons.support.ReflectionSupport"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:73:      "type" : "org_junit_platform.junit_platform_commons.ClasspathScannerTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:77:        "typeReached" : "org.junit.platform.commons.util.AnnotationUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:79:      "type" : "org_junit_platform.junit_platform_commons.ClasspathScannerTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:83:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:85:      "type" : "org_junit_platform.junit_platform_commons.ClasspathScannerTest",
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:95:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils$$Lambda/0x000000001b11a120"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:97:      "type" : "org_junit_platform.junit_platform_commons.ClasspathScannerTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:101:        "typeReached" : "org.junit.platform.commons.support.ReflectionSupport"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:103:      "type" : "org_junit_platform.junit_platform_commons.ModuleUtilsInnerModuleReferenceScannerTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:107:        "typeReached" : "org.junit.platform.commons.util.AnnotationUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:109:      "type" : "org_junit_platform.junit_platform_commons.ModuleUtilsInnerModuleReferenceScannerTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:113:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:115:      "type" : "org_junit_platform.junit_platform_commons.ModuleUtilsInnerModuleReferenceScannerTest",
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:125:        "typeReached" : "org.junit.platform.commons.support.ReflectionSupport"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:127:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:131:        "typeReached" : "org.junit.platform.commons.util.AnnotationUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:133:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:137:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:139:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest",
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:177:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:179:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest$ConstructorSubject"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:183:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:185:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest$FieldSubject",
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:194:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:196:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest$InstantiatedSubject",
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:208:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:210:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest$InterfaceFieldSubject"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:214:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:216:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest$InterfaceFields"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:220:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:222:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest$InterfaceMethodSubject"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:226:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:228:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest$MethodSubject"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:232:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:234:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest$OuterSubject"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:238:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:240:      "type" : "org_junit_platform.junit_platform_commons.ReflectionUtilsTest$OuterSubject$InnerSubject",
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:249:        "typeReached" : "org.junit.platform.commons.support.ReflectionSupport"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:251:      "type" : "org_junit_platform.junit_platform_commons.RuntimeUtilsTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:255:        "typeReached" : "org.junit.platform.commons.util.AnnotationUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:257:      "type" : "org_junit_platform.junit_platform_commons.RuntimeUtilsTest"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:261:        "typeReached" : "org.junit.platform.commons.util.ReflectionUtils"
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/resources/META-INF/native-image/reachability-metadata.json:263:      "type" : "org_junit_platform.junit_platform_commons.RuntimeUtilsTest",
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/RuntimeUtilsTest.java:7:package org_junit_platform.junit_platform_commons;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/RuntimeUtilsTest.java:10:import org.junit.platform.commons.util.RuntimeUtils;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/AnnotationUtilsTest.java:7:package org_junit_platform.junit_platform_commons;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/AnnotationUtilsTest.java:17:import org.junit.platform.commons.support.AnnotationSupport;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/ReflectionUtilsTest.java:7:package org_junit_platform.junit_platform_commons;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/ReflectionUtilsTest.java:17:import org.junit.platform.commons.util.ReflectionUtils;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/ReflectionUtilsTest.java:18:import org.junit.platform.commons.util.ReflectionUtils.HierarchyTraversalMode;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/ModuleUtilsInnerModuleReferenceScannerTest.java:7:package org_junit_platform.junit_platform_commons;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/ModuleUtilsInnerModuleReferenceScannerTest.java:12:import org.junit.platform.commons.util.ClassFilter;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/ModuleUtilsInnerModuleReferenceScannerTest.java:13:import org.junit.platform.commons.util.ModuleUtils;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/ClasspathScannerTest.java:7:package org_junit_platform.junit_platform_commons;
+./tests/src/org.junit.platform/junit-platform-commons/1.8.2/src/test/java/org_junit_platform/junit_platform_commons/ClasspathScannerTest.java:12:import org.junit.platform.commons.support.ReflectionSupport;
+
+codex
+The repo already prefers Maven source and javadoc jars when available, and GitHub paths for tests when there is no Maven tests jar. I’m checking the JUnit Platform artifacts now to avoid guessing the release tag or test packaging.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.junit.platform/junit-platform-engine/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-sources.jar",
+    "repository-url" : "https://github.com/junit-team/junit-framework",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-javadoc.jar",
+    "description" : "JUnit Platform Engine defines the API and support classes for test engines that plug into the JUnit Platform. It provides discovery selectors, filters, test descriptors, execution listeners, reporting types, and hierarchical execution support used by engines to discover and run tests.",
+    "tested-versions" : [
+      "1.8.2"
+    ],
+    "allowed-packages" : [
+      "org.junit.platform.engine"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.junit.platform/junit-platform-commons/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-sources.jar",
+    "repository-url" : "https://github.com/junit-team/junit5",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-javadoc.jar",
+    "description" : "JUnit Platform Commons provides shared utility APIs used across JUnit 5, including support for reflection, annotation lookup, classpath scanning, logging, and precondition checks. It belongs to the JUnit Platform layer and supports test discovery and execution infrastructure rather than acting as a test engine itself.",
+    "tested-versions" : [
+      "1.8.2",
+      "1.9.0",
+      "1.9.1",
+      "1.9.2",
+      "1.9.3",
+      "1.10.0",
+      "1.10.1",
+      "1.10.2",
+      "1.10.3",
+      "1.10.4",
+      "1.10.5"
+    ],
+    "allowed-packages" : [
+      "org.junit.platform.commons"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.junit.platform</groupId>
+  <artifactId>junit-platform-launcher</artifactId>
+  <version>1.11.3</version>
+  <name>JUnit Platform Launcher</name>
+  <description>Module "junit-platform-launcher" of JUnit 5.</description>
+  <url>https://junit.org/junit5/</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License v2.0</name>
+      <url>https://www.eclipse.org/legal/epl-v20.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>bechte</id>
+      <name>Stefan Bechtold</name>
+      <email>stefan.bechtold@me.com</email>
+    </developer>
+    <developer>
+      <id>jlink</id>
+      <name>Johannes Link</name>
+      <email>business@johanneslink.net</email>
+    </developer>
+    <developer>
+      <id>marcphilipp</id>
+      <name>Marc Philipp</name>
+      <email>mail@marcphilipp.de</email>
+    </developer>
+    <developer>
+      <id>mmerdes</id>
+      <name>Matthias Merdes</name>
+      <email>matthias.merdes@heidelpay.com</email>
+    </developer>
+    <developer>
+      <id>sbrannen</id>
+      <name>Sam Brannen</name>
+      <email>sam@sambrannen.com</email>
+    </developer>
+    <developer>
+      <id>sormuras</id>
+      <name>Christian Stein</name>
+      <email>sormuras@gmail.com</email>
+    </developer>
+    <developer>
+      <id>juliette-derancourt</id>
+      <name>Juliette de Rancourt</name>
+      <email>derancourt.juliette@gmail.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/junit-team/junit5.git</connection>
+    <developerConnection>scm:git:git://github.com/junit-team/junit5.git</developerConnection>
+    <url>https://github.com/junit-team/junit5</url>
+  </scm>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>5.11.3</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-engine</artifactId>
+      <version>1.11.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apiguardian</groupId>
+      <artifactId>apiguardian-api</artifactId>
+      <version>1.1.2</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.11.3/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/junit/platform/junit-platform-launcher/1.11.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/junit/platform/junit-platform-launcher/1.11.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="junit-platform-launcher-1.11.3-javadoc.jar" title="junit-platform-launcher-1.11.3-javadoc.jar">junit-platform-launcher-1.11.3-javadoc.jar</a>        2024-10-21 13:48    346500      
+<a href="junit-platform-launcher-1.11.3-javadoc.jar.asc" title="junit-platform-launcher-1.11.3-javadoc.jar.asc">junit-platform-launcher-1.11.3-javadoc.jar.as...</a>  2024-10-21 13:48       863      
+<a href="junit-platform-launcher-1.11.3-javadoc.jar.asc.md5" title="junit-platform-launcher-1.11.3-javadoc.jar.asc.md5">junit-platform-launcher-1.11.3-javadoc.jar.as...</a>  2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3-javadoc.jar.asc.sha1" title="junit-platform-launcher-1.11.3-javadoc.jar.asc.sha1">junit-platform-launcher-1.11.3-javadoc.jar.as...</a>  2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3-javadoc.jar.asc.sha256" title="junit-platform-launcher-1.11.3-javadoc.jar.asc.sha256">junit-platform-launcher-1.11.3-javadoc.jar.as...</a>  2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3-javadoc.jar.asc.sha512" title="junit-platform-launcher-1.11.3-javadoc.jar.asc.sha512">junit-platform-launcher-1.11.3-javadoc.jar.as...</a>  2024-10-21 13:48       128      
+<a href="junit-platform-launcher-1.11.3-javadoc.jar.md5" title="junit-platform-launcher-1.11.3-javadoc.jar.md5">junit-platform-launcher-1.11.3-javadoc.jar.md...</a>  2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3-javadoc.jar.sha1" title="junit-platform-launcher-1.11.3-javadoc.jar.sha1">junit-platform-launcher-1.11.3-javadoc.jar.sh...</a>  2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3-javadoc.jar.sha256" title="junit-platform-launcher-1.11.3-javadoc.jar.sha256">junit-platform-launcher-1.11.3-javadoc.jar.sh...</a>  2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3-javadoc.jar.sha512" title="junit-platform-launcher-1.11.3-javadoc.jar.sha512">junit-platform-launcher-1.11.3-javadoc.jar.sh...</a>  2024-10-21 13:48       128      
+<a href="junit-platform-launcher-1.11.3-sources.jar" title="junit-platform-launcher-1.11.3-sources.jar">junit-platform-launcher-1.11.3-sources.jar</a>        2024-10-21 13:48    108963      
+<a href="junit-platform-launcher-1.11.3-sources.jar.asc" title="junit-platform-launcher-1.11.3-sources.jar.asc">junit-platform-launcher-1.11.3-sources.jar.as...</a>  2024-10-21 13:48       863      
+<a href="junit-platform-launcher-1.11.3-sources.jar.asc.md5" title="junit-platform-launcher-1.11.3-sources.jar.asc.md5">junit-platform-launcher-1.11.3-sources.jar.as...</a>  2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3-sources.jar.asc.sha1" title="junit-platform-launcher-1.11.3-sources.jar.asc.sha1">junit-platform-launcher-1.11.3-sources.jar.as...</a>  2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3-sources.jar.asc.sha256" title="junit-platform-launcher-1.11.3-sources.jar.asc.sha256">junit-platform-launcher-1.11.3-sources.jar.as...</a>  2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3-sources.jar.asc.sha512" title="junit-platform-launcher-1.11.3-sources.jar.asc.sha512">junit-platform-launcher-1.11.3-sources.jar.as...</a>  2024-10-21 13:48       128      
+<a href="junit-platform-launcher-1.11.3-sources.jar.md5" title="junit-platform-launcher-1.11.3-sources.jar.md5">junit-platform-launcher-1.11.3-sources.jar.md...</a>  2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3-sources.jar.sha1" title="junit-platform-launcher-1.11.3-sources.jar.sha1">junit-platform-launcher-1.11.3-sources.jar.sh...</a>  2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3-sources.jar.sha256" title="junit-platform-launcher-1.11.3-sources.jar.sha256">junit-platform-launcher-1.11.3-sources.jar.sh...</a>  2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3-sources.jar.sha512" title="junit-platform-launcher-1.11.3-sources.jar.sha512">junit-platform-launcher-1.11.3-sources.jar.sh...</a>  2024-10-21 13:48       128      
+<a href="junit-platform-launcher-1.11.3.jar" title="junit-platform-launcher-1.11.3.jar">junit-platform-launcher-1.11.3.jar</a>                2024-10-21 13:48    189006      
+<a href="junit-platform-launcher-1.11.3.jar.asc" title="junit-platform-launcher-1.11.3.jar.asc">junit-platform-launcher-1.11.3.jar.asc</a>            2024-10-21 13:48       863      
+<a href="junit-platform-launcher-1.11.3.jar.asc.md5" title="junit-platform-launcher-1.11.3.jar.asc.md5">junit-platform-launcher-1.11.3.jar.asc.md5</a>        2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3.jar.asc.sha1" title="junit-platform-launcher-1.11.3.jar.asc.sha1">junit-platform-launcher-1.11.3.jar.asc.sha1</a>       2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3.jar.asc.sha256" title="junit-platform-launcher-1.11.3.jar.asc.sha256">junit-platform-launcher-1.11.3.jar.asc.sha256</a>     2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3.jar.asc.sha512" title="junit-platform-launcher-1.11.3.jar.asc.sha512">junit-platform-launcher-1.11.3.jar.asc.sha512</a>     2024-10-21 13:48       128      
+<a href="junit-platform-launcher-1.11.3.jar.md5" title="junit-platform-launcher-1.11.3.jar.md5">junit-platform-launcher-1.11.3.jar.md5</a>            2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3.jar.sha1" title="junit-platform-launcher-1.11.3.jar.sha1">junit-platform-launcher-1.11.3.jar.sha1</a>           2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3.jar.sha256" title="junit-platform-launcher-1.11.3.jar.sha256">junit-platform-launcher-1.11.3.jar.sha256</a>         2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3.jar.sha512" title="junit-platform-launcher-1.11.3.jar.sha512">junit-platform-launcher-1.11.3.jar.sha512</a>         2024-10-21 13:48       128      
+<a href="junit-platform-launcher-1.11.3.module" title="junit-platform-launcher-1.11.3.module">junit-platform-launcher-1.11.3.module</a>             2024-10-21 13:48      4733      
+<a href="junit-platform-launcher-1.11.3.module.asc" title="junit-platform-launcher-1.11.3.module.asc">junit-platform-launcher-1.11.3.module.asc</a>         2024-10-21 13:48       863      
+<a href="junit-platform-launcher-1.11.3.module.asc.md5" title="junit-platform-launcher-1.11.3.module.asc.md5">junit-platform-launcher-1.11.3.module.asc.md5</a>     2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3.module.asc.sha1" title="junit-platform-launcher-1.11.3.module.asc.sha1">junit-platform-launcher-1.11.3.module.asc.sha...</a>  2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3.module.asc.sha256" title="junit-platform-launcher-1.11.3.module.asc.sha256">junit-platform-launcher-1.11.3.module.asc.sha...</a>  2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3.module.asc.sha512" title="junit-platform-launcher-1.11.3.module.asc.sha512">junit-platform-launcher-1.11.3.module.asc.sha...</a>  2024-10-21 13:48       128      
+<a href="junit-platform-launcher-1.11.3.module.md5" title="junit-platform-launcher-1.11.3.module.md5">junit-platform-launcher-1.11.3.module.md5</a>         2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3.module.sha1" title="junit-platform-launcher-1.11.3.module.sha1">junit-platform-launcher-1.11.3.module.sha1</a>        2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3.module.sha256" title="junit-platform-launcher-1.11.3.module.sha256">junit-platform-launcher-1.11.3.module.sha256</a>      2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3.module.sha512" title="junit-platform-launcher-1.11.3.module.sha512">junit-platform-launcher-1.11.3.module.sha512</a>      2024-10-21 13:48       128      
+<a href="junit-platform-launcher-1.11.3.pom" title="junit-platform-launcher-1.11.3.pom">junit-platform-launcher-1.11.3.pom</a>                2024-10-21 13:48      3029      
+<a href="junit-platform-launcher-1.11.3.pom.asc" title="junit-platform-launcher-1.11.3.pom.asc">junit-platform-launcher-1.11.3.pom.asc</a>            2024-10-21 13:48       863      
+<a href="junit-platform-launcher-1.11.3.pom.asc.md5" title="junit-platform-launcher-1.11.3.pom.asc.md5">junit-platform-launcher-1.11.3.pom.asc.md5</a>        2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3.pom.asc.sha1" title="junit-platform-launcher-1.11.3.pom.asc.sha1">junit-platform-launcher-1.11.3.pom.asc.sha1</a>       2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3.pom.asc.sha256" title="junit-platform-launcher-1.11.3.pom.asc.sha256">junit-platform-launcher-1.11.3.pom.asc.sha256</a>     2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3.pom.asc.sha512" title="junit-platform-launcher-1.11.3.pom.asc.sha512">junit-platform-launcher-1.11.3.pom.asc.sha512</a>     2024-10-21 13:48       128      
+<a href="junit-platform-launcher-1.11.3.pom.md5" title="junit-platform-launcher-1.11.3.pom.md5">junit-platform-launcher-1.11.3.pom.md5</a>            2024-10-21 13:48        32      
+<a href="junit-platform-launcher-1.11.3.pom.sha1" title="junit-platform-launcher-1.11.3.pom.sha1">junit-platform-launcher-1.11.3.pom.sha1</a>           2024-10-21 13:48        40      
+<a href="junit-platform-launcher-1.11.3.pom.sha256" title="junit-platform-launcher-1.11.3.pom.sha256">junit-platform-launcher-1.11.3.pom.sha256</a>         2024-10-21 13:48        64      
+<a href="junit-platform-launcher-1.11.3.pom.sha512" title="junit-platform-launcher-1.11.3.pom.sha512">junit-platform-launcher-1.11.3.pom.sha512</a>         2024-10-21 13:48       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/junit-team/junit5/tree/r5.11.3/junit-platform-launcher/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/junit-team/junit5/tree/v5.11.3/junit-platform-launcher/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit5/git/ref/tags/r5.11.3 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit5/contents/junit-platform-launcher?ref=r5.11.3 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 151ms:
+HTTP/2 301 
+date: Sun, 03 May 2026 05:58:50 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/test
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=RcjbeG3E6ssmQGB0JDV8K%2FImAS5Bkssr3bENLlUPDcF9sv25pB9t2GaWTLIIb7cJi9iAlydolFuO6CGT9cZ00Qjl%2Fjtn8rc1eT3g4fdQWrvc9QIEFCW2aSGw0wIT8B47cZI9qjM2KoQuNk1plxYDmwS0fUgCjv0iCWqZBr2%2FCbc5tYNVP%2FJoBAXfaJl8T%2BExYgWCVjGnszp4rC1ycSTKUPp3D05l%2Bs%2B9qSLXHbzNDTHdMKgCuMVlk3wAGSDHc%2Bi0xHRGNSZxIhAh11GY3w20uQ%3D%3D--9QKLS1fakKKowAV6--6U6Tqxv%2FWzIpE4aK7fTDuA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.541735036.1777787930; expires=Mon, 03 May 2027 05:58:50 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:58:50 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:B3625:CE6F14:A08BA2:69F6E41A
+
+
+ succeeded in 150ms:
+HTTP/2 301 
+date: Sun, 03 May 2026 05:58:50 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/junit-team/junit-framework/tree/v5.11.3/junit-platform-launcher/src/test
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=4QpYI61AXueAkuvZl%2Byw%2BGCTmE2rmwqE4DfMCNJ%2BMTzvJ2zHuP8pIuBwAaU%2B%2FBmHxBc9py1YmnguvQxJ1Unij8e0oqqajx%2B3RO4Ra4JsdYim2B3PRc0GBTepKRm8D0CeasurooVvDanqfucXK9nsgPi%2FqlBy%2BoURAM2K3hb4HMmwzqW6eYFQYcEIej5LQRqd0NcsLvDosODX%2FJiy7lKx2kbKfS3lVLjgaDAQRloj%2FNrw21Ghqywe4AoEIeOnVUmkHL07C4EACt0rGccRrEliuw%3D%3D--KeOYCEO4FKKgZ%2FDT--BL30VypjP8Z49JYIgF%2FNmw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1806890212.1777787930; expires=Mon, 03 May 2027 05:58:50 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:58:50 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5113:438C9:CD45E8:9F6A48:69F6E41A
+
+
+ succeeded in 285ms:
+[
+  {
+    "name": "junit-platform-launcher.gradle.kts",
+    "path": "junit-platform-launcher/junit-platform-launcher.gradle.kts",
+    "sha": "a9b3630762c8ee80e649ea32517f23057b978b74",
+    "size": 557,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/junit-platform-launcher.gradle.kts?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/blob/r5.11.3/junit-platform-launcher/junit-platform-launcher.gradle.kts",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/blobs/a9b3630762c8ee80e649ea32517f23057b978b74",
+    "download_url": "https://raw.githubusercontent.com/junit-team/junit-framework/r5.11.3/junit-platform-launcher/junit-platform-launcher.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/junit-platform-launcher.gradle.kts?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/blobs/a9b3630762c8ee80e649ea32517f23057b978b74",
+      "html": "https://github.com/junit-team/junit-framework/blob/r5.11.3/junit-platform-launcher/junit-platform-launcher.gradle.kts"
+    }
+  },
+  {
+    "name": "src",
+    "path": "junit-platform-launcher/src",
+    "sha": "ded9c5cbd41636d1aca67589a6d30abb0dfc7628",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/ded9c5cbd41636d1aca67589a6d30abb0dfc7628",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/ded9c5cbd41636d1aca67589a6d30abb0dfc7628",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src"
+    }
+  }
+]
+
+ succeeded in 403ms:
+{
+  "ref": "refs/tags/r5.11.3",
+  "node_id": "MDM6UmVmMjkxMDIzNjc6cmVmcy90YWdzL3I1LjExLjM=",
+  "url": "https://api.github.com/repos/junit-team/junit-framework/git/refs/tags/r5.11.3",
+  "object": {
+    "sha": "dd894b965b6da345ff51015140cd44a9d9690638",
+    "type": "tag",
+    "url": "https://api.github.com/repos/junit-team/junit-framework/git/tags/dd894b965b6da345ff51015140cd44a9d9690638"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3.module | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.junit.platform",
+    "module": "junit-platform-launcher",
+    "version": "1.11.3",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.9"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.junit",
+          "module": "junit-bom",
+          "version": {
+            "requires": "5.11.3"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.junit.platform",
+          "module": "junit-platform-engine",
+          "version": {
+            "requires": "1.11.3"
+          }
+        },
+        {
+          "group": "org.apiguardian",
+          "module": "apiguardian-api",
+          "version": {
+            "requires": "1.1.2"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "junit-platform-launcher-1.11.3.jar",
+          "url": "junit-platform-launcher-1.11.3.jar",
+          "size": 189006,
+          "sha512": "46794f620b2569931d5c007c1026082e0027e14f18ac8a64d7e2dfd4d250d5964a1e13353265df9db4362e78c1c600b9894dc461c0380870abe11833fc156cbd",
+          "sha256": "b4727459201b0011beb0742bd807421a1fc8426b116193031ed87825bc2d4f04",
+          "sha1": "0a49b9aa3ddd206121b643ba556bc3420129c47d",
+          "md5": "4f399cb22912d98176147630fe4b0117"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.junit",
+          "module": "junit-bom",
+          "version": {
+            "requires": "5.11.3"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.junit.platform",
+          "module": "junit-platform-engine",
+          "version": {
+            "requires": "1.11.3"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "junit-platform-launcher-1.11.3.jar",
+          "url": "junit-platform-launcher-1.11.3.jar",
+          "size": 189006,
+          "sha512": "46794f620b2569931d5c007c1026082e0027e14f18ac8a64d7e2dfd4d250d5964a1e13353265df9db4362e78c1c600b9894dc461c0380870abe11833fc156cbd",
+          "sha256": "b4727459201b0011beb0742bd807421a1fc8426b116193031ed87825bc2d4f04",
+          "sha1": "0a49b9aa3ddd206121b643ba556bc3420129c47d",
+          "md5": "4f399cb22912d98176147630fe4b0117"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "junit-platform-launcher-1.11.3-javadoc.jar",
+          "url": "junit-platform-launcher-1.11.3-javadoc.jar",
+          "size": 346500,
+          "sha512": "a1ac705ded6676073f1c2a7cb3d87d2dba4d38f24d06f1f5b73c0bda1e34ddcd6f43bf205c8c79592d7d929bccfa75062d1eaddd1725af12abeb68a570f9e73c",
+          "sha256": "7ce23645889f2a52cd75f11a97143ef9357f9d0a906bef5b17967577a956530c",
+          "sha1": "bceeb159258ae2f35fbb1b9bf1143a8140d651ec",
+          "md5": "5384ffc75008c985803b1833299487df"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "junit-platform-launcher-1.11.3-sources.jar",
+          "url": "junit-platform-launcher-1.11.3-sources.jar",
+          "size": 108963,
+          "sha512": "673e20788c60e63172a65f7b4dd42553db48a32ab73f91d1101f1536af03accc6d2b5da30b92bfbada498b10604d432ad7fc4ea03c71bb0bc7ce3a152c4f45ca",
+          "sha256": "e560e5e7bc6eed184774f75a7b36b824e20ec818be4b991213c0d31aff4260c5",
+          "sha1": "d705f6b0d147036b7d84dca5eaad35b41d64592a",
+          "md5": "c0fdeeb10cf718807868490d41d2f328"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src?ref=r5.11.3 | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3-tests.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3-sources.jar | sed -n '1,20p' && curl -fsSI https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:58:57 GMT
+content-type: application/java-archive
+content-length: 108963
+cf-ray: 9f5d0973cad001e7-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2026718
+etag: "c0fdeeb10cf718807868490d41d2f328"
+last-modified: Mon, 21 Oct 2024 13:48:37 GMT
+x-checksum-md5: c0fdeeb10cf718807868490d41d2f328
+x-checksum-sha1: d705f6b0d147036b7d84dca5eaad35b41d64592a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 05:58:57 GMT
+content-type: application/java-archive
+content-length: 346500
+cf-ray: 9f5d097428f1b86b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2254030
+etag: "5384ffc75008c985803b1833299487df"
+last-modified: Mon, 21 Oct 2024 13:48:39 GMT
+x-checksum-md5: 5384ffc75008c985803b1833299487df
+x-checksum-sha1: bceeb159258ae2f35fbb1b9bf1143a8140d651ec
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 163ms:
+[
+  {
+    "name": "main",
+    "path": "junit-platform-launcher/src/main",
+    "sha": "06e17e852bd13df558007e50df0331818fdabfca",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/main?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/main",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/06e17e852bd13df558007e50df0331818fdabfca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/main?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/06e17e852bd13df558007e50df0331818fdabfca",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/main"
+    }
+  },
+  {
+    "name": "module",
+    "path": "junit-platform-launcher/src/module",
+    "sha": "d099714922d9311cae35d8f413ec70d035346f6c",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/module?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/module",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/d099714922d9311cae35d8f413ec70d035346f6c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/module?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/d099714922d9311cae35d8f413ec70d035346f6c",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/module"
+    }
+  },
+  {
+    "name": "test",
+    "path": "junit-platform-launcher/src/test",
+    "sha": "2fd42866ef1d620be43be5d9da98f09aaa90faa4",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/test?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/test",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/2fd42866ef1d620be43be5d9da98f09aaa90faa4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/test?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/2fd42866ef1d620be43be5d9da98f09aaa90faa4",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/test"
+    }
+  },
+  {
+    "name": "testFixtures",
+    "path": "junit-platform-launcher/src/testFixtures",
+    "sha": "4be1e01ae62df839925736db2f377f6bba2abf46",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/testFixtures?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/testFixtures",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/4be1e01ae62df839925736db2f377f6bba2abf46",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/testFixtures?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/4be1e01ae62df839925736db2f377f6bba2abf46",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/testFixtures"
+    }
+  }
+]
+
+ succeeded in 296ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 05:58:58 GMT
+content-type: text/html
+cf-ray: 9f5d0973c91e6d88-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/git/ref/tags/r1.11.3 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/junit-team/junit-framework/tags?per_page=100' | rg '\"name\".*5\\.11\\.3|\"name\".*1\\.11\\.3|\"name\".*r5\\.11|\"name\"' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/contents/documentation/src/docs?ref=r5.11.3 | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 171ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 211ms:
+    "name": "r6.1.0-RC1",
+    "name": "r6.1.0-M1",
+    "name": "r6.0.3",
+    "name": "r6.0.2",
+    "name": "r6.0.1",
+    "name": "r6.0.0",
+    "name": "r6.0.0-RC3",
+    "name": "r6.0.0-RC2",
+    "name": "r6.0.0-RC1",
+    "name": "r6.0.0-M2",
+    "name": "r6.0.0-M1",
+    "name": "r5.14.4",
+    "name": "r5.14.3",
+    "name": "r5.14.2",
+    "name": "r5.14.1",
+    "name": "r5.14.0",
+    "name": "r5.14.0-RC1",
+    "name": "r5.13.4",
+    "name": "r5.13.3",
+    "name": "r5.13.2",
+    "name": "r5.13.1",
+    "name": "r5.13.0",
+    "name": "r5.13.0-RC1",
+    "name": "r5.13.0-M3",
+    "name": "r5.13.0-M2",
+    "name": "r5.13.0-M1",
+    "name": "r5.12.2",
+    "name": "r5.12.1",
+    "name": "r5.12.0",
+    "name": "r5.12.0-RC2",
+    "name": "r5.12.0-RC1",
+    "name": "r5.12.0-M1",
+    "name": "r5.11.4",
+    "name": "r5.11.3",
+    "name": "r5.11.2",
+    "name": "r5.11.1",
+    "name": "r5.11.0",
+    "name": "r5.11.0-RC1",
+    "name": "r5.11.0-M2",
+    "name": "r5.11.0-M1",
+    "name": "r5.10.5",
+    "name": "r5.10.4",
+    "name": "r5.10.3",
+    "name": "r5.10.2",
+    "name": "r5.10.1",
+    "name": "r5.10.0",
+    "name": "r5.10.0-RC2",
+    "name": "r5.10.0-RC1",
+    "name": "r5.10.0-M1",
+    "name": "r5.9.3",
+    "name": "r5.9.2",
+    "name": "r5.9.1",
+    "name": "r5.9.0",
+    "name": "r5.9.0-RC1",
+    "name": "r5.9.0-M1",
+    "name": "r5.8.2",
+    "name": "r5.8.1",
+    "name": "r5.8.0",
+    "name": "r5.8.0-RC1",
+    "name": "r5.8.0-M1",
+    "name": "r5.7.2",
+    "name": "r5.7.1",
+    "name": "r5.7.0",
+    "name": "r5.7.0-RC1",
+    "name": "r5.7.0-M1",
+    "name": "r5.6.3",
+    "name": "r5.6.2",
+    "name": "r5.6.1",
+    "name": "r5.6.0",
+    "name": "r5.6.0-RC1",
+    "name": "r5.6.0-M1",
+    "name": "r5.5.2",
+    "name": "r5.5.1",
+    "name": "r5.5.0",
+    "name": "r5.5.0-RC2",
+    "name": "r5.5.0-RC1",
+    "name": "r5.5.0-M1",
+    "name": "r5.4.2",
+    "name": "r5.4.1",
+    "name": "r5.4.0",
+
+ succeeded in 152ms:
+[
+  {
+    "name": "asciidoc",
+    "path": "documentation/src/docs/asciidoc",
+    "sha": "e95cfd1f48c71899b9e7176304fd58bc9d9fa50c",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/documentation/src/docs/asciidoc?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/documentation/src/docs/asciidoc",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/e95cfd1f48c71899b9e7176304fd58bc9d9fa50c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/documentation/src/docs/asciidoc?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/e95cfd1f48c71899b9e7176304fd58bc9d9fa50c",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.11.3/documentation/src/docs/asciidoc"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "find . -maxdepth 3 -iname '*schema*' -o -name '*.schema.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+./stats/schemas
+./stats/schemas/run-metrics-output-schema-v1.0.1.json
+./stats/schemas/library-stats-schema-v1.0.2.json
+./metadata/schemas
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json
+./metadata/schemas/reachability-metadata-schema-v1.2.0.json
+./metadata/schemas/library-and-framework-list-schema-v1.0.0.json
+./forge/schemas
+./forge/schemas/strategy_schema.json
+./forge/schemas/benchmark_suite_schema.json
+./forge/schemas/benchmark_run_metrics_schema.json
+./forge/tests/test_schema_validator.py
+./forge/utility_scripts/schema_validator.py
+
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"|\"reason\"|\"replacement\"|\"language\"' metadata build/discovered-artifact-metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:28:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:46:    "language" : {
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:4:    "reason": "The default and platform classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:5:    "replacement": "io.netty.incubator:netty-incubator-codec-classes-quic:0.0.34.Final"
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the Gradle module metadata redirects JVM variants to kotlinx-io-bytestring-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the JVM artifact is published separately as kotlinx-io-core-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:4:    "reason": "The default and macOS classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:5:    "replacement": "io.netty:netty-resolver-dns-classes-macos:4.1.74.Final"
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:4:    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:92:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:75:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:33:          "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:131:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:156:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:186:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:243:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:282:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:344:    "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:108:            "required": [ "version", "reason" ],
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:114:              "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:137:        "reason"
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:145:        "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:150:        "replacement": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:243:          { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:250:        "reason": "Scala.js artifact; not a JVM library consumed by native-image.",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:251:        "replacement": "Use the JVM artifact if one exists."
+metadata/com.google.protobuf/protobuf-java-util/index.json:37:        "reason" : "Published POM for com.google.protobuf:protobuf-java-util:3.22.1 is malformed: dependency com.google.protobuf:protobuf-java uses invalid groupId '$com.google.protobuf' and omits the version."
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/test?ref=r5.11.3 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/main?ref=r5.11.3 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 149ms:
+[
+  {
+    "name": "README.md",
+    "path": "junit-platform-launcher/src/test/README.md",
+    "sha": "6e2fd0b363f0b93098d00ccd117bb591d7847209",
+    "size": 102,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/test/README.md?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/blob/r5.11.3/junit-platform-launcher/src/test/README.md",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/blobs/6e2fd0b363f0b93098d00ccd117bb591d7847209",
+    "download_url": "https://raw.githubusercontent.com/junit-team/junit-framework/r5.11.3/junit-platform-launcher/src/test/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/test/README.md?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/blobs/6e2fd0b363f0b93098d00ccd117bb591d7847209",
+      "html": "https://github.com/junit-team/junit-framework/blob/r5.11.3/junit-platform-launcher/src/test/README.md"
+    }
+  }
+]
+
+ succeeded in 168ms:
+[
+  {
+    "name": "java",
+    "path": "junit-platform-launcher/src/main/java",
+    "sha": "98151968035185c3e5ce6fcb8de5d37e89625d14",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/main/java?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/main/java",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/98151968035185c3e5ce6fcb8de5d37e89625d14",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/main/java?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/98151968035185c3e5ce6fcb8de5d37e89625d14",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/main/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "junit-platform-launcher/src/main/resources",
+    "sha": "99484a42679b49e00b0b8fad43dfc9defdde2625",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/main/resources?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/main/resources",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/99484a42679b49e00b0b8fad43dfc9defdde2625",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/main/resources?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/99484a42679b49e00b0b8fad43dfc9defdde2625",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/main/resources"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/junit-team/junit-framework/r5.11.3/junit-platform-launcher/src/test/README.md' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/git/trees/r5.11.3?recursive=1 | rg 'junit-platform-launcher/.*/(test|Test|tests|src/test|src/.*Test)|Launcher.*Tests|LauncherTests|DefaultLauncher|Launcher' | head -160" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-tests?ref=r5.11.3 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/testFixtures?ref=r5.11.3 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 143ms:
+[
+  {
+    "name": "java",
+    "path": "junit-platform-launcher/src/testFixtures/java",
+    "sha": "667daff30a6603f9150a27767de6783ef73c1def",
+    "size": 0,
+    "url": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/testFixtures/java?ref=r5.11.3",
+    "html_url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/testFixtures/java",
+    "git_url": "https://api.github.com/repos/junit-team/junit-framework/git/trees/667daff30a6603f9150a27767de6783ef73c1def",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/junit-team/junit-framework/contents/junit-platform-launcher/src/testFixtures/java?ref=r5.11.3",
+      "git": "https://api.github.com/repos/junit-team/junit-framework/git/trees/667daff30a6603f9150a27767de6783ef73c1def",
+      "html": "https://github.com/junit-team/junit-framework/tree/r5.11.3/junit-platform-launcher/src/testFixtures/java"
+    }
+  }
+]
+
+ succeeded in 146ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 167ms:
+For compatibility with the Eclipse IDE, the test for this module are in the `platform-tests` project.
+
+ succeeded in 458ms:
+      "path": "documentation/src/test/java/example/CustomLauncherInterceptor.java",
+      "path": "documentation/src/test/java/example/UsingTheLauncherDemo.java",
+      "path": "documentation/src/test/resources/META-INF/services/org.junit.platform.launcher.LauncherSessionListener",
+      "path": "gradle/plugins/common/src/main/kotlin/junitbuild/exec/GenerateStandaloneConsoleLauncherShadowedArtifactsFile.kt",
+      "path": "gradle/plugins/common/src/main/kotlin/junitbuild/exec/RunConsoleLauncher.kt",
+      "path": "junit-platform-console/src/main/java/org/junit/platform/console/ConsoleLauncher.java",
+      "path": "junit-platform-console/src/main/java9/org/junit/platform/console/ConsoleLauncherToolProvider.java",
+      "path": "junit-platform-jfr/src/main/resources/META-INF/services/org.junit.platform.launcher.LauncherDiscoveryListener",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/Launcher.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/LauncherConstants.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/LauncherDiscoveryListener.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/LauncherDiscoveryRequest.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/LauncherInterceptor.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/LauncherSession.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/LauncherSessionListener.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/TestExecutionListener.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/TestIdentifier.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/TestPlan.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/DefaultLauncher.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/DefaultLauncherConfig.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/DefaultLauncherSession.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/DelegatingLauncher.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/InterceptingLauncher.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/LauncherConfig.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/LauncherConfigurationParameters.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/LauncherDiscoveryRequestBuilder.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/LauncherDiscoveryResult.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/LauncherFactory.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/LauncherListenerRegistry.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/SessionPerRequestLauncher.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/core/TestEngineFormatter.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/listeners/TestExecutionSummary.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/listeners/discovery/AbortOnFailureLauncherDiscoveryListener.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/listeners/discovery/CompositeLauncherDiscoveryListener.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/listeners/discovery/LauncherDiscoveryListeners.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/listeners/discovery/LoggingLauncherDiscoveryListener.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/listeners/session/CompositeLauncherSessionListener.java",
+      "path": "junit-platform-launcher/src/main/java/org/junit/platform/launcher/listeners/session/LauncherSessionListeners.java",
+      "path": "junit-platform-launcher/src/test",
+      "path": "junit-platform-launcher/src/test/README.md",
+      "path": "junit-platform-launcher/src/testFixtures",
+      "path": "junit-platform-launcher/src/testFixtures/java",
+      "path": "junit-platform-launcher/src/testFixtures/java/org",
+      "path": "junit-platform-launcher/src/testFixtures/java/org/junit",
+      "path": "junit-platform-launcher/src/testFixtures/java/org/junit/platform",
+      "path": "junit-platform-launcher/src/testFixtures/java/org/junit/platform/launcher",
+      "path": "junit-platform-launcher/src/testFixtures/java/org/junit/platform/launcher/core",
+      "path": "junit-platform-launcher/src/testFixtures/java/org/junit/platform/launcher/core/ConfigurationParametersFactoryForTests.java",
+      "path": "junit-platform-launcher/src/testFixtures/java/org/junit/platform/launcher/core/LauncherFactoryForTestingPurposesOnly.java",
+      "path": "junit-platform-suite-commons/src/main/java/org/junit/platform/suite/commons/SuiteLauncherDiscoveryRequestBuilder.java",
+      "path": "junit-platform-suite-engine/src/main/java/org/junit/platform/suite/engine/SuiteLauncher.java",
+      "path": "junit-vintage-engine/src/test/java/org/junit/vintage/engine/VintageLauncherIntegrationTests.java",
+      "path": "jupiter-tests/src/test/java/org/junit/jupiter/migrationsupport/rules/LauncherBasedEnableRuleMigrationSupportTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/console/ConsoleLauncherIntegrationTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/console/ConsoleLauncherTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/console/ConsoleLauncherWrapper.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/console/ConsoleLauncherWrapperResult.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/InterceptorInjectedLauncherSessionListener.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/TestLauncherDiscoveryListener.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/TestLauncherInterceptor1.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/TestLauncherInterceptor2.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/TestLauncherSessionListener.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/core/DefaultLauncherEngineFilterTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/core/DefaultLauncherTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/core/LauncherConfigTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/core/LauncherConfigurationParametersTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/core/LauncherDiscoveryRequestBuilderTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/core/LauncherFactoryTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/core/LauncherSessionTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/listeners/discovery/AbortOnFailureLauncherDiscoveryListenerTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/listeners/discovery/AbstractLauncherDiscoveryListenerTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/listeners/discovery/CompositeLauncherDiscoveryListenerTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/listeners/discovery/LoggingLauncherDiscoveryListenerTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/launcher/listeners/session/CompositeLauncherSessionListenerTests.java",
+      "path": "platform-tests/src/test/java/org/junit/platform/suite/commons/SuiteLauncherDiscoveryRequestBuilderTests.java",
+      "path": "platform-tests/src/test/resources/intercepted-testservices/META-INF/services/org.junit.platform.launcher.LauncherSessionListener",
+      "path": "platform-tests/src/test/resources/testservices/META-INF/services/org.junit.platform.launcher.LauncherDiscoveryListener",
+      "path": "platform-tests/src/test/resources/testservices/META-INF/services/org.junit.platform.launcher.LauncherInterceptor",
+      "path": "platform-tests/src/test/resources/testservices/META-INF/services/org.junit.platform.launcher.LauncherSessionListener",
+
+codex
+JUnit publishes source and javadoc jars for this artifact, but no Maven tests jar. The module’s own README says its tests live in the `platform-tests` project, so I’m using that tagged GitHub path for `test-code-url`.
+exec
+/usr/bin/bash -lc "sed -n '1,130p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+{
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.0.1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each file either describes Native Image metadata bundles for a range of library versions, or marks the artifact as not applicable to Native Image.",
+  "type": "array",
+  "minItems": 1,
+  "oneOf": [
+    {
+      "items": {
+        "$ref": "#/$defs/metadataIndexEntry"
+      }
+    },
+    {
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/notForNativeImageEntry"
+      }
+    }
+  ],
+  "$defs": {
+    "metadataIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed-packages",
+        "metadata-version",
+        "tested-versions"
+      ],
+      "properties": {
+        "metadata-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Subdirectory name where the metadata files for this entry reside, e.g. '7.1.0.Final'."
+        },
+        "tested-versions": {
+          "type": "array",
+          "description": "Explicitly tested upstream library versions that this metadata is known to support.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "test-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
+        },
+        "source-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the metadata source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "repository-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the canonical project repository for this entry."
+        },
+        "documentation-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the project documentation for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional two-sentence explanation of what the library does."
+        },
+        "language": {
+          "$ref": "#/$defs/libraryLanguage"
+        },
+        "test-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the test source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "latest": {
+          "type": "boolean",
+          "description": "Marks this entry as the latest/default metadata for currently supported versions."
+        },
+        "default-for": {
+          "type": "string",
+          "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+        },
+        "override": {
+          "type": "boolean",
+          "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+        },
+        "allowed-packages": {
+          "type": "array",
+          "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "skipped-versions": {
+          "type": "array",
+          "description": "Versions explicitly excluded from support, each with a reason.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "version", "reason" ],
+            "properties": {
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "requires": {
+          "type": "array",
+          "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/moduleCoordinate"
+          }
+        }
+      }
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/contents/platform-tests/src/test/java/org/junit/platform/launcher?ref=r5.11.3 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/junit-team/junit-framework/contents/platform-tests/src/test?ref=r5.11.3 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 403
+
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 403
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test | sed -n '1,24p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 521ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:59:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ce53eb0e1e928c3271c68fdf7a96e2df"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=nWRywty7A7Rk3mUxy1boHl3jeZ%2BVNilPz2AKrD%2B9Hy8s99in1GsrI3e%2FroMgrnLnsSR8JcH1U5aR253ND82KekEfVGIFWFKzF1M0S4WRfySj54yP%2Bqa9bnzB1tUGbGuXlWCYAgj%2FBKLYngCSQfqY0Xs8upaGCiTqaVE%2B8Vm5P6FW%2FrFLctF%2F%2FMea5BH49yfMQ8cDLhlskiQPpagOAUd9NkpvSjqgdeF0sbWttX7lHCPBZ9NdF463umSW%2FDsMymLhBRTLQRtTte8sOIxnczgSyQ%3D%3D--vDXSKWKy4sgPsupi--SeIdfCDVYoNGCZcka5b2Dw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1395374143.1777787972; expires=Mon, 03 May 2027 05:59:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:59:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:79934:CEEB11:A0A2B1:69F6E444
+
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL -o "$tmp" https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3.jar; jar tf "$tmp" | rg '"'\\.class"'$'"' | head -20; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 110ms:
+module-info.class
+org/junit/platform/launcher/EngineDiscoveryResult$Status.class
+org/junit/platform/launcher/EngineDiscoveryResult.class
+org/junit/platform/launcher/EngineFilter$Type.class
+org/junit/platform/launcher/EngineFilter.class
+org/junit/platform/launcher/Launcher.class
+org/junit/platform/launcher/LauncherConstants.class
+org/junit/platform/launcher/LauncherDiscoveryListener$1.class
+org/junit/platform/launcher/LauncherDiscoveryListener.class
+org/junit/platform/launcher/LauncherDiscoveryRequest.class
+org/junit/platform/launcher/LauncherInterceptor$Invocation.class
+org/junit/platform/launcher/LauncherInterceptor.class
+org/junit/platform/launcher/LauncherSession.class
+org/junit/platform/launcher/LauncherSessionListener$1.class
+org/junit/platform/launcher/LauncherSessionListener.class
+org/junit/platform/launcher/PostDiscoveryFilter.class
+org/junit/platform/launcher/TagFilter.class
+org/junit/platform/launcher/TestExecutionListener.class
+org/junit/platform/launcher/TestIdentifier$SerializedForm.class
+org/junit/platform/launcher/TestIdentifier.class
+
+codex
+I’m going to update only the requested discovered metadata file. I’ll omit `language` and `not-for-native-image` because this is a regular JVM Java artifact with class files and not one of the non-JVM/platform-only cases.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+diff --git a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+index e74bc4c4af17471c6a30486faeb5224a706e0873..e27ddd86ccff8921ad6030ff90692acb8cad1529
+--- a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
++++ b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3"
++  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3",
++  "repository-url" : "https://github.com/junit-team/junit-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
++  "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
++  "description" : "JUnit Platform Launcher provides the public API for discovering and executing tests on the JUnit Platform from build tools, IDEs, and other integrations. It creates launcher sessions, builds discovery requests, invokes registered test engines, and reports discovery and execution events to listeners."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+index e74bc4c4af17471c6a30486faeb5224a706e0873..e27ddd86ccff8921ad6030ff90692acb8cad1529
+--- a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
++++ b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3"
++  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3",
++  "repository-url" : "https://github.com/junit-team/junit-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
++  "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
++  "description" : "JUnit Platform Launcher provides the public API for discovering and executing tests on the JUnit Platform from build tools, IDEs, and other integrations. It creates launcher sessions, builds discovery requests, invokes registered test engines, and reports discovery and execution events to listeners."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+{
+  "coordinates": "org.junit.platform:junit-platform-launcher:1.11.3",
+  "repository-url": "https://github.com/junit-team/junit-framework",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
+  "test-code-url": "https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
+  "description": "JUnit Platform Launcher provides the public API for discovering and executing tests on the JUnit Platform from build tools, IDEs, and other integrations. It creates launcher sessions, builds discovery requests, invokes registered test engines, and reports discovery and execution events to listeners."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:59:55 GMT
+content-type: application/java-archive
+content-length: 108963
+cf-ray: 9f5d0adbb995b571-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2026776
+etag: "c0fdeeb10cf718807868490d41d2f328"
+last-modified: Mon, 21 Oct 2024 13:48:37 GMT
+x-checksum-md5: c0fdeeb10cf718807868490d41d2f328
+x-checksum-sha1: d705f6b0d147036b7d84dca5eaad35b41d64592a
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:59:55 GMT
+content-type: application/java-archive
+content-length: 346500
+cf-ray: 9f5d0adbd8dbbc65-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2254088
+etag: "5384ffc75008c985803b1833299487df"
+last-modified: Mon, 21 Oct 2024 13:48:39 GMT
+x-checksum-md5: 5384ffc75008c985803b1833299487df
+x-checksum-sha1: bceeb159258ae2f35fbb1b9bf1143a8140d651ec
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:59:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ce53eb0e1e928c3271c68fdf7a96e2df"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+diff --git a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+index e74bc4c4af17471c6a30486faeb5224a706e0873..e27ddd86ccff8921ad6030ff90692acb8cad1529
+--- a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
++++ b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3"
++  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3",
++  "repository-url" : "https://github.com/junit-team/junit-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
++  "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
++  "description" : "JUnit Platform Launcher provides the public API for discovering and executing tests on the JUnit Platform from build tools, IDEs, and other integrations. It creates launcher sessions, builds discovery requests, invokes registered test engines, and reports discovery and execution events to listeners."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+index e74bc4c4af17471c6a30486faeb5224a706e0873..e27ddd86ccff8921ad6030ff90692acb8cad1529
+--- a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
++++ b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3"
++  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3",
++  "repository-url" : "https://github.com/junit-team/junit-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
++  "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
++  "description" : "JUnit Platform Launcher provides the public API for discovering and executing tests on the JUnit Platform from build tools, IDEs, and other integrations. It creates launcher sessions, builds discovery requests, invokes registered test engines, and reports discovery and execution events to listeners."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json && sed -n '1,80p' build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13
+diff --git a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+index e74bc4c4af17471c6a30486faeb5224a706e0873..e27ddd86ccff8921ad6030ff90692acb8cad1529
+--- a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
++++ b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3"
++  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3",
++  "repository-url" : "https://github.com/junit-team/junit-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
++  "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
++  "description" : "JUnit Platform Launcher provides the public API for discovering and executing tests on the JUnit Platform from build tools, IDEs, and other integrations. It creates launcher sessions, builds discovery requests, invokes registered test engines, and reports discovery and execution events to listeners."
+ }
+
+ succeeded in 134ms:
+{
+  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3",
+  "repository-url" : "https://github.com/junit-team/junit-framework",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
+  "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
+  "description" : "JUnit Platform Launcher provides the public API for discovering and executing tests on the JUnit Platform from build tools, IDEs, and other integrations. It creates launcher sessions, builds discovery requests, invokes registered test engines, and reports discovery and execution events to listeners."
+}
+
+codex
+Updated [org.junit.platform-junit-platform-launcher-1.11.3.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json) with repository, Maven source/javadoc URLs, the tagged JUnit test-suite URL, and a two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image` because the artifact is a normal JVM Java jar with class files. Verified the JSON with `jq` and checked the source, javadoc, and test URLs return `200`.
+diff --git a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+index e74bc4c4af17471c6a30486faeb5224a706e0873..e27ddd86ccff8921ad6030ff90692acb8cad1529
+--- a/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
++++ b/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3"
++  "coordinates" : "org.junit.platform:junit-platform-launcher:1.11.3",
++  "repository-url" : "https://github.com/junit-team/junit-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
++  "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.11.3/platform-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
++  "description" : "JUnit Platform Launcher provides the public API for discovering and executing tests on the JUnit Platform from build tools, IDEs, and other integrations. It creates launcher sessions, builds discovery requests, invokes registered test engines, and reports discovery and execution events to listeners."
+ }
+
+tokens used
+55,914
+Updated [org.junit.platform-junit-platform-launcher-1.11.3.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13/build/discovered-artifact-metadata/org.junit.platform-junit-platform-launcher-1.11.3.json) with repository, Maven source/javadoc URLs, the tagged JUnit test-suite URL, and a two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image` because the artifact is a normal JVM Java jar with class files. Verified the JSON with `jq` and checked the source, javadoc, and test URLs return `200`.
+Ran agent for org.junit.platform:junit-platform-launcher:1.11.3 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13/build/agent-artifact-discovery-logs/org.junit.platform-junit-platform-launcher-1.11.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2476-ae77da13/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 39s
+9 actionable tasks: 4 executed, 5 from cache
