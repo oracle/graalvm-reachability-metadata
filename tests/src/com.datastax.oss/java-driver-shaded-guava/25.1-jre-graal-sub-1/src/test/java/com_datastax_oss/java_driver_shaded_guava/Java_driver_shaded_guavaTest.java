@@ -70,8 +70,10 @@ import com.datastax.oss.driver.shaded.guava.common.util.concurrent.AbstractIdleS
 import com.datastax.oss.driver.shaded.guava.common.util.concurrent.Futures;
 import com.datastax.oss.driver.shaded.guava.common.util.concurrent.ListenableFuture;
 import com.datastax.oss.driver.shaded.guava.common.util.concurrent.MoreExecutors;
+import com.datastax.oss.driver.shaded.guava.common.util.concurrent.RateLimiter;
 import com.datastax.oss.driver.shaded.guava.common.util.concurrent.Service;
 import com.datastax.oss.driver.shaded.guava.common.util.concurrent.SettableFuture;
+import com.datastax.oss.driver.shaded.guava.common.util.concurrent.Striped;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.RoundingMode;
@@ -84,6 +86,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
 import org.junit.jupiter.api.Test;
 
 public class Java_driver_shaded_guavaTest {
@@ -235,6 +238,40 @@ public class Java_driver_shaded_guavaTest {
                 MoreExecutors.directExecutor());
 
         assertThat(recovered.get(1, TimeUnit.SECONDS)).isEqualTo("recovered: bad input");
+    }
+
+    @Test
+    void concurrencyHelpersRateLimitAndProvideKeyedSynchronization() {
+        RateLimiter limiter = RateLimiter.create(1_000_000.0d);
+
+        assertThat(limiter.getRate()).isEqualTo(1_000_000.0d);
+        assertThat(limiter.tryAcquire()).isTrue();
+
+        limiter.setRate(2_000_000.0d);
+
+        assertThat(limiter.getRate()).isEqualTo(2_000_000.0d);
+
+        Striped<Lock> stripedLocks = Striped.lock(4);
+        Lock sessionLock = stripedLocks.get("session-a");
+        Lock sameSessionLock = stripedLocks.get("session-a");
+
+        assertThat(stripedLocks.size()).isEqualTo(4);
+        assertThat(sessionLock).isSameAs(sameSessionLock);
+
+        sessionLock.lock();
+        boolean reacquired = sameSessionLock.tryLock();
+        try {
+            assertThat(reacquired).isTrue();
+        } finally {
+            if (reacquired) {
+                sameSessionLock.unlock();
+            }
+            sessionLock.unlock();
+        }
+
+        assertThat(stripedLocks.bulkGet(ImmutableList.of("session-b", "session-a", "session-b")))
+                .hasSize(3)
+                .contains(stripedLocks.get("session-a"), stripedLocks.get("session-b"));
     }
 
     @Test
