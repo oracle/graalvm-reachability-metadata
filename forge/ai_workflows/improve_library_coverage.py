@@ -339,7 +339,8 @@ def main(argv=None) -> int:
         persistent_instructions=strategy_obj.persistent_instructions,
     )
 
-    workflow_status, iterations = strategy_obj.run(agent=agent)
+    run_result = strategy_obj.run(agent=agent)
+    workflow_status, iterations = run_result[0], run_result[1]
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         finalize_status, _ = strategy_obj._finalize_successful_iteration()
