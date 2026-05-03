@@ -149,6 +149,33 @@ public class EventstreamTest {
     }
 
     @Test
+    void encodeHeadersMatchesMessageHeaderSectionAndSupportsByteAndShortHeaders() {
+        Map<String, HeaderValue> headers = new LinkedHashMap<>();
+        headers.put("byte", HeaderValue.fromByte((byte) -12));
+        headers.put("short", HeaderValue.fromShort((short) 12_345));
+        headers.put("string", HeaderValue.fromString("metadata"));
+        byte[] payload = new byte[] {10, 20};
+        byte[] encodedHeaders = Message.encodeHeaders(headers.entrySet());
+
+        ByteBuffer encodedMessage = new Message(headers, payload).toByteBuffer();
+        int totalLength = encodedMessage.getInt();
+        int headersLength = encodedMessage.getInt();
+        encodedMessage.position(12);
+        byte[] messageHeaderSection = new byte[headersLength];
+        encodedMessage.get(messageHeaderSection);
+
+        assertThat(headersLength).isEqualTo(encodedHeaders.length);
+        assertThat(messageHeaderSection).containsExactly(encodedHeaders);
+        assertThat(totalLength).isEqualTo(16 + encodedHeaders.length + payload.length);
+
+        Message decoded = Message.decode(new Message(headers, payload).toByteBuffer());
+        assertThat(decoded.getHeaders().keySet()).containsExactly("byte", "short", "string");
+        assertThat(decoded.getHeaders().get("byte").getByte()).isEqualTo((byte) -12);
+        assertThat(decoded.getHeaders().get("short").getShort()).isEqualTo((short) 12_345);
+        assertThat(decoded.getHeaders().get("string").getString()).isEqualTo("metadata");
+    }
+
+    @Test
     void decoderBuffersPartialInputAndEmitsCompleteMessagesInOrder() {
         Message first = new Message(Map.of("name", HeaderValue.fromString("first")), new byte[] {1, 2, 3});
         Message second = new Message(Map.of("name", HeaderValue.fromString("second")), new byte[] {4, 5});
