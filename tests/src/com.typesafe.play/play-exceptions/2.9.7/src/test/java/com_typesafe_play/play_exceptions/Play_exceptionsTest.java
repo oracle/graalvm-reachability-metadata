@@ -193,6 +193,29 @@ public class Play_exceptionsTest {
     }
 
     @Test
+    void interestingLinesDoesNotRequireColumnPosition() {
+        SourceException exception = new SourceException(
+                "Source error",
+                "No column position is available",
+                "routes",
+                2,
+                null,
+                "GET     /           controllers.Home.index\n"
+                        + "POST    /items      controllers.Items.create\n"
+                        + "DELETE  /items/:id  controllers.Items.delete");
+
+        PlayException.InterestingLines interestingLines = exception.interestingLines(1);
+
+        assertThat(exception.position()).isNull();
+        assertThat(interestingLines.firstLine).isEqualTo(1);
+        assertThat(interestingLines.errorLine).isEqualTo(1);
+        assertThat(interestingLines.focus).containsExactly(
+                "GET     /           controllers.Home.index",
+                "POST    /items      controllers.Items.create",
+                "DELETE  /items/:id  controllers.Items.delete");
+    }
+
+    @Test
     void interestingLinesIsUnavailableWhenInputOrLineIsMissing() {
         SourceException withoutInput = new SourceException(
                 "Source error",
