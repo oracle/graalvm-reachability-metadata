@@ -74,12 +74,13 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
         AtomicInteger meterProviderCustomizations = new AtomicInteger();
         AtomicInteger loggerProviderCustomizations = new AtomicInteger();
         AtomicInteger spanExporterCustomizations = new AtomicInteger();
+        AtomicReference<ConfigProperties> configuredConfig = new AtomicReference<>();
+        AtomicReference<Resource> configuredResource = new AtomicReference<>();
         AutoConfiguredOpenTelemetrySdk configured = null;
 
         try {
             configured = AutoConfiguredOpenTelemetrySdk.builder()
-                    .setResultAsGlobal(false)
-                    .registerShutdownHook(false)
+                    .disableShutdownHook()
                     .setServiceClassLoader(Opentelemetry_sdk_extension_autoconfigureTest.class.getClassLoader())
                     .addPropertiesSupplier(() -> Map.of("test.customizer.input", "from-supplier"))
                     .addPropertiesCustomizer(config -> {
@@ -88,9 +89,12 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
                     })
                     .addResourceCustomizer((resource, config) -> {
                         resourceCustomizations.incrementAndGet();
+                        configuredConfig.set(config);
                         Resource customResource = Resource.create(Attributes.of(
                                 CUSTOM_RESOURCE, config.getString("test.custom.resource")));
-                        return resource.merge(customResource);
+                        Resource customizedResource = resource.merge(customResource);
+                        configuredResource.set(customizedResource);
+                        return customizedResource;
                     })
                     .addSamplerCustomizer((sampler, config) -> {
                         samplerCustomizations.incrementAndGet();
@@ -124,7 +128,8 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
                     })
                     .build();
 
-            ConfigProperties config = configured.getConfig();
+            ConfigProperties config = configuredConfig.get();
+            assertThat(config).isNotNull();
             assertThat(valueSeenByPropertiesCustomizer).hasValue("from-supplier");
             assertThat(config.getString("otel.service.name")).isEqualTo("payments");
             assertThat(config.getBoolean("otel.sdk.disabled", true)).isFalse();
@@ -134,7 +139,8 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
                     .containsEntry("left", "right")
                     .containsEntry("region", "eu");
 
-            Resource resource = configured.getResource();
+            Resource resource = configuredResource.get();
+            assertThat(resource).isNotNull();
             assertThat(resource.getAttribute(SERVICE_NAME)).isEqualTo("payments");
             assertThat(resource.getAttribute(SERVICE_NAMESPACE)).isEqualTo("checkout");
             assertThat(resource.getAttribute(DEPLOYMENT_ENVIRONMENT)).isEqualTo("integration-test");
@@ -188,12 +194,12 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
 
     @Test
     void resourceDisabledKeysFilterDecodedConfiguredAttributes() {
+        AtomicReference<Resource> configuredResource = new AtomicReference<>();
         AutoConfiguredOpenTelemetrySdk configured = null;
 
         try {
             configured = AutoConfiguredOpenTelemetrySdk.builder()
-                    .setResultAsGlobal(false)
-                    .registerShutdownHook(false)
+                    .disableShutdownHook()
                     .addPropertiesCustomizer(config -> {
                         Map<String, String> properties = workingProperties();
                         properties.put("otel.service.name", "filtered-service");
@@ -204,9 +210,14 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
                                 "service.name,service.namespace,deployment.environment");
                         return properties;
                     })
+                    .addResourceCustomizer((resource, config) -> {
+                        configuredResource.set(resource);
+                        return resource;
+                    })
                     .build();
 
-            Resource resource = configured.getResource();
+            Resource resource = configuredResource.get();
+            assertThat(resource).isNotNull();
             assertThat(resource.getAttribute(SERVICE_NAME)).isNull();
             assertThat(resource.getAttribute(SERVICE_NAMESPACE)).isNull();
             assertThat(resource.getAttribute(DEPLOYMENT_ENVIRONMENT)).isNull();
@@ -221,16 +232,22 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
     @Test
     void disabledSdkDoesNotConfigureSignalProvidersButExposesConfigAndResource() {
         AtomicBoolean tracerProviderCustomizerCalled = new AtomicBoolean();
+        AtomicReference<ConfigProperties> configuredConfig = new AtomicReference<>();
+        AtomicReference<Resource> configuredResource = new AtomicReference<>();
         AutoConfiguredOpenTelemetrySdk configured = null;
 
         try {
             configured = AutoConfiguredOpenTelemetrySdk.builder()
-                    .setResultAsGlobal(false)
-                    .registerShutdownHook(false)
+                    .disableShutdownHook()
                     .addPropertiesCustomizer(config -> {
                         Map<String, String> properties = workingProperties();
                         properties.put("otel.sdk.disabled", "true");
                         return properties;
+                    })
+                    .addResourceCustomizer((resource, config) -> {
+                        configuredConfig.set(config);
+                        configuredResource.set(resource);
+                        return resource;
                     })
                     .addTracerProviderCustomizer((builder, config) -> {
                         tracerProviderCustomizerCalled.set(true);
@@ -244,8 +261,12 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
                     .startSpan();
             span.end();
 
-            assertThat(configured.getConfig().getBoolean("otel.sdk.disabled", false)).isTrue();
-            assertThat(configured.getResource().getAttribute(SERVICE_NAME)).isEqualTo("payments");
+            ConfigProperties config = configuredConfig.get();
+            Resource resource = configuredResource.get();
+            assertThat(config).isNotNull();
+            assertThat(resource).isNotNull();
+            assertThat(config.getBoolean("otel.sdk.disabled", false)).isTrue();
+            assertThat(resource.getAttribute(SERVICE_NAME)).isEqualTo("payments");
             assertThat(configured.getOpenTelemetrySdk().getPropagators().getTextMapPropagator().fields()).isEmpty();
             assertThat(tracerProviderCustomizerCalled).isFalse();
         } finally {
@@ -261,8 +282,7 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
 
         try {
             configured = AutoConfiguredOpenTelemetrySdk.builder()
-                    .setResultAsGlobal(false)
-                    .registerShutdownHook(false)
+                    .disableShutdownHook()
                     .addPropertiesCustomizer(config -> {
                         Map<String, String> properties = workingProperties();
                         properties.put("otel.traces.sampler", "parentbased_traceidratio");
@@ -314,8 +334,7 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
     @Test
     void invalidConfigurationFailsFastWithConfigurationException() {
         AutoConfiguredOpenTelemetrySdkBuilder builder = AutoConfiguredOpenTelemetrySdk.builder()
-                .setResultAsGlobal(false)
-                .registerShutdownHook(false)
+                .disableShutdownHook()
                 .addPropertiesCustomizer(config -> {
                     Map<String, String> properties = workingProperties();
                     properties.put("otel.traces.sampler", "not-a-sampler");
@@ -330,8 +349,7 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
     @Test
     void exporterConfigurationRejectsNoneMixedWithOtherExporters() {
         AutoConfiguredOpenTelemetrySdkBuilder builder = AutoConfiguredOpenTelemetrySdk.builder()
-                .setResultAsGlobal(false)
-                .registerShutdownHook(false)
+                .disableShutdownHook()
                 .addPropertiesCustomizer(config -> {
                     Map<String, String> properties = workingProperties();
                     properties.put("otel.traces.exporter", "none,custom");
@@ -347,8 +365,8 @@ public class Opentelemetry_sdk_extension_autoconfigureTest {
     void builderMethodsAreChainableAndValidateRequiredArguments() {
         AutoConfiguredOpenTelemetrySdkBuilder builder = AutoConfiguredOpenTelemetrySdk.builder();
 
-        assertThat(builder.registerShutdownHook(false)).isSameAs(builder);
-        assertThat(builder.setResultAsGlobal(false)).isSameAs(builder);
+        assertThat(builder.disableShutdownHook()).isSameAs(builder);
+        assertThat(builder.setResultAsGlobal()).isSameAs(builder);
         assertThat(builder.setServiceClassLoader(getClass().getClassLoader())).isSameAs(builder);
         assertThat(builder.addPropertiesSupplier(Map::of)).isSameAs(builder);
         assertThat(builder.addPropertiesCustomizer(config -> Map.of())).isSameAs(builder);
