@@ -10,6 +10,7 @@ import java.beans.FeatureDescriptor;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -246,6 +247,34 @@ public class Javax_elTest {
                 .isInstanceOf(PropertyNotWritableException.class);
     }
 
+    @Test
+    void valueExpressionsResolveImplicitObjectsThroughCustomResolver() {
+        ExpressionFactory factory = ExpressionFactory.newInstance();
+        Map<String, Object> settings = new HashMap<>();
+        settings.put("mode", "initial");
+        Map<String, Object> roots = new HashMap<>();
+        roots.put("settings", settings);
+        roots.put("selectedTheme", "light");
+
+        CompositeELResolver resolver = new CompositeELResolver();
+        resolver.add(new RootObjectELResolver(roots));
+        resolver.add(new MapELResolver());
+        SimpleELContext context = new SimpleELContext(resolver);
+
+        ValueExpression nestedExpression = factory.createValueExpression(context, "${settings.mode}", String.class);
+        assertThat(nestedExpression.getValue(context)).isEqualTo("initial");
+
+        ValueExpression writableNestedExpression = factory.createValueExpression(
+                context, "${settings['mode']}", String.class);
+        writableNestedExpression.setValue(context, "updated");
+        assertThat(settings.get("mode")).isEqualTo("updated");
+
+        ValueExpression rootExpression = factory.createValueExpression(context, "${selectedTheme}", String.class);
+        assertThat(rootExpression.getValue(context)).isEqualTo("light");
+        rootExpression.setValue(context, "dark");
+        assertThat(roots.get("selectedTheme")).isEqualTo("dark");
+    }
+
     private static SimpleELContext newContext() {
         CompositeELResolver resolver = new CompositeELResolver();
         resolver.add(new MapELResolver());
@@ -330,6 +359,62 @@ public class Javax_elTest {
 
         public static String fullName(String firstName, String lastName) {
             return firstName + " " + lastName;
+        }
+    }
+
+    public static final class RootObjectELResolver extends ELResolver {
+        private final Map<String, Object> roots;
+
+        RootObjectELResolver(Map<String, Object> roots) {
+            this.roots = roots;
+        }
+
+        @Override
+        public Object getValue(ELContext context, Object base, Object property) {
+            if (isRootProperty(base, property)) {
+                context.setPropertyResolved(true);
+                return roots.get(property.toString());
+            }
+            return null;
+        }
+
+        @Override
+        public Class<?> getType(ELContext context, Object base, Object property) {
+            if (isRootProperty(base, property)) {
+                context.setPropertyResolved(true);
+                return Object.class;
+            }
+            return null;
+        }
+
+        @Override
+        public void setValue(ELContext context, Object base, Object property, Object value) {
+            if (isRootProperty(base, property)) {
+                context.setPropertyResolved(true);
+                roots.put(property.toString(), value);
+            }
+        }
+
+        @Override
+        public boolean isReadOnly(ELContext context, Object base, Object property) {
+            if (isRootProperty(base, property)) {
+                context.setPropertyResolved(true);
+            }
+            return false;
+        }
+
+        @Override
+        public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
+            return Collections.emptyIterator();
+        }
+
+        @Override
+        public Class<?> getCommonPropertyType(ELContext context, Object base) {
+            return base == null ? String.class : null;
+        }
+
+        private boolean isRootProperty(Object base, Object property) {
+            return base == null && property != null && roots.containsKey(property.toString());
         }
     }
 
