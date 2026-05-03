@@ -8,6 +8,7 @@ package com_google_cloud.google_cloud_bigquery;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.cloud.bigquery.Acl;
 import com.google.cloud.bigquery.BigQueryError;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Clustering;
@@ -16,6 +17,9 @@ import com.google.cloud.bigquery.ConnectionProperty;
 import com.google.cloud.bigquery.CopyJobConfiguration;
 import com.google.cloud.bigquery.CsvOptions;
 import com.google.cloud.bigquery.DatasetId;
+import com.google.cloud.bigquery.DatasetInfo;
+import com.google.cloud.bigquery.EncryptionConfiguration;
+import com.google.cloud.bigquery.ExternalDatasetReference;
 import com.google.cloud.bigquery.ExternalTableDefinition;
 import com.google.cloud.bigquery.ExtractJobConfiguration;
 import com.google.cloud.bigquery.Field;
@@ -102,6 +106,81 @@ public class Google_cloud_bigqueryTest {
         assertThat(options.getUseInt64Timestamps()).isTrue();
         assertThat(options.getThrowNotFound()).isFalse();
         assertThat(options.isQueryPreviewEnabled()).isTrue();
+    }
+
+    @Test
+    void datasetInfoModelsAccessControlsDefaultsAndExternalReferences() {
+        EncryptionConfiguration encryption = EncryptionConfiguration.newBuilder()
+                .setKmsKeyName("projects/sample-project/locations/us/keyRings/analytics/cryptoKeys/default")
+                .build();
+        ExternalDatasetReference externalReference = ExternalDatasetReference.newBuilder()
+                .setConnection("projects/sample-project/locations/us/connections/external-catalog")
+                .setExternalSource("aws-glue://catalogs/analytics")
+                .build();
+        Acl.Expr condition = new Acl.Expr(
+                "request.time < timestamp('2030-01-01T00:00:00Z')",
+                "temporary access",
+                "Expires automatically",
+                "us");
+        Acl userReader = Acl.of(new Acl.User("analyst@example.com"), Acl.Role.READER, condition);
+        Acl projectReaders = Acl.of(Acl.Group.ofProjectReaders(), Acl.Role.READER);
+        Acl authorizedView = Acl.of(new Acl.View(TableId.of(PROJECT, DATASET, "shared_events_view")));
+        Acl authorizedRoutine = Acl.of(new Acl.Routine(RoutineId.of(PROJECT, DATASET, "mask_email")));
+        Acl authorizedDataset = Acl.of(new Acl.DatasetAclEntity(
+                DatasetId.of(PROJECT, "shared_reference"),
+                List.of("VIEWS")));
+        DatasetInfo datasetInfo = DatasetInfo.newBuilder(DatasetId.of(PROJECT, DATASET))
+                .setFriendlyName("Analytics dataset")
+                .setDescription("Curated analytics data")
+                .setLocation(LOCATION)
+                .setDefaultTableLifetime(86_400_000L)
+                .setDefaultPartitionExpirationMs(604_800_000L)
+                .setDefaultCollation("und:ci")
+                .setDefaultEncryptionConfiguration(encryption)
+                .setStorageBillingModel("PHYSICAL")
+                .setMaxTimeTravelHours(96L)
+                .setLabels(Map.of("env", "test"))
+                .setResourceTags(Map.of("tagKeys/456", "tagValues/789"))
+                .setExternalDatasetReference(externalReference)
+                .setAcl(List.of(userReader, projectReaders, authorizedView, authorizedRoutine, authorizedDataset))
+                .build();
+
+        assertThat(datasetInfo.getDatasetId()).isEqualTo(DatasetId.of(PROJECT, DATASET));
+        assertThat(datasetInfo.getFriendlyName()).isEqualTo("Analytics dataset");
+        assertThat(datasetInfo.getDescription()).isEqualTo("Curated analytics data");
+        assertThat(datasetInfo.getLocation()).isEqualTo(LOCATION);
+        assertThat(datasetInfo.getDefaultTableLifetime()).isEqualTo(86_400_000L);
+        assertThat(datasetInfo.getDefaultPartitionExpirationMs()).isEqualTo(604_800_000L);
+        assertThat(datasetInfo.getDefaultCollation()).isEqualTo("und:ci");
+        assertThat(datasetInfo.getDefaultEncryptionConfiguration()).isEqualTo(encryption);
+        assertThat(datasetInfo.getStorageBillingModel()).isEqualTo("PHYSICAL");
+        assertThat(datasetInfo.getMaxTimeTravelHours()).isEqualTo(96L);
+        assertThat(datasetInfo.getLabels()).containsEntry("env", "test");
+        assertThat(datasetInfo.getResourceTags()).containsEntry("tagKeys/456", "tagValues/789");
+        assertThat(datasetInfo.getExternalDatasetReference().getConnection()).endsWith("/connections/external-catalog");
+        assertThat(datasetInfo.getExternalDatasetReference().getExternalSource())
+                .isEqualTo("aws-glue://catalogs/analytics");
+        assertThat(datasetInfo.getAcl()).containsExactly(
+                userReader,
+                projectReaders,
+                authorizedView,
+                authorizedRoutine,
+                authorizedDataset);
+        assertThat(((Acl.User) datasetInfo.getAcl().get(0).getEntity()).getEmail()).isEqualTo("analyst@example.com");
+        assertThat(datasetInfo.getAcl().get(0).getCondition()).isEqualTo(condition);
+        assertThat(((Acl.Group) datasetInfo.getAcl().get(1).getEntity()).getIdentifier()).isEqualTo("projectReaders");
+        assertThat(((Acl.View) datasetInfo.getAcl().get(2).getEntity()).getId().getTable())
+                .isEqualTo("shared_events_view");
+        assertThat(((Acl.Routine) datasetInfo.getAcl().get(3).getEntity()).getId().getRoutine())
+                .isEqualTo("mask_email");
+        assertThat(((Acl.DatasetAclEntity) datasetInfo.getAcl().get(4).getEntity()).getTargetTypes())
+                .containsExactly("VIEWS");
+        assertThat(datasetInfo.toBuilder().setFriendlyName("Renamed dataset").build().getFriendlyName())
+                .isEqualTo("Renamed dataset");
+        assertThat(encryption.toBuilder()
+                .setKmsKeyName("projects/sample-project/locations/us/keyRings/analytics/cryptoKeys/other")
+                .build()
+                .getKmsKeyName()).endsWith("/cryptoKeys/other");
     }
 
     @Test
