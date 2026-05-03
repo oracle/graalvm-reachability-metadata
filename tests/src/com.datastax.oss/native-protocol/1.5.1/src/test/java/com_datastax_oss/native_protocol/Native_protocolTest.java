@@ -18,6 +18,7 @@ import com.datastax.oss.protocol.internal.Frame;
 import com.datastax.oss.protocol.internal.FrameCodec;
 import com.datastax.oss.protocol.internal.PrimitiveCodec;
 import com.datastax.oss.protocol.internal.ProtocolConstants;
+import com.datastax.oss.protocol.internal.request.Batch;
 import com.datastax.oss.protocol.internal.request.Execute;
 import com.datastax.oss.protocol.internal.request.Prepare;
 import com.datastax.oss.protocol.internal.request.Query;
@@ -251,6 +252,50 @@ public class Native_protocolTest {
         assertThat(decodedExecute.options.consistency).isEqualTo(ProtocolConstants.ConsistencyLevel.QUORUM);
         assertBufferEquals(decodedExecute.options.positionalValues.get(0), bytes(0xaa, 0xbb, 0xcc, 0xdd));
         assertThat(decodedExecute.options.keyspace).isEqualTo("app");
+    }
+
+    @Test
+    void batchRequestRoundTripsStatementsPreparedIdsValuesAndExecutionOptions() {
+        FrameCodec<ByteBuffer> clientCodec = FrameCodec.defaultClient(PRIMITIVE_CODEC, Compressor.none());
+        FrameCodec<ByteBuffer> serverCodec = FrameCodec.defaultServer(PRIMITIVE_CODEC, Compressor.none());
+        byte[] preparedQueryId = new byte[] {0x01, 0x23, 0x45};
+        List<Object> queriesOrIds = List.of(
+                "INSERT INTO users (id, login) VALUES (?, ?)",
+                preparedQueryId);
+        List<List<ByteBuffer>> values = List.of(
+                List.of(bytes(0, 0, 0, 7), bytes("carol")),
+                List.of(bytes("last-login")));
+
+        ByteBuffer encoded = flip(clientCodec.encode(Frame.forRequest(
+                ProtocolConstants.Version.V5,
+                44,
+                false,
+                Frame.NO_PAYLOAD,
+                new Batch(
+                        ProtocolConstants.BatchType.UNLOGGED,
+                        queriesOrIds,
+                        values,
+                        ProtocolConstants.ConsistencyLevel.LOCAL_QUORUM,
+                        ProtocolConstants.ConsistencyLevel.SERIAL,
+                        1_702_345_678_901L,
+                        "app",
+                        123))));
+
+        Frame decodedFrame = serverCodec.decode(encoded);
+        assertThat(decodedFrame.streamId).isEqualTo(44);
+        assertThat(decodedFrame.message).isInstanceOf(Batch.class);
+        Batch decodedBatch = (Batch) decodedFrame.message;
+        assertThat(decodedBatch.type).isEqualTo(ProtocolConstants.BatchType.UNLOGGED);
+        assertThat(decodedBatch.queriesOrIds.get(0)).isEqualTo("INSERT INTO users (id, login) VALUES (?, ?)");
+        assertThat((byte[]) decodedBatch.queriesOrIds.get(1)).containsExactly(preparedQueryId);
+        assertBufferEquals(decodedBatch.values.get(0).get(0), bytes(0, 0, 0, 7));
+        assertBufferEquals(decodedBatch.values.get(0).get(1), bytes("carol"));
+        assertBufferEquals(decodedBatch.values.get(1).get(0), bytes("last-login"));
+        assertThat(decodedBatch.consistency).isEqualTo(ProtocolConstants.ConsistencyLevel.LOCAL_QUORUM);
+        assertThat(decodedBatch.serialConsistency).isEqualTo(ProtocolConstants.ConsistencyLevel.SERIAL);
+        assertThat(decodedBatch.defaultTimestamp).isEqualTo(1_702_345_678_901L);
+        assertThat(decodedBatch.keyspace).isEqualTo("app");
+        assertThat(decodedBatch.nowInSeconds).isEqualTo(123);
     }
 
     @Test
