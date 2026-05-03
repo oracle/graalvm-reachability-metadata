@@ -121,6 +121,36 @@ public class Jline_terminal_jniTest {
     }
 
     @Test
+    void nativePtyAppliesAttributeChangesAfterOpen() throws Exception {
+        TerminalProvider provider = TerminalProvider.load("jni");
+        Attributes attributes = attributesForPty();
+        Size requestedSize = new Size(80, 24);
+
+        if (isSupportedPosixOperatingSystem()) {
+            try (Pty pty = ((JniTerminalProvider) provider).open(attributes, requestedSize)) {
+                Attributes updatedAttributes = new Attributes(pty.getAttr());
+                updatedAttributes.setLocalFlag(Attributes.LocalFlag.ECHO, true);
+                updatedAttributes.setLocalFlag(Attributes.LocalFlag.ICANON, false);
+                updatedAttributes.setInputFlag(Attributes.InputFlag.ICRNL, false);
+                updatedAttributes.setControlChar(Attributes.ControlChar.VMIN, 0);
+                updatedAttributes.setControlChar(Attributes.ControlChar.VTIME, 1);
+
+                pty.setAttr(updatedAttributes);
+
+                Attributes actualAttributes = pty.getAttr();
+                assertThat(actualAttributes.getLocalFlag(Attributes.LocalFlag.ECHO)).isTrue();
+                assertThat(actualAttributes.getLocalFlag(Attributes.LocalFlag.ICANON)).isFalse();
+                assertThat(actualAttributes.getInputFlag(Attributes.InputFlag.ICRNL)).isFalse();
+                assertThat(actualAttributes.getControlChar(Attributes.ControlChar.VMIN)).isZero();
+                assertThat(actualAttributes.getControlChar(Attributes.ControlChar.VTIME)).isEqualTo(1);
+            }
+        } else {
+            assertThatThrownBy(() -> ((JniTerminalProvider) provider).open(attributes, requestedSize))
+                    .isInstanceOf(UnsupportedOperationException.class);
+        }
+    }
+
+    @Test
     void terminalBuilderCreatesJniBackedTerminalForExplicitStreams() throws Exception {
         if (isSupportedPosixOperatingSystem()) {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
