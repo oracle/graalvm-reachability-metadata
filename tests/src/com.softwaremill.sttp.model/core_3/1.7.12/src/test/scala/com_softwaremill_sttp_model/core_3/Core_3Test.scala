@@ -78,6 +78,27 @@ class Core_3Test {
   }
 
   @Test
+  def uriCustomComponentEncodersChangeRenderingWithoutChangingModelValues(): Unit = {
+    val uri: Uri = Uri("https", "api.example.com", Seq("original"))
+      .withWholePath("/docs v1/chapter two")
+      .withParam("q key", "hello world")
+      .addQuerySegment(Uri.QuerySegment.Value("standalone value"))
+      .fragment("section one")
+
+    val customized: Uri = uri
+      .hostSegmentEncoding(_.replace(".", "-"))
+      .pathSegmentsEncoding(_.replace(" ", "_"))
+      .queryValueSegmentsEncoding(_.replace(" ", "_"))
+      .fragmentSegmentEncoding(_.replace(" ", "_"))
+
+    assertEquals("https://api-example-com/docs_v1/chapter_two?q+key=hello_world&standalone_value#section_one", customized.toString)
+    assertEquals(Some("api.example.com"), customized.host)
+    assertEquals(List("docs v1", "chapter two"), customized.path)
+    assertEquals(Some("hello world"), customized.params.get("q key"))
+    assertEquals(Some("section one"), customized.fragment)
+  }
+
+  @Test
   def uriInterpolatorEncodesInterpolatedValuesByComponent(): Unit = {
     val pathSegment: String = "team a"
     val queryValue: String = "a+b & c"
