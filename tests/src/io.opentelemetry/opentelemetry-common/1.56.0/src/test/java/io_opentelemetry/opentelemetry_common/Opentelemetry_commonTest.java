@@ -18,6 +18,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -36,6 +37,19 @@ public class Opentelemetry_commonTest {
                 %s
                 %s
                 """.formatted(EnglishGreetingService.class.getName(), FrenchGreetingService.class.getName())));
+
+        Iterable<GreetingService> services = componentLoader.load(GreetingService.class);
+
+        assertThat(services)
+                .extracting(service -> service.greet("OpenTelemetry"))
+                .containsExactly("Hello, OpenTelemetry", "Bonjour, OpenTelemetry");
+    }
+
+    @Test
+    void componentLoaderCombinesProvidersFromEveryServiceResource() {
+        ComponentLoader componentLoader = ComponentLoader.forClassLoader(new MultiServiceResourceClassLoader(List.of(
+                EnglishGreetingService.class.getName() + "\n",
+                "%s\n%s\n".formatted(EnglishGreetingService.class.getName(), FrenchGreetingService.class.getName()))));
 
         Iterable<GreetingService> services = componentLoader.load(GreetingService.class);
 
@@ -168,7 +182,7 @@ public class Opentelemetry_commonTest {
         @Override
         public URL getResource(String name) {
             if (SERVICE_RESOURCE.equals(name)) {
-                return serviceResourceUrl();
+                return serviceResourceUrl(serviceFileContent, 0);
             }
             return super.getResource(name);
         }
@@ -176,7 +190,7 @@ public class Opentelemetry_commonTest {
         @Override
         public Enumeration<URL> getResources(String name) throws IOException {
             if (SERVICE_RESOURCE.equals(name)) {
-                return Collections.enumeration(List.of(serviceResourceUrl()));
+                return Collections.enumeration(List.of(serviceResourceUrl(serviceFileContent, 0)));
             }
             return super.getResources(name);
         }
@@ -185,13 +199,48 @@ public class Opentelemetry_commonTest {
         public String toString() {
             return "service-resource-class-loader";
         }
+    }
 
-        private URL serviceResourceUrl() {
-            try {
-                return new URL(null, "memory:" + SERVICE_RESOURCE, new InMemoryUrlStreamHandler(serviceFileContent));
-            } catch (IOException e) {
-                throw new IllegalStateException("Unable to create in-memory service resource URL", e);
+    private static final class MultiServiceResourceClassLoader extends EmptyServiceResourceClassLoader {
+        private final List<String> serviceFileContents;
+
+        private MultiServiceResourceClassLoader(List<String> serviceFileContents) {
+            this.serviceFileContents = serviceFileContents;
+        }
+
+        @Override
+        public URL getResource(String name) {
+            if (SERVICE_RESOURCE.equals(name)) {
+                return serviceResourceUrl(serviceFileContents.get(0), 0);
             }
+            return super.getResource(name);
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            if (!SERVICE_RESOURCE.equals(name)) {
+                return super.getResources(name);
+            }
+
+            List<URL> serviceResourceUrls = new ArrayList<>();
+            for (int i = 0; i < serviceFileContents.size(); i++) {
+                serviceResourceUrls.add(serviceResourceUrl(serviceFileContents.get(i), i));
+            }
+            return Collections.enumeration(serviceResourceUrls);
+        }
+
+        @Override
+        public String toString() {
+            return "multi-service-resource-class-loader";
+        }
+    }
+
+    private static URL serviceResourceUrl(String serviceFileContent, int index) {
+        try {
+            return new URL(null, "memory:" + SERVICE_RESOURCE + "?" + index,
+                    new InMemoryUrlStreamHandler(serviceFileContent));
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to create in-memory service resource URL", e);
         }
     }
 
