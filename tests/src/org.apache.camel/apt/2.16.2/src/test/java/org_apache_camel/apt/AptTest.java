@@ -299,6 +299,42 @@ public class AptTest {
     }
 
     @Test
+    void endpointHelperComparatorsOrderEndpointMetadataForDocumentation() {
+        List<EndpointPath> paths = new ArrayList<>();
+        paths.add(endpointPath("prefix"));
+        paths.add(endpointPath("name"));
+        paths.add(endpointPath("bucket"));
+
+        paths.sort(EndpointHelper.createPathComparator("aws-s3://bucket/name?prefix=prefix"));
+
+        assertThat(paths)
+                .extracting(EndpointPath::getName)
+                .containsExactly("bucket", "name", "prefix");
+
+        List<EndpointOption> options = new ArrayList<>();
+        options.add(endpointOption("producerPoolSize", "producer", "producer"));
+        options.add(endpointOption("consumerDelay", "consumer", "consumer"));
+        options.add(endpointOption("bridgeErrorHandler", "consumer (advanced)", "consumer,advanced"));
+        options.add(endpointOption("zookeeperPath", "custom", "custom"));
+        options.add(endpointOption("timeout", "common", "common"));
+        options.add(endpointOption("autoStartup", "common", "common"));
+        options.add(endpointOption("lazyStartProducer", "common (advanced)", "common,advanced"));
+
+        options.sort(EndpointHelper.createGroupAndLabelComparator());
+
+        assertThat(options)
+                .extracting(EndpointOption::getName)
+                .containsExactly(
+                        "autoStartup",
+                        "timeout",
+                        "lazyStartProducer",
+                        "consumerDelay",
+                        "bridgeErrorHandler",
+                        "producerPoolSize",
+                        "zookeeperPath");
+    }
+
+    @Test
     void helperUtilitiesUseCamelAptFormattingRules() throws IOException {
         assertThat(Strings.isNullOrEmpty(null)).isTrue();
         assertThat(Strings.isNullOrEmpty("")).isTrue();
@@ -401,6 +437,38 @@ public class AptTest {
         assertThat(componentOption).isEqualTo(new ComponentOption(
                 "bridgeErrorHandler", "boolean", "false", "", "", "", false, "common", "common", false,
                 Collections.emptySet()));
+    }
+
+    private static EndpointPath endpointPath(String name) {
+        return new EndpointPath(
+                name,
+                "java.lang.String",
+                "false",
+                "",
+                "Path documentation.",
+                false,
+                "path",
+                "common",
+                false,
+                Collections.emptySet());
+    }
+
+    private static EndpointOption endpointOption(String name, String group, String label) {
+        return new EndpointOption(
+                name,
+                "java.lang.String",
+                "false",
+                "",
+                "",
+                "Option documentation.",
+                "",
+                "",
+                false,
+                false,
+                group,
+                label,
+                false,
+                Collections.emptySet());
     }
 
     private static ComponentModel componentModel() {
