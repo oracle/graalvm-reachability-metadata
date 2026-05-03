@@ -10,8 +10,65 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+sourceSets {
+    bootstrapTest {
+        java.srcDir 'src/bootstrapTest/java'
+        resources.srcDir 'src/test/resources'
+    }
+}
+
+configurations {
+    jacocoRuntimeAgent
+}
+
+tasks.register('bootstrapTestJar', Jar) {
+    from sourceSets.bootstrapTest.output
+    archiveClassifier = 'bootstrap-test'
+}
+
+tasks.named('compileTestJava') {
+    dependsOn tasks.named('bootstrapTestClasses')
+}
+
+tasks.register('bootstrapSystemResourceTest', Test) {
+    description = 'Exercises the MessageCatalog bootstrap class loader resource path.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    include '**/MessageCatalogTest.class'
+    shouldRunAfter tasks.named('test')
+    dependsOn tasks.named('bootstrapTestJar')
+    useJUnitPlatform()
+    systemProperty 'messageCatalog.bootstrapExpected', 'true'
+
+    if (extensions.findByName('jacoco') != null) {
+        jacoco.enabled = false
+    }
+
+    doFirst {
+        File dtdParserJar = configurations.testRuntimeClasspath.files.find {
+            it.name.startsWith('dtd-parser-') && it.name.endsWith('.jar')
+        }
+        assert dtdParserJar != null
+        String bootClasspath = tasks.named('bootstrapTestJar').get().archiveFile.get().asFile.absolutePath + File.pathSeparator + dtdParserJar.absolutePath
+        File jacocoAgent = configurations.jacocoRuntimeAgent.singleFile
+        File jacocoDestination = layout.buildDirectory.file('jacoco/bootstrapSystemResourceTest.exec').get().asFile
+        jvmArgs "-Xbootclasspath/a:${bootClasspath}",
+                "-javaagent:${jacocoAgent.absolutePath}=destfile=${jacocoDestination.absolutePath},append=false,inclbootstrapclasses=true,includes=com.sun.xml.dtdparser.*"
+    }
+}
+
+tasks.named('jacocoTestReport') {
+    dependsOn tasks.named('bootstrapSystemResourceTest')
+    executionData fileTree(dir: layout.buildDirectory.dir('jacoco').get().asFile, include: '*.exec')
+}
+
 dependencies {
     testImplementation "com.sun.xml.dtd-parser:dtd-parser:$libraryVersion"
+    bootstrapTestImplementation "com.sun.xml.dtd-parser:dtd-parser:$libraryVersion"
+    jacocoRuntimeAgent "org.jacoco:org.jacoco.agent:${jacoco.toolVersion}:runtime"
+    testCompileOnly sourceSets.bootstrapTest.output
+    testRuntimeOnly sourceSets.bootstrapTest.output
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 

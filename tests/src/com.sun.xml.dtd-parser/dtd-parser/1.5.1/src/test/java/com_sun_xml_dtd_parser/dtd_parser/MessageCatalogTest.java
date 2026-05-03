@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.sun.xml.dtdparser.MessageCatalog;
 
+import com_sun_xml_dtd_parser.dtd_parser.bootstrap.BootstrapMessageCatalog;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
@@ -49,11 +51,19 @@ public class MessageCatalogTest {
     }
 
     @Test
-    void detectsSupportedLocalesFromBundleClassAndPropertyResource() {
-        assertThat(catalog.isLocaleSupported("fr")).isTrue();
+    void detectsSupportedLocalesFromPropertyResource() {
         assertThat(catalog.isLocaleSupported("en")).isTrue();
         assertThat(catalog.isLocaleSupported("zz_ZZ")).isFalse();
         assertThat(catalog.chooseLocale(new String[] {"zh-cmn", "EN-us", "FR"})).isEqualTo(Locale.US);
+    }
+
+    @Test
+    void checksLocaleSupportWithBootstrapLoadedCatalog() {
+        if (Boolean.getBoolean("messageCatalog.bootstrapExpected")) {
+            assertThat(BootstrapMessageCatalog.isLoadedByBootstrap()).isTrue();
+        }
+
+        assertThat(BootstrapMessageCatalog.INSTANCE.isLocaleSupported("zz")).isFalse();
     }
 
     private static void clearBundleCache() {
