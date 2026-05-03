@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.cloud.bigquery.storage.v1.AnnotationsProto;
 import com.google.cloud.bigquery.storage.v1.AppendRowsRequest;
 import com.google.cloud.bigquery.storage.v1.AppendRowsResponse;
 import com.google.cloud.bigquery.storage.v1.ArrowRecordBatch;
@@ -54,6 +55,7 @@ import com.google.cloud.bigquery.storage.v1.WriteStreamName;
 import com.google.cloud.bigquery.storage.v1.WriteStreamView;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Timestamp;
@@ -203,6 +205,31 @@ public class Proto_google_cloud_bigquerystorage_v1Test {
         assertEquals(12.5D, parsed.getReadSession().getReadOptions().getSamplePercentage(), 0.0001D);
         assertEquals(snapshotTime, parsed.getReadSession().getTableModifiers().getSnapshotTime());
         assertEquals(64L, parsed.getReadSession().getEstimatedRowCount());
+    }
+
+    @Test
+    void protoSchemaSupportsBigQueryColumnNameAnnotations() throws Exception {
+        ExtensionRegistry registry = ExtensionRegistry.newInstance();
+        AnnotationsProto.registerAllExtensions(registry);
+        DescriptorProtos.FieldDescriptorProto field = DescriptorProtos.FieldDescriptorProto.newBuilder()
+                .setName("customer_display_name")
+                .setNumber(1)
+                .setType(DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING)
+                .setOptions(DescriptorProtos.FieldOptions.newBuilder()
+                        .setExtension(AnnotationsProto.columnName, "Customer Display Name"))
+                .build();
+        ProtoSchema schema = ProtoSchema.newBuilder()
+                .setProtoDescriptor(DescriptorProtos.DescriptorProto.newBuilder()
+                        .setName("CustomerRow")
+                        .addField(field))
+                .build();
+
+        ProtoSchema parsed = ProtoSchema.parseFrom(schema.toByteString(), registry);
+        DescriptorProtos.FieldOptions parsedOptions = parsed.getProtoDescriptor().getField(0).getOptions();
+        assertEquals("CustomerRow", parsed.getProtoDescriptor().getName());
+        assertEquals("customer_display_name", parsed.getProtoDescriptor().getField(0).getName());
+        assertTrue(parsedOptions.hasExtension(AnnotationsProto.columnName));
+        assertEquals("Customer Display Name", parsedOptions.getExtension(AnnotationsProto.columnName));
     }
 
     @Test
