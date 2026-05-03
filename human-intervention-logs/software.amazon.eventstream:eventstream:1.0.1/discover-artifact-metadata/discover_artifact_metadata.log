@@ -1,0 +1,1103 @@
+Starting a Gradle Daemon, 7 busy and 2 incompatible and 136 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deee4-f291-76c1-bd0a-66741bdd7ca4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: software.amazon.eventstream:eventstream:1.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.1" when "$version$" is replaced with "1.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+- Set "coordinates" to "software.amazon.eventstream:eventstream:1.0.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central first, then check the referenced upstream repository/tag so the versioned URLs point at the right place before editing the JSON.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json && sed -n '1,200p' build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+-rw-rw-r-- 1 vjovanov vjovanov 70 May  3 19:31 build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+{
+  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"software\\.amazon\\.eventstream|amazon\\.eventstream|eventstream\" ." in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central software.amazon.eventstream eventstream 1.0.1 POM repository URL
+web search: 
+web search: https://repo1.maven.org/maven2/software/amazon/eventstream/eventstream/1.0.1/
+web search: 
+web search: 
+codex
+Maven Central lists both a sources JAR and a Javadoc JAR for `1.0.1`, which is useful here because the requested source and documentation URLs can be Maven-hosted and version-substitutable. I’m checking the POM and upstream tag next to avoid guessing the repository path or tests.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>software.amazon.eventstream</groupId>
+    <artifactId>eventstream</artifactId>
+    <version>1.0.1</version>
+
+    <name>AWS Event Stream</name>
+    <description>The AWS Event Stream decoder library.</description>
+    <url>https://github.com/awslabs/aws-eventstream-java</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://aws.amazon.com/apache2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>amazonwebservices</id>
+            <organization>Amazon Web Services</organization>
+            <organizationUrl>https://aws.amazon.com</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/awslabs/aws-eventstream-java</url>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>1.2.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <release>8</release>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>software.amazon.eventstream</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <configuration>
+                    <show>public</show>
+                    <bottom><![CDATA[Copyright &#169; 2019 Amazon Web Services, Inc. All Rights Reserved.]]></bottom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>publishing</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>sonatype-nexus-staging</serverId>
+                            <nexusUrl>https://oss.sonatype.org</nexusUrl>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/software/amazon/eventstream/eventstream/1.0.1/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: software/amazon/eventstream/eventstream/1.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>software/amazon/eventstream/eventstream/1.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="eventstream-1.0.1-javadoc.jar" title="eventstream-1.0.1-javadoc.jar">eventstream-1.0.1-javadoc.jar</a>                     2019-05-02 00:13    424885      
+<a href="eventstream-1.0.1-javadoc.jar.asc" title="eventstream-1.0.1-javadoc.jar.asc">eventstream-1.0.1-javadoc.jar.asc</a>                 2019-05-02 00:13       833      
+<a href="eventstream-1.0.1-javadoc.jar.asc.md5" title="eventstream-1.0.1-javadoc.jar.asc.md5">eventstream-1.0.1-javadoc.jar.asc.md5</a>             2019-05-02 00:13        32      
+<a href="eventstream-1.0.1-javadoc.jar.asc.sha1" title="eventstream-1.0.1-javadoc.jar.asc.sha1">eventstream-1.0.1-javadoc.jar.asc.sha1</a>            2019-05-02 00:13        40      
+<a href="eventstream-1.0.1-javadoc.jar.md5" title="eventstream-1.0.1-javadoc.jar.md5">eventstream-1.0.1-javadoc.jar.md5</a>                 2019-05-02 00:13        32      
+<a href="eventstream-1.0.1-javadoc.jar.sha1" title="eventstream-1.0.1-javadoc.jar.sha1">eventstream-1.0.1-javadoc.jar.sha1</a>                2019-05-02 00:13        40      
+<a href="eventstream-1.0.1-sources.jar" title="eventstream-1.0.1-sources.jar">eventstream-1.0.1-sources.jar</a>                     2019-05-02 00:13     16020      
+<a href="eventstream-1.0.1-sources.jar.asc" title="eventstream-1.0.1-sources.jar.asc">eventstream-1.0.1-sources.jar.asc</a>                 2019-05-02 00:13       833      
+<a href="eventstream-1.0.1-sources.jar.asc.md5" title="eventstream-1.0.1-sources.jar.asc.md5">eventstream-1.0.1-sources.jar.asc.md5</a>             2019-05-02 00:13        32      
+<a href="eventstream-1.0.1-sources.jar.asc.sha1" title="eventstream-1.0.1-sources.jar.asc.sha1">eventstream-1.0.1-sources.jar.asc.sha1</a>            2019-05-02 00:13        40      
+<a href="eventstream-1.0.1-sources.jar.md5" title="eventstream-1.0.1-sources.jar.md5">eventstream-1.0.1-sources.jar.md5</a>                 2019-05-02 00:13        32      
+<a href="eventstream-1.0.1-sources.jar.sha1" title="eventstream-1.0.1-sources.jar.sha1">eventstream-1.0.1-sources.jar.sha1</a>                2019-05-02 00:13        40      
+<a href="eventstream-1.0.1.jar" title="eventstream-1.0.1.jar">eventstream-1.0.1.jar</a>                             2019-05-02 00:13     30193      
+<a href="eventstream-1.0.1.jar.asc" title="eventstream-1.0.1.jar.asc">eventstream-1.0.1.jar.asc</a>                         2019-05-02 00:13       833      
+<a href="eventstream-1.0.1.jar.asc.md5" title="eventstream-1.0.1.jar.asc.md5">eventstream-1.0.1.jar.asc.md5</a>                     2019-05-02 00:13        32      
+<a href="eventstream-1.0.1.jar.asc.sha1" title="eventstream-1.0.1.jar.asc.sha1">eventstream-1.0.1.jar.asc.sha1</a>                    2019-05-02 00:13        40      
+<a href="eventstream-1.0.1.jar.md5" title="eventstream-1.0.1.jar.md5">eventstream-1.0.1.jar.md5</a>                         2019-05-02 00:13        32      
+<a href="eventstream-1.0.1.jar.sha1" title="eventstream-1.0.1.jar.sha1">eventstream-1.0.1.jar.sha1</a>                        2019-05-02 00:13        40      
+<a href="eventstream-1.0.1.pom" title="eventstream-1.0.1.pom">eventstream-1.0.1.pom</a>                             2019-05-02 00:13      6066      
+<a href="eventstream-1.0.1.pom.asc" title="eventstream-1.0.1.pom.asc">eventstream-1.0.1.pom.asc</a>                         2019-05-02 00:13       833      
+<a href="eventstream-1.0.1.pom.asc.md5" title="eventstream-1.0.1.pom.asc.md5">eventstream-1.0.1.pom.asc.md5</a>                     2019-05-02 00:13        32      
+<a href="eventstream-1.0.1.pom.asc.sha1" title="eventstream-1.0.1.pom.asc.sha1">eventstream-1.0.1.pom.asc.sha1</a>                    2019-05-02 00:13        40      
+<a href="eventstream-1.0.1.pom.md5" title="eventstream-1.0.1.pom.md5">eventstream-1.0.1.pom.md5</a>                         2019-05-02 00:13        32      
+<a href="eventstream-1.0.1.pom.sha1" title="eventstream-1.0.1.pom.sha1">eventstream-1.0.1.pom.sha1</a>                        2019-05-02 00:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/awslabs/aws-eventstream-java/tags?per_page=100' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 175ms:
+[
+
+]
+
+web search: 
+web search: site:github.com aws-eventstream-java "eventstream" "1.0.1"
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/awslabs/aws-eventstream-java | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+exec
+/usr/bin/bash -lc "curl -fsSL https://android.googlesource.com/platform/external/aws-eventstream-java/+log?format=JSON | sed '1s/"'^)]}//'"' | head -c 4000" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+exec
+/usr/bin/bash -lc "curl -fsSIL https://repo1.maven.org/maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1-tests.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 17:31:39 GMT
+content-type: text/html
+cf-ray: 9f6100265fbc29a7-ZRH
+cf-cache-status: HIT
+age: 1269
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://repo1.maven.org/maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1-test-sources.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 17:31:39 GMT
+content-type: text/html
+cf-ray: 9f6100264e0203b1-ZRH
+cf-cache-status: HIT
+age: 1270
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 101ms:
+ succeeded in 688ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 17:31:40 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e94ed39082273c0b2d94229468bcf186"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=GlOZCiiyHukHXL830cLH15vCjsW7fINZb9DurJHS6LvP%2FkLudmzexcOC3zH%2BVb6fQvq0I%2FxLjgQbkcjFuJGdrR6rJWY4Q3dPrSIj9OdqSBCtwkgn8pg6cwgT9rQ1%2BjEhNG2YskJ49qpMenisBlpkzt13I38lVgDf%2B%2FK0%2BmclUenbYgZnfKogMql0x3k%2FlA3m0Me%2BsSyFf0QmF%2Bzk4laWXSQdrZaHO35bvHzmOcI5VrOO1%2FxraVIwNexE6ggNt3%2FARoQpeY37xBjtDFQFQh4gaA%3D%3D--oa9syD2lT6EKa6zc--BIIveDrsrCQTHyivYEkMPQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1990205563.1777829499; expires=Mon, 03 May 2027 17:31:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 17:31:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510D:17BC2E:79375EB:59E8AC1:69F7867B
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://android.googlesource.com/platform/external/aws-eventstream-java/+/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/?format=JSON | sed '1s/"'^)]}//'"' | head -c 5000" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+'
+{
+  "id": "46070fd2069c7aa1aa77484c6de8a6d0eae28e9a",
+  "entries": [
+    {
+      "mode": 16384,
+      "type": "tree",
+      "id": "e0236bd2c1800e549642c730086b6cc1b79e1a90",
+      "name": ".github"
+    },
+    {
+      "mode": 33188,
+      "type": "blob",
+      "id": "e097cfa43e0f12c0b7bc5da32068b583ff259823",
+      "name": ".travis.yml"
+    },
+    {
+      "mode": 33188,
+      "type": "blob",
+      "id": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "name": "LICENSE"
+    },
+    {
+      "mode": 33188,
+      "type": "blob",
+      "id": "8bc827e49e4cbfd20800ebebb0cf6f537e81893c",
+      "name": "NOTICE"
+    },
+    {
+      "mode": 33188,
+      "type": "blob",
+      "id": "a43053dc2104ba7344c1bbcb691c477d47e89360",
+      "name": "README.md"
+    },
+    {
+      "mode": 33188,
+      "type": "blob",
+      "id": "d5e2d9f54be980b4814ada0147c535ed56bce6d1",
+      "name": "pom.xml"
+    },
+    {
+      "mode": 16384,
+      "type": "tree",
+      "id": "63f4bc69ecd35bafcc5594d99eac5d00f40d37a0",
+      "name": "src"
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/awslabs/aws-eventstream-java.git' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/awslabs/aws-eventstream-java.git' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+exec
+/usr/bin/bash -lc "curl -fsSL https://android.googlesource.com/platform/external/aws-eventstream-java/+log?format=JSON | sed '1s/"'^)]}//'"' | rg -n \"1\\.0\\.1|version|Target JDK8|aws-eventstream\" -C 2" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 182ms:
+19-        "time": "Thu Dec 19 11:04:41 2024 -0800"
+20-      },
+21:      "message": "Add janitors to the OWNERS file am: 27402b32b8\n\nOriginal change: https://android-review.googlesource.com/c/platform/external/aws-eventstream-java/+/3423369\n\nChange-Id: I3fe74dad538151ef62333f5ae057a002e8920d97\nSigned-off-by: Automerger Merge Worker \u003candroid-build-automerger-merge-worker@system.gserviceaccount.com\u003e\n"
+22-    },
+23-    {
+--
+74-        "time": "Wed Feb 28 12:05:27 2024 +0000"
+75-      },
+76:      "message": "Import aws-eventstream-java to platform/external\n\nThird-Party Import of: https://github.com/awslabs/aws-crt-java\nRequest Document: go/android3p\nFor CL Reviewers: go/android3p#cl-review\nFor Build Team: go/ab-third-party-imports\nBug: http://b/325331017\nTest: m aws-eventstream-java\n\nChange-Id: If719a9db93e21053dac694fb008f63847640ca83\n"
+77-    },
+78-    {
+--
+126-        "time": "Wed May 01 17:12:19 2019 -0700"
+127-      },
+128:      "message": "Target JDK8; bump version to 1.0.1\n"
+129-    },
+130-    {
+
+ succeeded in 270ms:
+ succeeded in 278ms:
+1e76ef478f0108b38e2d7b70b598b4e5f0def3d1	refs/heads/master
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+exec
+/usr/bin/bash -lc 'curl -fsSL https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test | rg -n "test|Test|src/test|MessageDecoder" -m 10' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/awslabs/aws-eventstream-java/tree/1.0.1/src/test | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/awslabs/aws-eventstream-java/tree/v1.0.1/src/test | sed -n '1,40p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 447ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 17:31:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=Uoox4ip36EJZpRaT57AwLRY7wbO81vCknpMo2QK2dVanC%2FisHimHo%2B8gLK7J9RkjHgVxPUUclMIQik8GYCEQxQskjdOWkicurl: (22) The requested URL returned error: 404
+uppADVy6esnvV4SiB9CYsJT9l6alLGM4x3TBJ%2FlLASxHyLv%2BDM7IZapS5NFO8Jt9sXBUJniakyxJ%2FW1s4XDbwjmHYyv9iZRp3fi2fUrCLfkYhpTiySZ0S0ptHRRBSZHApw%2Fo4p4AZqzICLDNd51U6oy7eHE8joIb2sD5yNQiUjzIG5tEATOiNX5w%3D%3D--Sn0gkfybXVb73faF--4DAA2GWIql3LVTGyYg1x1Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1526744092.1777829514; expires=Mon, 03 May 2027 17:31:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 17:31:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510D:17BC2E:7941E3A:59F053B:69F7868A
+
+
+ succeeded in 457ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 17:31:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=jW58Foku3PVOtc9LcR5JQcxqN4NVThk%2BfaRG1AWNoZJtYbeNHa4yMOMpjUS0dpBe22dAVegQAC5xhylZ5vbb1g%2FBL1l2yox%2B0OB9D23gP4h0WIkY2d7JxuVbe6tq4UeLNepDHOhN4CKvc4kTIVPIGY%2FWSKBJn98IhpkUCkXZGkB%2B0E2XRM0yIK%2BzfMxleOueVX4D9yvABmccal3K88uS5n5wsRrnmOwHANjvxz2H6U4FUCAvQdhW0gyiP%2BC5Y7PXbnF83d18mLWunIniVvD91g%3D%3D--YKEeQYvaQssNDVsa--HEOtE%2Bluprawk9wgGvvpgQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.904589902.1777829514; expires=Mon, 03 May 2027 17:31:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 17:31:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5113:438C9:7B8A369:5B94D87:69F7868A
+
+
+ succeeded in 526ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 17:31:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3c31b04b71ea0ca5e16563dfe8e7c119"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=9OE1YK4uzcCAfV%2FYqg7D6bEA1AV2VDcRh5ziVDuWN6QfnUWR5tMB%2FAmZhXDuqY5oQLpT%2FYlcYQ2ffYzQk9SrRuJoqw8jlBD4OGZrdYUqHpNJJ95dkF8fb2p6FzBu%2F7tMuSyFO4yaY0xae1PeRlnp2XRNmKAzf%2FDrY188Lh6qxvCHn%2F%2B%2BVNp6GK0CdGePCXSlIwvznSqeHaHZOlVzAF692eIZHhoOKqP8bGP0tPN8zCIgGQrSbYlpesSjTeOZsmRJ59Kx32cvh5iVpoFh0jrpoA%3D%3D--A7ujirhL1gMygVJ5--2Gm62G%2FUFe7CBL1Ef8K9mA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.625194098.1777829514; expires=Mon, 03 May 2027 17:31:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 17:31:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510B:99CE2:7AE69A8:5B402B3:69F7868A
+
+
+ succeeded in 594ms:
+152:  <title>aws-eventstream-java/src/test at 7be2dd80e12f8835674c8ffb0f4a2efb64c7b585 · awslabs/aws-eventstream-java · GitHub</title>
+200:      <meta name="description" content="A Java implementation of EventStream encoding, an extensible binary datagram encoding. - aws-eventstream-java/src/test at 7be2dd80e12f8835674c8ffb0f4a2efb64c7b585 · awslabs/aws-eventstream-java">
+206:    <meta name="apple-itunes-app" content="app-id=1477376905, app-argument=https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test" />
+208:      <meta name="twitter:image" content="https://opengraph.githubassets.com/1b7f90412e23e8165d48e523de7dbc276bb5f0bd0d954993b89ab2c26cadf0b8/awslabs/aws-eventstream-java" /><meta name="twitter:site" content="@github" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="aws-eventstream-java/src/test at 7be2dd80e12f8835674c8ffb0f4a2efb64c7b585 · awslabs/aws-eventstream-java" /><meta name="twitter:description" content="A Java implementation of EventStream encoding, an extensible binary datagram encoding. - awslabs/aws-eventstream-java" />
+209:  <meta property="og:image" content="https://opengraph.githubassets.com/1b7f90412e23e8165d48e523de7dbc276bb5f0bd0d954993b89ab2c26cadf0b8/awslabs/aws-eventstream-java" /><meta property="og:image:alt" content="A Java implementation of EventStream encoding, an extensible binary datagram encoding. - awslabs/aws-eventstream-java" /><meta property="og:image:width" content="1200" /><meta property="og:image:height" content="600" /><meta property="og:site_name" content="GitHub" /><meta property="og:type" content="object" /><meta property="og:title" content="aws-eventstream-java/src/test at 7be2dd80e12f8835674c8ffb0f4a2efb64c7b585 · awslabs/aws-eventstream-java" /><meta property="og:url" content="https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test" /><meta property="og:description" content="A Java implementation of EventStream encoding, an extensible binary datagram encoding. - awslabs/aws-eventstream-java" />
+341:            href="/login?return_to=https%3A%2F%2Fgithub.com%2Fawslabs%2Faws-eventstream-java%2Ftree%2F7be2dd80e12f8835674c8ffb0f4a2efb64c7b585%2Fsrc%2Ftest"
+343:            data-hydro-click="{&quot;event_type&quot;:&quot;authentication.click&quot;,&quot;payload&quot;:{&quot;location_in_page&quot;:&quot;site header menu&quot;,&quot;repository_id&quot;:null,&quot;auth_type&quot;:&quot;SIGN_UP&quot;,&quot;originating_url&quot;:&quot;https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test&quot;,&quot;user_id&quot;:null}}" data-hydro-click-hmac="c7dd49987571b869a20755ab8911cffad39d93a03bd8c5216cb6c9cf0511d5fd"
+442:          <!-- '"` --><!-- </textarea></xmp> --></option></form><form id="query-builder-test-form" action="" accept-charset="UTF-8" method="get">
+443:  <query-builder data-target="qbsearch-input.queryBuilder" id="query-builder-query-builder-test" data-filter-key=":" data-view-component="true" class="QueryBuilder search-query-builder">
+445:      <label id="query-builder-test-label" for="query-builder-test" class="FormControl-label sr-only">
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"https://repo1.maven.org.*\\"'$version'"\\"'$.*sources.jar"'"' build/discovered-artifact-metadata metadata -g '*.json' | head -20" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.hamcrest/hamcrest-library/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/$version$/hamcrest-library-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/com.twitter/hpack/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"N/A\"|\"test-code-url\" : \".*[0-9a-f]{40}' build/discovered-artifact-metadata metadata -g '*.json' | head -50" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:25:    "test-code-url" : "N/A",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:7:    "test-code-url" : "N/A",
+metadata/portlet-api/portlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:7:    "test-code-url" : "N/A",
+metadata/org.brotli/dec/index.json:7:    "test-code-url" : "https://github.com/google/brotli/tree/4363f2d74b8af198f78b08e10cd0b3ead48af590/java/org/brotli/dec",
+metadata/com.intellij/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:21:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:36:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:50:    "test-code-url" : "N/A",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+metadata/dev.zio/zio-schema-macros_3/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.namespace.service/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.slf4j/slf4j-simple/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/541e6f7d181ff3405ae9495724430825aefff6a9/slf4j-simple/src/test/java",
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.jms/jakarta.jms-api/index.json:22:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:6:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:21:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:31:    "test-code-url" : "N/A",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/xml-apis/xml-apis/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:38:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:114:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:7:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://repo1.maven.org.*javadoc.jar\"' build/discovered-artifact-metadata metadata -g '*.json' | head -20" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-javadoc.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.4.0/error_prone_annotations-2.4.0-javadoc.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-javadoc.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:50:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.slf4j/slf4j-simple/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8.0-alpha0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/541e6f7d181ff3405ae9495724430825aefff6a9/slf4j-simple/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+    "description" : "SLF4J Simple is a lightweight SLF4J binding that routes SLF4J logging calls to a simple logger implementation. It writes log output to System.err by default and is intended as a basic logging backend for applications or tests that do not need a full logging framework.",
+    "tested-versions" : [
+      "1.8.0-alpha0",
+      "1.8.0-alpha1",
+      "1.8.0-alpha2",
+      "1.8.0-beta0",
+      "1.8.0-beta1",
+      "1.8.0-beta2",
+      "1.8.0-beta4",
+      "2.0.0",
+      "2.0.1",
+      "2.0.2",
+      "2.0.3",
+      "2.0.4",
+      "2.0.5",
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9",
+      "2.0.10",
+      "2.0.11",
+      "2.0.12",
+      "2.0.13",
+      "2.0.14",
+      "2.0.15",
+      "2.0.16",
+      "2.0.17",
+      "2.1.0-alpha0",
+      "2.1.0-alpha1"
+    ],
+    "allowed-packages" : [
+      "org.slf4j"
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.brotli/dec/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.1.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/brotli/dec/$version$/dec-$version$-sources.jar",
+    "repository-url" : "https://github.com/google/brotli",
+    "test-code-url" : "https://github.com/google/brotli/tree/4363f2d74b8af198f78b08e10cd0b3ead48af590/java/org/brotli/dec",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/brotli/dec/$version$/dec-$version$-javadoc.jar",
+    "description" : "Brotli is a lossless compression algorithm designed for compact web content and general-purpose data compression. This artifact provides the Java decoder implementation, including InputStream-based APIs for decompressing Brotli-compressed data.",
+    "tested-versions" : [
+      "0.1.2"
+    ],
+    "allowed-packages" : [
+      "org.brotli.dec"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"not-for-native-image\"|\"reason\"|\"replacement\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.compose.ui:ui-desktop:1.8.2.",
+metadata/org.jetbrains.compose.ui/ui/index.json:5:    "replacement": "org.jetbrains.compose.ui:ui-desktop:1.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the JVM artifact is published separately as kotlinx-io-core-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0.",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0"
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the Gradle module metadata redirects JVM variants to kotlinx-io-bytestring-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:4:    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+metadata/eu.timepit/refined_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:92:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:75:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:108:            "required": [ "version", "reason" ],
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:114:              "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:137:        "reason"
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:145:        "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:150:        "replacement": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:243:          { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:250:        "reason": "Scala.js artifact; not a JVM library consumed by native-image.",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:251:        "replacement": "Use the JVM artifact if one exists."
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:33:          "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:131:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:156:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:186:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:243:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:282:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:344:    "reason": {
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:28:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:46:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:4:    "reason": "The default and macOS classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:5:    "replacement": "io.netty:netty-resolver-dns-classes-macos:4.1.74.Final"
+metadata/com.google.protobuf/protobuf-java-util/index.json:37:        "reason" : "Published POM for com.google.protobuf:protobuf-java-util:3.22.1 is malformed: dependency com.google.protobuf:protobuf-java uses invalid groupId '$com.google.protobuf' and omits the version."
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:4:    "reason": "The default and platform classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:5:    "replacement": "io.netty.incubator:netty-incubator-codec-classes-quic:0.0.34.Final"
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/eventstream-1.0.1.jar" https://repo1.maven.org/maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1.jar; jar tf "$tmp/eventstream-1.0.1.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+software/
+software/amazon/
+software/amazon/eventstream/
+META-INF/maven/
+META-INF/maven/software.amazon.eventstream/
+META-INF/maven/software.amazon.eventstream/eventstream/
+software/amazon/eventstream/Checksums.class
+software/amazon/eventstream/HeaderValue$IntegerValue.class
+software/amazon/eventstream/HeaderValue$BooleanValue.class
+software/amazon/eventstream/MessageDecoder.class
+software/amazon/eventstream/HeaderValue$ByteValue.class
+software/amazon/eventstream/Header.class
+software/amazon/eventstream/HeaderValue$1.class
+software/amazon/eventstream/HeaderType.class
+software/amazon/eventstream/HeaderValue$TimestampValue.class
+software/amazon/eventstream/HeaderValue$LongValue.class
+software/amazon/eventstream/Utils.class
+software/amazon/eventstream/HeaderValue$ShortValue.class
+software/amazon/eventstream/MessageBuilder.class
+software/amazon/eventstream/HeaderValue$StringValue.class
+software/amazon/eventstream/HeaderValue$ByteArrayValue.class
+software/amazon/eventstream/Prelude.class
+META-INF/maven/software.amazon.eventstream/eventstream/pom.properties
+software/amazon/eventstream/HeaderValue.class
+software/amazon/eventstream/HeaderValue$UuidValue.class
+META-INF/maven/software.amazon.eventstream/eventstream/pom.xml
+software/amazon/eventstream/Message.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/awslabs/aws-eventstream-java/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/README.md | sed -n '1,140p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/awslabs/aws-eventstream-java/contents/src/test?ref=7be2dd80e12f8835674c8ffb0f4a2efb64c7b585' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 142ms:
+[
+  {
+    "name": "java",
+    "path": "src/test/java",
+    "sha": "0aaec761568d8b957689f7c40b827410987e5e94",
+    "size": 0,
+    "url": "https://api.github.com/repos/awslabs/aws-eventstream-java/contents/src/test/java?ref=7be2dd80e12f8835674c8ffb0f4a2efb64c7b585",
+    "html_url": "https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java",
+    "git_url": "https://api.github.com/repos/awslabs/aws-eventstream-java/git/trees/0aaec761568d8b957689f7c40b827410987e5e94",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/awslabs/aws-eventstream-java/contents/src/test/java?ref=7be2dd80e12f8835674c8ffb0f4a2efb64c7b585",
+      "git": "https://api.github.com/repos/awslabs/aws-eventstream-java/git/trees/0aaec761568d8b957689f7c40b827410987e5e94",
+      "html": "https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java"
+    }
+  }
+]
+
+ succeeded in 159ms:
+AWS EventStream for Java
+
+## License
+
+This library is licensed under the Apache 2.0 License. 
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 17:32:15 GMT
+content-type: application/java-archive
+content-length: 16020
+cf-ray: 9f610104ce0101df-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1367924
+etag: "0361d528c0553bf3bd209341b6bf99ff"
+last-modified: Thu, 02 May 2019 00:13:43 GMT
+x-checksum-md5: 0361d528c0553bf3bd209341b6bf99ff
+x-checksum-sha1: 7121512c9d99c6b4c6e7a6a858bb05cb2643d6b3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 17:32:16 GMT
+content-type: application/java-archive
+content-length: 424885
+cf-ray: 9f61010d1dc403a3-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2029167
+etag: "f7afe1d659ea119b540d36514d967bfc"
+last-modified: Thu, 02 May 2019 00:13:47 GMT
+x-checksum-md5: f7afe1d659ea119b540d36514d967bfc
+x-checksum-sha1: bbb6bb7dcb44dd6d9d85b3ad835cdd296f929d06
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/awslabs/aws-eventstream-java/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/pom.xml | rg -n '<version>|<description>|<url>|<java.version>|maven-compiler|junit' -C 1" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 160ms:
+8-    <artifactId>eventstream</artifactId>
+9:    <version>1.0.1</version>
+10-
+11-    <name>AWS Event Stream</name>
+12:    <description>The AWS Event Stream decoder library.</description>
+13:    <url>https://github.com/awslabs/aws-eventstream-java</url>
+14-    <licenses>
+--
+16-            <name>Apache License, Version 2.0</name>
+17:            <url>https://aws.amazon.com/apache2.0</url>
+18-            <distribution>repo</distribution>
+--
+32-    <scm>
+33:        <url>https://github.com/awslabs/aws-eventstream-java</url>
+34-    </scm>
+--
+37-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+38:        <java.version>1.8</java.version>
+39-        <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+--
+46-                <artifactId>maven-surefire-plugin</artifactId>
+47:                <version>2.22.1</version>
+48-                <dependencies>
+49-                    <dependency>
+50:                        <groupId>org.junit.platform</groupId>
+51:                        <artifactId>junit-platform-surefire-provider</artifactId>
+52:                        <version>1.2.0</version>
+53-                    </dependency>
+--
+58-                <groupId>org.apache.maven.plugins</groupId>
+59:                <artifactId>maven-compiler-plugin</artifactId>
+60:                <version>3.8.0</version>
+61-                <configuration>
+--
+70-                <artifactId>maven-jar-plugin</artifactId>
+71:                <version>3.1.0</version>
+72-                <configuration>
+--
+83-                <artifactId>maven-javadoc-plugin</artifactId>
+84:                <version>${maven-javadoc-plugin.version}</version>
+85-                <configuration>
+--
+101-                <artifactId>maven-source-plugin</artifactId>
+102:                <version>${maven-source-plugin.version}</version>
+103-                <executions>
+--
+122-                        <artifactId>maven-gpg-plugin</artifactId>
+123:                        <version>1.6</version>
+124-                        <executions>
+--
+136-                        <artifactId>nexus-staging-maven-plugin</artifactId>
+137:                        <version>1.6.8</version>
+138-                        <extensions>true</extensions>
+--
+150-        <dependency>
+151:            <groupId>org.junit.jupiter</groupId>
+152:            <artifactId>junit-jupiter-engine</artifactId>
+153:            <version>5.1.0</version>
+154-            <scope>test</scope>
+--
+158-            <artifactId>hamcrest-all</artifactId>
+159:            <version>1.3</version>
+160-            <scope>test</scope>
+
+web search: 
+web search: https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java
+web search: 
+web search: repo.maven.apache.org maven2 software amazon eventstream eventstream 1.0.1 eventstream-1.0.1-sources.jar
+web search: 
+web search: https://mvnrepository.com/artifact/software.amazon.eventstream/eventstream/1.0.1
+web search: 
+web search: https://github.com/awslabs/aws-eventstream-java
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -10' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+
+exec
+/usr/bin/bash -lc 'for f in $(rg --files build/discovered-artifact-metadata | head -5); do sed -n '"'1,80p' \""'$f"; done' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+{
+  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1"
+}
+
+codex
+I found no Maven-published test JAR, so I’ll use Maven Central for the source and Javadoc artifacts and the upstream GitHub commit that bumps the POM to `1.0.1` for the test suite. The binary JAR contains JVM `.class` files, so I’m leaving `not-for-native-image` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+diff --git a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+index a4c19d159b4fe109ed52a2803ff8ba472c97eb8d..e1bfd8b33b17181d24f78cd91adddc35c2c393d0
+--- a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
++++ b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1"
++  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1",
++  "repository-url" : "https://github.com/awslabs/aws-eventstream-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-javadoc.jar",
++  "description" : "AWS EventStream for Java encodes and decodes AWS Event Stream messages, an extensible binary datagram format used by AWS streaming protocols. It provides message, header, checksum, and builder APIs for producing and consuming event-stream payloads in Java applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+index a4c19d159b4fe109ed52a2803ff8ba472c97eb8d..e1bfd8b33b17181d24f78cd91adddc35c2c393d0
+--- a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
++++ b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1"
++  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1",
++  "repository-url" : "https://github.com/awslabs/aws-eventstream-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-javadoc.jar",
++  "description" : "AWS EventStream for Java encodes and decodes AWS Event Stream messages, an extensible binary datagram format used by AWS streaming protocols. It provides message, header, checksum, and builder APIs for producing and consuming event-stream payloads in Java applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+{
+  "coordinates": "software.amazon.eventstream:eventstream:1.0.1",
+  "repository-url": "https://github.com/awslabs/aws-eventstream-java",
+  "source-code-url": "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-sources.jar",
+  "test-code-url": "https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-javadoc.jar",
+  "description": "AWS EventStream for Java encodes and decodes AWS Event Stream messages, an extensible binary datagram format used by AWS streaming protocols. It provides message, header, checksum, and builder APIs for producing and consuming event-stream payloads in Java applications."
+}
+
+exec
+/usr/bin/bash -lc 'for url in https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1-sources.jar https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/1.0.1/eventstream-1.0.1-javadoc.jar; do curl -fsSIL "$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+diff --git a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+index a4c19d159b4fe109ed52a2803ff8ba472c97eb8d..e1bfd8b33b17181d24f78cd91adddc35c2c393d0
+--- a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
++++ b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1"
++  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1",
++  "repository-url" : "https://github.com/awslabs/aws-eventstream-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-javadoc.jar",
++  "description" : "AWS EventStream for Java encodes and decodes AWS Event Stream messages, an extensible binary datagram format used by AWS streaming protocols. It provides message, header, checksum, and builder APIs for producing and consuming event-stream payloads in Java applications."
+ }
+
+ succeeded in 647ms:
+HTTP/2 200 
+HTTP/2 200 
+
+codex
+The JSON parses cleanly and all three resolved URLs return HTTP 200 after substituting `1.0.1`. I’m doing one final diff check so the close-out names exactly what changed.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d
+ succeeded in 136ms:
+diff --git a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+index a4c19d159b4fe109ed52a2803ff8ba472c97eb8d..e1bfd8b33b17181d24f78cd91adddc35c2c393d0
+--- a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
++++ b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1"
++  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1",
++  "repository-url" : "https://github.com/awslabs/aws-eventstream-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-javadoc.jar",
++  "description" : "AWS EventStream for Java encodes and decodes AWS Event Stream messages, an extensible binary datagram format used by AWS streaming protocols. It provides message, header, checksum, and builder APIs for producing and consuming event-stream payloads in Java applications."
+ }
+
+web search: 
+web search: https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java
+web search: 
+web search: "eventstream-1.0.1-sources.jar" "software.amazon.eventstream"
+web search: 
+web search: 
+web search: 
+web search: search.maven.org artifact software.amazon.eventstream eventstream 1.0.1 jar
+codex
+Updated [software.amazon.eventstream-eventstream-1.0.1.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json).
+
+Used Maven Central for the source and Javadoc URLs because `1.0.1` publishes both `sources.jar` and `javadoc.jar`; used the upstream GitHub `src/test/java` directory at commit `7be2dd80...` for tests. ([repo1.maven.org](https://repo1.maven.org/maven2/software/amazon/eventstream/eventstream/1.0.1/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`, since this is a JVM Java artifact with class files.
+diff --git a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+index a4c19d159b4fe109ed52a2803ff8ba472c97eb8d..e1bfd8b33b17181d24f78cd91adddc35c2c393d0
+--- a/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
++++ b/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1"
++  "coordinates" : "software.amazon.eventstream:eventstream:1.0.1",
++  "repository-url" : "https://github.com/awslabs/aws-eventstream-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/awslabs/aws-eventstream-java/tree/7be2dd80e12f8835674c8ffb0f4a2efb64c7b585/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/eventstream/eventstream/$version$/eventstream-$version$-javadoc.jar",
++  "description" : "AWS EventStream for Java encodes and decodes AWS Event Stream messages, an extensible binary datagram format used by AWS streaming protocols. It provides message, header, checksum, and builder APIs for producing and consuming event-stream payloads in Java applications."
+ }
+
+tokens used
+88,729
+Updated [software.amazon.eventstream-eventstream-1.0.1.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d/build/discovered-artifact-metadata/software.amazon.eventstream-eventstream-1.0.1.json).
+
+Used Maven Central for the source and Javadoc URLs because `1.0.1` publishes both `sources.jar` and `javadoc.jar`; used the upstream GitHub `src/test/java` directory at commit `7be2dd80...` for tests. ([repo1.maven.org](https://repo1.maven.org/maven2/software/amazon/eventstream/eventstream/1.0.1/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`, since this is a JVM Java artifact with class files.
+Ran agent for software.amazon.eventstream:eventstream:1.0.1 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d/build/agent-artifact-discovery-logs/software.amazon.eventstream-eventstream-1.0.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4517-6444cf8d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 8s
+9 actionable tasks: 4 executed, 5 from cache
