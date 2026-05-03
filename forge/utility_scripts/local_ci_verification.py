@@ -137,7 +137,6 @@ def run_local_ci_verification(
 
 def fetch_pr_base_ref(repo_path: str, repo: str, base_branch: str = DEFAULT_BASE_BRANCH) -> str:
     """Fetch the upstream PR base and return a local ref suitable for diffing and rebasing."""
-    upstream_url = f"https://github.com/{repo}.git"
     remote_url = subprocess.run(
         ["git", "remote", "get-url", "upstream"],
         cwd=repo_path,
@@ -146,9 +145,26 @@ def fetch_pr_base_ref(repo_path: str, repo: str, base_branch: str = DEFAULT_BASE
         text=True,
         check=False,
     )
-    remote_name = "upstream" if remote_url.returncode == 0 and remote_url.stdout.strip() == upstream_url else "origin"
+    upstream_matches_target = (
+        remote_url.returncode == 0 and _github_repo_slug_from_url(remote_url.stdout.strip()) == repo.lower()
+    )
+    remote_name = "upstream" if upstream_matches_target else "origin"
     subprocess.run(["git", "fetch", remote_name, base_branch], cwd=repo_path, check=True)
     return f"{remote_name}/{base_branch}"
+
+
+def _github_repo_slug_from_url(remote_url: str) -> str | None:
+    """Return the lowercase GitHub owner/repo slug from common remote URL forms."""
+    patterns = (
+        r"^https://github\.com/(?P<slug>[^/]+/[^/]+?)(?:\.git)?/?$",
+        r"^git@github\.com:(?P<slug>[^/]+/[^/]+?)(?:\.git)?$",
+        r"^ssh://git@github\.com/(?P<slug>[^/]+/[^/]+?)(?:\.git)?/?$",
+    )
+    for pattern in patterns:
+        match = re.match(pattern, remote_url)
+        if match:
+            return match.group("slug").lower()
+    return None
 
 
 def format_local_ci_verification_pr_section(local_ci_verification: dict | None) -> str:
@@ -294,36 +310,54 @@ def _run_test_matrix_entries(
     if failed is not None:
         return failed
 
-    for entry in entries:
-        coordinates = str(entry.get("coordinates") or "").strip()
-        versions = entry.get("versions")
-        if not coordinates or not isinstance(versions, list):
-            continue
-        env = _matrix_env(entry)
-        failed = _run_recorded_command(
-            repo_path,
-            "check-metadata-files",
-            ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={coordinates}"],
-            result,
-            env=env,
-        )
-        if failed is not None:
-            return failed
-        failed = _run_recorded_command(
-            repo_path,
-            "run-consecutive-tests",
-            [
-                "bash",
-                "./.github/workflows/scripts/run-consecutive-tests.sh",
-                coordinates,
-                json.dumps([str(version) for version in versions]),
-            ],
-            result,
-            env=env,
-        )
-        if failed is not None:
-            return failed
-    return None
+    first_failed: CommandRecord | None = None
+    restore_failed: CommandRecord | None = None
+    try:
+        for entry in entries:
+            coordinates = str(entry.get("coordinates") or "").strip()
+            versions = entry.get("versions")
+            if not coordinates or not isinstance(versions, list):
+                continue
+            env = _matrix_env(entry)
+            failed = _run_recorded_command(
+                repo_path,
+                "check-metadata-files",
+                ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={coordinates}"],
+                result,
+                env=env,
+            )
+            if failed is not None:
+                first_failed = failed
+                break
+            failed = _run_recorded_command(
+                repo_path,
+                "run-consecutive-tests",
+                [
+                    "bash",
+                    "./.github/workflows/scripts/run-consecutive-tests.sh",
+                    coordinates,
+                    json.dumps([str(version) for version in versions]),
+                ],
+                result,
+                env=env,
+                failure_output_pattern=r"^FAILED",
+            )
+            if failed is not None:
+                first_failed = failed
+                break
+    finally:
+        restore_failed = _restore_docker_networking(repo_path, result)
+    return first_failed or restore_failed
+
+
+def _restore_docker_networking(repo_path: str, result: LocalCIVerificationResult) -> CommandRecord | None:
+    """Restore Docker networking after the CI-equivalent no-network test phase."""
+    return _run_recorded_command(
+        repo_path,
+        "restore-docker-networking",
+        ["bash", "./.github/workflows/scripts/restore-docker.sh"],
+        result,
+    )
 
 
 def _run_index_validation(
@@ -474,7 +508,7 @@ def _graalvm_home_for_java_version(java_version: str) -> str | None:
     if java_version == "25":
         return _required_env("GRAALVM_HOME_25_0")
     if java_version == "latest-ea":
-        return os.environ.get("GRAALVM_HOME_LATEST_EA") or _required_env("GRAALVM_HOME")
+        return _required_env("GRAALVM_HOME_LATEST_EA")
     env_name = "GRAALVM_HOME_" + re.sub(r"[^A-Za-z0-9]", "_", java_version).upper()
     return _required_env(env_name)
 
@@ -492,6 +526,7 @@ def _run_recorded_command(
         command: list[str],
         result: LocalCIVerificationResult,
         env: dict[str, str] | None = None,
+        failure_output_pattern: str | None = None,
 ) -> CommandRecord | None:
     command_env = dict(os.environ)
     display_env = dict(env or {})
@@ -509,16 +544,19 @@ def _run_recorded_command(
     output = completed.stdout or ""
     with open(log_path, "w", encoding="utf-8") as log_file:
         log_file.write(output)
+    returncode = completed.returncode
+    if returncode == 0 and failure_output_pattern and re.search(failure_output_pattern, output, re.MULTILINE):
+        returncode = 1
     record = CommandRecord(
         gate=gate,
         command=command,
-        returncode=completed.returncode,
+        returncode=returncode,
         env=display_env,
         log_path=display_log_path(log_path),
         output_excerpt=_tail(output),
     )
     result.commands.append(record)
-    if completed.returncode != 0:
+    if returncode != 0:
         return record
     return None
 

@@ -11,11 +11,17 @@ import unittest
 from unittest.mock import patch
 
 from utility_scripts.local_ci_verification import (
+    CommandRecord,
     LOCAL_CI_VERIFICATION_KEY,
+    LocalCIVerificationResult,
     classify_repo_fix_paths,
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
     run_local_ci_verification,
+    _github_repo_slug_from_url,
+    _graalvm_home_for_java_version,
+    _run_recorded_command,
+    _run_test_matrix_entries,
 )
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 
@@ -114,6 +120,80 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertTrue(local_ci_requires_human_intervention(metrics))
         self.assertIn("Local CI Verification", section)
         self.assertIn("build.gradle", section)
+
+    def test_run_recorded_command_fails_on_ci_failure_output_pattern(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+            command = ["python3", "-c", "print('FAILED[javaTest][1.0.0][./gradlew test]')"]
+            with patch(
+                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    return_value=os.path.join(log_path, "command.log"),
+            ):
+                failed = _run_recorded_command(
+                    repo_path,
+                    "run-consecutive-tests",
+                    command,
+                    result,
+                    failure_output_pattern=r"^FAILED",
+                )
+
+            self.assertIsNotNone(failed)
+            self.assertEqual(result.commands[0].returncode, 1)
+            self.assertIn("FAILED[javaTest]", result.commands[0].output_excerpt)
+
+    def test_test_matrix_restores_docker_after_test_failure(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        failed_record = CommandRecord(gate="run-consecutive-tests", command=["bash"], returncode=1)
+        gates: list[str] = []
+
+        def fake_run_recorded_command(
+                repo_path: str,
+                gate: str,
+                command: list[str],
+                local_result: LocalCIVerificationResult,
+                env: dict[str, str] | None = None,
+                failure_output_pattern: str | None = None,
+        ) -> CommandRecord | None:
+            gates.append(gate)
+            if gate == "run-consecutive-tests":
+                self.assertEqual(failure_output_pattern, r"^FAILED")
+                return failed_record
+            return None
+
+        with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
+            failed = _run_test_matrix_entries(
+                "/repo",
+                [{"coordinates": "org.example:demo:1.0.0", "versions": ["1.0.0"]}],
+                result,
+            )
+
+        self.assertIs(failed, failed_record)
+        self.assertEqual(gates[-1], "restore-docker-networking")
+
+    def test_latest_ea_requires_latest_ea_graalvm_home(self) -> None:
+        with patch.dict(os.environ, {"GRAALVM_HOME": "/stable"}, clear=True):
+            with self.assertRaisesRegex(RuntimeError, "GRAALVM_HOME_LATEST_EA"):
+                _graalvm_home_for_java_version("latest-ea")
+
+        with patch.dict(os.environ, {"GRAALVM_HOME_LATEST_EA": "/ea"}, clear=True):
+            self.assertEqual(_graalvm_home_for_java_version("latest-ea"), "/ea")
+
+    def test_github_repo_slug_from_url_accepts_https_and_ssh_forms(self) -> None:
+        expected = "oracle/graalvm-reachability-metadata"
+
+        self.assertEqual(
+            _github_repo_slug_from_url("https://github.com/oracle/graalvm-reachability-metadata.git"),
+            expected,
+        )
+        self.assertEqual(
+            _github_repo_slug_from_url("git@github.com:oracle/graalvm-reachability-metadata.git"),
+            expected,
+        )
+        self.assertEqual(
+            _github_repo_slug_from_url("ssh://git@github.com/oracle/graalvm-reachability-metadata.git"),
+            expected,
+        )
+        self.assertIsNone(_github_repo_slug_from_url("https://example.com/oracle/graalvm-reachability-metadata.git"))
 
 
 if __name__ == "__main__":
