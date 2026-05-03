@@ -103,6 +103,24 @@ public class EventstreamTest {
     }
 
     @Test
+    void decoderExpandsBufferForMessagesLargerThanInitialCapacity() {
+        byte[] payload = new byte[2 * 1024 * 1024];
+        for (int i = 0; i < payload.length; i++) {
+            payload[i] = (byte) (i % 251);
+        }
+        Message message = new Message(Map.of("large", HeaderValue.fromString("payload")), payload);
+        MessageDecoder decoder = new MessageDecoder();
+
+        decoder.feed(toBytes(message.toByteBuffer()));
+
+        List<Message> decodedMessages = decoder.getDecodedMessages();
+        assertThat(decodedMessages).hasSize(1);
+        Message decoded = decodedMessages.get(0);
+        assertThat(decoded.getHeaders()).containsExactlyEntriesOf(message.getHeaders());
+        assertThat(decoded.getPayload()).containsExactly(payload);
+    }
+
+    @Test
     void headerValueFactoriesExposeTypedValuesAndDefensiveByteBufferCopy() {
         ByteBuffer sourceBuffer = ByteBuffer.wrap(new byte[] {9, 8, 7, 6});
         sourceBuffer.position(1);
