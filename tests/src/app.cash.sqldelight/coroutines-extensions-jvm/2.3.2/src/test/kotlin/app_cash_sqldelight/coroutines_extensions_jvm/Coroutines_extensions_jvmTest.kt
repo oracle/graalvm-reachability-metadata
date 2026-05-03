@@ -18,6 +18,7 @@ import app.cash.sqldelight.db.SqlCursor
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
@@ -68,6 +69,30 @@ public class Coroutines_extensions_jvmTest {
                 listOf(User(3, "Linus"), User(4, "Margaret")),
             )
             assertThat(query.listenerCount).isZero()
+        }
+    }
+
+    @Test
+    fun asFlowIsColdAndReusableAcrossCollections(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val query: MutableUserQuery = MutableUserQuery(listOf(User(1, "Ada")))
+            val usersFlow: Flow<List<User>> = query.asFlow().mapToList(Dispatchers.Unconfined)
+
+            assertThat(query.addedListenerCount).isZero()
+            assertThat(query.executeCount).isZero()
+
+            query.replaceRows(User(2, "Grace"))
+            val firstSnapshot: List<User> = usersFlow.take(1).single()
+
+            query.replaceRows(User(3, "Linus"), User(4, "Margaret"))
+            val secondSnapshot: List<User> = usersFlow.take(1).single()
+
+            assertThat(firstSnapshot).containsExactly(User(2, "Grace"))
+            assertThat(secondSnapshot).containsExactly(User(3, "Linus"), User(4, "Margaret"))
+            assertThat(query.addedListenerCount).isEqualTo(2)
+            assertThat(query.removedListenerCount).isEqualTo(2)
+            assertThat(query.listenerCount).isZero()
+            assertThat(query.executeCount).isEqualTo(2)
         }
     }
 
