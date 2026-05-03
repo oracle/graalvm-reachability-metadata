@@ -17,6 +17,7 @@ import org.jline.reader.ParsedLine;
 import org.jline.reader.Parser;
 import org.jline.reader.impl.BufferImpl;
 import org.jline.reader.impl.DefaultExpander;
+import org.jline.reader.impl.DefaultHighlighter;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.SimpleMaskingCallback;
 import org.jline.reader.impl.completer.AggregateCompleter;
@@ -29,6 +30,8 @@ import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Size;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.AttributedString;
+import org.jline.utils.AttributedStyle;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -41,6 +44,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -318,6 +322,35 @@ public class Jline_readerTest {
 
             assertThat(candidateValues(nestedCandidates)).containsExactly(nestedCandidateValue);
             assertThat(candidateWithValue(nestedCandidates, nestedCandidateValue).complete()).isTrue();
+        }
+    }
+
+    @Test
+    void defaultHighlighterStylesConfiguredErrorsWithoutChangingDisplayedText() throws Exception {
+        String line = "ok ERR42 warning";
+        int errorIndex = line.indexOf("warning");
+        DefaultHighlighter highlighter = new DefaultHighlighter();
+        highlighter.setErrorPattern(Pattern.compile("\\bERR\\w+\\b"));
+        highlighter.setErrorIndex(errorIndex);
+
+        try (Terminal terminal = TerminalBuilder.builder()
+                .name("jline-highlighter-test")
+                .system(false)
+                .dumb(true)
+                .streams(new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream())
+                .encoding(StandardCharsets.UTF_8)
+                .build()) {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .highlighter(highlighter)
+                    .build();
+
+            AttributedString highlighted = reader.getHighlighter().highlight(reader, line);
+
+            assertThat(highlighted.toString()).isEqualTo(line);
+            assertThat(highlighted.styleAt(line.indexOf("ERR42"))).isNotEqualTo(AttributedStyle.DEFAULT);
+            assertThat(highlighted.styleAt(errorIndex)).isNotEqualTo(AttributedStyle.DEFAULT);
+            assertThat(highlighted.styleAt(line.indexOf(' ', line.indexOf("ERR42")))).isEqualTo(AttributedStyle.DEFAULT);
         }
     }
 
