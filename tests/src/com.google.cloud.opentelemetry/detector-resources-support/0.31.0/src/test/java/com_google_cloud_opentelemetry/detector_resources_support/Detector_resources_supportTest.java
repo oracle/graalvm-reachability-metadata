@@ -30,13 +30,18 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Detector_resources_supportTest {
     private static final String METADATA_PREFIX = "/computeMetadata/v1/";
 
     @Test
+    @Order(1)
     void attributeKeysExposeExpectedSemanticNamesAndAliases() {
         assertThat(AttributeKeys.GCE_AVAILABILITY_ZONE).isEqualTo("availability_zone");
         assertThat(AttributeKeys.GCE_CLOUD_REGION).isEqualTo("cloud_region");
@@ -66,6 +71,7 @@ public class Detector_resources_supportTest {
     }
 
     @Test
+    @Order(2)
     void supportedPlatformEnumHasStablePublicConstants() {
         assertThat(SupportedPlatform.values())
                 .containsExactly(
@@ -90,6 +96,24 @@ public class Detector_resources_supportTest {
     }
 
     @Test
+    @Order(3)
+    @Timeout(60)
+    void detectorRejectsMetadataResponsesWithoutGoogleFlavorHeader() throws Exception {
+        try (MetadataProxy metadataProxy = MetadataProxy.start()) {
+            withMetadataProxy(metadataProxy, () -> {
+                metadataProxy.includeMetadataFlavorHeader(false);
+                metadataProxy.replaceRoutes(Map.of("project/project-id", "non-google-project"));
+
+                DetectedPlatform detectedPlatform = GCPPlatformDetector.DEFAULT_INSTANCE.detectPlatform();
+                assertThat(detectedPlatform.getSupportedPlatform()).isEqualTo(SupportedPlatform.UNKNOWN_PLATFORM);
+                assertThat(detectedPlatform.getProjectId()).isEmpty();
+                assertThat(detectedPlatform.getAttributes()).isEmpty();
+            });
+        }
+    }
+
+    @Test
+    @Order(4)
     @Timeout(60)
     void defaultDetectorUsesMetadataServiceAndCurrentEnvironmentToBuildDetectedPlatform() throws Exception {
         try (MetadataProxy metadataProxy = MetadataProxy.start()) {
@@ -222,11 +246,13 @@ public class Detector_resources_supportTest {
         private final ServerSocket serverSocket;
         private final ExecutorService executorService;
         private volatile Map<String, String> routes;
+        private volatile boolean includeMetadataFlavorHeader;
 
         private MetadataProxy(ServerSocket serverSocket, ExecutorService executorService) {
             this.serverSocket = serverSocket;
             this.executorService = executorService;
             this.routes = Map.of();
+            this.includeMetadataFlavorHeader = true;
         }
 
         static MetadataProxy start() throws IOException {
@@ -248,6 +274,10 @@ public class Detector_resources_supportTest {
 
         void replaceRoutes(Map<String, String> routes) {
             this.routes = Map.copyOf(routes);
+        }
+
+        void includeMetadataFlavorHeader(boolean includeMetadataFlavorHeader) {
+            this.includeMetadataFlavorHeader = includeMetadataFlavorHeader;
         }
 
         private void serve() {
@@ -291,7 +321,9 @@ public class Detector_resources_supportTest {
             int statusCode = body == null ? 404 : 200;
             String reasonPhrase = body == null ? "Not Found" : "OK";
             byte[] bodyBytes = (body == null ? "not found" : body).getBytes(StandardCharsets.UTF_8);
-            String metadataFlavorHeader = body == null ? "" : "Metadata-Flavor: Google\r\n";
+            String metadataFlavorHeader = body == null || !includeMetadataFlavorHeader
+                    ? ""
+                    : "Metadata-Flavor: Google\r\n";
             String response = "HTTP/1.1 " + statusCode + " " + reasonPhrase + "\r\n"
                     + "Content-Type: text/plain; charset=UTF-8\r\n"
                     + "Content-Length: " + bodyBytes.length + "\r\n"
