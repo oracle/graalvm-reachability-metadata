@@ -6,11 +6,152 @@
  */
 package io_prometheus.simpleclient_tracer_otel;
 
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.TraceFlags;
+import io.opentelemetry.api.trace.TraceState;
+import io.opentelemetry.context.Scope;
+import io.prometheus.client.exemplars.tracer.common.SpanContextSupplier;
+import io.prometheus.client.exemplars.tracer.otel.OpenTelemetrySpanContextSupplier;
 import org.junit.jupiter.api.Test;
 
-class Simpleclient_tracer_otelTest {
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Simpleclient_tracer_otelTest {
+    private static final String TRACE_ID = "4bf92f3577b34da6a3ce929d0e0e4736";
+    private static final String SPAN_ID = "00f067aa0ba902b7";
+    private static final String CHILD_TRACE_ID = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    private static final String CHILD_SPAN_ID = "bbbbbbbbbbbbbbbb";
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void openTelemetryIntegrationIsAvailableWhenOpenTelemetryApiIsOnTheClasspath() {
+        String previousValue = System.getProperty("io.prometheus.otelExemplars");
+        System.clearProperty("io.prometheus.otelExemplars");
+        try {
+            assertThat(OpenTelemetrySpanContextSupplier.isAvailable()).isTrue();
+        } finally {
+            restoreOtelExemplarsProperty(previousValue);
+        }
+    }
+
+    @Test
+    void openTelemetryIntegrationCanBeDisabledWithSystemProperty() {
+        String previousValue = System.getProperty("io.prometheus.otelExemplars");
+        System.setProperty("io.prometheus.otelExemplars", "inactive");
+        try {
+            assertThat(OpenTelemetrySpanContextSupplier.isAvailable()).isFalse();
+        } finally {
+            restoreOtelExemplarsProperty(previousValue);
+        }
+    }
+
+    @Test
+    void noCurrentSpanProducesNoTraceOrSpanIdentifierAndIsNotSampled() {
+        OpenTelemetrySpanContextSupplier supplier = new OpenTelemetrySpanContextSupplier();
+
+        assertThat(supplier.getTraceId()).isNull();
+        assertThat(supplier.getSpanId()).isNull();
+        assertThat(supplier.isSampled()).isFalse();
+    }
+
+    @Test
+    void sampledCurrentSpanExposesTraceIdSpanIdAndSamplingDecision() {
+        OpenTelemetrySpanContextSupplier supplier = new OpenTelemetrySpanContextSupplier();
+        Span span = span(TRACE_ID, SPAN_ID, TraceFlags.getSampled());
+
+        try (Scope scope = span.makeCurrent()) {
+            assertThat(supplier.getTraceId()).isEqualTo(TRACE_ID);
+            assertThat(supplier.getSpanId()).isEqualTo(SPAN_ID);
+            assertThat(supplier.isSampled()).isTrue();
+        }
+    }
+
+    @Test
+    void unsampledCurrentSpanStillExposesTraceAndSpanIdentifiers() {
+        OpenTelemetrySpanContextSupplier supplier = new OpenTelemetrySpanContextSupplier();
+        Span span = span(TRACE_ID, SPAN_ID, TraceFlags.getDefault());
+
+        try (Scope scope = span.makeCurrent()) {
+            assertThat(supplier.getTraceId()).isEqualTo(TRACE_ID);
+            assertThat(supplier.getSpanId()).isEqualTo(SPAN_ID);
+            assertThat(supplier.isSampled()).isFalse();
+        }
+    }
+
+    @Test
+    void supplierReadsTheCurrentlyActiveSpanEveryTimeItIsQueried() {
+        OpenTelemetrySpanContextSupplier supplier = new OpenTelemetrySpanContextSupplier();
+        Span parentSpan = span(TRACE_ID, SPAN_ID, TraceFlags.getSampled());
+        Span childSpan = span(CHILD_TRACE_ID, CHILD_SPAN_ID, TraceFlags.getDefault());
+
+        try (Scope parentScope = parentSpan.makeCurrent()) {
+            assertThat(supplier.getTraceId()).isEqualTo(TRACE_ID);
+            assertThat(supplier.getSpanId()).isEqualTo(SPAN_ID);
+            assertThat(supplier.isSampled()).isTrue();
+
+            try (Scope childScope = childSpan.makeCurrent()) {
+                assertThat(supplier.getTraceId()).isEqualTo(CHILD_TRACE_ID);
+                assertThat(supplier.getSpanId()).isEqualTo(CHILD_SPAN_ID);
+                assertThat(supplier.isSampled()).isFalse();
+            }
+
+            assertThat(supplier.getTraceId()).isEqualTo(TRACE_ID);
+            assertThat(supplier.getSpanId()).isEqualTo(SPAN_ID);
+            assertThat(supplier.isSampled()).isTrue();
+        }
+
+        assertThat(supplier.getTraceId()).isNull();
+        assertThat(supplier.getSpanId()).isNull();
+        assertThat(supplier.isSampled()).isFalse();
+    }
+
+    @Test
+    void supplierCanBeConsumedThroughTheCommonSpanContextSupplierApi() {
+        SpanContextSupplier supplier = new OpenTelemetrySpanContextSupplier();
+        Span span = span(TRACE_ID, SPAN_ID, TraceFlags.getSampled());
+
+        try (Scope scope = span.makeCurrent()) {
+            assertThat(exemplarLabelsFor(supplier))
+                    .containsExactly(
+                            Map.entry("trace_id", TRACE_ID),
+                            Map.entry("span_id", SPAN_ID));
+        }
+    }
+
+    @Test
+    void unsampledOpenTelemetrySpanIsNotSelectedForExemplarLabels() {
+        SpanContextSupplier supplier = new OpenTelemetrySpanContextSupplier();
+        Span span = span(TRACE_ID, SPAN_ID, TraceFlags.getDefault());
+
+        try (Scope scope = span.makeCurrent()) {
+            assertThat(exemplarLabelsFor(supplier)).isEmpty();
+        }
+    }
+
+    private static Span span(String traceId, String spanId, TraceFlags traceFlags) {
+        SpanContext spanContext = SpanContext.create(traceId, spanId, traceFlags, TraceState.getDefault());
+        return Span.wrap(spanContext);
+    }
+
+    private static Map<String, String> exemplarLabelsFor(SpanContextSupplier supplier) {
+        if (supplier.getTraceId() == null || supplier.getSpanId() == null || !supplier.isSampled()) {
+            return Map.of();
+        }
+
+        Map<String, String> labels = new LinkedHashMap<>();
+        labels.put("trace_id", supplier.getTraceId());
+        labels.put("span_id", supplier.getSpanId());
+        return labels;
+    }
+
+    private static void restoreOtelExemplarsProperty(String previousValue) {
+        if (previousValue == null) {
+            System.clearProperty("io.prometheus.otelExemplars");
+        } else {
+            System.setProperty("io.prometheus.otelExemplars", previousValue);
+        }
     }
 }
