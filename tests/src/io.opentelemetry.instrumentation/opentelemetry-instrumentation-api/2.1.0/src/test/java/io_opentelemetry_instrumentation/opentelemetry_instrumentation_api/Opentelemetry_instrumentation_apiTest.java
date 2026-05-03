@@ -12,6 +12,7 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
+import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.ContextKey;
 import io.opentelemetry.instrumentation.api.instrumenter.AttributesExtractor;
@@ -19,12 +20,15 @@ import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.OperationListener;
 import io.opentelemetry.instrumentation.api.instrumenter.SpanKindExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.SpanNameExtractor;
+import io.opentelemetry.instrumentation.api.instrumenter.SpanStatusBuilder;
+import io.opentelemetry.instrumentation.api.instrumenter.SpanStatusExtractor;
 import io.opentelemetry.instrumentation.api.semconv.http.HttpClientAttributesExtractor;
 import io.opentelemetry.instrumentation.api.semconv.http.HttpClientAttributesGetter;
 import io.opentelemetry.instrumentation.api.semconv.http.HttpClientRequestResendCount;
 import io.opentelemetry.instrumentation.api.semconv.http.HttpServerAttributesExtractor;
 import io.opentelemetry.instrumentation.api.semconv.http.HttpServerAttributesGetter;
 import io.opentelemetry.instrumentation.api.semconv.http.HttpSpanNameExtractor;
+import io.opentelemetry.instrumentation.api.semconv.http.HttpSpanStatusExtractor;
 import io.opentelemetry.instrumentation.api.semconv.network.ClientAttributesExtractor;
 import io.opentelemetry.instrumentation.api.semconv.network.NetworkAttributesExtractor;
 import io.opentelemetry.instrumentation.api.semconv.network.ServerAttributesExtractor;
@@ -194,6 +198,54 @@ public class Opentelemetry_instrumentation_apiTest {
     }
 
     @Test
+    void httpSpanStatusExtractorsApplyClientAndServerErrorRules() {
+        ClientRequest clientRequest = new ClientRequest(
+                "GET",
+                "https://api.example.test/missing",
+                "api.example.test",
+                443,
+                Collections.emptyMap(),
+                "/missing");
+        ServerRequest serverRequest = new ServerRequest(
+                "GET",
+                "https",
+                "/missing",
+                null,
+                null,
+                "198.51.100.30",
+                42525,
+                Collections.emptyMap());
+        SpanStatusExtractor<ClientRequest, ClientResponse> clientStatusExtractor =
+                HttpSpanStatusExtractor.create(new TestHttpClientAttributesGetter());
+        SpanStatusExtractor<ServerRequest, ServerResponse> serverStatusExtractor =
+                HttpSpanStatusExtractor.create(new TestHttpServerAttributesGetter());
+
+        RecordingSpanStatusBuilder clientNotFoundStatus = new RecordingSpanStatusBuilder();
+        clientStatusExtractor.extract(
+                clientNotFoundStatus, clientRequest, new ClientResponse(404, Collections.emptyMap()), null);
+
+        RecordingSpanStatusBuilder serverNotFoundStatus = new RecordingSpanStatusBuilder();
+        serverStatusExtractor.extract(
+                serverNotFoundStatus, serverRequest, new ServerResponse(404, Collections.emptyMap()), null);
+
+        RecordingSpanStatusBuilder serverFailureStatus = new RecordingSpanStatusBuilder();
+        serverStatusExtractor.extract(
+                serverFailureStatus, serverRequest, new ServerResponse(500, Collections.emptyMap()), null);
+
+        RecordingSpanStatusBuilder clientTransportFailureStatus = new RecordingSpanStatusBuilder();
+        clientStatusExtractor.extract(
+                clientTransportFailureStatus,
+                clientRequest,
+                null,
+                new IllegalStateException("connection closed"));
+
+        assertThat(clientNotFoundStatus.statusCode()).isEqualTo(StatusCode.ERROR);
+        assertThat(serverNotFoundStatus.statusCode()).isNull();
+        assertThat(serverFailureStatus.statusCode()).isEqualTo(StatusCode.ERROR);
+        assertThat(clientTransportFailureStatus.statusCode()).isEqualTo(StatusCode.ERROR);
+    }
+
+    @Test
     void standaloneNetworkAndUrlExtractorsPopulateExpectedAttributes() {
         ServerRequest request = new ServerRequest(
                 "GET",
@@ -351,6 +403,20 @@ public class Opentelemetry_instrumentation_apiTest {
     }
 
     private record Attachment(String value) {
+    }
+
+    private static final class RecordingSpanStatusBuilder implements SpanStatusBuilder {
+        private StatusCode statusCode;
+
+        @Override
+        public SpanStatusBuilder setStatus(StatusCode statusCode, String description) {
+            this.statusCode = statusCode;
+            return this;
+        }
+
+        private StatusCode statusCode() {
+            return statusCode;
+        }
     }
 
     private static final class TestHttpClientAttributesGetter
