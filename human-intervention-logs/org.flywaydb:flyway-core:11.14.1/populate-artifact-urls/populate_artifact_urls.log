@@ -1,0 +1,790 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019def09-16e3-71b1-925b-d2c7e1c2b5d4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.flywaydb:flyway-core:11.14.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "11.14.1" when "$version$" is replaced with "11.14.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2/metadata/org.flywaydb/flyway-core/index.json
+- Entry selector: "metadata-version" = "11.14.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "11.14.1".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "11.14.1".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "11.14.1".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "11.14.1" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar
+- repository-url: https://github.com/flyway/flyway
+- test-code-url: N/A
+- documentation-url: https://github.com/flyway/flyway/tree/flyway-$version$/documentation
+- description: Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.
+- language: <missing>
+
+Context:
+- Coordinate version: 11.14.1
+- Entry metadata-version: 11.14.1
+- Entry test-version: 11.14.1
+codex
+I’ll verify the existing templates against the 11.14.1 artifacts/tag first, then inspect the index entry and only touch fields that qualify as missing under your rules.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"11\\.14\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.flywaydb/flyway-core/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+7:    "repository-url" : "https://github.com/flyway/flyway",
+8:    "test-code-url" : "N/A",
+9:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+10:    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+23:    "metadata-version" : "11.14.1",
+24:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+25:    "repository-url" : "https://github.com/flyway/flyway",
+26:    "test-code-url" : "N/A",
+27:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+28:    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+94:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+95:    "repository-url" : "https://github.com/flyway/flyway",
+96:    "test-code-url" : "N/A",
+97:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+98:    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+111:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+112:    "repository-url" : "https://github.com/flyway/flyway",
+113:    "test-code-url" : "N/A",
+114:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+115:    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+128:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+129:    "repository-url" : "https://github.com/flyway/flyway",
+130:    "test-code-url" : "N/A",
+131:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+132:    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+145:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+146:    "repository-url" : "https://github.com/flyway/flyway",
+147:    "test-code-url" : "N/A",
+148:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+149:    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+162:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+163:    "repository-url" : "https://github.com/flyway/flyway",
+164:    "test-code-url" : "N/A",
+165:    "documentation-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-javadoc.jar",
+166:    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --silent --show-error https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:10:55 GMT
+content-type: application/java-archive
+content-length: 588370
+cf-ray: 9f6139a59d44baad-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1492983
+etag: "03fed00ea474f349f5489b70b1269783"
+last-modified: Wed, 15 Oct 2025 13:01:30 GMT
+x-checksum-md5: 03fed00ea474f349f5489b70b1269783
+x-checksum-sha1: 8bd2b0c317a3dd9a116846036c12f8087fbefa59
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --silent --show-error https://github.com/flyway/flyway/tree/flyway-11.14.1/documentation' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --silent --show-error https://github.com/flyway/flyway' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 577ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:10:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"de585348573fe2ed48ec3e053c014762"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=MPuO7BNgo9w7H%2FXsb%2By5xBP309PypcydGzgmNs%2FuuGLLfWsWCwnpcs15pRp1C6Ha4rd4JjLcAYUSABuqYEfcZd42crz09k%2FYaoGLV5XC7hltxTdFGwj7V9WLRwe33wMqVYD59rYF3pESo0c6bzM6hb0%2FCUmm00yaIFzmuotwgNbtlLlTDQWnucRLNTHcW3GOPcdYArFpbYk7EExwMddWJtuC5xGcu5fR2TR0ExlsmK40NgmMLzw980bzcrIXHdeZboZyWHqhyfwXdfy8C0KFEw%3D%3D--sDuMhcOoI8uL0am8--Q93vSzfFKa4vP2WFKQXtRQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2093401128.1777831854; expires=Mon, 03 May 2027 18:10:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:10:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5113:438C9:8287578:60BA2DE:69F78FAE
+
+
+ succeeded in 538ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:10:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"d14cdb590ed33176f54c71fd27856488"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=c2zg14LOyQeqmPM5tNvMgZTXvPZU3I4ql8SaTeFEumOIe9PqsvwkrBiz4C4P1S71M9kDZqVPySaD9CfXDrnnLd7M%2Bd91gSPYAKXEzgtNSx4XzxVt%2BAiHXfScMjqlzXOwP8oSrr4JnfrOCucYVr5b%2FXBDlv84b%2F4F1hCqMA8OE6T7beNosb%2B6p2aci6x5v19l7oSOXqw9Kb3RGcnrhj7d7EJcuKS0KE0dseLh%2BBTUTpNFteY4CRegbtQ%2FQTKa41sNzVCXIIL3iE0qLrRLibkmqg%3D%3D--u329o%2Bb8ewhsb43c--ZUA3S91qFplzFFk0r5w0NA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1773441847.1777831855; expires=Mon, 03 May 2027 18:10:55 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:10:55 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:16A0:1459628:EE9E7D:69F78FAF
+
+
+codex
+The 11.14.1 source JAR and the versioned GitHub documentation path both return 200, and the target entry already has nonblank values for the URL and description fields. I’m checking whether there is a Maven test artifact before deciding whether `test-code-url: "N/A"` should stay untouched under the missing-field rule.
+web search: 
+web search: org.flywaydb flyway-core 11.14.1 Maven Central sources javadoc tests
+exec
+/usr/bin/bash -lc "sed -n '1,45p' metadata/org.flywaydb/flyway-core/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.3.0",
+    "test-version" : "11.14.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "12.3.0",
+      "12.4.0",
+      "12.5.0"
+    ],
+    "allowed-packages" : [
+      "org.apache",
+      "org.flywaydb",
+      "org.slf4j"
+    ]
+  },
+  {
+    "metadata-version" : "11.14.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway Core is a database migration library that manages and applies versioned schema changes across supported databases. It tracks migration history and helps keep database schemas consistent with application releases.",
+    "tested-versions" : [
+      "10.20.1",
+      "10.21.0",
+      "10.22.0",
+      "11.0.0",
+      "11.0.1",
+      "11.1.0",
+      "11.1.1",
+      "11.2.0",
+      "11.3.0",
+      "11.3.1",
+      "11.3.2",
+      "11.3.3",
+      "11.3.4",
+      "11.4.0",
+      "11.4.1",
+      "11.5.0",
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/flywaydb/flyway-core/11.14.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/flywaydb/flyway-core/11.14.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="flyway-core-11.14.1-javadoc.jar" title="flyway-core-11.14.1-javadoc.jar">flyway-core-11.14.1-javadoc.jar</a>                   2025-10-15 13:01    678136      
+<a href="flyway-core-11.14.1-javadoc.jar.asc" title="flyway-core-11.14.1-javadoc.jar.asc">flyway-core-11.14.1-javadoc.jar.asc</a>               2025-10-15 13:01       488      
+<a href="flyway-core-11.14.1-javadoc.jar.md5" title="flyway-core-11.14.1-javadoc.jar.md5">flyway-core-11.14.1-javadoc.jar.md5</a>               2025-10-15 13:01        32      
+<a href="flyway-core-11.14.1-javadoc.jar.sha1" title="flyway-core-11.14.1-javadoc.jar.sha1">flyway-core-11.14.1-javadoc.jar.sha1</a>              2025-10-15 13:01        40      
+<a href="flyway-core-11.14.1-javadoc.jar.sha256" title="flyway-core-11.14.1-javadoc.jar.sha256">flyway-core-11.14.1-javadoc.jar.sha256</a>            2025-10-15 13:01        64      
+<a href="flyway-core-11.14.1-javadoc.jar.sha512" title="flyway-core-11.14.1-javadoc.jar.sha512">flyway-core-11.14.1-javadoc.jar.sha512</a>            2025-10-15 13:01       128      
+<a href="flyway-core-11.14.1-sources.jar" title="flyway-core-11.14.1-sources.jar">flyway-core-11.14.1-sources.jar</a>                   2025-10-15 13:01    588370      
+<a href="flyway-core-11.14.1-sources.jar.asc" title="flyway-core-11.14.1-sources.jar.asc">flyway-core-11.14.1-sources.jar.asc</a>               2025-10-15 13:01       488      
+<a href="flyway-core-11.14.1-sources.jar.md5" title="flyway-core-11.14.1-sources.jar.md5">flyway-core-11.14.1-sources.jar.md5</a>               2025-10-15 13:01        32      
+<a href="flyway-core-11.14.1-sources.jar.sha1" title="flyway-core-11.14.1-sources.jar.sha1">flyway-core-11.14.1-sources.jar.sha1</a>              2025-10-15 13:01        40      
+<a href="flyway-core-11.14.1-sources.jar.sha256" title="flyway-core-11.14.1-sources.jar.sha256">flyway-core-11.14.1-sources.jar.sha256</a>            2025-10-15 13:01        64      
+<a href="flyway-core-11.14.1-sources.jar.sha512" title="flyway-core-11.14.1-sources.jar.sha512">flyway-core-11.14.1-sources.jar.sha512</a>            2025-10-15 13:01       128      
+<a href="flyway-core-11.14.1.jar" title="flyway-core-11.14.1.jar">flyway-core-11.14.1.jar</a>                           2025-10-15 13:01    737727      
+<a href="flyway-core-11.14.1.jar.asc" title="flyway-core-11.14.1.jar.asc">flyway-core-11.14.1.jar.asc</a>                       2025-10-15 13:01       488      
+<a href="flyway-core-11.14.1.jar.md5" title="flyway-core-11.14.1.jar.md5">flyway-core-11.14.1.jar.md5</a>                       2025-10-15 13:01        32      
+<a href="flyway-core-11.14.1.jar.sha1" title="flyway-core-11.14.1.jar.sha1">flyway-core-11.14.1.jar.sha1</a>                      2025-10-15 13:01        40      
+<a href="flyway-core-11.14.1.jar.sha256" title="flyway-core-11.14.1.jar.sha256">flyway-core-11.14.1.jar.sha256</a>                    2025-10-15 13:01        64      
+<a href="flyway-core-11.14.1.jar.sha512" title="flyway-core-11.14.1.jar.sha512">flyway-core-11.14.1.jar.sha512</a>                    2025-10-15 13:01       128      
+<a href="flyway-core-11.14.1.pom" title="flyway-core-11.14.1.pom">flyway-core-11.14.1.pom</a>                           2025-10-15 13:01      4774      
+<a href="flyway-core-11.14.1.pom.asc" title="flyway-core-11.14.1.pom.asc">flyway-core-11.14.1.pom.asc</a>                       2025-10-15 13:01       488      
+<a href="flyway-core-11.14.1.pom.md5" title="flyway-core-11.14.1.pom.md5">flyway-core-11.14.1.pom.md5</a>                       2025-10-15 13:01        32      
+<a href="flyway-core-11.14.1.pom.sha1" title="flyway-core-11.14.1.pom.sha1">flyway-core-11.14.1.pom.sha1</a>                      2025-10-15 13:01        40      
+<a href="flyway-core-11.14.1.pom.sha256" title="flyway-core-11.14.1.pom.sha256">flyway-core-11.14.1.pom.sha256</a>                    2025-10-15 13:01        64      
+<a href="flyway-core-11.14.1.pom.sha512" title="flyway-core-11.14.1.pom.sha512">flyway-core-11.14.1.pom.sha512</a>                    2025-10-15 13:01       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --silent --show-error https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1-test-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --silent --show-error https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1-tests.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ exited 22 in 220ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 18:11:06 GMT
+content-type: text/html
+cf-ray: 9f6139eaed7e021d-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 250ms:
+curl: (22) The requested URL returnedHTTP/2 404 
+date: Sun, 03 May 2026 18:11:06 GMT
+content-type: text/html
+cf-ray: 9f6139eb18ece5d9-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+ error: 404
+
+web search: 
+web search: org.flywaydb flyway-core 11.14.1 Maven Central flyway-core-11.14.1-sources.jar javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/
+codex
+Maven Central lists sources and javadoc for 11.14.1 but no `tests` or `test-sources` artifact in that version directory. I’m locating the tagged repository test path now; if the entry’s `N/A` is protected by the “nonblank” rule, I’ll leave the file unchanged and report the found URL separately.
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --silent --show-error https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:11:23 GMT
+content-type: application/java-archive
+content-length: 678136
+cf-ray: 9f613a58fa678822-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 19812
+etag: "782b40f05c9d0a6c4e27ef1c1a6ad6a4"
+last-modified: Wed, 15 Oct 2025 13:01:31 GMT
+x-checksum-md5: 782b40f05c9d0a6c4e27ef1c1a6ad6a4
+x-checksum-sha1: 2529547d0a14a5648f6c369f2cf19b384ca749ce
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-parent</artifactId>
+    <version>11.14.1</version>
+  </parent>
+  <artifactId>flyway-core</artifactId>
+  <packaging>jar</packaging>
+  <name>${project.artifactId}</name>
+  <dependencies>
+    <!-- Optional loggers -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Others -->
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-vfs</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws.secretsmanager</groupId>
+      <artifactId>aws-secretsmanager-jdbc</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc11</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-toml</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+
+
+
+
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-license</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>..</directory>
+                  <includes>
+                    <include>LICENSE.txt</include>
+                    <include>README.txt</include>
+                  </includes>
+                </resource>
+              </resources>
+              <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>lombok-javadoc</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <sourcepath>${project.basedir}/target/generated-sources/delombok</sourcepath>
+              <sourceFileIncludes>
+                <sourceFileInclude>**/core/Flyway.java</sourceFileInclude>
+                <sourceFileInclude>**/core/api/**/*.java</sourceFileInclude>
+              </sourceFileIncludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.0.1</version>
+        <configuration>
+          <sourcepath>${project.basedir}/target/generated-sources/delombok</sourcepath>
+          <sourceFileIncludes>
+            <sourceFileInclude>**/core/Flyway.java</sourceFileInclude>
+            <sourceFileInclude>**/core/api/**/*.java</sourceFileInclude>
+          </sourceFileIncludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --silent --show-error https://github.com/flyway/flyway/tree/flyway-11.14.1/flyway-core/src/main/java' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://api.github.com/repos/flyway/flyway/git/trees/flyway-11.14.1?recursive=1 | rg 'flyway-core/.*/test|src/test|test/java|test/kotlin|test/groovy|test/scala'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ exited 1 in 396ms:
+ succeeded in 524ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:11:24 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"787ad9903594cbfb830844130e9bf1c1"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ogKLn9bn6BGpSUw0DS2LGgM2AhfX8TwJcMD5aZcxrCnzrxbWS%2FjeExYcccOuwWQenJ7kpoOfNQa3MGrCewLkyjbeWNbvggaSDVE1wgTfMom0sM5h02srKJKxT5b3KxRbc%2BDzbzUV7JUoAdIb%2FMfSjtQVJhPH%2Bp%2F%2Bxl7ZlHFTyw4Jk9Es%2BFMmeR3IB3fJr%2FjuF5XZLvnukpMU7R%2FF9NHsYNFCa2T73uZfR0qV2pIISeAuGIyJphld03zA2CddOz4dfW61ceFixLA6wWKEOcPOwg%3D%3D--O9JQTrB91Ulghr1U--bItdY2rtnbJvb1OhnVcxiQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1232330462.1777831883; expires=Mon, 03 May 2027 18:11:23 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:11:23 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5102:17F6EE:82DE79B:611496B:69F78FCB
+
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://api.github.com/repos/flyway/flyway/git/refs/tags/flyway-11.14.1 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --silent --show-error https://github.com/flyway/flyway/tree/flyway-11.14.1/flyway-core/src/test/java' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://api.github.com/repos/flyway/flyway/git/trees/flyway-11.14.1?recursive=1 | jq -r '.tree[].path' | rg '"'^flyway-core|flyway-core'"' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --silent --show-error https://github.com/flyway/flyway/tree/flyway-11.14.1/flyway-core/src/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 140ms:
+flyway-core
+flyway-core/pom.xml
+flyway-core/src
+flyway-core/src/main
+flyway-core/src/main/java
+flyway-core/src/main/java/org
+flyway-core/src/main/java/org/flywaydb
+flyway-core/src/main/java/org/flywaydb/core
+flyway-core/src/main/java/org/flywaydb/core/Flyway.java
+flyway-core/src/main/java/org/flywaydb/core/FlywayExecutor.java
+flyway-core/src/main/java/org/flywaydb/core/FlywayTelemetryManager.java
+flyway-core/src/main/java/org/flywaydb/core/FlywayTelemetryProperties.java
+flyway-core/src/main/java/org/flywaydb/core/ProgressLogger.java
+flyway-core/src/main/java/org/flywaydb/core/ProgressLoggerEmpty.java
+flyway-core/src/main/java/org/flywaydb/core/ProgressLoggerJson.java
+flyway-core/src/main/java/org/flywaydb/core/ProgressLoggerSynchronized.java
+flyway-core/src/main/java/org/flywaydb/core/ProgressModel.java
+flyway-core/src/main/java/org/flywaydb/core/TelemetrySpan.java
+flyway-core/src/main/java/org/flywaydb/core/api
+flyway-core/src/main/java/org/flywaydb/core/api/ClassProvider.java
+flyway-core/src/main/java/org/flywaydb/core/api/CoreErrorCode.java
+flyway-core/src/main/java/org/flywaydb/core/api/CoreMigrationType.java
+flyway-core/src/main/java/org/flywaydb/core/api/ErrorCode.java
+flyway-core/src/main/java/org/flywaydb/core/api/ErrorDetails.java
+flyway-core/src/main/java/org/flywaydb/core/api/FlywayException.java
+flyway-core/src/main/java/org/flywaydb/core/api/InfoOutputProvider.java
+flyway-core/src/main/java/org/flywaydb/core/api/LoadableMigrationInfo.java
+flyway-core/src/main/java/org/flywaydb/core/api/Location.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationFilter.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationInfo.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationInfoService.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationPattern.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationState.java
+flyway-core/src/main/java/org/flywaydb/core/api/MigrationVersion.java
+flyway-core/src/main/java/org/flywaydb/core/api/ResourceProvider.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback
+flyway-core/src/main/java/org/flywaydb/core/api/callback/BaseCallback.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Callback.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/CallbackEvent.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Context.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Error.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Event.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/GenericCallback.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Statement.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/Warning.java
+flyway-core/src/main/java/org/flywaydb/core/api/callback/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/configuration
+flyway-core/src/main/java/org/flywaydb/core/api/configuration/ClassicConfiguration.java
+flyway-core/src/main/java/org/flywaydb/core/api/configuration/Configuration.java
+flyway-core/src/main/java/org/flywaydb/core/api/configuration/FluentConfiguration.java
+flyway-core/src/main/java/org/flywaydb/core/api/configuration/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/exception
+flyway-core/src/main/java/org/flywaydb/core/api/exception/FlywayBlockStatementExecutionException.java
+flyway-core/src/main/java/org/flywaydb/core/api/exception/FlywayValidateException.java
+flyway-core/src/main/java/org/flywaydb/core/api/executor
+flyway-core/src/main/java/org/flywaydb/core/api/executor/Context.java
+flyway-core/src/main/java/org/flywaydb/core/api/executor/MigrationExecutor.java
+flyway-core/src/main/java/org/flywaydb/core/api/executor/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/logging
+flyway-core/src/main/java/org/flywaydb/core/api/logging/Log.java
+flyway-core/src/main/java/org/flywaydb/core/api/logging/LogCreator.java
+flyway-core/src/main/java/org/flywaydb/core/api/logging/LogFactory.java
+flyway-core/src/main/java/org/flywaydb/core/api/logging/ProgressBar.java
+flyway-core/src/main/java/org/flywaydb/core/api/logging/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration
+flyway-core/src/main/java/org/flywaydb/core/api/migration/BaseJavaMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/Context.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/JavaMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineAppliedMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineJavaMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineMigrationConfigurationExtension.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineMigrationResolver.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineMigrationType.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineResolvedMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/baseline/BaselineResourceTypeProvider.java
+flyway-core/src/main/java/org/flywaydb/core/api/migration/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/output
+flyway-core/src/main/java/org/flywaydb/core/api/output/BaselineResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/CleanResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/CommandResultFactory.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/CompositeResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/ErrorOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/HtmlResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/InfoOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/InfoResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/MigrateErrorResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/MigrateOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/MigrateResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/MigrationKey.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/OperationResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/OperationResultBase.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/OperationResultJsonBase.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/RepairOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/RepairResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/ValidateOutput.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/ValidateResult.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/errors
+flyway-core/src/main/java/org/flywaydb/core/api/output/errors/ErrorCause.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/errors/ErrorOutputItem.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/errors/ExceptionToErrorObjectConverter.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/errors/FaultToErrorObjectConverter.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/errors/FlywayExceptionToErrorObjectConverter.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/errors/FlywayMigrateExceptionToErrorObjectConverter.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/errors/FlywaySqlExceptionToErrorObjectConverter.java
+flyway-core/src/main/java/org/flywaydb/core/api/output/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/pattern
+flyway-core/src/main/java/org/flywaydb/core/api/pattern/ValidatePattern.java
+flyway-core/src/main/java/org/flywaydb/core/api/resolver
+flyway-core/src/main/java/org/flywaydb/core/api/resolver/ChecksumMatcher.java
+flyway-core/src/main/java/org/flywaydb/core/api/resolver/MigrationResolver.java
+flyway-core/src/main/java/org/flywaydb/core/api/resolver/ResolvedMigration.java
+flyway-core/src/main/java/org/flywaydb/core/api/resolver/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/api/resource
+flyway-core/src/main/java/org/flywaydb/core/api/resource/LoadableResource.java
+flyway-core/src/main/java/org/flywaydb/core/api/resource/LoadableResourceMetadata.java
+flyway-core/src/main/java/org/flywaydb/core/api/resource/Resource.java
+flyway-core/src/main/java/org/flywaydb/core/api/resource/package-info.java
+flyway-core/src/main/java/org/flywaydb/core/extensibility
+
+ succeeded in 197ms:
+{
+  "ref": "refs/tags/flyway-11.14.1",
+  "node_id": "MDM6UmVmNzE3MDA1ODpyZWZzL3RhZ3MvZmx5d2F5LTExLjE0LjE=",
+  "url": "https://api.github.com/repos/flyway/flyway/git/refs/tags/flyway-11.14.1",
+  "object": {
+    "sha": "b7f6d36b813a999941dd95b17247407b155b489b",
+    "type": "tag",
+    "url": "https://api.github.com/repos/flyway/flyway/git/tags/b7f6d36b813a999941dd95b17247407b155b489b"
+  }
+}
+
+ exited 22 in 331ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 18:11:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=n%2BK07J5M%2FmSfLNfD6LuZZXCx%2F4062SETUcHtCX0w3%2BNU1UHzHFre3TKL%2FohO1pVam59BsaRyEHjH5MiNiSFpXhHv3BqRXH7rbPQQaoXBOXX32RL44BupVO4nMGl4IYuy392FxNkLIoWZFSDiOJ4LOpoDYA0dkm%2FG%2FzfkVk%2BAWKJbZ1gac3rl0DoBFHwToGI5f8Fiz6YQD%2FIKCNP0X5asJbHA%2FYg9fHV42QMeCyvqOupzcX8XNjKv1DHwc%2B0Gqq9I9f9701axOqFoY671MxFJOg%3D%3D--CFnCY3uns0EZ0i6N--hka9Y6Ij8tTHVoY%2Bc%2FWIHQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.397553232.1777831890; expires=Mon, 03 May 2027 18:11:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:11:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510D:17BC2E:8044541:5F19E6C:69F78FD2
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 418ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 18:11:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=99%2FPHx6kp04vqp3Go0c1PyyR6wQFtvuCz21t5eRHeJ%2B%2FjWf5G7vVhMEABd1DJFVtmGqvRERLcclm4%2BGY3HZ3XuhKsd3NFN7in4UW351WmmUBQyNGYq4YRTjvsGznM6U2KTJWAOPSQ7A6Yoac34NfcdasvjO4qUwwmHaYY8ibHkQQvTA07t6EG8sk%2BTOHtJGGwsE5d4sgBGGOFytbUWeBAiv1eBfx9MIrfNR3gECS5%2BRQ%2Fxs0ZT5h8oDjg4cuiNNamjbLzHpbQZ5rFdXz0j0ucQ%3D%3D--MtqMTEiDtx%2B%2FmTxM--bjVtpvvPfDgZL2pe0yUEug%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2124907726.1777831890; expires=Mon, 03 May 2027 18:11:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:11:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5102:17F6EE:82E37AE:611852B:69F78FD2
+
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.flywaydb/flyway-core/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/ | rg 'test|Test|sources|javadoc'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+<a href="flyway-core-11.14.1-javadoc.jar" title="flyway-core-11.14.1-javadoc.jar">flyway-core-11.14.1-javadoc.jar</a>                   2025-10-15 13:01    678136      
+<a href="flyway-core-11.14.1-javadoc.jar.asc" title="flyway-core-11.14.1-javadoc.jar.asc">flyway-core-11.14.1-javadoc.jar.asc</a>               2025-10-15 13:01       488      
+<a href="flyway-core-11.14.1-javadoc.jar.md5" title="flyway-core-11.14.1-javadoc.jar.md5">flyway-core-11.14.1-javadoc.jar.md5</a>               2025-10-15 13:01        32      
+<a href="flyway-core-11.14.1-javadoc.jar.sha1" title="flyway-core-11.14.1-javadoc.jar.sha1">flyway-core-11.14.1-javadoc.jar.sha1</a>              2025-10-15 13:01        40      
+<a href="flyway-core-11.14.1-javadoc.jar.sha256" title="flyway-core-11.14.1-javadoc.jar.sha256">flyway-core-11.14.1-javadoc.jar.sha256</a>            2025-10-15 13:01        64      
+<a href="flyway-core-11.14.1-javadoc.jar.sha512" title="flyway-core-11.14.1-javadoc.jar.sha512">flyway-core-11.14.1-javadoc.jar.sha512</a>            2025-10-15 13:01       128      
+<a href="flyway-core-11.14.1-sources.jar" title="flyway-core-11.14.1-sources.jar">flyway-core-11.14.1-sources.jar</a>                   2025-10-15 13:01    588370      
+<a href="flyway-core-11.14.1-sources.jar.asc" title="flyway-core-11.14.1-sources.jar.asc">flyway-core-11.14.1-sources.jar.asc</a>               2025-10-15 13:01       488      
+<a href="flyway-core-11.14.1-sources.jar.md5" title="flyway-core-11.14.1-sources.jar.md5">flyway-core-11.14.1-sources.jar.md5</a>               2025-10-15 13:01        32      
+<a href="flyway-core-11.14.1-sources.jar.sha1" title="flyway-core-11.14.1-sources.jar.sha1">flyway-core-11.14.1-sources.jar.sha1</a>              2025-10-15 13:01        40      
+<a href="flyway-core-11.14.1-sources.jar.sha256" title="flyway-core-11.14.1-sources.jar.sha256">flyway-core-11.14.1-sources.jar.sha256</a>            2025-10-15 13:01        64      
+<a href="flyway-core-11.14.1-sources.jar.sha512" title="flyway-core-11.14.1-sources.jar.sha512">flyway-core-11.14.1-sources.jar.sha512</a>            2025-10-15 13:01       128      
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://api.github.com/repos/flyway/flyway/git/trees/flyway-11.14.1?recursive=1 | jq -r '.tree[].path' | rg '("'^|/)src/test|(''^|/)test(s)?(/|$)|Test'"\\.java"'$'"' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://api.github.com/repos/flyway/flyway/git/trees/flyway-11.14.1?recursive=1 | jq -r '.tree[].path' | rg 'flyway-core' | rg 'Test|test|spec' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 188ms:
+ succeeded in 207ms:
+flyway-core/src/main/java/org/flywaydb/core/internal/database/base/TestContainersDatabaseType.java
+
+web search: 
+web search: Maven Central org.flywaydb flyway-core 11.14.1 sources javadoc
+web search: 
+web search: https://github.com/flyway/flyway/tree/flyway-11.14.1/documentation
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.flywaydb/flyway-core/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.flywaydb/flyway-core/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'python -m json.tool metadata/org.flywaydb/flyway-core/index.json >/dev/null' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2
+ succeeded in 0ms:
+web search: 
+web search: site:repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1 flyway-core-11.14.1-sources.jar
+web search: 
+web search: https://github.com/flyway/flyway/tree/flyway-11.14.1/documentation
+web search: 
+web search: 
+web search: 
+web search: site:github.com/flyway/flyway/tree/flyway-11.14.1/flyway-core/src/test flyway-core src test
+codex
+Verified the `metadata-version: "11.14.1"` entry in [index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2/metadata/org.flywaydb/flyway-core/index.json:23). Maven Central has the 11.14.1 sources and javadoc artifacts but no Maven test/test-sources artifact, and the GitHub documentation path resolves at tag `flyway-11.14.1`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/?utm_source=openai))
+
+No file changes were needed: all requested fields already had nonblank values, and `org.flywaydb:flyway-core` is not a Kotlin, Groovy, or Scala-specific library, so `language` stays absent. JSON validation passed, and `git diff` is empty for the file.
+tokens used
+75,444
+Verified the `metadata-version: "11.14.1"` entry in [index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2/metadata/org.flywaydb/flyway-core/index.json:23). Maven Central has the 11.14.1 sources and javadoc artifacts but no Maven test/test-sources artifact, and the GitHub documentation path resolves at tag `flyway-11.14.1`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/?utm_source=openai))
+
+No file changes were needed: all requested fields already had nonblank values, and `org.flywaydb:flyway-core` is not a Kotlin, Groovy, or Scala-specific library, so `language` stays absent. JSON validation passed, and `git diff` is empty for the file.
+Ran agent for org.flywaydb:flyway-core:11.14.1 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2/build/agent-url-discovery-logs/org.flywaydb-flyway-core-11.14.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1080-f8f613b2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 34s
+9 actionable tasks: 4 executed, 5 from cache

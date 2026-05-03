@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.flywaydb.core.api.Location;
 import org.flywaydb.core.api.resource.LoadableResource;
-import org.flywaydb.core.internal.scanner.ClasspathLocationHandler;
 import org.flywaydb.core.internal.scanner.LocationScannerCache;
 import org.flywaydb.core.internal.scanner.ResourceNameCache;
 import org.flywaydb.core.internal.scanner.classpath.ClassPathScanner;
@@ -29,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassPathScannerTest extends ClassLoader {
 
+    private static final String CLASSPATH_PREFIX = "classpath:";
     private static final String LOCATION_ROOT = "db/migration";
     private static final String WEBSPHERE_LOCATION_MARKER = LOCATION_ROOT + "/flyway.location";
 
@@ -47,7 +47,7 @@ public class ClassPathScannerTest extends ClassLoader {
                 Object.class,
                 this,
                 StandardCharsets.UTF_8,
-                Location.fromPath(ClasspathLocationHandler.CLASSPATH_PREFIX, LOCATION_ROOT),
+                new Location(CLASSPATH_PREFIX + LOCATION_ROOT),
                 new ResourceNameCache(),
                 new LocationScannerCache(),
                 true,

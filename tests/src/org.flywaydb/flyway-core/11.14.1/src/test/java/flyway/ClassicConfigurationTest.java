@@ -9,7 +9,8 @@ package flyway;
 import java.util.Map;
 
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
-import org.flywaydb.core.internal.command.clean.CleanModeConfigurationExtension;
+import org.flywaydb.core.internal.command.clean.CleanModel;
+import org.flywaydb.core.internal.configuration.ConfigUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,11 +24,10 @@ public class ClassicConfigurationTest {
         configuration.configure(Map.of(
                 "flyway.plugins.clean.schemas.exclude", "audit,temporary"));
 
-        final CleanModeConfigurationExtension cleanExtension = configuration.getConfigurationExtension(
-                CleanModeConfigurationExtension.class);
+        final CleanModel cleanModel = ConfigUtils.getCleanModel(configuration);
 
-        assertThat(cleanExtension.getClean()).isNotNull();
-        assertThat(cleanExtension.getClean().getSchemas()).isNotNull();
-        assertThat(cleanExtension.getClean().getSchemas().getExclude()).containsExactly("audit", "temporary");
+        assertThat(cleanModel).isNotNull();
+        assertThat(cleanModel.getSchemas()).isNotNull();
+        assertThat(cleanModel.getSchemas().getExclude()).containsExactly("audit", "temporary");
     }
 }
