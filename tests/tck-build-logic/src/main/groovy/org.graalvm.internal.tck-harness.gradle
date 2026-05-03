@@ -495,9 +495,6 @@ List<Map<String, Object>> changedMetadataTestEntries(
         List<String> changedCoordinates
 ) {
     List<Map<String, Object>> addedVersionEntries = flattenChangedTestedVersionEntries(tck.diffIndexTestedVersions(base, head))
-    Set<String> addedVersionCoordinates = addedVersionEntries
-            .collect { it["coordinates"].toString() }
-            .toSet()
     List<Map<String, Object>> entries = []
     entries.addAll(addedVersionEntries.collect { Map<String, Object> entry ->
         [
@@ -506,9 +503,7 @@ List<Map<String, Object>> changedMetadataTestEntries(
                 "batch"      : "added"
         ]
     })
-    entries.addAll(changedCoordinates
-            .findAll { coordinate -> !addedVersionCoordinates.contains(coordinate) }
-            .collectMany { coordinate -> tck.testedVersionBatches(coordinate, versionsPerJob) })
+    entries.addAll(changedCoordinates.collectMany { coordinate -> tck.testedVersionBatches(coordinate, versionsPerJob) })
     entries
 }
 

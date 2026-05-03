@@ -243,7 +243,7 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertNotIn("disable-docker-networking", gates)
         self.assertNotIn("restore-docker-networking", gates)
 
-    def test_merge_test_matrix_prefers_added_tested_versions_for_same_environment(self) -> None:
+    def test_merge_test_matrix_preserves_metadata_batches_when_added_versions_exist(self) -> None:
         metadata_entries = [
             {
                 "coordinates": "org.example:demo:1.0.0",
@@ -275,6 +275,7 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertEqual(
             merged,
             [
+                metadata_entries[0],
                 metadata_entries[1],
                 added_version_entries[0],
             ],

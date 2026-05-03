@@ -607,24 +607,8 @@ def _matrix_entries(matrix: dict) -> list[dict]:
 
 
 def _merge_test_matrix_entries(changed_metadata_entries: list[dict], changed_tested_version_entries: list[dict]) -> list[dict]:
-    """Prefer added tested-version entries over full metadata batches for the same CI environment."""
-    added_version_keys = {_matrix_environment_key(entry) for entry in changed_tested_version_entries}
-    merged: list[dict] = []
-    for entry in changed_metadata_entries:
-        if _matrix_environment_key(entry) in added_version_keys:
-            continue
-        merged.append(entry)
-    merged.extend(changed_tested_version_entries)
-    return _deduplicate_test_matrix_entries(merged)
-
-
-def _matrix_environment_key(entry: dict) -> tuple[str, str, str, str]:
-    return (
-        str(entry.get("coordinates") or ""),
-        str(entry.get("version") or ""),
-        str(entry.get("os") or ""),
-        str(entry.get("nativeImageMode") or ""),
-    )
+    """Preserve changed-metadata batches and added tested-version entries without exact duplicates."""
+    return _deduplicate_test_matrix_entries(changed_metadata_entries + changed_tested_version_entries)
 
 
 def _deduplicate_test_matrix_entries(entries: list[dict]) -> list[dict]:
