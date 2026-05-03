@@ -6,9 +6,6 @@
  */
 package org_apache_lucene.lucene_core;
 
-import java.util.Collections;
-import java.util.EnumSet;
-
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.RamUsageEstimator;
 import org.junit.jupiter.api.Test;
@@ -18,20 +15,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class RamUsageEstimatorTest {
     @Test
-    void initializesJvmMemoryConstantsAndFeatureSets() {
-        EnumSet<RamUsageEstimator.JvmFeature> supportedFeatures = RamUsageEstimator.getSupportedFeatures();
-        EnumSet<RamUsageEstimator.JvmFeature> unsupportedFeatures = RamUsageEstimator.getUnsupportedFeatures();
-        EnumSet<RamUsageEstimator.JvmFeature> allFeatures = EnumSet.allOf(RamUsageEstimator.JvmFeature.class);
-        EnumSet<RamUsageEstimator.JvmFeature> detectedFeatures = EnumSet.copyOf(supportedFeatures);
-        detectedFeatures.addAll(unsupportedFeatures);
-
-        assertThat(detectedFeatures).containsExactlyInAnyOrderElementsOf(allFeatures);
-        assertThat(Collections.disjoint(supportedFeatures, unsupportedFeatures)).isTrue();
-        assertThat(RamUsageEstimator.NUM_BYTES_OBJECT_REF).isPositive();
-        assertThat(RamUsageEstimator.NUM_BYTES_OBJECT_HEADER).isPositive();
-        assertThat(RamUsageEstimator.NUM_BYTES_ARRAY_HEADER).isPositive();
+    void initializesJvmMemoryConstants() {
+        assertThat(RamUsageEstimator.NUM_BYTES_OBJECT_REF).isIn(4, 8);
+        assertThat(RamUsageEstimator.NUM_BYTES_OBJECT_HEADER).isGreaterThanOrEqualTo(8);
+        assertThat(RamUsageEstimator.NUM_BYTES_ARRAY_HEADER)
+                .isGreaterThan(RamUsageEstimator.NUM_BYTES_OBJECT_HEADER);
         assertThat(RamUsageEstimator.NUM_BYTES_OBJECT_ALIGNMENT).isPositive();
-        assertThat(RamUsageEstimator.JVM_INFO_STRING).startsWith("[JVM: ").endsWith("]");
+        assertThat(RamUsageEstimator.NUM_BYTES_ARRAY_HEADER % RamUsageEstimator.NUM_BYTES_OBJECT_ALIGNMENT).isZero();
+        if (RamUsageEstimator.COMPRESSED_REFS_ENABLED) {
+            assertThat(RamUsageEstimator.NUM_BYTES_OBJECT_REF).isEqualTo(RamUsageEstimator.NUM_BYTES_INT);
+        }
     }
 
     @Test
