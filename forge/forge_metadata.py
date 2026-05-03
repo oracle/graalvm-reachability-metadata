@@ -3603,6 +3603,7 @@ def finalize_successful_issue(
                 [
                     "--coordinates", claimed_issue.issue_coordinates,
                     "--reachability-metadata-path", claimed_issue.worktree_path,
+                    "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 ]
             )
             return

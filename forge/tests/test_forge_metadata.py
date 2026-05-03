@@ -111,6 +111,24 @@ def _claimed_issue(
     )
 
 
+class FinalizeSuccessfulIssueTests(unittest.TestCase):
+    def test_not_for_native_image_pr_receives_metrics_repo_path_for_local_ci(self) -> None:
+        claimed_issue = _claimed_issue()
+
+        with patch.object(forge_metadata, "find_progress_state_path", return_value=None), \
+                patch.object(forge_metadata, "_load_pending_run_metrics", return_value={"status": "success"}), \
+                patch.object(forge_metadata, "metadata_coordinate_parts", return_value=("org.example", "lib", "1.0.0")), \
+                patch.object(forge_metadata, "is_not_for_native_image", return_value=True), \
+                patch.object(forge_metadata, "run_make_pr_not_for_native_image") as make_pr:
+            forge_metadata.finalize_successful_issue(claimed_issue)
+
+        make_pr.assert_called_once_with([
+            "--coordinates", "org.example:lib:1.0.0",
+            "--reachability-metadata-path", "/tmp/reachability-worktree",
+            "--metrics-repo-path", "/tmp/metrics-worktree",
+        ])
+
+
 class IssueClaimPreflightTests(unittest.TestCase):
     def test_forge_gh_logs_github_query_to_console(self) -> None:
         completed_process = subprocess.CompletedProcess(

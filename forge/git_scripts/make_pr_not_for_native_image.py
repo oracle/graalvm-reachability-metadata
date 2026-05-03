@@ -23,6 +23,14 @@ from git_scripts.common_git import (
     stage_and_commit,
 )
 from utility_scripts.metadata_index import get_not_for_native_image_marker
+from utility_scripts.local_ci_verification import (
+    HUMAN_INTERVENTION_LABEL,
+    LocalCIVerificationResult,
+    fetch_pr_base_ref,
+    format_local_ci_verification_pr_section,
+    local_ci_requires_human_intervention,
+    run_local_ci_verification,
+)
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 
@@ -39,29 +47,24 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--coordinates", required=True, help="Coordinates in group:artifact:version form")
     parser.add_argument("--reachability-metadata-path", help="Path to the reachability-metadata checkout")
+    parser.add_argument(
+        "--metrics-repo-path",
+        default=None,
+        help="Path to the metrics repository. If omitted, the forge directory in the selected worktree is used.",
+    )
     return parser
 
 
 def fetch_pr_base(repo_path: str) -> str:
     """Fetch the upstream PR base and return the ref to rebase onto."""
-    upstream_url = f"https://github.com/{REPO}.git"
-    upstream_remote_url = subprocess.run(
-        ["git", "remote", "get-url", "upstream"],
-        cwd=repo_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        text=True,
-        check=False,
-    )
-    if upstream_remote_url.returncode == 0 and REPO in upstream_remote_url.stdout.strip():
-        subprocess.run(["git", "fetch", "upstream", BASE_BRANCH], check=True, cwd=repo_path)
-        return f"upstream/{BASE_BRANCH}"
-
-    subprocess.run(["git", "fetch", upstream_url, BASE_BRANCH], check=True, cwd=repo_path)
-    return "FETCH_HEAD"
+    return fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
 
 
-def push_marker_branch(coordinates: str, repo_path: str) -> str:
+def push_marker_branch(
+        coordinates: str,
+        repo_path: str,
+        metrics_repo_path: str | None = None,
+) -> tuple[str, LocalCIVerificationResult]:
     """Create, commit, rebase, and push the marker branch."""
     group, artifact, _version = parse_coordinate_parts(coordinates)
     branch = build_ai_branch_name(f"not-for-native-image-{group}-{artifact}", cwd=repo_path)
@@ -74,11 +77,22 @@ def push_marker_branch(coordinates: str, repo_path: str) -> str:
     )
     base_ref = fetch_pr_base(repo_path)
     subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
+    local_ci_verification = run_local_ci_verification(
+        repo_path=repo_path,
+        coordinates=coordinates,
+        base_commit=base_ref,
+        metrics_repo_path=metrics_repo_path,
+    )
     subprocess.run(["git", "push", "origin", branch], check=True, cwd=repo_path)
-    return branch
+    return branch, local_ci_verification
 
 
-def create_pull_request(branch: str, coordinates: str, repo_path: str) -> None:
+def create_pull_request(
+        branch: str,
+        coordinates: str,
+        repo_path: str,
+        local_ci_verification: LocalCIVerificationResult | None = None,
+) -> None:
     """Create the marker PR."""
     if shutil.which("gh") is None:
         print("gh CLI not found. Skipping PR creation.")
@@ -111,6 +125,8 @@ Reason:
     if replacement:
         body += f"\nReplacement guidance:\n- {replacement}\n"
     body += "\n" + format_forge_revision_section()
+    local_ci_metrics = None if local_ci_verification is None else local_ci_verification.to_metrics()
+    body += format_local_ci_verification_pr_section(local_ci_metrics)
 
     cmd = [
         "gh", "pr", "create",
@@ -123,6 +139,8 @@ Reason:
         "--label", "library-new-request",
         "--label", "not-for-native-image",
     ]
+    if local_ci_requires_human_intervention(local_ci_metrics):
+        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
     for reviewer in REVIEWERS:
         cmd.extend(["--reviewer", reviewer])
     gh(*cmd[1:])
@@ -131,13 +149,13 @@ Reason:
 def main(argv=None) -> None:
     """Run the marker PR flow."""
     args = build_parser().parse_args(argv)
-    repo_path, _metrics_path = resolve_repo_roots(
+    repo_path, metrics_repo_path = resolve_repo_roots(
         args.reachability_metadata_path,
-        None,
+        args.metrics_repo_path,
     )
     ensure_gh_authenticated()
-    branch = push_marker_branch(args.coordinates, repo_path)
-    create_pull_request(branch, args.coordinates, repo_path)
+    branch, local_ci_verification = push_marker_branch(args.coordinates, repo_path, metrics_repo_path)
+    create_pull_request(branch, args.coordinates, repo_path, local_ci_verification)
 
 
 if __name__ == "__main__":
