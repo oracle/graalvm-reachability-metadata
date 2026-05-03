@@ -58,9 +58,6 @@ import org.eclipse.aether.spi.connector.transport.PutTask;
 import org.eclipse.aether.spi.connector.transport.TransportListener;
 import org.eclipse.aether.spi.connector.transport.Transporter;
 import org.eclipse.aether.spi.io.FileProcessor;
-import org.eclipse.aether.spi.log.Logger;
-import org.eclipse.aether.spi.log.LoggerFactory;
-import org.eclipse.aether.spi.log.NullLoggerFactory;
 import org.eclipse.aether.spi.synccontext.SyncContextFactory;
 import org.eclipse.aether.transfer.ArtifactTransferException;
 import org.eclipse.aether.transfer.ChecksumFailureException;
@@ -68,7 +65,6 @@ import org.eclipse.aether.transfer.MetadataTransferException;
 import org.eclipse.aether.transfer.TransferCancelledException;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferListener;
-import org.eclipse.aether.transform.FileTransformer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -87,7 +83,7 @@ public class Maven_resolver_spiTest {
     void artifactAndMetadataTransfersPreserveFluentStateAndDefaults() {
         Artifact artifact = artifact();
         Metadata metadata = metadata();
-        File file = tempDirectory.resolve("artifact.jar").toFile();
+        Path file = tempDirectory.resolve("artifact.jar");
         RemoteRepository repository = repository();
         RequestTrace trace = new RequestTrace("root").newChild("child");
         TransferListener listener = new NoOpTransferListener();
@@ -105,7 +101,7 @@ public class Maven_resolver_spiTest {
                 .setException(artifactException);
 
         assertThat(artifactDownload.getArtifact()).isSameAs(artifact);
-        assertThat(artifactDownload.getFile()).isSameAs(file);
+        assertThat(artifactDownload.getPath()).isEqualTo(file);
         assertThat(artifactDownload.getRequestContext()).isEqualTo("resolve");
         assertThat(artifactDownload.getChecksumPolicy()).isEqualTo("fail");
         assertThat(artifactDownload.isExistenceCheck()).isTrue();
@@ -114,7 +110,7 @@ public class Maven_resolver_spiTest {
         assertThat(artifactDownload.getTrace()).isSameAs(trace);
         assertThat(artifactDownload.getListener()).isSameAs(listener);
         assertThat(artifactDownload.getException()).isSameAs(artifactException);
-        assertThat(artifactDownload.toString()).contains("?", file.getName());
+        assertThat(artifactDownload.toString()).contains("?", file.getFileName().toString());
 
         ArtifactDownload defaults = new ArtifactDownload().setRequestContext(null).setChecksumPolicy(null);
         assertThat(defaults.getRequestContext()).isEmpty();
@@ -131,14 +127,14 @@ public class Maven_resolver_spiTest {
                 .setException(metadataException);
 
         assertThat(metadataDownload.getMetadata()).isSameAs(metadata);
-        assertThat(metadataDownload.getFile()).isSameAs(file);
+        assertThat(metadataDownload.getPath()).isEqualTo(file);
         assertThat(metadataDownload.getRequestContext()).isEqualTo("metadata");
         assertThat(metadataDownload.getChecksumPolicy()).isEqualTo("warn");
         assertThat(metadataDownload.getRepositories()).containsExactly(repository);
         assertThat(metadataDownload.getTrace()).isSameAs(trace);
         assertThat(metadataDownload.getListener()).isSameAs(listener);
         assertThat(metadataDownload.getException()).isSameAs(metadataException);
-        assertThat(metadataDownload.toString()).contains(file.getName());
+        assertThat(metadataDownload.toString()).contains(file.getFileName().toString());
         assertThat(new MetadataDownload().setRequestContext(null).setChecksumPolicy(null).setRepositories(null))
                 .extracting(MetadataDownload::getRequestContext, MetadataDownload::getChecksumPolicy,
                         MetadataDownload::getRepositories)
@@ -146,11 +142,11 @@ public class Maven_resolver_spiTest {
     }
 
     @Test
-    void uploadsExposeTransformerAndTypedExceptions() throws Exception {
+    void uploadsExposePathsAndTypedExceptions() throws Exception {
         Artifact artifact = artifact();
         Metadata metadata = metadata();
-        File file = tempDirectory.resolve("upload.jar").toFile();
-        Files.writeString(file.toPath(), "payload");
+        Path file = tempDirectory.resolve("upload.jar");
+        Files.writeString(file, "payload");
         RequestTrace trace = new RequestTrace("upload");
         TransferListener listener = new NoOpTransferListener();
         RemoteRepository repository = repository();
@@ -158,20 +154,8 @@ public class Maven_resolver_spiTest {
                 artifact, repository, "upload failed");
         MetadataTransferException metadataException = new MetadataTransferException(
                 metadata, repository, "metadata upload failed");
-        FileTransformer transformer = new FileTransformer() {
-            @Override
-            public Artifact transformArtifact(Artifact source) {
-                return new DefaultArtifact(source.getGroupId(), source.getArtifactId(), "sources",
-                        source.getExtension(), source.getVersion());
-            }
 
-            @Override
-            public InputStream transformData(File source) throws IOException {
-                return Files.newInputStream(source.toPath());
-            }
-        };
-
-        ArtifactUpload artifactUpload = new ArtifactUpload(artifact, file, transformer)
+        ArtifactUpload artifactUpload = new ArtifactUpload(artifact, file)
                 .setTrace(trace)
                 .setListener(listener)
                 .setException(artifactException);
@@ -181,28 +165,25 @@ public class Maven_resolver_spiTest {
                 .setException(metadataException);
 
         assertThat(artifactUpload.getArtifact()).isSameAs(artifact);
-        assertThat(artifactUpload.getFile()).isSameAs(file);
-        assertThat(artifactUpload.getFileTransformer()).isSameAs(transformer);
+        assertThat(artifactUpload.getPath()).isEqualTo(file);
+        assertThat(Files.readString(artifactUpload.getPath())).isEqualTo("payload");
         assertThat(artifactUpload.getTrace()).isSameAs(trace);
         assertThat(artifactUpload.getListener()).isSameAs(listener);
         assertThat(artifactUpload.getException()).isSameAs(artifactException);
-        assertThat(artifactUpload.toString()).contains(">>>", "sources", file.getName());
-        try (InputStream transformedData = artifactUpload.getFileTransformer().transformData(file)) {
-            assertThat(transformedData.readAllBytes()).isEqualTo("payload".getBytes(StandardCharsets.UTF_8));
-        }
+        assertThat(artifactUpload.toString()).contains("demo", file.getFileName().toString());
 
         assertThat(metadataUpload.getMetadata()).isSameAs(metadata);
-        assertThat(metadataUpload.getFile()).isSameAs(file);
+        assertThat(metadataUpload.getPath()).isEqualTo(file);
         assertThat(metadataUpload.getTrace()).isSameAs(trace);
         assertThat(metadataUpload.getListener()).isSameAs(listener);
         assertThat(metadataUpload.getException()).isSameAs(metadataException);
-        assertThat(metadataUpload.toString()).contains(file.getName());
+        assertThat(metadataUpload.toString()).contains(file.getFileName().toString());
     }
 
     @Test
     void getAndPutTransportTasksHandleMemoryFilesResumeAndChecksums() throws Exception {
         URI location = URI.create("org/example/demo/1.0/demo-1.0.jar");
-        GetTask inMemoryGet = new GetTask(location).setDataFile(null, true);
+        GetTask inMemoryGet = new GetTask(location).setDataPath(null, true);
         try (OutputStream output = inMemoryGet.newOutputStream()) {
             output.write("one".getBytes(StandardCharsets.UTF_8));
         }
@@ -222,8 +203,8 @@ public class Maven_resolver_spiTest {
 
         Path download = tempDirectory.resolve("download.bin");
         Files.writeString(download, "prefix");
-        GetTask fileGet = new GetTask(location).setDataFile(download.toFile(), true);
-        assertThat(fileGet.getDataFile()).isEqualTo(download.toFile());
+        GetTask fileGet = new GetTask(location).setDataPath(download, true);
+        assertThat(fileGet.getDataPath()).isEqualTo(download);
         assertThat(fileGet.getResumeOffset()).isEqualTo(6L);
         try (OutputStream output = fileGet.newOutputStream(true)) {
             output.write("-suffix".getBytes(StandardCharsets.UTF_8));
@@ -245,8 +226,8 @@ public class Maven_resolver_spiTest {
 
         Path upload = tempDirectory.resolve("upload.bin");
         Files.writeString(upload, "from-file");
-        PutTask putFromFile = new PutTask(location).setDataFile(upload.toFile());
-        assertThat(putFromFile.getDataFile()).isEqualTo(upload.toFile());
+        PutTask putFromFile = new PutTask(location).setDataPath(upload);
+        assertThat(putFromFile.getDataPath()).isEqualTo(upload);
         assertThat(putFromFile.getDataLength()).isEqualTo(9L);
         assertThat(putFromFile.newInputStream().readAllBytes()).isEqualTo("from-file".getBytes(StandardCharsets.UTF_8));
     }
@@ -297,7 +278,7 @@ public class Maven_resolver_spiTest {
         assertThat(CRC32_FACTORY.getFileExtension()).isEqualTo("crc32");
         assertThat(ChecksumAlgorithmHelper.calculate(data, List.of(CRC32_FACTORY)))
                 .containsExactly(Map.entry("CRC32", expectedCrc32(data)));
-        assertThat(ChecksumAlgorithmHelper.calculate(file.toFile(), List.of(CRC32_FACTORY)))
+        assertThat(ChecksumAlgorithmHelper.calculate(file, List.of(CRC32_FACTORY)))
                 .containsExactly(Map.entry("CRC32", expectedCrc32(data)));
 
         RepositoryLayout.ChecksumLocation explicit = new RepositoryLayout.ChecksumLocation(
@@ -359,37 +340,14 @@ public class Maven_resolver_spiTest {
     }
 
     @Test
-    void nullLoggerFactoryReturnsSafeNoOpAndDelegatedLoggers() {
-        Logger noOpLogger = NullLoggerFactory.INSTANCE.getLogger("org.example.Component");
-
-        assertThat(noOpLogger).isSameAs(NullLoggerFactory.LOGGER);
-        assertThat(noOpLogger.isDebugEnabled()).isFalse();
-        assertThat(noOpLogger.isWarnEnabled()).isFalse();
-        noOpLogger.debug("debug message");
-        noOpLogger.debug("debug message", new IllegalStateException("debug"));
-        noOpLogger.warn("warn message");
-        noOpLogger.warn("warn message", new IllegalStateException("warn"));
-
-        RecordingLoggerFactory recordingFactory = new RecordingLoggerFactory();
-        Logger delegatedLogger = NullLoggerFactory.getSafeLogger(recordingFactory, Maven_resolver_spiTest.class);
-
-        assertThat(delegatedLogger).isSameAs(recordingFactory.logger);
-        assertThat(recordingFactory.requestedNames).containsExactly(Maven_resolver_spiTest.class.getName());
-        assertThat(NullLoggerFactory.getSafeLogger(null, Maven_resolver_spiTest.class))
-                .isSameAs(NullLoggerFactory.LOGGER);
-        assertThat(NullLoggerFactory.getSafeLogger(name -> null, Maven_resolver_spiTest.class))
-                .isSameAs(NullLoggerFactory.LOGGER);
-    }
-
-    @Test
     void serviceProviderInterfacesCanBeImplementedAndComposed() throws Exception {
         Artifact artifact = artifact();
         Metadata metadata = metadata();
         RemoteRepository repository = repository();
-        ArtifactDownload artifactDownload = new ArtifactDownload(artifact, "context", null, "fail");
-        MetadataDownload metadataDownload = new MetadataDownload(metadata, "context", null, "fail");
-        ArtifactUpload artifactUpload = new ArtifactUpload(artifact, null);
-        MetadataUpload metadataUpload = new MetadataUpload(metadata, null);
+        ArtifactDownload artifactDownload = new ArtifactDownload(artifact, "context", (Path) null, "fail");
+        MetadataDownload metadataDownload = new MetadataDownload(metadata, "context", (Path) null, "fail");
+        ArtifactUpload artifactUpload = new ArtifactUpload(artifact, (Path) null);
+        MetadataUpload metadataUpload = new MetadataUpload(metadata, (Path) null);
 
         InMemoryProvidedChecksumsSource providedSource = new InMemoryProvidedChecksumsSource(
                 Map.of("CRC32", "provided"));
@@ -615,45 +573,6 @@ public class Maven_resolver_spiTest {
             if (parent != null) {
                 Files.createDirectories(parent.toPath());
             }
-        }
-    }
-
-    private static final class RecordingLoggerFactory implements LoggerFactory {
-        private final RecordingLogger logger = new RecordingLogger();
-        private final List<String> requestedNames = new ArrayList<>();
-
-        @Override
-        public Logger getLogger(String name) {
-            requestedNames.add(name);
-            return logger;
-        }
-    }
-
-    private static final class RecordingLogger implements Logger {
-        @Override
-        public boolean isDebugEnabled() {
-            return true;
-        }
-
-        @Override
-        public void debug(String message) {
-        }
-
-        @Override
-        public void debug(String message, Throwable error) {
-        }
-
-        @Override
-        public boolean isWarnEnabled() {
-            return true;
-        }
-
-        @Override
-        public void warn(String message) {
-        }
-
-        @Override
-        public void warn(String message, Throwable error) {
         }
     }
 
