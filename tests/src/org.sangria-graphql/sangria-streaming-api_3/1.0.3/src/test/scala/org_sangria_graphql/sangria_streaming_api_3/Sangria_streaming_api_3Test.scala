@@ -160,6 +160,20 @@ class Sangria_streaming_api_3Test {
   }
 
   @Test
+  def futureSubscriptionStreamGivenSupportsAutomaticTypeClassResolution(): Unit = {
+    import sangria.streaming.future.given
+
+    val stream: SubscriptionStream[Future] = summon[SubscriptionStream[Future]]
+    val like: SubscriptionStreamLike[Future[GraphAction[String, Int]], GraphAction, String, Int, AnyVal] =
+      summon[SubscriptionStreamLike[Future[GraphAction[String, Int]], GraphAction, String, Int, AnyVal]]
+    val actionStream: like.StreamSource[GraphAction[String, Int]] =
+      like.subscriptionStream.single((context: String) => context.length)
+
+    assertTrue(stream.supported(like.subscriptionStream))
+    assertEquals(6, await(like.subscriptionStream.first(actionStream))("native"))
+  }
+
+  @Test
   def validOutStreamTypeInstancesCoverSubclassesOptionsSequencesAndNothing(): Unit = {
     val subclass: ValidOutStreamType[String, CharSequence] = summon[ValidOutStreamType[String, CharSequence]]
     val exact: ValidOutStreamType[String, String] = summon[ValidOutStreamType[String, String]]
