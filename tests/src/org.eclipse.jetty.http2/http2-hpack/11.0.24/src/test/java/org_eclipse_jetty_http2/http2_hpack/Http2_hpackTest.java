@@ -40,7 +40,7 @@ public class Http2_hpackTest {
         MetaData firstDecoded = decoder.decode(firstBlock);
 
         assertThat(firstDecoded).isInstanceOf(MetaData.Request.class);
-        MetaData.Request decodedRequest = (MetaData.Request)firstDecoded;
+        MetaData.Request decodedRequest = (MetaData.Request) firstDecoded;
         assertThat(decodedRequest.getBeginNanoTime()).isEqualTo(12345L);
         assertThat(decodedRequest.getMethod()).isEqualTo("GET");
         assertThat(decodedRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_2);
@@ -84,7 +84,7 @@ public class Http2_hpackTest {
         MetaData decoded = decoder.decode(encode(encoder, request));
 
         assertThat(decoded).isInstanceOf(MetaData.ConnectRequest.class);
-        MetaData.ConnectRequest decodedRequest = (MetaData.ConnectRequest)decoded;
+        MetaData.ConnectRequest decodedRequest = (MetaData.ConnectRequest) decoded;
         assertThat(decodedRequest.getBeginNanoTime()).isEqualTo(67890L);
         assertThat(decodedRequest.getMethod()).isEqualTo("CONNECT");
         assertThat(decodedRequest.getProtocol()).isEqualTo("websocket");
@@ -123,7 +123,7 @@ public class Http2_hpackTest {
         assertThat(preEncodedContentType).isNotEmpty();
         assertThat(preEncodedServer).isNotEmpty();
         assertThat(decoded).isInstanceOf(MetaData.Response.class);
-        MetaData.Response response = (MetaData.Response)decoded;
+        MetaData.Response response = (MetaData.Response) decoded;
         assertThat(response.getStatus()).isEqualTo(204);
         assertThat(response.getHttpVersion()).isEqualTo(HttpVersion.HTTP_2);
         assertThat(response.getFields().get(HttpHeader.CONTENT_TYPE)).isEqualTo("text/plain;charset=utf-8");
@@ -145,7 +145,7 @@ public class Http2_hpackTest {
         MetaData decoded = decoder.decode(block);
 
         assertThat(decoded).isInstanceOf(MetaData.Response.class);
-        MetaData.Response response = (MetaData.Response)decoded;
+        MetaData.Response response = (MetaData.Response) decoded;
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getFields().get(HttpHeader.CONTENT_TYPE)).isEqualTo("text/plain");
         assertThat(response.getFields().get(HttpHeader.SET_COOKIE)).isEqualTo("session=secret");
@@ -239,7 +239,7 @@ public class Http2_hpackTest {
     @Test
     void rejectsInvalidOrOversizedHeaderBlocks() throws Exception {
         HpackDecoder invalidIndexDecoder = new HpackDecoder(4096, System::nanoTime);
-        assertThatThrownBy(() -> invalidIndexDecoder.decode(ByteBuffer.wrap(new byte[] {(byte)0x80})))
+        assertThatThrownBy(() -> invalidIndexDecoder.decode(ByteBuffer.wrap(new byte[] {(byte) 0x80})))
                 .isInstanceOf(HpackException.class);
 
         HpackEncoder encoder = new HpackEncoder();
@@ -253,7 +253,7 @@ public class Http2_hpackTest {
 
     @Test
     void decodesIso88591StringFromByteBuffer() {
-        ByteBuffer bytes = ByteBuffer.wrap(new byte[] {'J', 'e', 't', 't', 'y', '-', (byte)0xE9});
+        ByteBuffer bytes = ByteBuffer.wrap(new byte[] {'J', 'e', 't', 't', 'y', '-', (byte) 0xE9});
 
         assertThat(HpackDecoder.toISO88591String(bytes, bytes.remaining())).isEqualTo("Jetty-?");
         assertThat(bytes.position()).isEqualTo(bytes.limit());
