@@ -141,6 +141,28 @@ public class EventstreamTest {
     }
 
     @Test
+    void encodingEnforcesProtocolBoundsForHeaderNamesStringsAndByteArrays() {
+        assertThatThrownBy(() -> encodeMessage(Map.of("", HeaderValue.fromString("value"))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Strings may not be empty");
+        assertThatThrownBy(() -> encodeMessage(Map.of("emptyString", HeaderValue.fromString(""))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Strings may not be empty");
+        assertThatThrownBy(() -> encodeMessage(Map.of("emptyBytes", HeaderValue.fromByteArray(new byte[0]))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Byte arrays may not be empty");
+        assertThatThrownBy(() -> encodeMessage(Map.of("h".repeat(256), HeaderValue.fromString("value"))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Illegal string length");
+        assertThatThrownBy(() -> encodeMessage(Map.of("longString", HeaderValue.fromString("v".repeat(32_768)))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Illegal string length");
+        assertThatThrownBy(() -> encodeMessage(Map.of("longBytes", HeaderValue.fromByteArray(new byte[32_768]))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Illegal byte array length");
+    }
+
+    @Test
     void decoderBuffersPartialInputAndReturnsDecodedMessages() {
         Message first = new Message(Map.of("name", HeaderValue.fromString("first")), new byte[] {1, 2, 3});
         Message second = new Message(Map.of("name", HeaderValue.fromString("second")), new byte[] {4, 5});
@@ -251,6 +273,10 @@ public class EventstreamTest {
         byte[] combined = Arrays.copyOf(first, first.length + second.length);
         System.arraycopy(second, 0, combined, first.length, second.length);
         return combined;
+    }
+
+    private static ByteBuffer encodeMessage(Map<String, HeaderValue> headers) {
+        return new Message(headers, new byte[] {1}).toByteBuffer();
     }
 
     private static byte[] readRemaining(ByteBuffer byteBuffer) {
