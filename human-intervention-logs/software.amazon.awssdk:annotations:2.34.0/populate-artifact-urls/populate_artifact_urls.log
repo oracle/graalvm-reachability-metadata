@@ -1,0 +1,408 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deee8-e9a8-7b31-9963-e357493d398b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: software.amazon.awssdk:annotations:2.34.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.34.0" when "$version$" is replaced with "2.34.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d/metadata/software.amazon.awssdk/annotations/index.json
+- Entry selector: "metadata-version" = "2.34.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "2.34.0".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "2.34.0".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "2.34.0".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "2.34.0" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar
+- repository-url: https://github.com/aws/aws-sdk-java-v2
+- test-code-url: N/A
+- documentation-url: https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar
+- description: AWS Java SDK Annotations provides marker annotations used by AWS SDK for Java 2.x modules to describe API stability, threading, mutability, nullability, generated code, and SDK visibility. It is a small JVM support artifact containing annotation types rather than a service client or runtime integration.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.34.0
+- Entry metadata-version: 2.34.0
+- Entry test-version: 2.34.0
+codex
+I’ll inspect the existing metadata entry and verify the rendered 2.34.0 artifact URLs before deciding whether anything actually needs editing.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/software.amazon.awssdk/annotations/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+4:    "metadata-version" : "2.34.0",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+9:    "description" : "AWS Java SDK Annotations provides marker annotations used by AWS SDK for Java 2.x modules to describe API stability, threading, mutability, nullability, generated code, and SDK visibility. It is a small JVM support artifact containing annotation types rather than a service client or runtime integration.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/software.amazon.awssdk/annotations/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.34.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+    "description" : "AWS Java SDK Annotations provides marker annotations used by AWS SDK for Java 2.x modules to describe API stability, threading, mutability, nullability, generated code, and SDK visibility. It is a small JVM support artifact containing annotation types rather than a service client or runtime integration.",
+    "tested-versions" : [
+      "2.34.0"
+    ],
+    "allowed-packages" : [
+      "software.amazon.awssdk.annotations"
+    ]
+  }
+]
+
+web search: 
+web search: https://github.com/aws/aws-sdk-java-v2
+web search: 
+web search: repo.maven.apache.org maven2 software amazon awssdk annotations 2.34.0 annotations-2.34.0-sources.jar
+codex
+The entry already has non-blank values for every requested field except `language`. I’m checking Maven Central’s 2.34.0 directory now, including whether a test artifact exists, and then I’ll only edit if the file is actually missing a required value.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/2.34.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: software/amazon/awssdk/annotations/2.34.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>software/amazon/awssdk/annotations/2.34.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="annotations-2.34.0-javadoc.jar" title="annotations-2.34.0-javadoc.jar">annotations-2.34.0-javadoc.jar</a>                    2025-09-19 21:47    359952      
+<a href="annotations-2.34.0-javadoc.jar.asc" title="annotations-2.34.0-javadoc.jar.asc">annotations-2.34.0-javadoc.jar.asc</a>                2025-09-19 21:47       833      
+<a href="annotations-2.34.0-javadoc.jar.md5" title="annotations-2.34.0-javadoc.jar.md5">annotations-2.34.0-javadoc.jar.md5</a>                2025-09-19 21:47        32      
+<a href="annotations-2.34.0-javadoc.jar.sha1" title="annotations-2.34.0-javadoc.jar.sha1">annotations-2.34.0-javadoc.jar.sha1</a>               2025-09-19 21:47        40      
+<a href="annotations-2.34.0-sources.jar" title="annotations-2.34.0-sources.jar">annotations-2.34.0-sources.jar</a>                    2025-09-19 21:47     19589      
+<a href="annotations-2.34.0-sources.jar.asc" title="annotations-2.34.0-sources.jar.asc">annotations-2.34.0-sources.jar.asc</a>                2025-09-19 21:47       833      
+<a href="annotations-2.34.0-sources.jar.md5" title="annotations-2.34.0-sources.jar.md5">annotations-2.34.0-sources.jar.md5</a>                2025-09-19 21:47        32      
+<a href="annotations-2.34.0-sources.jar.sha1" title="annotations-2.34.0-sources.jar.sha1">annotations-2.34.0-sources.jar.sha1</a>               2025-09-19 21:47        40      
+<a href="annotations-2.34.0.jar" title="annotations-2.34.0.jar">annotations-2.34.0.jar</a>                            2025-09-19 21:47     13755      
+<a href="annotations-2.34.0.jar.asc" title="annotations-2.34.0.jar.asc">annotations-2.34.0.jar.asc</a>                        2025-09-19 21:47       833      
+<a href="annotations-2.34.0.jar.md5" title="annotations-2.34.0.jar.md5">annotations-2.34.0.jar.md5</a>                        2025-09-19 21:47        32      
+<a href="annotations-2.34.0.jar.sha1" title="annotations-2.34.0.jar.sha1">annotations-2.34.0.jar.sha1</a>                       2025-09-19 21:47        40      
+<a href="annotations-2.34.0.pom" title="annotations-2.34.0.pom">annotations-2.34.0.pom</a>                            2025-09-19 21:47      1684      
+<a href="annotations-2.34.0.pom.asc" title="annotations-2.34.0.pom.asc">annotations-2.34.0.pom.asc</a>                        2025-09-19 21:47       833      
+<a href="annotations-2.34.0.pom.md5" title="annotations-2.34.0.pom.md5">annotations-2.34.0.pom.md5</a>                        2025-09-19 21:47        32      
+<a href="annotations-2.34.0.pom.sha1" title="annotations-2.34.0.pom.sha1">annotations-2.34.0.pom.sha1</a>                       2025-09-19 21:47        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/2.34.0/annotations-2.34.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License").
+  ~ You may not use this file except in compliance with the License.
+  ~ A copy of the License is located at
+  ~
+  ~  http://aws.amazon.com/apache2.0
+  ~
+  ~ or in the "license" file accompanying this file. This file is distributed
+  ~ on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+  ~ express or implied. See the License for the specific language governing
+  ~ permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>core</artifactId>
+        <groupId>software.amazon.awssdk</groupId>
+        <version>2.34.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>annotations</artifactId>
+    <name>AWS Java SDK :: Annotations</name>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>software.amazon.awssdk.annotations</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/2.34.0/annotations-2.34.0-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/2.34.0/annotations-2.34.0-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 373ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 17:35:58 GMT
+content-type: application/java-archive
+content-length: 359952
+cf-ray: 9f6106738c0403a5-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "5aac01aa389062081fde10654c8940c8"
+last-modified: Fri, 19 Sep 2025 21:46:43 GMT
+x-checksum-md5: 5aac01aa389062081fde10654c8940c8
+x-checksum-sha1: cd6750018c73c3d338a25ed8b79cff0ca929ae17
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://github.com/aws/aws-sdk-java-v2/tree/2.34.0
+web search: 
+web search: annotations-2.34.0-sources.jar annotations-2.34.0-javadoc.jar repo.maven.apache.org
+web search: 
+web search: https://mvnrepository.com/artifact/software.amazon.awssdk/annotations/2.34.0
+exec
+/usr/bin/bash -lc 'git diff -- metadata/software.amazon.awssdk/annotations/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/annotations-2.34.0-sources.jar" https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/2.34.0/annotations-2.34.0-sources.jar; jar tf "$tmp/annotations-2.34.0-sources.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/2.34.0/annotations-2.34.0-tests.jar \\
+  https://repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/2.34.0/annotations-2.34.0-test-sources.jar; do \\
+  printf '%s -> ' \""'$u"; curl -fsSI "$u" >/tmp/head.$$ 2>/dev/null && awk '"'NR==1{print "'$2}'"' /tmp/head."'$$ || echo missing; '"\\
+done; rm -f /tmp/head."'$$' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 119ms:
+META-INF/
+META-INF/MANIFEST.MF
+software/
+software/amazon/
+software/amazon/awssdk/
+software/amazon/awssdk/annotations/
+META-INF/maven/
+META-INF/maven/software.amazon.awssdk/
+META-INF/maven/software.amazon.awssdk/annotations/
+software/amazon/awssdk/annotations/Generated.java
+software/amazon/awssdk/annotations/Immutable.java
+software/amazon/awssdk/annotations/Mutable.java
+software/amazon/awssdk/annotations/NotNull.java
+software/amazon/awssdk/annotations/NotThreadSafe.java
+software/amazon/awssdk/annotations/ReviewBeforeRelease.java
+software/amazon/awssdk/annotations/SdkInternalApi.java
+software/amazon/awssdk/annotations/SdkPreviewApi.java
+software/amazon/awssdk/annotations/SdkProtectedApi.java
+software/amazon/awssdk/annotations/SdkPublicApi.java
+software/amazon/awssdk/annotations/SdkTestInternalApi.java
+software/amazon/awssdk/annotations/ThreadSafe.java
+software/amazon/awssdk/annotations/ToBuilderIgnoreField.java
+software/amazon/awssdk/annotations/package-info.java
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/maven/software.amazon.awssdk/annotations/pom.xml
+META-INF/maven/software.amazon.awssdk/annotations/pom.properties
+
+ succeeded in 316ms:
+missing
+
+codex
+Maven Central has the source and Javadoc JARs for 2.34.0, but no `tests` or `test-sources` classifier in that release directory. I’m doing one last check against the tagged upstream tree to see whether a module-local test suite exists outside Maven.
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/software.amazon.awssdk/annotations/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 0ms:
+?? metadata/software.amazon.awssdk/annotations/index.json
+
+exec
+/usr/bin/bash -lc "for ref in 2.34.0 v2.34.0; do \\
+  for path in core/annotations/src/test annotations/src/test; do \\
+    u=\"https://github.com/aws/aws-sdk-java-v2/tree/"'$ref/$path"; '"\\
+    printf '%s -> ' \""'$u"; '"\\
+    curl -fsSI -L \""'$u" >/tmp/head.$$ 2>/dev/null && awk '"'NR==1{code="'$2} END{print code}'"' /tmp/head."'$$ || echo missing; '"\\
+  done; \\
+done; rm -f /tmp/head."'$$' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+exec
+/usr/bin/bash -lc "for ref in 2.34.0 v2.34.0; do \\
+  u=\"https://raw.githubusercontent.com/aws/aws-sdk-java-v2/"'$ref/core/annotations/pom.xml"; '"\\
+  printf '%s -> ' \""'$u"; '"\\
+  curl -fsSI \""'$u" >/tmp/head.$$ 2>/dev/null && awk '"'NR==1{print "'$2}'"' /tmp/head."'$$ || echo missing; '"\\
+done; rm -f /tmp/head."'$$' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 434ms:
+200
+https://raw.githubusercontent.com/aws/aws-sdk-java-v2/v2.34.0/core/annotations/pom.xml -> missing
+
+ succeeded in 1827ms:
+missing
+https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/annotations/src/test -> missing
+https://github.com/aws/aws-sdk-java-v2/tree/v2.34.0/core/annotations/src/test -> missing
+https://github.com/aws/aws-sdk-java-v2/tree/v2.34.0/annotations/src/test -> missing
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations?ref=2.34.0 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src?ref=2.34.0 | sed -n '1,180p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 137ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "core/annotations/pom.xml",
+    "sha": "e46fa9c6e7227589b79cb6353e63c0fc99de8a17",
+    "size": 1684,
+    "url": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/pom.xml?ref=2.34.0",
+    "html_url": "https://github.com/aws/aws-sdk-java-v2/blob/2.34.0/core/annotations/pom.xml",
+    "git_url": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/blobs/e46fa9c6e7227589b79cb6353e63c0fc99de8a17",
+    "download_url": "https://raw.githubusercontent.com/aws/aws-sdk-java-v2/2.34.0/core/annotations/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/pom.xml?ref=2.34.0",
+      "git": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/blobs/e46fa9c6e7227589b79cb6353e63c0fc99de8a17",
+      "html": "https://github.com/aws/aws-sdk-java-v2/blob/2.34.0/core/annotations/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "core/annotations/src",
+    "sha": "fa080352617776aecf650ccf1b57b97e5f226a95",
+    "size": 0,
+    "url": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src?ref=2.34.0",
+    "html_url": "https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/core/annotations/src",
+    "git_url": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/trees/fa080352617776aecf650ccf1b57b97e5f226a95",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src?ref=2.34.0",
+      "git": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/trees/fa080352617776aecf650ccf1b57b97e5f226a95",
+      "html": "https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/core/annotations/src"
+    }
+  }
+]
+
+ succeeded in 175ms:
+[
+  {
+    "name": "main",
+    "path": "core/annotations/src/main",
+    "sha": "89626b7501e501a81f398f14814a4dd03a5fa0a7",
+    "size": 0,
+    "url": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src/main?ref=2.34.0",
+    "html_url": "https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/core/annotations/src/main",
+    "git_url": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/trees/89626b7501e501a81f398f14814a4dd03a5fa0a7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/core/annotations/src/main?ref=2.34.0",
+      "git": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/trees/89626b7501e501a81f398f14814a4dd03a5fa0a7",
+      "html": "https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/core/annotations/src/main"
+    }
+  }
+]
+
+codex
+The tagged GitHub module contains only `src/main` for `core/annotations`; no module-local `src/test` tree is present at tag `2.34.0`. Since the file’s requested fields are already non-blank and the library is not Kotlin, Groovy, or Scala-specific, I’m leaving the `language` field absent as requested.
+exec
+/usr/bin/bash -lc 'jq empty metadata/software.amazon.awssdk/annotations/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/software.amazon.awssdk/annotations/index.json && git status --short -- metadata/software.amazon.awssdk/annotations/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d
+ succeeded in 0ms:
+?? metadata/software.amazon.awssdk/annotations/index.json
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/software/amazon/awssdk/annotations/2.34.0/
+web search: 
+web search: https://mvnrepository.com/artifact/software.amazon.awssdk/annotations/2.34.0
+codex
+Verified [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d/metadata/software.amazon.awssdk/annotations/index.json:4). No edit was needed: all requested non-language fields are already non-blank, the Maven source/Javadoc templates render for `2.34.0`, and `language` should remain absent because this is an AWS SDK for Java artifact, not Kotlin/Groovy/Scala-specific. ([mvnrepository.com](https://mvnrepository.com/artifact/software.amazon.awssdk/annotations/2.34.0))
+
+I also verified JSON validity with `jq empty`. `test-code-url` remains `N/A`: Maven Central has no `tests` or `test-sources` artifact for this coordinate, and the tagged upstream module has no `src/test` tree.
+tokens used
+51,726
+Verified [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d/metadata/software.amazon.awssdk/annotations/index.json:4). No edit was needed: all requested non-language fields are already non-blank, the Maven source/Javadoc templates render for `2.34.0`, and `language` should remain absent because this is an AWS SDK for Java artifact, not Kotlin/Groovy/Scala-specific. ([mvnrepository.com](https://mvnrepository.com/artifact/software.amazon.awssdk/annotations/2.34.0))
+
+I also verified JSON validity with `jq empty`. `test-code-url` remains `N/A`: Maven Central has no `tests` or `test-sources` artifact for this coordinate, and the tagged upstream module has no `src/test` tree.
+Ran agent for software.amazon.awssdk:annotations:2.34.0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d/build/agent-url-discovery-logs/software.amazon.awssdk-annotations-2.34.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4514-b6686f2d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 13s
+9 actionable tasks: 1 executed, 8 up-to-date
