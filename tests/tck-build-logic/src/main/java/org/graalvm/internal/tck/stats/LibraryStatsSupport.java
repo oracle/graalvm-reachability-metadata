@@ -245,7 +245,12 @@ public final class LibraryStatsSupport {
             );
         }
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(
+                dynamicAccessDir,
+                libraryClasses,
+                parsedJacocoReport.coveredLinesBySource(),
+                parsedJacocoReport.coveredMethodsByClass()
+        );
         return versionStats(
                 coordinate,
                 LibraryStatsModels.DynamicAccessStatsValue.available(parsedDynamicAccess.dynamicAccessStats()),
@@ -270,7 +275,12 @@ public final class LibraryStatsSupport {
         if (libraryClasses.isEmpty()) {
             return new ExternalDynamicAccessSummary(0L, Map.of());
         }
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, Map.of());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(
+                dynamicAccessDir,
+                libraryClasses,
+                Map.of(),
+                Map.of()
+        );
         return new ExternalDynamicAccessSummary(
                 parsedDynamicAccess.dynamicAccessStats().totalCalls(),
                 parsedDynamicAccess.dynamicAccessStats().breakdown()
@@ -293,7 +303,12 @@ public final class LibraryStatsSupport {
             );
         }
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(
+                dynamicAccessDir,
+                libraryClasses,
+                parsedJacocoReport.coveredLinesBySource(),
+                parsedJacocoReport.coveredMethodsByClass()
+        );
         return new LibraryStatsModels.DynamicAccessCoverageReport(
                 coordinate,
                 parsedDynamicAccess.dynamicAccessStats().totalCalls() > 0,
@@ -570,7 +585,8 @@ public final class LibraryStatsSupport {
     private static ParsedDynamicAccess parseDynamicAccessReports(
             Path dynamicAccessDir,
             Set<String> libraryClasses,
-            Map<String, Set<Integer>> coveredLinesBySource
+            Map<String, Set<Integer>> coveredLinesBySource,
+            Map<String, Set<String>> coveredMethodsByClass
     ) {
         if (!Files.isDirectory(dynamicAccessDir)) {
             return emptyDynamicAccess();
@@ -583,7 +599,13 @@ public final class LibraryStatsSupport {
                     .filter(Files::isRegularFile)
                     .filter(path -> DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString()).matches())
                     .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
-                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, coveredLinesBySource, callSitesByKey));
+                    .forEach(path -> parseDynamicAccessFile(
+                            path,
+                            libraryClasses,
+                            coveredLinesBySource,
+                            coveredMethodsByClass,
+                            callSitesByKey
+                    ));
         } catch (IOException e) {
             throw new GradleException("Failed to traverse dynamic access directory " + dynamicAccessDir, e);
         }
@@ -641,6 +663,7 @@ public final class LibraryStatsSupport {
             Path path,
             Set<String> libraryClasses,
             Map<String, Set<Integer>> coveredLinesBySource,
+            Map<String, Set<String>> coveredMethodsByClass,
             Map<String, ParsedDynamicAccessCallSite> callSitesByKey
     ) {
         Matcher matcher = DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString());
@@ -668,6 +691,9 @@ public final class LibraryStatsSupport {
                         String sourceKey = sourceKey(parsedFrame.className(), parsedFrame.sourceFile());
                         Set<Integer> coveredLines = coveredLinesBySource.get(sourceKey);
                         covered = coveredLines != null && coveredLines.contains(parsedFrame.lineNumber());
+                    } else {
+                        Set<String> coveredMethods = coveredMethodsByClass.get(parsedFrame.className());
+                        covered = coveredMethods != null && coveredMethods.contains(parsedFrame.methodName());
                     }
                     callSitesByKey.put(
                             callSiteKey,
@@ -706,10 +732,11 @@ public final class LibraryStatsSupport {
             return null;
         }
         String className = matcher.group(1);
+        String methodName = matcher.group(2);
         String sourceFile = matcher.group(3);
         String lineNumberString = matcher.group(4);
         Integer lineNumber = lineNumberString == null ? null : Integer.parseInt(lineNumberString);
-        return new ParsedStackFrame(className, sourceFile, lineNumber);
+        return new ParsedStackFrame(className, methodName, sourceFile, lineNumber);
     }
 
     private static ParsedJacocoReport parseJacocoReport(Path jacocoReport) {
@@ -728,6 +755,7 @@ public final class LibraryStatsSupport {
             Element root = document.getDocumentElement();
 
             Map<String, Set<Integer>> coveredLinesBySource = new HashMap<>();
+            Map<String, Map<String, MethodCoverage>> methodsByClass = new HashMap<>();
             NodeList packages = root.getChildNodes();
             for (int i = 0; i < packages.getLength(); i++) {
                 Node node = packages.item(i);
@@ -735,6 +763,15 @@ public final class LibraryStatsSupport {
                     continue;
                 }
                 String packageName = packageElement.getAttribute("name");
+                NodeList classNodes = packageElement.getChildNodes();
+                for (int j = 0; j < classNodes.getLength(); j++) {
+                    Node classNode = classNodes.item(j);
+                    if (!(classNode instanceof Element classElement) || !"class".equals(classElement.getTagName())) {
+                        continue;
+                    }
+                    recordMethodCoverage(classElement, methodsByClass);
+                }
+
                 NodeList sourceFiles = packageElement.getChildNodes();
                 for (int j = 0; j < sourceFiles.getLength(); j++) {
                     Node sourceNode = sourceFiles.item(j);
@@ -764,6 +801,7 @@ public final class LibraryStatsSupport {
                 LibraryStatsModels.CoverageMetricValue fullyCoveredMetric = fullyCoveredCoverageMetricValue();
                 return new ParsedJacocoReport(
                         coveredLinesBySource,
+                        fullyCoveredMethodsByClass(methodsByClass),
                         fullyCoveredMetric,
                         fullyCoveredMetric,
                         fullyCoveredMetric
@@ -771,6 +809,7 @@ public final class LibraryStatsSupport {
             }
             return new ParsedJacocoReport(
                     coveredLinesBySource,
+                    fullyCoveredMethodsByClass(methodsByClass),
                     coverageMetricOrNa(rootCounters, "LINE"),
                     coverageMetricOrNa(rootCounters, "INSTRUCTION"),
                     coverageMetricOrNa(rootCounters, "METHOD")
@@ -807,6 +846,63 @@ public final class LibraryStatsSupport {
             }
         }
         return false;
+    }
+
+    private static void recordMethodCoverage(
+            Element classElement,
+            Map<String, Map<String, MethodCoverage>> methodsByClass
+    ) {
+        String className = classElement.getAttribute("name").replace('/', '.');
+        Map<String, MethodCoverage> methods = methodsByClass.computeIfAbsent(className, ignored -> new HashMap<>());
+        NodeList methodNodes = classElement.getChildNodes();
+        for (int i = 0; i < methodNodes.getLength(); i++) {
+            Node methodNode = methodNodes.item(i);
+            if (!(methodNode instanceof Element methodElement) || !"method".equals(methodElement.getTagName())) {
+                continue;
+            }
+            MethodCoverage coverage = methodInstructionCoverage(methodElement);
+            if (coverage == null) {
+                continue;
+            }
+            String methodName = methodElement.getAttribute("name");
+            methods.merge(methodName, coverage, MethodCoverage::add);
+        }
+    }
+
+    private static MethodCoverage methodInstructionCoverage(Element methodElement) {
+        NodeList counterNodes = methodElement.getChildNodes();
+        for (int i = 0; i < counterNodes.getLength(); i++) {
+            Node counterNode = counterNodes.item(i);
+            if (!(counterNode instanceof Element counterElement) || !"counter".equals(counterElement.getTagName())) {
+                continue;
+            }
+            if (!"INSTRUCTION".equals(counterElement.getAttribute("type"))) {
+                continue;
+            }
+            long missed = Long.parseLong(counterElement.getAttribute("missed"));
+            long covered = Long.parseLong(counterElement.getAttribute("covered"));
+            return new MethodCoverage(covered, missed);
+        }
+        return null;
+    }
+
+    private static Map<String, Set<String>> fullyCoveredMethodsByClass(
+            Map<String, Map<String, MethodCoverage>> methodsByClass
+    ) {
+        Map<String, Set<String>> result = new HashMap<>();
+        for (Map.Entry<String, Map<String, MethodCoverage>> classEntry : methodsByClass.entrySet()) {
+            Set<String> coveredMethods = new LinkedHashSet<>();
+            for (Map.Entry<String, MethodCoverage> methodEntry : classEntry.getValue().entrySet()) {
+                MethodCoverage coverage = methodEntry.getValue();
+                if (coverage.coveredInstructions() > 0L && coverage.missedInstructions() == 0L) {
+                    coveredMethods.add(methodEntry.getKey());
+                }
+            }
+            if (!coveredMethods.isEmpty()) {
+                result.put(classEntry.getKey(), coveredMethods);
+            }
+        }
+        return result;
     }
 
     private static Map<String, LibraryStatsModels.CoverageMetric> parseRootCounters(Element root) {
@@ -901,7 +997,7 @@ public final class LibraryStatsSupport {
         );
     }
 
-    private record ParsedStackFrame(String className, String sourceFile, Integer lineNumber) {
+    private record ParsedStackFrame(String className, String methodName, String sourceFile, Integer lineNumber) {
     }
 
     private record ParsedDynamicAccess(
@@ -923,10 +1019,20 @@ public final class LibraryStatsSupport {
 
     private record ParsedJacocoReport(
             Map<String, Set<Integer>> coveredLinesBySource,
+            Map<String, Set<String>> coveredMethodsByClass,
             LibraryStatsModels.CoverageMetricValue line,
             LibraryStatsModels.CoverageMetricValue instruction,
             LibraryStatsModels.CoverageMetricValue method
     ) {
+    }
+
+    private record MethodCoverage(long coveredInstructions, long missedInstructions) {
+        MethodCoverage add(MethodCoverage other) {
+            return new MethodCoverage(
+                    coveredInstructions + other.coveredInstructions(),
+                    missedInstructions + other.missedInstructions()
+            );
+        }
     }
 
     public record ExternalDynamicAccessSummary(

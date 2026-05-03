@@ -108,6 +108,64 @@ class LibraryStatsSupportTests {
     }
 
     @Test
+    void buildVersionStatsUsesMethodCoverageWhenDynamicAccessFrameHasNoLineNumber() throws IOException {
+        Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Foo.class"));
+
+        Path dynamicAccessDir = tempDir.resolve("dynamic-access-no-lines");
+        Files.createDirectories(dynamicAccessDir.resolve("demo"));
+        Files.writeString(
+                dynamicAccessDir.resolve("demo").resolve("reflection-calls.json"),
+                """
+                {
+                  "java.lang.Class#forName(java.lang.String)": [
+                    "com.example.Foo.noLine(Foo.java)",
+                    "com.example.Foo.overloaded(Foo.java)"
+                  ]
+                }
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        Path jacocoReport = tempDir.resolve("jacoco-no-lines.xml");
+        Files.writeString(
+                jacocoReport,
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <report name="demo">
+                  <package name="com/example">
+                    <class name="com/example/Foo" sourcefilename="Foo.java">
+                      <method name="noLine" desc="()V">
+                        <counter type="INSTRUCTION" missed="0" covered="3"/>
+                      </method>
+                      <method name="overloaded" desc="()V">
+                        <counter type="INSTRUCTION" missed="0" covered="2"/>
+                      </method>
+                      <method name="overloaded" desc="(Ljava/lang/String;)V">
+                        <counter type="INSTRUCTION" missed="4" covered="0"/>
+                      </method>
+                    </class>
+                  </package>
+                  <counter type="INSTRUCTION" missed="4" covered="5"/>
+                  <counter type="LINE" missed="0" covered="0"/>
+                  <counter type="METHOD" missed="1" covered="2"/>
+                </report>
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStats(
+                "com.example:demo:1.0.0",
+                List.of(libraryJar),
+                dynamicAccessDir,
+                jacocoReport
+        );
+
+        assertThat(versionStats.dynamicAccess().totalCalls()).isEqualTo(2);
+        assertThat(versionStats.dynamicAccess().coveredCalls()).isEqualTo(1);
+        assertThat(versionStats.dynamicAccess().breakdown().get("reflection").coveredCalls()).isEqualTo(1);
+    }
+
+    @Test
     void buildVersionStatsAllowsMissingDynamicAccessDirectory() throws IOException {
         Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Foo.class"));
 
