@@ -8,7 +8,7 @@ package org_apache_camel.camel_util_json;
 
 import org.junit.jupiter.api.Test;
 
-class Camel_util_jsonTest {
+public class Camel_util_jsonTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
