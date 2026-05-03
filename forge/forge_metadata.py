@@ -62,6 +62,7 @@ from git_scripts.common_git import (
     is_github_rate_limit_text,
     log_github_query,
     run_github_json_with_retries,
+    run_github_with_retries,
 )
 from git_scripts.make_pr_javac_fix import main as run_make_pr_javac_fix
 from git_scripts.make_pr_java_run_fix import main as run_make_pr_java_run_fix
@@ -1094,7 +1095,7 @@ CLAIM_BACKOFF_MAX = 10  # Maximum seconds to wait before verifying claim
 
 def get_authenticated_user() -> str:
     """Return the GitHub username of the currently authenticated gh user."""
-    result = gh("api", "user", "--jq", ".login")
+    result = run_github_with_retries(gh, ("api", "user", "--jq", ".login"))
     return result.stdout.strip()
 
 

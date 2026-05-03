@@ -235,6 +235,32 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertIn("GitHub API transient failure", stderr.getvalue())
         self.assertNotIn("query=", stderr.getvalue())
 
+    def test_get_authenticated_user_retries_transient_timeout(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr='Get "https://api.github.com/user": dial tcp 140.82.121.5:443: i/o timeout',
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="vjovanov\n",
+            stderr="",
+        )
+
+        with patch.object(
+                forge_metadata.subprocess,
+                "run",
+                side_effect=[failed_process, successful_process],
+        ) as run, \
+                patch.object(common_git.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO):
+            self.assertEqual(forge_metadata.get_authenticated_user(), "vjovanov")
+
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+
     def test_preflight_fallback_does_not_continue_after_rate_limit(self) -> None:
         issue = {"number": 1412, "labels": []}
 

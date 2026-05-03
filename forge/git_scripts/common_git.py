@@ -325,14 +325,46 @@ def run_github_json_with_retries(
     raise RuntimeError("GitHub JSON command exhausted retries")
 
 
+def run_github_with_retries(
+        gh_runner: Callable[..., subprocess.CompletedProcess],
+        args: tuple[str, ...],
+        *,
+        quiet: bool = False,
+        max_attempts: int = GITHUB_TRANSIENT_RETRY_ATTEMPTS,
+) -> subprocess.CompletedProcess:
+    """Run a read-only gh command, retrying transient GitHub failures."""
+    for attempt in range(1, max_attempts + 1):
+        command_quiet = quiet or attempt < max_attempts
+        try:
+            return gh_runner(*args, quiet=command_quiet)
+        except subprocess.CalledProcessError as exc:
+            error_text = _github_error_text_from_exception(exc)
+            if attempt < max_attempts and is_github_transient_failure_text(error_text):
+                _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                time.sleep(_github_retry_delay_seconds(attempt))
+                continue
+            raise
+
+    raise RuntimeError("GitHub command exhausted retries")
+
+
 def gh_json(*args: str) -> Any:
     """Run a gh CLI command and parse its stdout as JSON."""
     return run_github_json_with_retries(gh, args)
 
 
+def gh_with_retries(*args: str, quiet: bool = False, cwd: str | None = None) -> subprocess.CompletedProcess:
+    """Run a read-only gh CLI command with retries for transient failures."""
+    return run_github_with_retries(
+        lambda *gh_args, quiet=False: gh(*gh_args, cwd=cwd, quiet=quiet),
+        args,
+        quiet=quiet,
+    )
+
+
 def get_authenticated_login(cwd=None) -> str:
     """Return the authenticated GitHub login used by gh."""
-    result = gh("api", "user", "--jq", ".login", cwd=cwd)
+    result = gh_with_retries("api", "user", "--jq", ".login", cwd=cwd)
     return result.stdout.strip()
 
 
