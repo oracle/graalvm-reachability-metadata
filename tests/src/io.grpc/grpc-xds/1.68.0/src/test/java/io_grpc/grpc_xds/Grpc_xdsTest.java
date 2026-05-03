@@ -16,6 +16,7 @@ import io.grpc.BindableService;
 import io.grpc.InsecureChannelCredentials;
 import io.grpc.InsecureServerCredentials;
 import io.grpc.LoadBalancerProvider;
+import io.grpc.MethodDescriptor;
 import io.grpc.NameResolver.ConfigOrError;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.Status;
@@ -65,6 +66,15 @@ import io.grpc.xds.shaded.io.envoyproxy.envoy.config.route.v3.RouteAction;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.config.route.v3.RouteMatch;
 import io.grpc.xds.shaded.io.envoyproxy.envoy.config.route.v3.VirtualHost;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.BucketId;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaResponse;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaResponse.BucketAction;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaResponse.BucketAction.QuotaAssignmentAction;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaServiceGrpc;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaUsageReports;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.service.rate_limit_quota.v3.RateLimitQuotaUsageReports.BucketQuotaUsage;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.type.v3.RateLimitStrategy;
+import io.grpc.xds.shaded.io.envoyproxy.envoy.type.v3.TokenBucket;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
@@ -285,6 +295,68 @@ public class Grpc_xdsTest {
         assertThat(upstream.loadMetricStatsMap()).isEmpty();
         assertThat(droppedRequests.category()).isEqualTo("overload");
         assertThat(droppedRequests.droppedCount()).isEqualTo(5L);
+    }
+
+    @Test
+    void rateLimitQuotaServiceBuildsUsageReportsAndAssignments() {
+        BucketId bucketId = BucketId.newBuilder()
+                .putBucket("tenant", "gold")
+                .putBucket("method", "CheckoutService/Pay")
+                .build();
+        BucketQuotaUsage usage = BucketQuotaUsage.newBuilder()
+                .setBucketId(bucketId)
+                .setTimeElapsed(Duration.newBuilder().setSeconds(5L))
+                .setNumRequestsAllowed(11L)
+                .setNumRequestsDenied(2L)
+                .build();
+        RateLimitQuotaUsageReports usageReports = RateLimitQuotaUsageReports.newBuilder()
+                .setDomain("payments")
+                .addBucketQuotaUsages(usage)
+                .build();
+
+        TokenBucket tokenBucket = TokenBucket.newBuilder()
+                .setMaxTokens(100)
+                .setTokensPerFill(UInt32Value.of(10))
+                .setFillInterval(Duration.newBuilder().setSeconds(1L))
+                .build();
+        QuotaAssignmentAction quotaAssignment = QuotaAssignmentAction.newBuilder()
+                .setAssignmentTimeToLive(Duration.newBuilder().setSeconds(30L))
+                .setRateLimitStrategy(RateLimitStrategy.newBuilder().setTokenBucket(tokenBucket))
+                .build();
+        BucketAction action = BucketAction.newBuilder()
+                .setBucketId(bucketId)
+                .setQuotaAssignmentAction(quotaAssignment)
+                .build();
+        RateLimitQuotaResponse response = RateLimitQuotaResponse.newBuilder()
+                .addBucketAction(action)
+                .build();
+
+        MethodDescriptor<RateLimitQuotaUsageReports, RateLimitQuotaResponse> method =
+                RateLimitQuotaServiceGrpc.getStreamRateLimitQuotasMethod();
+        ServerServiceDefinition serviceDefinition = RateLimitQuotaServiceGrpc.bindService(
+                new RateLimitQuotaServiceGrpc.AsyncService() { });
+
+        assertThat(method.getType()).isEqualTo(MethodDescriptor.MethodType.BIDI_STREAMING);
+        assertThat(method.getServiceName()).isEqualTo(RateLimitQuotaServiceGrpc.SERVICE_NAME);
+        assertThat(method.getBareMethodName()).isEqualTo("StreamRateLimitQuotas");
+        assertThat(serviceDefinition.getServiceDescriptor().getName()).isEqualTo(RateLimitQuotaServiceGrpc.SERVICE_NAME);
+        assertThat(serviceDefinition.getMethods()).hasSize(1);
+        assertThat(usageReports.getDomain()).isEqualTo("payments");
+        assertThat(usageReports.getBucketQuotaUsages(0).getBucketId().getBucketMap())
+                .containsEntry("tenant", "gold")
+                .containsEntry("method", "CheckoutService/Pay");
+        assertThat(usageReports.getBucketQuotaUsages(0).getNumRequestsAllowed()).isEqualTo(11L);
+        assertThat(usageReports.getBucketQuotaUsages(0).getNumRequestsDenied()).isEqualTo(2L);
+        assertThat(response.getBucketAction(0).getBucketActionCase())
+                .isEqualTo(BucketAction.BucketActionCase.QUOTA_ASSIGNMENT_ACTION);
+        assertThat(response.getBucketAction(0).getQuotaAssignmentAction().getRateLimitStrategy().getStrategyCase())
+                .isEqualTo(RateLimitStrategy.StrategyCase.TOKEN_BUCKET);
+        assertThat(response.getBucketAction(0)
+                .getQuotaAssignmentAction()
+                .getRateLimitStrategy()
+                .getTokenBucket()
+                .getTokensPerFill()
+                .getValue()).isEqualTo(10);
     }
 
     @Test
