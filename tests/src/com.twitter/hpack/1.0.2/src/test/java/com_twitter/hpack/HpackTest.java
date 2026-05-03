@@ -75,6 +75,27 @@ public class HpackTest {
     }
 
     @Test
+    void encodesCustomHeadersWithoutDynamicIndexingWhenTableCapacityIsZero() throws IOException {
+        Encoder encoder = new Encoder(0);
+        Decoder decoder = new Decoder(8192, 0);
+
+        ByteArrayOutputStream firstHeaderBlock = new ByteArrayOutputStream();
+        encoder.encodeHeader(firstHeaderBlock, ascii("x-no-index"), ascii("alpha"), false);
+
+        ByteArrayOutputStream secondHeaderBlock = new ByteArrayOutputStream();
+        encoder.encodeHeader(secondHeaderBlock, ascii("x-no-index"), ascii("alpha"), false);
+
+        assertThat(firstHeaderBlock.toByteArray()).isEqualTo(secondHeaderBlock.toByteArray());
+        assertThat(secondHeaderBlock.toByteArray()[0] & 0x80).isZero();
+        assertThat(decode(decoder, firstHeaderBlock.toByteArray()))
+                .containsExactly(header("x-no-index", "alpha", false));
+        assertThat(decode(decoder, secondHeaderBlock.toByteArray()))
+                .containsExactly(header("x-no-index", "alpha", false));
+        assertThat(encoder.getMaxHeaderTableSize()).isZero();
+        assertThat(decoder.getMaxHeaderTableSize()).isZero();
+    }
+
+    @Test
     void encodesStaticAndDynamicTableReferencesForRoundTripDecoding() throws IOException {
         Encoder encoder = new Encoder(256);
         Decoder decoder = new Decoder(8192, 256);
