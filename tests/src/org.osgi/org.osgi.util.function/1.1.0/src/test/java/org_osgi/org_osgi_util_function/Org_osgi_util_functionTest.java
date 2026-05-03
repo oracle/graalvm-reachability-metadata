@@ -96,6 +96,26 @@ public class Org_osgi_util_functionTest {
         assertThatThrownBy(() -> failingPredicate.test("value")).isSameAs(predicateFailure);
     }
 
+    @Test
+    void interfacesCanBeImplementedByReusableStatefulClasses() throws Exception {
+        PrefixFunction prefixFunction = new PrefixFunction("osgi-");
+        ContainsTextPredicate containsApi = new ContainsTextPredicate("api");
+        RecordingConsumer recordingConsumer = new RecordingConsumer();
+
+        String functionValue = prefixFunction.apply("function");
+        String apiValue = prefixFunction.apply("api");
+
+        if (containsApi.test(functionValue)) {
+            recordingConsumer.accept(functionValue);
+        }
+        if (containsApi.test(apiValue)) {
+            recordingConsumer.accept(apiValue);
+        }
+
+        assertThat(functionValue).isEqualTo("osgi-function");
+        assertThat(recordingConsumer.acceptedValues()).containsExactly("osgi-api");
+    }
+
     private static boolean hasOnlyLetters(String value) throws Exception {
         if (value.isEmpty()) {
             throw new InvalidInputException("Empty values are not supported");
@@ -124,6 +144,45 @@ public class Org_osgi_util_functionTest {
     private static <T> void forEach(Iterable<T> values, Consumer<? super T> consumer) throws Exception {
         for (T value : values) {
             consumer.accept(value);
+        }
+    }
+
+    private static final class PrefixFunction implements Function<String, String> {
+        private final String prefix;
+
+        private PrefixFunction(String prefix) {
+            this.prefix = prefix;
+        }
+
+        @Override
+        public String apply(String value) {
+            return prefix + value;
+        }
+    }
+
+    private static final class ContainsTextPredicate implements Predicate<String> {
+        private final String text;
+
+        private ContainsTextPredicate(String text) {
+            this.text = text;
+        }
+
+        @Override
+        public boolean test(String value) {
+            return value.contains(text);
+        }
+    }
+
+    private static final class RecordingConsumer implements Consumer<String> {
+        private final List<String> acceptedValues = new ArrayList<>();
+
+        @Override
+        public void accept(String value) {
+            acceptedValues.add(value);
+        }
+
+        private List<String> acceptedValues() {
+            return acceptedValues;
         }
     }
 
