@@ -47,7 +47,7 @@ public class ClassUtilsTest {
     void obtainsPublicStaticFieldValue() {
         ClassLoader classLoader = ClassUtilsTest.class.getClassLoader();
 
-        String value = ClassUtils.getStaticFieldValue(StaticFields.class.getName(), "PUBLIC_VALUE", classLoader);
+        String value = ClassUtils.getStaticFieldValue(StaticFields.class.getName(), "publicValue", classLoader);
 
         assertThat(value).isEqualTo("static-value");
     }
@@ -92,7 +92,7 @@ public class ClassUtilsTest {
     }
 
     public static class StaticFields {
-        public static String PUBLIC_VALUE = "static-value";
+        public static String publicValue = "static-value";
     }
 
     private static class FieldHolder {
