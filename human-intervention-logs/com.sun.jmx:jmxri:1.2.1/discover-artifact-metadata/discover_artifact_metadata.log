@@ -1,0 +1,1059 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded06-62fc-7233-a430-69475343075e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.jmx:jmxri:1.2.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.2.1" when "$version$" is replaced with "1.2.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+- Set "coordinates" to "com.sun.jmx:jmxri:1.2.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.2.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and any upstream/public project references, then update the JSON directly with the most defensible URLs.
+web search: 
+web search: com.sun.jmx jmxri 1.2.1 Maven sources
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/
+web search: 
+web search: 
+codex
+Maven Central exposes only a tiny POM listing for this coordinate in the indexed result, so I’m checking the actual repository contents and the local target file before deciding whether the artifact is a real Native Image target.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,160p' build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+{
+  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sun.jmx</groupId>
+  <artifactId>jmxri</artifactId>
+  <version>1.2.1</version>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar; curl -fsSI https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-sources.jar; curl -fsSI https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-tests.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ exited 22 in 744ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 08:48:44 GMT
+content-type: text/html
+cf-ray: 9f5e02229d66a625-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 08:48:44 GMT
+content-type: text/html
+cf-ray: 9f5e0223d88001f4-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 08:48:44 GMT
+content-type: text/html
+cf-ray: 9f5e0225d884bbfc-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "rg -n '\"replacement\"|\"reason\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"N/A\"' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"|\"repository-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"|\"repository-url\"' metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/io.lettuce/lettuce-core/index.json:6:    "repository-url" : "https://github.com/redis/lettuce",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:6:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:24:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/javax.portlet/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/at.yawk.lz4/lz4-java/index.json:6:    "repository-url" : "https://github.com/yawkat/lz4-java/tree/v1.10.4",
+metadata/com.esotericsoftware/minlog/index.json:6:    "repository-url" : "https://github.com/EsotericSoftware/minlog",
+metadata/org.lz4/lz4-java/index.json:7:    "repository-url": "https://github.com/lz4/lz4-java",
+metadata/org.fusesource.jansi/jansi/index.json:6:    "repository-url" : "https://github.com/fusesource/jansi",
+metadata/org.fusesource.jansi/jansi/index.json:33:    "repository-url" : "https://github.com/fusesource/jansi",
+metadata/org.fusesource.jansi/jansi/index.json:51:    "repository-url" : "https://github.com/fusesource/jansi",
+metadata/info.picocli/picocli/index.json:6:    "repository-url" : "https://github.com/remkop/picocli",
+metadata/ch.qos.cal10n/cal10n-api/index.json:6:    "repository-url" : "https://github.com/qos-ch/cal10n",
+metadata/javax.el/javax.el-api/index.json:6:    "repository-url" : "https://github.com/javaee/el-spec",
+metadata/javax.validation/validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/org.checkerframework/checker-qual/index.json:5:    "repository-url" : "https://github.com/typetools/checker-framework",
+metadata/org.checkerframework/checker-qual/index.json:20:    "repository-url" : "https://github.com/typetools/checker-framework",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:6:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.apache.ant/ant-antlr/index.json:6:    "repository-url" : "https://github.com/apache/ant",
+metadata/org.checkerframework/checker-compat-qual/index.json:6:    "repository-url" : "https://github.com/typetools/checker-framework",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:20:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-api",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:7:    "repository-url": "https://github.com/javaee/metro-fi",
+metadata/javax.servlet/servlet-api/index.json:6:    "repository-url" : "https://github.com/apache/tomcat55",
+metadata/javax.servlet/servlet-api/index.json:20:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/javax.servlet/servlet-api/index.json:34:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/org.jboss.netty/netty/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.glassfish.hk2.external/jakarta.inject/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.apache.activemq/artemis-jms-client/index.json:6:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:33:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:51:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:66:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/javax.servlet/javax.servlet-api/index.json:6:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/org.json/json/index.json:6:    "repository-url" : "https://github.com/stleary/JSON-java",
+metadata/org.jboss/jandex/index.json:6:    "repository-url" : "https://github.com/smallrye/jandex",
+metadata/com.google.errorprone/error_prone_annotations/index.json:6:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.errorprone/error_prone_annotations/index.json:20:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.errorprone/error_prone_annotations/index.json:34:    "repository-url" : "https://github.com/google/error-prone",
+metadata/com.google.errorprone/error_prone_annotations/index.json:48:    "repository-url" : "https://github.com/google/error-prone",
+metadata/xalan/xalan/index.json:6:    "repository-url" : "https://github.com/apache/xalan-java",
+metadata/javax.el/el-api/index.json:6:    "repository-url" : "https://github.com/javaee/uel-ri",
+metadata/org.apache.activemq/activemq-client/index.json:6:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-client/index.json:36:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:6:    "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
+metadata/com.github.docker-java/docker-java-transport/index.json:6:    "repository-url" : "https://github.com/docker-java/docker-java",
+metadata/javax.money/money-api/index.json:6:    "repository-url" : "https://github.com/JavaMoney/jsr354-api",
+metadata/org.jsoup/jsoup/index.json:6:    "repository-url" : "https://github.com/jhy/jsoup",
+metadata/org.jsoup/jsoup/index.json:36:    "repository-url" : "https://github.com/jhy/jsoup",
+metadata/com.mysql/mysql-connector-j/index.json:6:    "repository-url" : "https://github.com/mysql/mysql-connector-j",
+metadata/com.android.databinding/baseLibrary/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/frameworks/data-binding",
+metadata/com.android.databinding/baseLibrary/index.json:20:    "repository-url" : "https://android.googlesource.com/platform/frameworks/data-binding",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:6:    "repository-url" : "https://source.mysema.com/svn/mysema/projects/commons/lang",
+metadata/com.h2database/h2/index.json:6:    "repository-url" : "https://github.com/h2database/h2database",
+metadata/org.ow2.asm/asm-tree/index.json:6:    "repository-url" : "https://gitlab.ow2.org/asm/asm/",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:6:    "repository-url" : "https://github.com/apache/hadoop-thirdparty",
+metadata/org.ow2.asm/asm-analysis/index.json:6:    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:6:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:26:    "repository-url" : "https://github.com/jwtk/jjwt",
+metadata/org.apache.activemq/activemq-broker/index.json:5:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-broker/index.json:28:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.osgi/org.osgi.core/index.json:6:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.osgi/org.osgi.core/index.json:22:    "repository-url" : "https://github.com/osgi/osgi",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.springframework.security/spring-security-crypto/index.json:49:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/org.springframework.security/spring-security-crypto/index.json:101:    "repository-url" : "https://github.com/spring-projects/spring-security",
+metadata/com.ecwid.consul/consul-api/index.json:12:    "repository-url": "https://github.com/Ecwid/consul-api/tree/v1.4.5",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.hibernate.models/hibernate-models/index.json:6:    "repository-url" : "https://github.com/hibernate/hibernate-models",
+metadata/com.android.tools/annotations/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.google.flatbuffers/flatbuffers-java/index.json:6:    "repository-url" : "https://github.com/google/flatbuffers",
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' metadata | head -50" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc "rg -n '\"replacement\"|\"reason\"' metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the Gradle module metadata redirects JVM variants to kotlinx-io-bytestring-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the JVM artifact is published separately as kotlinx-io-core-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:4:    "reason": "The default and macOS classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:5:    "replacement": "io.netty:netty-resolver-dns-classes-macos:4.1.74.Final"
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:4:    "reason": "The default and platform classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:5:    "replacement": "io.netty.incubator:netty-incubator-codec-classes-quic:0.0.34.Final"
+metadata/org.jboss.weld/weld-build-config/index.json:4:    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:92:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:75:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:33:          "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:131:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:156:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:186:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:243:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:282:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:344:    "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:108:            "required": [ "version", "reason" ],
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:114:              "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:137:        "reason"
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:145:        "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:150:        "replacement": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:243:          { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:250:        "reason": "Scala.js artifact; not a JVM library consumed by native-image.",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:251:        "replacement": "Use the JVM artifact if one exists."
+metadata/com.google.protobuf/protobuf-java-util/index.json:37:        "reason" : "Published POM for com.google.protobuf:protobuf-java-util:3.22.1 is malformed: dependency com.google.protobuf:protobuf-java uses invalid groupId '$com.google.protobuf' and omits the version."
+
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:28:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:46:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jboss.weld/weld-build-config/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the JVM artifact is published separately as kotlinx-io-core-jvm.",
+    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+web search: 
+web search: site:mvnrepository.com com.sun.jmx jmxri 1.2.1
+web search: 
+web search: https://archiva.wikimedia.org/repository/mirrored/com/sun/jmx/jmxri/1.2.1/
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.management</groupId>
+  <artifactId>jmxri</artifactId>
+  <version>1.2.1</version>
+  <name>JMX 1.2.1 Reference Implementation</name>
+  <url>http://java.sun.com/products/JavaManagement/</url>
+
+  <distributionManagement>
+    <downloadUrl>http://java.sun.com/products/JavaManagement/download.html</downloadUrl>
+  </distributionManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/javax/management/jmxri/1.2.1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+<html>
+<head><title>Index of /maven2/javax/management/jmxri/1.2.1/</title></head>
+<body bgcolor=white>
+<h1>Index of /maven2/javax/management/jmxri/1.2.1/</h1>
+<hr>
+<pre>
+<a href=../>../</a>
+<a href="jmxri-1.2.1.pom.sha1">jmxri-1.2.1.pom.sha1</a>                               2006-03-16 22:12                  145
+<a href="jmxri-1.2.1.pom">jmxri-1.2.1.pom</a>                                    2006-03-16 21:27                  410
+<a href="jmxri-1.2.1.pom.md5">jmxri-1.2.1.pom.md5</a>                                2006-03-16 22:12                  137
+</pre>
+<hr>
+</body>
+</html>
+
+ exited 22 in 256ms:
+curl: (22) The requested URL reHTTP/2 404 
+date: Sun, 03 May 2026 08:49:11 GMT
+content-type: text/html
+cf-ray: 9f5e02cf7bc90396-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+turned error: 404
+
+web search: 
+web search: jmxri-1.2.1.jar maven
+web search: 
+web search: "jmx-1_2_1-ri" source
+codex
+I found an old JMX RI distribution and third-party Maven mirrors that contain a `jmxri.jar`, but Maven Central for this exact `com.sun.jmx:jmxri:1.2.1` coordinate only publishes a POM. I’m checking whether the mirror JAR changes the Native Image applicability decision before writing the metadata.
+exec
+/usr/bin/bash -lc "curl -fsSL https://download.dcache.org/nexus/service/rest/repository/browse/public-snapshots/com/sun/jmx/jmxri/1.2.1/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jmxri.jar" https://download.dcache.org/nexus/service/rest/repository/browse/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar && jar tf "$tmp/jmxri.jar" | head -40; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 188ms:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Index of /com/sun/jmx/jmxri/1.2.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+
+    <link rel="icon" type="image/png" href="../../../../../../../../../../static/rapture/resources/safari-favicon-32x32.png?3.70.3-01" sizes="32x32">
+    <link rel="mask-icon" href="../../../../../../../../../../static/rapture/resources/favicon-white.svg?3.70.3-01" color="#00bb6c">
+    <link rel="icon" type="image/png" href="../../../../../../../../../../static/rapture/resources/favicon.svg?3.70.3-01" sizes="16x16">
+
+    <link rel="stylesheet" type="text/css" href="../../../../../../../../../../static/css/nexus-content.css?3.70.3-01"/>
+</head>
+<body class="htmlIndex">
+<h1>Index of /com/sun/jmx/jmxri/1.2.1</h1>
+
+
+<table cellspacing="10">
+    <tr>
+        <th align="left">Name</th>
+        <th>Last Modified</th>
+        <th>Size</th>
+        <th>Description</th>
+    </tr>
+        <tr>
+            <td><a href="../">Parent Directory</a></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar">jmxri-1.2.1.jar</a></td>
+            <td>
+                    Tue Mar 13 07:12:16 GMT 2018
+            </td>
+            <td align="right">
+                    365858
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar.md5">jmxri-1.2.1.jar.md5</a></td>
+            <td>
+                    Tue Mar 13 07:12:40 GMT 2018
+            </td>
+            <td align="right">
+                    32
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar.sha1">jmxri-1.2.1.jar.sha1</a></td>
+            <td>
+                    Tue Mar 13 07:12:40 GMT 2018
+            </td>
+            <td align="right">
+                    40
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom">jmxri-1.2.1.pom</a></td>
+            <td>
+                    Tue Mar 13 07:12:16 GMT 2018
+            </td>
+            <td align="right">
+                    303
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom.md5">jmxri-1.2.1.pom.md5</a></td>
+            <td>
+                    Tue Mar 13 07:12:16 GMT 2018
+            </td>
+            <td align="right">
+                    32
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom.sha1">jmxri-1.2.1.pom.sha1</a></td>
+            <td>
+                    Tue Mar 13 07:12:16 GMT 2018
+            </td>
+            <td align="right">
+                    40
+            </td>
+            <td></td>
+        </tr>
+</table>
+</body>
+</html>
+
+ succeeded in 163ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 1474ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.management</groupId>
+  <artifactId>jmxri</artifactId>
+  <version>1.2.1</version>
+  <name>JMX 1.2.1 Reference Implementation</name>
+  <url>http://java.sun.com/products/JavaManagement/</url>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-sources.jar; curl -fsSI https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-javadoc.jar; curl -fsSI https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-tests.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jmxri.jar" https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar && jar tf "$tmp/jmxri.jar" | head -60; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc "curl -fsSL https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 100ms:
+ succeeded in 1792ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/sun/
+com/sun/jmx/
+com/sun/jmx/mbeanserver/
+com/sun/jmx/interceptor/
+com/sun/jmx/trace/
+com/sun/jmx/defaults/
+com/sun/management/
+com/sun/management/jmx/
+javax/
+javax/management/
+javax/management/loading/
+javax/management/openmbean/
+javax/management/relation/
+javax/management/timer/
+javax/management/modelmbean/
+javax/management/monitor/
+com/sun/jmx/mbeanserver/MetaData.class
+com/sun/jmx/mbeanserver/Repository.class
+com/sun/jmx/mbeanserver/JmxMBeanServerBuilder.class
+com/sun/jmx/mbeanserver/MBeanInstantiatorImpl.class
+com/sun/jmx/mbeanserver/MBeanInstantiator.class
+com/sun/jmx/mbeanserver/ModifiableClassLoaderRepository.class
+com/sun/jmx/mbeanserver/JmxMBeanServer$1.class
+com/sun/jmx/mbeanserver/JmxMBeanServer.class
+com/sun/jmx/mbeanserver/SunJmxMBeanServer.class
+com/sun/jmx/mbeanserver/SecureClassLoaderRepository.class
+com/sun/jmx/mbeanserver/Introspector.class
+com/sun/jmx/mbeanserver/MBeanServerDelegateImpl.class
+com/sun/jmx/mbeanserver/ObjectInputStreamWithLoader.class
+com/sun/jmx/mbeanserver/GetPropertyAction.class
+com/sun/jmx/mbeanserver/ClassLoaderRepositorySupport$LoaderEntry.class
+com/sun/jmx/mbeanserver/ClassLoaderRepositorySupport.class
+com/sun/jmx/mbeanserver/DynamicMetaDataImpl.class
+com/sun/jmx/mbeanserver/BaseMetaDataImpl.class
+com/sun/jmx/mbeanserver/StandardMetaDataImpl.class
+com/sun/jmx/mbeanserver/MetaDataImpl$PrivateStandardMeta.class
+com/sun/jmx/mbeanserver/MetaDataImpl$PrivateDynamicMeta.class
+com/sun/jmx/mbeanserver/MetaDataImpl.class
+com/sun/jmx/mbeanserver/NamedObject.class
+com/sun/jmx/mbeanserver/RepositorySupport$ObjectNamePattern.class
+com/sun/jmx/mbeanserver/RepositorySupport.class
+com/sun/jmx/interceptor/MBeanServerInterceptor.class
+com/sun/jmx/interceptor/InterceptorNotPresentException.class
+com/sun/jmx/interceptor/ForwardingMBeanServerInterceptor.class
+com/sun/jmx/interceptor/InterceptorCycleException.class
+com/sun/jmx/interceptor/DefaultMBeanServerInterceptor$ListenerWrapper.class
+com/sun/jmx/interceptor/DefaultMBeanServerInterceptor$1.class
+com/sun/jmx/interceptor/DefaultMBeanServerInterceptor.class
+com/sun/jmx/trace/TraceTags.class
+com/sun/jmx/trace/TraceDestination.class
+com/sun/jmx/trace/Trace.class
+com/sun/jmx/trace/TraceImplementation.class
+com/sun/jmx/trace/TraceManager.class
+com/sun/jmx/defaults/ServiceName.class
+com/sun/jmx/defaults/JmxProperties.class
+com/sun/management/jmx/Trace.class
+com/sun/management/jmx/TraceListener.class
+
+ exited 22 in 11451ms:
+HTTP/1.1 404 Not Found
+Server: nginx
+Date: Sun, 03 May 2026 08:49:46 GMT
+Content-Type: text/html
+Content-Length: 1602
+Connection: keep-alive
+X-Content-Type-Options: nosniff
+Content-Security-Policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 404 Not Found
+Server: nginx
+Date: Sun, 03 May 2026 08:49:50 GMT
+Content-Type: text/html
+Content-Length: 1602
+Connection: keep-alive
+X-Content-Type-Options: nosniff
+Content-Security-Policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 404 Not Found
+Server: nginx
+Date: Sun, 03 May 2026 08:49:54 GMT
+Content-Type: text/html
+Content-Length: 1602
+Connection: keep-alive
+X-Content-Type-Options: nosniff
+Content-Security-Policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+
+
+web search: 
+web search: 
+web search: 
+web search: com.sun.jmx jmxri 1.2.1 Maven Central
+web search: 
+web search: "Reference Implementation Version 1.2.1" "jmx" "doc"
+web search: 
+web search: site:oracle.com Java Management Extensions JMX Reference Implementation 1.2.1
+web search: 
+web search: https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/
+web search: 
+web search: https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/doc/files.html
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'curl -fsSI https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/src/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc 'curl -fsSI https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/examples/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc 'curl -fsSI https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ exited 22 in 1408ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 08:50:22 GMT
+server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 1289ms:
+HTTP/2 200 
+content-type: text/html
+last-modified: Tue, 15 Jul 2003 08:24:26 GMT
+accept-ranges: bytes
+content-length: 3921
+date: Sun, 03 May 2026 08:50:22 GMT
+server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+ succeeded in 1369ms:
+HTTP/2 200 
+content-type: text/html; charset=UTF-8
+date: Sun, 03 May 2026 08:50:22 GMT
+server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/ | sed -n '1,200p'; curl -fsSL https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 1719ms:
+<!DOCTYPE html><html><head><meta http-equiv="Content-type" content="text/html; charset=UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="stylesheet" href="/_autoindex/assets/css/autoindex.css" /><script src="/_autoindex/assets/js/tablesort.js"></script><script src="/_autoindex/assets/js/tablesort.number.js"></script><title>Index of /laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/</title></head>
+<body><div class="content"><h1>Index of /laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/</h1>
+<div id="table-list"><table id="table-content"><thead class="t-header"><tr><th class="colname" aria-sort="ascending"><a class="name" href="?ND"  onclick="return false"">Name</a></th><th class="colname" data-sort-method="number"><a href="?MA"  onclick="return false"">Last Modified</a></th><th class="colname" data-sort-method="number"><a href="?SA"  onclick="return false"">Size</a></th></tr></thead>
+<tr data-sort-method="none"><td><a href="/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/"><img class="icon" src="/_autoindex/assets/icons/corner-left-up.svg" alt="Up">Parent Directory</a></td><td></td><td></td></tr>
+<tr><td data-sort="*jmx-1_2_1-bin"><a href="/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/"><img class="icon" src="/_autoindex/assets/icons/folder-fill.svg" alt="Directory">jmx-1_2_1-bin</a></td><td data-sort="-178906954">2014-04-19 07:37</td><td data-sort="-1">-</td></tr>
+</table></div>
+<address>Proudly Served by LiteSpeed Web Server at www.javainthebox.net Port 443</address></div><script>new Tablesort(document.getElementById("table-content"));</script></body></html>
+<!DOCTYPE html><html><head><meta http-equiv="Content-type" content="text/html; charset=UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="stylesheet" href="/_autoindex/assets/css/autoindex.css" /><script src="/_autoindex/assets/js/tablesort.js"></script><script src="/_autoindex/assets/js/tablesort.number.js"></script><title>Index of /laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/</title></head>
+<body><div class="content"><h1>Index of /laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/</h1>
+<div id="table-list"><table id="table-content"><thead class="t-header"><tr><th class="colname" aria-sort="ascending"><a class="name" href="?ND"  onclick="return false"">Name</a></th><th class="colname" data-sort-method="number"><a href="?MA"  onclick="return false"">Last Modified</a></th><th class="colname" data-sort-method="number"><a href="?SA"  onclick="return false"">Size</a></th></tr></thead>
+<tr data-sort-method="none"><td><a href="/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/"><img class="icon" src="/_autoindex/assets/icons/corner-left-up.svg" alt="Up">Parent Directory</a></td><td></td><td></td></tr>
+<tr><td data-sort="*doc"><a href="/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/"><img class="icon" src="/_autoindex/assets/icons/folder-fill.svg" alt="Directory">doc</a></td><td data-sort="-178906979">2014-04-19 07:37</td><td data-sort="-1">-</td></tr>
+<tr><td data-sort="*examples"><a href="/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/examples/"><img class="icon" src="/_autoindex/assets/icons/folder-fill.svg" alt="Directory">examples</a></td><td data-sort="-178906957">2014-04-19 07:37</td><td data-sort="-1">-</td></tr>
+<tr><td data-sort="*lib"><a href="/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/lib/"><img class="icon" src="/_autoindex/assets/icons/folder-fill.svg" alt="Directory">lib</a></td><td data-sort="-178906954">2014-04-19 07:37</td><td data-sort="-1">-</td></tr>
+<tr><td data-sort="license.html"><a href="/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/LICENSE.html"><img class="icon" src="/_autoindex/assets/icons/file-text.svg" alt="[TXT]">LICENSE.html</a></td><td data-sort="1061458088">2003-08-21 09:28</td><td data-sort="12288">     12k</td></tr>
+</table></div>
+<address>Proudly Served by LiteSpeed Web Server at www.javainthebox.net Port 443</address></div><script>new Tablesort(document.getElementById("table-content"));</script></body></html>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1.2.1-ri/jmx-1.2.1-bin/doc/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc 'curl -fsSI https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ exited 22 in 799ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 08:50:40 GMT
+server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+ succeeded in 807ms:
+HTTP/2 200 
+content-type: text/html
+last-modified: Tue, 15 Jul 2003 08:24:26 GMT
+accept-ranges: bytes
+content-length: 3921
+date: Sun, 03 May 2026 08:50:40 GMT
+server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+ succeeded in 801ms:
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+  <TITLE>JMX 1.2.1 RI Documentation Index</TITLE>
+
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF"
+      LINK="#0000FF" VLINK="#000077" ALINK="#FF0000">
+
+<TABLE BORDER=0 WIDTH="100%"><TR>
+<TD><IMG SRC="doc/images/smi.logo.gif" ALT="Sun Microsystems, Inc"
+         HEIGHT=43 WIDTH=120>&nbsp;</TD>
+</TR></TABLE>
+<HR>
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<CENTER>
+  <H1>
+    Java<SUP><FONT SIZE=-2>TM</FONT></SUP> Management Extensions
+    (JMX<SUP><FONT SIZE=-2>TM</FONT></SUP>)</H1>
+  <H2>
+    Reference Implementation Version 1.2.1</B></BR>
+  </H2>
+</CENTER>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+
+The Java <SUP><FONT SIZE=-2>TM</FONT></SUP> Management extensions 
+(JMX<SUP><FONT SIZE=-2>TM</FONT></SUP>) provide a standard for instrumenting 
+manageable resources and developing dynamic agents. This release contains the 
+JMX reference implementation (RI) for the instrumentation and agent levels of 
+the specification.<P> 
+
+The Java classes which make up the RI are supported on
+the Java 2 Platform, Standard Edition (J2SE), version 1.4:
+
+<A HREF="http://java.sun.com/webapps/getjava/BrowserRedirect?locale=en">
+<IMG SRC="doc/images/get_java_red_button.gif" ALT = "Java: Get It Now!" ALIGN=CENTER>
+</A>
+<P>
+
+As a result of the 
+<A HREF="http://jcp.org/en/home/index">Java Community Process</A>, 
+JMX is an extension to the Java programming
+language, and its packages use the <code>javax</code> prefix. The RI
+also includes some internal classes in the
+<code>com.sun.jmx.*</code> packages.<P>
+
+In this software bundle, Sun also provides classes for an
+HTML adaptor: these are independent of the JMX specification and are
+provided only for demonstration purposes. These classes are in the
+<code>com.sun.jdmk.*</code> packages.
+
+</BLOCKQUOTE>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+  <B><FONT SIZE=+1><A HREF="doc/files.html">File List</A>
+  </FONT></B><BR>
+
+Includes the list of all components in this bundle and how to use them.
+
+</BLOCKQUOTE>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+  <B><FONT SIZE=+1><A HREF="RELEASE_NOTES.txt">Release Notes</A>
+  </FONT></B><BR>
+
+The Release Notes cover the features and known limitations of this release.
+
+</BLOCKQUOTE>
+
+
+<!-- ============================================================= -->
+<BLOCKQUOTE>
+
+exec
+/usr/bin/bash -lc "rg -n '1_2|\\"'$version'"\\"'$'"' metadata/javax metadata/com.sun metadata/org.mortbay.jetty metadata/javax.servlet metadata/javax.el metadata/javax.portlet | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+rg: metadata/javax: No such file or directory (os error 2)
+rg: metadata/com.sun: No such file or directory (os error 2)
+metadata/javax.portlet/portlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-sources.jar",
+metadata/javax.portlet/portlet-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+metadata/javax.el/el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:22:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/servlet-$version$-fr-spec-oth-JSpec/servlet-2_4-fr-spec.pdf",
+metadata/javax.servlet/servlet-api/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:36:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7840-servlet-$version$-spec-oth-JSpec/servlet-2_3-fcs-spec.pdf",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jmxri.jar" https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar; jar tf "$tmp/jmxri.jar" | rg '"'\\.java"'$|test|junit'"' | head -80; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 454ms:
+exec
+/usr/bin/bash -lc "curl -IL --max-time 10 http://java.sun.com/products/JavaManagement/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 2067ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://java.sun.com/products/JavaManagement/
+Cache-Control: max-age=0
+Expires: Sun, 03 May 2026 08:51:04 GMT
+Date: Sun, 03 May 2026 08:51:04 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=92.123.27.52,b=79976737,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.341b7b5c.1777798264.4c45921
+
+HTTP/2 301 
+server: AkamaiGHost
+content-length: 0
+location: http://www.oracle.com/technetwork/java/javase/tech/javamanagement-140525.html
+cache-control: max-age=0
+expires: Sun, 03 May 2026 08:51:04 GMT
+date: Sun, 03 May 2026 08:51:04 GMT
+akamai-request-bc: [a=92.123.27.52,b=79976797,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+akamai-grn: 0.341b7b5c.1777798264.4c4595d
+
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://www.oracle.com/technetwork/java/javase/tech/javamanagement-140525.html
+Date: Sun, 03 May 2026 08:51:04 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=173.222.108.102,b=134831618,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.666cdead.1777798264.8095e02
+Set-Cookie: akaas_aud-seg-ocom-prod=2147483647~rv=26~id=d250ff12a3cf8d608f242a90e27c7ffd; path=/
+X-Frame-Options: sameorigin
+Content-Security-Policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1
+Origin-Cache-Control: NO_HEADER_PRESENTED
+Origin-Edge-Control: NO_HEADER_PRESENTED
+Actual-Object-TTL: -1
+Server-Timing: ak_p; desc="1777798264512_2917035110_134831618_7_7462_6_0_-";dur=1
+
+HTTP/2 301 
+content-type: text/html; charset=utf-8
+location: https://www.oracle.com/java/technologies/javase/javamanagement.html
+x-oracle-dms-ecid: 006KENe4wzdFs1KimT9xWJ001JM0002WBh
+status: 301 Moved Permanently
+x-oracle-dms-rid: 0:1
+x-content-type-options: nosniff
+surrogate-control: content="ESI/1.0"
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000
+cache-control: max-age=1800
+date: Sun, 03 May 2026 08:51:05 GMT
+set-cookie: X-Oracle-BMC-LBS-Route=8bbc906d4aa639e3c78525d4f0b9264c3e686a8c; Path=/; Secure; HttpOnly
+set-cookie: JSESSIONID=zXLtCLlNoXrlMRyka0bxF8m4uiPrfnDBJWsA5T8XqE8gv0126DhS!-793846109!-2099853367; path=/;SameSite=Lax;secure;; HttpOnly
+akamai-request-bc: [a=173.222.108.102,b=134831631,c=g,n=CH_ZH_GLATTBRUGG,o=20940],[c=c,n=IT_25_MILANO,o=20940],[a=73,c=o]
+akamai-grn: 0.666cdead.1777798264.8095e0f
+set-cookie: akaas_aud-seg-ocom-prod=2147483647~rv=12~id=fc32707b5531deb06ae1ff8fa34f9f79; path=/; Secure; SameSite=None
+x-frame-options: sameorigin
+content-security-policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+x-content-type-options: nosniff
+x-xss-protection: 1
+origin-cache-control: no-cache, no-store
+origin-edge-control: NO_HEADER_PRESENTED
+actual-object-ttl: -1
+server-timing: ak_p; desc="1777798264540_2917035110_134831631_84775_8849_8_40_15";dur=1
+
+HTTP/2 200 
+content-type: text/html; charset=UTF-8
+strict-transport-security: max-age=31536000; includeSubDomains
+last-modified: Sun, 03 May 2026 06:31:19 GMT
+x-oracle-dms-ecid: 006KENe8li5Fw0KimTXvWJ0001Ri001CNL
+custom_cache_rule_location: Default
+x-oracle-dms-rid: 0:1
+device_type: Any
+x-content-type-options: nosniff
+host_service: FutureTenseContentServer:12c
+custom_akamai_autopurge: NO
+content-language: en-US
+cache-control: max-age=1800
+expires: Sun, 03 May 2026 09:21:06 GMT
+date: Sun, 03 May 2026 08:51:06 GMT
+
+web search: 
+web search: https://www.oracle.com/java/technologies/javase/javamanagement.html
+web search: 
+web search: https://www.oracle.com/java/technologies/javase-downloads.html
+web search: 
+web search: https://www.oracle.com/java/technologies/javase/docs-jmx-jsp.html
+codex
+I’m going to record the reachable Oracle JMX technology page as the project/root URL, use the exact mirrored 1.2.1 RI documentation page for docs, and leave source/test as `N/A` because I did not find Maven source/test artifacts or a trustworthy source repository for this release. I will not set `not-for-native-image`: an old Maven mirror publishes a JAR with JVM `.class` files for this coordinate, so it is not certainly a non-JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+diff --git a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+index 34416ce0d157d5f2de8610c1dbcf049fd70753c7..25b23b20e34e6a68230f2ad3d53b22940caf87c2
+--- a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
++  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
++  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
++  "description" : "JMX RI is Sun's Java Management Extensions reference implementation for instrumenting manageable resources and building dynamic management agents. Version 1.2.1 provides the instrumentation and agent-level classes for the JMX 1.2 API, including the javax.management API packages and Sun internal implementation classes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+index 34416ce0d157d5f2de8610c1dbcf049fd70753c7..25b23b20e34e6a68230f2ad3d53b22940caf87c2
+--- a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
++  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
++  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
++  "description" : "JMX RI is Sun's Java Management Extensions reference implementation for instrumenting manageable resources and building dynamic management agents. Version 1.2.1 provides the instrumentation and agent-level classes for the JMX 1.2 API, including the javax.management API packages and Sun internal implementation classes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.jmx:jmxri:1.2.1",
+  "repository-url": "https://www.oracle.com/java/technologies/javase/javamanagement.html",
+  "source-code-url": "N/A",
+  "test-code-url": "N/A",
+  "documentation-url": "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
+  "description": "JMX RI is Sun's Java Management Extensions reference implementation for instrumenting manageable resources and building dynamic management agents. Version 1.2.1 provides the instrumentation and agent-level classes for the JMX 1.2 API, including the javax.management API packages and Sun internal implementation classes."
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\\?["'^" ]*'"\\"'$version'"\\"'$|documentation-url.*1_'"' metadata | head -50" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+metadata/commons-logging/commons-logging-api/index.json:8:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/dom4j/dom4j/index.json:8:    "documentation-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/xdocs",
+metadata/xml-apis/xml-apis/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/$version$/index.html",
+metadata/avalon-framework/avalon-framework/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/src/xdocs/framework/",
+metadata/logkit/logkit/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/LogKit_1_0_1/avalon-logkit/src/xdocs/",
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/$version$/magnolia_3-$version$-javadoc.jar",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/$version$/geronimo-annotation_1.1_spec-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+index 34416ce0d157d5f2de8610c1dbcf049fd70753c7..25b23b20e34e6a68230f2ad3d53b22940caf87c2
+--- a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
++  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
++  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
++  "description" : "JMX RI is Sun's Java Management Extensions reference implementation for instrumenting manageable resources and building dynamic management agents. Version 1.2.1 provides the instrumentation and agent-level classes for the JMX 1.2 API, including the javax.management API packages and Sun internal implementation classes."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/
+web search: 
+web search: https://download.dcache.org/nexus/service/rest/repository/browse/public-snapshots/com/sun/jmx/jmxri/1.2.1/
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name '*.json' | head -10 | xargs -r -n1 sh -c 'echo "'$0; sed -n "1,80p" "$0"'"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+{
+  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
+  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
+  "source-code-url" : "N/A",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
+  "description" : "JMX RI is Sun's Java Management Extensions reference implementation for instrumenting manageable resources and building dynamic management agents. Version 1.2.1 provides the instrumentation and agent-level classes for the JMX 1.2 API, including the javax.management API packages and Sun internal implementation classes."
+}
+
+diff --git a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+index 34416ce0d157d5f2de8610c1dbcf049fd70753c7..25b23b20e34e6a68230f2ad3d53b22940caf87c2
+--- a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
++  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
++  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
++  "description" : "JMX RI is Sun's Java Management Extensions reference implementation for instrumenting manageable resources and building dynamic management agents. Version 1.2.1 provides the instrumentation and agent-level classes for the JMX 1.2 API, including the javax.management API packages and Sun internal implementation classes."
+ }
+
+web search: 
+web search: repo.maven.apache.org com/sun/jmx/jmxri/1.2.1 jmxri 1.2.1 POM
+codex
+Updated [com.sun.jmx-jmxri-1.2.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json).
+
+I set source/test URLs to `N/A` because Maven Central only exposes the POM for this coordinate, not source/test artifacts. I used the exact mirrored JMX 1.2.1 RI documentation page for `documentation-url`; it uses Sun’s historical `1_2_1` archive naming rather than a working `$version$` path. ([repo1.maven.org](https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`, since a Maven mirror publishes a JAR for this coordinate and local inspection showed JVM `.class` files. ([download.dcache.org](https://download.dcache.org/nexus/service/rest/repository/browse/public-snapshots/com/sun/jmx/jmxri/1.2.1/?utm_source=openai))
+diff --git a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+index 34416ce0d157d5f2de8610c1dbcf049fd70753c7..25b23b20e34e6a68230f2ad3d53b22940caf87c2
+--- a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
++  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
++  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/index.html",
++  "description" : "JMX RI is Sun's Java Management Extensions reference implementation for instrumenting manageable resources and building dynamic management agents. Version 1.2.1 provides the instrumentation and agent-level classes for the JMX 1.2 API, including the javax.management API packages and Sun internal implementation classes."
+ }
+
+tokens used
+113,289
+Updated [com.sun.jmx-jmxri-1.2.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json).
+
+I set source/test URLs to `N/A` because Maven Central only exposes the POM for this coordinate, not source/test artifacts. I used the exact mirrored JMX 1.2.1 RI documentation page for `documentation-url`; it uses Sun’s historical `1_2_1` archive naming rather than a working `$version$` path. ([repo1.maven.org](https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`, since a Maven mirror publishes a JAR for this coordinate and local inspection showed JVM `.class` files. ([download.dcache.org](https://download.dcache.org/nexus/service/rest/repository/browse/public-snapshots/com/sun/jmx/jmxri/1.2.1/?utm_source=openai))
+Ran agent for com.sun.jmx:jmxri:1.2.1 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b/build/agent-artifact-discovery-logs/com.sun.jmx-jmxri-1.2.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-b4b48c9b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 26s
+9 actionable tasks: 4 executed, 5 from cache
