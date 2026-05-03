@@ -22,6 +22,7 @@ import org.jline.reader.impl.SimpleMaskingCallback;
 import org.jline.reader.impl.completer.AggregateCompleter;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.EnumCompleter;
+import org.jline.reader.impl.completer.FileNameCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.reader.impl.history.DefaultHistory;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -267,6 +269,59 @@ public class Jline_readerTest {
     }
 
     @Test
+    void fileNameCompleterContributesFileAndDirectoryCandidates() throws Exception {
+        Path workingDirectory = temporaryDirectory.resolve("workspace");
+        Path scriptsDirectory = workingDirectory.resolve("scripts");
+        Files.createDirectories(scriptsDirectory);
+        Files.writeString(workingDirectory.resolve("status.txt"), "ready", StandardCharsets.UTF_8);
+        Files.writeString(scriptsDirectory.resolve("build.sh"), "echo build", StandardCharsets.UTF_8);
+
+        FileNameCompleter completer = new FileNameCompleter();
+        String separator = workingDirectory.getFileSystem().getSeparator();
+        String topLevelPrefix = workingDirectory.toString() + separator;
+        String scriptsCandidateValue = scriptsDirectory.toString() + separator;
+        String statusCandidateValue = workingDirectory.resolve("status.txt").toString();
+        String nestedCandidateValue = scriptsDirectory.resolve("build.sh").toString();
+        try (Terminal terminal = TerminalBuilder.builder()
+                .name("jline-file-completer-test")
+                .system(false)
+                .dumb(true)
+                .streams(new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream())
+                .encoding(StandardCharsets.UTF_8)
+                .build()) {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .completer(completer)
+                    .option(LineReader.Option.AUTO_PARAM_SLASH, true)
+                    .option(LineReader.Option.AUTO_REMOVE_SLASH, true)
+                    .build();
+            DefaultParser parser = new DefaultParser().escapeChars(new char[0]);
+            List<Candidate> topLevelCandidates = new ArrayList<>();
+
+            String topLevelInput = topLevelPrefix + "s";
+            completer.complete(
+                    reader,
+                    parser.parse(topLevelInput, topLevelInput.length(), Parser.ParseContext.COMPLETE),
+                    topLevelCandidates);
+
+            assertThat(candidateValues(topLevelCandidates)).contains(scriptsCandidateValue, statusCandidateValue);
+            Candidate scriptsCandidate = candidateWithValue(topLevelCandidates, scriptsCandidateValue);
+            assertThat(scriptsCandidate.complete()).isFalse();
+            assertThat(scriptsCandidate.suffix()).isEqualTo(separator);
+            assertThat(candidateWithValue(topLevelCandidates, statusCandidateValue).complete()).isTrue();
+
+            List<Candidate> nestedCandidates = new ArrayList<>();
+            completer.complete(
+                    reader,
+                    parser.parse(scriptsCandidateValue, scriptsCandidateValue.length(), Parser.ParseContext.COMPLETE),
+                    nestedCandidates);
+
+            assertThat(candidateValues(nestedCandidates)).containsExactly(nestedCandidateValue);
+            assertThat(candidateWithValue(nestedCandidates, nestedCandidateValue).complete()).isTrue();
+        }
+    }
+
+    @Test
     void maskingCallbackAndCandidatesExposeDisplayHistoryAndSortingMetadata() {
         SimpleMaskingCallback maskingCallback = new SimpleMaskingCallback('*');
         Candidate visible = new Candidate("checkout", "checkout", "commands", "switch branches", " ", "co", true);
@@ -284,6 +339,13 @@ public class Jline_readerTest {
         assertThat(visible.suffix()).isEqualTo(" ");
         assertThat(visible.key()).isEqualTo("co");
         assertThat(visible.complete()).isTrue();
+    }
+
+    private static Candidate candidateWithValue(List<Candidate> candidates, String value) {
+        return candidates.stream()
+                .filter(candidate -> candidate.value().equals(value))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Missing candidate: " + value));
     }
 
     private static List<String> candidateValues(List<Candidate> candidates) {
