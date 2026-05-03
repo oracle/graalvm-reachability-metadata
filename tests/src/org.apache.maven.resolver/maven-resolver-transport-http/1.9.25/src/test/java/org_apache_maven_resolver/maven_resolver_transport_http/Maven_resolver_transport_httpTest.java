@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,6 +50,7 @@ import org.eclipse.aether.transport.http.RFC9457.RFC9457Payload;
 import org.eclipse.aether.transport.http.RFC9457.RFC9457Reporter;
 import org.eclipse.aether.transport.http.XChecksumChecksumExtractor;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -56,6 +59,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class Maven_resolver_transport_httpTest {
     private static final String ARTIFACT_PATH = "/repository/com/example/demo/1.0/demo-1.0.jar";
     private static final String ARTIFACT_BODY = "resolved artifact contents";
+    private static final String RESUMABLE_ARTIFACT_BODY = "already-downloaded remainder fetched over HTTP range";
     private static final String SHA1 = "0123456789abcdef0123456789abcdef01234567";
     private static final String MD5 = "0123456789abcdef0123456789abcdef";
 
@@ -169,6 +173,34 @@ public class Maven_resolver_transport_httpTest {
     }
 
     @Test
+    void transporterResumesFileDownloadUsingHttpRange(@TempDir Path tempDir) throws Exception {
+        String localPrefix = RESUMABLE_ARTIFACT_BODY.substring(0, "already-downloaded".length());
+        Path artifactFile = tempDir.resolve("artifact.txt");
+        Files.writeString(artifactFile, localPrefix, StandardCharsets.UTF_8);
+
+        try (ResumableDownloadServer server = ResumableDownloadServer.start()) {
+            HttpTransporterFactory factory = new HttpTransporterFactory(checksumExtractors());
+            RemoteRepository repository = new RemoteRepository.Builder("local", "default", server.repositoryUrl())
+                    .build();
+            Transporter transporter = factory.newInstance(session(), repository);
+            try {
+                GetTask getTask = new GetTask(URI.create("resumable/artifact.txt"))
+                        .setDataFile(artifactFile.toFile(), true);
+                transporter.get(getTask);
+
+                assertThat(Files.readString(artifactFile, StandardCharsets.UTF_8))
+                        .isEqualTo(RESUMABLE_ARTIFACT_BODY);
+                assertThat(server.rangeHeader()).isEqualTo("bytes=" + localPrefix.length() + "-");
+                assertThat(server.acceptEncodingHeader()).isEqualTo("identity");
+                assertThat(server.ifUnmodifiedSinceHeader()).isNotBlank();
+                assertThat(getTask.getChecksums()).containsEntry("SHA-1", SHA1).containsEntry("MD5", MD5);
+            } finally {
+                transporter.close();
+            }
+        }
+    }
+
+    @Test
     void transporterPerformsPeekGetPutAndReportsProblemJson() throws Exception {
         AtomicReference<String> uploadedBody = new AtomicReference<>();
         try (TestRepositoryServer server = TestRepositoryServer.start(uploadedBody)) {
@@ -243,6 +275,97 @@ public class Maven_resolver_transport_httpTest {
         @Override
         public void close() {
             EntityUtils.consumeQuietly(getEntity());
+        }
+    }
+
+    private static final class ResumableDownloadServer implements AutoCloseable {
+        private final HttpServer server;
+        private final ExecutorService executor;
+        private final AtomicReference<String> rangeHeader = new AtomicReference<>();
+        private final AtomicReference<String> acceptEncodingHeader = new AtomicReference<>();
+        private final AtomicReference<String> ifUnmodifiedSinceHeader = new AtomicReference<>();
+
+        private ResumableDownloadServer(HttpServer server, ExecutorService executor) {
+            this.server = server;
+            this.executor = executor;
+        }
+
+        static ResumableDownloadServer start() throws IOException {
+            HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+            ExecutorService executor = Executors.newSingleThreadExecutor(runnable -> {
+                Thread thread = new Thread(runnable, "resolver-http-resume-test-server");
+                thread.setDaemon(true);
+                return thread;
+            });
+            ResumableDownloadServer repositoryServer = new ResumableDownloadServer(server, executor);
+            server.createContext("/", repositoryServer::handle);
+            server.setExecutor(executor);
+            server.start();
+            return repositoryServer;
+        }
+
+        String repositoryUrl() {
+            return "http://127.0.0.1:" + server.getAddress().getPort() + "/repository/";
+        }
+
+        String rangeHeader() {
+            return rangeHeader.get();
+        }
+
+        String acceptEncodingHeader() {
+            return acceptEncodingHeader.get();
+        }
+
+        String ifUnmodifiedSinceHeader() {
+            return ifUnmodifiedSinceHeader.get();
+        }
+
+        private void handle(HttpExchange exchange) throws IOException {
+            try {
+                if (!"/repository/resumable/artifact.txt".equals(exchange.getRequestURI().getPath())
+                        || !"GET".equals(exchange.getRequestMethod())) {
+                    exchange.sendResponseHeaders(404, -1);
+                    return;
+                }
+
+                rangeHeader.set(exchange.getRequestHeaders().getFirst("Range"));
+                acceptEncodingHeader.set(exchange.getRequestHeaders().getFirst("Accept-Encoding"));
+                ifUnmodifiedSinceHeader.set(exchange.getRequestHeaders().getFirst("If-Unmodified-Since"));
+
+                long offset = parseRangeOffset(rangeHeader.get());
+                byte[] fullBody = RESUMABLE_ARTIFACT_BODY.getBytes(StandardCharsets.UTF_8);
+                if (offset <= 0 || offset >= fullBody.length) {
+                    exchange.sendResponseHeaders(416, -1);
+                    return;
+                }
+
+                byte[] remainingBody = RESUMABLE_ARTIFACT_BODY.substring((int) offset)
+                        .getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().add("Content-Range",
+                        "bytes " + offset + "-" + (fullBody.length - 1) + "/" + fullBody.length);
+                exchange.getResponseHeaders().add("x-checksum-sha1", SHA1);
+                exchange.getResponseHeaders().add("x-checksum-md5", MD5);
+                exchange.sendResponseHeaders(206, remainingBody.length);
+                try (OutputStream outputStream = exchange.getResponseBody()) {
+                    outputStream.write(remainingBody);
+                }
+            } finally {
+                exchange.close();
+            }
+        }
+
+        private long parseRangeOffset(String range) {
+            if (range == null || !range.startsWith("bytes=") || !range.endsWith("-")) {
+                return -1;
+            }
+            return Long.parseLong(range.substring("bytes=".length(), range.length() - 1));
+        }
+
+        @Override
+        public void close() throws InterruptedException {
+            server.stop(0);
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(Duration.ofSeconds(1).toMillis(), TimeUnit.MILLISECONDS)).isTrue();
         }
     }
 
