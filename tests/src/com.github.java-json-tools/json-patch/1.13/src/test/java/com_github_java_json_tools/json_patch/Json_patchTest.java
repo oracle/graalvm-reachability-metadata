@@ -156,6 +156,30 @@ public class Json_patchTest {
     }
 
     @Test
+    public void comparisonsTreatEquivalentJsonNumbersAsEqual() throws Exception {
+        JsonNode source = json("""
+                {
+                  "integer": 1,
+                  "decimal": 1.0,
+                  "array": [2]
+                }
+                """);
+        JsonNode patchJson = json("""
+                [
+                  { "op": "test", "path": "/integer", "value": 1.0 },
+                  { "op": "test", "path": "/decimal", "value": 1 },
+                  { "op": "test", "path": "/array/0", "value": 2.0 }
+                ]
+                """);
+        JsonNode diffJson = JsonDiff.asJson(json("{ \"value\": 1 }"), json("{ \"value\": 1.0 }"));
+
+        JsonNode patched = JsonPatch.fromJson(patchJson).apply(source);
+
+        assertThat(patched).isEqualTo(source);
+        assertThat(diffJson.size()).isZero();
+    }
+
+    @Test
     public void patchPathsUseJsonPointerEscapingForSpecialObjectMemberNames() throws Exception {
         JsonNode source = json("""
                 {
