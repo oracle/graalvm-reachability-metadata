@@ -238,6 +238,30 @@ class Json4s_ast_3Test {
   }
 
   @Test
+  def buildsJsonObjectsWithDslConversions(): Unit = {
+    import org.json4s.JsonDSL.WithBigDecimal.*
+
+    val attributes: Map[String, String] = Map("currency" -> "EUR", "channel" -> "online")
+    val invoice: JObject =
+      ("name" -> "invoice") ~
+        ("paid" -> true) ~
+        ("total" -> BigDecimal("19.99")) ~
+        ("lineAmounts" -> List(1.25d, 2.50d)) ~
+        ("labels" -> List("digital", "priority")) ~
+        ("attributes" -> attributes) ~
+        ("reference" -> Option.empty[String])
+
+    assertEquals(JString("invoice"), invoice \ "name")
+    assertEquals(JBool.True, invoice \ "paid")
+    assertEquals(JDecimal(BigDecimal("19.99")), invoice \ "total")
+    assertEquals(JArray(List(JDecimal(BigDecimal("1.25")), JDecimal(BigDecimal("2.5")))), invoice \ "lineAmounts")
+    assertEquals(JArray(List(JString("digital"), JString("priority"))), invoice \ "labels")
+    assertEquals(JString("EUR"), invoice \ "attributes" \ "currency")
+    assertEquals(JString("online"), invoice \ "attributes" \ "channel")
+    assertTrue(invoice.obj.contains(JField("reference", JNothing)))
+  }
+
+  @Test
   def buildsAstAndTextWithJsonWriters(): Unit = {
     val ast: JValue = JsonWriter.ast
       .startObject()
