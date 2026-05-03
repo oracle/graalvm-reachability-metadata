@@ -8,7 +8,7 @@ package org_threeten.threetenbp;
 
 import org.junit.jupiter.api.Test;
 
-class ThreetenbpTest {
+public class ThreetenbpTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
