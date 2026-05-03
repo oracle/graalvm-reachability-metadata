@@ -38,15 +38,23 @@ import org.apache.kerby.x509.type.AlgorithmIdentifier;
 import org.apache.kerby.x509.type.AttCertValidityPeriod;
 import org.apache.kerby.x509.type.BasicConstraints;
 import org.apache.kerby.x509.type.Certificate;
+import org.apache.kerby.x509.type.CertificateList;
 import org.apache.kerby.x509.type.CertificateSerialNumber;
+import org.apache.kerby.x509.type.DistributionPoint;
+import org.apache.kerby.x509.type.DistributionPointName;
 import org.apache.kerby.x509.type.Extension;
 import org.apache.kerby.x509.type.Extensions;
 import org.apache.kerby.x509.type.GeneralName;
 import org.apache.kerby.x509.type.GeneralNames;
 import org.apache.kerby.x509.type.KeyUsage;
+import org.apache.kerby.x509.type.ReasonFlags;
+import org.apache.kerby.x509.type.RevokedCertificate;
+import org.apache.kerby.x509.type.RevokedCertificates;
 import org.apache.kerby.x509.type.SubjectKeyIdentifier;
 import org.apache.kerby.x509.type.SubjectPublicKeyInfo;
+import org.apache.kerby.x509.type.TBSCertList;
 import org.apache.kerby.x509.type.TBSCertificate;
+import org.apache.kerby.x509.type.Time;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -244,6 +252,82 @@ public class Kerby_pkixTest {
     }
 
     @Test
+    void modelsCertificateRevocationListsAndDistributionPoints() {
+        GeneralName crlLocation = new GeneralName();
+        crlLocation.setUniformResourceIdentifier(new Asn1IA5String("https://example.test/crl/root.crl"));
+        GeneralNames fullName = new GeneralNames();
+        fullName.addElement(crlLocation);
+
+        DistributionPointName distributionPointName = new DistributionPointName();
+        distributionPointName.setFullName(fullName);
+
+        ReasonFlags reasons = new ReasonFlags();
+        reasons.setFlag(1);
+        reasons.setFlag(5);
+
+        GeneralName crlIssuer = new GeneralName();
+        crlIssuer.setDirectoryName(name("Kerby CRL Issuer"));
+        GeneralNames crlIssuers = new GeneralNames();
+        crlIssuers.addElement(crlIssuer);
+
+        DistributionPoint distributionPoint = new DistributionPoint();
+        distributionPoint.setDistributionPoint(distributionPointName);
+        distributionPoint.setReasons(reasons);
+        distributionPoint.setCRLIssuer(crlIssuers);
+
+        CertificateSerialNumber revokedSerialNumber = new CertificateSerialNumber();
+        revokedSerialNumber.setValue(BigInteger.valueOf(99L));
+        Time revocationDate = generalizedTime(1_701_000_000_000L);
+
+        Extension reasonExtension = new Extension();
+        reasonExtension.setExtnId(new Asn1ObjectIdentifier("2.5.29.21"));
+        reasonExtension.setCritical(false);
+        reasonExtension.setExtnValue(new byte[] {10, 1, 1});
+        Extensions entryExtensions = new Extensions();
+        entryExtensions.addElement(reasonExtension);
+
+        RevokedCertificate revokedCertificate = new RevokedCertificate();
+        revokedCertificate.setUserCertificate(revokedSerialNumber);
+        revokedCertificate.setRevocationData(revocationDate);
+        revokedCertificate.setCrlEntryExtensions(entryExtensions);
+        RevokedCertificates revokedCertificates = new RevokedCertificates();
+        revokedCertificates.addElement(revokedCertificate);
+
+        TBSCertList tbsCertList = new TBSCertList();
+        tbsCertList.setVersion(new Asn1Integer(BigInteger.ONE));
+        tbsCertList.setSignature(algorithm(SHA256_WITH_RSA_OID));
+        tbsCertList.setIssuer(name("Kerby CRL Issuer"));
+        tbsCertList.setThisUpdata(generalizedTime(1_700_900_000_000L));
+        tbsCertList.setNextUpdate(generalizedTime(1_701_500_000_000L));
+        tbsCertList.setRevokedCertificates(revokedCertificates);
+        tbsCertList.setCrlExtensions(new Extensions());
+
+        CertificateList certificateList = new CertificateList();
+        certificateList.setTBSCertList(tbsCertList);
+        certificateList.setSignatureAlgorithms(algorithm(SHA256_WITH_RSA_OID));
+        certificateList.setSignatureValue(new Asn1BitString(new byte[] {2, 7, 1, 8}, 0));
+
+        assertThat(distributionPoint.getDistributionPoint().getFullName().getElements().get(0)
+                .getUniformResourceIdentifier().getValue()).isEqualTo("https://example.test/crl/root.crl");
+        assertThat(distributionPoint.getReasons().isFlagSet(1)).isTrue();
+        assertThat(distributionPoint.getReasons().isFlagSet(5)).isTrue();
+        assertThat(distributionPoint.getReasons().isFlagSet(8)).isFalse();
+        assertThat(distributionPoint.getCRLIssuer().getElements().get(0).getDirectoryName().getName().getElements())
+                .hasSize(1);
+        assertThat(certificateList.getTBSCertList().getVersion().getValue()).isEqualTo(BigInteger.ONE);
+        assertThat(certificateList.getTBSCertList().getRevokedCertificates().getElements().get(0)
+                .getUserCertificate().getValue()).isEqualTo(BigInteger.valueOf(99L));
+        assertThat(certificateList.getTBSCertList().getRevokedCertificates().getElements().get(0)
+                .getRevocationDate().generalizedTime()).isEqualTo(new Date(1_701_000_000_000L));
+        assertThat(certificateList.getTBSCertList().getRevokedCertificates().getElements().get(0)
+                .getCrlEntryExtensions().getElements().get(0).getExtnId().getValue()).isEqualTo("2.5.29.21");
+        assertThat(certificateList.getTBSCertList().getNextUpdate().generalizedTime())
+                .isEqualTo(new Date(1_701_500_000_000L));
+        assertThat(certificateList.getSignatureAlgorithm().getAlgorithm()).isEqualTo(SHA256_WITH_RSA_OID);
+        assertThat(certificateList.getSignature().getValue()).isEqualTo(new byte[] {2, 7, 1, 8});
+    }
+
+    @Test
     void supportsChoiceAccessorsForDirectoryAndSubjectKeyIdentifiers() {
         GeneralName directoryName = new GeneralName();
         directoryName.setDirectoryName(name("Directory Choice"));
@@ -267,6 +351,12 @@ public class Kerby_pkixTest {
         identifier.setAlgorithm(oid);
         identifier.setParameters(new Asn1OctetString(new byte[] {5, 0}));
         return identifier;
+    }
+
+    private static Time generalizedTime(long timeInMillis) {
+        Time time = new Time();
+        time.setGeneralTime(new Asn1GeneralizedTime(new Date(timeInMillis)));
+        return time;
     }
 
     private static Certificate minimalCertificate() {
