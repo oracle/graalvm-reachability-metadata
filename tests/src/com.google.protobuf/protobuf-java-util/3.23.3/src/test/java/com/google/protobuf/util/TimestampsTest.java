@@ -53,6 +53,13 @@ public class TimestampsTest {
         assertThat(Timestamps.isValid(Timestamps.MIN_VALUE)).isTrue();
     }
 
+    @Test
+    public void testNowUsesAvailableSystemClock() {
+        Timestamp value = Timestamps.now();
+
+        assertThat(Timestamps.isValid(value)).isTrue();
+        assertThat(value.getSeconds()).isAtLeast(946684800L);
+    }
 
     @Test
     public void testIsValid_false() {
