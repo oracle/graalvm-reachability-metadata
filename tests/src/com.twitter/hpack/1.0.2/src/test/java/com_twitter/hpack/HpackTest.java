@@ -81,6 +81,28 @@ public class HpackTest {
     }
 
     @Test
+    void encoderUsesHuffmanCodingForCompactStringLiterals() throws IOException {
+        Encoder encoder = new Encoder(DEFAULT_TABLE_SIZE);
+        ByteArrayOutputStream encodedHeaders = new ByteArrayOutputStream();
+
+        encoder.encodeHeader(encodedHeaders, ascii(":authority"), ascii("www.example.com"), false);
+        byte[] headerBlock = encodedHeaders.toByteArray();
+        CapturingHeaderListener listener = decode(headerBlock);
+
+        assertThat(headerBlock[0] & 0xff)
+                .as("literal header should use the static name index for :authority")
+                .isEqualTo(0x41);
+        assertThat(headerBlock[1] & 0x80)
+                .as("the value string literal should be Huffman encoded")
+                .isEqualTo(0x80);
+        assertThat(headerBlock[1] & 0x7f)
+                .as("the encoded value should be shorter than the ASCII representation")
+                .isLessThan(ascii("www.example.com").length);
+        assertThat(listener.headers())
+                .containsExactly(new DecodedHeader(":authority", "www.example.com", false));
+    }
+
+    @Test
     void maxHeaderTableSizeUpdateIsEmittedAndAppliedBeforeHeaders() throws IOException {
         Encoder encoder = new Encoder(128);
         Decoder decoder = new Decoder(MAX_HEADER_SIZE, 128);
