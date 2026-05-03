@@ -283,6 +283,25 @@ class Sangria_ast_3Test {
   }
 
   @Test
+  def inputDocumentsMergeStandaloneGraphqlInputValues(): Unit = {
+    val profileValue: ObjectValue = ObjectValue(Vector(
+      ObjectField("name", StringValue("Ada")),
+      ObjectField("roles", ListValue(Vector(EnumValue("ADMIN"), EnumValue("EDITOR"))))
+    ))
+    val thresholdValue: ListValue = ListValue(Vector(BigDecimalValue(BigDecimal("0.75")), BigDecimalValue(BigDecimal("0.95"))))
+    val source: String = "{ name: \"Ada\", roles: [ADMIN, EDITOR] }\n[0.75, 0.95]"
+    val sourceMapper: DefaultSourceMapper = new DefaultSourceMapper("input.graphql", InMemorySourceMapperInput(source))
+    val profileDocument: InputDocument = InputDocument(values = Vector(profileValue), sourceMapper = Some(sourceMapper))
+    val thresholdDocument: InputDocument = InputDocument(values = Vector(thresholdValue))
+    val mergedDocument: InputDocument = profileDocument + thresholdDocument
+
+    assertEquals(Some(source), profileDocument.source)
+    assertEquals(profileDocument.merge(thresholdDocument), mergedDocument)
+    assertEquals(Vector(profileValue, thresholdValue), mergedDocument.values)
+    assertFalse(mergedDocument.source.isDefined)
+  }
+
+  @Test
   def copyEqualityAndCacheKeysReactToAstContentChanges(): Unit = {
     val original: Field = Field(
       alias = Some("node"),
