@@ -131,6 +131,25 @@ public class Utils_liteTest {
         assertThat(SdkInternalThreadLocal.containsKey("parent-key")).isTrue();
     }
 
+    @Test
+    void childThreadMutationsAreVisibleThroughInheritedContext() throws InterruptedException {
+        SdkInternalThreadLocal.put("shared-key", "parent-value");
+        SdkInternalThreadLocal.put("removed-key", "value-to-remove");
+
+        runInThread(() -> {
+            assertThat(SdkInternalThreadLocal.get("shared-key")).isEqualTo("parent-value");
+            assertThat(SdkInternalThreadLocal.remove("removed-key")).isEqualTo("value-to-remove");
+
+            SdkInternalThreadLocal.put("shared-key", "child-value");
+            SdkInternalThreadLocal.put("child-key", "child-only-value");
+        });
+
+        assertThat(SdkInternalThreadLocal.get("shared-key")).isEqualTo("child-value");
+        assertThat(SdkInternalThreadLocal.get("removed-key")).isNull();
+        assertThat(SdkInternalThreadLocal.containsKey("removed-key")).isFalse();
+        assertThat(SdkInternalThreadLocal.get("child-key")).isEqualTo("child-only-value");
+    }
+
     private static void runInThread(Runnable action) throws InterruptedException {
         AtomicReference<Throwable> failure = new AtomicReference<>();
         Thread thread = new Thread(() -> {
