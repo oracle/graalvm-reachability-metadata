@@ -25,6 +25,16 @@ class Sourcepos_3Test {
   }
 
   @Test
+  def usesExplicitContextualSourcePositionWhenProvided(): Unit = {
+    val provided: SourcePos = SourcePos("Provided.scala", 128)
+    val observed: SourcePos = captureWithProvidedSourcePosition(provided)
+
+    assertEquals("Provided.scala", observed.file)
+    assertEquals(128, observed.line)
+    assertEquals(provided, observed)
+  }
+
+  @Test
   def supportsValueSemanticsCopyingAndStringRendering(): Unit = {
     val position: SourcePos = SourcePos("Main.scala", 42)
     val samePosition: SourcePos = SourcePos.apply("Main.scala", 42)
@@ -80,6 +90,12 @@ class Sourcepos_3Test {
   }
 
   private def captureContextualSourcePosition(using sourcePos: SourcePos): SourcePos = sourcePos
+
+  private def captureWithProvidedSourcePosition(provided: SourcePos): SourcePos = {
+    given SourcePos = provided
+
+    captureContextualSourcePosition
+  }
 
   private def assertPointsAtThisTest(sourcePos: SourcePos): Unit = {
     val normalizedFile: String = sourcePos.file.replace('\\', '/')
