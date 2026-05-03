@@ -126,6 +126,24 @@ public class Coroutines_extensions_jvmTest {
     }
 
     @Test
+    fun mapToOneOrNullAndDefaultReturnExistingRows(): Unit = runBlocking {
+        withTimeout(5_000) {
+            val query: MutableUserQuery = MutableUserQuery(listOf(User(1, "Ada")))
+            val defaultUser: User = User(99, "default")
+
+            val nullableUser: User? = flowOf(query).mapToOneOrNull(Dispatchers.Unconfined).single()
+            val defaultedUser: User = flowOf(query)
+                .mapToOneOrDefault(defaultUser, Dispatchers.Unconfined)
+                .single()
+
+            assertThat(nullableUser).isEqualTo(User(1, "Ada"))
+            assertThat(defaultedUser).isEqualTo(User(1, "Ada"))
+            assertThat(defaultedUser).isNotEqualTo(defaultUser)
+            assertThat(query.executeCount).isEqualTo(2)
+        }
+    }
+
+    @Test
     fun mapToOneNotNullFiltersEmptyResults(): Unit = runBlocking {
         withTimeout(5_000) {
             val emptyQuery: MutableUserQuery = MutableUserQuery(emptyList())
