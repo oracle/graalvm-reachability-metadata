@@ -19,9 +19,10 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
-import org.gradle.api.logging.LogLevel;
 import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.process.ExecOperations;
+import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
 import java.io.IOException;
@@ -293,9 +294,10 @@ public final class MetadataGenerationUtils {
             }
         }
 
-        // Add the new entry and mark it as latest
-        List<String> testedVersions = new ArrayList<>();
-        testedVersions.add(newCoords.version());
+        // Add the new entry and mark it as latest.
+        // When this creates a new metadata boundary inside an existing range,
+        // move covered tested versions to the new entry so index validation keeps passing.
+        List<String> testedVersions = moveTestedVersionsCoveredByNewMetadata(entries, newCoords.version());
         MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(
                 Boolean.TRUE, // latest
                 null, // override
@@ -325,5 +327,101 @@ public final class MetadataGenerationUtils {
             json = json + System.lineSeparator();
         }
         Files.writeString(indexFile.toPath(), json, java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    private static List<String> moveTestedVersionsCoveredByNewMetadata(List<MetadataVersionsIndexEntry> entries, String newVersion) {
+        VersionNumber newMetadataVersion = parseVersionOrNull(newVersion);
+        List<String> movedVersions = new ArrayList<>();
+        movedVersions.add(newVersion);
+
+        if (newMetadataVersion == null) {
+            return movedVersions;
+        }
+
+        VersionNumber nextMetadataVersion = findNextMetadataVersion(entries, newMetadataVersion);
+        for (int i = 0; i < entries.size(); i++) {
+            MetadataVersionsIndexEntry entry = entries.get(i);
+            VersionNumber entryMetadataVersion = parseVersionOrNull(entry.metadataVersion());
+            if (entryMetadataVersion == null || entryMetadataVersion.compareTo(newMetadataVersion) >= 0) {
+                continue;
+            }
+
+            List<String> testedVersions = entry.testedVersions();
+            if (testedVersions == null || testedVersions.isEmpty()) {
+                continue;
+            }
+
+            List<String> retainedVersions = new ArrayList<>();
+            boolean moved = false;
+            for (String testedVersion : testedVersions) {
+                if (isCoveredByNewMetadata(testedVersion, newMetadataVersion, nextMetadataVersion)) {
+                    movedVersions.add(testedVersion);
+                    moved = true;
+                } else {
+                    retainedVersions.add(testedVersion);
+                }
+            }
+            if (moved) {
+                entries.set(i, copyWithTestedVersions(entry, retainedVersions));
+            }
+        }
+
+        return new ArrayList<>(new LinkedHashSet<>(movedVersions));
+    }
+
+    private static VersionNumber findNextMetadataVersion(List<MetadataVersionsIndexEntry> entries, VersionNumber newMetadataVersion) {
+        VersionNumber nextMetadataVersion = null;
+        for (MetadataVersionsIndexEntry entry : entries) {
+            VersionNumber candidate = parseVersionOrNull(entry.metadataVersion());
+            if (candidate == null || candidate.compareTo(newMetadataVersion) <= 0) {
+                continue;
+            }
+            if (nextMetadataVersion == null || candidate.compareTo(nextMetadataVersion) < 0) {
+                nextMetadataVersion = candidate;
+            }
+        }
+        return nextMetadataVersion;
+    }
+
+    private static boolean isCoveredByNewMetadata(String testedVersion, VersionNumber newMetadataVersion, VersionNumber nextMetadataVersion) {
+        VersionNumber parsedTestedVersion = parseVersionOrNull(testedVersion);
+        if (parsedTestedVersion == null || parsedTestedVersion.compareTo(newMetadataVersion) < 0) {
+            return false;
+        }
+        return nextMetadataVersion == null || parsedTestedVersion.compareTo(nextMetadataVersion) < 0;
+    }
+
+    private static VersionNumber parseVersionOrNull(String version) {
+        if (version == null) {
+            return null;
+        }
+        try {
+            return VersionNumber.parse(version);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private static MetadataVersionsIndexEntry copyWithTestedVersions(MetadataVersionsIndexEntry entry, List<String> testedVersions) {
+        return new MetadataVersionsIndexEntry(
+                entry.latest(),
+                entry.override(),
+                entry.defaultFor(),
+                entry.metadataVersion(),
+                entry.testVersion(),
+                entry.sourceCodeUrl(),
+                entry.repositoryUrl(),
+                entry.testCodeUrl(),
+                entry.documentationUrl(),
+                entry.description(),
+                entry.language(),
+                testedVersions,
+                entry.skippedVersions(),
+                entry.allowedPackages(),
+                entry.requires(),
+                entry.notForNativeImage(),
+                entry.reason(),
+                entry.replacement()
+        );
     }
 }
