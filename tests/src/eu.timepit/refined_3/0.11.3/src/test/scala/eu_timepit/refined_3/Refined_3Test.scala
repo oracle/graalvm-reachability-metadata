@@ -175,6 +175,21 @@ class Refined_3Test {
   }
 
   @Test
+  def autoUnwrapProvidesImplicitAccessToUnderlyingValues(): Unit = {
+    import eu.timepit.refined.auto.autoUnwrap
+    import scala.language.implicitConversions
+
+    def addOne(value: Int): Int = value + 1
+    def hasConfigurationSuffix(value: String): Boolean = value.endsWith(".conf")
+
+    val positive: numericTypes.PosInt = expectRight(numericTypes.PosInt.from(41))
+    val configurationPath: String Refined EndsWith[".conf"] = expectRight(refineV[EndsWith[".conf"]]("native-image.conf"))
+
+    assertThat(addOne(positive)).isEqualTo(42)
+    assertThat(hasConfigurationSuffix(configurationPath)).isTrue
+  }
+
+  @Test
   def lowLevelPublicApiSupportsRefTypeOpsPatternMatchingAndValidationInspection(): Unit = {
     val refined: Int Refined Positive = expectRight(refineV[Positive](3))
     val Refined(unwrapped) = refined
