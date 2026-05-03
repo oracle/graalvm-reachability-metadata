@@ -1,0 +1,244 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dec46-ad4c-7560-89bf-a647e3131be7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.ant:ant-launcher:1.8.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.8.1" when "$version$" is replaced with "1.8.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/metadata/org.apache.ant/ant-launcher/index.json
+- Entry selector: "metadata-version" = "1.8.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "1.8.1".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "1.8.1".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "1.8.1".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "1.8.1" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch
+- repository-url: https://github.com/apache/ant
+- test-code-url: https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch
+- documentation-url: https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html
+- description: Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.8.1
+- Entry metadata-version: 1.8.1
+- Entry test-version: 1.8.1
+codex
+I’ll inspect the existing metadata entry first, then verify the rendered 1.8.1 URLs before making only the allowed field changes.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.apache.ant/ant-launcher/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+4:    "metadata-version" : "1.8.1",
+5:    "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
+6:    "repository-url" : "https://github.com/apache/ant",
+7:    "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
+8:    "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
+9:    "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.ant/ant-launcher/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8.1",
+    "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
+    "repository-url" : "https://github.com/apache/ant",
+    "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
+    "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
+    "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries.",
+    "tested-versions" : [
+      "1.8.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.tools.ant.launch"
+    ]
+  }
+]
+
+codex
+The entry already has non-blank URL and description fields; only `language` is absent. I’m still checking whether the existing template URLs render correctly for `1.8.1` and whether Maven-published source/test artifacts should override them under the repository’s metadata convention.
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org|sources.jar|test.*jar|maven.*source-code-url|source-code-url.*maven' metadata | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/net.java.dev.jna/jna/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/$version$/jna-$version$-sources.jar",
+metadata/net.java.dev.jna/jna/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/$version$/jna-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-javadoc.jar",
+metadata/jline/jline/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/jline/jline/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-tests.jar",
+metadata/jline/jline/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+metadata/org.scala-sbt/util-interface/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/util-interface/$version$/util-interface-$version$-sources.jar",
+metadata/org.scala-sbt/util-interface/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scala-sbt/util-interface/$version$/util-interface-$version$-javadoc.jar",
+metadata/javax.portlet/portlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-sources.jar",
+metadata/javax.portlet/portlet-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-javadoc.jar",
+metadata/javax.el/el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.scala-sbt/test-interface/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/$version$/test-interface-$version$-sources.jar",
+metadata/org.scala-sbt/test-interface/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scala-sbt/test-interface/$version$/test-interface-$version$-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+metadata/com.esotericsoftware/minlog/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/$version$/minlog-$version$-sources.jar",
+metadata/com.esotericsoftware/minlog/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/$version$/minlog-$version$-tests.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/xml/fastinfoset/FastInfoset/$version$/FastInfoset-$version$-sources.jar",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/com/sun/xml/fastinfoset/FastInfosetRoundTripTests/$version$/FastInfosetRoundTripTests-$version$-sources.jar",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/xml/fastinfoset/FastInfoset/$version$/FastInfoset-$version$-javadoc.jar",
+metadata/at.yawk.lz4/lz4-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://github.com/apache/ant/tree/rel/1.8.1/src/main/org/apache/tools/ant/launch' \\
+  'https://github.com/apache/ant/tree/rel/1.8.1/src/tests/junit/org/apache/tools/ant/launch' \\
+  'https://github.com/apache/ant/blob/rel/1.8.1/docs/manual/running.html' \\
+  'https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-sources.jar' \\
+  'https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-tests.jar'; do printf '%s -> ' \""'$url"; curl -L -s -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 2479ms:
+200 https://github.com/apache/ant/tree/rel/1.8.1/src/main/org/apache/tools/ant/launch
+https://github.com/apache/ant/tree/rel/1.8.1/src/tests/junit/org/apache/tools/ant/launch -> 200 https://github.com/apache/ant/tree/rel/1.8.1/src/tests/junit/org/apache/tools/ant/launch
+https://github.com/apache/ant/blob/rel/1.8.1/docs/manual/running.html -> 200 https://github.com/apache/ant/blob/rel/1.8.1/docs/manual/running.html
+https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-sources.jar -> 404 https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-sources.jar
+https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-tests.jar -> 404 https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-tests.jar
+
+codex
+The rendered GitHub source, test, and manual URLs all return 200 for `rel/1.8.1`. Maven Central does not expose `ant-launcher-1.8.1-sources.jar` or `ant-launcher-1.8.1-tests.jar`, so the existing tag-specific repository URLs are the correct candidates to keep.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.apache.ant/ant-launcher/index.json >/dev/null && echo valid-json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+valid-json
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.ant/ant-launcher/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+codex
+No file changes were needed in [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/metadata/org.apache.ant/ant-launcher/index.json:1). The existing `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description` are already non-blank and render correctly for `1.8.1`.
+
+I verified the rendered GitHub source, test, and documentation URLs return `200`. Maven Central does not provide `ant-launcher-1.8.1-sources.jar` or `ant-launcher-1.8.1-tests.jar`, so there was no Maven URL to prefer. `language` remains absent because this is not a Kotlin, Groovy, or Scala-specific library. JSON validation passed, and `git diff` is empty.
+tokens used
+14,372
+No file changes were needed in [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/metadata/org.apache.ant/ant-launcher/index.json:1). The existing `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description` are already non-blank and render correctly for `1.8.1`.
+
+I verified the rendered GitHub source, test, and documentation URLs return `200`. Maven Central does not provide `ant-launcher-1.8.1-sources.jar` or `ant-launcher-1.8.1-tests.jar`, so there was no Maven URL to prefer. `language` remains absent because this is not a Kotlin, Groovy, or Scala-specific library. JSON validation passed, and `git diff` is empty.
+Ran agent for org.apache.ant:ant-launcher:1.8.1 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/build/agent-url-discovery-logs/org.apache.ant-ant-launcher-1.8.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 32s
+9 actionable tasks: 1 executed, 8 up-to-date

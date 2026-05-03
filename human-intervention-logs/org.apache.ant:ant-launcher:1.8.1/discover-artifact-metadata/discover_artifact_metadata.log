@@ -1,0 +1,1325 @@
+Starting a Gradle Daemon, 5 busy and 5 incompatible and 6 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dec44-c70b-7f60-906f-6679a79e4ce4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.ant:ant-launcher:1.8.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.8.1" when "$version$" is replaced with "1.8.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+- Set "coordinates" to "org.apache.ant:ant-launcher:1.8.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.8.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and Apache Ant release/tag conventions, then update the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+-rw-rw-r-- 1 vjovanov vjovanov 58 May  3 07:17 build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+{
+  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.apache\\.ant:ant-launcher|ant-launcher\" build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json:2:  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
+
+web search: 
+web search: Maven Central org.apache.ant ant-launcher 1.8.1 sources jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.ant/ant-launcher
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/ant/ant-launcher/1.8.1 ant-launcher-1.8.1-sources.jar
+codex
+The existing metadata file only has coordinates. I’m checking whether Central provides source or test artifacts for exactly `1.8.1`, since the request says to prefer Maven-hosted artifacts when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!--
+  This POM has been created manually by the Ant Development Team.
+  Please contact us if you are not satisfied with the data contained in this POM.
+  URL : http://ant.apache.org
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.apache.ant</groupId>
+    <artifactId>ant-parent</artifactId>
+    <relativePath>../pom.xml</relativePath>
+    <version>1.8.1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.ant</groupId>
+  <artifactId>ant-launcher</artifactId>
+  <version>1.8.1</version>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.4</source>
+          <target>1.4</target>
+          <includes>
+            <include>org/apache/tools/ant/launch/*.java</include>
+          </includes>
+
+        </configuration>
+      </plugin>
+    </plugins>
+    <sourceDirectory>../../../../src/main</sourceDirectory>
+    <testSourceDirectory>../../../../src/testcases</testSourceDirectory>
+    <outputDirectory>../../../../target/ant-launcher/classes</outputDirectory>
+    <testOutputDirectory>../../../../target/ant-launcher/testcases</testOutputDirectory>
+    <directory>../../../../target/ant-launcher</directory>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/ant/ant-launcher/1.8.1/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/ant/ant-launcher/1.8.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/ant/ant-launcher/1.8.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="ant-launcher-1.8.1.jar" title="ant-launcher-1.8.1.jar">ant-launcher-1.8.1.jar</a>                            2010-04-30 22:04     12312      
+<a href="ant-launcher-1.8.1.jar.asc" title="ant-launcher-1.8.1.jar.asc">ant-launcher-1.8.1.jar.asc</a>                        2010-04-30 22:04       190      
+<a href="ant-launcher-1.8.1.jar.asc.md5" title="ant-launcher-1.8.1.jar.asc.md5">ant-launcher-1.8.1.jar.asc.md5</a>                    2010-04-30 22:04        32      
+<a href="ant-launcher-1.8.1.jar.asc.sha" title="ant-launcher-1.8.1.jar.asc.sha">ant-launcher-1.8.1.jar.asc.sha</a>                    2010-04-30 22:04        40      
+<a href="ant-launcher-1.8.1.jar.asc.sha.md5" title="ant-launcher-1.8.1.jar.asc.sha.md5">ant-launcher-1.8.1.jar.asc.sha.md5</a>                2010-04-30 22:04        32      
+<a href="ant-launcher-1.8.1.jar.asc.sha.sha1" title="ant-launcher-1.8.1.jar.asc.sha.sha1">ant-launcher-1.8.1.jar.asc.sha.sha1</a>               2010-04-30 22:04        40      
+<a href="ant-launcher-1.8.1.jar.asc.sha1" title="ant-launcher-1.8.1.jar.asc.sha1">ant-launcher-1.8.1.jar.asc.sha1</a>                   2010-04-30 22:04        40      
+<a href="ant-launcher-1.8.1.jar.md5" title="ant-launcher-1.8.1.jar.md5">ant-launcher-1.8.1.jar.md5</a>                        2010-04-30 22:04        34      
+<a href="ant-launcher-1.8.1.jar.sha1" title="ant-launcher-1.8.1.jar.sha1">ant-launcher-1.8.1.jar.sha1</a>                       2010-04-30 22:04        42      
+<a href="ant-launcher-1.8.1.pom" title="ant-launcher-1.8.1.pom">ant-launcher-1.8.1.pom</a>                            2010-04-30 22:04      2383      
+<a href="ant-launcher-1.8.1.pom.asc" title="ant-launcher-1.8.1.pom.asc">ant-launcher-1.8.1.pom.asc</a>                        2010-04-30 22:04       190      
+<a href="ant-launcher-1.8.1.pom.asc.md5" title="ant-launcher-1.8.1.pom.asc.md5">ant-launcher-1.8.1.pom.asc.md5</a>                    2010-04-30 22:04        32      
+<a href="ant-launcher-1.8.1.pom.asc.sha" title="ant-launcher-1.8.1.pom.asc.sha">ant-launcher-1.8.1.pom.asc.sha</a>                    2010-04-30 22:04        40      
+<a href="ant-launcher-1.8.1.pom.asc.sha.md5" title="ant-launcher-1.8.1.pom.asc.sha.md5">ant-launcher-1.8.1.pom.asc.sha.md5</a>                2010-04-30 22:04        32      
+<a href="ant-launcher-1.8.1.pom.asc.sha.sha1" title="ant-launcher-1.8.1.pom.asc.sha.sha1">ant-launcher-1.8.1.pom.asc.sha.sha1</a>               2010-04-30 22:04        40      
+<a href="ant-launcher-1.8.1.pom.asc.sha1" title="ant-launcher-1.8.1.pom.asc.sha1">ant-launcher-1.8.1.pom.asc.sha1</a>                   2010-04-30 22:04        40      
+<a href="ant-launcher-1.8.1.pom.md5" title="ant-launcher-1.8.1.pom.md5">ant-launcher-1.8.1.pom.md5</a>                        2010-04-30 22:04        34      
+<a href="ant-launcher-1.8.1.pom.sha1" title="ant-launcher-1.8.1.pom.sha1">ant-launcher-1.8.1.pom.sha1</a>                       2010-04-30 22:04        42      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-sources.jar || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-tests.jar || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 238ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 05:17:23 GMT
+content-type: text/html
+cf-ray: 9f5ccc8f5ee6039c-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 219ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 05:17:24 GMT
+content-type: text/html
+cf-ray: 9f5ccc8f98844f9a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/ant.git | rg -n \"1\\.8\\.1|ANT_181|rel/1\\.8\"" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/ant/tree/ANT_181 || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://svn.apache.org/repos/asf/ant/core/tags/ANT_181/ || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/ant/tree/rel/1.8.1 || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 113ms:
+HTTP/1.1 200 OK
+Date: Sun, 03 May 2026 05:17:30 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Sat, 01 May 2010 03:41:05 GMT
+ETag: W/"939905//ant/core/tags/ANT_181"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+ succeeded in 345ms:
+139:b0e184cc63a2a124fe3cbc784a53a50a0caa3066	refs/tags/ANT_181
+140:511c9956704a6023d1d1b1403d36f58eab10266b	refs/tags/ANT_181^{}
+279:d935adce59dad91f1f50958ce4bf516358b92cbb	refs/tags/rel/1.8.0
+280:7d104a8e46eca0350b1e39694f3987d312978689	refs/tags/rel/1.8.0^{}
+281:ec01daf83c352dd4d07866763a04a25ddde9a8e1	refs/tags/rel/1.8.1
+282:511c9956704a6023d1d1b1403d36f58eab10266b	refs/tags/rel/1.8.1^{}
+283:bafbd1b9064e4ae25f8ec0d9ad870532d0aec0ad	refs/tags/rel/1.8.2
+284:cd4c13a2a35521c84227fbf3aee1c6065283cf7f	refs/tags/rel/1.8.2^{}
+285:77e1246e5c1131a413a72474c82d353beecf95b1	refs/tags/rel/1.8.3
+286:25f34e9d0e285d75737835034daf0f5d589cce02	refs/tags/rel/1.8.3^{}
+287:c424383010c17d3525838d98c4843e472b6f80d9	refs/tags/rel/1.8.4
+288:7105ec785cdcc0faa9afcb9b8384d4864f08a5d6	refs/tags/rel/1.8.4^{}
+
+ succeeded in 854ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:17:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a95ce8feeb57c101ed3f6761d1e8a741"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=xpxt4%2B1kDW%2BNs51PU0VyJBwp6IfOvUFZO3y%2B9Mi0T2SB1D%2FCj0sjR5zIgtoOZIKdSrRuo1EF14rjBLtVy41X758wHnXo5ciiyIhqgSDIiSkTYGEfi4i9DbJfpLIOxzRQ4aZutfUsBYmYR8k7maxfqHJAPIsbYJVv4Krik41D8CczBIRPBBqRtpf89eNcmUJsKMERng7GHrmGXpOoS%2FXEmC8rUYQp9QUVh%2B94WZvTchvGBMg9yT8nLs350QgVY88Zq80w8b0zQXrXPxR27QL7sQ%3D%3D--sUW7uqRi8JsW2gB0--d%2F6JlFjVozaytQ82TRsTAw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.974279449.1777785450; expires=Mon, 03 May 2027 05:17:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:17:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5114:438C9:7D9EAC:62D39C:69F6DA6A
+
+
+ succeeded in 774ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:17:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"964792b427026a78d28991dae0559af5"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=sdC%2BjTJZeEYJQxS5lJ77JewDxI5Htzow942b%2F6P34DkCuX5Z%2F%2FXpGaV5%2Fc0%2FwdiGbeBUMwt9xV4655fjmIipKqsPsVv1u0gJ0EmRuzOGA3Q%2BEp7znDXI%2BKriqk8gtxTlbb9oW%2BGidAbWDlrbd%2BmdOaMCRVDn2rs4nbuR2w54kxeokULLJAecXd4AOmXa%2B6zFE4QV%2BavEUcWmQNAu020IAasg%2BvyagZ8Me20A3Ep6OjsKY4ODpctovOWwrnYnU2%2BrNYzNKm4W33YiU4JQhjkT6g%3D%3D--L5uGmaEo43aEJV8R--4rr2%2BwZ5BDsh8QhJy0p8Bw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1140962798.1777785450; expires=Mon, 03 May 2027 05:17:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:17:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5116:CCC67:7AAADA:60AA7B:69F6DA6A
+
+
+codex
+Central has the binary JAR and POM for `1.8.1`, but no `-sources.jar` or `-tests.jar`. The POM points at Ant’s monorepo source and test directories, so I’m using the release tag for the source, test, and docs URLs.
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/ant/tree/rel/1.8.1/src/main/org/apache/tools/ant/launch || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/ant/git/trees/511c9956704a6023d1d1b1403d36f58eab10266b?recursive=1 | rg '\"path\": \"(src/main/org/apache/tools/ant/launch|src/testcases|docs|manual|README|WHATSNEW)' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/ant/tree/rel/1.8.1/docs/manual || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/ant/tree/rel/1.8.1/src/testcases || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 305ms:
+      "path": "README",
+      "path": "WHATSNEW",
+      "path": "docs.xml",
+      "path": "docs",
+      "path": "docs/LICENSE",
+      "path": "docs/ant2",
+      "path": "docs/ant2/FunctionalRequirements.html",
+      "path": "docs/ant2/VFS.txt",
+      "path": "docs/ant2/actionlist.html",
+      "path": "docs/ant2/features.html",
+      "path": "docs/ant2/original-specification.html",
+      "path": "docs/ant2/requested-features.html",
+      "path": "docs/ant2/requested-features.txt",
+      "path": "docs/ant_in_anger.html",
+      "path": "docs/ant_task_guidelines.html",
+      "path": "docs/antlibs",
+      "path": "docs/antlibs/antunit",
+      "path": "docs/antlibs/antunit/index.html",
+      "path": "docs/antlibs/bindownload.cgi",
+      "path": "docs/antlibs/bindownload.html",
+      "path": "docs/antlibs/charter.html",
+      "path": "docs/antlibs/compress",
+      "path": "docs/antlibs/compress/index.html",
+      "path": "docs/antlibs/dotnet",
+      "path": "docs/antlibs/dotnet/index.html",
+      "path": "docs/antlibs/index.html",
+      "path": "docs/antlibs/proper.html",
+      "path": "docs/antlibs/props",
+      "path": "docs/antlibs/props/index.html",
+      "path": "docs/antlibs/sandbox.html",
+      "path": "docs/antlibs/srcdownload.cgi",
+      "path": "docs/antlibs/srcdownload.html",
+      "path": "docs/antlibs/svn",
+      "path": "docs/antlibs/svn/index.html",
+      "path": "docs/antnews.html",
+      "path": "docs/appendix_e.pdf",
+      "path": "docs/bindownload.cgi",
+      "path": "docs/bindownload.html",
+      "path": "docs/breadcrumbs.js",
+      "path": "docs/bugs.html",
+      "path": "docs/bylaws.html",
+      "path": "docs/contributors.html",
+      "path": "docs/external.html",
+      "path": "docs/faq.html",
+      "path": "docs/favicon.ico",
+      "path": "docs/images",
+      "path": "docs/images/JDJEditorsChoiceAward.jpg",
+      "path": "docs/images/ant_logo.ico",
+      "path": "docs/images/ant_logo_large.gif",
+      "path": "docs/images/ant_logo_medium.gif",
+      "path": "docs/images/ant_logo_small.gif",
+      "path": "docs/images/beta.png",
+      "path": "docs/images/current.gif",
+      "path": "docs/images/group-logo.gif",
+      "path": "docs/images/jp_rcwinner_2003.gif",
+      "path": "docs/images/jw_ec_logo_winner2002.gif",
+      "path": "docs/images/jw_ec_logo_winner2003.gif",
+      "path": "docs/images/label.gif",
+      "path": "docs/images/menu-left.gif",
+      "path": "docs/images/menu-right.gif",
+      "path": "docs/images/page.gif",
+      "path": "docs/images/printer.gif",
+      "path": "docs/images/project-logo.gif",
+      "path": "docs/images/sdm_productivity_award.gif",
+      "path": "docs/images/search-left.gif",
+      "path": "docs/images/search-right.gif",
+      "path": "docs/images/spacer.gif",
+      "path": "docs/images/tab-left.gif",
+      "path": "docs/images/tab-right.gif",
+      "path": "docs/images/tabSel-left.gif",
+      "path": "docs/images/tabSel-right.gif",
+      "path": "docs/index.html",
+      "path": "docs/legal.html",
+      "path": "docs/license.html",
+      "path": "docs/mail.html",
+      "path": "docs/manual",
+      "path": "docs/manual/CoreTasks",
+      "path": "docs/manual/CoreTasks/ant.html",
+      "path": "docs/manual/CoreTasks/antcall.html",
+      "path": "docs/manual/CoreTasks/antstructure.html",
+curl: (23) Failure writing output to destination
+
+ succeeded in 634ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 05:17:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=WBDNnBHU2ckk9fhgsvCNtEGGHhX4u1Zqh%2BNqDdfEddVNUc0ceCiV3wPpTWJM1%2BSZeqVBPSEYOtOGOFS3%2FulfWJrMsMDj8%2FovbJgmJ4WOu5vtPdPLYOp4TuhC94Kf3R%2BddQOz6l%2FOAUKEDhs8QfWlI32n%2Fsmf%2BnPhB6lsx47So9%2FdAprIuwZsDXxFCgukbzpz1mjnmqqSmndeU8RlUxIZc8eYPwTbcsHOkUjqU7R79dowdEvvx1blRmTLAILRBnDWrYLF6b5TEE%2B4sVN6wbwB9w%3D%3D--ysRqP9nxHjO29duw--hd8yAU8If0KEPyhK9Wn2lQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1370173597.1777785459; expires=Mon, 03 May 2027 05:17:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:17:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5121:269E4E:7B703D:613C36:69F6DA73
+
+
+ succeeded in 656ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:17:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2346b3e738625c5a5fb585b816e0b0b2"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=NQU8bHdEIgklXGkBJFU%2BTMypRKZShRJCraWLg%2F6acIOZrCCtF8Hq%2FhmNC%2Fa3wSfMbfnmhavpTBORxsYGjEj1H64YtE5CoaDF5TGdgBwSGonAbtOwwpU1uPUNdeh9e2cPAbI8oAPh722gKOESI%2FhMFG0gtijzvsWmb%2FHU6pI3v5vNd%2FL%2BOnWxmucHApl1CI8Zv7GgzjrkskuBd4dzDh8EM3bb%2BhGRDVbMIu7NO%2BeS2qEwREsdB0%2BaKNBREOErW%2BMzVCl%2F9anAaiiU923koO5edw%3D%3D--Sx4tL1EDpXPa%2Fol9--xQHkeip83rjBEmD1yUfNzg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1706436694.1777785459; expires=Mon, 03 May 2027 05:17:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:17:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511E:269E4E:7B703D:613C34:69F6DA73
+
+
+ succeeded in 676ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:17:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"77eae44cdf1544be62c83574b3046308"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=PRf%2BKGR5%2BZ8xGi0FkYzOXbqIlWLFZUsJ%2FJ8GDipEIPT32wdY3LBqXY6Xz2QTW9kHzD6dzWxIDhw8LMmFjrq%2BAHz4kbozAsmF%2FEEk45%2Fou%2FK1taFFrKMChJkqGe16lOhaWseMgS93ZPnH%2F96ft3Vsb%2Bxx%2Ba5RsByVrFUR7%2FbbbAetTSLNsIMwf2DKkDO3FO6AsUAZwSiZNnqMEv5%2Fh7gjXZJVlq4VkV6Uk2%2BN8r4yqyiwGJe6sRpWy4BxwkfW%2BLkGuE7Qr2PHvPKNJ6IjcmytkA%3D%3D--zv9Df%2FT1mSdaG85k--8CoeTYgwA2ocZO6kkXO8xg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1145711683.1777785459; expires=Mon, 03 May 2027 05:17:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:17:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5107:3178CB:7BCD82:616EBF:69F6DA73
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/ant/git/trees/511c9956704a6023d1d1b1403d36f58eab10266b?recursive=1 | rg 'Launcher|launch' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/ant/tree/rel/1.8.1/src/tests/junit || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/ant/git/trees/511c9956704a6023d1d1b1403d36f58eab10266b?recursive=1 | rg '\"path\": \"src/(test|testcases|tests|etc|main/org/apache/tools/ant/launch)' | head -120" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+      "path": "src/etc",
+      "path": "src/etc/ant-bin.wxs",
+      "path": "src/etc/ant-msi.wxs",
+      "path": "src/etc/ant-update.xsl",
+      "path": "src/etc/changelog.xsl",
+      "path": "src/etc/checkstyle",
+      "path": "src/etc/checkstyle/RequiredHeader.txt",
+      "path": "src/etc/checkstyle/checkstyle-config",
+      "path": "src/etc/checkstyle/checkstyle-frames.xsl",
+      "path": "src/etc/checkstyle/checkstyle-text.xsl",
+      "path": "src/etc/checkstyle/checkstyle-xdoc.xsl",
+      "path": "src/etc/common2master.xsl",
+      "path": "src/etc/coverage-frames.xsl",
+      "path": "src/etc/jdepend-frames.xsl",
+      "path": "src/etc/jdepend.xsl",
+      "path": "src/etc/junit-frames-xalan1.xsl",
+      "path": "src/etc/junit-frames.xsl",
+      "path": "src/etc/junit-noframes.xsl",
+      "path": "src/etc/log.xsl",
+      "path": "src/etc/manifest",
+      "path": "src/etc/maudit-frames.xsl",
+      "path": "src/etc/mmetrics-frames.xsl",
+      "path": "src/etc/performance",
+      "path": "src/etc/performance/build.xml",
+      "path": "src/etc/performance/dirscanner.xml",
+      "path": "src/etc/poms",
+      "path": "src/etc/poms/README.txt",
+      "path": "src/etc/poms/ant-antlr",
+      "path": "src/etc/poms/ant-antlr/pom.xml",
+      "path": "src/etc/poms/ant-apache-bcel",
+      "path": "src/etc/poms/ant-apache-bcel/pom.xml",
+      "path": "src/etc/poms/ant-apache-bsf",
+      "path": "src/etc/poms/ant-apache-bsf/pom.xml",
+      "path": "src/etc/poms/ant-apache-log4j",
+      "path": "src/etc/poms/ant-apache-log4j/pom.xml",
+      "path": "src/etc/poms/ant-apache-oro",
+      "path": "src/etc/poms/ant-apache-oro/pom.xml",
+      "path": "src/etc/poms/ant-apache-regexp",
+      "path": "src/etc/poms/ant-apache-regexp/pom.xml",
+      "path": "src/etc/poms/ant-apache-resolver",
+      "path": "src/etc/poms/ant-apache-resolver/pom.xml",
+      "path": "src/etc/poms/ant-apache-xalan2",
+      "path": "src/etc/poms/ant-apache-xalan2/pom.xml",
+      "path": "src/etc/poms/ant-commons-logging",
+      "path": "src/etc/poms/ant-commons-logging/pom.xml",
+      "path": "src/etc/poms/ant-commons-net",
+      "path": "src/etc/poms/ant-commons-net/pom.xml",
+      "path": "src/etc/poms/ant-jai",
+      "path": "src/etc/poms/ant-jai/pom.xml",
+      "path": "src/etc/poms/ant-javamail",
+      "path": "src/etc/poms/ant-javamail/pom.xml",
+      "path": "src/etc/poms/ant-jdepend",
+      "path": "src/etc/poms/ant-jdepend/pom.xml",
+      "path": "src/etc/poms/ant-jmf",
+      "path": "src/etc/poms/ant-jmf/pom.xml",
+      "path": "src/etc/poms/ant-jsch",
+      "path": "src/etc/poms/ant-jsch/pom.xml",
+      "path": "src/etc/poms/ant-junit",
+      "path": "src/etc/poms/ant-junit/pom.xml",
+      "path": "src/etc/poms/ant-launcher",
+      "path": "src/etc/poms/ant-launcher/pom.xml",
+      "path": "src/etc/poms/ant-netrexx",
+      "path": "src/etc/poms/ant-netrexx/pom.xml",
+      "path": "src/etc/poms/ant-nodeps",
+      "path": "src/etc/poms/ant-nodeps/pom.xml",
+      "path": "src/etc/poms/ant-swing",
+      "path": "src/etc/poms/ant-swing/pom.xml",
+      "path": "src/etc/poms/ant-testutil",
+      "path": "src/etc/poms/ant-testutil/pom.xml",
+      "path": "src/etc/poms/ant",
+      "path": "src/etc/poms/ant/pom.xml",
+      "path": "src/etc/poms/pom.xml",
+      "path": "src/etc/printFailingTests.xsl",
+      "path": "src/etc/tagdiff.xsl",
+      "path": "src/etc/testcases",
+      "path": "src/etc/testcases/asf-logo.gif",
+      "path": "src/etc/testcases/core",
+      "path": "src/etc/testcases/core/antclassloader.xml",
+      "path": "src/etc/testcases/core/case.xml",
+      "path": "src/etc/testcases/core/containersrc",
+      "path": "src/etc/testcases/core/containersrc/test",
+      "path": "src/etc/testcases/core/containersrc/test/SpecialSeq.java",
+      "path": "src/etc/testcases/core/directoryscanner.xml",
+      "path": "src/etc/testcases/core/dispatch",
+      "path": "src/etc/testcases/core/dispatch/dispatch.xml",
+      "path": "src/etc/testcases/core/duplicate-target-imported.xml",
+      "path": "src/etc/testcases/core/duplicate-target.xml",
+      "path": "src/etc/testcases/core/duplicate-target2.xml",
+      "path": "src/etc/testcases/core/executor.xml",
+      "path": "src/etc/testcases/core/extended-taskdef.xml",
+      "path": "src/etc/testcases/core/immutable.xml",
+      "path": "src/etc/testcases/core/include",
+      "path": "src/etc/testcases/core/include/basic",
+      "path": "src/etc/testcases/core/include/basic/include.inc",
+      "path": "src/etc/testcases/core/include/basic/include.xml",
+      "path": "src/etc/testcases/core/include/basic/relative.xml",
+      "path": "src/etc/testcases/core/include/frag#ment",
+      "path": "src/etc/testcases/core/include/frag#ment/include.inc",
+      "path": "src/etc/testcases/core/include/frag#ment/include.xml",
+      "path": "src/etc/testcases/core/include/frag#ment/relative.xml",
+      "path": "src/etc/testcases/core/include/frag#ment/simple.xml",
+      "path": "src/etc/testcases/core/include/included_file_parse_error",
+      "path": "src/etc/testcases/core/include/included_file_parse_error/build.xml",
+      "path": "src/etc/testcases/core/include/included_file_parse_error/included_file.xml",
+      "path": "src/etc/testcases/core/include/included_file_task_error",
+      "path": "src/etc/testcases/core/include/included_file_task_error/build.xml",
+      "path": "src/etc/testcases/core/include/included_file_task_error/included_file.xml",
+      "path": "src/etc/testcases/core/include/including_file_parse_error",
+      "path": "src/etc/testcases/core/include/including_file_parse_error/build.xml",
+      "path": "src/etc/testcases/core/include/including_file_parse_error/included_file.xml",
+      "path": "src/etc/testcases/core/include/including_file_task_error",
+      "path": "src/etc/testcases/core/include/including_file_task_error/build.xml",
+      "path": "src/etc/testcases/core/include/including_file_task_error/included_file.xml",
+      "path": "src/etc/testcases/core/include/with space",
+      "path": "src/etc/testcases/core/include/with space/include.inc",
+      "path": "src/etc/testcases/core/include/with space/include.xml",
+      "path": "src/etc/testcases/core/include/with space/relative.xml",
+      "path": "src/etc/testcases/core/include/with space/simple.xml",
+      "path": "src/etc/testcases/core/loaderref",
+      "path": "src/etc/testcases/core/loaderref/loaderref.xml",
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/ant/tree/rel/1.8.1/src/tests/junit/org/apache/tools/ant/launch || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 140ms:
+      "path": "src/etc/poms/ant-launcher",
+      "path": "src/etc/poms/ant-launcher/pom.xml",
+      "path": "src/main/org/apache/tools/ant/launch",
+      "path": "src/main/org/apache/tools/ant/launch/AntMain.java",
+      "path": "src/main/org/apache/tools/ant/launch/LaunchException.java",
+      "path": "src/main/org/apache/tools/ant/launch/Launcher.java",
+      "path": "src/main/org/apache/tools/ant/launch/Locator.java",
+      "path": "src/tests/junit/org/apache/tools/ant/launch",
+      "path": "src/tests/junit/org/apache/tools/ant/launch/LocatorTest.java",
+
+ succeeded in 481ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:17:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"d1833106f6a0dae748498026077716f0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=VS7a4gQHVHvDSfQ8sV1TsWFQZpZKeotbESdR1kePjRyLFyQTVDxHI8HEIdlh40rtj9N3mNTfCkNGsI9wdEgwQOQJtNINXugBVjnuiMwNTnhGNUtVxfIn0LIqg%2BrZCxzvbVD8Vdv1lEEolaBN8%2Bo8nclLpnf%2BVK7SkddLCMsLTFzw88m%2BefBpIBZBtRe4n2R6SB2oscwKGh5aEAm02j9vugEidZ7dbpkCYHhYmfKQEImTBA%2FrCiF13PAV9tEux04xCATUfL80XWH79D3cJSd2tA%3D%3D--Lk2zo3kunlQ3rMVK--HDsn0%2F%2BrunXWV8F2XgexcQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.367895657.1777785465; expires=Mon, 03 May 2027 05:17:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:17:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5118:167D:11E8EA1C:D91BCAB:69F6DA79
+
+
+ succeeded in 583ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:17:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8a595394fe466114eeaaa866ba4f7de0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=1GWXHoogdcWq4eLbIDA41PWIh990Mmd9JpfZhZu6xOSzHswoiWhkwwCqFnjzVaIPSIfKj8gpIibUUu61mkWSnJdMZLkvspGtvtltmXZLH1nIhinFUeGfVZPWEvYMzT3V1f8RSqGchuUSnM8coDvsltlspmboF2CGEw1y%2Fe1ipzcgavhejOsShpX9UhRqDUJQaHUI9Ftaf1DbDJNoWB%2B0d%2BMEoZp%2F32SNnDU%2BV2xnrhwS3%2FG3aAk%2FYxkrn2nTux0EKE%2BuuA%2F9SWZ87TD2UH6JfQ%3D%3D--jpUj3fRL8bLcN77i--Bx0uZ2%2BkQpvJEjekaz92Kw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1158283340.1777785465; expires=Mon, 03 May 2027 05:17:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:17:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5119:CCC67:7B1C09:6100BF:69F6DA79
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1.jar -o /tmp/ant-launcher-1.8.1.jar && jar tf /tmp/ant-launcher-1.8.1.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/tools/
+org/apache/tools/ant/
+org/apache/tools/ant/launch/
+org/apache/tools/ant/launch/AntMain.class
+org/apache/tools/ant/launch/LaunchException.class
+org/apache/tools/ant/launch/Launcher.class
+org/apache/tools/ant/launch/Locator$1.class
+org/apache/tools/ant/launch/Locator.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/ant/rel/1.8.1/README | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/ant/rel/1.8.1/src/main/org/apache/tools/ant/launch/Launcher.java | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/apache/ant/rel/1.8.1/docs/manual/running.html | rg -n "ant-launcher|launcher|Running Apache Ant|ant.jar|ANT_HOME" | head -40' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 152ms:
+
+                                 A     N     T
+ 
+
+  What is it? 
+  -----------
+  
+  Ant is a Java based build tool. In theory it is kind of like "make" 
+  without makes wrinkles and with the full portability of pure java code.
+
+  
+  Why?
+  ----
+  
+  Why another build tool when there is already make, gnumake, nmake, jam, 
+  and others? Because all of those tools have limitations that its original 
+  author couldn't live with when developing software across multiple platforms. 
+  
+  Make-like tools are inherently shell based. They evaluate a set of 
+  dependencies and then execute commands not unlike what you would issue on a 
+  shell. This means that you can easily extend these tools by using or writing 
+  any program for the OS that you are working on. However, this also means that 
+  you limit yourself to the OS, or at least the OS type such as Unix, that you 
+  are working on.
+  
+  Makefiles are inherently evil as well. Anybody who has worked on them for any 
+  time has run into the dreaded tab problem. "Is my command not executing 
+  because I have a space in front of my tab!!!" said the original author of Ant 
+  way too many times. Tools like Jam took care of this to a great degree, but 
+  still use yet another format to use and remember.
+  
+  Ant is different. Instead a model where it is extended with shell based 
+  commands, it is extended using Java classes. Instead of writing shell 
+  commands, the configuration files are XML based calling out a target tree 
+  where various tasks get executed. Each task is run by an object which 
+  implements a particular Task interface.
+  
+  Granted, this removes some of the expressive power that is inherent by being 
+  able to construct a shell command such as `find . -name foo -exec rm {}` but 
+  it gives you the ability to be cross platform. To work anywhere and 
+  everywhere. And hey, if you really need to execute a shell command, Ant has 
+  an exec rule that allows different commands to be executed based on the OS 
+  that it is executing on.
+
+  The Latest Version
+  ------------------
+
+  Details of the latest version can be found on the Apache Ant
+  Project web site <http://ant.apache.org/>.
+
+
+  Documentation
+  -------------
+
+  Documentation is available in HTML format, in the docs/ directory.
+  For information about building and installing Ant, see
+  docs/manual/index.html
+
+
+  Licensing
+  ---------
+
+  This software is licensed under the terms you may find in the file 
+  named "LICENSE" in this directory.
+  
+  This distribution includes cryptographic software.  The country in 
+  which you currently reside may have restrictions on the import, 
+  possession, use, and/or re-export to another country, of 
+  encryption software.  BEFORE using any encryption software, please 
+  check your country's laws, regulations and policies concerning the
+  import, possession, or use, and re-export of encryption software, to 
+  see if this is permitted.  See <http://www.wassenaar.org/> for more
+  information.
+
+  The U.S. Government Department of Commerce, Bureau of Industry and
+  Security (BIS), has classified this software as Export Commodity 
+  Control Number (ECCN) 5D002.C.1, which includes information security
+  software using or performing cryptographic functions with asymmetric
+  algorithms.  The form and manner of this Apache Software Foundation
+  distribution makes it eligible for export under the License Exception
+
+ succeeded in 164ms:
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+package org.apache.tools.ant.launch;
+
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.MalformedURLException;
+import java.io.File;
+import java.util.StringTokenizer;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+
+
+/**
+ * This is a launcher for Ant.
+ *
+ * @since Ant 1.6
+ */
+public class Launcher {
+
+    /**
+     * The Ant Home (installation) Directory property.
+     * {@value}
+     */
+    public static final String ANTHOME_PROPERTY = "ant.home";
+
+    /**
+     * The Ant Library Directory property.
+     * {@value}
+     */
+    public static final String ANTLIBDIR_PROPERTY = "ant.library.dir";
+
+    /**
+     * The directory name of the per-user ant directory.
+     * {@value}
+     */
+    public static final String ANT_PRIVATEDIR = ".ant";
+
+    /**
+     * The name of a per-user library directory.
+     * {@value}
+     */
+    public static final String ANT_PRIVATELIB = "lib";
+
+    /**
+     * launch diagnostics flag; for debugging trouble at launch time.
+     */
+    public static boolean launchDiag = false;
+
+    /**
+     * The location of a per-user library directory.
+     * <p>
+     * It's value is the concatenation of {@link #ANT_PRIVATEDIR}
+     * with {@link #ANT_PRIVATELIB}, with an appropriate file separator
+     * in between. For example, on Unix, it's <code>.ant/lib</code>.
+     */
+    public static final String USER_LIBDIR =
+        ANT_PRIVATEDIR + File.separatorChar + ANT_PRIVATELIB;
+
+    /**
+     * The startup class that is to be run.
+     * {@value}
+     */
+    public static final String MAIN_CLASS = "org.apache.tools.ant.Main";
+
+    /**
+     * System property with user home directory.
+     * {@value}
+     */
+    public static final String USER_HOMEDIR = "user.home";
+
+    /**
+     * System property with application classpath.
+     * {@value}
+     */
+    private static final String JAVA_CLASS_PATH = "java.class.path";
+
+    /**
+     * Exit code on trouble
+     */
+    protected static final int EXIT_CODE_ERROR = 2;
+
+    /**
+     * Entry point for starting command line Ant.
+     *
+     * @param  args commandline arguments
+     */
+    public static void main(String[] args) {
+        int exitCode;
+        try {
+            Launcher launcher = new Launcher();
+            exitCode = launcher.run(args);
+        } catch (LaunchException e) {
+            exitCode = EXIT_CODE_ERROR;
+            System.err.println(e.getMessage());
+        } catch (Throwable t) {
+            exitCode = EXIT_CODE_ERROR;
+            t.printStackTrace(System.err);
+        }
+        if (exitCode != 0) {
+            if (launchDiag) {
+                System.out.println("Exit code: "+exitCode);
+            }
+
+ succeeded in 193ms:
+22:<title>Running Apache Ant</title>
+150:Prior to Ant 1.6, all jars in the ANT_HOME/lib would be added to the CLASSPATH
+153:default directories scanned are ANT_HOME/lib and a user specific directory,
+170:  <li>jars from ANT_HOME/lib</li>
+513:<li>Environment variable <code>ANT_HOME</code> is set.</li>
+515:<code>JAVA_HOME</code> and at least one element from <code>ANT_HOME</code>.</li>
+522:<code>JAVA_HOME</code> and <code>ANT_HOME</code> must be defined because <code>antenv.cmd</code>
+524:everything from <code>%ANT_HOME%\lib</code> except <code>ant-*.jar</code> to
+570:<li><code>ant.jar</code> and <code>ant-launcher.jar</code></li>
+577:    load jars from the specified ANT_HOME. You should start the latter with the most minimal
+578:classpath possible, generally just the ant-launcher.jar.
+596:        &lt;pathelement location="${ant.home}/lib/ant-launcher.jar"/&gt;
+
+web search: 
+web search: 
+web search: 
+web search: https://github.com/apache/ant/tree/rel/1.8.1/src/main/org/apache/tools/ant/launch
+web search: 
+web search: repo.maven.apache.org maven2 org/apache/ant/ant-launcher/1.8.1 ant-launcher-1.8.1.jar pom
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -5 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"not-for-native-image\"|\"language\"' --glob '*.json' . | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+./metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+./metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+./metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+./metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+./metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+./metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+./metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+./metadata/org.springframework/spring-aspects/index.json:6:    "repository-url": "https://github.com/spring-projects/spring-framework",
+./metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+./metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+./metadata/org.springframework/spring-jcl/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+./metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+./metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/parameter-names/src/test",
+./metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+./metadata/org.apache.thrift/libthrift/index.json:6:    "repository-url" : "https://github.com/apache/thrift",
+./metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+./metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+./metadata/org.apache.thrift/libthrift/index.json:20:    "repository-url" : "https://github.com/apache/thrift",
+./metadata/org.apache.thrift/libthrift/index.json:21:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+./metadata/org.apache.thrift/libthrift/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+./metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+./metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-module-kotlin",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-$version$/src/test",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:50:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-io/index.json:51:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:52:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:64:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:65:    "repository-url" : "https://github.com/jetty/jetty.project",
+./metadata/org.eclipse.jetty/jetty-io/index.json:66:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:67:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'artifact-metadata|discovered-artifact-metadata|repository-url' . --glob '"'!build/**'"' | head -100" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:306:                null, // repository-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:64:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:75:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:76:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:29:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:205:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:254:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:59:                .contains("Set missing \"repository-url\" to the selected repository URL.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:60:                .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:256:                    "repository-url": "https://example.com/repository-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:58:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:71:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - repository-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:357:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:358:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:370:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:374:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:375:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./forge/utility_scripts/native_image_artifact.py:34:    return os.path.join(repo_path, "build", "discovered-artifact-metadata", f"{sanitized}.json")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:173:                - Set "repository-url" to the discovered repository root URL.
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:296:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./forge/utility_scripts/source_context.py:168:    log_path = build_task_log_path("discover-artifact-metadata", coordinate, "discover_artifact_metadata.log")
+./forge/utility_scripts/source_context.py:170:    log_stage("discover-artifact-metadata", f"Discovering artifact metadata for {coordinate}; output: {log_path_display}")
+./forge/utility_scripts/source_context.py:193:    log_stage("discover-artifact-metadata", f"Artifact metadata discovered for {coordinate}")
+./forge/utility_scripts/source_context.py:222:        repository_url=normalize_url_value(index_entry.get("repository-url")),
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+./docs/FUNCTIONAL_SPEC.md:163:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.0.1` → `v2.0.2` or `v2.0.x` → `v2.1.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`); patch bumps refine validation of those same auxiliary fields. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/org.apiguardian/apiguardian-api/index.json:6:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/org.apache.arrow/arrow-format/index.json:6:    "repository-url" : "https://github.com/apache/arrow",
+./metadata/org.apache.arrow/arrow-format/index.json:30:    "repository-url" : "https://github.com/apache/arrow",
+./metadata/org.javamoney.moneta/moneta-core/index.json:6:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+./metadata/org.javamoney.moneta/moneta-core/index.json:20:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+./metadata/dev.failsafe/failsafe/index.json:6:    "repository-url" : "https://github.com/failsafe-lib/failsafe",
+./metadata/nekohtml/xercesMinimal/index.json:6:    "repository-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/",
+./metadata/org.aspectj/aspectjweaver/index.json:6:    "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+./metadata/org.junit.platform/junit-platform-engine/index.json:6:    "repository-url" : "https://github.com/junit-team/junit-framework",
+./metadata/org.junit.platform/junit-platform-commons/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:6:    "repository-url" : "https://github.com/antlr/antlr4",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/org.clojure/google-closure-library-third-party/index.json:6:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.clojure/google-closure-library-third-party/index.json:20:    "repository-url" : "https://github.com/google/closure-library",
+./metadata/org.postgresql/postgresql/index.json:6:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:28:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+./metadata/javax.servlet/servlet-api/index.json:6:    "repository-url" : "https://github.com/apache/tomcat55",
+./metadata/javax.servlet/servlet-api/index.json:20:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/javax.servlet/servlet-api/index.json:34:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/javax.servlet/javax.servlet-api/index.json:6:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/com.android.tools/annotations/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+./metadata/org.eclipse.aether/aether-util/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/org.eclipse.aether/aether-api/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.eclipse.aether/aether-spi/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.eclipse.aether/aether-impl/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:7:    "repository-url": "https://github.com/spotbugs/spotbugs",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:6:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+./metadata/backport-util-concurrent/backport-util-concurrent/index.json:6:    "repository-url" : "svn://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/",
+./metadata/org.dom4j/dom4j/index.json:6:    "repository-url" : "https://github.com/dom4j/dom4j",
+./metadata/org.latencyutils/LatencyUtils/index.json:6:    "repository-url" : "https://github.com/LatencyUtils/LatencyUtils",
+./metadata/commons-fileupload/commons-fileupload/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:7:    "repository-url": "https://github.com/fusesource/hawtbuf",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/com.github.ghik/silencer-lib_2.13/index.json:6:    "repository-url" : "https://github.com/ghik/silencer",
+./metadata/org.eclipse.microprofile.openapi/microprofile-openapi-api/index.json:6:    "repository-url" : "https://github.com/microprofile/microprofile-open-api",
+./metadata/org.xmlunit/xmlunit-placeholders/index.json:6:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+./metadata/org.xmlunit/xmlunit-core/index.json:6:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+./metadata/aopalliance/aopalliance/index.json:6:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+./metadata/javax.annotation/jsr250-api/index.json:7:    "repository-url": "N/A",
+./metadata/javax.annotation/javax.annotation-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.annotation",
+./metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+./metadata/org.apache.santuario/xmlsec/index.json:9:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+./metadata/javax.jcr/jcr/index.json:6:    "repository-url" : "N/A",
+./metadata/org.sonatype.aether/aether-util/index.json:6:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+./metadata/org.sonatype.aether/aether-util/index.json:20:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/ant/blob/rel/1.8.1/docs/manual/running.html || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-javadoc.jar || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/ant/tree/rel/1.8.1/docs/manual/api/org/apache/tools/ant/launch || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/ant/git/trees/511c9956704a6023d1d1b1403d36f58eab10266b?recursive=1 | rg '\"path\": \"docs/manual/(api/org/apache/tools/ant/launch|running\\.html|install\\.html|index\\.html)'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 234ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 05:18:19 GMT
+content-type: text/html
+cf-ray: 9f5ccdec9961bc6b-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/ant/ant-launcher/1.8.1/ant-launcher-1.8.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 448ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 05:18:19 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=tI7sfzjsybkU0EjO8m%2FonWgJ56kwCB1gADO6P5a3gQmybcBN3DyiEKGfVNUXZhK49Qff8IekFZ9FJoVwpaQRt4LYP6pB521qgrr82nEa8SdhKZ20497297w8lSPvV7J4NkoikGgocwi0To09XXLYjhvtJDpDxLpwXzai2jnwPJLpaEVg4OrEJJzbQJSNXkxI3c8dnGiRAT05V7JF0D7kKHhCO2uOIRYIBVlLHcPHCnTfOAUREC3JRpgVvGxjz5DuaI8rj6phGDgfxp2NCDZY4Q%3D%3D--C0jnNuvtqaYiePCA--XJzxY%2F6keVlfajr0YN%2Fb8g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.358299952.1777785499; expires=Mon, 03 May 2027 05:18:19 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:18:19 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:438C9:7F1FC8:63FBB1:69F6DA9B
+
+
+ succeeded in 446ms:
+      "path": "docs/manual/index.html",
+      "path": "docs/manual/install.html",
+      "path": "docs/manual/running.html",
+
+ succeeded in 666ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:18:20 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/apache/ant.git
+x-raw-download: https://raw.githubusercontent.com/apache/ant/rel/1.8.1/docs/manual/running.html
+etag: W/"d2e839855be2b6c2d357c14773b0d710"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=f63eI4qZfDOEtCpEaYSmcVo%2FU%2F2xI0nZhuhzic4KmNwNmRcpsLTjsjUvUKJBe9WNoSJSgNasAHwupi7m6v1ESEK8frSOdE%2BGPbuZfzDBmGk7bKp8kOpjrJoikccEtYz26KLIxBIpt6JqgUJpxpTRztRYHfikDRCpcHUZudWrzstTZp2qAy5mmnCqsL%2FslPsesox8OfAKWcyY8ginqFs6fyXTLY9UCsG5N9%2B5NuTlSN8NkdUiq2Q3CryjgeEDa%2FBpoFEZUROeqlZeomZ5jnUlhQ%3D%3D--ztYrb%2F%2FDLBm6ngUH--uYXkj4lhF8ztlISEGBjdiQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.927216463.1777785499; expires=Mon, 03 May 2027 05:18:19 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:18:19 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5107:3178CB:7D0728:6260E6:69F6DA9B
+
+
+codex
+I found the release tag `rel/1.8.1`, launcher sources under `src/main/org/apache/tools/ant/launch`, and a matching launcher test package under `src/tests/junit/org/apache/tools/ant/launch`. I’m going to fill the file with those tag-templated URLs and leave language/native-image exclusion fields absent because this is a regular Java JAR with `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+index f9d06ec5b59df5744aedc4513068e040a96a99fe..219ea55e53445e5e69acf53532799fbab361e805
+--- a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
++++ b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
++  "coordinates" : "org.apache.ant:ant-launcher:1.8.1",
++  "repository-url" : "https://github.com/apache/ant",
++  "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
++  "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
++  "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
++  "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+index f9d06ec5b59df5744aedc4513068e040a96a99fe..219ea55e53445e5e69acf53532799fbab361e805
+--- a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
++++ b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
++  "coordinates" : "org.apache.ant:ant-launcher:1.8.1",
++  "repository-url" : "https://github.com/apache/ant",
++  "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
++  "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
++  "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
++  "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.ant:ant-launcher:1.8.1",
+  "repository-url": "https://github.com/apache/ant",
+  "source-code-url": "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
+  "test-code-url": "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
+  "documentation-url": "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
+  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://github.com/apache/ant/tree/rel/1.8.1/src/main/org/apache/tools/ant/launch' \\
+  'https://github.com/apache/ant/tree/rel/1.8.1/src/tests/junit/org/apache/tools/ant/launch' \\
+  'https://github.com/apache/ant/blob/rel/1.8.1/docs/manual/running.html'; do \\
+  code="'$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+diff --git a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+index f9d06ec5b59df5744aedc4513068e040a96a99fe..219ea55e53445e5e69acf53532799fbab361e805
+--- a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
++++ b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
++  "coordinates" : "org.apache.ant:ant-launcher:1.8.1",
++  "repository-url" : "https://github.com/apache/ant",
++  "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
++  "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
++  "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
++  "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries."
+ }
+
+ succeeded in 1474ms:
+200 https://github.com/apache/ant/tree/rel/1.8.1/src/main/org/apache/tools/ant/launch
+200 https://github.com/apache/ant/tree/rel/1.8.1/src/tests/junit/org/apache/tools/ant/launch
+200 https://github.com/apache/ant/blob/rel/1.8.1/docs/manual/running.html
+
+diff --git a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+index f9d06ec5b59df5744aedc4513068e040a96a99fe..219ea55e53445e5e69acf53532799fbab361e805
+--- a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
++++ b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
++  "coordinates" : "org.apache.ant:ant-launcher:1.8.1",
++  "repository-url" : "https://github.com/apache/ant",
++  "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
++  "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
++  "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
++  "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+index f9d06ec5b59df5744aedc4513068e040a96a99fe..219ea55e53445e5e69acf53532799fbab361e805
+--- a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
++++ b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
++  "coordinates" : "org.apache.ant:ant-launcher:1.8.1",
++  "repository-url" : "https://github.com/apache/ant",
++  "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
++  "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
++  "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
++  "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json && sed -n '1,120p' build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f
+diff --git a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+index f9d06ec5b59df5744aedc4513068e040a96a99fe..219ea55e53445e5e69acf53532799fbab361e805
+--- a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
++++ b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
++  "coordinates" : "org.apache.ant:ant-launcher:1.8.1",
++  "repository-url" : "https://github.com/apache/ant",
++  "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
++  "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
++  "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
++  "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries."
+ }
+
+ succeeded in 121ms:
+{
+  "coordinates" : "org.apache.ant:ant-launcher:1.8.1",
+  "repository-url" : "https://github.com/apache/ant",
+  "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
+  "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
+  "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
+  "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries."
+}
+
+web search: 
+web search: https://github.com/apache/ant/tree/rel/1.8.1/src/main/org/apache/tools/ant/launch
+codex
+Updated [org.apache.ant-ant-launcher-1.8.1.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json:1) with the Ant repository root, `rel/$version$` source/test/doc URLs, and a two-sentence description. I left `language` and `not-for-native-image` absent because this is a JVM Java artifact with launcher classes and matching tagged source/test paths. ([github.com](https://github.com/apache/ant/tree/rel/1.8.1/src/main/org/apache/tools/ant/launch))
+
+Validated the JSON with `jq` and checked the templated URLs resolve with `$version$ = 1.8.1`.
+diff --git a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+index f9d06ec5b59df5744aedc4513068e040a96a99fe..219ea55e53445e5e69acf53532799fbab361e805
+--- a/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
++++ b/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.ant:ant-launcher:1.8.1"
++  "coordinates" : "org.apache.ant:ant-launcher:1.8.1",
++  "repository-url" : "https://github.com/apache/ant",
++  "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
++  "test-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/tests/junit/org/apache/tools/ant/launch",
++  "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
++  "description" : "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks in a portable way. The ant-launcher artifact contains the small launcher classes that locate an Ant installation and start org.apache.tools.ant.Main with the correct Ant libraries."
+ }
+
+tokens used
+86,101
+Updated [org.apache.ant-ant-launcher-1.8.1.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/build/discovered-artifact-metadata/org.apache.ant-ant-launcher-1.8.1.json:1) with the Ant repository root, `rel/$version$` source/test/doc URLs, and a two-sentence description. I left `language` and `not-for-native-image` absent because this is a JVM Java artifact with launcher classes and matching tagged source/test paths. ([github.com](https://github.com/apache/ant/tree/rel/1.8.1/src/main/org/apache/tools/ant/launch))
+
+Validated the JSON with `jq` and checked the templated URLs resolve with `$version$ = 1.8.1`.
+Ran agent for org.apache.ant:ant-launcher:1.8.1 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/build/agent-artifact-discovery-logs/org.apache.ant-ant-launcher-1.8.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2373-7b46d37f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 3s
+9 actionable tasks: 4 executed, 5 from cache
