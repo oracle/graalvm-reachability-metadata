@@ -32,7 +32,7 @@ import org.mozilla.universalchardet.UniversalDetector;
 
 public class JuniversalchardetTest {
     private static final byte[] UTF_8_BOM = new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
-    private static final String UTF_8_TEXT = "GraalVM reachability metadata — Ελληνικά 日本語 кириллица";
+    private static final String UTF_8_TEXT = "GraalVM reachability metadata \u2014 \u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac \u65e5\u672c\u8a9e \u043a\u0438\u0440\u0438\u043b\u043b\u0438\u0446\u0430";
 
     @TempDir
     Path temporaryDirectory;
