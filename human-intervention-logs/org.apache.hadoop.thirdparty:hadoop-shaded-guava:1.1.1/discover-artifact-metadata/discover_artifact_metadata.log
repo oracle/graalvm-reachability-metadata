@@ -1,0 +1,1223 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dec45-b090-7bf0-81bf-ec95221b87b7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1.1" when "$version$" is replaced with "1.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+- Set "coordinates" to "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources, then patch the JSON directly with the version-templated URLs.
+web search: 
+web search: org.apache.hadoop.thirdparty hadoop-shaded-guava 1.1.1 Maven POM scm url
+exec
+/usr/bin/bash -lc "pwd && rg --files | rg 'org\\.apache\\.hadoop\\.thirdparty-hadoop-shaded-guava-1\\.1\\.1\\.json|pom\\.xml"'$|README|README.md'"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+README.md
+skills/README.md
+forge/README.md
+tests/src/org.eclipse.jetty/jetty-client/11.0.12/README.md
+tests/src/org.eclipse.jetty/jetty-server/12.1.3/README.md
+tests/src/org.eclipse.jetty/jetty-server/12.0.1/README.md
+tests/src/org.jooq/jooq/3.18.2/README.md
+tests/src/org.jooq/jooq/3.17.7/README.md
+tests/src/org.mockito/mockito-core/4.8.1/README.md
+tests/src/net.java.dev.jna/jna/README.md
+tests/src/com.zaxxer/HikariCP/5.0.1/README.md
+tests/src/ch.qos.logback/logback-classic/1.4.1/README.md
+tests/src/org.liquibase/liquibase-core/5.0.1/README.md
+tests/src/com.ecwid.consul/consul-api/README.md
+tests/src/org.testcontainers/testcontainers/1.17.6/README.md
+tests/src/org.testcontainers/testcontainers/1.19.8/README.md
+tests/src/org.hibernate/hibernate-core/5.6.14.Final/README.md
+tests/src/org.hibernate.validator/hibernate-validator/README.md
+tests/src/org.hibernate.orm/hibernate-core/6.6.0.Final/README.md
+tests/src/org.hibernate.orm/hibernate-core/6.2.0.Final/README.md
+tests/src/org.hibernate.orm/hibernate-core/7.1.0.Final/README.md
+tests/src/org.hibernate.orm/hibernate-core/7.0.0.Final/README.md
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/README.md
+tests/src/org.hibernate.orm/hibernate-core/6.5.0.Final/README.md
+tests/src/org.flywaydb/flyway-core/11.14.1/README.md
+tests/src/org.hibernate.orm/hibernate-envers/README.md
+tests/src/org.flywaydb/flyway-core/10.20.0/README.md
+tests/src/org.flywaydb/flyway-core/10.20.1/README.md
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/hadoop-shaded-guava-1.1.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>hadoop-thirdparty</artifactId>
+    <groupId>org.apache.hadoop.thirdparty</groupId>
+    <version>1.1.1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>hadoop-shaded-guava</artifactId>
+  <name>Apache Hadoop shaded Guava</name>
+  <build>
+    <resources>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${project.basedir}/..</directory>
+        <includes>
+          <include>licenses-binary/*</include>
+          <include>NOTICE.txt</include>
+          <include>NOTICE-binary</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>shade-guava</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>com.google.code.findbugs:jsr305</exclude>
+                </excludes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>org.checkerframework:checker-qual</artifact>
+                  <excludes>
+                    <exclude>META-INF/LICENSE.txt</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <relocations>
+                <relocation>
+                  <pattern>com/google/</pattern>
+                  <shadedPattern>${shaded.prefix}/com/google/</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org/checkerframework/</pattern>
+                  <shadedPattern>${shaded.prefix}/org/checkerframework/</shadedPattern>
+                </relocation>
+              </relocations>
+              <transformers>
+                <transformer>
+                  <resources>
+                    <resource>NOTICE</resource>
+                    <resource>LICENSE</resource>
+                  </resources>
+                </transformer>
+                <transformer>
+                  <resource>META-INF/LICENSE.txt</resource>
+                  <file>${basedir}/../LICENSE-binary</file>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <createDependencyReducedPom>true</createDependencyReducedPom>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/hadoop-shaded-guava-1.1.1-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/hadoop-shaded-guava-1.1.1-test-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/hadoop-shaded-guava-1.1.1-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ exited 22 in 0ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 05:18:11 GMT
+content-type: text/html
+cf-ray: 9f5ccdbc1aef7dd2-ZRH
+cf-cache-status: HIT
+age: 3042
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/hadoop-shaded-guava-1.1.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: hadoop-thirdparty 1.1.1 github hadoop-shaded-guava
+codex
+The artifact POM confirms this is a shaded Java JAR module, and Maven Central does not publish a sources or test-sources classifier for `1.1.1`. I’m checking the Apache release/source tag next so the metadata can point at stable versioned source, tests, and docs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-thirdparty/1.1.1/hadoop-thirdparty-1.1.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.hadoop.thirdparty</groupId>
+  <artifactId>hadoop-thirdparty</artifactId>
+  <version>1.1.1</version>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>21</version>
+    <relativePath/>
+    <!-- no parent resolution -->
+  </parent>
+  <name>Apache Hadoop Third-party Libs</name>
+  <packaging>pom</packaging>
+  <description>
+    Packaging of relocated (renamed, shaded) third-party libraries used by Hadoop.
+  </description>
+
+  <distributionManagement>
+    <repository>
+      <id>${distMgmtStagingId}</id>
+      <name>${distMgmtStagingName}</name>
+      <url>${distMgmtStagingUrl}</url>
+    </repository>
+    <snapshotRepository>
+      <id>${distMgmtSnapshotsId}</id>
+      <name>${distMgmtSnapshotsName}</name>
+      <url>${distMgmtSnapshotsUrl}</url>
+    </snapshotRepository>
+    <site>
+      <id>apache.website</id>
+      <url>scpexe://people.apache.org/www/hadoop.apache.org/docs/rthirdparty-${project.version}</url>
+    </site>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>${distMgmtSnapshotsId}</id>
+      <name>${distMgmtSnapshotsName}</name>
+      <url>${distMgmtSnapshotsUrl}</url>
+    </repository>
+    <repository>
+      <id>repository.jboss.org</id>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <properties>
+    <!-- define the Java language version used by the compiler -->
+    <javac.version>1.8</javac.version>
+
+    <distMgmtSnapshotsId>apache.snapshots.https</distMgmtSnapshotsId>
+    <distMgmtSnapshotsName>Apache Development Snapshot Repository</distMgmtSnapshotsName>
+    <distMgmtSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distMgmtSnapshotsUrl>
+    <distMgmtStagingId>apache.staging.https</distMgmtStagingId>
+    <distMgmtStagingName>Apache Release Distribution Repository</distMgmtStagingName>
+    <distMgmtStagingUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distMgmtStagingUrl>
+
+    <!-- platform encoding override -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!--thirdparty dependency versions-->
+    <shaded.prefix>org.apache.hadoop.thirdparty</shaded.prefix>
+    <protobuf.shade.prefix>${shaded.prefix}.protobuf</protobuf.shade.prefix>
+    <protobuf_3_7.version>3.7.1</protobuf_3_7.version>
+    <guava.version>30.1.1-jre</guava.version>
+
+    <!-- maven plugin versions -->
+    <maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
+    <maven-site-plugin.version>3.6</maven-site-plugin.version>
+    <maven-stylus-skin.version>1.5</maven-stylus-skin.version>
+    <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
+    <maven-assembly-plugin.version>2.5</maven-assembly-plugin.version>
+    <maven-dependency-plugin.version>3.0.2</maven-dependency-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
+    <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+    <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+    <apache-rat-plugin.version>0.12</apache-rat-plugin.version>
+    <wagon-ssh.version>2.4</wagon-ssh.version>
+    <maven-bundle-plugin.version>2.5.0</maven-bundle-plugin.version>
+    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <checkstyle.version>8.19</checkstyle.version>
+    <dependency-check-maven.version>6.1.5</dependency-check-maven.version>
+    <exec-maven-plugin.version>1.3.1</exec-maven-plugin.version>
+  </properties>
+
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>https://www.apache.org</url>
+  </organization>
+
+  <modules>
+    <module>hadoop-shaded-protobuf_3_7</module>
+    <module>hadoop-shaded-guava</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${maven-dependency-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven-enforcer-plugin.version}</version>
+          <configuration>
+            <rules>
+              <requireMavenVersion>
+                <version>[3.0.2,)</version>
+              </requireMavenVersion>
+              <requireJavaVersion>
+                <version>[1.8,)</version>
+              </requireJavaVersion>
+            </rules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven-assembly-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven-deploy-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>${apache-rat-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>${maven-antrun-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${exec-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+          <dependencies>
+            <dependency><!-- add support for ssh/scp -->
+              <groupId>org.apache.maven.wagon</groupId>
+              <artifactId>wagon-ssh</artifactId>
+              <version>${wagon-ssh.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.maven.doxia</groupId>
+              <artifactId>doxia-module-markdown</artifactId>
+              <version>1.8</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>${maven-bundle-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${dependency-check-maven.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>dependency-reduced-pom.xml</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>pre-clean</phase>
+          </execution>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>validate</phase>
+          </execution>
+          <execution>
+            <id>site</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>pre-site</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>.gitattributes</exclude>
+            <exclude>.gitignore</exclude>
+            <exclude>.git/**</exclude>
+            <exclude>.github/pull_request_template.md</exclude>
+            <exclude>.idea/**</exclude>
+            <exclude>README.md</exclude>
+            <exclude>**/build/**</exclude>
+            <exclude>**/patchprocess/**</exclude>
+            <exclude>**/*.js</exclude>
+            <exclude>licenses/**</exclude>
+            <exclude>licenses-binary/**</exclude>
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+            <exclude>NOTICE-binary</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-descriptor</id>
+            <goals>
+              <goal>attach-descriptor</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <inherited>true</inherited>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <!-- OWASP's dependency-check plugin will scan the third party
+             dependencies of this project for known CVEs (security
+             vulnerabilities against them). It will produce a report
+             in target/dependency-check-report.html. To invoke, run
+             'mvn dependency-check:aggregate'. Note that this plugin
+             requires maven 3.1.1 or greater.
+        -->
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <version>${dependency-check-maven.version}</version>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <excludeDefaults>true</excludeDefaults>
+  </reporting>
+
+  <profiles>
+    <profile>
+      <id>src</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>src-dist</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <tarLongFileMode>posix</tarLongFileMode>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <attach>false</attach>
+                  <finalName>hadoop-thirdparty-${project.version}-src</finalName>
+                  <outputDirectory>target</outputDirectory>
+                  <descriptors>
+                    <descriptor>src/main/resources/assemblies/hadoop-thirdparty-src.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>src-dist-msg</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <echo/>
+                    <echo>Hadoop Thirdparty source tar available at: ${basedir}/target/hadoop-thirdparty-${project.version}-src.tar.gz</echo>
+                    <echo/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>sign</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>releasedocs</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>releasedocs</id>
+                <phase>pre-site</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>${basedir}/dev-support/bin/releasedocmaker</executable>
+                  <arguments>
+                    <argument>--index</argument>
+                    <argument>--license</argument>
+                    <argument>--outputdir</argument>
+                    <argument>${basedir}/src/site/markdown/release</argument>
+                    <argument>--project</argument>
+                    <argument>HADOOP</argument>
+                    <argument>--projecttitle</argument>
+                    <argument>Apache Hadoop Third-party Libs</argument>
+                    <argument>--usetoday</argument>
+                    <argument>--fileversions</argument>
+                    <argument>--dirversions</argument>
+                    <argument>--version</argument>
+                    <argument>thirdparty-${project.version}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-clean-plugin</artifactId>
+            <configuration>
+              <filesets>
+                <fileset>
+                  <directory>src/site/markdown/release</directory>
+                  <includes>
+                    <include>${project.version}/</include>
+                    <include>index.md</include>
+                  </includes>
+                  <followSymlinks>false</followSymlinks>
+                </fileset>
+              </filesets>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="hadoop-shaded-guava-1.1.1.jar" title="hadoop-shaded-guava-1.1.1.jar">hadoop-shaded-guava-1.1.1.jar</a>                     2021-05-26 08:13   3362359      
+<a href="hadoop-shaded-guava-1.1.1.jar.asc" title="hadoop-shaded-guava-1.1.1.jar.asc">hadoop-shaded-guava-1.1.1.jar.asc</a>                 2021-05-26 08:13       833      
+<a href="hadoop-shaded-guava-1.1.1.jar.md5" title="hadoop-shaded-guava-1.1.1.jar.md5">hadoop-shaded-guava-1.1.1.jar.md5</a>                 2021-05-26 08:13        32      
+<a href="hadoop-shaded-guava-1.1.1.jar.sha1" title="hadoop-shaded-guava-1.1.1.jar.sha1">hadoop-shaded-guava-1.1.1.jar.sha1</a>                2021-05-26 08:13        40      
+<a href="hadoop-shaded-guava-1.1.1.pom" title="hadoop-shaded-guava-1.1.1.pom">hadoop-shaded-guava-1.1.1.pom</a>                     2021-05-26 08:13      2968      
+<a href="hadoop-shaded-guava-1.1.1.pom.asc" title="hadoop-shaded-guava-1.1.1.pom.asc">hadoop-shaded-guava-1.1.1.pom.asc</a>                 2021-05-26 08:13       833      
+<a href="hadoop-shaded-guava-1.1.1.pom.md5" title="hadoop-shaded-guava-1.1.1.pom.md5">hadoop-shaded-guava-1.1.1.pom.md5</a>                 2021-05-26 08:13        32      
+<a href="hadoop-shaded-guava-1.1.1.pom.sha1" title="hadoop-shaded-guava-1.1.1.pom.sha1">hadoop-shaded-guava-1.1.1.pom.sha1</a>                2021-05-26 08:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name 'org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json' -print -exec sed -n '1,160p' {} \\;" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+{
+  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
+}
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/hadoop-thirdparty.git | rg '1\\.1\\.1|rel|release|thirdparty'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 337ms:
+78ae2068d7514eb7d170dade5953215cae53ff1d	refs/tags/rel/release-1.0.0
+3395253a6235c40e5eac57a365fc1268d3f379af	refs/tags/rel/release-1.0.0^{}
+e159647e35b8ef78eee1f51a5a2497db657c76f7	refs/tags/rel/release-1.1.0
+e2cf849f4e1b096efd19294f6bd300a7462ceed6	refs/tags/rel/release-1.1.0^{}
+ad3510439b1a07be23bf88555f8aa3237c22f4f5	refs/tags/rel/release-1.1.1
+e4932839436412d04a90a7cc2ef21a39e9d1dad9	refs/tags/rel/release-1.1.1^{}
+022c9c9084351bd9aa8a7a8e6b85cb00f4b19837	refs/tags/rel/release-1.2.0
+64b672142797b5acffa94cadfc2d2be6f4dbbb23	refs/tags/rel/release-1.2.0^{}
+1c615e7bc47d005f4fe52d711b940cffc33c6622	refs/tags/rel/release-1.3.0
+0fd62903b071b5186f31b7030ce42e1c00f6bb6a	refs/tags/rel/release-1.3.0^{}
+ee64e824f4b3ef1327d8b2f58e25645b81c9a65b	refs/tags/rel/release-1.4.0
+a1eda71bbfa630138b97ecac1a977c18d05f0003	refs/tags/rel/release-1.4.0^{}
+9361815093f1efe67fca41bb66a612f932ea8826	refs/tags/rel/release-1.5.0
+f38cd430aa2a17bd404d90a5f2ca2e2116b22ae4	refs/tags/rel/release-1.5.0^{}
+16f6d2ac9a8c7d3ad4ef63e20ed2e3e4dacc474e	refs/tags/release-1.0.0-RC0
+863efce35337eeebeb928e10c3fd1931351aa20a	refs/tags/release-1.0.0-RC1
+3395253a6235c40e5eac57a365fc1268d3f379af	refs/tags/release-1.0.0-RC1^{}
+55deed3b88b389f900052cd85515e45e3811453c	refs/tags/release-1.1.0-RC0
+e2cf849f4e1b096efd19294f6bd300a7462ceed6	refs/tags/release-1.1.0-RC0^{}
+d81c1d74d9376580ec9b6ec6df945ddaa0ac4dd4	refs/tags/release-1.1.1-RC0
+e4932839436412d04a90a7cc2ef21a39e9d1dad9	refs/tags/release-1.1.1-RC0^{}
+a9aa6b243addc39a45202ad8e7b42bf17a1956ae	refs/tags/release-1.2.0-RC0
+447d6e64a1381f10db770aef0906f09858f1b210	refs/tags/release-1.2.0-RC0^{}
+b2022f008d82c839ed25bcc07170f1014b6d3ad2	refs/tags/release-1.2.0-RC1
+64b672142797b5acffa94cadfc2d2be6f4dbbb23	refs/tags/release-1.2.0-RC1^{}
+27d56b8e146478198fd68ec07bbd963ceefc4051	refs/tags/release-1.3.0-RC1
+0fd62903b071b5186f31b7030ce42e1c00f6bb6a	refs/tags/release-1.3.0-RC1^{}
+d0dba08140592417438dc76636e404566ebe27d4	refs/tags/release-1.4.0-RC0
+5595f1357eaad02e1cfb660bcce7fd34515197ff	refs/tags/release-1.4.0-RC0^{}
+9d3c3570d0da17d42bcacfd6f1d85b4cd9f27366	refs/tags/release-1.4.0-RC1
+a1eda71bbfa630138b97ecac1a977c18d05f0003	refs/tags/release-1.4.0-RC1^{}
+55c7bb344c868a5bbcd8b7d070fabca0453ed9a1	refs/tags/release-1.5.0-RC0
+f38cd430aa2a17bd404d90a5f2ca2e2116b22ae4	refs/tags/release-1.5.0-RC0^{}
+8d5f451c6858bbc0272cc170a08189ad57d28f54	refs/tags/release-1.6.0-RC0
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\" : \"https://github.com/apache/hadoop-thirdparty|hadoop-thirdparty|hadoop-shaded-guava' build/discovered-artifact-metadata metadata tests -g '*.json' -g '"'!build/tmp/**'"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json:  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:    "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:    "repository-url" : "https://github.com/apache/hadoop-thirdparty",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:    "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/hadoop-thirdparty/contents/hadoop-shaded-guava/src?ref=rel/release-1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/hadoop-thirdparty/contents/hadoop-shaded-guava?ref=rel/release-1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/apache/hadoop-thirdparty/tree/rel/release-1.1.1/hadoop-shaded-guava/src/main && curl -fsI https://github.com/apache/hadoop-thirdparty/tree/rel/release-1.1.1/hadoop-shaded-guava/src/test && curl -fsI https://hadoop.apache.org/docs/rthirdparty-1.1.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ exited 22 in 158ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 168ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "hadoop-shaded-guava/pom.xml",
+    "sha": "11b6dbda4b528adf34726b3434c7687959e3e30b",
+    "size": 5189,
+    "url": "https://api.github.com/repos/apache/hadoop-thirdparty/contents/hadoop-shaded-guava/pom.xml?ref=rel/release-1.1.1",
+    "html_url": "https://github.com/apache/hadoop-thirdparty/blob/rel/release-1.1.1/hadoop-shaded-guava/pom.xml",
+    "git_url": "https://api.github.com/repos/apache/hadoop-thirdparty/git/blobs/11b6dbda4b528adf34726b3434c7687959e3e30b",
+    "download_url": "https://raw.githubusercontent.com/apache/hadoop-thirdparty/rel/release-1.1.1/hadoop-shaded-guava/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/hadoop-thirdparty/contents/hadoop-shaded-guava/pom.xml?ref=rel/release-1.1.1",
+      "git": "https://api.github.com/repos/apache/hadoop-thirdparty/git/blobs/11b6dbda4b528adf34726b3434c7687959e3e30b",
+      "html": "https://github.com/apache/hadoop-thirdparty/blob/rel/release-1.1.1/hadoop-shaded-guava/pom.xml"
+    }
+  }
+]
+
+ exited 22 in 443ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 05:18:29 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=OWfUg0E4Xum5JNDTNxvUI2xb3ZvuPO9EO3tTCQ7YPWZR1z8lnSJcnwir8dfWGrCfpIUpIDbaoMsfXtoKPkkkfUThAfQ%2BDRjjjAlnz748U6lYP8CvvQQR%2BiRszUv5Y7bBD1cK5AipGRkElBGtZpLMVq65oziaZYDT5GdovGt3boZOBMNlQG3OJtlCUqS%2FJhT%2B6Eqw1lJw9ePAydf38a%2B9kHOv7vi8exMvPK8tWoaf7elyHM%2Bdl4jyrRBKfB7nTTiJbQXHzkjs%2BV4AJAweOEnRJg%3D%3D--dteD3yWs8z5ze0cD--1KI1RvSCTqvpiV%2BezL%2F4yw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.97598006.1777785508; expires=Mon, 03 May 2027 05:18:28 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 05:18:28 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5106:7BC10:7F6A53:643699:69F6DAA4
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.1",
+    "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz",
+    "repository-url" : "https://github.com/apache/hadoop-thirdparty",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz",
+    "description" : "This artifact packages Google Protocol Buffers Java 3.7.1 with its classes relocated under the org.apache.hadoop.thirdparty.protobuf namespace for Hadoop. The shading lets Hadoop use protobuf internally without conflicting with applications that depend on their own com.google.protobuf classes.",
+    "tested-versions" : [
+      "1.1.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.hadoop.thirdparty.protobuf"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz && curl -fsI https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/hadoop-thirdparty/rel/release-1.1.1/hadoop-shaded-guava/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 119ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/hadoop/thirdparty/thirdparty-1.1.1</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                       <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/hadoop/thirdparty/">Parent Directory</a>                                                -   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="CHANGELOG.md">CHANGELOG.md</a>                               2021-06-01 02:02  1.3K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="CHANGELOG.md.asc">CHANGELOG.md.asc</a>                           2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="CHANGELOG.md.sha512">CHANGELOG.md.sha512</a>                        2021-06-01 02:02  153   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="RELEASENOTES.md">RELEASENOTES.md</a>                            2021-06-01 02:02  1.0K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="RELEASENOTES.md.asc">RELEASENOTES.md.asc</a>                        2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="RELEASENOTES.md.sha512">RELEASENOTES.md.sha512</a>                     2021-06-01 02:02  156   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-rat.txt">hadoop-thirdparty-1.1.1-rat.txt</a>            2021-06-01 02:02  2.7K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-rat.txt.asc">hadoop-thirdparty-1.1.1-rat.txt.asc</a>        2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-rat.txt.sha512">hadoop-thirdparty-1.1.1-rat.txt.sha512</a>     2021-06-01 02:02  172   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="hadoop-thirdparty-1.1.1-site.tar.gz">hadoop-thirdparty-1.1.1-site.tar.gz</a>        2021-06-01 02:02  393K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-site.tar.gz.asc">hadoop-thirdparty-1.1.1-site.tar.gz.asc</a>    2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-site.tar.gz.sha512">hadoop-thirdparty-1.1.1-site.tar.gz.sha512</a> 2021-06-01 02:02  176   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="hadoop-thirdparty-1.1.1-src.tar.gz">hadoop-thirdparty-1.1.1-src.tar.gz</a>         2021-06-01 02:02   21K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-src.tar.gz.asc">hadoop-thirdparty-1.1.1-src.tar.gz.asc</a>     2021-06-01 02:02  833   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="hadoop-thirdparty-1.1.1-src.tar.gz.sha512">hadoop-thirdparty-1.1.1-src.tar.gz.sha512</a>  2021-06-01 02:02  175   
+<hr></pre>
+</body></html>
+
+ succeeded in 162ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>hadoop-thirdparty</artifactId>
+        <groupId>org.apache.hadoop.thirdparty</groupId>
+        <version>1.1.1</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>hadoop-shaded-guava</artifactId>
+    <name>Apache Hadoop shaded Guava</name>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/..</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>licenses-binary/*</include>
+                    <include>NOTICE.txt</include>
+                    <include>NOTICE-binary</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>shade-guava</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>com.google.code.findbugs:jsr305</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>org.checkerframework:checker-qual</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/LICENSE.txt</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com/google/</pattern>
+                                    <shadedPattern>${shaded.prefix}/com/google/</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org/checkerframework/</pattern>
+                                    <shadedPattern>${shaded.prefix}/org/checkerframework/</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                                    <resources>
+                                        <resource>NOTICE</resource>
+                                        <resource>LICENSE</resource>
+                                    </resources>
+                                </transformer>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>META-INF/LICENSE.txt</resource>
+                                    <file>${basedir}/../LICENSE-binary</file>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+ succeeded in 262ms:
+HTTP/1.1 200 OK
+Date: Sun, 03 May 2026 05:18:34 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Tue, 01 Jun 2021 02:02:03 GMT
+ETag: "5500-5c3aaba75763f"
+Accept-Ranges: bytes
+Content-Length: 21760
+Content-Type: application/x-gzip
+
+HTTP/1.1 200 OK
+Date: Sun, 03 May 2026 05:18:34 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Tue, 01 Jun 2021 02:02:03 GMT
+ETag: "625a5-5c3aaba75763f"
+Accept-Ranges: bytes
+Content-Length: 402853
+Content-Type: application/x-gzip
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/
+web search: 
+web search: archive.apache.org dist hadoop thirdparty thirdparty-1.1.1 hadoop-thirdparty-1.1.1-src.tar.gz
+exec
+/usr/bin/bash -lc "curl -fsSL https://hadoop.apache.org/docs/rthirdparty-1.1.1/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+exec
+/usr/bin/bash -lc 'curl -fsI https://hadoop.apache.org/docs/rthirdparty-1.1.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 0ms:
+HTTP/2 404 
+server: Apache
+content-type: text/html; charset=iso-8859-1
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+date: Sun, 03 May 2026 05:18:48 GMT
+age: 0
+x-served-by: cache-hel1410021-HEL, cache-fra-eddf8230040-FRA
+x-cache: MISS, HIT
+x-cache-hits: 0, 1
+x-timer: S1777785528.134995,VS0,VE27
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 196
+
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz | tar -tzf - | rg '"'hadoop-shaded-guava|src/test|README|site'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/hadoop-shaded-guava-1.1.1.jar -o /tmp/hadoop-shaded-guava-1.1.1.jar && jar tf /tmp/hadoop-shaded-guava-1.1.1.jar | sed -n '1,40p' && jar tf /tmp/hadoop-shaded-guava-1.1.1.jar | rg '\\.class"'$'"' -m 5" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 145ms:
+hadoop-thirdparty-1.1.1-src/hadoop-shaded-guava/
+hadoop-thirdparty-1.1.1-src/src/site/
+hadoop-thirdparty-1.1.1-src/src/site/markdown/
+hadoop-thirdparty-1.1.1-src/src/site/markdown/release/
+hadoop-thirdparty-1.1.1-src/src/site/markdown/release/thirdparty-1.0.0/
+hadoop-thirdparty-1.1.1-src/src/site/resources/
+hadoop-thirdparty-1.1.1-src/src/site/resources/css/
+hadoop-thirdparty-1.1.1-src/README.md
+hadoop-thirdparty-1.1.1-src/hadoop-shaded-guava/pom.xml
+hadoop-thirdparty-1.1.1-src/src/site/markdown/index.md.vm
+hadoop-thirdparty-1.1.1-src/src/site/markdown/release/thirdparty-1.0.0/CHANGELOG.thirdparty-1.0.0.md
+hadoop-thirdparty-1.1.1-src/src/site/markdown/release/thirdparty-1.0.0/RELEASENOTES.thirdparty-1.0.0.md
+hadoop-thirdparty-1.1.1-src/src/site/resources/css/site.css
+hadoop-thirdparty-1.1.1-src/src/site/site.xml
+
+ succeeded in 409ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/DEPENDENCIES
+META-INF/maven/
+META-INF/maven/org.apache.hadoop.thirdparty/
+META-INF/maven/org.apache.hadoop.thirdparty/hadoop-shaded-guava/
+META-INF/maven/org.apache.hadoop.thirdparty/hadoop-shaded-guava/pom.xml
+META-INF/maven/org.apache.hadoop.thirdparty/hadoop-shaded-guava/pom.properties
+META-INF/NOTICE-binary
+META-INF/NOTICE.txt
+META-INF/licenses-binary/
+META-INF/licenses-binary/LICENSE.protobuf.txt
+META-INF/maven/com.google.guava/
+META-INF/maven/com.google.guava/guava/
+META-INF/maven/com.google.guava/guava/pom.properties
+META-INF/maven/com.google.guava/guava/pom.xml
+org/
+org/apache/
+org/apache/hadoop/
+org/apache/hadoop/thirdparty/
+org/apache/hadoop/thirdparty/com/
+org/apache/hadoop/thirdparty/com/google/
+org/apache/hadoop/thirdparty/com/google/common/
+org/apache/hadoop/thirdparty/com/google/common/annotations/
+org/apache/hadoop/thirdparty/com/google/common/annotations/Beta.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/GwtCompatible.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/GwtIncompatible.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/VisibleForTesting.class
+org/apache/hadoop/thirdparty/com/google/common/base/
+org/apache/hadoop/thirdparty/com/google/common/base/Absent.class
+org/apache/hadoop/thirdparty/com/google/common/base/AbstractIterator$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/AbstractIterator$State.class
+org/apache/hadoop/thirdparty/com/google/common/base/AbstractIterator.class
+org/apache/hadoop/thirdparty/com/google/common/base/Ascii.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$1.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$2.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$3.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$4.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$5.class
+org/apache/hadoop/thirdparty/com/google/common/base/CaseFormat$StringConverter.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/Beta.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/GwtCompatible.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/GwtIncompatible.class
+org/apache/hadoop/thirdparty/com/google/common/annotations/VisibleForTesting.class
+org/apache/hadoop/thirdparty/com/google/common/base/Absent.class
+
+codex
+There are no Maven sources or test artifacts, and the Apache source release contains the Guava module POM but no module test tree. I’m going to use the same Apache archive source/site release URLs already used for the sibling Hadoop thirdparty metadata and leave `test-code-url` as `N/A`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..403bb9307a98b876244661690b0a79ec3392dc7a
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty namespace for Apache Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..403bb9307a98b876244661690b0a79ec3392dc7a
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty namespace for Apache Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+web search: 
+web search: Maven Central hadoop-shaded-guava 1.1.1 org.apache.hadoop.thirdparty
+web search: 
+web search: GitHub apache hadoop-thirdparty
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
+  "repository-url": "https://github.com/apache/hadoop-thirdparty",
+  "source-code-url": "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
+  "test-code-url": "N/A",
+  "documentation-url": "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
+  "description": "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty namespace for Apache Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..403bb9307a98b876244661690b0a79ec3392dc7a
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty namespace for Apache Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json && git status --short --ignored build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..403bb9307a98b876244661690b0a79ec3392dc7a
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty namespace for Apache Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+ succeeded in 128ms:
+!! build/
+
+web search: 
+web search: site:repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1 hadoop-shaded-guava-1.1.1.jar
+web search: 
+web search: 
+web search: 
+web search: "hadoop-thirdparty-1.1.1-site.tar.gz" "hadoop-thirdparty-1.1.1-src.tar.gz"
+codex
+Updated [org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json:1).
+
+I set the Hadoop Thirdparty repository, Apache archive source/site URLs with `$version$`, `test-code-url` as `N/A`, and a two-sentence description. Maven Central only lists the JAR/POM for this artifact version, while Apache publishes the matching source and site archives for `1.1.1`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; this is a JVM JAR with class files, not a non-JVM platform artifact. Verified the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+index b6476c1ade80ec47b1d2cfd492098f544badbd11..403bb9307a98b876244661690b0a79ec3392dc7a
+--- a/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1"
++  "coordinates" : "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
++  "repository-url" : "https://github.com/apache/hadoop-thirdparty",
++  "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-src.tar.gz",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-$version$/hadoop-thirdparty-$version$-site.tar.gz",
++  "description" : "This artifact packages Google Guava 30.1.1-jre with its classes relocated under the org.apache.hadoop.thirdparty namespace for Apache Hadoop. The shading lets Hadoop use Guava internally without conflicting with applications that depend on their own com.google.common classes."
+ }
+
+tokens used
+63,498
+Updated [org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af/build/discovered-artifact-metadata/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.json:1).
+
+I set the Hadoop Thirdparty repository, Apache archive source/site URLs with `$version$`, `test-code-url` as `N/A`, and a two-sentence description. Maven Central only lists the JAR/POM for this artifact version, while Apache publishes the matching source and site archives for `1.1.1`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/hadoop/thirdparty/hadoop-shaded-guava/1.1.1/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; this is a JVM JAR with class files, not a non-JVM platform artifact. Verified the JSON with `jq`.
+Ran agent for org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af/build/agent-artifact-discovery-logs/org.apache.hadoop.thirdparty-hadoop-shaded-guava-1.1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3029-ab07f2af/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 25s
+9 actionable tasks: 4 executed, 5 from cache
