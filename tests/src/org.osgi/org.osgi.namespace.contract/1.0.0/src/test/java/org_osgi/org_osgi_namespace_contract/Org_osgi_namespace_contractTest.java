@@ -97,6 +97,21 @@ public class Org_osgi_namespace_contractTest {
     }
 
     @Test
+    void nameOnlyContractRequirementMatchesEveryVersionOfThatContract() throws Exception {
+        SyntheticResource resource = new SyntheticResource();
+        Capability servletFive = resource.addContractCapability(JAKARTA_SERVLET_CONTRACT, "5.0.0", Map.of());
+        Capability servletSix = resource.addContractCapability(JAKARTA_SERVLET_CONTRACT, "6.0.0", Map.of());
+        resource.addContractCapability(JAX_RS_CONTRACT, "3.1.0", Map.of());
+        Requirement requirement = resource.addRequirement(
+                ContractNamespace.CONTRACT_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE,
+                        "(" + ContractNamespace.CONTRACT_NAMESPACE + "=" + JAKARTA_SERVLET_CONTRACT + ")"),
+                Map.of());
+
+        assertThat(contractCapabilitiesMatchingFilter(resource, requirement)).containsExactly(servletFive, servletSix);
+    }
+
+    @Test
     void optionalActiveRequirementIsKeptSeparateFromResolveTimeRequirement() {
         SyntheticResource resource = new SyntheticResource();
         Requirement resolveRequirement = resource.addRequirement(
