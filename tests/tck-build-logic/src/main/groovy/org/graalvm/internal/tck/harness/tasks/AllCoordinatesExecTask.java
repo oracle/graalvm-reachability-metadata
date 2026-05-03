@@ -16,9 +16,10 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
     }
 
     private void runSingle(String coordinates) {
-        List<String> command = commandFor(coordinates);
+        List<String> command = normalizeCommand(commandFor(coordinates));
         beforeEach(coordinates, command);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -135,6 +136,21 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
             throw new GradleException(errorMessageFor(coordinates, exitCode));
         }
         afterEach(coordinates);
+    }
+
+    private static List<String> normalizeCommand(List<String> command) {
+        if (command.isEmpty() || command.contains("--no-daemon")) {
+            return command;
+        }
+        String executableName = Path.of(command.get(0)).getFileName().toString();
+        if (!"gradlew".equals(executableName) && !"gradlew.bat".equals(executableName)) {
+            return command;
+        }
+        List<String> normalized = new ArrayList<>(command.size() + 1);
+        normalized.add(command.get(0));
+        normalized.add("--no-daemon");
+        normalized.addAll(command.subList(1, command.size()));
+        return normalized;
     }
 
     @SuppressWarnings("unchecked")
