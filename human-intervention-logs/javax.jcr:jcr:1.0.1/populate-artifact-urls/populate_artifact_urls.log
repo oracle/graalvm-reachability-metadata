@@ -1,0 +1,1310 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019decc8-b754-7bd0-bc7e-8464c398ca84
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.jcr:jcr:1.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.1" when "$version$" is replaced with "1.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/metadata/javax.jcr/jcr/index.json
+- Entry selector: "metadata-version" = "1.0.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "1.0.1".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "1.0.1".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "1.0.1".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "1.0.1" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0.1
+- Entry metadata-version: 1.0.1
+- Entry test-version: 1.0.1
+codex
+I’ll verify the artifact metadata and versioned Maven/source locations first, then patch only the missing fields in the target `index.json`.
+web search: 
+web search: Maven Central javax.jcr jcr 1.0.1 sources jar
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/javax/jcr/jcr/1.0.1 jcr-1.0.1-sources.jar
+codex
+The artifact appears to be an old JCR 1.0 API package. I’m checking Maven Central directly because the search index surfaced `1.0` more readily than `1.0.1`, and the request prefers Maven source/test artifacts when they exist.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/javax.jcr/jcr/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "tested-versions" : [
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "javax.jcr"
+    ]
+  },
+  {
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/$version$/jcr-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/$version$/jcr-$version$-javadoc.jar",
+    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "javax.jcr"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -sL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.jcr</groupId>
+  <artifactId>jcr</artifactId>
+  <name>Content Repository for Java Technology API</name>
+  <version>1.0.1</version>
+  <description>Content Repository for Java technology API.  Specifies a standard API to access content repositories in JavaTM 2 independently of implementation.</description>
+  <url>http://www.jcp.org/en/jsr/detail?id=170</url>
+  <licenses>
+    <license>
+      <name>Day License</name>
+      <url>http://www.day.com/maven/jsr170/licenses/day-spec-license.htm</url>
+    </license>
+  </licenses>
+  <inceptionYear>2004</inceptionYear>
+  <organization>
+    <name>Day Software Management AG</name>
+    <url>http://www.day.com/</url>
+  </organization>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.4</source>
+          <target>1.4</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <downloadUrl>http://www.day.com/site/en/index/related/downloads/RI_download.html</downloadUrl>
+  </distributionManagement>
+
+</project>
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 239ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Sun, 03 May 2026 07:41:22 GMT
+content-type: text/html
+cf-ray: 9f5d9f75aa69f877-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 259ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 07:41:22 GMT
+content-type: text/html
+cf-ray: 9f5d9f75af22be5a-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc "curl -sL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/jcr/jcr/1.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/jcr/jcr/1.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jcr-1.0.1-sources.jar.md5" title="jcr-1.0.1-sources.jar.md5">jcr-1.0.1-sources.jar.md5</a>                         2006-11-24 01:01        32      
+<a href="jcr-1.0.1-sources.jar.sha1" title="jcr-1.0.1-sources.jar.sha1">jcr-1.0.1-sources.jar.sha1</a>                        2006-11-24 01:01        40      
+<a href="jcr-1.0.1.jar.md5" title="jcr-1.0.1.jar.md5">jcr-1.0.1.jar.md5</a>                                 2006-11-24 01:01        32      
+<a href="jcr-1.0.1.jar.sha1" title="jcr-1.0.1.jar.sha1">jcr-1.0.1.jar.sha1</a>                                2006-11-24 01:01        40      
+<a href="jcr-1.0.1.pom" title="jcr-1.0.1.pom">jcr-1.0.1.pom</a>                                     2006-11-24 01:01      1345      
+<a href="jcr-1.0.1.pom.md5" title="jcr-1.0.1.pom.md5">jcr-1.0.1.pom.md5</a>                                 2006-11-24 01:01        36      
+<a href="jcr-1.0.1.pom.sha1" title="jcr-1.0.1.pom.sha1">jcr-1.0.1.pom.sha1</a>                                2006-11-24 01:01        44      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-24 01:01       111      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-24 01:01        75      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-24 01:01       130      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -sL https://repo1.maven.org/maven2/javax/jcr/jcr/1.0.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/jcr/jcr/1.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/jcr/jcr/1.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jcr-1.0.1-sources.jar.md5" title="jcr-1.0.1-sources.jar.md5">jcr-1.0.1-sources.jar.md5</a>                         2006-11-24 01:01        32      
+<a href="jcr-1.0.1-sources.jar.sha1" title="jcr-1.0.1-sources.jar.sha1">jcr-1.0.1-sources.jar.sha1</a>                        2006-11-24 01:01        40      
+<a href="jcr-1.0.1.jar.md5" title="jcr-1.0.1.jar.md5">jcr-1.0.1.jar.md5</a>                                 2006-11-24 01:01        32      
+<a href="jcr-1.0.1.jar.sha1" title="jcr-1.0.1.jar.sha1">jcr-1.0.1.jar.sha1</a>                                2006-11-24 01:01        40      
+<a href="jcr-1.0.1.pom" title="jcr-1.0.1.pom">jcr-1.0.1.pom</a>                                     2006-11-24 01:01      1345      
+<a href="jcr-1.0.1.pom.md5" title="jcr-1.0.1.pom.md5">jcr-1.0.1.pom.md5</a>                                 2006-11-24 01:01        36      
+<a href="jcr-1.0.1.pom.sha1" title="jcr-1.0.1.pom.sha1">jcr-1.0.1.pom.sha1</a>                                2006-11-24 01:01        44      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-24 01:01       111      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-24 01:01        75      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-24 01:01       130      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc "curl -sL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0/maven-metadata.xml 2>/dev/null | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 235ms:
+
+  0     0    0     0    0     0 HTTP/2 404 
+date: Sun, 03 May 2026 07:41:27 GMT
+content-type: text/html
+cf-ray: 9f5d9f938fa7e5d9-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+     0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 261ms:
+<metadata>
+  <groupId>javax.jcr</groupId>
+  <artifactId>jcr</artifactId>
+  <version>1.0</version>
+</metadata>
+web search: 
+web search: "javax.jcr" "jcr-1.0.1" "sources"
+web search: 
+web search: https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "curl -sL https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html | sed -n '45,90p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc 'curl -I -L https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc 'curl -I -L https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc 'curl -I -L https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 691ms:
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 14490
+Content-Type: text/html
+ETag: "1c9687371cb51116c7fd1451aafedc1f:1320665469"
+Last-Modified: Fri, 25 Mar 2011 21:00:44 GMT
+Server: AkamaiNetStorage
+Date: Sun, 03 May 2026 07:41:39 GMT
+Connection: keep-alive
+
+
+  0 14490    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 1034ms:
+HTTP/1.1 404 Not Found
+Accept-Ranges: bytes
+Content-Length: 7073
+Content-Type: text/html
+ETag: "477d9862374177c810b0b7d73b4f1e53:1531792454.541174"
+Last-Modified: Wed, 31 Aug 2011 20:28:54 GMT
+Server: AkamaiNetStorage
+Date: Sun, 03 May 2026 07:41:39 GMT
+Connection: keep-alive
+
+
+  0  7073    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0  7073    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+
+ succeeded in 1153ms:
+<td id="leftcontent" valign="top">
+<div class="bar"><img src="../assets/images/hr_dots1.gif" alt="" height="3" width="150"></div>
+<!-- begin find JSRs form -->
+<!-- IMPORTANT! do not convert this form to Struts < html : form > tag. javascript change of form.action property fails. -->
+<img src="../assets/images/hd_find-jsrs.gif" alt="Find JSRs" height="18" width="150">
+<!-- ** Menu Start ** //-->
+<ul id="p7PMnav">
+<li><a href="http://jcp.org/en/jsr/platform">JSRs by Platform</a></li>
+<li><a href="http://jcp.org/en/jsr/tech">JSRs by Technology</a></li>
+<li><a href="http://jcp.org/en/jsr/stage">JSRs by Stage</a></li>
+<li><a href="http://jcp.org/en/jsr/ec">JSRs by Committee</a></li>
+<li><a href="http://jcp.org/en/jsr/all">List of All JSRs</a></li>
+<!--end find JSRs form -->
+<div style="clear: both;"><img src="../assets/images/spacer.gif" alt="" height="25" width="1"></div>
+<!--begin JCP info -->
+<img src="../assets/images/hd_jcp-info.gif" alt="JCP Info" height="18" width="150">
+<li><a href="http://jcp.org/en/whatsnew/jcp" class="p7PMtrg">Updates</a>
+<ul>
+<li><a href="http://jcp.org/en/whatsnew/jcp">Recent Updates</a></li>
+<li><a href="http://jcp.org/en/whatsnew/calendar">Calendar</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/procedures/overview" class="p7PMtrg">About JCP</a>
+<ul>
+<li><a href="http://jcp.org/en/procedures/overview">Program Overview</a></li>
+<li><a href="http://jcp.org/en/procedures/jcp2">JCP Procedures</a></li>
+<li><a href="http://jcp.org/en/participation/members">JCP Members</a></li>
+<li><a href="http://jcp.org/en/participation/committee">Executive Committee</a></li>
+<li><a href="http://jcp.org/en/whatsnew/elections">Elections</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/introduction/faq">FAQ</a></li>
+<li><a href="http://jcp.org/en/resources/contacts">Contacts</a></li>
+<li><a href="http://jcp.org/en/participation/overview" class="p7PMtrg">Participation</a>
+<ul>
+<li><a href="http://jcp.org/en/participation/overview">Getting Involved</a></li>
+<li><a href="http://jcp.org/en/participation/membership">Becoming a JCP Member</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/resources/contents" class="p7PMtrg">Community Resources</a>
+<ul>
+<li><a href="http://jcp.org/en/resources/contents">Resources Overview</a></li>
+<li><a href="http://jcp.org/en/resources/guide">Spec Lead Guide</a></li>
+<li><a href="http://jcp.org/en/resources/tdk">TCK Tool & Info</a></li>
+</ul>
+</li>
+
+ succeeded in 1497ms:
+
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0HTTP/1.1 404 Not Found
+Accept-Ranges: bytes
+Content-Length: 7073
+Content-Type: text/html
+ETag: "477d9862374177c810b0b7d73b4f1e53:1531792454.541174"
+Last-Modified: Wed, 31 Aug 2011 20:28:54 GMT
+Server: AkamaiNetStorage
+Date: Sun, 03 May 2026 07:41:40 GMT
+Connection: keep-alive
+
+
+  0  7073    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+
+exec
+/usr/bin/bash -lc "curl -sL https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html | sed -n '180,280p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc 'curl -sL https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html | rg -n "zip|content_repository|download|Final|Maintenance|Specification|Reference|Source|API|RI|TCK"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+function disableAnchor(obj, disable, enabledHref, onclickFtn) {
+    if (disable) {
+        obj.onclick = onclickFtn;
+        // obj.setAttribute('onclick', disabledHref );
+        // obj.removeAttribute('href');
+        // obj.setAttribute('href', onclickFtn );
+        obj.setAttribute('class', 'boldbodylink');
+
+    } else {
+        obj.setAttribute('href', enabledHref);
+        obj.onclick = null;
+        obj.setAttribute('class', 'boldbodylink');
+
+    }
+
+}
+
+function disableDownloadAnchors(doc, disabled) {
+    var agreementPrompt = new Function("alert('Sorry, you must accept the License Agreement before downloading.');");
+    // NOTE: These vars are being passed to the methods below, so the var name  should
+    //       match the parameter passed to the method. Customize var names for download(s) involved
+
+    var uuid__3fACUFBebQAAAEYiak5AXha = 'http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip';
+    disableAnchorByName(doc, 'uuid__3fACUFBebQAAAEYiak5AXha', disabled, uuid__3fACUFBebQAAAEYiak5AXha, agreementPrompt);
+
+    var uuid_sl3ACUFB0ikAAAEYh6k5AXha = 'http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip';
+    disableAnchorByName(doc, 'uuid_sl3ACUFB0ikAAAEYh6k5AXha', disabled, uuid_sl3ACUFB0ikAAAEYh6k5AXha, agreementPrompt);
+
+
+}
+
+function youMustAgreePrompt(){
+	alert('Sorry, you must accept the License Agreement before downloading.');
+}
+
+function acceptAgreement(windowRef){
+	var doc = windowRef.document;
+	disableDownloadAnchors(doc, false);
+	hideAgreementDiv(doc);
+}
+
+function declineAgreement(windowRef){
+	var doc = windowRef.document;
+	disableDownloadAnchors(doc, true);
+	// forward();
+}
+
+function showAgreement(){
+    window.open('content_repository-1.0.1-mr-oth-JSpec-license.html','LicenseAgreement','status=1,scrollbars=1,width=500,height=400,top=150,left=400');
+}
+
+function forward(){
+	location.href="http://www.oracle.com/technetwork/licenses/sorry-150381.html";
+}
+
+function hideAgreementDiv(doc) {
+	if (doc.getElementById) { // DOM3 = IE5, NS6
+		doc.getElementById('agreementDiv').style.visibility = 'hidden';
+		doc.getElementById('thankYouDiv').style.visibility = 'visible';
+	} else {
+		if (doc.layers) { // Netscape 4
+			doc.agreementDiv.visibility = 'hidden';
+			doc.thankYouDiv.visibility = 'visible';
+		} else { // IE 4
+			doc.all.agreementDiv.style.visibility = 'hidden';
+			doc.all.thankYouDiv.style.visibility = 'visible';
+		}
+	}
+}
+</script>
+
+<form name="agreementForm" method="post" action="radio">
+<div align="left" id="agreementDiv">
+
+<table border="0" width="100%">
+<tbody>
+<tr>
+<td>
+<span>You must accept the <a href="javascript:showAgreement();">Software License Agreement</a> to download this software.</span>
+</td>
+</tr>
+<tr>
+<td>
+<div align="left">
+<input type="radio" onclick="acceptAgreement(window.self);" name="agreement" /> <span>Accept</span> <span>License Agreement</span> | <input type="radio" onclick="declineAgreement(window.self);" name="agreement" /> <span>Decline</span> <span>License Agreement</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</form>
+
+<div style="visibility: hidden;" id="thankYouDiv">
+<table border="0" width="100%">
+<tbody>
+<tr>
+<td><span>Thank you for accepting the Software License Agreement; you may now download this software.</span></td>
+</tr>
+</tbody>
+
+ succeeded in 0ms:
+23:JSR-000170 Content Repository for Java technology API 1.0.1 
+36:<a href="http://java.com/en/download/index.jsp">Get Java Here</a>
+88:<li><a href="http://jcp.org/en/resources/tdk">TCK Tool & Info</a></li>
+110:JSR-000170 Content Repository for Java technology API 1.0.1 
+198:    var agreementPrompt = new Function("alert('Sorry, you must accept the License Agreement before downloading.');");
+200:    //       match the parameter passed to the method. Customize var names for download(s) involved
+202:    var uuid__3fACUFBebQAAAEYiak5AXha = 'http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip';
+205:    var uuid_sl3ACUFB0ikAAAEYh6k5AXha = 'http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip';
+212:	alert('Sorry, you must accept the License Agreement before downloading.');
+228:    window.open('content_repository-1.0.1-mr-oth-JSpec-license.html','LicenseAgreement','status=1,scrollbars=1,width=500,height=400,top=150,left=400');
+258:<span>You must accept the <a href="javascript:showAgreement();">Software License Agreement</a> to download this software.</span>
+278:<td><span>Thank you for accepting the Software License Agreement; you may now download this software.</span></td>
+311:<b>Download Instruction:</b>&nbsp;Click the product name or the file name to start the download.<br>
+333:JSR-000170 Content Repository for Java technology API 1.0.1 MR Source<br>
+334:<a onclick="youMustAgreePrompt();" name="uuid__3fACUFBebQAAAEYiak5AXha" id="uuid__3fACUFBebQAAAEYiak5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">content_repository-1_0_1-mr-source.zip</a></td>
+339:JSR-000170 Content Repository for Java technology API 1.0.1 MR Specification<br>
+340:<a onclick="youMustAgreePrompt();" name="uuid_sl3ACUFB0ikAAAEYh6k5AXha" id="uuid_sl3ACUFB0ikAAAEYh6k5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">content_repository-1_0_1-mr-spec.zip</a></td>
+354:If you need assistance with downloads, please contact <a href="https://www.sun.com/secure/contact/feedback/sdlc.jsp">Customer Service</a>. For all other JCP related questions, please see our <a href="http://jcp.org/en/introduction/faq">Frequently Asked Questions (FAQ)</a>.
+369:<!-- BEGIN RIGHT CONTENT -->
+373:<!-- END RIGHT CONTENT -->
+389:<!-- BEGIN G9 VARIATION 0 -->
+392:<!-- END G9 VARIATION 0 -->
+
+exec
+/usr/bin/bash -lc "curl -sL https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html | sed -n '280,380p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+</tbody>
+</table>
+</div>
+
+</div></div>
+</div>
+<div class="cornerBL"><div class="cornerBR">
+<!-- END PC1 COMPONENT V.0 -->
+<!-- BEGIN PRODUCT SPECIFIC TEXT-->
+
+<p class="intro">
+</p>
+
+<!-- END PRODUCT SPECIFIC TEXT-->
+<!-- BEGIN G18 COMPONENT V.0 -->
+<div class="g18"><div class="g18v0">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+<tr valign="top">
+<td width="50%" class="col1">
+<!-- BEGIN SUPPORT COMPONENT-->
+
+<p class="intro">
+</p>
+
+</td><td class="col2">
+
+<!-- END SUPPORT COMPONENT-->
+</td></tr></table></div></div>
+<!-- END G18 COMPONENT V.3 -->
+
+<p>
+<b>Download Instruction:</b>&nbsp;Click the product name or the file name to start the download.<br>
+</p>
+
+<form name="sdmform" method="post" action="">
+<input type="hidden" name="detectedJavaVersion" id="detectedJavaVersion" value="0">
+<!-- BEGIN REQUIRED FILES COMPONENT-->
+<div class="g26">
+<table width="100%" summary="Downloads listed by product, filename, and size">
+<caption id="RequiredFilesCaption" name="RequiredFilesCaption" style="display:">Required Files</caption>
+
+<thead>
+<tr>
+<td class="g26checkbox"></td>
+<th scope="col" class="g26widecol">File Description and Name</th>
+<th scope="col" class="g26tinycol">Size</th>
+</tr>
+</thead>
+<tbody>
+
+
+<tr><td class="g26checkbox">&nbsp;</td>
+<td scope="row" class="g26widecol">
+JSR-000170 Content Repository for Java technology API 1.0.1 MR Source<br>
+<a onclick="youMustAgreePrompt();" name="uuid__3fACUFBebQAAAEYiak5AXha" id="uuid__3fACUFBebQAAAEYiak5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">content_repository-1_0_1-mr-source.zip</a></td>
+<td class="g26tinycol">92.99 KB</td></tr>
+
+<tr><td class="g26checkbox">&nbsp;</td>
+<td scope="row" class="g26widecol">
+JSR-000170 Content Repository for Java technology API 1.0.1 MR Specification<br>
+<a onclick="youMustAgreePrompt();" name="uuid_sl3ACUFB0ikAAAEYh6k5AXha" id="uuid_sl3ACUFB0ikAAAEYh6k5AXha" href=""><img src="../assets/images/ic_download.gif" class="g15download-icon" border="0" alt="">content_repository-1_0_1-mr-spec.zip</a></td>
+<td class="g26tinycol">1.95 MB</td></tr>
+
+
+</tbody>
+</table>
+<!-- END REQUIRED FILES COMPONENT-->
+</div>
+<br>
+<!-- BEGIN OPTIONAL FILES COMPONENT-->
+
+<!-- END OPTIONAL FILES COMPONENT-->
+
+<p>
+If you need assistance with downloads, please contact <a href="https://www.sun.com/secure/contact/feedback/sdlc.jsp">Customer Service</a>. For all other JCP related questions, please see our <a href="http://jcp.org/en/introduction/faq">Frequently Asked Questions (FAQ)</a>.
+</p>
+<!-- END SDM COMPONENT -->
+<br>
+<!-- BEGIN MARKETING MESSAGE FOOTER -->
+
+<!-- END MARKETING MESSAGE FOOTER -->
+<!-- BEGIN PC1 COMPONENT V.1 -->
+</div></div></div></div>
+<!-- END PC1 COMPONENT V.1 -->
+
+<!-- End ENO Working Area -->
+</td>
+<!-- END CENTER CONTENT -->
+<td width="15"><img src="../assets/images/global/spacer.gif" width="15" height="1"></td>
+<!-- BEGIN RIGHT CONTENT -->
+<td id="rightcontent" valign="top">
+<img src="../assets/images/global/spacer.gif" width="150" height="5" alt=""><br>
+</td>
+<!-- END RIGHT CONTENT -->
+</tr>
+</table>
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div id="a5" class="a5 a5v0">
+<ul>
+<li class="hasmenu"><a href="http://www.sun.com/aboutsun/media/index.html">News Center</a></li>
+<li class="hasmenu"><a href="http://www.sun.com/aboutsun/">About Sun</a></li>
+
+exec
+/usr/bin/bash -lc 'curl -sL https://jcp.org/en/jsr/detail?id=170 | rg -n "Final|Maintenance|download|javax.jcr|1.0.1|Content Repository"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 1009ms:
+92:			<a href="https://www.oracle.com/java/technologies/downloads/" alt="Oracle's Java download page">Get Java Here</a> &nbsp;|&nbsp;
+223:            <a href="https://www.oracle.com/java/technologies/downloads/" target="_blank"><img style="display: ;" src="/images/ad_banner2.gif" alt="Ad Banner" border="1" height="70" width="150"></a>
+334:<div class="header1">JSR 170: Content Repository for Java<sup><font size="-2">TM</font></sup> technology API</div>
+359:                                        <td>Maintenance Draft Review </td>
+368:                                        <td>Final Release </td>
+377:                                        <td>Final Approval Ballot </td>
+386:                                        <td>Proposed Final Draft  2</td>
+395:                                        <td>Proposed Final Draft </td>
+470:    <b> Status: </b><a href="/en/introduction/glossary#status"><font color=black><span title="A JSR that has produced a Maintenance Review or Maintenance Release more than a year ago.">Maintenance</span></font></a><br>
+639:Proposed Final Draft submitted: feb-2005<BR>
+640:Final Release: may-2005
+738:differentiate a Content Repository from a Data Repository.<P>
+763:API level that addresses the unique requirements of a Content Repository. As well, there exists no Content Repository centric standard that appears to address issues
+804:<P>The Content Repository for Java technology API proposes the package name javax.jcr and would reside entirely within this package tree.
+822:<P>Even though the Content Repository implementation itself may have to deal with localization and internationalization issues there are none that have to be taken into
+841:apr-2003 Proposed Final draft submitted <BR>
+842:jun-2003 Final release
+870:<P>Content Repository for Java technology API Website: <BR>
+875:JTA, Java Transaction API, Version 1.0.1 <BR>
+
+codex
+Maven Central has checksum sidecars for the `1.0.1` sources artifact but the actual sources JAR returns 404, so I’m using the JCP maintenance-release download page as the versioned source/documentation candidate and treating tests as unavailable unless a concrete test artifact turns up.
+exec
+/usr/bin/bash -lc 'curl -sL https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/ | rg -n "test|javadoc|source|jar|pom"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+22:<a href="jcr-1.0.1-sources.jar.md5" title="jcr-1.0.1-sources.jar.md5">jcr-1.0.1-sources.jar.md5</a>                         2006-11-24 01:01        32      
+23:<a href="jcr-1.0.1-sources.jar.sha1" title="jcr-1.0.1-sources.jar.sha1">jcr-1.0.1-sources.jar.sha1</a>                        2006-11-24 01:01        40      
+24:<a href="jcr-1.0.1.jar.md5" title="jcr-1.0.1.jar.md5">jcr-1.0.1.jar.md5</a>                                 2006-11-24 01:01        32      
+25:<a href="jcr-1.0.1.jar.sha1" title="jcr-1.0.1.jar.sha1">jcr-1.0.1.jar.sha1</a>                                2006-11-24 01:01        40      
+26:<a href="jcr-1.0.1.pom" title="jcr-1.0.1.pom">jcr-1.0.1.pom</a>                                     2006-11-24 01:01      1345      
+27:<a href="jcr-1.0.1.pom.md5" title="jcr-1.0.1.pom.md5">jcr-1.0.1.pom.md5</a>                                 2006-11-24 01:01        36      
+28:<a href="jcr-1.0.1.pom.sha1" title="jcr-1.0.1.pom.sha1">jcr-1.0.1.pom.sha1</a>                                2006-11-24 01:01        44      
+
+exec
+/usr/bin/bash -lc 'curl -I -L http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc 'curl -I -L https://jcp.org/en/jsr/detail?id=170' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc 'curl -I -L http://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 232ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+content-type: text/html; charset=ISO-8859-1
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1
+strict-transport-security: max-age=31536000; includeSubDomains;
+content-security-policy: default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'self'
+x-oracle-dms-ecid: 006KEJnFz_fFk3KimTKqkJ000BZH000TYj
+x-oracle-dms-rid: 0:1
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+content-length: 0
+date: Sun, 03 May 2026 07:42:04 GMT
+set-cookie: JSESSIONID=TZfsyYk2KZl5RTS8uOqoDOucbnshpU0L1waJNl_sGVgFiW9mPFd0!1551470467; path=/; secure; HttpOnly
+akamai-grn: 0.771b7b5c.1777794123.db6b027
+server-timing: ak_p; desc="1777794123926_1551571831_230076455_23291_9050_7_15_15";dur=1
+
+
+ succeeded in 1388ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://edelivery.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip
+Date: Sun, 03 May 2026 07:42:03 GMT
+Connection: keep-alive
+
+HTTP/1.1 302 Moved Temporarily
+Content-Type: text/html
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1;mode=block
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Location: https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip?AuthParam=1777794244_1aa221d368fefe7d86c57d719b1f9913
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Sun, 03 May 2026 07:42:04 GMT
+Connection: keep-alive
+Set-Cookie: X-Oracle-BMC-LBS-Route=aca519ff4c85cd73b4ea64898fa6574861f57219; Path=/; Secure; HttpOnly
+Akamai-GRN: 0.646cdead.1777794124.32db29dd
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 95226
+Content-Type: application/zip
+ETag: "ccbc8e669a58734d06616b81fb1c7fba:1320050096"
+Last-Modified: Mon, 20 Mar 2006 15:08:03 GMT
+Server: AkamaiNetStorage
+Date: Sun, 03 May 2026 07:42:05 GMT
+Connection: keep-alive
+
+
+  0 95226    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+
+ succeeded in 1411ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0 1997k    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://edelivery.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip
+Date: Sun, 03 May 2026 07:42:03 GMT
+Connection: keep-alive
+
+HTTP/1.1 302 Moved Temporarily
+Content-Type: text/html
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1;mode=block
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Location: https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip?AuthParam=1777794244_e7f1ce556956e9fa17e39318a1440060
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Sun, 03 May 2026 07:42:04 GMT
+Connection: keep-alive
+Set-Cookie: X-Oracle-BMC-LBS-Route=23b86ad44a260e6acc974c00763b06f73d05a370; Path=/; Secure; HttpOnly
+Akamai-GRN: 0.646cdead.1777794124.32db29de
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 2045598
+Content-Type: application/zip
+ETag: "e677c0a01eaa11ca1962a305909a40bc:1320050097"
+Last-Modified: Mon, 20 Mar 2006 15:08:06 GMT
+Server: AkamaiNetStorage
+Date: Sun, 03 May 2026 07:42:05 GMT
+Connection: keep-alive
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc "curl -sL https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip | unzip -l - | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc 'curl -I -L https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+exec
+/usr/bin/bash -lc "curl -sL https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip | unzip -l - | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 216ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0 95226    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://edelivery.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip
+Date: Sun, 03 May 2026 07:42:15 GMT
+Connection: keep-alive
+
+HTTP/1.1 302 Moved Temporarily
+Content-Type: text/html
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1;mode=block
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Location: https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip?AuthParam=1777794255_b79b727ab85a86754adf7a4070ca6f45
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Sun, 03 May 2026 07:42:15 GMT
+Connection: keep-alive
+Set-Cookie: X-Oracle-BMC-LBS-Route=23b86ad44a260e6acc974c00763b06f73d05a370; Path=/; Secure; HttpOnly
+Akamai-GRN: 0.646cdead.1777794135.32db3784
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 95226
+Content-Type: application/zip
+ETag: "ccbc8e669a58734d06616b81fb1c7fba:1320050096"
+Last-Modified: Mon, 20 Mar 2006 15:08:03 GMT
+Server: AkamaiNetStorage
+Date: Sun, 03 May 2026 07:42:15 GMT
+Connection: keep-alive
+
+
+ succeeded in 687ms:
+ succeeded in 722ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0 1997k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://edelivery.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip
+Date: Sun, 03 May 2026 07:42:15 GMT
+Connection: keep-alive
+
+HTTP/1.1 302 Moved Temporarily
+Content-Type: text/html
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1;mode=block
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Location: https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip?AuthParam=1777794255_d7102015da87f6476336f36041bd8bf0
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Sun, 03 May 2026 07:42:15 GMT
+Connection: keep-alive
+Set-Cookie: X-Oracle-BMC-LBS-Route=aca519ff4c85cd73b4ea64898fa6574861f57219; Path=/; Secure; HttpOnly
+Akamai-GRN: 0.646cdead.1777794135.32db3789
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 2045598
+Content-Type: application/zip
+ETag: "e677c0a01eaa11ca1962a305909a40bc:1320050097"
+Last-Modified: Mon, 20 Mar 2006 15:08:06 GMT
+Server: AkamaiNetStorage
+Date: Sun, 03 May 2026 07:42:15 GMT
+Connection: keep-alive
+
+
+ succeeded in 1946ms:
+codex
+I’ve got verified versioned source/spec downloads from the JCP maintenance release, no real Maven sources JAR or test artifact, and no source repository root in the POM. I’m going to add the missing fields to only the `1.0.1` entry and leave `language` absent because this is a plain Java API artifact rather than Kotlin, Groovy, or Scala.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/metadata/javax.jcr/jcr/index.json
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..26a47a363c1f44b0c2b22b7c975b0c07ba678f6e
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..26a47a363c1f44b0c2b22b7c975b0c07ba678f6e
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+codex
+The file is patched. I’m doing a quick JSON parse and repository metadata validation for `javax.jcr:jcr:1.0.1` so any formatting or schema issue is caught before I hand it back.
+exec
+/usr/bin/bash -lc 'jq . metadata/javax.jcr/jcr/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/javax.jcr/jcr/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+diff --git i/metadata/javax.jcr/jcr/index.json w/metadata/javax.jcr/jcr/index.json
+index c5dfcf6960..26a47a363c 100644
+--- i/metadata/javax.jcr/jcr/index.json
++++ w/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=javax.jcr:jcr:1.0.1 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..26a47a363c1f44b0c2b22b7c975b0c07ba678f6e
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+ exited 1 in 1847ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for javax.jcr:jcr:1.0.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/metadata/javax.jcr/jcr/1.0.1/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - javax.jcr:jcr:1.0.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/metadata/javax.jcr/jcr/1.0.1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - javax.jcr:jcr:1.0.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/metadata/javax.jcr/jcr/1.0.1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+BUILD FAILED in 1s
+
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..26a47a363c1f44b0c2b22b7c975b0c07ba678f6e
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+codex
+`jq` accepted the JSON. The Gradle metadata check does run, but it fails on an existing structural issue for this coordinate: `metadata/javax.jcr/jcr/1.0.1/reachability-metadata.json` is missing, which is outside the requested index-field update.
+exec
+/usr/bin/bash -lc "nl -ba metadata/javax.jcr/jcr/index.json | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.0.1",
+     5	    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
+     6	    "repository-url" : "N/A",
+     7	    "test-code-url" : "N/A",
+     8	    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
+     9	    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+    10	    "tested-versions" : [
+    11	      "1.0.1"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "javax.jcr"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.0",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/$version$/jcr-$version$-sources.jar",
+    20	    "repository-url" : "N/A",
+    21	    "test-code-url" : "N/A",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/$version$/jcr-$version$-javadoc.jar",
+    23	    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+    24	    "tested-versions" : [
+    25	      "1.0"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "javax.jcr"
+    29	    ]
+    30	  }
+    31	]
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/javax.jcr/jcr/index.json metadata/javax.jcr/jcr/1.0.1' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+ M metadata/javax.jcr/jcr/index.json
+
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..26a47a363c1f44b0c2b22b7c975b0c07ba678f6e
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+web search: 
+web search: https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html
+web search: 
+web search: repo.maven.apache.org maven2 javax jcr jcr 1.0.1 jcr-1.0.1.pom
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/javax.jcr/jcr/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsIL https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip >/dev/null && curl -fsIL https://download.oracle.com/otn-pub/jcp/content_repository-1.0.1-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..26a47a363c1f44b0c2b22b7c975b0c07ba678f6e
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+ succeeded in 456ms:
+web search: 
+web search: https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/javax/jcr/jcr/1.0.1/jcr-1.0.1.pom
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/metadata/javax.jcr/jcr/index.json:4) for `metadata-version` `1.0.1`.
+
+I filled `source-code-url` and `documentation-url` with the JCP 1.0.1 MR source/spec archives, set `repository-url` and `test-code-url` to `N/A`, added the two-sentence description, and left `language` absent because this is not Kotlin/Groovy/Scala-specific. The JCP pages list the 1.0.1 MR Source and MR Specification downloads and describe JSR 170 as the standard `javax.jcr` content repository API. ([download.oracle.com](https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html))
+
+Verification:
+- `jq . metadata/javax.jcr/jcr/index.json >/dev/null` passed.
+- `git diff --check -- metadata/javax.jcr/jcr/index.json` passed.
+- Rendered source/spec URLs returned successfully.
+- `./gradlew checkMetadataFiles -Pcoordinates=javax.jcr:jcr:1.0.1 --stacktrace` fails on pre-existing missing `metadata/javax.jcr/jcr/1.0.1/reachability-metadata.json`.
+diff --git a/metadata/javax.jcr/jcr/index.json b/metadata/javax.jcr/jcr/index.json
+index c5dfcf696037cf1b57cb708e986369fa4fd0d9dc..26a47a363c1f44b0c2b22b7c975b0c07ba678f6e
+--- a/metadata/javax.jcr/jcr/index.json
++++ b/metadata/javax.jcr/jcr/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.1",
++    "source-code-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-source.zip",
++    "repository-url" : "N/A",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/content_repository-$version$-mr-oth-JSpec/content_repository-1_0_1-mr-spec.zip",
++    "description" : "Defines the Java Content Repository (JCR) 1.0 API for accessing content repositories independently of a specific implementation. It provides the standard javax.jcr interfaces, classes, and exceptions for sessions, workspaces, nodes, properties, queries, observation, locking, and versioning.",
+     "tested-versions" : [
+       "1.0.1"
+     ],
+
+tokens used
+79,900
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/metadata/javax.jcr/jcr/index.json:4) for `metadata-version` `1.0.1`.
+
+I filled `source-code-url` and `documentation-url` with the JCP 1.0.1 MR source/spec archives, set `repository-url` and `test-code-url` to `N/A`, added the two-sentence description, and left `language` absent because this is not Kotlin/Groovy/Scala-specific. The JCP pages list the 1.0.1 MR Source and MR Specification downloads and describe JSR 170 as the standard `javax.jcr` content repository API. ([download.oracle.com](https://download.oracle.com/otndocs/jcp/content_repository-1.0.1-mr-oth-JSpec/index.html))
+
+Verification:
+- `jq . metadata/javax.jcr/jcr/index.json >/dev/null` passed.
+- `git diff --check -- metadata/javax.jcr/jcr/index.json` passed.
+- Rendered source/spec URLs returned successfully.
+- `./gradlew checkMetadataFiles -Pcoordinates=javax.jcr:jcr:1.0.1 --stacktrace` fails on pre-existing missing `metadata/javax.jcr/jcr/1.0.1/reachability-metadata.json`.
+Ran agent for javax.jcr:jcr:1.0.1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/build/agent-url-discovery-logs/javax.jcr-jcr-1.0.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2569-b9b7deef/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 4s
+9 actionable tasks: 1 executed, 8 up-to-date
