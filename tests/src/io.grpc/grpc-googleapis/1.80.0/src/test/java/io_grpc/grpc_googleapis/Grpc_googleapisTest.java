@@ -67,6 +67,14 @@ public class Grpc_googleapisTest {
     }
 
     @Test
+    void experimentalProviderAdvertisesDnsCompatibleSocketAddresses() {
+        GoogleCloudToProdExperimentalNameResolverProvider provider =
+                        new GoogleCloudToProdExperimentalNameResolverProvider();
+
+        assertThat(provider.getProducedSocketAddressTypes()).containsExactly(InetSocketAddress.class);
+    }
+
+    @Test
     void providersAreDiscoverableThroughDefaultNameResolverRegistry() throws InterruptedException {
         try (ResolverArgsResources resources = new ResolverArgsResources()) {
             NameResolverRegistry registry = NameResolverRegistry.getDefaultRegistry();
