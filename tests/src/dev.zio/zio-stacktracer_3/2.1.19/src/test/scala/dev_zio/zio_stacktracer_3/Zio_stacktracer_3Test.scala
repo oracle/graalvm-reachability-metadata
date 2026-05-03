@@ -152,6 +152,16 @@ class Zio_stacktracer_3Test {
   }
 
   @Test
+  def explicitTraceCanBePassedThroughWhenAutomaticTracingIsDisabled(): Unit = {
+    given DisableAutoTrace = TracingImplicits.disableAutoTrace
+    val manualTrace: Tracer.instance.Type = Tracer.instance("manual.disabled.trace", "ManualDisabled.scala", 91)
+
+    val decoded: Option[(String, String, Int)] = decode(automaticallyCapturedTrace()(using manualTrace))
+
+    assertEquals(Some(("manual.disabled.trace", "ManualDisabled.scala", 91)), decoded)
+  }
+
+  @Test
   def tracingImplicitsExposeASingleDisableAutoTraceMarker(): Unit = {
     val first: DisableAutoTrace = TracingImplicits.disableAutoTrace
     val second: DisableAutoTrace = TracingImplicits.disableAutoTrace
