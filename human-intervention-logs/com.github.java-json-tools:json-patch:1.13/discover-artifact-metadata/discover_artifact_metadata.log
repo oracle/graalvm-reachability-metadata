@@ -1,0 +1,1095 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dee4b-2c75-7fd3-853c-04a9c1e52019
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.github.java-json-tools:json-patch:1.13
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.13" when "$version$" is replaced with "1.13".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+- Set "coordinates" to "com.github.java-json-tools:json-patch:1.13".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.13".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream repository, then update the JSON in place with version-templated URLs.
+web search: 
+web search: Maven Central com.github.java-json-tools json-patch 1.13 scm url
+codex
+Maven Central identifies the artifact as a normal JVM JAR with source and javadoc classifiers available, and the POM points back to the `java-json-tools/json-patch` GitHub repository. I’m checking the local JSON shape before making the targeted edit.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+{
+  "coordinates" : "com.github.java-json-tools:json-patch:1.13"
+}
+
+exec
+/usr/bin/bash -lc 'ls -l build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 67 May  3 16:43 build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 131ms:
+web search: 
+web search: 
+web search: 
+web search: site:central.sonatype.com/artifact/com.github.java-json-tools/json-patch 1.13
+web search: 
+web search: https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/
+web search: 
+web search: 
+codex
+The Maven directory has published main, sources, and javadoc JARs for `1.13`, but no test artifact. I’m checking the upstream tags now so the test-suite URL can point at the exact tagged source tree instead of a moving branch.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/json-patch-1.13.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.java-json-tools</groupId>
+  <artifactId>json-patch</artifactId>
+  <version>1.13</version>
+  <name>json-patch</name>
+  <description>JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7386) implementation in Java</description>
+  <url>https://github.com/java-json-tools/json-patch</url>
+  <licenses>
+    <license>
+      <name>Lesser General Public License, version 3 or greater</name>
+      <url>http://www.gnu.org/licenses/lgpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>Apache Software License, version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>huggsboson</id>
+      <name>John Huffaker</name>
+      <email>jhuffaker+java-json-tools@gmail.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>git@github.com:java-json-tools/json-patch.git</connection>
+    <developerConnection>scm:git:git@github.com:java-json-tools/json-patch.git</developerConnection>
+    <url>git@github.com:java-json-tools/json-patch.git</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.11.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.java-json-tools</groupId>
+      <artifactId>msg-simple</artifactId>
+      <version>1.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.java-json-tools</groupId>
+      <artifactId>jackson-coreutils</artifactId>
+      <version>2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>7.1.0</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>junit</artifactId>
+          <groupId>junit</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>snakeyaml</artifactId>
+          <groupId>org.yaml</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>bsh</artifactId>
+          <groupId>org.beanshell</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.28.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>2.9.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>28.2-android</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/java-json-tools/json-patch.git' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 305ms:
+5922bdcee44d9e58335cdbdbcc35b3bcfe43d38a	refs/tags/1.2
+fe2823d776bf5bfd921bd6f22217efc2830c2b7f	refs/tags/1.3
+d86e6bf418174f2224542e82c5b3ddaabc17e367	refs/tags/1.4
+c1a8c814a031e9d6ebc67fe879d5f375385be284	refs/tags/1.5
+b547346a0e742249bcde439264496d3337261df7	refs/tags/1.6
+9d0f4a7fb746bfb7d9937441331c606e09190be0	refs/tags/1.7
+c09f404b4a0e4e6286c8034b3bc6ae324ec01bd1	refs/tags/1.8
+90d740c4d2fed4763d9538a82017334209617979	refs/tags/1.9
+b18895b3a8726a18604b8581b1015bd8521beb07	refs/tags/v1.11
+e346c911e083f626563c51c7749a2a6664683ec9	refs/tags/v1.12
+7c391b5d3c6b1649178c7278c1096b65e974e4ae	refs/tags/v1.13
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/com.github.java-json-tools/json-patch/1.13
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org.*sources.jar|javadoc.jar|src/test' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find metadata -name '*index*.json' -o -name '*json-patch*' | head -40" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+metadata/org.eclipse.jetty/jetty-ee/index.json
+metadata/org.eclipse.jetty/jetty-server/index.json
+metadata/org.eclipse.jetty/jetty-client/index.json
+metadata/org.eclipse.jetty/jetty-util/index.json
+metadata/org.eclipse.jetty/jetty-http/index.json
+metadata/org.eclipse.jetty/jetty-io/index.json
+metadata/org.eclipse.jetty/jetty-session/index.json
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/org.awaitility/awaitility/index.json
+metadata/org.junit.jupiter/junit-jupiter-params/index.json
+metadata/org.apache.thrift/libthrift/index.json
+metadata/org.springframework/spring-jcl/index.json
+metadata/org.springframework/spring-aspects/index.json
+metadata/org.springframework/spring-instrument/index.json
+metadata/com.rabbitmq/amqp-client/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json
+metadata/com.google.re2j/re2j/index.json
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json
+metadata/com.github.ben-manes.caffeine/caffeine/index.json
+metadata/org.openjfx/javafx-base/index.json
+metadata/org.apache.directory.api/api-util/index.json
+metadata/org.apache.directory.api/api-i18n/index.json
+metadata/org.glassfish.hk2/hk2-utils/index.json
+metadata/com.thoughtworks.paranamer/paranamer/index.json
+metadata/log4j/log4j/index.json
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json
+metadata/io.zipkin.zipkin2/zipkin/index.json
+metadata/com.github.mwiede/jsch/index.json
+metadata/org.datanucleus/javax.jdo/index.json
+metadata/org.playframework/play-build-link/index.json
+metadata/org.playframework/play-exceptions/index.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' metadata | head -120" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:25:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:21:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.tpolecat/sourcepos_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-sources.jar",
+metadata/org.tpolecat/sourcepos_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/SourcePos/tree/v$version$/sourcepos/src/test",
+metadata/org.tpolecat/sourcepos_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/com.zaxxer/SparseBitSet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/SparseBitSet/$version$/SparseBitSet-$version$-sources.jar",
+metadata/com.zaxxer/SparseBitSet/index.json:7:    "test-code-url" : "https://github.com/brettwooldridge/SparseBitSet/tree/SparseBitSet-$version$/src/test/java",
+metadata/com.zaxxer/SparseBitSet/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/SparseBitSet/$version$/SparseBitSet-$version$-javadoc.jar",
+metadata/javax.el/el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+metadata/javax.el/el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/el-api/index.json:8:    "documentation-url" : "https://docs.oracle.com/javaee/5/api/javax/el/package-summary.html",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/portlet-api/portlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/portals/portlet-api_$version$_spec/$version$/portlet-api_$version$_spec-$version$-sources.jar",
+metadata/portlet-api/portlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/portlet-api/portlet-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/portals/portlet-api_$version$_spec/$version$/portlet-api_$version$_spec-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/xmlpull/xmlpull/index.json:5:    "source-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:7:    "test-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:8:    "documentation-url" : "N/A",
+metadata/com.codahale.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/codahale/metrics/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/com.codahale.metrics/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/com.codahale.metrics/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/codahale/metrics/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:7:    "test-code-url" : "https://android.googlesource.com/platform/frameworks/data-binding/+/refs/tags/gradle_$version$/integration-tests/",
+metadata/com.android.databinding/baseLibrary/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:21:    "test-code-url" : "https://android.googlesource.com/platform/frameworks/data-binding/+/refs/tags/gradle_1.5.0/integration-tests/",
+metadata/com.android.databinding/baseLibrary/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/$version$/geronimo-annotation_1.3_spec-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/$version$/geronimo-annotation_1.3_spec-$version$-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
+metadata/com.zaxxer/HikariCP/index.json:6:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
+metadata/com.zaxxer/HikariCP/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:18:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
+metadata/com.zaxxer/HikariCP/index.json:20:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
+metadata/com.zaxxer/HikariCP/index.json:21:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
+metadata/com.zaxxer/HikariCP/index.json:36:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
+metadata/com.zaxxer/HikariCP/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
+metadata/com.atomikos/transactions-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/$version$/transactions-api-$version$-sources.jar",
+metadata/com.atomikos/transactions-api/index.json:7:    "test-code-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development/file/$version$/public/transactions-api/src/test",
+metadata/com.atomikos/transactions-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/$version$/transactions-api-$version$-javadoc.jar",
+metadata/com.mchange/mchange-commons-java/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/$version$/mchange-commons-java-$version$-sources.jar",
+metadata/com.mchange/mchange-commons-java/index.json:7:    "test-code-url" : "https://github.com/swaldman/mchange-commons-java/tree/mchange-commons-java-$version$/src/test",
+metadata/com.mchange/mchange-commons-java/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/$version$/mchange-commons-java-$version$-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-javadoc.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/$version$/stax2-api-$version$-sources.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/$version$/stax2-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:21:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:36:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:50:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org.*sources.jar|javadoc.jar|src/test' metadata | head -120" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/$version$/barchart-udt-bundle-$version$-sources.jar",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:7:    "test-code-url" : "https://github.com/barchart/barchart-udt/tree/barchart-udt-$version$/barchart-udt-it/barchart-udt-it-02-bundle-test/src/test",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/$version$/barchart-udt-bundle-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.jboss.resteasy/resteasy-client/index.json:7:    "test-code-url" : "https://github.com/resteasy/resteasy/tree/v$version$/resteasy-client/src/test",
+metadata/org.jboss.resteasy/resteasy-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/$version$/resteasy-client-$version$-javadoc.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-sources.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-models/tree/$version$/hibernate-models/src/test",
+metadata/org.hibernate.models/hibernate-models/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-javadoc.jar",
+metadata/org.apache.lucene/lucene-core/index.json:7:    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+metadata/org.apache.lucene/lucene-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+metadata/org.apache.lucene/lucene-core/index.json:21:    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+metadata/org.apache.lucene/lucene-core/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+metadata/org.apache.lucene/lucene-core/index.json:35:    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+metadata/org.apache.lucene/lucene-core/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:6:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/c1.5.2-5/src/test",
+metadata/com.github.luben/zstd-jni/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:21:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/v$version$/src/test",
+metadata/com.github.luben/zstd-jni/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:36:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/v$version$/src/test",
+metadata/com.github.luben/zstd-jni/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:49:    "test-code-url" : "https://github.com/luben/zstd-jni/tree/v$version$/src/test",
+metadata/com.github.luben/zstd-jni/index.json:50:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/$version$/duct-tape-$version$-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/$version$/src/test/java",
+metadata/commons-daemon/commons-daemon/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-daemon/commons-daemon/$version$/commons-daemon-$version$-javadoc.jar",
+metadata/org.testcontainers/testcontainers/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/$version$/testcontainers-$version$-sources.jar",
+metadata/org.testcontainers/testcontainers/index.json:7:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/$version$/core/src/test",
+metadata/org.testcontainers/testcontainers/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/$version$/testcontainers-$version$-javadoc.jar",
+metadata/org.testcontainers/testcontainers/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/$version$/testcontainers-$version$-sources.jar",
+metadata/org.testcontainers/testcontainers/index.json:38:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/$version$/core/src/test",
+metadata/org.testcontainers/testcontainers/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/$version$/testcontainers-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/$version$/kotlinx-datetime-jvm-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:26:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$-rc0/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-javadoc.jar",
+metadata/org.opentest4j/opentest4j/index.json:7:    "test-code-url" : "https://github.com/ota4j-team/opentest4j/tree/r1.2.0/src/test",
+metadata/org.opentest4j/opentest4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/opentest4j/opentest4j/$version$/opentest4j-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/$version$/kotlinx-io-bytestring-jvm-$version$-javadoc.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/$version$/stax2-api-$version$-javadoc.jar",
+metadata/library-and-framework-list.json:511:          "https://github.com/itext/itext-java/tree/develop/barcodes/src/test"
+metadata/library-and-framework-list.json:524:          "https://github.com/itext/itext-java/tree/develop/kernel/src/test",
+metadata/library-and-framework-list.json:525:          "https://github.com/itext/itext-java/tree/develop/sign/src/test"
+metadata/library-and-framework-list.json:539:          "https://github.com/itext/itext-java/tree/develop/kernel/src/test",
+metadata/library-and-framework-list.json:540:          "https://github.com/itext/itext-java/tree/develop/sign/src/test"
+metadata/library-and-framework-list.json:553:          "https://github.com/itext/itext-java/tree/develop/commons/src/test"
+metadata/library-and-framework-list.json:569:          "https://github.com/itext/itext-java/tree/develop/io/src/test"
+metadata/library-and-framework-list.json:585:          "https://github.com/itext/itext-java/tree/develop/forms/src/test"
+metadata/library-and-framework-list.json:601:          "https://github.com/itext/itext-pdfhtml-java/tree/develop/src/test"
+metadata/library-and-framework-list.json:617:          "https://github.com/itext/itext-java/tree/develop/layout/src/test"
+metadata/library-and-framework-list.json:633:          "https://github.com/itext/itext-java/tree/develop/io/src/test"
+metadata/library-and-framework-list.json:653:          "https://github.com/itext/itext-java/tree/develop/barcodes/src/test",
+metadata/library-and-framework-list.json:654:          "https://github.com/itext/itext-java/tree/develop/forms/src/test",
+metadata/library-and-framework-list.json:655:          "https://github.com/itext/itext-java/tree/develop/io/src/test",
+metadata/library-and-framework-list.json:656:          "https://github.com/itext/itext-java/tree/develop/kernel/src/test",
+metadata/library-and-framework-list.json:657:          "https://github.com/itext/itext-java/tree/develop/layout/src/test",
+metadata/library-and-framework-list.json:658:          "https://github.com/itext/itext-java/tree/develop/pdfa/src/test",
+metadata/library-and-framework-list.json:659:          "https://github.com/itext/itext-java/tree/develop/pdfua/src/test",
+metadata/library-and-framework-list.json:660:          "https://github.com/itext/itext-java/tree/develop/sign/src/test",
+metadata/library-and-framework-list.json:661:          "https://github.com/itext/itext-java/tree/develop/styled-xml-parser/src/test",
+metadata/library-and-framework-list.json:662:          "https://github.com/itext/itext-java/tree/develop/svg/src/test"
+metadata/library-and-framework-list.json:678:          "https://github.com/itext/itext-java/tree/develop/kernel/src/test"
+metadata/library-and-framework-list.json:694:          "https://github.com/itext/itext-java/tree/develop/layout/src/test"
+metadata/library-and-framework-list.json:708:          "https://github.com/itext/itext-java/tree/develop/pdfa/src/test"
+metadata/library-and-framework-list.json:722:          "https://github.com/itext/itext-java/tree/develop/pdftest/src/test"
+metadata/library-and-framework-list.json:736:          "https://github.com/itext/itext-java/tree/develop/pdfua/src/test"
+metadata/library-and-framework-list.json:750:          "https://github.com/itext/itext-java/tree/develop/sign/src/test"
+metadata/library-and-framework-list.json:764:          "https://github.com/itext/itext-java/tree/develop/styled-xml-parser/src/test"
+metadata/library-and-framework-list.json:780:          "https://github.com/itext/itext-java/tree/develop/svg/src/test"
+metadata/library-and-framework-list.json:892:          "https://github.com/oracle/oci-java-sdk/tree/master/bmc-addons/bmc-graalvm-addon/src/test/java/com/oracle/bmc/graalvm",
+metadata/library-and-framework-list.json:893:          "https://github.com/oracle/oci-java-sdk/tree/master/bmc-addons/bmc-graalvm-jersey3-addon/src/test/java/com/oracle/bmc/graalvm"
+metadata/library-and-framework-list.json:1878:          "https://github.com/SoftInstigate/restheart/tree/master/core/src/test"
+metadata/library-and-framework-list.json:1896:          "https://github.com/SoftInstigate/restheart/tree/master/core/src/test"
+metadata/library-and-framework-list.json:1914:          "https://github.com/SoftInstigate/restheart/tree/master/core/src/test"
+metadata/library-and-framework-list.json:1932:          "https://github.com/SoftInstigate/restheart/tree/master/core/src/test"
+metadata/library-and-framework-list.json:1950:          "https://github.com/SoftInstigate/restheart/tree/master/core/src/test"
+metadata/library-and-framework-list.json:1968:          "https://github.com/SoftInstigate/restheart/tree/master/core/src/test"
+metadata/library-and-framework-list.json:1986:          "https://github.com/SoftInstigate/restheart/tree/master/core/src/test"
+metadata/org.testcontainers/junit-jupiter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/testcontainers/junit-jupiter/$version$/junit-jupiter-$version$-sources.jar",
+metadata/org.testcontainers/junit-jupiter/index.json:7:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/$version$/modules/junit-jupiter/src/test",
+metadata/org.jboss.jdeparser/jdeparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jdeparser/jdeparser/$version$/jdeparser-$version$-sources.jar",
+metadata/org.jboss.jdeparser/jdeparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/jdeparser/jdeparser/$version$/jdeparser-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/json-patch-1.13-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 14:43:57 GMT
+content-type: application/java-archive
+content-length: 39008
+cf-ray: 9f600a7b9f3bbc41-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 700321
+etag: "25e17e07fa9fc9d515606a0ff9308603"
+last-modified: Wed, 27 May 2020 16:54:12 GMT
+x-checksum-md5: 25e17e07fa9fc9d515606a0ff9308603
+x-checksum-sha1: f7dfc1834339137d2e182ed54424e428dd388d22
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/json-patch-1.13-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 14:43:57 GMT
+content-type: application/java-archive
+content-length: 83668
+cf-ray: 9f600a7b996ddc8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1832363
+etag: "a8773033c1912a634a3d46db45525718"
+last-modified: Wed, 27 May 2020 16:54:14 GMT
+x-checksum-md5: a8773033c1912a634a3d46db45525718
+x-checksum-sha1: 3e2f2943b761c31bf7790d7907e056b291ae026f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/java-json-tools/json-patch/contents/?ref=v1.13 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/json-patch-1.13-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 165ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "8d12d3a3232d6a2dffaa8896b52fc20d698b09b3",
+    "size": 47,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/.gitignore?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/.gitignore",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/8d12d3a3232d6a2dffaa8896b52fc20d698b09b3",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/.gitignore?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/8d12d3a3232d6a2dffaa8896b52fc20d698b09b3",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/.gitignore"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "87d1760720994082896a0a4502f928abacbf6316",
+    "size": 302,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/.travis.yml?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/.travis.yml",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/87d1760720994082896a0a4502f928abacbf6316",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/.travis.yml?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/87d1760720994082896a0a4502f928abacbf6316",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/.travis.yml"
+    }
+  },
+  {
+    "name": "ASL-2.0.txt",
+    "path": "ASL-2.0.txt",
+    "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "size": 11358,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/ASL-2.0.txt?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/ASL-2.0.txt",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/ASL-2.0.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/ASL-2.0.txt?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/ASL-2.0.txt"
+    }
+  },
+  {
+    "name": "BUILD.md",
+    "path": "BUILD.md",
+    "sha": "d5bd5f7b30ca1beaebe515fe12741ab6976d914d",
+    "size": 957,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/BUILD.md?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/BUILD.md",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/d5bd5f7b30ca1beaebe515fe12741ab6976d914d",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/BUILD.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/BUILD.md?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/d5bd5f7b30ca1beaebe515fe12741ab6976d914d",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/BUILD.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTORS.md",
+    "path": "CONTRIBUTORS.md",
+    "sha": "daeb67679ee86555a179243b363346f08b60e473",
+    "size": 175,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/CONTRIBUTORS.md?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/CONTRIBUTORS.md",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/daeb67679ee86555a179243b363346f08b60e473",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/CONTRIBUTORS.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/CONTRIBUTORS.md?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/daeb67679ee86555a179243b363346f08b60e473",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/CONTRIBUTORS.md"
+    }
+  },
+  {
+    "name": "LGPL-3.0.txt",
+    "path": "LGPL-3.0.txt",
+    "sha": "341c30bda4457610db4829294e5d7e526d4c835b",
+    "size": 7652,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/LGPL-3.0.txt?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/LGPL-3.0.txt",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/341c30bda4457610db4829294e5d7e526d4c835b",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/LGPL-3.0.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/LGPL-3.0.txt?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/341c30bda4457610db4829294e5d7e526d4c835b",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/LGPL-3.0.txt"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "16cda1283a42a2f328e87cf49d48db565d1bd871",
+    "size": 427,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/LICENSE?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/LICENSE",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/16cda1283a42a2f328e87cf49d48db565d1bd871",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/LICENSE?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/16cda1283a42a2f328e87cf49d48db565d1bd871",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "42af29b0caa2fa3a673512316f0fd2da7a8ecf8e",
+    "size": 4468,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/README.md?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/README.md",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/42af29b0caa2fa3a673512316f0fd2da7a8ecf8e",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/README.md?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/42af29b0caa2fa3a673512316f0fd2da7a8ecf8e",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/README.md"
+    }
+  },
+  {
+    "name": "RELEASE-NOTES.md",
+    "path": "RELEASE-NOTES.md",
+    "sha": "0f2f52258311547247464e44905f289d707679b1",
+    "size": 1198,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/RELEASE-NOTES.md?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/RELEASE-NOTES.md",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/0f2f52258311547247464e44905f289d707679b1",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/RELEASE-NOTES.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/RELEASE-NOTES.md?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/0f2f52258311547247464e44905f289d707679b1",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/RELEASE-NOTES.md"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "8ffa1a34cd17f85d55e0107c5e9b78f1b407a97e",
+    "size": 6428,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/build.gradle?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/build.gradle",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/8ffa1a34cd17f85d55e0107c5e9b78f1b407a97e",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/build.gradle?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/8ffa1a34cd17f85d55e0107c5e9b78f1b407a97e",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/build.gradle"
+    }
+  },
+  {
+    "name": "dorelease.sh",
+    "path": "dorelease.sh",
+    "sha": "874bf975616f65a6507a5604083505235b375afc",
+    "size": 149,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/dorelease.sh?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/dorelease.sh",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/874bf975616f65a6507a5604083505235b375afc",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/dorelease.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/dorelease.sh?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/874bf975616f65a6507a5604083505235b375afc",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/dorelease.sh"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "73886691097db213d98687f03f86d5799c593792",
+    "size": 0,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/gradle?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/tree/v1.13/gradle",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/trees/73886691097db213d98687f03f86d5799c593792",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/gradle?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/trees/73886691097db213d98687f03f86d5799c593792",
+      "html": "https://github.com/java-json-tools/json-patch/tree/v1.13/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "83f2acfdc319a24e8766cca78f32474ad7a22dd6",
+    "size": 5960,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/gradlew?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/gradlew",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/83f2acfdc319a24e8766cca78f32474ad7a22dd6",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/gradlew?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/83f2acfdc319a24e8766cca78f32474ad7a22dd6",
+      "html": "https://github.com/java-json-tools/json-patch/blob/v1.13/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "24467a141f791695fc1009c78d913b2c849d1412",
+    "size": 2942,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/gradlew.bat?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/blob/v1.13/gradlew.bat",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/blobs/24467a141f791695fc1009c78d913b2c849d1412",
+    "download_url": "https://raw.githubusercontent.com/java-json-tools/json-patch/v1.13/gradlew.bat",
+    "type": "file",
+    "_links": {
+
+ succeeded in 244ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 14:43:57 GMT
+content-type: text/html
+cf-ray: 9f600a7bcbb48bbd-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/github/java-json-tools/json-patch/1.13/json-patch-1.13-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/json-patch-1.13-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/java-json-tools/json-patch/contents/src?ref=v1.13 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/java-json-tools/json-patch/tree/v1.13/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 151ms:
+[
+  {
+    "name": "main",
+    "path": "src/main",
+    "sha": "765374db5b367dba189908c14b89019299eef805",
+    "size": 0,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/src/main?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/tree/v1.13/src/main",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/trees/765374db5b367dba189908c14b89019299eef805",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/src/main?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/trees/765374db5b367dba189908c14b89019299eef805",
+      "html": "https://github.com/java-json-tools/json-patch/tree/v1.13/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "src/test",
+    "sha": "6b83c42eadce94292966fe7620681915bfbd133d",
+    "size": 0,
+    "url": "https://api.github.com/repos/java-json-tools/json-patch/contents/src/test?ref=v1.13",
+    "html_url": "https://github.com/java-json-tools/json-patch/tree/v1.13/src/test",
+    "git_url": "https://api.github.com/repos/java-json-tools/json-patch/git/trees/6b83c42eadce94292966fe7620681915bfbd133d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/java-json-tools/json-patch/contents/src/test?ref=v1.13",
+      "git": "https://api.github.com/repos/java-json-tools/json-patch/git/trees/6b83c42eadce94292966fe7620681915bfbd133d",
+      "html": "https://github.com/java-json-tools/json-patch/tree/v1.13/src/test"
+    }
+  }
+]
+
+ succeeded in 249ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 14:44:02 GMT
+content-type: text/html
+cf-ray: 9f600a98289d8bbd-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/github/java-json-tools/json-patch/1.13/json-patch-1.13-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 428ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 14:44:02 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"426f9417d2ca8642994a992a96877a3b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=I2d06k4hGzW0QLKG7rWIPGA5ZwrLFujwIcvdnzyGqnVuwFCUe2kG1RJz%2BUd10UkekbUTTi2nJeMJOKrmwxWlOL%2FZ4DQH1uBrkjkFqe6P18nuu6cGGQ1I895qvKVff9vfYNVaRkL1BWhKLIWw%2F6Xy5HLdfOUQc0ZqyZZBqO6XHusEGz7oF2iQPWWr6BiMK4lnm1WoD28CtrmU96wx8dXHc7HknH7j1oazznmX8dt5%2F18JrNvc3lh3SX5Dr6NKE%2FAn%2FRyk7%2FcmbZRPXSU7Ygs4dg%3D%3D--6o7zQ0p8D5pZZSTo--v8ke0kJlH9AHiYwk%2FwL3%2FA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1211492933.1777819441; expires=Mon, 03 May 2027 14:44:01 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 14:44:01 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510D:17BC2E:5CA1018:44D4E9D:69F75F31
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,24p' metadata/org.yaml/snakeyaml/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+    "description" : "SnakeYAML is a Java library for parsing and emitting YAML 1.1 documents. It lets applications load YAML into Java objects and serialize Java data structures back to YAML.",
+    "tested-versions" : [
+      "2.0"
+    ],
+    "allowed-packages" : [
+      "org.yaml.snakeyaml"
+    ]
+  },
+  {
+    "metadata-version" : "1.32",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+    "description" : "SnakeYAML is a Java library for parsing and emitting YAML 1.1 documents. It lets applications load YAML into Java objects and serialize Java data structures back to YAML.",
+    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,40p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+{
+  "coordinates" : "com.github.java-json-tools:json-patch:1.13"
+}
+
+web search: 
+web search: repo1.maven.org maven2 com github java-json-tools json-patch 1.13 json-patch 1.13 pom
+web search: 
+web search: https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/
+web search: 
+web search: https://github.com/java-json-tools/json-patch/tree/v1.13/src/test
+codex
+I found the exact `v1.13` tag and confirmed the upstream test directory at `src/test`; the Maven Central listing has the sources and javadocs but no `tests` or `test-sources` classifier. I’m updating only the requested JSON fields and leaving language/native-image exception fields absent because this is a regular Java JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+diff --git a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+index 11585281841bff15e787b8414aaf01fab06cb4c6..d8395d5e04f796684eab02f125607dd41610c020
+--- a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
++++ b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.github.java-json-tools:json-patch:1.13"
++  "coordinates" : "com.github.java-json-tools:json-patch:1.13",
++  "repository-url" : "https://github.com/java-json-tools/json-patch",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-json-tools/json-patch/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-javadoc.jar",
++  "description" : "json-patch is a Java implementation of JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7386) built on Jackson. It can deserialize, apply, and generate patches for Jackson JsonNode values, including RFC 6902 diff operations and merge patch application."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+index 11585281841bff15e787b8414aaf01fab06cb4c6..d8395d5e04f796684eab02f125607dd41610c020
+--- a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
++++ b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.github.java-json-tools:json-patch:1.13"
++  "coordinates" : "com.github.java-json-tools:json-patch:1.13",
++  "repository-url" : "https://github.com/java-json-tools/json-patch",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-json-tools/json-patch/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-javadoc.jar",
++  "description" : "json-patch is a Java implementation of JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7386) built on Jackson. It can deserialize, apply, and generate patches for Jackson JsonNode values, including RFC 6902 diff operations and merge patch application."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+{
+  "coordinates": "com.github.java-json-tools:json-patch:1.13",
+  "repository-url": "https://github.com/java-json-tools/json-patch",
+  "source-code-url": "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-sources.jar",
+  "test-code-url": "https://github.com/java-json-tools/json-patch/tree/v$version$/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-javadoc.jar",
+  "description": "json-patch is a Java implementation of JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7386) built on Jackson. It can deserialize, apply, and generate patches for Jackson JsonNode values, including RFC 6902 diff operations and merge patch application."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/java-json-tools/json-patch/tree/v1.13/src/test | sed -n '1,8p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 14:44:02 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"426f9417d2ca8642994a992a96877a3b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/json-patch-1.13-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 14:44:29 GMT
+content-type: application/java-archive
+content-length: 39008
+cf-ray: 9f600b475e3ec8a4-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 700354
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/json-patch-1.13-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 14:44:29 GMT
+content-type: application/java-archive
+content-length: 83668
+cf-ray: 9f600b475a81bc6b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1832395
+
+diff --git a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+index 11585281841bff15e787b8414aaf01fab06cb4c6..d8395d5e04f796684eab02f125607dd41610c020
+--- a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
++++ b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.github.java-json-tools:json-patch:1.13"
++  "coordinates" : "com.github.java-json-tools:json-patch:1.13",
++  "repository-url" : "https://github.com/java-json-tools/json-patch",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-json-tools/json-patch/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-javadoc.jar",
++  "description" : "json-patch is a Java implementation of JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7386) built on Jackson. It can deserialize, apply, and generate patches for Jackson JsonNode values, including RFC 6902 diff operations and merge patch application."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+index 11585281841bff15e787b8414aaf01fab06cb4c6..d8395d5e04f796684eab02f125607dd41610c020
+--- a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
++++ b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.github.java-json-tools:json-patch:1.13"
++  "coordinates" : "com.github.java-json-tools:json-patch:1.13",
++  "repository-url" : "https://github.com/java-json-tools/json-patch",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-json-tools/json-patch/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-javadoc.jar",
++  "description" : "json-patch is a Java implementation of JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7386) built on Jackson. It can deserialize, apply, and generate patches for Jackson JsonNode values, including RFC 6902 diff operations and merge patch application."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --ignored --short build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+!! build/
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc
+ succeeded in 0ms:
+{
+  "coordinates" : "com.github.java-json-tools:json-patch:1.13",
+  "repository-url" : "https://github.com/java-json-tools/json-patch",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-sources.jar",
+  "test-code-url" : "https://github.com/java-json-tools/json-patch/tree/v$version$/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-javadoc.jar",
+  "description" : "json-patch is a Java implementation of JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7386) built on Jackson. It can deserialize, apply, and generate patches for Jackson JsonNode values, including RFC 6902 diff operations and merge patch application."
+}
+
+diff --git a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+index 11585281841bff15e787b8414aaf01fab06cb4c6..d8395d5e04f796684eab02f125607dd41610c020
+--- a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
++++ b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.github.java-json-tools:json-patch:1.13"
++  "coordinates" : "com.github.java-json-tools:json-patch:1.13",
++  "repository-url" : "https://github.com/java-json-tools/json-patch",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-json-tools/json-patch/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-javadoc.jar",
++  "description" : "json-patch is a Java implementation of JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7386) built on Jackson. It can deserialize, apply, and generate patches for Jackson JsonNode values, including RFC 6902 diff operations and merge patch application."
+ }
+
+web search: 
+web search: Maven Repository com.github.java-json-tools json-patch 1.13
+web search: 
+web search: github java-json-tools json-patch v1.13 src/test
+codex
+Updated [com.github.java-json-tools-json-patch-1.13.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json:1).
+
+I used Maven Central for the `sources.jar` and `javadoc.jar`, and the upstream `v1.13` GitHub tag for `src/test` because Maven Central does not publish a test artifact for this version. The artifact is a normal Java JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/?utm_source=openai))
+
+Validation done: `jq .` passed, and the resolved source, documentation, and test URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+index 11585281841bff15e787b8414aaf01fab06cb4c6..d8395d5e04f796684eab02f125607dd41610c020
+--- a/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
++++ b/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.github.java-json-tools:json-patch:1.13"
++  "coordinates" : "com.github.java-json-tools:json-patch:1.13",
++  "repository-url" : "https://github.com/java-json-tools/json-patch",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-json-tools/json-patch/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/$version$/json-patch-$version$-javadoc.jar",
++  "description" : "json-patch is a Java implementation of JSON Patch (RFC 6902) and JSON Merge Patch (RFC 7386) built on Jackson. It can deserialize, apply, and generate patches for Jackson JsonNode values, including RFC 6902 diff operations and merge patch application."
+ }
+
+tokens used
+82,282
+Updated [com.github.java-json-tools-json-patch-1.13.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc/build/discovered-artifact-metadata/com.github.java-json-tools-json-patch-1.13.json:1).
+
+I used Maven Central for the `sources.jar` and `javadoc.jar`, and the upstream `v1.13` GitHub tag for `src/test` because Maven Central does not publish a test artifact for this version. The artifact is a normal Java JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/com/github/java-json-tools/json-patch/1.13/?utm_source=openai))
+
+Validation done: `jq .` passed, and the resolved source, documentation, and test URLs all returned HTTP 200.
+Ran agent for com.github.java-json-tools:json-patch:1.13 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc/build/agent-artifact-discovery-logs/com.github.java-json-tools-json-patch-1.13.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3301-60974ebc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 35s
+9 actionable tasks: 4 executed, 5 from cache
