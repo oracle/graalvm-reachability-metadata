@@ -133,6 +133,18 @@ public class JuniversalchardetTest {
     }
 
     @Test
+    void readerFactoryUsesProvidedDefaultCharsetWhenDetectionIsInconclusive() throws IOException {
+        String text = "Fallback charset line one\nline two";
+        Path inputFile = temporaryDirectory.resolve("reader-factory-fallback.txt");
+        Files.write(inputFile, text.getBytes(StandardCharsets.UTF_16LE));
+
+        assertThat(UniversalDetector.detectCharset(inputFile)).isNull();
+        try (Reader reader = ReaderFactory.createReaderFromFile(inputFile.toFile(), StandardCharsets.UTF_16LE)) {
+            assertThat(readAllCharacters(reader)).isEqualTo(text);
+        }
+    }
+
+    @Test
     void unicodeBomInputStreamExposesAndSkipsDetectedBom() throws IOException {
         byte[] payload = concat(UTF_8_BOM, "payload".getBytes(StandardCharsets.UTF_8));
 
