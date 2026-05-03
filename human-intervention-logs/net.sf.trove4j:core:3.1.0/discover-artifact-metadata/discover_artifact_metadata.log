@@ -1,0 +1,916 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deb24-f3c6-7ca3-b00b-6c4f3d2cbd14
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sf.trove4j:core:3.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.1.0" when "$version$" is replaced with "3.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+- Set "coordinates" to "net.sf.trove4j:core:3.1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream project links, then patch the JSON directly using the repository’s existing metadata style.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+{
+  "coordinates" : "net.sf.trove4j:core:3.1.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"trove4j|net\\.sf\\.trove4j|source-code-url|documentation-url\" metadata tests build/discovered-artifact-metadata 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json:2:  "coordinates" : "net.sf.trove4j:core:3.1.0"
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:211:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:212:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:252:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:253:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:319:                    .hasMessageContaining("Cannot promote source-code-url")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:380:        appendUrlField(fields, "source-code-url", sourceCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:382:        appendUrlField(fields, "documentation-url", documentationUrl);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:204:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:207:                .containsEntry("documentation-url", "https://example.com/docs")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:253:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:256:                .containsEntry("documentation-url", "https://example.com/docs")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:305:                null, // source-code-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:308:                null, // documentation-url
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:61:                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:62:                .contains("Set missing \"documentation-url\" to the selected project documentation URL with \"$version$\" replacing version \"1.4.1\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:69:                .contains("- source-code-url: <missing>")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:124:                .contains("- source-code-url: https://example.com/source-a")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:153:                .contains("- source-code-url: https://example.com/source-a")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:212:                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:255:                    "source-code-url": "https://example.com/source-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:258:                    "documentation-url": "https://example.com/docs-a",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:57:                .contains("Set \"source-code-url\", \"test-code-url\", and \"documentation-url\" to the discovered values with \"$version$\" replacing version \"3.1.0\".")
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/javax.el/el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+metadata/javax.el/el-api/index.json:8:    "documentation-url" : "https://docs.oracle.com/javaee/5/api/javax/el/package-summary.html",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - source-code-url: %s
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - documentation-url: %s
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "source-code-url" to the selected source URL with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:360:                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing version "%s".
+
+web search: 
+web search: net.sf.trove4j core 3.1.0 maven sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/
+web search: 
+web search: site:bitbucket.org/trove4j/trove core 3.1.0 tag
+web search: 
+web search: https://bitbucket.org/trove4j/trove/src/master/
+codex
+Maven Central has both the `sources.jar` and `javadoc.jar` for `3.1.0`, so those are the strongest candidates for source and documentation fields. I’m checking whether there is a reliable versioned upstream test-suite URL before deciding whether to use it or mark it `N/A`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.trove4j</groupId>
+  <artifactId>core</artifactId>
+  <version>3.1.0</version>
+  <name>Trove (core)</name>
+  <description>High performance collections for Java</description>
+  <url>https://bitbucket.org/trove4j/trove/src/master/</url>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License 2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Rob Eden</name>
+      <email>robeden1@gmail.com</email>
+    </developer>
+    <developer>
+      <name>Johan Parent</name>
+      <email>jparent@users.sourceforge.net</email>
+    </developer>
+    <developer>
+      <name>Jeff Randall</name>
+      <email>randall@uph.com</email>
+    </developer>
+    <developer>
+      <name>Eric D. Friedman</name>
+      <email>ericdf@users.sourceforge.net</email>
+    </developer>
+  </developers>
+  <scm>
+    <url>https://bitbucket.org/trove4j/trove/src/master/</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-sources.jar -o /tmp/core-3.1.0-sources.jar && jar tf /tmp/core-3.1.0-sources.jar | head -60' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0.jar -o /tmp/core-3.1.0.jar && jar tf /tmp/core-3.1.0.jar | head -60' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 178ms:
+META-INF/
+META-INF/MANIFEST.MF
+gnu/
+gnu/trove/
+gnu/trove/function/
+gnu/trove/function/TObjectFunction.java
+gnu/trove/strategy/
+gnu/trove/strategy/IdentityHashingStrategy.java
+gnu/trove/strategy/HashingStrategy.java
+gnu/trove/map/
+gnu/trove/map/TMap.java
+gnu/trove/map/hash/
+gnu/trove/map/hash/TCustomHashMap.java
+gnu/trove/map/hash/THashMap.java
+gnu/trove/impl/
+gnu/trove/impl/Constants.java
+gnu/trove/impl/sync/
+gnu/trove/impl/sync/SynchronizedSet.java
+gnu/trove/impl/sync/SynchronizedCollection.java
+gnu/trove/impl/hash/
+gnu/trove/impl/hash/TCustomObjectHash.java
+gnu/trove/impl/hash/TObjectHash.java
+gnu/trove/impl/hash/THashPrimitiveIterator.java
+gnu/trove/impl/hash/THashIterator.java
+gnu/trove/impl/hash/THash.java
+gnu/trove/impl/hash/TPrimitiveHash.java
+gnu/trove/impl/PrimeFinder.java
+gnu/trove/impl/HashFunctions.java
+gnu/trove/iterator/
+gnu/trove/iterator/TAdvancingIterator.java
+gnu/trove/iterator/TPrimitiveIterator.java
+gnu/trove/iterator/TIterator.java
+gnu/trove/iterator/hash/
+gnu/trove/iterator/hash/TObjectHashIterator.java
+gnu/trove/list/
+gnu/trove/list/linked/
+gnu/trove/list/linked/TLinkedList.java
+gnu/trove/list/TLinkableAdapter.java
+gnu/trove/list/TLinkable.java
+gnu/trove/procedure/
+gnu/trove/procedure/TObjectObjectProcedure.java
+gnu/trove/procedure/TObjectProcedure.java
+gnu/trove/procedure/array/
+gnu/trove/procedure/array/ToObjectArrayProceedure.java
+gnu/trove/set/
+gnu/trove/set/hash/
+gnu/trove/set/hash/THashSet.java
+gnu/trove/set/hash/TCustomHashSet.java
+gnu/trove/Version.java
+gnu/trove/function/TByteFunction.java
+gnu/trove/function/TShortFunction.java
+gnu/trove/function/TFloatFunction.java
+gnu/trove/function/TLongFunction.java
+gnu/trove/function/TDoubleFunction.java
+gnu/trove/function/TIntFunction.java
+gnu/trove/function/TCharFunction.java
+gnu/trove/TIntCollection.java
+gnu/trove/TShortCollection.java
+gnu/trove/TCollections.java
+gnu/trove/map/TCharDoubleMap.java
+
+ succeeded in 239ms:
+META-INF/
+META-INF/MANIFEST.MF
+gnu/
+gnu/trove/
+gnu/trove/TByteCollection.class
+gnu/trove/function/
+gnu/trove/function/TFloatFunction.class
+gnu/trove/function/TObjectFunction.class
+gnu/trove/function/TLongFunction.class
+gnu/trove/function/TDoubleFunction.class
+gnu/trove/function/TByteFunction.class
+gnu/trove/function/TShortFunction.class
+gnu/trove/function/TIntFunction.class
+gnu/trove/function/TCharFunction.class
+gnu/trove/TIntCollection.class
+gnu/trove/strategy/
+gnu/trove/strategy/HashingStrategy.class
+gnu/trove/strategy/IdentityHashingStrategy.class
+gnu/trove/map/
+gnu/trove/map/TLongLongMap.class
+gnu/trove/map/TCharLongMap.class
+gnu/trove/map/TIntDoubleMap.class
+gnu/trove/map/TIntByteMap.class
+gnu/trove/map/TIntObjectMap.class
+gnu/trove/map/TShortLongMap.class
+gnu/trove/map/TFloatLongMap.class
+gnu/trove/map/TIntCharMap.class
+gnu/trove/map/TObjectFloatMap.class
+gnu/trove/map/TObjectCharMap.class
+gnu/trove/map/custom_hash/
+gnu/trove/map/custom_hash/TObjectFloatCustomHashMap.class
+gnu/trove/map/custom_hash/TObjectFloatCustomHashMap$TObjectFloatHashIterator.class
+gnu/trove/map/custom_hash/TObjectShortCustomHashMap.class
+gnu/trove/map/custom_hash/TObjectDoubleCustomHashMap.class
+gnu/trove/map/custom_hash/TObjectCharCustomHashMap$MapBackedView.class
+gnu/trove/map/custom_hash/TObjectByteCustomHashMap$2.class
+gnu/trove/map/custom_hash/TObjectFloatCustomHashMap$TFloatValueCollection$1.class
+gnu/trove/map/custom_hash/TObjectByteCustomHashMap$TByteValueCollection$1.class
+gnu/trove/map/custom_hash/TObjectCharCustomHashMap$1.class
+gnu/trove/map/custom_hash/TObjectLongCustomHashMap$KeyView.class
+gnu/trove/map/custom_hash/TObjectDoubleCustomHashMap$2.class
+gnu/trove/map/custom_hash/TObjectDoubleCustomHashMap$TDoubleValueCollection$1.class
+gnu/trove/map/custom_hash/TObjectIntCustomHashMap$2.class
+gnu/trove/map/custom_hash/TObjectIntCustomHashMap$KeyView.class
+gnu/trove/map/custom_hash/TObjectLongCustomHashMap$TLongValueCollection$TObjectLongValueHashIterator.class
+gnu/trove/map/custom_hash/TObjectDoubleCustomHashMap$1.class
+gnu/trove/map/custom_hash/TObjectLongCustomHashMap.class
+gnu/trove/map/custom_hash/TObjectCharCustomHashMap$2.class
+gnu/trove/map/custom_hash/TObjectCharCustomHashMap$TCharValueCollection$TObjectCharValueHashIterator.class
+gnu/trove/map/custom_hash/TObjectLongCustomHashMap$1.class
+gnu/trove/map/custom_hash/TObjectByteCustomHashMap$TByteValueCollection.class
+gnu/trove/map/custom_hash/TObjectLongCustomHashMap$TObjectLongHashIterator.class
+gnu/trove/map/custom_hash/TObjectIntCustomHashMap$1.class
+gnu/trove/map/custom_hash/TObjectByteCustomHashMap$TObjectByteHashIterator.class
+gnu/trove/map/custom_hash/TObjectLongCustomHashMap$TLongValueCollection$1.class
+gnu/trove/map/custom_hash/TObjectShortCustomHashMap$TShortValueCollection$TObjectShortValueHashIterator.class
+gnu/trove/map/custom_hash/TObjectIntCustomHashMap$TIntValueCollection$TObjectIntValueHashIterator.class
+gnu/trove/map/custom_hash/TObjectDoubleCustomHashMap$TDoubleValueCollection$TObjectDoubleValueHashIterator.class
+gnu/trove/map/custom_hash/TObjectIntCustomHashMap$MapBackedView.class
+gnu/trove/map/custom_hash/TObjectShortCustomHashMap$KeyView.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-tests.jar || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 174ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/sf/trove4j/core/3.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/sf/trove4j/core/3.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="core-3.1.0-javadoc.jar" title="core-3.1.0-javadoc.jar">core-3.1.0-javadoc.jar</a>                            2018-08-03 02:23   4645895      
+<a href="core-3.1.0-javadoc.jar.asc" title="core-3.1.0-javadoc.jar.asc">core-3.1.0-javadoc.jar.asc</a>                        2018-08-03 02:23       874      
+<a href="core-3.1.0-javadoc.jar.asc.md5" title="core-3.1.0-javadoc.jar.asc.md5">core-3.1.0-javadoc.jar.asc.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.asc.sha1" title="core-3.1.0-javadoc.jar.asc.sha1">core-3.1.0-javadoc.jar.asc.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-javadoc.jar.md5" title="core-3.1.0-javadoc.jar.md5">core-3.1.0-javadoc.jar.md5</a>                        2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.md5.md5" title="core-3.1.0-javadoc.jar.md5.md5">core-3.1.0-javadoc.jar.md5.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.md5.sha1" title="core-3.1.0-javadoc.jar.md5.sha1">core-3.1.0-javadoc.jar.md5.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-javadoc.jar.sha1" title="core-3.1.0-javadoc.jar.sha1">core-3.1.0-javadoc.jar.sha1</a>                       2018-08-03 02:23        40      
+<a href="core-3.1.0-javadoc.jar.sha1.md5" title="core-3.1.0-javadoc.jar.sha1.md5">core-3.1.0-javadoc.jar.sha1.md5</a>                   2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.sha1.sha1" title="core-3.1.0-javadoc.jar.sha1.sha1">core-3.1.0-javadoc.jar.sha1.sha1</a>                  2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar" title="core-3.1.0-sources.jar">core-3.1.0-sources.jar</a>                            2018-08-03 02:23   1828003      
+<a href="core-3.1.0-sources.jar.asc" title="core-3.1.0-sources.jar.asc">core-3.1.0-sources.jar.asc</a>                        2018-08-03 02:23       874      
+<a href="core-3.1.0-sources.jar.asc.md5" title="core-3.1.0-sources.jar.asc.md5">core-3.1.0-sources.jar.asc.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.asc.sha1" title="core-3.1.0-sources.jar.asc.sha1">core-3.1.0-sources.jar.asc.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar.md5" title="core-3.1.0-sources.jar.md5">core-3.1.0-sources.jar.md5</a>                        2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.md5.md5" title="core-3.1.0-sources.jar.md5.md5">core-3.1.0-sources.jar.md5.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.md5.sha1" title="core-3.1.0-sources.jar.md5.sha1">core-3.1.0-sources.jar.md5.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar.sha1" title="core-3.1.0-sources.jar.sha1">core-3.1.0-sources.jar.sha1</a>                       2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar.sha1.md5" title="core-3.1.0-sources.jar.sha1.md5">core-3.1.0-sources.jar.sha1.md5</a>                   2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.sha1.sha1" title="core-3.1.0-sources.jar.sha1.sha1">core-3.1.0-sources.jar.sha1.sha1</a>                  2018-08-03 02:23        40      
+<a href="core-3.1.0.jar" title="core-3.1.0.jar">core-3.1.0.jar</a>                                    2018-08-03 02:23   2560395      
+<a href="core-3.1.0.jar.asc" title="core-3.1.0.jar.asc">core-3.1.0.jar.asc</a>                                2018-08-03 02:23       874      
+<a href="core-3.1.0.jar.asc.md5" title="core-3.1.0.jar.asc.md5">core-3.1.0.jar.asc.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.asc.sha1" title="core-3.1.0.jar.asc.sha1">core-3.1.0.jar.asc.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.jar.md5" title="core-3.1.0.jar.md5">core-3.1.0.jar.md5</a>                                2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.md5.md5" title="core-3.1.0.jar.md5.md5">core-3.1.0.jar.md5.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.md5.sha1" title="core-3.1.0.jar.md5.sha1">core-3.1.0.jar.md5.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.jar.sha1" title="core-3.1.0.jar.sha1">core-3.1.0.jar.sha1</a>                               2018-08-03 02:23        40      
+<a href="core-3.1.0.jar.sha1.md5" title="core-3.1.0.jar.sha1.md5">core-3.1.0.jar.sha1.md5</a>                           2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.sha1.sha1" title="core-3.1.0.jar.sha1.sha1">core-3.1.0.jar.sha1.sha1</a>                          2018-08-03 02:23        40      
+<a href="core-3.1.0.pom" title="core-3.1.0.pom">core-3.1.0.pom</a>                                    2018-08-03 02:23      1307      
+<a href="core-3.1.0.pom.asc" title="core-3.1.0.pom.asc">core-3.1.0.pom.asc</a>                                2018-08-03 02:23       874      
+<a href="core-3.1.0.pom.asc.md5" title="core-3.1.0.pom.asc.md5">core-3.1.0.pom.asc.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.asc.sha1" title="core-3.1.0.pom.asc.sha1">core-3.1.0.pom.asc.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.pom.md5" title="core-3.1.0.pom.md5">core-3.1.0.pom.md5</a>                                2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.md5.md5" title="core-3.1.0.pom.md5.md5">core-3.1.0.pom.md5.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.md5.sha1" title="core-3.1.0.pom.md5.sha1">core-3.1.0.pom.md5.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.pom.sha1" title="core-3.1.0.pom.sha1">core-3.1.0.pom.sha1</a>                               2018-08-03 02:23        40      
+<a href="core-3.1.0.pom.sha1.md5" title="core-3.1.0.pom.sha1.md5">core-3.1.0.pom.sha1.md5</a>                           2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.sha1.sha1" title="core-3.1.0.pom.sha1.sha1">core-3.1.0.pom.sha1.sha1</a>                          2018-08-03 02:23        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 224ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 00:03:04 GMT
+content-type: text/html
+cf-ray: 9f5b00200e508822-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 258ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 00:03:04 GMT
+content-type: text/html
+cf-ray: 9f5b00200da48bbd-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://bitbucket.org/trove4j/trove/src/master/ || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://bitbucket.org/trove4j/trove/src/3.1.0/ || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://bitbucket.org/trove4j/trove/src/trove-3.1.0/ || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://bitbucket.org/trove4j/trove/src/v3.1.0/ || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 330ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 00:03:09 GMT
+content-type: text/html; charset=utf-8
+content-length: 22062
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+x-view-name: bitbucket.apps.repo2.views.SourceView
+x-dc-location: Micros-3
+x-served-by: 0302676d8fd5
+x-version: f72aa25e582f
+x-static-version: f72aa25e582f
+x-request-count: 1105
+x-render-time: 0.20377874374389648
+x-b3-traceid: 986ce3fa9ba74dfd990259b5953847cd
+x-b3-spanid: 50cecf6db48383da
+x-frame-options: SAMEORIGIN
+content-security-policy: style-src 'self' 'unsafe-inline' https://aui-cdn.atlassian.com/ https://cdn.cookielaw.org/ https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io pendo-static-6291417196199936.storage.googleapis.com https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; font-src 'self' https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net; connect-src bitbucket.org *.bitbucket.org bb-inf.net *.bb-inf.net atlassianblog.wpengine.com id.atlassian.com api.atlassian.com api.stg.atlassian.com wss://bitbucketci-ws-service.services.atlassian.com/ wss://bitbucketci-ws-service.stg.services.atlassian.com/ wss://bitbucketci-ws-service.dev.services.atlassian.com/ analytics.atlassian.com atlassian-cookies--categories.us-east-1.prod.public.atl-paas.net as.atlassian.com api-private.stg.atlassian.com api-private.atlassian.com xp.atlassian.com atl-global.atlassian.com cofs.staging.public.atl-paas.net cofs.prod.public.atl-paas.net fd-assets.prod.atl-paas.net flight-deck-assets-bifrost.prod-east.frontend.public.atl-paas.net intake.opbeat.com api.media.atlassian.com api.segment.io xid.statuspage.io xid.atlassian.com xid.sourcetreeapp.com www.google-analytics.com sentry.io *.ingest.sentry.io statsigapi.net fd-config.us-east-1.prod.public.atl-paas.net fd-config-bifrost.prod-east.frontend.public.atl-paas.net micros--prod-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--prod-east--bitbucketci-file-service--files.s3.amazonaws.com micros--stg-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--stg-east--bitbucketci-file-service--files.s3.amazonaws.com micros--ddev--bitbucketci-file-service--files.s3.ap-southeast-2.amazonaws.com app.pendo.io data.pendo.io pendo-static-6291417196199936.storage.googleapis.com bqlf8qjztdtr.statuspage.io wss://bitbucket.org/gateway/api/bbc-aps/subscriptions wss://bitbucket.org/gateway/api/graphql/subscriptions https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; object-src 'none'; frame-ancestors 'self' start.atlassian.com start.stg.atlassian.com atlaskit.atlassian.com bitbucket.org app.pendo.io; base-uri 'self'; script-src 'unsafe-eval' 'strict-dynamic' 'unsafe-inline' 'self' http: https: https://remote-app-switcher.stg-east.frontend.public.atl-paas.net https://remote-app-switcher.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io data.pendo.io pendo-io-static.storage.googleapis.com pendo-static-6291417196199936.storage.googleapis.com https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ 'nonce-dbPPKY7sgwkNrrsXfq6TQg=='; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; report-uri https://web-security-reports.services.atlassian.com/csp-report/bb-website
+expires: Sun, 03 May 2026 00:03:09 GMT
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+set-cookie: csrftoken=y3bLsERj0zXU3MSyRzElTj19XwFvfEFv; expires=Sun, 02 May 2027 00:03:09 GMT; Max-Age=31449600; Path=/; SameSite=Lax; Secure
+x-usage-quota-remaining: 996165.517
+x-usage-request-cost: 3891.90
+x-usage-user-time: 0.107595
+x-usage-system-time: 0.009162
+x-usage-input-ops: 0
+x-usage-output-ops: 0
+x-envoy-attempt-count: 1
+age: 0
+x-cache: MISS
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+atl-traceid: 986ce3fa9ba74dfd990259b5953847cd
+atl-request-id: 986ce3fa-9ba7-4dfd-9902-59b5953847cd
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+report-to: {"endpoints": [{"url": "https://dz8aopenkvv6s.cloudfront.net"}], "group": "endpoint-1", "include_subdomains": true, "max_age": 600}
+nel: {"failure_fraction": 0.01, "include_subdomains": true, "max_age": 600, "report_to": "endpoint-1"}
+server-timing: atl-edge;dur=313,atl-edge-internal;dur=2,atl-edge-upstream;dur=312,atl-edge-pop;desc="aws-eu-central-1"
+
+
+ succeeded in 338ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 00:03:09 GMT
+content-type: text/html; charset=utf-8
+content-length: 22077
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+x-view-name: bitbucket.apps.repo2.views.SourceView
+x-dc-location: Micros-3
+x-served-by: 69e0b7ec0d98
+x-version: f72aa25e582f
+x-static-version: f72aa25e582f
+x-request-count: 389
+x-render-time: 0.20513010025024414
+x-b3-traceid: 287983032e91441bb5856711cb69f90c
+x-b3-spanid: eb583f77fc323d43
+x-frame-options: SAMEORIGIN
+content-security-policy: style-src 'self' 'unsafe-inline' https://aui-cdn.atlassian.com/ https://cdn.cookielaw.org/ https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io pendo-static-6291417196199936.storage.googleapis.com https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; font-src 'self' https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net; object-src 'none'; frame-ancestors 'self' start.atlassian.com start.stg.atlassian.com atlaskit.atlassian.com bitbucket.org app.pendo.io; script-src 'unsafe-eval' 'strict-dynamic' 'unsafe-inline' 'self' http: https: https://remote-app-switcher.stg-east.frontend.public.atl-paas.net https://remote-app-switcher.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io data.pendo.io pendo-io-static.storage.googleapis.com pendo-static-6291417196199936.storage.googleapis.com https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ 'nonce-+Ic5j0P4Fw7CAy2Ru5cXnQ=='; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; connect-src bitbucket.org *.bitbucket.org bb-inf.net *.bb-inf.net atlassianblog.wpengine.com id.atlassian.com api.atlassian.com api.stg.atlassian.com wss://bitbucketci-ws-service.services.atlassian.com/ wss://bitbucketci-ws-service.stg.services.atlassian.com/ wss://bitbucketci-ws-service.dev.services.atlassian.com/ analytics.atlassian.com atlassian-cookies--categories.us-east-1.prod.public.atl-paas.net as.atlassian.com api-private.stg.atlassian.com api-private.atlassian.com xp.atlassian.com atl-global.atlassian.com cofs.staging.public.atl-paas.net cofs.prod.public.atl-paas.net fd-assets.prod.atl-paas.net flight-deck-assets-bifrost.prod-east.frontend.public.atl-paas.net intake.opbeat.com api.media.atlassian.com api.segment.io xid.statuspage.io xid.atlassian.com xid.sourcetreeapp.com www.google-analytics.com sentry.io *.ingest.sentry.io statsigapi.net fd-config.us-east-1.prod.public.atl-paas.net fd-config-bifrost.prod-east.frontend.public.atl-paas.net micros--prod-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--prod-east--bitbucketci-file-service--files.s3.amazonaws.com micros--stg-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--stg-east--bitbucketci-file-service--files.s3.amazonaws.com micros--ddev--bitbucketci-file-service--files.s3.ap-southeast-2.amazonaws.com app.pendo.io data.pendo.io pendo-static-6291417196199936.storage.googleapis.com bqlf8qjztdtr.statuspage.io wss://bitbucket.org/gateway/api/bbc-aps/subscriptions wss://bitbucket.org/gateway/api/graphql/subscriptions https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; base-uri 'self'; report-uri https://web-security-reports.services.atlassian.com/csp-report/bb-website
+expires: Sun, 03 May 2026 00:03:09 GMT
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+set-cookie: csrftoken=aRtwLfVI8179ZshfHTiYRuiZVxFy1BdF; expires=Sun, 02 May 2027 00:03:09 GMT; Max-Age=31449600; Path=/; SameSite=Lax; Secure
+x-usage-quota-remaining: 996125.806
+x-usage-request-cost: 3932.07
+x-usage-user-time: 0.110309
+x-usage-system-time: 0.007653
+x-usage-input-ops: 0
+x-usage-output-ops: 0
+x-envoy-attempt-count: 1
+age: 0
+x-cache: MISS
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+atl-traceid: 287983032e91441bb5856711cb69f90c
+atl-request-id: 28798303-2e91-441b-b585-6711cb69f90c
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+report-to: {"endpoints": [{"url": "https://dz8aopenkvv6s.cloudfront.net"}], "group": "endpoint-1", "include_subdomains": true, "max_age": 600}
+nel: {"failure_fraction": 0.01, "include_subdomains": true, "max_age": 600, "report_to": "endpoint-1"}
+server-timing: atl-edge;dur=319,atl-edge-internal;dur=3,atl-edge-upstream;dur=317,atl-edge-pop;desc="aws-eu-central-1"
+
+
+ succeeded in 359ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 00:03:09 GMT
+content-type: text/html; charset=utf-8
+content-length: 22059
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+x-view-name: bitbucket.apps.repo2.views.SourceView
+x-dc-location: Micros-3
+x-served-by: da397f4a3bb8
+x-version: f72aa25e582f
+x-static-version: f72aa25e582f
+x-request-count: 3146
+x-render-time: 0.22715210914611816
+x-b3-traceid: 395c2143f91440b5b2cd2bfc6df7ad77
+x-b3-spanid: 4afbf4c7a146c693
+x-frame-options: SAMEORIGIN
+content-security-policy: object-src 'none'; script-src 'unsafe-eval' 'strict-dynamic' 'unsafe-inline' 'self' http: https: https://remote-app-switcher.stg-east.frontend.public.atl-paas.net https://remote-app-switcher.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io data.pendo.io pendo-io-static.storage.googleapis.com pendo-static-6291417196199936.storage.googleapis.com https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ 'nonce-aOZ0pEL0bE+bIcpVol2WdQ=='; base-uri 'self'; style-src 'self' 'unsafe-inline' https://aui-cdn.atlassian.com/ https://cdn.cookielaw.org/ https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io pendo-static-6291417196199936.storage.googleapis.com https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; frame-ancestors 'self' start.atlassian.com start.stg.atlassian.com atlaskit.atlassian.com bitbucket.org app.pendo.io; connect-src bitbucket.org *.bitbucket.org bb-inf.net *.bb-inf.net atlassianblog.wpengine.com id.atlassian.com api.atlassian.com api.stg.atlassian.com wss://bitbucketci-ws-service.services.atlassian.com/ wss://bitbucketci-ws-service.stg.services.atlassian.com/ wss://bitbucketci-ws-service.dev.services.atlassian.com/ analytics.atlassian.com atlassian-cookies--categories.us-east-1.prod.public.atl-paas.net as.atlassian.com api-private.stg.atlassian.com api-private.atlassian.com xp.atlassian.com atl-global.atlassian.com cofs.staging.public.atl-paas.net cofs.prod.public.atl-paas.net fd-assets.prod.atl-paas.net flight-deck-assets-bifrost.prod-east.frontend.public.atl-paas.net intake.opbeat.com api.media.atlassian.com api.segment.io xid.statuspage.io xid.atlassian.com xid.sourcetreeapp.com www.google-analytics.com sentry.io *.ingest.sentry.io statsigapi.net fd-config.us-east-1.prod.public.atl-paas.net fd-config-bifrost.prod-east.frontend.public.atl-paas.net micros--prod-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--prod-east--bitbucketci-file-service--files.s3.amazonaws.com micros--stg-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--stg-east--bitbucketci-file-service--files.s3.amazonaws.com micros--ddev--bitbucketci-file-service--files.s3.ap-southeast-2.amazonaws.com app.pendo.io data.pendo.io pendo-static-6291417196199936.storage.googleapis.com bqlf8qjztdtr.statuspage.io wss://bitbucket.org/gateway/api/bbc-aps/subscriptions wss://bitbucket.org/gateway/api/graphql/subscriptions https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; font-src 'self' https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net; report-uri https://web-security-reports.services.atlassian.com/csp-report/bb-website
+expires: Sun, 03 May 2026 00:03:09 GMT
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+set-cookie: csrftoken=b76GySevtYiR1uIQcSR7s7x5vNtvXcwt; expires=Sun, 02 May 2027 00:03:09 GMT; Max-Age=31449600; Path=/; SameSite=Lax; Secure
+x-usage-quota-remaining: 995644.078
+x-usage-request-cost: 4419.93
+x-usage-user-time: 0.123789
+x-usage-system-time: 0.008809
+x-usage-input-ops: 0
+x-usage-output-ops: 0
+x-envoy-attempt-count: 1
+age: 0
+x-cache: MISS
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+atl-traceid: 395c2143f91440b5b2cd2bfc6df7ad77
+atl-request-id: 395c2143-f914-40b5-b2cd-2bfc6df7ad77
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+report-to: {"endpoints": [{"url": "https://dz8aopenkvv6s.cloudfront.net"}], "group": "endpoint-1", "include_subdomains": true, "max_age": 600}
+nel: {"failure_fraction": 0.01, "include_subdomains": true, "max_age": 600, "report_to": "endpoint-1"}
+server-timing: atl-edge;dur=342,atl-edge-internal;dur=2,atl-edge-upstream;dur=341,atl-edge-pop;desc="aws-eu-central-1"
+
+
+ succeeded in 369ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:03:09 GMT
+content-type: text/html; charset=utf-8
+content-length: 16584
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+x-view-name: bitbucket.apps.repo2.views.SourceView
+x-dc-location: Micros-3
+x-served-by: 361a61ef9b3d
+x-version: f72aa25e582f
+x-static-version: f72aa25e582f
+x-request-count: 2230
+x-render-time: 0.23357582092285156
+x-b3-traceid: 0412c824b0d24b8d82fcae36c46a0049
+x-b3-spanid: 007714c8498e9fef
+x-frame-options: SAMEORIGIN
+content-security-policy: style-src 'self' 'unsafe-inline' https://aui-cdn.atlassian.com/ https://cdn.cookielaw.org/ https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io pendo-static-6291417196199936.storage.googleapis.com https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; object-src 'none'; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; script-src 'unsafe-eval' 'strict-dynamic' 'unsafe-inline' 'self' http: https: https://remote-app-switcher.stg-east.frontend.public.atl-paas.net https://remote-app-switcher.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io data.pendo.io pendo-io-static.storage.googleapis.com pendo-static-6291417196199936.storage.googleapis.com https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ 'nonce-zbS5GU0NWX8ZDI0sA+AZhw=='; font-src 'self' https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net; connect-src bitbucket.org *.bitbucket.org bb-inf.net *.bb-inf.net atlassianblog.wpengine.com id.atlassian.com api.atlassian.com api.stg.atlassian.com wss://bitbucketci-ws-service.services.atlassian.com/ wss://bitbucketci-ws-service.stg.services.atlassian.com/ wss://bitbucketci-ws-service.dev.services.atlassian.com/ analytics.atlassian.com atlassian-cookies--categories.us-east-1.prod.public.atl-paas.net as.atlassian.com api-private.stg.atlassian.com api-private.atlassian.com xp.atlassian.com atl-global.atlassian.com cofs.staging.public.atl-paas.net cofs.prod.public.atl-paas.net fd-assets.prod.atl-paas.net flight-deck-assets-bifrost.prod-east.frontend.public.atl-paas.net intake.opbeat.com api.media.atlassian.com api.segment.io xid.statuspage.io xid.atlassian.com xid.sourcetreeapp.com www.google-analytics.com sentry.io *.ingest.sentry.io statsigapi.net fd-config.us-east-1.prod.public.atl-paas.net fd-config-bifrost.prod-east.frontend.public.atl-paas.net micros--prod-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--prod-east--bitbucketci-file-service--files.s3.amazonaws.com micros--stg-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--stg-east--bitbucketci-file-service--files.s3.amazonaws.com micros--ddev--bitbucketci-file-service--files.s3.ap-southeast-2.amazonaws.com app.pendo.io data.pendo.io pendo-static-6291417196199936.storage.googleapis.com bqlf8qjztdtr.statuspage.io wss://bitbucket.org/gateway/api/bbc-aps/subscriptions wss://bitbucket.org/gateway/api/graphql/subscriptions https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; frame-ancestors 'self' start.atlassian.com start.stg.atlassian.com atlaskit.atlassian.com bitbucket.org app.pendo.io; base-uri 'self'; report-uri https://web-security-reports.services.atlassian.com/csp-report/bb-website
+expires: Sun, 03 May 2026 00:03:09 GMT
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+set-cookie: csrftoken=ub98WI2P5BQonHqPvuFFB2Fur0P2HgW3; expires=Sun, 02 May 2027 00:03:09 GMT; Max-Age=31449600; Path=/; SameSite=Lax; Secure
+x-usage-quota-remaining: 996218.042
+x-usage-request-cost: 3847.77
+x-usage-user-time: 0.109815
+x-usage-system-time: 0.005618
+x-usage-input-ops: 0
+x-usage-output-ops: 0
+x-envoy-attempt-count: 1
+age: 0
+accept-ranges: bytes
+x-cache: MISS
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+atl-traceid: 0412c824b0d24b8d82fcae36c46a0049
+atl-request-id: 0412c824-b0d2-4b8d-82fc-ae36c46a0049
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+report-to: {"endpoints": [{"url": "https://dz8aopenkvv6s.cloudfront.net"}], "group": "endpoint-1", "include_subdomains": true, "max_age": 600}
+nel: {"failure_fraction": 0.01, "include_subdomains": true, "max_age": 600, "report_to": "endpoint-1"}
+server-timing: atl-edge;dur=346,atl-edge-internal;dur=1,atl-edge-upstream;dur=345,atl-edge-pop;desc="aws-eu-central-1"
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/refs/tags?pagelen=100' | head -c 12000" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/master/?pagelen=100' | head -c 12000" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 237ms:
+{"values": [], "pagelen": 100, "size": 0, "page": 1}
+ succeeded in 373ms:
+{"values":[{"path":"benchmarks","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/benchmarks/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/benchmarks/?format=meta"}}},{"path":"core","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/core/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/core/?format=meta"}}},{"path":"experimental","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/experimental/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/experimental/?format=meta"}}},{"path":"generator","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/generator/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/generator/?format=meta"}}},{"path":"gradle","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/gradle/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/gradle/?format=meta"}}},{"path":"resources","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/resources/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/resources/?format=meta"}}},{"path":".gitignore","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":".gitignore","size":112,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/.gitignore"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/.gitignore?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/.gitignore"}}},{"path":"AUTHORS.txt","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"AUTHORS.txt","size":477,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/AUTHORS.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/AUTHORS.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/AUTHORS.txt"}}},{"path":"CHANGES.txt","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"CHANGES.txt","size":20701,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/CHANGES.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/CHANGES.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/CHANGES.txt"}}},{"path":"LICENSE.txt","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"LICENSE.txt","size":26976,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/LICENSE.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/LICENSE.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/LICENSE.txt"}}},{"path":"README-license.txt","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"README-license.txt","size":778,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/README-license.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/README-license.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/README-license.txt"}}},{"path":"README.md","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"README.md","size":5309,"mimetype":"text/markdown","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/README.md"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/README.md?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/README.md"}}},{"path":"bitbucket-pipelines.yml","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"bitbucket-pipelines.yml","size":136,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/bitbucket-pipelines.yml"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/bitbucket-pipelines.yml?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/bitbucket-pipelines.yml"}}},{"path":"build.gradle","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"build.gradle","size":5648,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/build.gradle"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/build.gradle?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/build.gradle"}}},{"path":"build.xml","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"build.xml","size":17345,"mimetype":"application/xml","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/build.xml"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/build.xml?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/build.xml"}}},{"path":"gradlew","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html"
+exec
+/usr/bin/bash -lc "unzip -p /tmp/core-3.1.0-sources.jar gnu/trove/Version.java | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 0ms:
+///////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2001, Eric D. Friedman All Rights Reserved.
+// Copyright (c) 2009, Rob Eden All Rights Reserved.
+// Copyright (c) 2009, Jeff Randall All Rights Reserved.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+///////////////////////////////////////////////////////////////////////////////
+
+package gnu.trove;
+
+/**
+ * <p>
+ * Simple class meant as a possible main class (via manifest) to report the
+ * implementation version of the trove4j jar.
+ * </p>
+ * <p>
+ * This may be useful to ask feedback WITH build version information
+ * </p>
+ * <p>
+ * The Main-Class entry in the manifest.mf should be set during the build as well
+ * as the Implementation-Version manifest attribute should be set as well.
+ * </p>
+ * <p>
+ * Created by IntelliJ IDEA.
+ * <br>
+ * User: Johan Parent
+ * <br>
+ * Date: 3/03/11
+ * <br>
+ * Time: 22:10
+ * </p>
+ */
+public class Version {
+    public static void main(String[] args) {
+        System.out.println(getVersion());
+    }
+
+    /**
+     * <p>
+     * Returns the implementation version of trove4j. Intended for applications
+     * wanting to return the version of trove4j they are using
+     * </p>
+     * NOTE: this method will only return a useful version when working
+     * with a trove4j jar as it requires a manifest file
+     *
+     * @return
+     */
+    public static String getVersion() {
+        String version = Version.class.getPackage().getImplementationVersion();
+        //
+        if (version != null) {
+            return "trove4j version " + version;
+        }
+
+        return "Sorry no Implementation-Version manifest attribute available";
+    }
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/master/core/src/test/ | head -c 8000' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/master/core/src/main/java/gnu/trove/Version.java | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 267ms:
+{"values":[{"path":"core/src/test/java","commit":{"hash":"1f89c102b9f7c8ec71b7d6c29be1852a429593d2","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/1f89c102b9f7c8ec71b7d6c29be1852a429593d2"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/core/src/test/java/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/1f89c102b9f7c8ec71b7d6c29be1852a429593d2/core/src/test/java/?format=meta"}}}],"pagelen":10,"page":1}
+ succeeded in 295ms:
+///////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2001, Eric D. Friedman All Rights Reserved.
+// Copyright (c) 2009, Rob Eden All Rights Reserved.
+// Copyright (c) 2009, Jeff Randall All Rights Reserved.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+///////////////////////////////////////////////////////////////////////////////
+
+package gnu.trove;
+
+/**
+ * <p>
+ * Simple class meant as a possible main class (via manifest) to report the
+ * implementation version of the trove4j jar.
+ * </p>
+ * <p>
+ * This may be useful to ask feedback WITH build version information
+ * </p>
+ * <p>
+ * The Main-Class entry in the manifest.mf should be set during the build as well
+ * as the Implementation-Version manifest attribute should be set as well.
+ * </p>
+ * <p>
+ * Created by IntelliJ IDEA.
+ * <br>
+ * User: Johan Parent
+ * <br>
+ * Date: 3/03/11
+ * <br>
+ * Time: 22:10
+ * </p>
+ */
+public class Version {
+    public static void main(String[] args) {
+        System.out.println(getVersion());
+    }
+
+    /**
+     * <p>
+     * Returns the implementation version of trove4j. Intended for applications
+     * wanting to return the version of trove4j they are using
+     * </p>
+     * NOTE: this method will only return a useful version when working
+     * with a trove4j jar as it requires a manifest file
+     *
+     * @return
+     */
+    public static String getVersion() {
+        String version = Version.class.getPackage().getImplementationVersion();
+        //
+        if (version != null) {
+            return "trove4j version " + version;
+        }
+
+        return "Sorry no Implementation-Version manifest attribute available";
+    }
+}
+
+codex
+The upstream Bitbucket repository is reachable and contains tests, but I could not find a `3.1.0` tag or Maven test-sources/tests artifact. Given the requirement for version-specific test URLs, I’m going to use Maven for source and javadocs and set `test-code-url` to `N/A` rather than point at an unversioned branch.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+diff --git a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+index 6dca82d0dbb12a037d8f2a11cdbd3d19ffa14c88..3c5185e0581a69c3a83239081d372f4e6301909b
+--- a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
++++ b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.trove4j:core:3.1.0"
++  "coordinates" : "net.sf.trove4j:core:3.1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
++  "repository-url" : "https://bitbucket.org/trove4j/trove",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
++  "description" : "Trove4j core provides high-performance primitive and object collections for Java, including maps, sets, lists, iterators, and procedures. It reduces boxing overhead and memory use compared with standard collection implementations for workloads that store primitive values."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+index 6dca82d0dbb12a037d8f2a11cdbd3d19ffa14c88..3c5185e0581a69c3a83239081d372f4e6301909b
+--- a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
++++ b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.trove4j:core:3.1.0"
++  "coordinates" : "net.sf.trove4j:core:3.1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
++  "repository-url" : "https://bitbucket.org/trove4j/trove",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
++  "description" : "Trove4j core provides high-performance primitive and object collections for Java, including maps, sets, lists, iterators, and procedures. It reduces boxing overhead and memory use compared with standard collection implementations for workloads that store primitive values."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 0ms:
+{
+  "coordinates": "net.sf.trove4j:core:3.1.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
+  "repository-url": "https://bitbucket.org/trove4j/trove",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
+  "description": "Trove4j core provides high-performance primitive and object collections for Java, including maps, sets, lists, iterators, and procedures. It reduces boxing overhead and memory use compared with standard collection implementations for workloads that store primitive values."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSLI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-sources.jar >/tmp/trove-source-head.txt && sed -n '1,12p' /tmp/trove-source-head.txt" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:03:36 GMT
+content-type: application/java-archive
+content-length: 1828003
+cf-ray: 9f5b00e62f85bc12-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1998253
+etag: "998cc29e48f25ecbf9b882919b2ff294"
+last-modified: Fri, 03 Aug 2018 02:23:29 GMT
+x-checksum-md5: 998cc29e48f25ecbf9b882919b2ff294
+x-checksum-sha1: 24f13b6f943bc45fab11850f4e51f2cac8498335
+
+exec
+/usr/bin/bash -lc "curl -fsSLI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-javadoc.jar >/tmp/trove-javadoc-head.txt && sed -n '1,12p' /tmp/trove-javadoc-head.txt" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 00:03:36 GMT
+content-type: application/java-archive
+content-length: 4645895
+cf-ray: 9f5b00e62d5ddf5e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1608877
+etag: "f7bc1efb959fe27d7e26fa0702eadabd"
+last-modified: Fri, 03 Aug 2018 02:23:29 GMT
+x-checksum-md5: f7bc1efb959fe27d7e26fa0702eadabd
+x-checksum-sha1: 0c329d1160533e1c4fee778c497f99560773050a
+
+diff --git a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+index 6dca82d0dbb12a037d8f2a11cdbd3d19ffa14c88..3c5185e0581a69c3a83239081d372f4e6301909b
+--- a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
++++ b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.trove4j:core:3.1.0"
++  "coordinates" : "net.sf.trove4j:core:3.1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
++  "repository-url" : "https://bitbucket.org/trove4j/trove",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
++  "description" : "Trove4j core provides high-performance primitive and object collections for Java, including maps, sets, lists, iterators, and procedures. It reduces boxing overhead and memory use compared with standard collection implementations for workloads that store primitive values."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org net/sf/trove4j/core/3.1.0 core-3.1.0.pom
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/
+web search: 
+web search: bitbucket trove4j trove repository
+codex
+Updated [net.sf.trove4j-core-3.1.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json).
+
+I used Maven Central for the versioned sources and javadocs because `3.1.0` publishes both artifacts, and set `test-code-url` to `N/A` because there is no versioned Maven test/test-sources artifact in that directory listing. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/)) The repository root is Bitbucket, matching the published project metadata. ([central.sonatype.com](https://central.sonatype.com/artifact/net.sf.trove4j/core?utm_source=openai))
+
+Validation: JSON parses with `jq`; source and javadoc URLs resolve after replacing `$version$` with `3.1.0`. I left `language` absent and did not set `not-for-native-image` because this is a JVM jar with class files.
+diff --git a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+index 6dca82d0dbb12a037d8f2a11cdbd3d19ffa14c88..3c5185e0581a69c3a83239081d372f4e6301909b
+--- a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
++++ b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.trove4j:core:3.1.0"
++  "coordinates" : "net.sf.trove4j:core:3.1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
++  "repository-url" : "https://bitbucket.org/trove4j/trove",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
++  "description" : "Trove4j core provides high-performance primitive and object collections for Java, including maps, sets, lists, iterators, and procedures. It reduces boxing overhead and memory use compared with standard collection implementations for workloads that store primitive values."
+ }
+
+tokens used
+72,208
+Updated [net.sf.trove4j-core-3.1.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json).
+
+I used Maven Central for the versioned sources and javadocs because `3.1.0` publishes both artifacts, and set `test-code-url` to `N/A` because there is no versioned Maven test/test-sources artifact in that directory listing. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/)) The repository root is Bitbucket, matching the published project metadata. ([central.sonatype.com](https://central.sonatype.com/artifact/net.sf.trove4j/core?utm_source=openai))
+
+Validation: JSON parses with `jq`; source and javadoc URLs resolve after replacing `$version$` with `3.1.0`. I left `language` absent and did not set `not-for-native-image` because this is a JVM jar with class files.
+Ran agent for net.sf.trove4j:core:3.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655/build/agent-artifact-discovery-logs/net.sf.trove4j-core-3.1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-9f713655/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 19s
+9 actionable tasks: 4 executed, 5 from cache
