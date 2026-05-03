@@ -95,6 +95,28 @@ class Zio_config_3Test {
   }
 
   @Test
+  def convertsTupleConfigurationToCaseClass(): Unit = {
+    val values: Map[String, String] = Map(
+      "database.url"      -> "jdbc:postgresql://db.example.test/app",
+      "database.poolSize" -> "16",
+      "database.tls"      -> "true"
+    )
+    val provider: ConfigProvider = ConfigProvider.fromMap(values)
+    val descriptor: Config[DatabaseConfig] = Config
+      .string("url")
+      .zipWith(Config.int("poolSize"))((url: String, poolSize: Int) => (url, poolSize))
+      .zipWith(Config.boolean("tls")) { case ((url: String, poolSize: Int), tls: Boolean) =>
+        (url, poolSize, tls)
+      }
+      .to[DatabaseConfig]
+      .nested("database")
+
+    val config: DatabaseConfig = unsafeRun(read(descriptor.from(provider)))
+
+    assertThat(config).isEqualTo(DatabaseConfig("jdbc:postgresql://db.example.test/app", 16, tls = true))
+  }
+
+  @Test
   def collectsMultipleDescriptorsIntoOrderedList(): Unit = {
     val values: Map[String, String] = Map(
       "cluster.primary" -> "alpha",
@@ -200,6 +222,8 @@ class Zio_config_3Test {
 
 object Zio_config_3Test {
   private final case class ServerConfig(host: String, port: Int, secure: Boolean)
+
+  private final case class DatabaseConfig(url: String, poolSize: Int, tls: Boolean)
 
   private def unsafeRun[E, A](effect: ZIO[Any, E, A]): A =
     Unsafe.unsafe { implicit unsafe =>
