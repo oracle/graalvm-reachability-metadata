@@ -11,25 +11,39 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 
 ---
 
-### 🔎 Check if Your Library or Framework Is Supported
+## Get Support
 
-To quickly check whether reachability metadata exists for a specific library, you can run the following command directly from your terminal (works on **Linux** and **macOS**, or on **Windows** with Git Bash / WSL):
-```bash
-curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "<groupId>:<artifactId>:<version>"
-```
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>Check a Library</h3>
+      <p>Search by Maven coordinates and get the right next step for missing or outdated metadata.</p>
+      <p><a href="https://vjovanov.github.io/graalvm-reachability-metadata/"><strong>Open the support checker &rarr;</strong></a></p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>Request New Metadata</h3>
+      <p>Ask automation to add support for a library that is not in this repository yet.</p>
+      <p><a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><strong>Open a library request ticket &rarr;</strong></a></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>Update Existing Metadata</h3>
+      <p>Report a failing version, missing dynamic access, or stale metadata for an already supported library.</p>
+      <p><a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><strong>Open an update ticket &rarr;</strong></a></p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>Contribute a Fix</h3>
+      <p>File the tracking ticket first, then follow the contribution guide before sending the pull request.</p>
+      <p><a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><strong>Open the tracking ticket &rarr;</strong></a></p>
+    </td>
+  </tr>
+</table>
 
 For a broader overview of supported libraries and frameworks, you can visit [this page](https://www.graalvm.org/native-image/libraries-and-frameworks/). It lists libraries and frameworks that are tested and ready for GraalVM Native Image.  
 
 If you’d like yours to appear there as well, open a pull request updating [this JSON file](https://github.com/oracle/graalvm-reachability-metadata/blob/master/metadata/library-and-framework-list.json).
 Before submitting a pull request, please read [this guide](docs/CONTRIBUTING.md#tested-libraries-and-frameworks).
-
-### 📚 Request Support for a New Library
-
-Open a [library-request ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml), include the Maven coordinates, and our automation will take it from there (🤖).
-
-### 🛠️ Request an Update to an Existing Library
-
-Open an [update ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml) and include the Maven coordinates of the library that needs changes.
 
 ---
 
