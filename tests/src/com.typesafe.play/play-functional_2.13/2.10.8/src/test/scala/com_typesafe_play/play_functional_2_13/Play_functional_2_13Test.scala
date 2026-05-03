@@ -7,6 +7,7 @@
 package com_typesafe_play.play_functional_2_13
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import play.api.libs.functional.Alternative
 import play.api.libs.functional.Applicative
@@ -158,6 +159,16 @@ class Play_functional_2_13Test {
 
     assertThat(userEncoder.write(User("Ada", 36))).isEqualTo("Ada|36")
     assertThat(joinedEncoder.write("same")).isEqualTo("same|same")
+  }
+
+  @Test
+  def unliftBuildsFunctionFromOptionalResultFunction(): Unit = {
+    val parseEvenNumber: String => Option[Int] = (raw: String) => raw.toIntOption.filter(_ % 2 == 0)
+    val evenNumber: String => Int = unlift(parseEvenNumber)
+    val rejectedOddNumber: MatchError = assertThrows(classOf[MatchError], () => evenNumber("41"))
+
+    assertThat(evenNumber("42")).isEqualTo(42)
+    assertThat(rejectedOddNumber).isInstanceOf(classOf[MatchError])
   }
 
   @Test
