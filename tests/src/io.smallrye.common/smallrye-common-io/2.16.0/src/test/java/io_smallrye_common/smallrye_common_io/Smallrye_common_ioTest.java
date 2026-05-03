@@ -126,6 +126,31 @@ public class Smallrye_common_ioTest {
     }
 
     @Test
+    void cleanRecursivelyOnFileTargetsRemovesOnlyTheFile(@TempDir Path tempDir) throws IOException {
+        Path insecureFile = tempDir.resolve("insecure-file.txt");
+        Path insecureSibling = tempDir.resolve("insecure-sibling.txt");
+        Files.writeString(insecureFile, "remove me");
+        Files.writeString(insecureSibling, "keep me");
+
+        Files2.cleanRecursivelyEvenIfInsecure(insecureFile);
+
+        assertThat(insecureFile).doesNotExist();
+        assertThat(insecureSibling).hasContent("keep me");
+
+        if (Files2.hasSecureDirectories()) {
+            Path secureFile = tempDir.resolve("secure-file.txt");
+            Path secureSibling = tempDir.resolve("secure-sibling.txt");
+            Files.writeString(secureFile, "remove me securely");
+            Files.writeString(secureSibling, "keep me securely");
+
+            Files2.cleanRecursively(secureFile);
+
+            assertThat(secureFile).doesNotExist();
+            assertThat(secureSibling).hasContent("keep me securely");
+        }
+    }
+
+    @Test
     void recursiveDeletionRemovesDirectorySymbolicLinksWithoutFollowingThem(@TempDir Path tempDir) throws IOException {
         Path externalTarget = tempDir.resolve("external-target");
         Files.createDirectories(externalTarget);
