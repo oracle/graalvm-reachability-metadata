@@ -413,6 +413,26 @@ jobs:
       - name: "❗ Create aggregated issues for unsupported library versions"
         if: steps.aggregate.outputs.has-failures == 'true'
         run: |
+          set -euo pipefail
+
+          git fetch --no-tags --depth=1 origin +master:refs/remotes/origin/master
+
+          latest_master_supports_version() {
+            local name="$1"
+            local failed_version="$2"
+            local group="${name%%:*}"
+            local artifact="${name#*:}"
+            local index_path="metadata/$group/$artifact/index.json"
+
+            if ! git cat-file -e "origin/master:$index_path" 2>/dev/null; then
+              return 1
+            fi
+
+            git show "origin/master:$index_path" | jq -e --arg version "$failed_version" '
+              any(.[]?; (."metadata-version" == $version) or ((."tested-versions" // []) | index($version) != null))
+            ' >/dev/null
+          }
+
           jq -c '.failures[]' aggregate-results.json | while read -r library; do
             NAME="$(printf '%s' "$library" | jq -r '.name')"
             printf '%s' "$library" | jq -c '.failures[]' | while read -r failure; do
@@ -423,6 +443,11 @@ jobs:
               PRIMARY_FAILURE_TYPE="$(printf '%s' "$failure" | jq -r '.failureTypes | sort | .[0]')"
               TITLE="${{ env.ISSUE_TITLE_PREFIX }}$PRIMARY_FAILURE_TYPE$TITLE_END"
               FAILURE_LABEL="fails-$(printf '%s' "$PRIMARY_FAILURE_TYPE" | sed 's/ /-/g')"
+
+              if latest_master_supports_version "$NAME" "$FAILED_VERSION"; then
+                echo "Latest origin/master already supports $GAV_COORDINATES. Skipping stale failure issue."
+                continue
+              fi
 
               ISSUE_NUMBER=$(
                 gh issue list \
