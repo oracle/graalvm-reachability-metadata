@@ -88,6 +88,24 @@ public class Annotations_apiTest {
     }
 
     @Test
+    void arrayValuedAnnotationMembersReturnDefensiveCopies() throws Exception {
+        Resources resources = FullyAnnotatedComponent.class.getAnnotation(Resources.class);
+        Resource originalFirstResource = resources.value()[0];
+        Resource[] mutableResourceCopy = resources.value();
+        mutableResourceCopy[0] = resources.value()[1];
+
+        RolesAllowed rolesAllowed = method(SecuredComponent.class, "operatorOnly")
+                .getAnnotation(RolesAllowed.class);
+        String[] mutableRoleCopy = rolesAllowed.value();
+        mutableRoleCopy[0] = "guest";
+
+        assertThat(resources.value()).isNotSameAs(mutableResourceCopy);
+        assertThat(resources.value()[0]).isEqualTo(originalFirstResource);
+        assertThat(resources.value()[0].name()).isEqualTo("jdbc/orders");
+        assertThat(rolesAllowed.value()).containsExactly("admin", "operator");
+    }
+
+    @Test
     void ejbAnnotationsExposeSingleAndContainerValues() throws Exception {
         EJB fieldEjb = field(EnterpriseReferences.class, "catalogBean").getAnnotation(EJB.class);
         EJB methodEjb = method(EnterpriseReferences.class, "setAuditBean", Runnable.class).getAnnotation(EJB.class);
