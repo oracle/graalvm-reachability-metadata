@@ -86,6 +86,21 @@ class Zio_stacktracer_3Test {
   }
 
   @Test
+  def explicitNewTraceCanBeForcedWhenAutomaticTracingIsDisabled(): Unit = {
+    given DisableAutoTrace = TracingImplicits.disableAutoTrace
+
+    val trace: Tracer.instance.Type = Tracer.newTrace
+    val decoded: Option[(String, String, Int)] = decode(trace)
+
+    assertTrue(decoded.isDefined, s"Trace could not be decoded: $trace")
+    val (location, file, line): (String, String, Int) = decoded.get
+    assertTrue(location.contains("Zio_stacktracer_3Test"), s"Unexpected trace location: $location")
+    assertTrue(location.contains("explicitNewTraceCanBeForcedWhenAutomaticTracingIsDisabled"), s"Unexpected trace location: $location")
+    assertEquals("Zio_stacktracer_3Test.scala", file)
+    assertTrue(line > 0, s"Unexpected trace line: $line")
+  }
+
+  @Test
   def tracerRejectsEmptyAndMalformedTraces(): Unit = {
     val invalidTraces: List[Tracer.instance.Type] = List(
       Tracer.instance.empty,
