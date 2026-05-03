@@ -113,6 +113,42 @@ class Zio_schema_3Test {
   }
 
   @Test
+  def mapAndSetSchemasRoundTripThroughDynamicDictionaryAndSetValues(): Unit = {
+    val mapSchema: Schema[Map[String, Int]] = Schema.map(Schema[String], Schema[Int])
+    val setSchema: Schema[Set[String]] = Schema.set(Schema[String])
+
+    val scores: Map[String, Int] = Map("Ada" -> 10, "Bob" -> 20)
+    val dynamicMap: DynamicValue = mapSchema.toDynamic(scores)
+    val mapEntries: Chunk[(DynamicValue, DynamicValue)] = dynamicMap match {
+      case DynamicValue.Dictionary(entries) => entries
+      case other => throw new AssertionError(s"Expected DynamicValue.Dictionary, got $other")
+    }
+    assertThat(mapEntries.toList.asJava).containsExactlyInAnyOrder(
+      DynamicValue("Ada") -> DynamicValue(10),
+      DynamicValue("Bob") -> DynamicValue(20)
+    )
+    assertThat(mapSchema.fromDynamic(dynamicMap)).isEqualTo(Right(scores))
+    assertThat(
+      mapSchema.fromDynamic(DynamicValue.Dictionary(Chunk(DynamicValue("Ada") -> DynamicValue("ten")))).isLeft
+    ).isTrue()
+    assertThat(mapSchema.defaultValue).isEqualTo(Right(Map.empty[String, Int]))
+
+    val tags: Set[String] = Set("scala", "native")
+    val dynamicSet: DynamicValue = setSchema.toDynamic(tags)
+    val setValues: Set[DynamicValue] = dynamicSet match {
+      case DynamicValue.SetValue(values) => values
+      case other => throw new AssertionError(s"Expected DynamicValue.SetValue, got $other")
+    }
+    assertThat(setValues.asJava).containsExactlyInAnyOrder(
+      DynamicValue("scala"),
+      DynamicValue("native")
+    )
+    assertThat(setSchema.fromDynamic(dynamicSet)).isEqualTo(Right(tags))
+    assertThat(setSchema.fromDynamic(DynamicValue.SetValue(Set(DynamicValue(1)))).isLeft).isTrue()
+    assertThat(setSchema.defaultValue).isEqualTo(Right(Set.empty[String]))
+  }
+
+  @Test
   def caseClassSchemaExposesFieldsAnnotationsDefaultsAndValidation(): Unit = {
     val schema: Schema.CaseClass2[String, Int, Person] = Person.schema
     val ada: Person = Person("Ada", 37)
