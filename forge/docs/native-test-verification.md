@@ -25,7 +25,9 @@ code:
   earlier in this gate invocation).
 - `172`            -> metadata gap; append the cycle's trace dir to the
   running `metadataConfigDirs` so the next cycle's build sees it, then
-  continue.
+  continue. If a later `172` cycle produces no new trace metadata
+  entries, print the accumulated progress and fail fast because another
+  rebuild would repeat the same missing-metadata state.
 - any other non-0  -> code/test failure; route to codex (the coding
   agent). Codex finishes it: on codex success return
   `PASSED_WITH_INTERVENTION`; on codex failure return `FAILED`. The gate
@@ -116,13 +118,15 @@ Per-cycle semantics:
     metadata and returns.
   - `172` → `ExitStatus.MISSING_METADATA`. The trace dir captured at
     least one missing access; appending it to `config_dirs` makes the
-    next cycle's build see that metadata. Codex is **not** invoked —
-    tracing is the authoritative way to fill metadata gaps.
+    next cycle's build see that metadata. Codex is **not** invoked. If
+    the current `172` cycle produces no new canonical metadata entries
+    compared with accepted trace dirs, the gate prints the accumulated
+    progress, prints the failure-log tail, and returns `FAILED`.
   - any other non-zero → the test or library code is broken in a way
     that more metadata cannot fix. Codex finishes it: codex is invoked
     once, and the gate returns based on codex's exit code. The gate does
     **not** re-run `runNativeTraceImage` after codex.
-- **Codex is terminal on non-172.** Codex with the
+- **Codex is terminal when invoked.** Codex with the
   `fix-missing-reachability-metadata` skill has full repo write access
   and validates its own work; the gate does not second-guess by re-
   verifying. This avoids the gate getting stuck in a codex/verify ping-
@@ -210,8 +214,11 @@ A `verify_native_test_passes(...)` invocation is correct iff:
      dirs as `-PinputDirs=` and the caller's `output_dir` as
      `-PoutputDir=`, then return `PASSED` (or
      `PASSED_WITH_INTERVENTION` if codex ran in an earlier cycle).
-   - `172` → append `runs_dir/cycle-<i>` to the running config dirs and
-     continue to the next outer cycle. Codex is **not** invoked.
+   - `172` with new trace metadata entries → append
+     `runs_dir/cycle-<i>` to the running config dirs and continue to the
+     next outer cycle. Codex is **not** invoked.
+   - `172` with no new trace metadata entries → print the accumulated
+     progress and failure-log tail, then return `FAILED`.
    - any other non-zero → invoke `run_codex_metadata_fix` once and
      return based on its exit code: `PASSED_WITH_INTERVENTION` on codex
      success, `FAILED` on codex failure. The gate does not re-run

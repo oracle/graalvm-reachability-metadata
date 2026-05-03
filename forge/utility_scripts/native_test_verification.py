@@ -16,6 +16,7 @@ code. The gate routes on that exit code:
   earlier cycle).
 - ``172``   → metadata gap; append the cycle's trace dir to the running
   ``metadataConfigDirs`` so the next cycle's build sees it, then continue.
+  If a later ``172`` produces no new trace entries, print progress and fail.
 - any other → run ``run_codex_metadata_fix`` once. Codex finishes it: on
   codex success return ``PASSED_WITH_INTERVENTION``; on codex failure return
   ``FAILED``. The gate does not re-verify after codex.
@@ -27,6 +28,7 @@ must surface to the coding agent. See
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -118,6 +120,7 @@ def verify_native_test_passes(
     )
 
     accepted_run_dirs: list[str] = []
+    accepted_metadata_entries: set[str] = set()
     intervention_records: list[InterventionRecord] = []
     intervention_used = False
     last_log_path: str | None = None
@@ -133,6 +136,36 @@ def verify_native_test_passes(
             accepted_run_dirs=list(accepted_run_dirs),
             intervention_records=intervention_records,
         )
+
+    def _route_to_codex(cycle: int, run_dir: str, reason: str) -> NativeTestVerificationResult:
+        log_stage(
+            _GATE_STAGE,
+            f"cycle {cycle + 1}: {reason}; routing to codex (terminal)",
+        )
+        codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
+            reachability_repo_path,
+            coordinate,
+            reproduction_command=_run_native_trace_image_command(
+                coordinate=coordinate,
+                run_dir=run_dir,
+                metadata_config_dirs=accepted_run_dirs,
+            ),
+        )
+        intervention_records.append(
+            InterventionRecord(
+                stage=f"cycle-{cycle + 1}-codex",
+                kind="codex",
+                log_path=codex_log_path,
+            )
+        )
+        if codex_timed_out or codex_rc != 0:
+            log_stage(
+                _GATE_STAGE,
+                f"codex did not converge (timed_out={codex_timed_out}, rc={codex_rc}); FAILED",
+            )
+            return _make_result(STATUS_FAILED, cycle + 1)
+        log_stage(_GATE_STAGE, "codex finished; trusting codex's outcome")
+        return _make_result(STATUS_PASSED_WITH_INTERVENTION, cycle + 1)
 
     for cycle in range(max_iterations):
         log_stage(_GATE_STAGE, f"cycle {cycle + 1}/{max_iterations}")
@@ -179,45 +212,38 @@ def verify_native_test_passes(
                 )
                 _print_failure_log_tail(log_path, cycle + 1)
                 return _make_result(STATUS_FAILED, cycle + 1)
+            metadata_entries = _metadata_entries(run_dir)
+            added_entries = metadata_entries - accepted_metadata_entries
+            if not added_entries:
+                _print_metadata_progress(
+                    accepted_run_dirs=accepted_run_dirs,
+                    accepted_entry_count=len(accepted_metadata_entries),
+                    current_entry_count=len(metadata_entries),
+                    reason="no new trace metadata entries",
+                )
+                _print_failure_log_tail(log_path, cycle + 1)
+                log_stage(
+                    _GATE_STAGE,
+                    f"cycle {cycle + 1}: binary exited 172 but produced no new trace metadata; failing fast",
+                )
+                return _make_result(STATUS_FAILED, cycle + 1)
             log_stage(
                 _GATE_STAGE,
                 f"cycle {cycle + 1}: binary exited 172 (missing metadata); "
-                f"adding {os.path.basename(run_dir)} to config_dirs",
+                f"adding {os.path.basename(run_dir)} to config_dirs "
+                f"({len(added_entries)} new entr{'y' if len(added_entries) == 1 else 'ies'})",
             )
+            accepted_metadata_entries.update(added_entries)
             accepted_run_dirs.append(run_dir)
             continue
 
-        log_stage(
-            _GATE_STAGE,
-            f"cycle {cycle + 1}: binary failed (gradle_exit={gradle_rc}, binary_exit={binary_rc}); "
-            "routing to codex (terminal)",
-        )
         if not collected_metadata_files:
             _print_failure_log_tail(log_path, cycle + 1)
-        codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
-            reachability_repo_path,
-            coordinate,
-            reproduction_command=_run_native_trace_image_command(
-                coordinate=coordinate,
-                run_dir=run_dir,
-                metadata_config_dirs=accepted_run_dirs,
-            ),
+        return _route_to_codex(
+            cycle,
+            run_dir,
+            f"binary failed (gradle_exit={gradle_rc}, binary_exit={binary_rc})",
         )
-        intervention_records.append(
-            InterventionRecord(
-                stage=f"cycle-{cycle + 1}-codex",
-                kind="codex",
-                log_path=codex_log_path,
-            )
-        )
-        if codex_timed_out or codex_rc != 0:
-            log_stage(
-                _GATE_STAGE,
-                f"codex did not converge (timed_out={codex_timed_out}, rc={codex_rc}); FAILED",
-            )
-            return _make_result(STATUS_FAILED, cycle + 1)
-        log_stage(_GATE_STAGE, "codex finished; trusting codex's outcome")
-        return _make_result(STATUS_PASSED_WITH_INTERVENTION, cycle + 1)
 
     log_stage(
         _GATE_STAGE,
@@ -336,6 +362,30 @@ def _print_failure_log_tail(log_path: str, cycle_number: int) -> None:
         log_stage(_GATE_STAGE, line, indent_level=2)
 
 
+def _print_metadata_progress(
+        accepted_run_dirs: list[str],
+        accepted_entry_count: int,
+        current_entry_count: int,
+        reason: str,
+) -> None:
+    """Print trace-loop progress before a no-progress failure."""
+    log_stage(
+        _GATE_STAGE,
+        (
+            f"metadata progress stalled ({reason}): "
+            f"accepted_runs={len(accepted_run_dirs)}, "
+            f"accepted_unique_entries={accepted_entry_count}, "
+            f"current_cycle_entries={current_entry_count}"
+        ),
+        indent_level=1,
+    )
+    if not accepted_run_dirs:
+        return
+    log_stage(_GATE_STAGE, "accepted run dirs:", indent_level=1)
+    for run_dir in accepted_run_dirs:
+        log_stage(_GATE_STAGE, run_dir, indent_level=2)
+
+
 def _extract_failure_log_tail(log_path: str) -> str:
     """Extract a bounded tail from a native trace run log."""
     try:
@@ -382,6 +432,53 @@ def _metadata_file_has_entries(path: str) -> bool:
     except OSError:
         return False
     return _json_has_entries(data)
+
+
+def _metadata_entries(run_dir: str) -> set[str]:
+    """Return canonical metadata entries collected in ``run_dir``."""
+    entries: set[str] = set()
+    for metadata_file in _metadata_files(run_dir):
+        relative_path = os.path.relpath(metadata_file, run_dir)
+        try:
+            with open(metadata_file, "r", encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            opaque_digest = _opaque_file_digest(metadata_file)
+            if opaque_digest is not None:
+                entries.add(f"{relative_path}::raw::{opaque_digest}")
+            continue
+        except OSError:
+            continue
+        entries.update(
+            f"{relative_path}::{entry}"
+            for entry in _flatten_metadata_entries("", data)
+        )
+    return entries
+
+
+def _flatten_metadata_entries(path: str, value: object) -> list[str]:
+    """Flatten metadata JSON into stable entry strings."""
+    if isinstance(value, list):
+        return [
+            f"{path}::{json.dumps(item, sort_keys=True)}"
+            for item in value
+        ]
+    if isinstance(value, dict):
+        result: list[str] = []
+        for key in sorted(value.keys()):
+            child_path = f"{path}/{key}" if path else key
+            result.extend(_flatten_metadata_entries(child_path, value[key]))
+        return result
+    return [f"{path}::{json.dumps(value, sort_keys=True)}"]
+
+
+def _opaque_file_digest(path: str) -> str | None:
+    """Return a stable digest for non-JSON metadata files."""
+    try:
+        with open(path, "rb") as handle:
+            return hashlib.sha256(handle.read()).hexdigest()
+    except OSError:
+        return None
 
 
 def _json_has_entries(value: object) -> bool:

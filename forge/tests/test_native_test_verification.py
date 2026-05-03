@@ -234,6 +234,7 @@ class GateRoutingTests(unittest.TestCase):
             scripted_exits: list[int],
             metadata_exit_codes: set[int] | None = None,
             log_text: str = "BUILD SUCCESSFUL\n",
+            repeated_metadata: bool = False,
     ):
         """Build a subprocess.run replacement that consumes ``scripted_exits``.
 
@@ -269,8 +270,11 @@ class GateRoutingTests(unittest.TestCase):
                     Path(exit_file).write_text(str(rc), encoding="utf-8")
                 if run_dir and rc in metadata_exit_codes:
                     Path(run_dir).mkdir(parents=True, exist_ok=True)
+                    generated_type = "com.example.Generated"
+                    if not repeated_metadata:
+                        generated_type = f"{generated_type}{len(calls)}"
                     Path(run_dir, "reachability-metadata.json").write_text(
-                        json.dumps({"reflection": [{"type": f"com.example.Generated{len(calls)}"}]}),
+                        json.dumps({"reflection": [{"type": generated_type}]}),
                         encoding="utf-8",
                     )
                 # Gradle-side exit is always 0 (Exec uses ignoreExitValue).
@@ -306,6 +310,30 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.status, ntv.STATUS_PASSED)
         self.assertEqual(result.iterations_used, 3)
         self.assertEqual(len(result.accepted_run_dirs), 2)
+
+    def test_fails_fast_when_172_repeats_same_metadata(self) -> None:
+        fake, _calls = self._fake_run_factory([172, 172], repeated_metadata=True)
+        output = io.StringIO()
+        with patch(
+                "utility_scripts.native_test_verification.subprocess.run",
+                side_effect=fake,
+        ), redirect_stdout(output):
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+
+        self.assertEqual(result.status, ntv.STATUS_FAILED)
+        self.assertEqual(result.iterations_used, 2)
+        self.assertEqual(len(result.accepted_run_dirs), 1)
+        printed = output.getvalue()
+        self.assertIn("metadata progress stalled (no new trace metadata entries)", printed)
+        self.assertIn("accepted_runs=1", printed)
+        self.assertIn("accepted_unique_entries=1", printed)
+        self.assertIn("current_cycle_entries=1", printed)
+        self.assertIn("produced no new trace metadata; failing fast", printed)
 
     def test_prints_aggregated_metadata_path_after_merge(self) -> None:
         fake, _calls = self._fake_run_factory([172, 0])
