@@ -1,0 +1,1025 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dedb4-ebb7-78c1-8679-35e53e2b765b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: software.amazon.awssdk:third-party-jackson-core:2.34.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.34.0" when "$version$" is replaced with "2.34.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+- Set "coordinates" to "software.amazon.awssdk:third-party-jackson-core:2.34.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.34.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven Central and the upstream AWS SDK repo, then update the discovered metadata JSON directly with version-templated URLs.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+{
+  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"third-party-jackson-core|software.amazon.awssdk\" metadata tests build/discovered-artifact-metadata -g '*.json' -g '*.java' -g '*.xml' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json:2:  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0"
+metadata/library-and-framework-list.json:2674:    "artifact": "software.amazon.awssdk:*",
+metadata/library-and-framework-list.json:2681:          "https://repo1.maven.org/maven2/software/amazon/awssdk/"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.SignerUtils"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:17:        "typeReached": "software.amazon.awssdk.protocols.query.unmarshall.XmlDomParser"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:29:        "typeReached": "software.amazon.awssdk.core.util.SdkUserAgent"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:35:        "typeReached": "software.amazon.awssdk.core.util.SdkUserAgent"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:41:        "typeReached": "software.amazon.awssdk.utils.Md5Utils"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:53:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.DigestAlgorithm$DigestThreadLocal"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:65:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.SignerUtils"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:79:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.SigningAlgorithm$MacThreadLocal"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:85:        "typeReached": "software.amazon.awssdk.services.s3.auth.scheme.internal.DefaultS3AuthSchemeProvider"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:91:        "typeReached": "software.amazon.awssdk.protocols.query.unmarshall.XmlDomParser"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:97:        "typeReached": "software.amazon.awssdk.utils.Logger"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:103:        "typeReached": "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:105:      "glob": "software/amazon/awssdk/global/handlers/execution.interceptors"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:109:        "typeReached": "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:111:      "glob": "software/amazon/awssdk/services/s3/execution.interceptors"
+metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/$version$/s3-$version$-sources.jar",
+metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/$version$/s3-$version$-javadoc.jar",
+metadata/software.amazon.awssdk/s3/index.json:221:      "software.amazon.awssdk"
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:7:package software_amazon_awssdk.s3;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:31:import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:32:import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:33:import software.amazon.awssdk.core.ResponseBytes;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:34:import software.amazon.awssdk.core.sync.RequestBody;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:35:import software.amazon.awssdk.http.AbortableInputStream;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:36:import software.amazon.awssdk.http.ExecutableHttpRequest;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:37:import software.amazon.awssdk.http.HttpExecuteRequest;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:38:import software.amazon.awssdk.http.HttpExecuteResponse;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:39:import software.amazon.awssdk.http.SdkHttpClient;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:40:import software.amazon.awssdk.http.SdkHttpFullResponse;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:41:import software.amazon.awssdk.http.SdkHttpMethod;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:42:import software.amazon.awssdk.http.SdkHttpRequest;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:43:import software.amazon.awssdk.regions.Region;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:44:import software.amazon.awssdk.services.s3.S3Client;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:45:import software.amazon.awssdk.services.s3.S3Configuration;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:46:import software.amazon.awssdk.services.s3.S3Uri;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:47:import software.amazon.awssdk.services.s3.model.ChecksumMode;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:48:import software.amazon.awssdk.services.s3.model.CommonPrefix;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:49:import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:50:import software.amazon.awssdk.services.s3.model.CompletedPart;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:51:import software.amazon.awssdk.services.s3.model.CopyObjectResponse;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:52:import software.amazon.awssdk.services.s3.model.CreateMultipartUploadResponse;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:53:import software.amazon.awssdk.services.s3.model.Delete;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:54:import software.amazon.awssdk.services.s3.model.DeleteObjectsResponse;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:55:import software.amazon.awssdk.services.s3.model.DeletedObject;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:56:import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:57:import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:58:import software.amazon.awssdk.services.s3.model.GetUrlRequest;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:59:import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:60:import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:61:import software.amazon.awssdk.services.s3.model.MetadataDirective;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:62:import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:63:import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:64:import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:65:import software.amazon.awssdk.services.s3.model.S3Error;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:66:import software.amazon.awssdk.services.s3.model.S3Object;
+tests/src/software.amazon.awssdk/s3/2.25.3/src/test/java/software_amazon_awssdk/s3/S3Test.java:67:import software.amazon.awssdk.services.s3.model.UploadPartResponse;
+tests/src/software.amazon.awssdk/s3/2.25.3/user-code-filter.json:7:      "includeClasses" : "software.amazon.awssdk.**"
+
+web search: 
+web search: software.amazon.awssdk third-party-jackson-core 2.34.0 Maven Central sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+Maven Central has the 2.34.0 binary, sources jar, javadoc jar, and optional jar for this artifact, but no test-sources jar in that version directory. I’m checking the tagged upstream tree for the module’s test path before writing the metadata.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/third-party-jackson-core-2.34.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>third-party</artifactId>
+    <groupId>software.amazon.awssdk</groupId>
+    <version>2.34.0</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>third-party-jackson-core</artifactId>
+  <name>AWS Java SDK :: Third Party :: Jackson-core</name>
+  <url>https://aws.amazon.com/sdkforjava</url>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactSet>
+            <includes>
+              <include>com.fasterxml.jackson.core:*</include>
+            </includes>
+          </artifactSet>
+          <relocations>
+            <relocation>
+              <pattern>com.fasterxml.jackson.core</pattern>
+              <shadedPattern>software.amazon.awssdk.thirdparty.jackson.core</shadedPattern>
+            </relocation>
+          </relocations>
+          <filters>
+            <filter>
+              <artifact>com.fasterxml.jackson.core:*</artifact>
+              <excludes>
+                <exclude>META-INF/**/pom.xml</exclude>
+                <exclude>META-INF/**/pom.properties</exclude>
+                <exclude>META-INF/versions/**/*.class</exclude>
+              </excludes>
+            </filter>
+          </filters>
+          <transformers>
+            <transformer />
+          </transformers>
+          <shadedArtifactAttached>false</shadedArtifactAttached>
+          <createDependencyReducedPom>true</createDependencyReducedPom>
+          <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${basedir}/target/aws-sdk-java-third-party-jackson-core-${awsjavasdk.version}.jar</file>
+                  <type>jar</type>
+                  <classifier>optional</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>software.amazon.awssdk.thirdparty.jackson.core</Automatic-Module-Name>
+            </manifestEntries>
+            <manifest>
+              <addDefaultEntries>false</addDefaultEntries>
+            </manifest>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>javadoc-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourcepath>${basedir}/../../core/profiles/src/main/java/software/amazon/awssdk/profiles;${basedir}/../../core/sdk-core/src/main/java/software/amazon/awssdk/core</sourcepath>
+          <failOnError>false</failOnError>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>software.amazon.awssdk</groupId>
+        <artifactId>bom-internal</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/third-party/third-party-jackson-core/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: software/amazon/awssdk/third-party-jackson-core/2.34.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>software/amazon/awssdk/third-party-jackson-core/2.34.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="third-party-jackson-core-2.34.0-javadoc.jar" title="third-party-jackson-core-2.34.0-javadoc.jar">third-party-jackson-core-2.34.0-javadoc.jar</a>       2025-09-19 21:45       317      
+<a href="third-party-jackson-core-2.34.0-javadoc.jar.asc" title="third-party-jackson-core-2.34.0-javadoc.jar.asc">third-party-jackson-core-2.34.0-javadoc.jar.a...</a>  2025-09-19 21:45       833      
+<a href="third-party-jackson-core-2.34.0-javadoc.jar.md5" title="third-party-jackson-core-2.34.0-javadoc.jar.md5">third-party-jackson-core-2.34.0-javadoc.jar.m...</a>  2025-09-19 21:45        32      
+<a href="third-party-jackson-core-2.34.0-javadoc.jar.sha1" title="third-party-jackson-core-2.34.0-javadoc.jar.sha1">third-party-jackson-core-2.34.0-javadoc.jar.s...</a>  2025-09-19 21:45        40      
+<a href="third-party-jackson-core-2.34.0-optional.jar" title="third-party-jackson-core-2.34.0-optional.jar">third-party-jackson-core-2.34.0-optional.jar</a>      2025-09-19 21:45    579525      
+<a href="third-party-jackson-core-2.34.0-optional.jar.asc" title="third-party-jackson-core-2.34.0-optional.jar.asc">third-party-jackson-core-2.34.0-optional.jar....</a>  2025-09-19 21:45       833      
+<a href="third-party-jackson-core-2.34.0-optional.jar.md5" title="third-party-jackson-core-2.34.0-optional.jar.md5">third-party-jackson-core-2.34.0-optional.jar....</a>  2025-09-19 21:45        32      
+<a href="third-party-jackson-core-2.34.0-optional.jar.sha1" title="third-party-jackson-core-2.34.0-optional.jar.sha1">third-party-jackson-core-2.34.0-optional.jar....</a>  2025-09-19 21:45        40      
+<a href="third-party-jackson-core-2.34.0-sources.jar" title="third-party-jackson-core-2.34.0-sources.jar">third-party-jackson-core-2.34.0-sources.jar</a>       2025-09-19 21:45      7786      
+<a href="third-party-jackson-core-2.34.0-sources.jar.asc" title="third-party-jackson-core-2.34.0-sources.jar.asc">third-party-jackson-core-2.34.0-sources.jar.a...</a>  2025-09-19 21:45       833      
+<a href="third-party-jackson-core-2.34.0-sources.jar.md5" title="third-party-jackson-core-2.34.0-sources.jar.md5">third-party-jackson-core-2.34.0-sources.jar.m...</a>  2025-09-19 21:45        32      
+<a href="third-party-jackson-core-2.34.0-sources.jar.sha1" title="third-party-jackson-core-2.34.0-sources.jar.sha1">third-party-jackson-core-2.34.0-sources.jar.s...</a>  2025-09-19 21:45        40      
+<a href="third-party-jackson-core-2.34.0.jar" title="third-party-jackson-core-2.34.0.jar">third-party-jackson-core-2.34.0.jar</a>               2025-09-19 21:45    579525      
+<a href="third-party-jackson-core-2.34.0.jar.asc" title="third-party-jackson-core-2.34.0.jar.asc">third-party-jackson-core-2.34.0.jar.asc</a>           2025-09-19 21:45       833      
+<a href="third-party-jackson-core-2.34.0.jar.md5" title="third-party-jackson-core-2.34.0.jar.md5">third-party-jackson-core-2.34.0.jar.md5</a>           2025-09-19 21:45        32      
+<a href="third-party-jackson-core-2.34.0.jar.sha1" title="third-party-jackson-core-2.34.0.jar.sha1">third-party-jackson-core-2.34.0.jar.sha1</a>          2025-09-19 21:45        40      
+<a href="third-party-jackson-core-2.34.0.pom" title="third-party-jackson-core-2.34.0.pom">third-party-jackson-core-2.34.0.pom</a>               2025-09-19 21:45      4455      
+<a href="third-party-jackson-core-2.34.0.pom.asc" title="third-party-jackson-core-2.34.0.pom.asc">third-party-jackson-core-2.34.0.pom.asc</a>           2025-09-19 21:45       833      
+<a href="third-party-jackson-core-2.34.0.pom.md5" title="third-party-jackson-core-2.34.0.pom.md5">third-party-jackson-core-2.34.0.pom.md5</a>           2025-09-19 21:45        32      
+<a href="third-party-jackson-core-2.34.0.pom.sha1" title="third-party-jackson-core-2.34.0.pom.sha1">third-party-jackson-core-2.34.0.pom.sha1</a>          2025-09-19 21:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/third-party/third-party-jackson-core' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 457ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:59:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4c6e11a9c6e8e4556aadb29dc22cc13a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=zgbrc92WFK7zzI2z85zFAgsaimkiiJ6mZdHRZHDVJNMHSkrqLyCu1cp7%2FZTW3F%2Fh2erc1bH1v6UGbHB77ElTdJtTJJw3p2MvJbhQZklmaQoKQsoox2FTHxa57CW1TI7oqJxGh8bLs7xN0OOZRDHo11EoaHNGaWq4ftx%2BxuboUfGIaXtejwARHQlDa674Sc01dHLO%2B77fSIHC8YRmOYnYAL44BWdm8fhP8ZDn2j7nr%2FHl58RVDx49HCVrAZl5%2FNQ3CM%2FgiTKVNNQrzPmGGrU%2BqA%3D%3D--cCUpRxNY0SzECOQg--fHLsQdtwHW9I3D0N5SLCSg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.572406742.1777809572; expires=Mon, 03 May 2027 11:59:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 11:59:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511D:438C9:435AD41:3212F0E:69F738A4
+
+
+ exited 22 in 458ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 11:59:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=3MTAlz%2B628o2LI4nNfZwWXuvNbLpH5DFD2v2wmhCn5IArwFqibLp16Ibsj7tSQffhNZhMYLxvImeDgGgvdGliocUaoGjB9sJAMcoZxEAjPTI90nzqGpbQghalj8aUdaoprFQ4NP85faKYMn2cz55pPbJ1yGAF%2Fyj%2FE7ErB9Cm4vXL2sWyy52b7LO9iv9N%2Fs2w9X%2FdWgvj3heGnZkxsf89aHRMtYjlb5fHxnldLRAtB0bYksn%2BgxtpQFEeMloHt15owP4AplRjyPwM9nfGc0FsQ%3D%3D--clIxFvE39LBHgAl1--wmwJt0nIvWD8%2BlGtTjloow%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1459259466.1777809572; expires=Mon, 03 May 2027 11:59:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 11:59:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511B:79934:438AD77:323308A:69F738A4
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/third-party-jackson-core-2.34.0-sources.jar -o /tmp/third-party-jackson-core-2.34.0-sources.jar && jar tf /tmp/third-party-jackson-core-2.34.0-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/software.amazon.awssdk/
+META-INF/maven/software.amazon.awssdk/third-party-jackson-core/
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/maven/software.amazon.awssdk/third-party-jackson-core/pom.xml
+META-INF/maven/software.amazon.awssdk/third-party-jackson-core/pom.properties
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/aws/aws-sdk-java-v2/contents/third-party/third-party-jackson-core?ref=2.34.0 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/aws/aws-sdk-java-v2/contents/third-party?ref=2.34.0 | rg -n 'third-party-jackson|name|path|html_url'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/third-party-jackson-core-2.34.0.jar -o /tmp/third-party-jackson-core-2.34.0.jar && jar tf /tmp/third-party-jackson-core-2.34.0.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 140ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "third-party/third-party-jackson-core/pom.xml",
+    "sha": "3b8a9674e17a0bd115a19b0f11f51924632919ee",
+    "size": 6702,
+    "url": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/third-party/third-party-jackson-core/pom.xml?ref=2.34.0",
+    "html_url": "https://github.com/aws/aws-sdk-java-v2/blob/2.34.0/third-party/third-party-jackson-core/pom.xml",
+    "git_url": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/blobs/3b8a9674e17a0bd115a19b0f11f51924632919ee",
+    "download_url": "https://raw.githubusercontent.com/aws/aws-sdk-java-v2/2.34.0/third-party/third-party-jackson-core/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/third-party/third-party-jackson-core/pom.xml?ref=2.34.0",
+      "git": "https://api.github.com/repos/aws/aws-sdk-java-v2/git/blobs/3b8a9674e17a0bd115a19b0f11f51924632919ee",
+      "html": "https://github.com/aws/aws-sdk-java-v2/blob/2.34.0/third-party/third-party-jackson-core/pom.xml"
+    }
+  }
+]
+
+ succeeded in 136ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/FastDoubleParser-LICENSE
+META-INF/LICENSE
+META-INF/NOTICE
+META-INF/services/
+software/
+software/amazon/
+software/amazon/awssdk/
+software/amazon/awssdk/thirdparty/
+software/amazon/awssdk/thirdparty/jackson/
+software/amazon/awssdk/thirdparty/jackson/core/
+software/amazon/awssdk/thirdparty/jackson/core/Base64Variant$PaddingReadBehaviour.class
+software/amazon/awssdk/thirdparty/jackson/core/Base64Variant.class
+software/amazon/awssdk/thirdparty/jackson/core/Base64Variants.class
+software/amazon/awssdk/thirdparty/jackson/core/ErrorReportConfiguration$Builder.class
+software/amazon/awssdk/thirdparty/jackson/core/ErrorReportConfiguration.class
+software/amazon/awssdk/thirdparty/jackson/core/FormatFeature.class
+software/amazon/awssdk/thirdparty/jackson/core/FormatSchema.class
+software/amazon/awssdk/thirdparty/jackson/core/JacksonException.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonEncoding.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonFactory$Feature.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonFactory.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonFactoryBuilder.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonGenerationException.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonGenerator$1.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonGenerator$Feature.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonGenerator.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonLocation.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonParseException.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonParser$Feature.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonParser$NumberType.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonParser$NumberTypeFP.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonParser.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonPointer$PointerParent.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonPointer$PointerSegment.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonPointer$Serialization.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonPointer.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonProcessingException.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonStreamContext.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonToken$1.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonToken.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonTokenId.class
+software/amazon/awssdk/thirdparty/jackson/core/JsonpCharacterEscapes.class
+software/amazon/awssdk/thirdparty/jackson/core/ObjectCodec.class
+software/amazon/awssdk/thirdparty/jackson/core/PrettyPrinter.class
+software/amazon/awssdk/thirdparty/jackson/core/SerializableString.class
+software/amazon/awssdk/thirdparty/jackson/core/StreamReadCapability.class
+software/amazon/awssdk/thirdparty/jackson/core/StreamReadConstraints$Builder.class
+software/amazon/awssdk/thirdparty/jackson/core/StreamReadConstraints.class
+software/amazon/awssdk/thirdparty/jackson/core/StreamReadFeature.class
+software/amazon/awssdk/thirdparty/jackson/core/StreamWriteCapability.class
+software/amazon/awssdk/thirdparty/jackson/core/StreamWriteConstraints$Builder.class
+software/amazon/awssdk/thirdparty/jackson/core/StreamWriteConstraints.class
+software/amazon/awssdk/thirdparty/jackson/core/StreamWriteFeature.class
+software/amazon/awssdk/thirdparty/jackson/core/TSFBuilder.class
+software/amazon/awssdk/thirdparty/jackson/core/TokenStreamFactory.class
+software/amazon/awssdk/thirdparty/jackson/core/TreeCodec.class
+software/amazon/awssdk/thirdparty/jackson/core/TreeNode.class
+software/amazon/awssdk/thirdparty/jackson/core/Version.class
+software/amazon/awssdk/thirdparty/jackson/core/Versioned.class
+software/amazon/awssdk/thirdparty/jackson/core/async/
+software/amazon/awssdk/thirdparty/jackson/core/async/ByteArrayFeeder.class
+software/amazon/awssdk/thirdparty/jackson/core/async/ByteBufferFeeder.class
+software/amazon/awssdk/thirdparty/jackson/core/async/NonBlockingInputFeeder.class
+software/amazon/awssdk/thirdparty/jackson/core/async/package-info.class
+software/amazon/awssdk/thirdparty/jackson/core/base/
+software/amazon/awssdk/thirdparty/jackson/core/base/GeneratorBase.class
+software/amazon/awssdk/thirdparty/jackson/core/base/ParserBase.class
+software/amazon/awssdk/thirdparty/jackson/core/base/ParserMinimalBase.class
+software/amazon/awssdk/thirdparty/jackson/core/base/package-info.class
+software/amazon/awssdk/thirdparty/jackson/core/exc/
+software/amazon/awssdk/thirdparty/jackson/core/exc/InputCoercionException.class
+software/amazon/awssdk/thirdparty/jackson/core/exc/StreamConstraintsException.class
+software/amazon/awssdk/thirdparty/jackson/core/exc/StreamReadException.class
+software/amazon/awssdk/thirdparty/jackson/core/exc/StreamWriteException.class
+software/amazon/awssdk/thirdparty/jackson/core/exc/package-info.class
+software/amazon/awssdk/thirdparty/jackson/core/filter/
+
+ succeeded in 150ms:
+3:    "name": "pom.xml",
+4:    "path": "third-party/pom.xml",
+8:    "html_url": "https://github.com/aws/aws-sdk-java-v2/blob/2.34.0/third-party/pom.xml",
+19:    "name": "third-party-jackson-core",
+20:    "path": "third-party/third-party-jackson-core",
+23:    "url": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/third-party/third-party-jackson-core?ref=2.34.0",
+24:    "html_url": "https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/third-party/third-party-jackson-core",
+29:      "self": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/third-party/third-party-jackson-core?ref=2.34.0",
+31:      "html": "https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/third-party/third-party-jackson-core"
+35:    "name": "third-party-jackson-dataformat-cbor",
+36:    "path": "third-party/third-party-jackson-dataformat-cbor",
+39:    "url": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/third-party/third-party-jackson-dataformat-cbor?ref=2.34.0",
+40:    "html_url": "https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/third-party/third-party-jackson-dataformat-cbor",
+45:      "self": "https://api.github.com/repos/aws/aws-sdk-java-v2/contents/third-party/third-party-jackson-dataformat-cbor?ref=2.34.0",
+47:      "html": "https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/third-party/third-party-jackson-dataformat-cbor"
+51:    "name": "third-party-slf4j-api",
+52:    "path": "third-party/third-party-slf4j-api",
+56:    "html_url": "https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/third-party/third-party-slf4j-api",
+
+codex
+The upstream module at tag `2.34.0` contains only its module `pom.xml`, and the artifact’s Maven sources jar is present but only carries Maven metadata and notices because the published jar is shaded from Jackson. Since I do not see a Maven test artifact or a tagged module test directory, I’m going to mark only the test suite URL as `N/A`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/third-party-jackson-core-2.34.0.pom | rg -n "<name>|<description>|<url>|<scm>|jackson|shade|relocation|shadedPattern" -C 2' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+8-  </parent>
+9-  <modelVersion>4.0.0</modelVersion>
+10:  <artifactId>third-party-jackson-core</artifactId>
+11:  <name>AWS Java SDK :: Third Party :: Jackson-core</name>
+12:  <url>https://aws.amazon.com/sdkforjava</url>
+13-  <build>
+14-    <plugins>
+15-      <plugin>
+16:        <artifactId>maven-shade-plugin</artifactId>
+17-        <version>3.5.0</version>
+18-        <executions>
+--
+20-            <phase>package</phase>
+21-            <goals>
+22:              <goal>shade</goal>
+23-            </goals>
+24-          </execution>
+--
+27-          <artifactSet>
+28-            <includes>
+29:              <include>com.fasterxml.jackson.core:*</include>
+30-            </includes>
+31-          </artifactSet>
+32:          <relocations>
+33:            <relocation>
+34:              <pattern>com.fasterxml.jackson.core</pattern>
+35:              <shadedPattern>software.amazon.awssdk.thirdparty.jackson.core</shadedPattern>
+36:            </relocation>
+37:          </relocations>
+38-          <filters>
+39-            <filter>
+40:              <artifact>com.fasterxml.jackson.core:*</artifact>
+41-              <excludes>
+42-                <exclude>META-INF/**/pom.xml</exclude>
+--
+49-            <transformer />
+50-          </transformers>
+51:          <shadedArtifactAttached>false</shadedArtifactAttached>
+52-          <createDependencyReducedPom>true</createDependencyReducedPom>
+53-          <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+--
+67-              <artifacts>
+68-                <artifact>
+69:                  <file>${basedir}/target/aws-sdk-java-third-party-jackson-core-${awsjavasdk.version}.jar</file>
+70-                  <type>jar</type>
+71-                  <classifier>optional</classifier>
+--
+81-          <archive>
+82-            <manifestEntries>
+83:              <Automatic-Module-Name>software.amazon.awssdk.thirdparty.jackson.core</Automatic-Module-Name>
+84-            </manifestEntries>
+85-            <manifest>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/third-party-jackson-core-2.34.0-sources.jar -o /tmp/tpjc-sources.jar && jar tf /tmp/tpjc-sources.jar | rg '\\.java"'$'"' || true" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/aws/aws-sdk-java-v2/2.34.0/pom.xml | rg -n "<scm>|<connection>|<developerConnection>|<url>|github.com/aws/aws-sdk-java-v2" -C 2' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/third-party-jackson-core-2.34.0-tests.jar || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 191ms:
+31-        AutoScaling, etc).
+32-    </description>
+33:    <url>https://aws.amazon.com/sdkforjava</url>
+34-    <licenses>
+35-        <license>
+36-            <name>Apache License, Version 2.0</name>
+37:            <url>https://aws.amazon.com/apache2.0</url>
+38-            <distribution>repo</distribution>
+39-        </license>
+--
+98-        <module>test/s3-tests</module>
+99-    </modules>
+100:    <scm>
+101:        <url>${scm.github.url}</url>
+102:        <connection>${scm.github.connection}</connection>
+103-    </scm>
+104-    <properties>
+--
+200-        <integTestSourceDirectory>${project.basedir}/src/it/java</integTestSourceDirectory>
+201-        <javadoc.resourcesDir>${session.executionRootDirectory}</javadoc.resourcesDir>
+202:        <scm.github.url>https://github.com/aws/aws-sdk-java-v2</scm.github.url>
+203:        <scm.github.connection>scm:git:git://github.com/aws/aws-sdk-java-v2.git</scm.github.connection>
+204-    </properties>
+205-
+
+ succeeded in 230ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 11:59:49 GMT
+content-type: text/html
+cf-ray: 9f5f1a0fed13b86b-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/third-party-jackson-core-2.34.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://raw.githubusercontent.com/aws/aws-sdk-java-v2/2.34.0/pom.xml
+web search: 
+web search: repo.maven.apache.org software.amazon.awssdk third-party-jackson-core 2.34.0
+web search: 
+web search: https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "sed -n '1,28p' metadata/software.amazon.awssdk/s3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.25.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/$version$/s3-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/s3/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/$version$/s3-$version$-javadoc.jar",
+    "description" : "This module provides the AWS SDK for Java v2 client classes for Amazon S3. It lets Java applications interact with Amazon Simple Storage Service to manage buckets and objects.",
+    "tested-versions" : [
+      "2.25.3",
+      "2.25.4",
+      "2.25.5",
+      "2.25.6",
+      "2.25.7",
+      "2.25.8",
+      "2.25.9",
+      "2.25.10",
+      "2.25.11",
+      "2.25.12",
+      "2.25.13",
+      "2.25.14",
+      "2.25.15",
+      "2.25.16",
+      "2.25.17",
+      "2.25.18",
+      "2.25.19",
+      "2.25.20",
+
+ succeeded in 0ms:
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:6:    "repository-url" : "https://github.com/google/re2j",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:9:    "description" : "RE2/J is a Java implementation of the RE2 regular expression engine that provides predictable linear-time matching. It exposes a Java-style regular expression API for compiling patterns and matching strings without backtracking behavior that can lead to exponential runtime.",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:6:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:9:    "description" : "WildFly OpenSSL Java provides Java bindings for OpenSSL and exposes them through JSSE-compatible SSLContext and security provider APIs. The java artifact contains the Java side of the binding and expects the native library to be supplied separately or through a platform-specific WildFly OpenSSL artifact.",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:21:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:23:    "description" : "WildFly OpenSSL Java provides Java bindings for OpenSSL and exposes them through JSSE-compatible SSLContext and security provider APIs. The java artifact contains the Java side of the binding and expects the native library to be supplied separately or through a platform-specific WildFly OpenSSL artifact.",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:9:    "description" : "Jackson Dataformat CBOR adds support for reading and writing Concise Binary Object Representation (CBOR) data through Jackson's streaming, data binding, and tree model APIs. It provides CBOR-specific parser, generator, factory, and mapper implementations so Java applications can serialize and deserialize objects and JSON-like structures in a compact binary format.",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:9:    "description" : "Jackson Dataformat TOML adds Jackson support for reading and writing TOML documents. It provides TOML parsing and generation through Jackson's streaming and databinding APIs.",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:9:    "description" : "Jackson Dataformat YAML provides Jackson-backed reading and writing of YAML data through the standard streaming and data-binding APIs. It integrates SnakeYAML as the underlying YAML parser and generator so Java applications can serialize and deserialize YAML alongside other Jackson data formats.",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:9:    "description" : "The RabbitMQ Java client library lets Java applications connect to RabbitMQ brokers and communicate using AMQP 0-9-1. It provides APIs for connections, channels, message publishing, consuming, acknowledgements, and related client-side broker interactions.",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:9:    "description" : "Spring Instrument provides a Java instrumentation agent that captures and exposes the JVM Instrumentation instance for later use by Spring-based applications. It supports Spring features that need load-time class transformation or other access to the JVM instrumentation API.",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:6:    "repository-url": "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:9:    "description": "Spring Aspects provides AspectJ aspects that let Spring facilities such as dependency injection, transaction management, caching, and asynchronous execution participate in AspectJ-weaved applications. It is part of the Spring Framework and supplies runtime support for applying those cross-cutting concerns outside standard proxy-based Spring AOP.",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:9:    "description" : "The biz.aQute.bnd.annotation artifact provides bnd-specific Java annotations for OSGi bundle metadata, package versioning, capabilities, service metadata, JPMS hints, licenses, and plugin declarations. These annotations are consumed by bnd and related tooling to generate or validate bundle headers and metadata without hard-coding that information in build instructions.",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:9:    "description" : "Spring JCL is Spring Framework's Commons Logging bridge, providing the org.apache.commons.logging API used by Spring while routing log calls to Log4j 2, SLF4J, or java.util.logging based on the runtime classpath. It lets Spring and applications use a small logging facade without depending on the external commons-logging artifact.",
+metadata/org.example/library/index.json:9:    "source-code-url": "N/A",
+metadata/org.example/library/index.json:10:    "repository-url": "N/A",
+metadata/org.example/library/index.json:11:    "test-code-url": "N/A",
+metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+metadata/org.example/library/index.json:13:    "description": "N/A",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:9:    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:6:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:9:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/org.apache.thrift/libthrift/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:20:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:21:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:23:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'third-party.*jackson|Jackson Core|shaded' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json:2:  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0"
+metadata/io.lettuce/lettuce-core/6.1.10.RELEASE/reachability-metadata.json:578:      "type": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueColdProducerFields",
+metadata/io.lettuce/lettuce-core/6.1.10.RELEASE/reachability-metadata.json:589:      "type": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields",
+metadata/io.lettuce/lettuce-core/6.1.10.RELEASE/reachability-metadata.json:600:      "type": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields",
+metadata/io.lettuce/lettuce-core/6.1.10.RELEASE/reachability-metadata.json:611:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField",
+metadata/io.lettuce/lettuce-core/6.1.10.RELEASE/reachability-metadata.json:622:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField",
+metadata/io.lettuce/lettuce-core/6.1.10.RELEASE/reachability-metadata.json:633:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField",
+metadata/tools.jackson.core/jackson-core/index.json:9:    "description" : "Jackson Core provides the foundational streaming JSON parser and generator APIs used by the Jackson data-processing suite. It implements low-level token-based reading and writing for JSON, enabling higher-level Jackson modules and applications to process JSON efficiently.",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:3275:        "typeReached": "com.hazelcast.shaded.org.jctools.queues.MpmcArrayQueueConsumerIndexField"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:3277:      "type": "com.hazelcast.shaded.org.jctools.queues.MpmcArrayQueueConsumerIndexField",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:3286:        "typeReached": "com.hazelcast.shaded.org.jctools.queues.MpmcArrayQueueProducerIndexField"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:3288:      "type": "com.hazelcast.shaded.org.jctools.queues.MpmcArrayQueueProducerIndexField",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:5501:        "typeReached": "com.hazelcast.shaded.org.jctools.util.UnsafeAccess"
+metadata/org.apache.activemq/artemis-jms-client/2.29.0/reachability-metadata.json:1177:        "typeReached": "org.apache.activemq.artemis.commons.shaded.johnzon.core.JsonProviderImpl"
+metadata/org.apache.activemq/artemis-jms-client/2.29.0/reachability-metadata.json:1179:      "glob": "META-INF/services/org.apache.activemq.artemis.commons.shaded.johnzon.core.spi.JsonPointerFactory"
+metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json:1329:        "typeReached": "org.apache.activemq.artemis.commons.shaded.johnzon.core.JsonProviderImpl"
+metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json:1331:      "glob": "META-INF/services/org.apache.activemq.artemis.commons.shaded.johnzon.core.spi.JsonPointerFactory"
+metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json:885:        "typeReached": "org.apache.activemq.artemis.commons.shaded.johnzon.core.JsonProviderImpl"
+metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json:887:      "glob": "META-INF/services/org.apache.activemq.artemis.commons.shaded.johnzon.core.spi.JsonPointerFactory"
+metadata/io.netty/netty-codec-stomp/4.1.74.Final/reachability-metadata.json:25:      "type": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueColdProducerFields",
+metadata/io.netty/netty-codec-stomp/4.1.74.Final/reachability-metadata.json:36:      "type": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields",
+metadata/io.netty/netty-codec-stomp/4.1.74.Final/reachability-metadata.json:47:      "type": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields",
+metadata/io.netty/netty-codec-stomp/4.1.74.Final/reachability-metadata.json:58:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField",
+metadata/io.netty/netty-codec-stomp/4.1.74.Final/reachability-metadata.json:69:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField",
+metadata/io.netty/netty-codec-stomp/4.1.74.Final/reachability-metadata.json:80:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField",
+metadata/io.netty/netty-codec-mqtt/4.1.74.Final/reachability-metadata.json:13:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField",
+metadata/io.netty/netty-codec-mqtt/4.1.74.Final/reachability-metadata.json:24:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField",
+metadata/io.netty/netty-codec-mqtt/4.1.74.Final/reachability-metadata.json:35:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField",
+metadata/io.netty/netty-codec-mqtt/4.1.79.Final/reachability-metadata.json:33:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField",
+metadata/io.netty/netty-codec-mqtt/4.1.79.Final/reachability-metadata.json:44:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField",
+metadata/io.netty/netty-codec-mqtt/4.1.79.Final/reachability-metadata.json:55:      "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField",
+metadata/io.netty/netty-codec/4.1.42.Final/reachability-metadata.json:7:      "type" : "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField",
+metadata/io.netty/netty-codec/4.1.42.Final/reachability-metadata.json:18:      "type" : "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField",
+metadata/io.netty/netty-codec/4.1.42.Final/reachability-metadata.json:29:      "type" : "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField",
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:5:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:27:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.CreateContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:91:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:97:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.ExecCreateCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:103:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.ExecCreateCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:117:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.ExecCreateCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:130:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:152:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:188:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:208:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:246:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectExecCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:267:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectExecCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:282:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectExecCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:329:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.ExecCreateCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:417:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.std.StdValueInstantiator"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:431:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.CreateContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:483:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.ser.BeanSerializerFactory"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:505:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InfoCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:544:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:588:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:712:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.ser.BeanSerializerFactory"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:726:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.std.CollectionDeserializer"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:732:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.std.ObjectArrayDeserializer"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:738:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.ser.AnyGetterWriter"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:750:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.ExecCreateCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:756:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InfoCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:762:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectExecCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:768:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.ListImagesCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:774:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.VersionCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:788:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InfoCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:851:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationContext"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:857:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.BasicDeserializerFactory"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:863:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.DeserializerCache"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:869:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.std.StdKeyDeserializers"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:875:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.BasicBeanDescription"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:881:        "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.BeanDeserializerBase"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:895:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.CreateContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:915:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InfoCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:922:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InfoCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:953:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.CreateContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:1225:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectContainerCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:1253:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.ListImagesCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:1274:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InfoCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:1295:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InfoCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:1316:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InfoCmdExec"
+metadata/org.testcontainers/testcontainers/1.17.6/reachability-metadata.json:1329:        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.exec.InspectContainerCmdExec"
+
+codex
+I’m updating the JSON now with Maven Central source and javadoc artifacts, the AWS SDK Java v2 repository root, and `N/A` for tests because the available evidence does not show a versioned test suite for this shaded module.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+index 1ceb9660fa0f538b1a01e5df24476ff70537c937..76b6a3039c332ea1631038bcbda2fb692bc692e6
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0"
++  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 third-party-jackson-core is a shaded copy of Jackson Core relocated under software.amazon.awssdk.thirdparty.jackson.core. It provides the low-level streaming JSON parser, generator, and related token-processing APIs used internally by the AWS SDK without exposing a direct dependency on com.fasterxml.jackson.core."
+ }
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+index 1ceb9660fa0f538b1a01e5df24476ff70537c937..76b6a3039c332ea1631038bcbda2fb692bc692e6
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0"
++  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 third-party-jackson-core is a shaded copy of Jackson Core relocated under software.amazon.awssdk.thirdparty.jackson.core. It provides the low-level streaming JSON parser, generator, and related token-processing APIs used internally by the AWS SDK without exposing a direct dependency on com.fasterxml.jackson.core."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+{
+  "coordinates": "software.amazon.awssdk:third-party-jackson-core:2.34.0",
+  "repository-url": "https://github.com/aws/aws-sdk-java-v2",
+  "source-code-url": "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-javadoc.jar",
+  "description": "AWS SDK for Java v2 third-party-jackson-core is a shaded copy of Jackson Core relocated under software.amazon.awssdk.thirdparty.jackson.core. It provides the low-level streaming JSON parser, generator, and related token-processing APIs used internally by the AWS SDK without exposing a direct dependency on com.fasterxml.jackson.core."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/third-party-jackson-core-2.34.0-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 12:00:18 GMT
+content-type: application/java-archive
+content-length: 7786
+cf-ray: 9f5f1ac2d8e703af-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1744547
+etag: "9f61ec48727a3a0f50fa90994378ed16"
+last-modified: Fri, 19 Sep 2025 21:47:12 GMT
+x-checksum-md5: 9f61ec48727a3a0f50fa90994378ed16
+x-checksum-sha1: 71b0960d594d23e83cd85d7e9d2de0e1fe283e7a
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/third-party-jackson-core-2.34.0-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+index 1ceb9660fa0f538b1a01e5df24476ff70537c937..76b6a3039c332ea1631038bcbda2fb692bc692e6
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0"
++  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 third-party-jackson-core is a shaded copy of Jackson Core relocated under software.amazon.awssdk.thirdparty.jackson.core. It provides the low-level streaming JSON parser, generator, and related token-processing APIs used internally by the AWS SDK without exposing a direct dependency on com.fasterxml.jackson.core."
+ }
+
+ succeeded in 299ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 12:00:18 GMT
+content-type: application/java-archive
+content-length: 317
+cf-ray: 9f5f1ac2dbcf931a-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "4870e09c3cd16e6280ad7ddae8d40ea2"
+last-modified: Fri, 19 Sep 2025 21:47:10 GMT
+x-checksum-md5: 4870e09c3cd16e6280ad7ddae8d40ea2
+x-checksum-sha1: 792bde3284be629cff25850567eb2480d062c1bc
+server: cloudflare
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/aws/aws-sdk-java-v2 | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 134ms:
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+index 1ceb9660fa0f538b1a01e5df24476ff70537c937..76b6a3039c332ea1631038bcbda2fb692bc692e6
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0"
++  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 third-party-jackson-core is a shaded copy of Jackson Core relocated under software.amazon.awssdk.thirdparty.jackson.core. It provides the low-level streaming JSON parser, generator, and related token-processing APIs used internally by the AWS SDK without exposing a direct dependency on com.fasterxml.jackson.core."
+ }
+
+ succeeded in 652ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 12:00:22 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"f66f428057d0fa6bff377f73d7e0b1c8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e
+ succeeded in 0ms:
+{
+  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0",
+  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+  "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-sources.jar",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-javadoc.jar",
+  "description" : "AWS SDK for Java v2 third-party-jackson-core is a shaded copy of Jackson Core relocated under software.amazon.awssdk.thirdparty.jackson.core. It provides the low-level streaming JSON parser, generator, and related token-processing APIs used internally by the AWS SDK without exposing a direct dependency on com.fasterxml.jackson.core."
+}
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+index 1ceb9660fa0f538b1a01e5df24476ff70537c937..76b6a3039c332ea1631038bcbda2fb692bc692e6
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0"
++  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 third-party-jackson-core is a shaded copy of Jackson Core relocated under software.amazon.awssdk.thirdparty.jackson.core. It provides the low-level streaming JSON parser, generator, and related token-processing APIs used internally by the AWS SDK without exposing a direct dependency on com.fasterxml.jackson.core."
+ }
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0 third-party-jackson-core-2.34.0-sources.jar
+web search: 
+web search: https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/third-party/third-party-jackson-core
+web search: 
+web search: https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+Updated [software.amazon.awssdk-third-party-jackson-core-2.34.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json).
+
+I set Maven Central source and javadoc URLs because the `2.34.0` directory publishes both artifacts, plus the JVM jar. I left `test-code-url` as `N/A` because Maven Central has no tests artifact and the tagged upstream module only contains `pom.xml`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/))
+
+I did not set `language` or `not-for-native-image`; the artifact is not Kotlin/Groovy/Scala-specific, and the jar contains JVM `.class` files. Validated the JSON with `jq` and confirmed the source and javadoc URLs resolve with `$version$ = 2.34.0`.
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+index 1ceb9660fa0f538b1a01e5df24476ff70537c937..76b6a3039c332ea1631038bcbda2fb692bc692e6
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0"
++  "coordinates" : "software.amazon.awssdk:third-party-jackson-core:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/third-party-jackson-core/$version$/third-party-jackson-core-$version$-javadoc.jar",
++  "description" : "AWS SDK for Java v2 third-party-jackson-core is a shaded copy of Jackson Core relocated under software.amazon.awssdk.thirdparty.jackson.core. It provides the low-level streaming JSON parser, generator, and related token-processing APIs used internally by the AWS SDK without exposing a direct dependency on com.fasterxml.jackson.core."
+ }
+
+tokens used
+85,404
+Updated [software.amazon.awssdk-third-party-jackson-core-2.34.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e/build/discovered-artifact-metadata/software.amazon.awssdk-third-party-jackson-core-2.34.0.json).
+
+I set Maven Central source and javadoc URLs because the `2.34.0` directory publishes both artifacts, plus the JVM jar. I left `test-code-url` as `N/A` because Maven Central has no tests artifact and the tagged upstream module only contains `pom.xml`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/software/amazon/awssdk/third-party-jackson-core/2.34.0/))
+
+I did not set `language` or `not-for-native-image`; the artifact is not Kotlin/Groovy/Scala-specific, and the jar contains JVM `.class` files. Validated the JSON with `jq` and confirmed the source and javadoc URLs resolve with `$version$ = 2.34.0`.
+Ran agent for software.amazon.awssdk:third-party-jackson-core:2.34.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e/build/agent-artifact-discovery-logs/software.amazon.awssdk-third-party-jackson-core-2.34.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4519-8f6cce6e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 36s
+9 actionable tasks: 4 executed, 5 from cache
