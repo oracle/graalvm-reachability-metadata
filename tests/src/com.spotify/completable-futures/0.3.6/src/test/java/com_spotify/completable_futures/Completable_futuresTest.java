@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -137,6 +138,23 @@ public class Completable_futuresTest {
 
         CompletionStage<String> dereferenced = CompletableFutures.dereference(completed(completed("nested")));
         assertEquals("nested", await(dereferenced));
+    }
+
+    @Test
+    void supplyAsyncComposeWithoutExecutorRunsSupplierAndWaitsForReturnedStage() throws Exception {
+        CompletableFuture<String> source = new CompletableFuture<>();
+        CountDownLatch supplierInvoked = new CountDownLatch(1);
+
+        CompletionStage<String> composed = CompletableFutures.supplyAsyncCompose(() -> {
+            supplierInvoked.countDown();
+            return source.thenApply(value -> value + ":mapped");
+        });
+
+        assertTrue(supplierInvoked.await(TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertFalse(composed.toCompletableFuture().isDone());
+
+        source.complete("async");
+        assertEquals("async:mapped", await(composed));
     }
 
     @Test
