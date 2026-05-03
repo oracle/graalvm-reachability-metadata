@@ -28,9 +28,12 @@ import java.util.regex.Pattern;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import graphql.GraphQLContext;
+import graphql.execution.CoercedVariables;
 import graphql.language.FloatValue;
 import graphql.language.IntValue;
 import graphql.language.StringValue;
+import graphql.language.Value;
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.DataFetcher;
 import graphql.schema.FieldCoordinates;
@@ -45,7 +48,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class Graphql_java_extended_scalarsTest {
+public class Graphql_java_extended_scalarsTest {
 
     @Test
     void temporalAndIdentifierScalarsRoundTripThroughGraphQl() throws Exception {
@@ -59,7 +62,7 @@ class Graphql_java_extended_scalarsTest {
         assertThat(dateTimeLiteral.inputValue()).isEqualTo(OffsetDateTime.parse("2024-01-02T03:04:05Z"));
         assertThat(outputValue(dateTimeLiteral.executionResult())).isEqualTo("2024-01-02T03:04:05.000Z");
 
-        assertThat(ExtendedScalars.DateTime.getCoercing().serialize(ZonedDateTime.parse("2024-01-02T03:04:05+02:00")))
+        assertThat(serialize(ExtendedScalars.DateTime, ZonedDateTime.parse("2024-01-02T03:04:05+02:00")))
             .isEqualTo("2024-01-02T03:04:05.000+02:00");
 
         EchoResult dateVariable = executeVariableEcho(ExtendedScalars.Date, "2024-01-02");
@@ -103,47 +106,49 @@ class Graphql_java_extended_scalarsTest {
 
     @Test
     void numericAndCharacterScalarsValidateBoundaries() {
-        assertThat(ExtendedScalars.PositiveInt.getCoercing().parseValue(1)).isEqualTo(1);
-        assertThatThrownBy(() -> ExtendedScalars.PositiveInt.getCoercing().parseValue(0))
+        assertThat(parseValue(ExtendedScalars.PositiveInt, 1)).isEqualTo(1);
+        assertThatThrownBy(() -> parseValue(ExtendedScalars.PositiveInt, 0))
             .hasMessageContaining("positive integer");
 
-        assertThat(ExtendedScalars.NegativeInt.getCoercing().parseValue(-1)).isEqualTo(-1);
-        assertThatThrownBy(() -> ExtendedScalars.NegativeInt.getCoercing().parseValue(0))
+        assertThat(parseValue(ExtendedScalars.NegativeInt, -1)).isEqualTo(-1);
+        assertThatThrownBy(() -> parseValue(ExtendedScalars.NegativeInt, 0))
             .hasMessageContaining("negative integer");
 
-        assertThat(ExtendedScalars.NonNegativeFloat.getCoercing().parseLiteral(new IntValue(BigInteger.ZERO))).isEqualTo(0.0d);
-        assertThatThrownBy(() -> ExtendedScalars.NonPositiveFloat.getCoercing().parseValue(0.1d))
+        assertThat(parseLiteral(ExtendedScalars.NonNegativeFloat, new IntValue(BigInteger.ZERO)))
+            .isEqualTo(0.0d);
+        assertThatThrownBy(() -> parseValue(ExtendedScalars.NonPositiveFloat, 0.1d))
             .hasMessageContaining("less than or equal to zero");
 
-        assertThat(ExtendedScalars.GraphQLByte.getCoercing().parseLiteral(new IntValue(BigInteger.valueOf(127)))).isEqualTo((byte) 127);
-        assertThatThrownBy(() -> ExtendedScalars.GraphQLByte.getCoercing().parseLiteral(new IntValue(BigInteger.valueOf(128))))
+        assertThat(parseLiteral(ExtendedScalars.GraphQLByte, new IntValue(BigInteger.valueOf(127))))
+            .isEqualTo((byte) 127);
+        assertThatThrownBy(() -> parseLiteral(ExtendedScalars.GraphQLByte, new IntValue(BigInteger.valueOf(128))))
             .hasMessageContaining("Byte range");
 
-        assertThat(ExtendedScalars.GraphQLShort.getCoercing().parseLiteral(new IntValue(BigInteger.valueOf(32767))))
+        assertThat(parseLiteral(ExtendedScalars.GraphQLShort, new IntValue(BigInteger.valueOf(32767))))
             .isEqualTo((short) 32767);
-        assertThatThrownBy(() -> ExtendedScalars.GraphQLShort.getCoercing().parseValue(32768))
+        assertThatThrownBy(() -> parseValue(ExtendedScalars.GraphQLShort, 32768))
             .hasMessageContaining("Short");
 
-        assertThat(ExtendedScalars.GraphQLLong.getCoercing().parseLiteral(new StringValue("1234567890123")))
+        assertThat(parseLiteral(ExtendedScalars.GraphQLLong, new StringValue("1234567890123")))
             .isEqualTo(1_234_567_890_123L);
-        assertThat(ExtendedScalars.GraphQLBigDecimal.getCoercing().parseLiteral(new FloatValue(new BigDecimal("12.34"))))
+        assertThat(parseLiteral(ExtendedScalars.GraphQLBigDecimal, new FloatValue(new BigDecimal("12.34"))))
             .isEqualTo(new BigDecimal("12.34"));
-        assertThat(ExtendedScalars.GraphQLBigInteger.getCoercing().parseLiteral(new StringValue("1234")))
+        assertThat(parseLiteral(ExtendedScalars.GraphQLBigInteger, new StringValue("1234")))
             .isEqualTo(new BigInteger("1234"));
 
-        assertThat(ExtendedScalars.GraphQLChar.getCoercing().parseValue("x")).isEqualTo('x');
-        assertThatThrownBy(() -> ExtendedScalars.GraphQLChar.getCoercing().parseValue("xy"))
+        assertThat(parseValue(ExtendedScalars.GraphQLChar, "x")).isEqualTo('x');
+        assertThatThrownBy(() -> parseValue(ExtendedScalars.GraphQLChar, "xy"))
             .hasMessageContaining("Char");
     }
 
     @Test
     void urlScalarAcceptsUrlObjectsAndPreservesExternalForm() throws Exception {
-        URL url = new URL("file:/tmp/graphql/schema.graphql");
+        URL url = URI.create("file:/tmp/graphql/schema.graphql").toURL();
 
-        URL parsedValue = (URL) ExtendedScalars.Url.getCoercing().parseValue(url);
+        URL parsedValue = (URL) parseValue(ExtendedScalars.Url, url);
         assertThat(parsedValue.toExternalForm()).isEqualTo(url.toExternalForm());
 
-        StringValue literal = (StringValue) ExtendedScalars.Url.getCoercing().valueToLiteral(url);
+        StringValue literal = (StringValue) valueToLiteral(ExtendedScalars.Url, url);
         assertThat(literal.getValue()).isEqualTo(url.toExternalForm());
 
         EchoResult variableResult = executeVariableEcho(ExtendedScalars.Url, url);
@@ -202,10 +207,10 @@ class Graphql_java_extended_scalarsTest {
     }
 
     private void assertUrlLikeInputRoundTrip(Object input, String expectedExternalForm) {
-        URL parsedValue = (URL) ExtendedScalars.Url.getCoercing().parseValue(input);
+        URL parsedValue = (URL) parseValue(ExtendedScalars.Url, input);
         assertThat(parsedValue.toExternalForm()).isEqualTo(expectedExternalForm);
 
-        StringValue literal = (StringValue) ExtendedScalars.Url.getCoercing().valueToLiteral(input);
+        StringValue literal = (StringValue) valueToLiteral(ExtendedScalars.Url, input);
         assertThat(literal.getValue()).isEqualTo(expectedExternalForm);
 
         EchoResult variableResult = executeVariableEcho(ExtendedScalars.Url, input);
@@ -214,6 +219,26 @@ class Graphql_java_extended_scalarsTest {
         assertThat(((URL) variableResult.inputValue()).toExternalForm()).isEqualTo(expectedExternalForm);
         assertThat(outputValue(variableResult.executionResult())).isInstanceOf(URL.class);
         assertThat(((URL) outputValue(variableResult.executionResult())).toExternalForm()).isEqualTo(expectedExternalForm);
+    }
+
+    private Object serialize(GraphQLScalarType scalarType, Object input) {
+        return scalarType.getCoercing()
+            .serialize(input, GraphQLContext.getDefault(), Locale.ENGLISH);
+    }
+
+    private Object parseValue(GraphQLScalarType scalarType, Object input) {
+        return scalarType.getCoercing()
+            .parseValue(input, GraphQLContext.getDefault(), Locale.ENGLISH);
+    }
+
+    private Object parseLiteral(GraphQLScalarType scalarType, Value<?> input) {
+        return scalarType.getCoercing()
+            .parseLiteral(input, CoercedVariables.emptyVariables(), GraphQLContext.getDefault(), Locale.ENGLISH);
+    }
+
+    private Value<?> valueToLiteral(GraphQLScalarType scalarType, Object input) {
+        return scalarType.getCoercing()
+            .valueToLiteral(input, GraphQLContext.getDefault(), Locale.ENGLISH);
     }
 
     private void assertStructuredScalarRoundTrip(GraphQLScalarType scalarType, Map<String, Object> variableInput) {
