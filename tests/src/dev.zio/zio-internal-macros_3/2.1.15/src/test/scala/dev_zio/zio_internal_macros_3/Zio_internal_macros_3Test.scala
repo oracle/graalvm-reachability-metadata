@@ -200,6 +200,24 @@ class Zio_internal_macros_3Test {
   }
 
   @Test
+  def byNameParameterRendererRewritesEveryByNameParameterInSignature(): Unit = {
+    val fullMethodSignature: String = "def combine(left: => LeftLayer, right: => RightLayer): zio.ULayer[CombinedLayer]"
+    val rendered: String = TerminalRendering.byNameParameterInMacroError(
+      method = "combine",
+      fullMethodSignature = fullMethodSignature,
+      byNameParameters = Seq("left: => LeftLayer", "right: => RightLayer")
+    )
+    val plainText: String = removeAnsiEscapes(rendered)
+
+    assertThat(plainText).contains(fullMethodSignature)
+    assertThat(plainText).contains(
+      "def combine(left: () => LeftLayer, right: () => RightLayer): zio.ULayer[CombinedLayer]"
+    )
+    assertThat(plainText).contains("ZLayer.provide(combine(...))")
+    assertThat(plainText).contains("val temp = combine(...)")
+  }
+
+  @Test
   def layerWiringErrorCaseClassesExposeProductAndCopySemantics(): Unit = {
     val missingTopLevel: LayerWiringError.MissingTopLevel = LayerWiringError.MissingTopLevel("zio.Clock")
     val missingTransitive: LayerWiringError.MissingTransitive =
@@ -274,4 +292,7 @@ class Zio_internal_macros_3Test {
     assertThat(styleNames).isEqualTo(List("bold", "faint", "underlined", "reversed"))
     assertThat(wiringDescriptions).isEqualTo(List("missing:A", "transitive:B:C,D", "circular:E:F"))
   }
+
+  private def removeAnsiEscapes(value: String): String =
+    value.replaceAll("\u001b\\[[;\\d]*m", "")
 }
