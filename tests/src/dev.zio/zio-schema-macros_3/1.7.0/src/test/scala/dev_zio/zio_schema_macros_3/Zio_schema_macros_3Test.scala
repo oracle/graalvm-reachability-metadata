@@ -10,9 +10,39 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import zio.schema.internal.SourceLocation
 
+import scala.compiletime.{constValue, erasedValue, summonInline}
+import scala.deriving.Mirror
 import scala.jdk.CollectionConverters.*
 
 private inline def generatedSourceLocation: SourceLocation = ${ SourceLocation.generateSourceLocation }
+
+private inline def sourceLocationMirrorHasExpectedElementTypes(using mirror: Mirror.ProductOf[SourceLocation]): Boolean = {
+  summonInline[mirror.MirroredElemTypes =:= (String, Int, Int)]
+  true
+}
+
+private final case class DerivedProductDescription(typeName: String, fieldNames: List[String], arity: Int)
+
+private object DerivedProductDescription {
+  inline def forProduct[A](using mirror: Mirror.ProductOf[A]): DerivedProductDescription =
+    DerivedProductDescription(
+      constValue[mirror.MirroredLabel].asInstanceOf[String],
+      tupleLabels[mirror.MirroredElemLabels],
+      tupleSize[mirror.MirroredElemTypes]
+    )
+
+  private inline def tupleLabels[Labels <: Tuple]: List[String] =
+    inline erasedValue[Labels] match {
+      case _: EmptyTuple      => Nil
+      case _: (head *: tail) => constValue[head].asInstanceOf[String] :: tupleLabels[tail]
+    }
+
+  private inline def tupleSize[Elements <: Tuple]: Int =
+    inline erasedValue[Elements] match {
+      case _: EmptyTuple      => 0
+      case _: (_ *: tail) => 1 + tupleSize[tail]
+    }
+}
 
 class Zio_schema_macros_3Test {
   @Test
@@ -81,6 +111,16 @@ class Zio_schema_macros_3Test {
     assertThat(column).isEqualTo(13)
     assertThat(rebuilt).isEqualTo(location)
     assertThat(SourceLocation.unapply(location)).isEqualTo(location)
+  }
+
+  @Test
+  def companionMirrorProvidesCompileTimeProductMetadataForGenericDerivation(): Unit = {
+    val description = DerivedProductDescription.forProduct[SourceLocation]
+
+    assertThat(description.typeName).isEqualTo("SourceLocation")
+    assertThat(description.fieldNames.asJava).containsExactly("path", "line", "col")
+    assertThat(description.arity).isEqualTo(3)
+    assertThat(sourceLocationMirrorHasExpectedElementTypes).isTrue()
   }
 
   @Test
