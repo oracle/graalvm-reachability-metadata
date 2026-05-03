@@ -8,7 +8,7 @@ package ru_vyarus.generics_resolver;
 
 import org.junit.jupiter.api.Test;
 
-class Generics_resolverTest {
+public class Generics_resolverTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
