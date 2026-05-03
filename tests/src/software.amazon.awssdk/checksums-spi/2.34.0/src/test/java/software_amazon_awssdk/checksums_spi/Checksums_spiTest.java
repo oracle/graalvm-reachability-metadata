@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
@@ -73,6 +74,24 @@ public class Checksums_spiTest {
 
         assertThat(algorithm.algorithmId()).isEqualTo("CRC32");
         assertThat(algorithm.getValue()).isEqualTo(0x0D4A1185L);
+    }
+
+    @Test
+    void callersCanResolveARequestedAlgorithmFromRegisteredImplementations() {
+        ChecksumAlgorithm crc32 = new FixedChecksumAlgorithm("CRC32");
+        ChecksumAlgorithm crc32c = new FixedChecksumAlgorithm("CRC32C");
+        ChecksumAlgorithm sha256 = new FixedChecksumAlgorithm("SHA256");
+        List<ChecksumAlgorithm> registeredAlgorithms = List.of(crc32, crc32c, sha256);
+
+        assertThat(resolveAlgorithm(registeredAlgorithms, "CRC32C")).contains(crc32c);
+        assertThat(resolveAlgorithm(registeredAlgorithms, "crc32c")).isEmpty();
+        assertThat(resolveAlgorithm(registeredAlgorithms, "SHA1")).isEmpty();
+    }
+
+    private static Optional<ChecksumAlgorithm> resolveAlgorithm(List<ChecksumAlgorithm> algorithms, String requestedAlgorithmId) {
+        return algorithms.stream()
+                .filter(algorithm -> algorithm.algorithmId().equals(requestedAlgorithmId))
+                .findFirst();
     }
 
     private static List<String> algorithmIds(List<ChecksumAlgorithm> algorithms) {
