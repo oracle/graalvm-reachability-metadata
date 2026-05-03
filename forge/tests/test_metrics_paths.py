@@ -5,6 +5,7 @@
 
 import json
 import os
+import subprocess
 import tempfile
 import unittest
 
@@ -58,6 +59,56 @@ def _public_execution_metrics(run_metrics: dict) -> dict:
     run_metrics = dict(run_metrics)
     run_metrics.pop("post_generation_intervention", None)
     return run_metrics
+
+
+def _run_git(repo_path: str, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["git", *args],
+        cwd=repo_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        check=True,
+    )
+
+
+def _git_commit_all(repo_path: str, message: str) -> str:
+    _run_git(repo_path, "add", "-A")
+    _run_git(
+        repo_path,
+        "-c",
+        "user.name=Forge Tests",
+        "-c",
+        "user.email=forge-tests@example.com",
+        "commit",
+        "-m",
+        message,
+    )
+    return _run_git(repo_path, "rev-parse", "HEAD").stdout.strip()
+
+
+def _write_file(path: str, content: str) -> None:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as file:
+        file.write(content)
+
+
+def _write_metadata_files(repo_path: str, package: str, artifact: str, library_version: str) -> None:
+    metadata_dir = os.path.join(repo_path, "metadata", package, artifact, library_version)
+    metadata_index_dir = os.path.dirname(metadata_dir)
+    os.makedirs(metadata_dir, exist_ok=True)
+    with open(os.path.join(metadata_index_dir, "index.json"), "w", encoding="utf-8") as file:
+        json.dump(
+            [
+                {
+                    "metadata-version": library_version,
+                    "tested-versions": [library_version],
+                }
+            ],
+            file,
+        )
+    with open(os.path.join(metadata_dir, "reachability-metadata.json"), "w", encoding="utf-8") as file:
+        json.dump({"reflection": [{"type": "org.example.Demo"}]}, file)
 
 
 class DummyAgent:
@@ -140,6 +191,140 @@ class MetricsPathTests(unittest.TestCase):
             self.assertEqual(
                 metadata_file,
                 os.path.join("metadata", "org.example", "demo", "1.0.0", "reachability-metadata.json"),
+            )
+
+    def test_resolve_artifact_paths_prefers_changed_generated_test_in_multi_file_root(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            _run_git(temp_dir, "init")
+            package = "org.freemarker"
+            artifact = "freemarker"
+            library_version = "2.3.31"
+            tests_root = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                package,
+                artifact,
+                library_version,
+                "src",
+                "test",
+                "java",
+                "fm",
+            )
+            _write_metadata_files(temp_dir, package, artifact, library_version)
+            _write_file(os.path.join(tests_root, "Product.java"), "package fm;\nclass Product {}\n")
+            _write_file(
+                os.path.join(tests_root, "FreemarkerTest.java"),
+                "package fm;\nimport org.junit.jupiter.api.Test;\nclass FreemarkerTest { @Test void renders() {} }\n",
+            )
+            starting_commit = _git_commit_all(temp_dir, "scaffold")
+            generated_test = os.path.join(
+                tests_root,
+                "ObjectBuilderSettingEvaluatorInnerBuilderCallExpressionTest.java",
+            )
+            _write_file(
+                generated_test,
+                "package fm;\n"
+                "import org.junit.jupiter.api.Test;\n"
+                "class ObjectBuilderSettingEvaluatorInnerBuilderCallExpressionTest { @Test void evaluates() {} }\n",
+            )
+            ending_commit = _git_commit_all(temp_dir, "generated test")
+
+            test_file, _metadata_file = resolve_artifact_paths(
+                temp_dir,
+                package,
+                artifact,
+                library_version,
+                tests_root,
+                starting_commit=starting_commit,
+                ending_commit=ending_commit,
+            )
+
+            self.assertEqual(
+                test_file,
+                os.path.join(
+                    "tests",
+                    "src",
+                    package,
+                    artifact,
+                    library_version,
+                    "src",
+                    "test",
+                    "java",
+                    "fm",
+                    "ObjectBuilderSettingEvaluatorInnerBuilderCallExpressionTest.java",
+                ),
+            )
+
+    def test_resolve_artifact_paths_prefers_changed_semantic_test_over_changed_helper(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            _run_git(temp_dir, "init")
+            package = "jline"
+            artifact = "jline"
+            library_version = "3.0.0.M1"
+            tests_root = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                package,
+                artifact,
+                library_version,
+                "src",
+                "test",
+                "java",
+            )
+            helper_file = os.path.join(tests_root, "com", "cloudius", "util", "Stty.java")
+            semantic_test = os.path.join(
+                tests_root,
+                "org",
+                "graalvm",
+                "jline",
+                "CandidateListCompletionHandlerMessagesTest.java",
+            )
+            _write_metadata_files(temp_dir, package, artifact, library_version)
+            _write_file(helper_file, "package com.cloudius.util;\nclass Stty {}\n")
+            _write_file(
+                semantic_test,
+                "package org.graalvm.jline;\n"
+                "import org.junit.jupiter.api.Test;\n"
+                "class CandidateListCompletionHandlerMessagesTest { @Test void printsMessages() {} }\n",
+            )
+            starting_commit = _git_commit_all(temp_dir, "scaffold")
+            _write_file(helper_file, "package com.cloudius.util;\nclass Stty { static final int ROWS = 24; }\n")
+            _write_file(
+                semantic_test,
+                "package org.graalvm.jline;\n"
+                "import org.junit.jupiter.api.Test;\n"
+                "class CandidateListCompletionHandlerMessagesTest { @Test void printsMessages() {} @Test void loadsBundle() {} }\n",
+            )
+            ending_commit = _git_commit_all(temp_dir, "fix javac")
+
+            test_file, _metadata_file = resolve_artifact_paths(
+                temp_dir,
+                package,
+                artifact,
+                library_version,
+                tests_root,
+                starting_commit=starting_commit,
+                ending_commit=ending_commit,
+            )
+
+            self.assertEqual(
+                test_file,
+                os.path.join(
+                    "tests",
+                    "src",
+                    package,
+                    artifact,
+                    library_version,
+                    "src",
+                    "test",
+                    "java",
+                    "org",
+                    "graalvm",
+                    "jline",
+                    "CandidateListCompletionHandlerMessagesTest.java",
+                ),
             )
 
     def test_test_version_resolution_uses_first_tested_versions_entry(self) -> None:

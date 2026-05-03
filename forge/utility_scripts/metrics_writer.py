@@ -442,16 +442,17 @@ def build_run_metrics_dict(
     return run_metrics
 
 
-def resolve_artifact_paths(repo_path, package, artifact, library_version, tests_root):
+def resolve_artifact_paths(
+        repo_path: str,
+        package: str,
+        artifact: str,
+        library_version: str,
+        tests_root: str,
+        starting_commit: str | None = None,
+        ending_commit: str | None = None,
+) -> tuple[str, str]:
     """Resolve test file and metadata file paths for a library version."""
-    test_file_path = None
-    for dirpath, _, filenames in os.walk(tests_root):
-        for fname in filenames:
-            if _is_test_source_file(fname):
-                test_file_path = os.path.relpath(os.path.join(dirpath, fname), repo_path)
-                break
-        if test_file_path:
-            break
+    test_file_path = _resolve_test_artifact_path(repo_path, tests_root, starting_commit, ending_commit)
 
     # Determine metadata_file path (either reachability-metadata.json or the metadata dir)
     metadata_version = resolve_metadata_version(repo_path, package, artifact, library_version)
@@ -469,6 +470,117 @@ def resolve_artifact_paths(repo_path, package, artifact, library_version, tests_
 
 def _is_test_source_file(file_name: str) -> bool:
     return file_name.endswith((".java", ".kt", ".scala", ".groovy"))
+
+
+def _resolve_test_artifact_path(
+        repo_path: str,
+        tests_root: str,
+        starting_commit: str | None = None,
+        ending_commit: str | None = None,
+) -> str | None:
+    source_files = _list_test_source_files(repo_path, tests_root)
+    if not source_files:
+        return None
+
+    changed_source_files = set(_changed_test_source_files(repo_path, tests_root, starting_commit, ending_commit))
+    ranked_files = sorted(
+        source_files,
+        key=lambda path: (
+            _test_artifact_rank(repo_path, path, changed_source_files),
+            path,
+        ),
+    )
+    return ranked_files[0]
+
+
+def _test_artifact_rank(repo_path: str, rel_path: str, changed_source_files: set[str]) -> int:
+    is_semantic_test = _is_semantic_test_file(repo_path, rel_path)
+    if rel_path in changed_source_files and is_semantic_test:
+        return 0
+    if is_semantic_test:
+        return 1
+    if rel_path in changed_source_files:
+        return 2
+    return 3
+
+
+def _list_test_source_files(repo_path: str, tests_root: str) -> list[str]:
+    source_files = []
+    if not tests_root or not os.path.isdir(tests_root):
+        return source_files
+
+    for dirpath, dirnames, filenames in os.walk(tests_root):
+        dirnames.sort()
+        for file_name in sorted(filenames):
+            if _is_test_source_file(file_name):
+                source_files.append(
+                    os.path.normpath(os.path.relpath(os.path.join(dirpath, file_name), repo_path))
+                )
+    return source_files
+
+
+def _changed_test_source_files(
+        repo_path: str,
+        tests_root: str,
+        starting_commit: str | None,
+        ending_commit: str | None,
+) -> list[str]:
+    if not starting_commit or not _is_git_worktree(repo_path):
+        return []
+
+    test_root_rel = os.path.relpath(tests_root, repo_path)
+    revision_range = [starting_commit]
+    if ending_commit:
+        revision_range.append(ending_commit)
+
+    result = subprocess.run(
+        ["git", "diff", "--name-only", "--diff-filter=ACMRT", *revision_range, "--", test_root_rel],
+        cwd=repo_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return []
+
+    return sorted(os.path.normpath(path) for path in result.stdout.splitlines() if _is_test_source_file(path))
+
+
+def _is_git_worktree(repo_path: str) -> bool:
+    result = subprocess.run(
+        ["git", "rev-parse", "--is-inside-work-tree"],
+        cwd=repo_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True,
+        check=False,
+    )
+    return result.returncode == 0 and result.stdout.strip() == "true"
+
+
+def _is_semantic_test_file(repo_path: str, rel_path: str) -> bool:
+    file_name = os.path.basename(rel_path)
+    source_name, _ = os.path.splitext(file_name)
+    if source_name.endswith(("Test", "Tests", "IT", "ITCase", "Spec", "Specification")):
+        return True
+
+    absolute_path = os.path.join(repo_path, rel_path)
+    try:
+        with open(absolute_path, "r", encoding="utf-8") as source_file:
+            content = source_file.read()
+    except OSError:
+        return False
+
+    semantic_markers = (
+        "@Test",
+        "@ParameterizedTest",
+        "org.junit",
+        "junit.framework",
+        "spock.lang",
+        "io.kotest",
+    )
+    return any(marker in content for marker in semantic_markers)
 
 
 def collect_base_metrics(repo_path, package, artifact, library_version, agent, model_name, global_iterations):
@@ -504,7 +616,15 @@ def create_run_metrics_output_json(
     Build a run_metrics dict using collected metrics.
     """
     metrics = collect_base_metrics(repo_path, package, artifact, library_version, agent, model_name, global_iterations)
-    test_file, metadata_file = resolve_artifact_paths(repo_path, package, artifact, library_version, tests_root)
+    test_file, metadata_file = resolve_artifact_paths(
+        repo_path,
+        package,
+        artifact,
+        library_version,
+        tests_root,
+        starting_commit=starting_commit,
+        ending_commit=ending_commit,
+    )
     agent_name = resolve_agent(strategy_name)
     stats = load_library_stats_snapshot(repo_path, package, artifact, library_version)
 
@@ -553,7 +673,15 @@ def create_javac_fix_run_metrics_output_json(
 ):
     """Build run metrics for fix_javac_fail workflow including previous-version metrics."""
     metrics = collect_base_metrics(repo_path, package, artifact, new_library_version, agent, model_name, global_iterations)
-    test_file, metadata_file = resolve_artifact_paths(repo_path, package, artifact, new_library_version, tests_root)
+    test_file, metadata_file = resolve_artifact_paths(
+        repo_path,
+        package,
+        artifact,
+        new_library_version,
+        tests_root,
+        starting_commit=starting_commit,
+        ending_commit=ending_commit,
+    )
 
     previous_coverage_percent, _ = collect_version_coverage_metrics(
         repo_path=repo_path,
