@@ -202,6 +202,53 @@ public class Org_osgi_service_repositoryTest {
     }
 
     @Test
+    void contentNamespaceArbitraryAttributesParticipateInRequirementMatching() {
+        ContentResource linuxBundle = contentResource(
+                "bundle-linux",
+                "hash-linux",
+                "https://example.invalid/linux.jar",
+                "application/java-archive",
+                "linux-payload",
+                Map.of("classifier", "linux-x86_64", "osgi.native.osname", "Linux"));
+        ContentResource sourcesBundle = contentResource(
+                "bundle-sources",
+                "hash-sources",
+                "https://example.invalid/sources.jar",
+                "application/java-archive",
+                "sources-payload",
+                Map.of("classifier", "sources", "documentation", "true"));
+        SimpleRepository repository = new SimpleRepository(linuxBundle, sourcesBundle);
+        Requirement nativeRequirement = repository.newRequirementBuilder(ContentNamespace.CONTENT_NAMESPACE)
+                .addDirective(
+                        Namespace.REQUIREMENT_FILTER_DIRECTIVE,
+                        "(&(classifier=linux-x86_64)(osgi.native.osname=Linux))")
+                .build();
+        Requirement documentationRequirement = repository.newRequirementBuilder(ContentNamespace.CONTENT_NAMESPACE)
+                .addDirective(Namespace.REQUIREMENT_FILTER_DIRECTIVE, "(documentation=true)")
+                .build();
+
+        Map<Requirement, Collection<Capability>> providers = repository.findProviders(
+                List.of(nativeRequirement, documentationRequirement));
+
+        assertThat(providers.get(nativeRequirement))
+                .singleElement()
+                .satisfies(capability -> {
+                    assertThat(capability.getResource()).isSameAs(linuxBundle);
+                    assertThat(capability.getAttributes())
+                            .containsEntry("classifier", "linux-x86_64")
+                            .containsEntry("osgi.native.osname", "Linux");
+                });
+        assertThat(providers.get(documentationRequirement))
+                .singleElement()
+                .satisfies(capability -> {
+                    assertThat(capability.getResource()).isSameAs(sourcesBundle);
+                    assertThat(capability.getAttributes())
+                            .containsEntry("classifier", "sources")
+                            .containsEntry("documentation", "true");
+                });
+    }
+
+    @Test
     void repositoryFindProvidersEvaluatesRequirementExpressionPromises() throws Exception {
         ContentResource bundleA = contentResource(
                 "bundle-a",
@@ -276,19 +323,31 @@ public class Org_osgi_service_repositoryTest {
             String url,
             String mime,
             String content) {
+        return contentResource(identity, hash, url, mime, content, Map.of());
+    }
+
+    private static ContentResource contentResource(
+            String identity,
+            String hash,
+            String url,
+            String mime,
+            String content,
+            Map<String, Object> additionalContentAttributes) {
         ContentResource resource = new ContentResource(identity, content.getBytes(StandardCharsets.UTF_8));
         resource.addCapability(
                 BUNDLE_NAMESPACE,
                 Map.of(),
                 Map.of(BUNDLE_NAMESPACE, identity));
+        Map<String, Object> contentAttributes = new LinkedHashMap<>();
+        contentAttributes.put(ContentNamespace.CONTENT_NAMESPACE, hash);
+        contentAttributes.put(ContentNamespace.CAPABILITY_URL_ATTRIBUTE, url);
+        contentAttributes.put(ContentNamespace.CAPABILITY_SIZE_ATTRIBUTE, (long) content.length());
+        contentAttributes.put(ContentNamespace.CAPABILITY_MIME_ATTRIBUTE, mime);
+        contentAttributes.putAll(additionalContentAttributes);
         resource.addCapability(
                 ContentNamespace.CONTENT_NAMESPACE,
                 Map.of(),
-                Map.of(
-                        ContentNamespace.CONTENT_NAMESPACE, hash,
-                        ContentNamespace.CAPABILITY_URL_ATTRIBUTE, url,
-                        ContentNamespace.CAPABILITY_SIZE_ATTRIBUTE, (long) content.length(),
-                        ContentNamespace.CAPABILITY_MIME_ATTRIBUTE, mime));
+                contentAttributes);
         return resource;
     }
 
