@@ -10,7 +10,7 @@ import eu.timepit.refined.api.RefType
 import eu.timepit.refined.api.RefType.ops.*
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.api.Validate
-import eu.timepit.refined.boolean.{And, Not, Or}
+import eu.timepit.refined.boolean.{AllOf, And, AnyOf, Not, Or, Xor}
 import eu.timepit.refined.char.{Digit, Letter, LetterOrDigit, LowerCase, UpperCase, Whitespace}
 import eu.timepit.refined.collection.{Contains, Count, Empty, Exists, Forall, Head, Index, Last, MaxSize, MinSize, NonEmpty, Size}
 import eu.timepit.refined.generic.Equal
@@ -64,6 +64,27 @@ class Refined_3Test {
     assertThat(expectLeft(refineV[SmallPositive](11))).contains("Right predicate")
     assertThat(refineV[Interval.Open[0, 10]](10).isLeft).isTrue
     assertThat(refineV[Odd](8).isLeft).isTrue
+  }
+
+  @Test
+  def nAryAndExclusiveBooleanPredicatesValidateCompositeRules(): Unit = {
+    type PositiveOddUnderTen = AllOf[(Positive, Odd, Less[10])]
+    type OutsideOrBoundary = AnyOf[(Less[0], Equal[0], Greater[100])]
+    type PositiveXorEven = Xor[Positive, Even]
+
+    assertThat(expectRight(refineV[PositiveOddUnderTen](7)).value).isEqualTo(7)
+    assertThat(refineV[PositiveOddUnderTen](8).isLeft).isTrue
+    assertThat(refineV[PositiveOddUnderTen](11).isLeft).isTrue
+
+    assertThat(expectRight(refineV[OutsideOrBoundary](-1)).value).isEqualTo(-1)
+    assertThat(expectRight(refineV[OutsideOrBoundary](0)).value).isEqualTo(0)
+    assertThat(expectRight(refineV[OutsideOrBoundary](101)).value).isEqualTo(101)
+    assertThat(refineV[OutsideOrBoundary](50).isLeft).isTrue
+
+    assertThat(expectRight(refineV[PositiveXorEven](3)).value).isEqualTo(3)
+    assertThat(expectRight(refineV[PositiveXorEven](-4)).value).isEqualTo(-4)
+    assertThat(refineV[PositiveXorEven](4).isLeft).isTrue
+    assertThat(refineV[PositiveXorEven](-3).isLeft).isTrue
   }
 
   @Test
