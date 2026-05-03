@@ -7,6 +7,7 @@
 package io_grpc.grpc_googleapis;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.ChannelLogger;
 import io.grpc.EquivalentAddressGroup;
@@ -72,6 +73,32 @@ public class Grpc_googleapisTest {
                         new GoogleCloudToProdExperimentalNameResolverProvider();
 
         assertThat(provider.getProducedSocketAddressTypes()).containsExactly(InetSocketAddress.class);
+    }
+
+    @Test
+    void resolverDerivesServiceAuthorityFromTargetPathWithUriAuthority() throws InterruptedException {
+        try (ResolverArgsResources resources = new ResolverArgsResources()) {
+            GoogleCloudToProdNameResolverProvider provider = new GoogleCloudToProdNameResolverProvider();
+
+            NameResolver resolver = provider.newNameResolver(
+                            URI.create("google-c2p://resolver-authority/localhost:8443"), resources.args);
+
+            assertThat(resolver).isNotNull();
+            assertThat(resolver.getServiceAuthority()).isEqualTo("localhost:8443");
+
+            resolver.shutdown();
+        }
+    }
+
+    @Test
+    void resolverRejectsTargetsWithoutAPathComponent() throws InterruptedException {
+        try (ResolverArgsResources resources = new ResolverArgsResources()) {
+            GoogleCloudToProdNameResolverProvider provider = new GoogleCloudToProdNameResolverProvider();
+
+            assertThatThrownBy(() -> provider.newNameResolver(
+                            URI.create("google-c2p://resolver-authority"), resources.args))
+                            .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
     @Test
