@@ -62,5 +62,15 @@ final class Literally_3Test {
 
     assertThat(errors.exists(error => error.message.contains("interpolation not supported"))).isTrue()
   }
+
+  @Test
+  def validationFailuresAreReportedAtCompileTime(): Unit = {
+    val errors = typeCheckErrors("{ import org_typelevel.literally_3.LiterallyTestFixtures.*; port\"65536\" }")
+
+    assertThat(errors.exists(error =>
+      error.message.contains("invalid port literal '65536'") &&
+        error.message.contains("expected an integer between 0 and 65535")
+    )).isTrue()
+  }
 }
 
