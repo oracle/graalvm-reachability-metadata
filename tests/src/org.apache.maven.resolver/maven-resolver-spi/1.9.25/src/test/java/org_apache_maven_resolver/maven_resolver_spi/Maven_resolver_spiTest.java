@@ -18,6 +18,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,6 +57,7 @@ import org.eclipse.aether.spi.connector.transport.PeekTask;
 import org.eclipse.aether.spi.connector.transport.PutTask;
 import org.eclipse.aether.spi.connector.transport.TransportListener;
 import org.eclipse.aether.spi.connector.transport.Transporter;
+import org.eclipse.aether.spi.io.FileProcessor;
 import org.eclipse.aether.spi.log.Logger;
 import org.eclipse.aether.spi.log.LoggerFactory;
 import org.eclipse.aether.spi.log.NullLoggerFactory;
@@ -325,6 +327,38 @@ public class Maven_resolver_spiTest {
     }
 
     @Test
+    void fileProcessorImplementationsCanReportProgressAndManageChecksumFiles() throws Exception {
+        FileProcessor processor = new LocalFileProcessor();
+        File directory = tempDirectory.resolve("processor/nested").toFile();
+        File textFile = new File(directory, "text.txt");
+        File binaryFile = new File(directory, "binary.bin");
+        File copiedFile = tempDirectory.resolve("processor/copy.bin").toFile();
+        File movedFile = tempDirectory.resolve("processor/moved.bin").toFile();
+        File checksumFile = tempDirectory.resolve("processor/artifact.jar.sha1").toFile();
+        List<String> progressedChunks = new ArrayList<>();
+
+        assertThat(processor.mkdirs(directory)).isTrue();
+        processor.write(textFile, "resolver-spi file processor");
+        processor.write(binaryFile, new ByteArrayInputStream("abcdef".getBytes(StandardCharsets.UTF_8)));
+        long copiedBytes = processor.copy(binaryFile, copiedFile, data -> {
+            byte[] bytes = new byte[data.remaining()];
+            data.get(bytes);
+            progressedChunks.add(new String(bytes, StandardCharsets.UTF_8));
+        });
+        processor.writeChecksum(checksumFile, "  abc123  ");
+        processor.move(copiedFile, movedFile);
+        processor.copy(movedFile, copiedFile);
+
+        assertThat(Files.readString(textFile.toPath())).isEqualTo("resolver-spi file processor");
+        assertThat(copiedBytes).isEqualTo(6L);
+        assertThat(progressedChunks).containsExactly("abcd", "ef");
+        assertThat(Files.readAllBytes(copiedFile.toPath())).isEqualTo("abcdef".getBytes(StandardCharsets.UTF_8));
+        assertThat(Files.readAllBytes(movedFile.toPath())).isEqualTo("abcdef".getBytes(StandardCharsets.UTF_8));
+        assertThat(Files.readString(checksumFile.toPath())).isEqualTo("  abc123  " + System.lineSeparator());
+        assertThat(processor.readChecksum(checksumFile)).isEqualTo("abc123");
+    }
+
+    @Test
     void nullLoggerFactoryReturnsSafeNoOpAndDelegatedLoggers() {
         Logger noOpLogger = NullLoggerFactory.INSTANCE.getLogger("org.example.Component");
 
@@ -512,6 +546,75 @@ public class Maven_resolver_spiTest {
             byte[] bytes = new byte[data.remaining()];
             data.get(bytes);
             progressed.add(new String(bytes, StandardCharsets.UTF_8));
+        }
+    }
+
+    private static final class LocalFileProcessor implements FileProcessor {
+        @Override
+        public boolean mkdirs(File directory) {
+            return directory.mkdirs() || directory.isDirectory();
+        }
+
+        @Override
+        public void write(File target, String data) throws IOException {
+            ensureParentDirectory(target);
+            Files.writeString(target.toPath(), data, StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public void write(File target, InputStream data) throws IOException {
+            ensureParentDirectory(target);
+            Files.copy(data, target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        @Override
+        public void move(File source, File target) throws IOException {
+            ensureParentDirectory(target);
+            Files.move(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        @Override
+        public void copy(File source, File target) throws IOException {
+            copy(source, target, null);
+        }
+
+        @Override
+        public long copy(File source, File target, FileProcessor.ProgressListener listener) throws IOException {
+            ensureParentDirectory(target);
+            long copiedBytes = 0L;
+            byte[] buffer = new byte[4];
+            try (InputStream input = Files.newInputStream(source.toPath());
+                    OutputStream output = Files.newOutputStream(target.toPath())) {
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) >= 0) {
+                    if (bytesRead == 0) {
+                        continue;
+                    }
+                    output.write(buffer, 0, bytesRead);
+                    copiedBytes += bytesRead;
+                    if (listener != null) {
+                        listener.progressed(ByteBuffer.wrap(buffer, 0, bytesRead).asReadOnlyBuffer());
+                    }
+                }
+            }
+            return copiedBytes;
+        }
+
+        @Override
+        public String readChecksum(File source) throws IOException {
+            return Files.readString(source.toPath(), StandardCharsets.UTF_8).trim();
+        }
+
+        @Override
+        public void writeChecksum(File target, String checksum) throws IOException {
+            write(target, checksum + System.lineSeparator());
+        }
+
+        private static void ensureParentDirectory(File target) throws IOException {
+            File parent = target.getParentFile();
+            if (parent != null) {
+                Files.createDirectories(parent.toPath());
+            }
         }
     }
 
