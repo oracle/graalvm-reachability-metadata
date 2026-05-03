@@ -9,6 +9,7 @@ package it_unimi_dsi.fastutil;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
@@ -34,10 +35,13 @@ import it.unimi.dsi.fastutil.io.FastByteArrayOutputStream;
 import it.unimi.dsi.fastutil.longs.Long2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Random;
 import org.junit.jupiter.api.Test;
 
@@ -148,6 +152,42 @@ public class FastutilTest {
         assertThat(weights.get(10L)).isEqualTo(3.75d);
         assertThat(weights.get(20L)).isEqualTo(2.0d);
         assertThat(weights.get(99L)).isNaN();
+    }
+
+    @Test
+    void customHashCollectionsUseStrategiesForKeyEquivalence() {
+        Hash.Strategy<String> caseInsensitiveStrategy = new Hash.Strategy<String>() {
+            @Override
+            public int hashCode(String value) {
+                return value == null ? 0 : value.toLowerCase(Locale.ROOT).hashCode();
+            }
+
+            @Override
+            public boolean equals(String left, String right) {
+                if (left == right) {
+                    return true;
+                }
+                return left != null && right != null && left.equalsIgnoreCase(right);
+            }
+        };
+
+        ObjectOpenCustomHashSet<String> headers = new ObjectOpenCustomHashSet<>(caseInsensitiveStrategy);
+        assertThat(headers.add("Content-Type")).isTrue();
+        assertThat(headers.add("content-type")).isFalse();
+        assertThat(headers.contains("CONTENT-TYPE")).isTrue();
+        assertThat(headers.addOrGet("CoNtEnT-TyPe")).isEqualTo("Content-Type");
+        assertThat(headers.addOrGet("Accept")).isEqualTo("Accept");
+        assertThat(headers.remove("ACCEPT")).isTrue();
+        assertThat(headers).containsExactly("Content-Type");
+
+        Object2IntOpenCustomHashMap<String> counts = new Object2IntOpenCustomHashMap<>(caseInsensitiveStrategy);
+        counts.defaultReturnValue(-1);
+        assertThat(counts.put("Warning", 1)).isEqualTo(-1);
+        assertThat(counts.putIfAbsent("warning", 5)).isEqualTo(1);
+        assertThat(counts.addTo("WARNING", 2)).isEqualTo(1);
+        assertThat(counts.getInt("warning")).isEqualTo(3);
+        assertThat(counts.remove("WaRnInG", 3)).isTrue();
+        assertThat(counts.containsKey("warning")).isFalse();
     }
 
     @Test
