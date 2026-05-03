@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -173,6 +174,35 @@ public class Maven_resolver_transport_httpTest {
     }
 
     @Test
+    void transporterAppliesConfiguredUserAgentAndRequestHeaders() throws Exception {
+        AtomicReference<Map<String, String>> requestHeaders = new AtomicReference<>();
+        try (HeaderCaptureServer server = HeaderCaptureServer.start(requestHeaders)) {
+            DefaultRepositorySystemSession session = session();
+            String userAgent = "resolver-http-functional-test";
+            Map<String, String> configuredHeaders = new LinkedHashMap<>();
+            configuredHeaders.put("X-Resolver-Test", "configured header");
+            configuredHeaders.put("X-Resolver-Trace", "trace-token");
+            session.setConfigProperty(ConfigurationProperties.USER_AGENT, userAgent);
+            session.setConfigProperty(ConfigurationProperties.HTTP_HEADERS, configuredHeaders);
+
+            HttpTransporterFactory factory = new HttpTransporterFactory(checksumExtractors());
+            RemoteRepository repository = new RemoteRepository.Builder("local", "default", server.repositoryUrl())
+                    .build();
+            Transporter transporter = factory.newInstance(session, repository);
+            try {
+                transporter.peek(new PeekTask(URI.create("headers/artifact.txt")));
+
+                assertThat(requestHeaders.get())
+                        .containsEntry(HttpHeaders.USER_AGENT.toLowerCase(Locale.ROOT), userAgent)
+                        .containsEntry("x-resolver-test", "configured header")
+                        .containsEntry("x-resolver-trace", "trace-token");
+            } finally {
+                transporter.close();
+            }
+        }
+    }
+
+    @Test
     void transporterResumesFileDownloadUsingHttpRange(@TempDir Path tempDir) throws Exception {
         String localPrefix = RESUMABLE_ARTIFACT_BODY.substring(0, "already-downloaded".length());
         Path artifactFile = tempDir.resolve("artifact.txt");
@@ -275,6 +305,59 @@ public class Maven_resolver_transport_httpTest {
         @Override
         public void close() {
             EntityUtils.consumeQuietly(getEntity());
+        }
+    }
+
+    private static final class HeaderCaptureServer implements AutoCloseable {
+        private final HttpServer server;
+        private final ExecutorService executor;
+
+        private HeaderCaptureServer(HttpServer server, ExecutorService executor) {
+            this.server = server;
+            this.executor = executor;
+        }
+
+        static HeaderCaptureServer start(AtomicReference<Map<String, String>> requestHeaders) throws IOException {
+            HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+            ExecutorService executor = Executors.newSingleThreadExecutor(runnable -> {
+                Thread thread = new Thread(runnable, "resolver-http-headers-test-server");
+                thread.setDaemon(true);
+                return thread;
+            });
+            HeaderCaptureServer repositoryServer = new HeaderCaptureServer(server, executor);
+            server.createContext("/", exchange -> repositoryServer.handle(exchange, requestHeaders));
+            server.setExecutor(executor);
+            server.start();
+            return repositoryServer;
+        }
+
+        String repositoryUrl() {
+            return "http://127.0.0.1:" + server.getAddress().getPort() + "/repository/";
+        }
+
+        private void handle(HttpExchange exchange, AtomicReference<Map<String, String>> requestHeaders)
+                throws IOException {
+            try {
+                if (!"/repository/headers/artifact.txt".equals(exchange.getRequestURI().getPath())
+                        || !"HEAD".equals(exchange.getRequestMethod())) {
+                    exchange.sendResponseHeaders(404, -1);
+                    return;
+                }
+                Map<String, String> capturedHeaders = new LinkedHashMap<>();
+                exchange.getRequestHeaders().forEach((name, values) -> capturedHeaders.put(
+                        name.toLowerCase(Locale.ROOT), String.join(",", values)));
+                requestHeaders.set(capturedHeaders);
+                exchange.sendResponseHeaders(200, -1);
+            } finally {
+                exchange.close();
+            }
+        }
+
+        @Override
+        public void close() throws InterruptedException {
+            server.stop(0);
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(Duration.ofSeconds(1).toMillis(), TimeUnit.MILLISECONDS)).isTrue();
         }
     }
 
