@@ -85,6 +85,24 @@ public class CamelXmlJaxpUtilTest {
     }
 
     @Test
+    void colorPrintAppliesCallbackToXmlDeclarationWhenRequested() throws Exception {
+        String xml = """
+                <?xml version="1.0" encoding="UTF-8"?><root/>
+                """.trim();
+
+        String colorizedXml = XmlPrettyPrinter.colorPrint(
+                xml,
+                2,
+                true,
+                (kind, value) -> "[" + kind + ":" + value + "]");
+
+        assertThat(colorizedXml).isEqualTo("""
+                [1:<?xml version="1.0" encoding="UTF-8"?>]
+                [2:<root>]
+                [2:</root>]""");
+    }
+
+    @Test
     void colorPrintExposesStableColorElementConstantsToCallbacks() throws Exception {
         String xml = """
                 <root><child key="value">body</child></root>
