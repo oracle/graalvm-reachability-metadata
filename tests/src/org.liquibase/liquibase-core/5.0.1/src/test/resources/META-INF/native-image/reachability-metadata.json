@@ -1,0 +1,89 @@
+{
+  "reflection" : [
+    {
+      "condition" : {
+        "typeReached" : "liquibase.serializer.ReflectionSerializer"
+      },
+      "type" : "org_liquibase.liquibase_core.AbstractLiquibaseSerializableTest$ParentWithChild",
+      "fields" : [
+        {
+          "name" : "child"
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "liquibase.change.custom.CustomChangeWrapper"
+      },
+      "type" : "org_liquibase.liquibase_core.ExampleCustomSqlChange",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "setColumnName",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name" : "setNewValue",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name" : "setTableName",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "liquibase.change.custom.CustomChangeWrapper"
+      },
+      "type" : "org_liquibase.liquibase_core.ExampleCustomTaskChange",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "setHelloTo",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    }
+  ],
+  "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "liquibase.command.core.helpers.DatabaseChangelogCommandStep"
+      },
+      "glob" : "changelog.xml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "liquibase.parser.core.yaml.YamlChangeLogParser"
+      },
+      "glob" : "changelog.yaml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "liquibase.changelog.DatabaseChangeLog"
+      },
+      "glob" : "included.changelog.xml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "liquibase.changelog.DatabaseChangeLog"
+      },
+      "glob" : "renamed.changelog.xml"
+    }
+  ]
+}
