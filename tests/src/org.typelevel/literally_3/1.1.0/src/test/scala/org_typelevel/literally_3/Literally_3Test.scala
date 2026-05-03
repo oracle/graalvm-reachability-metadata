@@ -9,6 +9,8 @@ package org_typelevel.literally_3
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
+import scala.compiletime.testing.typeCheckErrors
+
 final class Literally_3Test {
   import LiterallyTestFixtures.*
 
@@ -52,6 +54,13 @@ final class Literally_3Test {
     assertThat(black).isEqualTo(RgbColor(0, 0, 0))
     assertThat(mixedCase).isEqualTo(RgbColor(171, 205, 9))
     assertThat(white).isEqualTo(RgbColor(255, 255, 255))
+  }
+
+  @Test
+  def interpolationArgumentsAreRejectedAtCompileTime(): Unit = {
+    val errors = typeCheckErrors("{ import org_typelevel.literally_3.LiterallyTestFixtures.*; port\"${49152}\" }")
+
+    assertThat(errors.exists(error => error.message.contains("interpolation not supported"))).isTrue()
   }
 }
 
