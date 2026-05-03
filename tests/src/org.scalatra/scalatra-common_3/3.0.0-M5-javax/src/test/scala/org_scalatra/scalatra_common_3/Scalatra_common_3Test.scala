@@ -129,6 +129,15 @@ class Scalatra_common_3Test {
   }
 
   @Test
+  def initializableProvidesNoOpShutdownLifecycleHook(): Unit = {
+    val initializable = new ShutdownLifecycleComponent
+
+    initializable.runShutdownTwice()
+
+    assertEquals(None, initializable.initializedWith)
+  }
+
+  @Test
   def handlerImplementationsReceiveRequestAndResponseReferences(): Unit = {
     val handler = new RecordingHandler
 
@@ -168,6 +177,13 @@ class Scalatra_common_3Test {
   }
 
   private final class MultipartAware(override val servletContext: ServletContext) extends BaseInitializable with HasMultipartConfig
+
+  private final class ShutdownLifecycleComponent extends BaseInitializable {
+    def runShutdownTwice(): Unit = {
+      shutdown()
+      shutdown()
+    }
+  }
 
   private final class RecordingHandler extends Handler {
     var calls: Int = 0
