@@ -6,6 +6,7 @@
  */
 package org_apache_maven_resolver.maven_resolver_connector_basic;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -59,6 +61,7 @@ import org.eclipse.aether.transfer.NoRepositoryLayoutException;
 import org.eclipse.aether.transfer.NoTransporterException;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferListener;
+import org.eclipse.aether.transform.FileTransformer;
 import org.eclipse.aether.transfer.TransferResource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -162,6 +165,45 @@ public class Maven_resolver_connector_basicTest {
                 assertThat(event.getRequestType()).isEqualTo(TransferEvent.RequestType.PUT);
                 assertThat(event.getResource().getRepositoryUrl()).isEqualTo(repository().getUrl() + "/");
             });
+        } finally {
+            connector.close();
+        }
+    }
+
+    @Test
+    void uploadsTransformedArtifactDataWhenFileTransformerIsConfigured() throws Exception {
+        InMemoryTransporter transporter = new InMemoryTransporter();
+        Artifact artifact = artifact();
+        Path artifactSource = tempDirectory.resolve("transformable-artifact.jar");
+        Files.writeString(artifactSource, "original-artifact");
+        AtomicBoolean transformed = new AtomicBoolean();
+        FileTransformer transformer = new FileTransformer() {
+            @Override
+            public Artifact transformArtifact(Artifact artifact) {
+                return artifact;
+            }
+
+            @Override
+            public InputStream transformData(File file) throws IOException {
+                transformed.set(true);
+                String originalContent = Files.readString(file.toPath());
+                String transformedContent = "transformed:" + originalContent.toUpperCase(Locale.ROOT);
+                return new ByteArrayInputStream(transformedContent.getBytes(StandardCharsets.UTF_8));
+            }
+        };
+
+        RepositoryConnector connector = newConnector(transporter, Collections.emptyMap());
+        try {
+            ArtifactUpload artifactUpload = new ArtifactUpload(artifact, artifactSource.toFile(), transformer);
+
+            connector.put(List.of(artifactUpload), null);
+
+            assertThat(artifactUpload.getException()).isNull();
+            assertThat(transformed).isTrue();
+            assertThat(transporter.putLocations()).containsExactly(SimpleRepositoryLayout.locationFor(artifact));
+            assertThat(transporter.content(SimpleRepositoryLayout.locationFor(artifact)))
+                    .isEqualTo("transformed:ORIGINAL-ARTIFACT");
+            assertThat(Files.readString(artifactSource)).isEqualTo("original-artifact");
         } finally {
             connector.close();
         }
