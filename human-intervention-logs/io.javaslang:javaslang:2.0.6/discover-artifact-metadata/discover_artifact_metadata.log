@@ -1,0 +1,1116 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019def17-09aa-7853-8ce9-bdbaae0e4ed6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.javaslang:javaslang:2.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.6" when "$version$" is replaced with "2.0.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+- Set "coordinates" to "io.javaslang:javaslang:2.0.6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/repository sources first, then update the JSON in place with the version-templated URLs.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+-rw-rw-r-- 1 vjovanov vjovanov 53 May  3 20:25 build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 0ms:
+{
+  "coordinates" : "io.javaslang:javaslang:2.0.6"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'io\\.javaslang|javaslang' ." in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 0ms:
+./metadata/io.javaslang/javaslang-match/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang-match/$version$/javaslang-match-$version$-sources.jar",
+./metadata/io.javaslang/javaslang-match/index.json:7:    "test-code-url" : "https://github.com/vavr-io/vavr/blob/javaslang-v$version$/javaslang/src/test/java/javaslang/MatchTest.java",
+./metadata/io.javaslang/javaslang-match/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang-match/$version$/javaslang-match-$version$-javadoc.jar",
+./metadata/io.javaslang/javaslang-match/index.json:15:      "javaslang.match"
+./stats/io.javaslang/javaslang-match/2.0.6/execution-metrics.json:4:    "library": "io.javaslang:javaslang-match:2.0.6",
+./stats/io.javaslang/javaslang-match/2.0.6/execution-metrics.json:52:      "test_file": "tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java",
+./stats/io.javaslang/javaslang-match/2.0.6/execution-metrics.json:53:      "metadata_file": "metadata/io.javaslang/javaslang-match/2.0.6/reachability-metadata.json"
+./tests/src/io.javaslang/javaslang-match/2.0.6/build.gradle:14:    testImplementation "io.javaslang:javaslang-match:$libraryVersion"
+./tests/src/io.javaslang/javaslang-match/2.0.6/build.gradle:15:    testImplementation "io.javaslang:javaslang:$libraryVersion"
+./tests/src/io.javaslang/javaslang-match/2.0.6/build.gradle:16:    testAnnotationProcessor "io.javaslang:javaslang-match:$libraryVersion"
+./tests/src/io.javaslang/javaslang-match/2.0.6/settings.gradle:20:rootProject.name = 'io.javaslang.javaslang-match_tests'
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:7:package io_javaslang.javaslang_match;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:13:import javaslang.API;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:14:import javaslang.Tuple;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:15:import javaslang.Tuple0;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:16:import javaslang.Tuple1;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:17:import javaslang.Tuple2;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:18:import javaslang.Tuple3;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:19:import javaslang.Tuple4;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:20:import javaslang.control.Option;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:21:import javaslang.match.PatternsProcessor;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:22:import javaslang.match.annotation.Patterns;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:23:import javaslang.match.annotation.Unapply;
+./tests/src/io.javaslang/javaslang-match/2.0.6/src/test/java/io_javaslang/javaslang_match/Javaslang_matchTest.java:142:        assertThat(supportedAnnotationTypes).containsExactly("javaslang.match.annotation.Patterns");
+./tests/src/io.javaslang/javaslang-match/2.0.6/gradle.properties:4:library.coordinates = io.javaslang:javaslang-match:2.0.6
+./tests/src/io.javaslang/javaslang-match/2.0.6/gradle.properties:6:metadata.dir = io.javaslang/javaslang-match/2.0.6/
+./tests/src/io.javaslang/javaslang-match/2.0.6/user-code-filter.json:7:      "includeClasses" : "javaslang.match.**"
+
+codex
+The repo already has related metadata for `javaslang-match:2.0.6`; I’m using that as a consistency anchor and checking Maven Central for whether core `javaslang` has source, javadoc, and test artifacts.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/io.javaslang/javaslang-match/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang-match/$version$/javaslang-match-$version$-sources.jar",
+    "repository-url" : "https://github.com/vavr-io/vavr",
+    "test-code-url" : "https://github.com/vavr-io/vavr/blob/javaslang-v$version$/javaslang/src/test/java/javaslang/MatchTest.java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang-match/$version$/javaslang-match-$version$-javadoc.jar",
+    "description" : "Javaslang Match provides annotations and an annotation processor that generate support code for structural pattern matching in Java. It is part of the Javaslang functional programming library and helps Java applications express match-style control flow with generated pattern helpers.",
+    "tested-versions" : [
+      "2.0.6",
+      "2.1.0-alpha"
+    ],
+    "allowed-packages" : [
+      "javaslang.match"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/javaslang/javaslang/2.0.6/javaslang-2.0.6.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <prerequisites>
+        <maven>3.0.4</maven>
+    </prerequisites>
+    <parent>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang-parent</artifactId>
+        <version>2.0.6</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>javaslang</artifactId>
+    <packaging>jar</packaging>
+    <name>Javaslang</name>
+    <description>Javaslang is a Java standard library extension built for Java 8 and above.</description>
+    <url>http://javaslang.io</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>javaslang-match</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+    </build>
+    <profiles>
+
+
+        <profile>
+            <!-- Use `mvn clean test -DskipGen` to skip the code generator -->
+            <id>gen</id>
+            <activation>
+                <property>
+                    <name>!skipGen</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.alchim31.maven</groupId>
+                        <artifactId>scala-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/javaslang/javaslang/2.0.6/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 271ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/javaslang/javaslang/2.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/javaslang/javaslang/2.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="javaslang-2.0.6-javadoc.jar" title="javaslang-2.0.6-javadoc.jar">javaslang-2.0.6-javadoc.jar</a>                       2017-04-04 07:56   1449588      
+<a href="javaslang-2.0.6-javadoc.jar.asc" title="javaslang-2.0.6-javadoc.jar.asc">javaslang-2.0.6-javadoc.jar.asc</a>                   2017-04-04 07:56       833      
+<a href="javaslang-2.0.6-javadoc.jar.md5" title="javaslang-2.0.6-javadoc.jar.md5">javaslang-2.0.6-javadoc.jar.md5</a>                   2017-04-04 07:56        32      
+<a href="javaslang-2.0.6-javadoc.jar.sha1" title="javaslang-2.0.6-javadoc.jar.sha1">javaslang-2.0.6-javadoc.jar.sha1</a>                  2017-04-04 07:56        40      
+<a href="javaslang-2.0.6-sources.jar" title="javaslang-2.0.6-sources.jar">javaslang-2.0.6-sources.jar</a>                       2017-04-04 07:56    266955      
+<a href="javaslang-2.0.6-sources.jar.asc" title="javaslang-2.0.6-sources.jar.asc">javaslang-2.0.6-sources.jar.asc</a>                   2017-04-04 07:56       833      
+<a href="javaslang-2.0.6-sources.jar.md5" title="javaslang-2.0.6-sources.jar.md5">javaslang-2.0.6-sources.jar.md5</a>                   2017-04-04 07:56        32      
+<a href="javaslang-2.0.6-sources.jar.sha1" title="javaslang-2.0.6-sources.jar.sha1">javaslang-2.0.6-sources.jar.sha1</a>                  2017-04-04 07:56        40      
+<a href="javaslang-2.0.6.jar" title="javaslang-2.0.6.jar">javaslang-2.0.6.jar</a>                               2017-04-04 07:56    611568      
+<a href="javaslang-2.0.6.jar.asc" title="javaslang-2.0.6.jar.asc">javaslang-2.0.6.jar.asc</a>                           2017-04-04 07:56       833      
+<a href="javaslang-2.0.6.jar.md5" title="javaslang-2.0.6.jar.md5">javaslang-2.0.6.jar.md5</a>                           2017-04-04 07:56        32      
+<a href="javaslang-2.0.6.jar.sha1" title="javaslang-2.0.6.jar.sha1">javaslang-2.0.6.jar.sha1</a>                          2017-04-04 07:56        40      
+<a href="javaslang-2.0.6.pom" title="javaslang-2.0.6.pom">javaslang-2.0.6.pom</a>                               2017-04-04 07:56      3275      
+<a href="javaslang-2.0.6.pom.asc" title="javaslang-2.0.6.pom.asc">javaslang-2.0.6.pom.asc</a>                           2017-04-04 07:56       833      
+<a href="javaslang-2.0.6.pom.md5" title="javaslang-2.0.6.pom.md5">javaslang-2.0.6.pom.md5</a>                           2017-04-04 07:56        32      
+<a href="javaslang-2.0.6.pom.sha1" title="javaslang-2.0.6.pom.sha1">javaslang-2.0.6.pom.sha1</a>                          2017-04-04 07:56        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: https://github.com/vavr-io/vavr/tree/javaslang-v2.0.6/javaslang/src/test/java/javaslang
+web search: 
+web search: repo.maven.apache.org io.javaslang javaslang 2.0.6 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/io/javaslang/javaslang/2.0.6/
+web search: 
+web search: 
+codex
+Maven Central has the core jar, sources jar, and javadoc jar for `2.0.6`, but not a `test-sources` artifact for `io.javaslang:javaslang`. The right test-suite target is the `javaslang-v2.0.6` tag in the Vavr repository, where the `javaslang/src/test/java/javaslang` tree is present.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/javaslang/javaslang-parent/2.0.6/javaslang-parent-2.0.6.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 0ms:
+<!--
+
+Before creating a pull request, the following goals should be executed locally:
+
+* Executing tests: `mvn clean test`
+* Executing doclint: `mvn javadoc:javadoc`
+* Executing code coverage report: `mvn -P ci clean test jacoco:report`
+
+Run benchmarks:
+
+* `mvn test -Pbenchmark -pl javaslang`
+
+We use these goals frequently to keep the dependencies and plugins up-to-date:
+
+* Update version properties: `mvn versions:update-properties`
+* Check for new plugin version: `mvn versions:display-plugin-updates`
+
+Note: The maven build currently needs to be started from the javaslang root dir
+      because the code generators write to hard-coded relative directories.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <prerequisites>
+        <maven>3.0.4</maven>
+    </prerequisites>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+    <groupId>io.javaslang</groupId>
+    <artifactId>javaslang-parent</artifactId>
+    <version>2.0.6</version>
+    <packaging>pom</packaging>
+    <name>Javaslang Parent</name>
+    <description>Javaslang is a Java standard library extension built for Java 8 and above.</description>
+    <modules>
+        <module>javaslang</module>
+        <module>javaslang-match</module>
+        <module>javaslang-pure</module>
+        <module>javaslang-test</module>
+    </modules>
+    <url>http://javaslang.io</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:javaslang/javaslang.git</connection>
+        <developerConnection>scm:git:git@github.com:javaslang/javaslang.git</developerConnection>
+        <url>git@github.com:javaslang/javaslang.git</url>
+        <tag>v2.0.6</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>danieldietrich</id>
+            <name>Daniel Dietrich</name>
+            <email>cafebab3@gmail.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <assertj.core.version>3.3.0</assertj.core.version>
+        <eclipse.lifecycle.mapping.version>1.0.0</eclipse.lifecycle.mapping.version>
+        <java.version>1.8</java.version>
+        <jmh.version>1.11.3</jmh.version>
+        <junit.version>4.12</junit.version>
+        <maven.build-helper.version>1.9.1</maven.build-helper.version>
+        <maven.bundle.version>3.0.1</maven.bundle.version>
+        <maven.clean.plugin>2.6.1</maven.clean.plugin>
+        <maven.compiler.version>3.2</maven.compiler.version>
+        <maven.deploy.version>2.8.2</maven.deploy.version>
+        <maven.gpg.version>1.5</maven.gpg.version>
+        <maven.jacoco.version>0.7.2.201409121644</maven.jacoco.version>
+        <maven.jar.version>2.6</maven.jar.version>
+        <maven.javadoc.version>2.10.3</maven.javadoc.version>
+        <maven.release.version>2.5.1</maven.release.version>
+        <maven.versions.version>2.1</maven.versions.version>
+        <scala.maven.version>3.2.2</scala.maven.version>
+        <scala.version>2.11.7</scala.version>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-core</artifactId>
+                <version>${jmh.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-generator-annprocess</artifactId>
+                <version>${jmh.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${maven.versions.version}</version>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven.release.version}</version>
+                    <configuration>
+                        <!-- Simple tag names -->
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                        <!-- Circumvent maven-gpg-plugin bug -->
+                        <mavenExecutorId>forked-path</mavenExecutorId>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <!-- Honor arguments passed via command line -->
+                        <arguments>${arguments} -Psonatype-oss-release</arguments>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${maven.build-helper.version}</version>
+                    <executions>
+                        <execution>
+                            <id>add-source</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>${project.basedir}/src-gen/main/java</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>add-test-source</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-test-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>${project.basedir}/src-gen/test/java</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <showDeprecation>true</showDeprecation>
+                        <showWarnings>true</showWarnings>
+                        <compilerArgs>
+                            <arg>-Xlint:all</arg>
+                            <arg>-Werror</arg>
+                            <!-- Workaround for JDK bug https://bugs.openjdk.java.net/browse/JDK-6999068 -->
+                            <arg>-Xlint:-processing</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven.deploy.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven.jar.version}</version>
+                    <configuration>
+                        <archive>
+                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven.javadoc.version}</version>
+                    <configuration>
+                        <links>
+                            <link>https://docs.oracle.com/javase/8/docs/api/</link>
+                        </links>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${maven.bundle.version}</version>
+                    <executions>
+                        <execution>
+                            <id>bundle-manifest</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>manifest</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <profiles>
+        <profile>
+            <!-- Use `mvn clean test -DskipGen` to skip the code generator -->
+            <id>gen</id>
+            <activation>
+                <property>
+                    <name>!skipGen</name>
+                </property>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-clean-plugin</artifactId>
+                            <version>${maven.clean.plugin}</version>
+                            <executions>
+                                <execution>
+                                    <id>clean-generated-sources</id>
+                                    <phase>generate-sources</phase>
+                                    <goals>
+                                        <goal>clean</goal>
+                                    </goals>
+                                    <configuration>
+                                        <filesets>
+                                            <fileset>
+                                                <directory>${project.basedir}/src-gen</directory>
+                                            </fileset>
+                                        </filesets>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>net.alchim31.maven</groupId>
+                            <artifactId>scala-maven-plugin</artifactId>
+                            <version>${scala.maven.version}</version>
+                            <configuration>
+                                <scalaVersion>${scala.version}</scalaVersion>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <phase>generate-sources</phase>
+                                    <goals>
+                                        <goal>script</goal>
+                                    </goals>
+                                    <configuration>
+                                        <scriptFile>${project.basedir}/generator/Generator.scala</scriptFile>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <!-- A profile for code coverage analysis in ci environments -->
+        <profile>
+            <id>ci</id>
+            <activation>
+                <property>
+                    <name>env.CI</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${maven.jacoco.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- A profile for gpg-signing .jars when releasing -->
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <!-- Automatically set to true on mvn release:perform -->
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven.gpg.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- A profile for eliminating eclipse m2e warnings -->
+        <profile>
+            <id>eclipse-m2e</id>
+            <activation>
+                <property>
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.eclipse.m2e</groupId>
+                            <artifactId>lifecycle-mapping</artifactId>
+                            <version>${eclipse.lifecycle.mapping.version}</version>
+                            <configuration>
+                                <lifecycleMappingMetadata>
+                                    <pluginExecutions>
+                                        <!-- Elimate the eclipse warning 'maven-enforcer-plugin (goal "enforce")
+                                            is ignored by m2e' -->
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-enforcer-plugin</artifactId>
+                                                <versionRange>[0,)</versionRange>
+                                                <goals>
+                                                    <goal>enforce</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-clean-plugin</artifactId>
+                                                <versionRange>[0,)</versionRange>
+                                                <goals>
+                                                    <goal>clean</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>net.alchim31.maven</groupId>
+                                                <artifactId>scala-maven-plugin</artifactId>
+                                                <versionRange>[0,)</versionRange>
+                                                <goals>
+                                                    <goal>script</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.felix</groupId>
+                                                <artifactId>maven-bundle-plugin</artifactId>
+                                                <versionRange>[0,)</versionRange>
+                                                <goals>
+                                                    <goal>manifest</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                    </pluginExecutions>
+                                </lifecycleMappingMetadata>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>benchmark</id>
+            <modules>
+                <module>javaslang</module>
+                <module>javaslang-match</module>
+                <module>javaslang-pure</module>
+                <module>javaslang-test</module>
+                <module>javaslang-benchmark</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Benchmark.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/javaslang/javaslang/2.0.6/javaslang-2.0.6-test-sources.jar || true' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/vavr-io/vavr/tree/javaslang-v2.0.6/javaslang/src/test/java/javaslang' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 242ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 18:26:25 GMT
+content-type: text/html
+cf-ray: 9f61505a9efda032-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/javaslang/javaslang/2.0.6/javaslang-2.0.6-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 583ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:26:25 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"949ad41b8b597d8afd4038cdff38bb5d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=wN6RYa73PuK9ptxuKKAmzY0W6%2B%2FVOeQy%2BZnIzrmWnx0hc%2F9IAuE76EgHA3dDMKU%2F2lyhcJscyEgrCbXVECzT8O0jYrVZ30tmBJp90I60BjVcBb9zWdBBxN6dl9VI%2FoTad%2F8vXMcKITN3IcPxOZfcH5YjwIajlv1FDzT1NqGTUFQuokNl3ARHY8RDFLGjFtAZtsPdsIYCHxBJEXJubt8pdnZ%2Fhe6ld8Ar7Tr%2BQzBKfeHmoVJMNNhkxy%2BZTaWDqt9swxJ%2BY1tAhwsynjwwONuhqg%3D%3D--bGej%2BfqQHneZNFR9--qxU3%2FNn1BSsUKCZQq%2FkVbg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.223871567.1777832785; expires=Mon, 03 May 2027 18:26:25 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:26:25 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510D:17BC2E:82E0C93:6105DBE:69F79351
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/javaslang/javaslang/2.0.6/javaslang-2.0.6-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/io/javaslang/javaslang/2.0.6/javaslang-2.0.6-javadoc.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+exec
+/usr/bin/bash -lc "curl -fsIL https://github.com/javaslang/javaslang | sed -n '1,40p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang?ref=javaslang-v2.0.6 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 204ms:
+[
+  {
+    "name": "AbstractValueTest.java",
+    "path": "javaslang/src/test/java/javaslang/AbstractValueTest.java",
+    "sha": "d660590c88bbf1d93d11fc321a1733cf2e262cfa",
+    "size": 23285,
+    "url": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/AbstractValueTest.java?ref=javaslang-v2.0.6",
+    "html_url": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/AbstractValueTest.java",
+    "git_url": "https://api.github.com/repos/vavr-io/vavr/git/blobs/d660590c88bbf1d93d11fc321a1733cf2e262cfa",
+    "download_url": "https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang/src/test/java/javaslang/AbstractValueTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/AbstractValueTest.java?ref=javaslang-v2.0.6",
+      "git": "https://api.github.com/repos/vavr-io/vavr/git/blobs/d660590c88bbf1d93d11fc321a1733cf2e262cfa",
+      "html": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/AbstractValueTest.java"
+    }
+  },
+  {
+    "name": "AssertionsExtensions.java",
+    "path": "javaslang/src/test/java/javaslang/AssertionsExtensions.java",
+    "sha": "0335554791e1e28842c740798b5f0bd501973e58",
+    "size": 1249,
+    "url": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/AssertionsExtensions.java?ref=javaslang-v2.0.6",
+    "html_url": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/AssertionsExtensions.java",
+    "git_url": "https://api.github.com/repos/vavr-io/vavr/git/blobs/0335554791e1e28842c740798b5f0bd501973e58",
+    "download_url": "https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang/src/test/java/javaslang/AssertionsExtensions.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/AssertionsExtensions.java?ref=javaslang-v2.0.6",
+      "git": "https://api.github.com/repos/vavr-io/vavr/git/blobs/0335554791e1e28842c740798b5f0bd501973e58",
+      "html": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/AssertionsExtensions.java"
+    }
+  },
+  {
+    "name": "IterableTest.java",
+    "path": "javaslang/src/test/java/javaslang/IterableTest.java",
+    "sha": "86851607d2b312d798dec50e6d3d3d75798820f0",
+    "size": 1774,
+    "url": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/IterableTest.java?ref=javaslang-v2.0.6",
+    "html_url": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/IterableTest.java",
+    "git_url": "https://api.github.com/repos/vavr-io/vavr/git/blobs/86851607d2b312d798dec50e6d3d3d75798820f0",
+    "download_url": "https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang/src/test/java/javaslang/IterableTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/IterableTest.java?ref=javaslang-v2.0.6",
+      "git": "https://api.github.com/repos/vavr-io/vavr/git/blobs/86851607d2b312d798dec50e6d3d3d75798820f0",
+      "html": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/IterableTest.java"
+    }
+  },
+  {
+    "name": "JavaCollections.java",
+    "path": "javaslang/src/test/java/javaslang/JavaCollections.java",
+    "sha": "1c8dcca95c469fe2bf058be6f88aff0126fe5eee",
+    "size": 1223,
+    "url": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/JavaCollections.java?ref=javaslang-v2.0.6",
+    "html_url": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/JavaCollections.java",
+    "git_url": "https://api.github.com/repos/vavr-io/vavr/git/blobs/1c8dcca95c469fe2bf058be6f88aff0126fe5eee",
+    "download_url": "https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang/src/test/java/javaslang/JavaCollections.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/JavaCollections.java?ref=javaslang-v2.0.6",
+      "git": "https://api.github.com/repos/vavr-io/vavr/git/blobs/1c8dcca95c469fe2bf058be6f88aff0126fe5eee",
+      "html": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/JavaCollections.java"
+    }
+  },
+  {
+    "name": "LazyTest.java",
+    "path": "javaslang/src/test/java/javaslang/LazyTest.java",
+    "sha": "35a89f2b6a2506f0ecfce39f2efb58615fd42a5c",
+    "size": 8678,
+    "url": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/LazyTest.java?ref=javaslang-v2.0.6",
+    "html_url": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/LazyTest.java",
+    "git_url": "https://api.github.com/repos/vavr-io/vavr/git/blobs/35a89f2b6a2506f0ecfce39f2efb58615fd42a5c",
+    "download_url": "https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang/src/test/java/javaslang/LazyTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/LazyTest.java?ref=javaslang-v2.0.6",
+      "git": "https://api.github.com/repos/vavr-io/vavr/git/blobs/35a89f2b6a2506f0ecfce39f2efb58615fd42a5c",
+      "html": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/LazyTest.java"
+    }
+  },
+  {
+    "name": "MatchErrorTest.java",
+    "path": "javaslang/src/test/java/javaslang/MatchErrorTest.java",
+    "sha": "c8659e9bf0dbb5f4492829403881fa3a1b1e0999",
+    "size": 1026,
+    "url": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/MatchErrorTest.java?ref=javaslang-v2.0.6",
+    "html_url": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchErrorTest.java",
+    "git_url": "https://api.github.com/repos/vavr-io/vavr/git/blobs/c8659e9bf0dbb5f4492829403881fa3a1b1e0999",
+    "download_url": "https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchErrorTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/MatchErrorTest.java?ref=javaslang-v2.0.6",
+      "git": "https://api.github.com/repos/vavr-io/vavr/git/blobs/c8659e9bf0dbb5f4492829403881fa3a1b1e0999",
+      "html": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchErrorTest.java"
+    }
+  },
+  {
+    "name": "MatchTest.java",
+    "path": "javaslang/src/test/java/javaslang/MatchTest.java",
+    "sha": "599e4d4a9ffc9f06e830c4f93a5705e3b93fd466",
+    "size": 11626,
+    "url": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/MatchTest.java?ref=javaslang-v2.0.6",
+    "html_url": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchTest.java",
+    "git_url": "https://api.github.com/repos/vavr-io/vavr/git/blobs/599e4d4a9ffc9f06e830c4f93a5705e3b93fd466",
+    "download_url": "https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/MatchTest.java?ref=javaslang-v2.0.6",
+      "git": "https://api.github.com/repos/vavr-io/vavr/git/blobs/599e4d4a9ffc9f06e830c4f93a5705e3b93fd466",
+      "html": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchTest.java"
+    }
+  },
+  {
+    "name": "PredicatesTest.java",
+    "path": "javaslang/src/test/java/javaslang/PredicatesTest.java",
+    "sha": "9a480747f22ec998139c20a741c0284035867eae",
+    "size": 3276,
+    "url": "https://api.github.com/repos/vavr-io/vavr/contents/javaslang/src/test/java/javaslang/PredicatesTest.java?ref=javaslang-v2.0.6",
+    "html_url": "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/PredicatesTest.java",
+
+ succeeded in 453ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:26:30 GMT
+content-type: application/java-archive
+content-length: 1449588
+cf-ray: 9f61507c5e7a2680-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "6b79740bbe5b330a651a4232c6bec9aa"
+last-modified: Tue, 04 Apr 2017 07:56:32 GMT
+x-checksum-md5: 6b79740bbe5b330a651a4232c6bec9aa
+x-checksum-sha1: fb76797e1b97a4cc00d19207815ff527bd8ab3bf
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 810ms:
+HTTP/2 301 
+date: Sun, 03 May 2026 18:26:30 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/vavr-io/vavr
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=q8EEUOJd4l7CjcbfkUIRGR%2Fk3pmp0NghsU5IdRyv7bwSiJjvDhV1iaZ3lh5JQ8MXSN7xR4VDgf4BO%2Fi3uQTSFUZ%2Fj05Y4jX0SfsI0yQ%2FmTAIjnh%2FJJiKTeEY%2BT4KE1q01n4hoZ3RCedV2rXW%2F0u4xw3TWi7ZZl8o4O8efLrlVuWQltD36d%2FzuLJ%2B0bisljFglXRvidTH5b%2FfuN3mRJCJHaVUwxUzs9OyD806Hqu9CPh%2BHAAsDIyRSQzQQsW8JyDyEIXoOBUBPx2M1M1eQGnUbg%3D%3D--nzsQulsMfPjZri%2Bx--eRNAG88wYgzs4eupUB6L%2Fw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1596072491.1777832790; expires=Mon, 03 May 2027 18:26:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:26:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5102:17F6EE:85894F5:630A789:69F79356
+
+HTTP/2 200 
+date: Sun, 03 May 2026 18:26:31 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"cc08319409c5dca50fc87a050acd2b9b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=VpCdhAOkXuasfAZh8G7cHd3xDTwN4QXneApnthU3faWAudqeeqSOqA0A36IZiPxNKXURzSpwx30rd7gYuv9nDwE9wJ2xfdGPMSSZI5eiSkMJ3RfNp1%2FLHRPvFwBIFY8PjghwEu%2B11wJp4FmDBGof6g0H%2Bi7zbfDEPKOktRykxTUmcNifNhGr%2F1cbGlOTTCZmrG05iWb8LFIePThpXNdaFUVp4KKEMxfl84Cheq%2FecPu4Aw8tHjP%2BrJPnmUsb7c4UXNz%2Fap6M8ORyjQVAZohYvA%3D%3D--DwCac%2BTGuF265kJj--Qu%2B8rFzfIr50dZAqZPQPyA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1149862734.1777832790; expires=Mon, 03 May 2027 18:26:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:26:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5102:17F6EE:8589701:630A8D5:69F79356
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/vavr-io/vavr/tree/v2.0.6/javaslang/src/test/java/javaslang || true' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vavr-io/vavr/git/ref/tags/javaslang-v2.0.6 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/vavr-io/vavr/git/ref/tags/v2.0.6 | sed -n '1,80p' || true" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 195ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 198ms:
+{
+  "ref": "refs/tags/javaslang-v2.0.6",
+  "node_id": "MDM6UmVmMTYzNzg4Nzk6cmVmcy90YWdzL2phdmFzbGFuZy12Mi4wLjY=",
+  "url": "https://api.github.com/repos/vavr-io/vavr/git/refs/tags/javaslang-v2.0.6",
+  "object": {
+    "sha": "e8ad5f3a857b0c408da18836cb3b6a849f56a885",
+    "type": "tag",
+    "url": "https://api.github.com/repos/vavr-io/vavr/git/tags/e8ad5f3a857b0c408da18836cb3b6a849f56a885"
+  }
+}
+
+ succeeded in 354ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 18:26:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=jY%2BCSBG46JJscGVuudJ2R8YGSpH74iF7ySJE1UJ2mlIUuuSmXbWJKUuszPILu87eveDBJvrs1F0prsK6Bv5RP5m%2BPcqZIrIp8zV5rJoCJLWax%2F70dzCReE9D015jwUQob7xM3E8n%2FXxh95rxpWMSqYBhZI9KPglknJ%2BdptzPMe3%2BrH%2Fr%2BMVNWY7pu5ChV6GRHxeHE2yeIy%2FZ6QBCgO8%2BKwYPhXrEkOiGZLmBN6EFnu9b0MY%2BL9S0pWyG4YYb4Nct%2F7aIm2xsVZf85ydd8OtvCg%3D%3D--JfaNpauYl3eSjyhV--DgJKpqXf%2Fot8o7OQ78VopQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2140575882.1777832799; expires=Mon, 03 May 2027 18:26:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:26:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5117:F99DF:873FDA9:644487C:69F7935F
+
+
+codex
+I’ve got enough evidence to make the metadata change: Maven-hosted source and javadoc jars, GitHub test tree on `javaslang-v2.0.6`, JVM jar packaging, and no Kotlin/Groovy/Scala language marker needed.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+diff --git a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+index dfda2897abb093a734a97534506b155a3f05e010..d9203be5e08f161680b2bc2b2d51d1413213a2c8
+--- a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
++++ b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.javaslang:javaslang:2.0.6"
++  "coordinates" : "io.javaslang:javaslang:2.0.6",
++  "repository-url" : "https://github.com/vavr-io/vavr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vavr-io/vavr/tree/javaslang-v$version$/javaslang/src/test/java/javaslang",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-javadoc.jar",
++  "description" : "Javaslang is a Java functional programming library that extends the standard Java library with persistent collections, tuples, functions, pattern matching helpers, and control types such as Option, Try, Either, and Future. It lets Java 8 applications model immutable data and compose computations in a Scala-inspired style while remaining a regular JVM jar."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+index dfda2897abb093a734a97534506b155a3f05e010..d9203be5e08f161680b2bc2b2d51d1413213a2c8
+--- a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
++++ b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.javaslang:javaslang:2.0.6"
++  "coordinates" : "io.javaslang:javaslang:2.0.6",
++  "repository-url" : "https://github.com/vavr-io/vavr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vavr-io/vavr/tree/javaslang-v$version$/javaslang/src/test/java/javaslang",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-javadoc.jar",
++  "description" : "Javaslang is a Java functional programming library that extends the standard Java library with persistent collections, tuples, functions, pattern matching helpers, and control types such as Option, Try, Either, and Future. It lets Java 8 applications model immutable data and compose computations in a Scala-inspired style while remaining a regular JVM jar."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 0ms:
+{
+  "coordinates": "io.javaslang:javaslang:2.0.6",
+  "repository-url": "https://github.com/vavr-io/vavr",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-sources.jar",
+  "test-code-url": "https://github.com/vavr-io/vavr/tree/javaslang-v$version$/javaslang/src/test/java/javaslang",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-javadoc.jar",
+  "description": "Javaslang is a Java functional programming library that extends the standard Java library with persistent collections, tuples, functions, pattern matching helpers, and control types such as Option, Try, Either, and Future. It lets Java 8 applications model immutable data and compose computations in a Scala-inspired style while remaining a regular JVM jar."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/javaslang/javaslang/2.0.6/javaslang-2.0.6-sources.jar >/dev/null && curl -fsI https://repo.maven.apache.org/maven2/io/javaslang/javaslang/2.0.6/javaslang-2.0.6-javadoc.jar >/dev/null && curl -fsI https://github.com/vavr-io/vavr/tree/javaslang-v2.0.6/javaslang/src/test/java/javaslang >/dev/null' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+diff --git a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+index dfda2897abb093a734a97534506b155a3f05e010..d9203be5e08f161680b2bc2b2d51d1413213a2c8
+--- a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
++++ b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.javaslang:javaslang:2.0.6"
++  "coordinates" : "io.javaslang:javaslang:2.0.6",
++  "repository-url" : "https://github.com/vavr-io/vavr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vavr-io/vavr/tree/javaslang-v$version$/javaslang/src/test/java/javaslang",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-javadoc.jar",
++  "description" : "Javaslang is a Java functional programming library that extends the standard Java library with persistent collections, tuples, functions, pattern matching helpers, and control types such as Option, Try, Either, and Future. It lets Java 8 applications model immutable data and compose computations in a Scala-inspired style while remaining a regular JVM jar."
+ }
+
+ succeeded in 192ms:
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a
+diff --git a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+index dfda2897abb093a734a97534506b155a3f05e010..d9203be5e08f161680b2bc2b2d51d1413213a2c8
+--- a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
++++ b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.javaslang:javaslang:2.0.6"
++  "coordinates" : "io.javaslang:javaslang:2.0.6",
++  "repository-url" : "https://github.com/vavr-io/vavr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vavr-io/vavr/tree/javaslang-v$version$/javaslang/src/test/java/javaslang",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-javadoc.jar",
++  "description" : "Javaslang is a Java functional programming library that extends the standard Java library with persistent collections, tuples, functions, pattern matching helpers, and control types such as Option, Try, Either, and Future. It lets Java 8 applications model immutable data and compose computations in a Scala-inspired style while remaining a regular JVM jar."
+ }
+
+ succeeded in 149ms:
+codex
+Updated [io.javaslang-javaslang-2.0.6.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json:1).
+
+I set the repository, Maven source/javadoc URLs, GitHub tagged test-suite URL, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because this is a regular JVM jar artifact. JSON validation passed with `jq`, and the rendered source, javadoc, and test URLs all returned successfully.
+diff --git a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+index dfda2897abb093a734a97534506b155a3f05e010..d9203be5e08f161680b2bc2b2d51d1413213a2c8
+--- a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
++++ b/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.javaslang:javaslang:2.0.6"
++  "coordinates" : "io.javaslang:javaslang:2.0.6",
++  "repository-url" : "https://github.com/vavr-io/vavr",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-sources.jar",
++  "test-code-url" : "https://github.com/vavr-io/vavr/tree/javaslang-v$version$/javaslang/src/test/java/javaslang",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang/$version$/javaslang-$version$-javadoc.jar",
++  "description" : "Javaslang is a Java functional programming library that extends the standard Java library with persistent collections, tuples, functions, pattern matching helpers, and control types such as Option, Try, Either, and Future. It lets Java 8 applications model immutable data and compose computations in a Scala-inspired style while remaining a regular JVM jar."
+ }
+
+tokens used
+46,046
+Updated [io.javaslang-javaslang-2.0.6.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a/build/discovered-artifact-metadata/io.javaslang-javaslang-2.0.6.json:1).
+
+I set the repository, Maven source/javadoc URLs, GitHub tagged test-suite URL, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because this is a regular JVM jar artifact. JSON validation passed with `jq`, and the rendered source, javadoc, and test URLs all returned successfully.
+Ran agent for io.javaslang:javaslang:2.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a/build/agent-artifact-discovery-logs/io.javaslang-javaslang-2.0.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2744-6ed0ef9a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 5s
+9 actionable tasks: 4 executed, 5 from cache
