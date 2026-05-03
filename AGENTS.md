@@ -1,5 +1,8 @@
 # Development Cheat Sheet
 
+## Talk
+- Duration: 50 minutes, including questions.
+
 ## Prerequisites (assume exists)
 - JAVA_HOME set to JDK 21 (GraalVM recommended to match CI)
 - Docker
