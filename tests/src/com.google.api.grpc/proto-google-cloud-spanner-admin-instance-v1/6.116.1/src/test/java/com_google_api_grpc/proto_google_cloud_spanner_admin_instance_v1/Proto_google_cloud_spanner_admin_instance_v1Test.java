@@ -8,7 +8,15 @@ package com_google_api_grpc.proto_google_cloud_spanner_admin_instance_v1;
 
 import java.util.List;
 
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.GetPolicyOptions;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.longrunning.Operation;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
@@ -59,6 +67,7 @@ import com.google.spanner.admin.instance.v1.UpdateInstanceMetadata;
 import com.google.spanner.admin.instance.v1.UpdateInstancePartitionMetadata;
 import com.google.spanner.admin.instance.v1.UpdateInstancePartitionRequest;
 import com.google.spanner.admin.instance.v1.UpdateInstanceRequest;
+import com.google.type.Expr;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -360,6 +369,66 @@ public class Proto_google_cloud_spanner_admin_instance_v1Test {
                 .isEqualTo(FulfillmentPeriod.FULFILLMENT_PERIOD_NORMAL);
         assertThat(updateInstanceMetadata.getExpectedFulfillmentPeriod())
                 .isEqualTo(FulfillmentPeriod.FULFILLMENT_PERIOD_EXTENDED);
+    }
+
+    @Test
+    void createsIamPolicyRequestsForInstanceAdminResources() {
+        String instanceResource = InstanceName.format(PROJECT, INSTANCE_ID);
+        Binding adminBinding = Binding.newBuilder()
+                .setRole("roles/spanner.admin")
+                .addMembers("user:admin@example.com")
+                .build();
+        Binding conditionalReaderBinding = Binding.newBuilder()
+                .setRole("roles/spanner.viewer")
+                .addMembers("group:readers@example.com")
+                .setCondition(Expr.newBuilder()
+                        .setTitle("limited-access")
+                        .setDescription("Only grant viewer access for approved requests.")
+                        .setExpression("request.auth.claims.approved == true"))
+                .build();
+        Policy policy = Policy.newBuilder()
+                .setVersion(3)
+                .addBindings(adminBinding)
+                .addBindings(conditionalReaderBinding)
+                .setEtag(ByteString.copyFromUtf8("policy-etag"))
+                .build();
+
+        SetIamPolicyRequest setPolicy = SetIamPolicyRequest.newBuilder()
+                .setResource(instanceResource)
+                .setPolicy(policy)
+                .setUpdateMask(FieldMask.newBuilder().addPaths("bindings").addPaths("etag"))
+                .build();
+        GetIamPolicyRequest getPolicy = GetIamPolicyRequest.newBuilder()
+                .setResource(instanceResource)
+                .setOptions(GetPolicyOptions.newBuilder().setRequestedPolicyVersion(3))
+                .build();
+        TestIamPermissionsRequest testPermissions = TestIamPermissionsRequest.newBuilder()
+                .setResource(instanceResource)
+                .addPermissions("spanner.instances.get")
+                .addPermissions("spanner.instances.update")
+                .build();
+        TestIamPermissionsResponse permissionsResponse = TestIamPermissionsResponse.newBuilder()
+                .addPermissions("spanner.instances.get")
+                .build();
+        Descriptors.ServiceDescriptor instanceAdminService =
+                SpannerInstanceAdminProto.getDescriptor().findServiceByName("InstanceAdmin");
+
+        assertThat(setPolicy.getResource()).isEqualTo(instanceResource);
+        assertThat(setPolicy.getPolicy().getVersion()).isEqualTo(3);
+        assertThat(setPolicy.getPolicy().getBindingsList()).containsExactly(adminBinding, conditionalReaderBinding);
+        assertThat(setPolicy.getPolicy().getBindings(1).getCondition().getExpression())
+                .isEqualTo("request.auth.claims.approved == true");
+        assertThat(setPolicy.getUpdateMask().getPathsList()).containsExactly("bindings", "etag");
+        assertThat(getPolicy.getOptions().getRequestedPolicyVersion()).isEqualTo(3);
+        assertThat(testPermissions.getPermissionsList())
+                .containsExactly("spanner.instances.get", "spanner.instances.update");
+        assertThat(permissionsResponse.getPermissionsList()).containsExactly("spanner.instances.get");
+        assertThat(instanceAdminService.findMethodByName("SetIamPolicy").getInputType().getFullName())
+                .isEqualTo("google.iam.v1.SetIamPolicyRequest");
+        assertThat(instanceAdminService.findMethodByName("GetIamPolicy").getOutputType().getFullName())
+                .isEqualTo("google.iam.v1.Policy");
+        assertThat(instanceAdminService.findMethodByName("TestIamPermissions").getOutputType().getFullName())
+                .isEqualTo("google.iam.v1.TestIamPermissionsResponse");
     }
 
     @Test
