@@ -21,6 +21,7 @@ import org.parboiled2.Parser
 import org.parboiled2.ParserInput
 import org.parboiled2.Rule0
 import org.parboiled2.Rule1
+import org.parboiled2.StringBuilding
 import org.parboiled2.support.hlist.::
 import org.parboiled2.support.hlist.HNil
 import org.parboiled2.util.Base64
@@ -113,6 +114,13 @@ class Parboiled_3Test {
     assertThat(CharPredicate.Empty.negated.matchesAny("x")).isTrue
   }
 
+  @Test
+  def buildsQuotedTextWithStringBuilderActions(): Unit = {
+    val parsed: String = new QuotedTextParser(ParserInput("\"Hello\\n\\\"Scala\\\"\\\\3\"")).QuotedText.run().get
+
+    assertThat(parsed).isEqualTo("Hello\n\"Scala\"\\3")
+  }
+
   private def parseAssignment(input: String): scala.util.Try[Assignment] =
     new AssignmentParser(ParserInput(input)).InputLine.run()
 }
@@ -158,6 +166,18 @@ final class CommandParser(val input: ParserInput) extends Parser {
 }
 
 final class Base64RuleParser(val input: ParserInput) extends Parser with Base64Parsing
+
+final class QuotedTextParser(val input: ParserInput) extends Parser with StringBuilding {
+  def QuotedText: Rule1[String] = rule {
+    '"' ~ clearSB() ~ zeroOrMore(EscapedChar | PlainChar) ~ '"' ~ EOI ~ push(sb.toString)
+  }
+
+  def EscapedChar: Rule0 = rule {
+    '\\' ~ ('n' ~ appendSB('\n') | 't' ~ appendSB('\t') | '"' ~ appendSB('"') | '\\' ~ appendSB('\\'))
+  }
+
+  def PlainChar: Rule0 = rule { noneOf("\"\\") ~ appendSB() }
+}
 
 final class DynamicTokenParser(val input: ParserInput) extends Parser with DynamicRuleHandler[DynamicTokenParser, String :: HNil] {
   def Word: Rule1[String] = rule { capture(oneOrMore(CharPredicate.Alpha)) ~ EOI }
