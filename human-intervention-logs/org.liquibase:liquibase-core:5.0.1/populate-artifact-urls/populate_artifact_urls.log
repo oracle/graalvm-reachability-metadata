@@ -1,0 +1,316 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dee28-eaad-7bf1-80bc-99e7ee902040
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.liquibase:liquibase-core:5.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "5.0.1" when "$version$" is replaced with "5.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652/metadata/org.liquibase/liquibase-core/index.json
+- Entry selector: "metadata-version" = "5.0.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "5.0.1".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "5.0.1".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "5.0.1".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "5.0.1" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar
+- repository-url: https://github.com/liquibase/liquibase
+- test-code-url: https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test
+- documentation-url: https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar
+- description: Liquibase tracks, versions, and deploys database schema changes for applications. It orders database change sets for deployment, supports rollbacks, and integrates with build and CI/CD tools.
+- language: <missing>
+
+Context:
+- Coordinate version: 5.0.1
+- Entry metadata-version: 5.0.1
+- Entry test-version: 5.0.1
+codex
+I’ll verify the existing metadata entry and check the versioned Maven/GitHub URLs before touching the file, since the current values are templates and may already be correct.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"5\\.0\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.liquibase/liquibase-core/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652
+12:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+13:    "repository-url": "https://github.com/liquibase/liquibase",
+14:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-core/src/test",
+15:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+16:    "description": "Liquibase helps developers track, version, and deploy database schema changes. It automatically orders and applies change sets, supports rollbacks, and integrates with build and CI/CD tools."
+29:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+30:    "repository-url": "https://github.com/liquibase/liquibase",
+31:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-core/src/test",
+32:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+33:    "description": "Liquibase helps developers track, version, and deploy database schema changes. It automatically orders changes for deployment, supports rollbacks, and integrates with build and CI/CD tools."
+46:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+47:    "repository-url": "https://github.com/liquibase/liquibase",
+48:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+49:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+50:    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders change sets for deployment, supports rollbacks, and integrates with build and CI/CD tooling."
+64:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+65:    "repository-url": "https://github.com/liquibase/liquibase",
+66:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+67:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+68:    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders migration scripts for deployment, supports rollbacks, and integrates with build and CI/CD tools."
+87:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+88:    "repository-url": "https://github.com/liquibase/liquibase",
+89:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+90:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+91:    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders migration scripts for deployment, supports rollbacks, and integrates with build and CI/CD tools."
+98:    "metadata-version": "5.0.1",
+103:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+104:    "repository-url": "https://github.com/liquibase/liquibase",
+105:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+106:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+107:    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders database change sets for deployment, supports rollbacks, and integrates with build and CI/CD tools.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.liquibase/liquibase-core/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652
+ succeeded in 0ms:
+[
+  {
+    "default-for": "4\\.1\\d\\..*",
+    "allowed-packages": [
+      "liquibase",
+      "org.liquibase"
+    ],
+    "metadata-version": "4.17.0",
+    "tested-versions": [
+      "4.17.0"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+    "repository-url": "https://github.com/liquibase/liquibase",
+    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-core/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+    "description": "Liquibase helps developers track, version, and deploy database schema changes. It automatically orders and applies change sets, supports rollbacks, and integrates with build and CI/CD tools."
+  },
+  {
+    "default-for": "4\\.2(0|1|2)\\..*",
+    "allowed-packages": [
+      "liquibase",
+      "org.liquibase"
+    ],
+    "metadata-version": "4.20.0",
+    "test-version": "4.17.0",
+    "tested-versions": [
+      "4.20.0"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+    "repository-url": "https://github.com/liquibase/liquibase",
+    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-core/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+    "description": "Liquibase helps developers track, version, and deploy database schema changes. It automatically orders changes for deployment, supports rollbacks, and integrates with build and CI/CD tools."
+  },
+  {
+    "default-for": "4\\.23\\..*",
+    "allowed-packages": [
+      "liquibase",
+      "org.liquibase"
+    ],
+    "metadata-version": "4.23.0",
+    "test-version": "4.17.0",
+    "tested-versions": [
+      "4.23.0"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+    "repository-url": "https://github.com/liquibase/liquibase",
+    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders change sets for deployment, supports rollbacks, and integrates with build and CI/CD tooling."
+  },
+  {
+    "default-for": "^(4\\.25\\.(0|1)|4\\.26\\.0)$",
+    "allowed-packages": [
+      "liquibase",
+      "org.liquibase"
+    ],
+    "metadata-version": "4.25.0",
+    "tested-versions": [
+      "4.25.0",
+      "4.25.1",
+      "4.26.0"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+    "repository-url": "https://github.com/liquibase/liquibase",
+    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders migration scripts for deployment, supports rollbacks, and integrates with build and CI/CD tools."
+  },
+  {
+    "allowed-packages": [
+      "liquibase",
+      "org.liquibase"
+    ],
+    "metadata-version": "4.27.0",
+    "test-version": "4.25.0",
+    "tested-versions": [
+      "4.27.0",
+      "4.28.0",
+      "4.29.0",
+      "4.30.0",
+      "4.31.0",
+      "4.31.1",
+      "4.32.0",
+      "4.33.0"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+    "repository-url": "https://github.com/liquibase/liquibase",
+    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders migration scripts for deployment, supports rollbacks, and integrates with build and CI/CD tools."
+  },
+  {
+    "allowed-packages": [
+      "liquibase",
+      "org.liquibase"
+    ],
+    "metadata-version": "5.0.1",
+    "tested-versions": [
+      "5.0.1",
+      "5.0.2"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+    "repository-url": "https://github.com/liquibase/liquibase",
+    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders database change sets for deployment, supports rollbacks, and integrates with build and CI/CD tools.",
+    "latest": true
+  }
+]
+
+web search: 
+web search: https://github.com/liquibase/liquibase/tree/v5.0.1/liquibase-standard/src/test
+web search: 
+web search: repo1.maven.org maven2 org liquibase liquibase-core 5.0.1 liquibase-core-5.0.1-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/liquibase/liquibase-core/
+web search: 
+web search: https://repo1.maven.org/maven2/org/liquibase/liquibase-core/5.0.1/
+codex
+The 5.0.1 entry already has non-blank values for every requested field except `language`. I found the Maven Central 5.0.1 directory listing includes both the sources and javadoc jars, and the GitHub `v5.0.1` test path resolves to `liquibase-standard/src/test`, so I’m checking whether any file update is actually required under the “missing only” rule.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"5.0.1\")' metadata/org.liquibase/liquibase-core/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652
+ succeeded in 0ms:
+{
+  "allowed-packages": [
+    "liquibase",
+    "org.liquibase"
+  ],
+  "metadata-version": "5.0.1",
+  "tested-versions": [
+    "5.0.1",
+    "5.0.2"
+  ],
+  "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-sources.jar",
+  "repository-url": "https://github.com/liquibase/liquibase",
+  "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/$version$/liquibase-core-$version$-javadoc.jar",
+  "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders database change sets for deployment, supports rollbacks, and integrates with build and CI/CD tools.",
+  "latest": true
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/liquibase/liquibase-core/5.0.1/liquibase-core-5.0.1-sources.jar \\
+  https://repo1.maven.org/maven2/org/liquibase/liquibase-core/5.0.1/liquibase-core-5.0.1-javadoc.jar \\
+  https://github.com/liquibase/liquibase/tree/v5.0.1/liquibase-standard/src/test \\
+  https://github.com/liquibase/liquibase; do
+  printf '%s ' \""'$url"
+  curl -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652
+ succeeded in 2204ms:
+200
+https://repo1.maven.org/maven2/org/liquibase/liquibase-core/5.0.1/liquibase-core-5.0.1-javadoc.jar 200
+https://github.com/liquibase/liquibase/tree/v5.0.1/liquibase-standard/src/test 200
+https://github.com/liquibase/liquibase 200
+
+codex
+All rendered URLs returned HTTP 200. Since `language` should remain absent for this Java library and the other target fields are already populated, I’m doing a final diff check to confirm the repository stayed unchanged.
+exec
+/usr/bin/bash -lc "jq -e '.[] | select(.\"metadata-version\" == \"5.0.1\") | has(\"language\") | not' metadata/org.liquibase/liquibase-core/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652
+ succeeded in 0ms:
+true
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.liquibase/liquibase-core/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652
+ succeeded in 0ms:
+web search: 
+web search: https://repo1.maven.org/maven2/org/liquibase/liquibase-core/5.0.1/
+web search: 
+web search: 
+codex
+No edit was needed in [index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652/metadata/org.liquibase/liquibase-core/index.json:98). The `5.0.1` entry already had non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description`; `language` remains absent because `liquibase-core` is not Kotlin, Groovy, or Scala-specific.
+
+Verified the rendered Maven URLs: the `5.0.1` Maven directory contains both `liquibase-core-5.0.1-sources.jar` and `liquibase-core-5.0.1-javadoc.jar`. The GitHub test path resolves at tag `v5.0.1`, and the repository root is the canonical `liquibase/liquibase` repository. ([repo1.maven.org](https://repo1.maven.org/maven2/org/liquibase/liquibase-core/5.0.1/))
+
+Checks run: `jq` entry inspection, `curl -L` URL checks, and `git diff` confirmed no repository changes.
+tokens used
+36,161
+No edit was needed in [index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652/metadata/org.liquibase/liquibase-core/index.json:98). The `5.0.1` entry already had non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description`; `language` remains absent because `liquibase-core` is not Kotlin, Groovy, or Scala-specific.
+
+Verified the rendered Maven URLs: the `5.0.1` Maven directory contains both `liquibase-core-5.0.1-sources.jar` and `liquibase-core-5.0.1-javadoc.jar`. The GitHub test path resolves at tag `v5.0.1`, and the repository root is the canonical `liquibase/liquibase` repository. ([repo1.maven.org](https://repo1.maven.org/maven2/org/liquibase/liquibase-core/5.0.1/))
+
+Checks run: `jq` entry inspection, `curl -L` URL checks, and `git diff` confirmed no repository changes.
+Ran agent for org.liquibase:liquibase-core:5.0.1 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652/build/agent-url-discovery-logs/org.liquibase-liquibase-core-5.0.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1068-4eb8c652/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 49s
+9 actionable tasks: 4 executed, 5 from cache
