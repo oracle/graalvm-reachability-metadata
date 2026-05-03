@@ -74,6 +74,18 @@ class Zio_stacktracer_3Test {
   }
 
   @Test
+  def manuallyCreatedTraceCarriesTheTracedMarkerAndSupportsParenthesizedLocations(): Unit = {
+    val location: String = "example.Workflow(step).resume"
+    val file: String = "Workflow.scala"
+    val line: Int = 27
+    val trace: Tracer.instance.Type & Tracer.Traced = Tracer.instance(location, file, line)
+    val traced: Tracer.Traced = requireTraced(trace)
+
+    assertSame(trace.asInstanceOf[AnyRef], traced.asInstanceOf[AnyRef])
+    assertEquals(Some((location, file, line)), decode(trace))
+  }
+
+  @Test
   def tracerRejectsEmptyAndMalformedTraces(): Unit = {
     val invalidTraces: List[Tracer.instance.Type] = List(
       Tracer.instance.empty,
@@ -118,6 +130,8 @@ class Zio_stacktracer_3Test {
   private def automaticallyCapturedTrace()(using trace: Tracer.instance.Type): Tracer.instance.Type = trace
 
   private def decode(trace: Tracer.instance.Type): Option[(String, String, Int)] = Tracer.instance.unapply(trace)
+
+  private def requireTraced(trace: Tracer.Traced): Tracer.Traced = trace
 
   private def unsafeTrace(trace: String): Tracer.instance.Type = trace.asInstanceOf[Tracer.instance.Type]
 }
