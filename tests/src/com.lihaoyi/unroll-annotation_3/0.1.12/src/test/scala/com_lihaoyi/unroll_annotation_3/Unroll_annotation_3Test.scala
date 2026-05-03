@@ -44,6 +44,19 @@ class Unroll_annotation_3Test {
   }
 
   @Test
+  def secondaryConstructorAnnotationPreservesDefaultedConstruction(): Unit = {
+    val defaultTask: AnnotatedTask = new AnnotatedTask("index")
+    val sizedTask: AnnotatedTask = new AnnotatedTask("batch", itemCount = 8)
+    val priorityTask: AnnotatedTask = new AnnotatedTask("deploy", priority = true)
+    val customTask: AnnotatedTask = new AnnotatedTask("archive", 3, priority = true)
+
+    assertEquals("index:1:normal", defaultTask.description)
+    assertEquals("batch:8:normal", sizedTask.description)
+    assertEquals("deploy:1:priority", priorityTask.description)
+    assertEquals("archive:3:priority", customTask.description)
+  }
+
+  @Test
   def caseClassAnnotationPreservesCompanionCopyAndProductBehavior(): Unit = {
     val defaultOrder: AnnotatedOrder = AnnotatedOrder()
     val rushOrder: AnnotatedOrder = defaultOrder.copy(quantity = 4, expedited = true)
@@ -93,6 +106,15 @@ final class AnnotatedFormatter(private val defaultLabel: String) {
 final class AnnotatedGreeter @unroll (val greeting: String = "Hello", val punctuation: String = "!") {
   @unroll
   def greet(name: String = "world"): String = s"$greeting, $name$punctuation"
+}
+
+final class AnnotatedTask(val name: String, val itemCount: Int, val category: String) {
+  @unroll
+  def this(name: String, itemCount: Int = 1, priority: Boolean = false) = {
+    this(name, itemCount, if priority then "priority" else "normal")
+  }
+
+  def description: String = s"$name:$itemCount:$category"
 }
 
 @unroll
