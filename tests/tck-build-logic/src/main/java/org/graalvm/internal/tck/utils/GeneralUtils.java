@@ -75,10 +75,12 @@ public final class GeneralUtils {
             execSpec.setExecutable(executable);
             execSpec.setArgs(args);
             execSpec.setStandardOutput(execOutput);
+            execSpec.setErrorOutput(execOutput);
+            execSpec.setIgnoreExitValue(true);
         });
 
         if (result.getExitValue() != 0) {
-            throw new RuntimeException(errorMessage + ". See: " + execOutput);
+            throw new RuntimeException(errorMessage + ". See output:\n" + execOutput.toString(StandardCharsets.UTF_8));
         }
     }
 

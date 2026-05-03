@@ -4,6 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import argparse
+import os
 import subprocess
 import sys
 
@@ -118,6 +119,21 @@ def main(argv=None) -> int:
 
     if result.returncode != 0:
         library = f"{group}:{artifact}:{new_version}"
+        generated_metadata_file = os.path.join(
+            reachability_metadata_path,
+            "metadata",
+            group,
+            artifact,
+            new_version,
+            "reachability-metadata.json",
+        )
+        if not os.path.isfile(generated_metadata_file):
+            print(
+                "ERROR: fixTestNativeImageRun failed before generating "
+                f"{generated_metadata_file}. Skipping Codex metadata repair.",
+                file=sys.stderr,
+            )
+            return result.returncode
         print(f"[pipeline] Detected missing metadata entries for {library}. Running Codex fix.")
         codex_rc, _codex_log, _codex_timed_out = run_codex_metadata_fix(reachability_metadata_path, library)
         if codex_rc != 0:

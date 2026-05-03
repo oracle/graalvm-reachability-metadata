@@ -9,14 +9,15 @@ package org.graalvm.internal.tck;
 import org.graalvm.internal.tck.utils.GeneralUtils;
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 import org.gradle.process.ExecOperations;
-import org.gradle.api.GradleException;
 
 import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +34,7 @@ import java.util.List;
  */
 public abstract class FixTestNativeImageRun extends DefaultTask {
     private static final String GRADLEW = "gradlew";
+    private static final String REACHABILITY_METADATA_FILE = "reachability-metadata.json";
 
     private String testLibraryCoordinates;
     private String newLibraryVersion;
@@ -82,7 +84,6 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
         Coordinates baseCoords = Coordinates.parse(testLibraryCoordinates);
         String newCoordsString = baseCoords.group() + ":" + baseCoords.artifact() + ":" + newLibraryVersion;
         Coordinates newCoords = Coordinates.parse(newCoordsString);
-        MetadataGenerationUtils.makeVersionLatestInIndexJson(getLayout(), newCoords, baseCoords.version());
 
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(getLayout(), newCoordsString);
         Files.createDirectories(metadataDirectory);
@@ -94,29 +95,62 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         }
 
-        MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), newCoordsString, gradlewPath, newLibraryVersion);
+        MetadataGenerationUtils.collectMetadata(
+                getExecOperations(),
+                testsDirectory,
+                getLayout(),
+                newCoordsString,
+                gradlewPath,
+                newLibraryVersion
+        );
+        verifyGeneratedMetadata(metadataDirectory);
+        MetadataGenerationUtils.makeVersionLatestInIndexJson(getLayout(), newCoords, baseCoords.version());
 
         // At the end, attempt to run tests with the new library version.
         // If the build fails, it can be due agent's non-deterministic nature.
         GeneralUtils.printInfo("Running the test with updated metadata");
-        var execOutput = new java.io.ByteArrayOutputStream();
-        var testResult = runTestWithVersion(gradlewPath, testLibraryCoordinates, newLibraryVersion, execOutput);
+        var execOutput = new ByteArrayOutputStream();
+        var testResult = runTestWithVersion(gradlewPath, newCoordsString, newLibraryVersion, execOutput);
         if (testResult.getExitValue() != 0) {
             GeneralUtils.printInfo("Test run failed, running agent again");
-            MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), newCoordsString, gradlewPath);
-            testResult = runTestWithVersion(gradlewPath, testLibraryCoordinates, newLibraryVersion, execOutput);
+            MetadataGenerationUtils.collectMetadata(
+                    getExecOperations(),
+                    testsDirectory,
+                    getLayout(),
+                    newCoordsString,
+                    gradlewPath,
+                    newLibraryVersion
+            );
+            verifyGeneratedMetadata(metadataDirectory);
+            testResult = runTestWithVersion(gradlewPath, newCoordsString, newLibraryVersion, execOutput);
             if (testResult.getExitValue() != 0) {
                 throw new GradleException("Test run failed. See output:\n" + execOutput);
             }
         }
     }
 
-    private org.gradle.process.ExecResult runTestWithVersion(Path gradlewPath, String coords, String version, java.io.ByteArrayOutputStream execOutput) {
+    private void verifyGeneratedMetadata(Path metadataDirectory) {
+        Path metadataFile = metadataDirectory.resolve(REACHABILITY_METADATA_FILE);
+        if (!Files.isRegularFile(metadataFile)) {
+            throw new GradleException(
+                    "Metadata generation did not create " + metadataFile + ". Not updating index.json."
+            );
+        }
+    }
+
+    private org.gradle.process.ExecResult runTestWithVersion(
+            Path gradlewPath,
+            String coords,
+            String version,
+            ByteArrayOutputStream execOutput
+    ) {
         return getExecOperations().exec(execSpec -> {
             execSpec.setExecutable(gradlewPath.toString());
             execSpec.setArgs(List.of("test", "-Pcoordinates=" + coords));
             execSpec.environment("GVM_TCK_LV", version);
             execSpec.setStandardOutput(execOutput);
+            execSpec.setErrorOutput(execOutput);
+            execSpec.setIgnoreExitValue(true);
         });
     }
 }
