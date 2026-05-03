@@ -1,0 +1,1442 @@
+Starting a Gradle Daemon, 13 busy and 5 incompatible and 182 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019defd5-a928-7180-98ac-82d45723b4b8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.camel:camel-util:4.20.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.20.0" when "$version$" is replaced with "4.20.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+- Set "coordinates" to "org.apache.camel:camel-util:4.20.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.20.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata format first, then verify Apache Camel’s artifact/tag layout and Maven source/test availability before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.camel:camel-util:4.20.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+
+exec
+/usr/bin/bash -lc 'rg -n "camel-util|source-code-url|test-code-url|documentation-url" -S metadata build/discovered-artifact-metadata | head -80' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+metadata/dev.zio/zio-config_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-config/tree/v$version$/core/shared/src/test",
+metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+metadata/dev.zio/zio-stacktracer_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+metadata/dev.zio/zio-http_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-http/tree/v$version$/zio-http/jvm/src/test",
+metadata/dev.zio/zio-http_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+metadata/dev.zio/zio-internal-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-schema/tree/v$version$/zio-schema/shared/src/test/scala",
+metadata/dev.zio/zio-schema_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:7:    "test-code-url" : "N/A",
+metadata/dev.zio/zio-schema-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:31:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json:2:  "coordinates" : "org.apache.camel:camel-util:4.20.0"
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+
+web search: 
+web search: Maven Central org.apache.camel camel-util 4.20.0 sources javadoc tests jar
+web search: 
+web search: https://camel.apache.org/releases/release-4.20.0/
+codex
+The local schema matches the standard `coordinates`, repository, source/test/docs, description fields. I’ve confirmed Camel 4.20.0 is tagged as `camel-4.20.0`; next I’m checking Maven Central for classifier artifacts because the repo prefers Maven-hosted sources/tests/docs when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.camel</groupId>
+    <artifactId>core</artifactId>
+    <version>4.20.0</version>
+  </parent>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-util</artifactId>
+  <version>4.20.0</version>
+  <name>Camel :: Util</name>
+  <description>The Camel Utilities</description>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <properties>
+    <firstVersion>3.0.0</firstVersion>
+    <label>core</label>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.17</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/apache/camel/camel-4.20.0/core/camel-util/pom.xml' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 262ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/camel/camel-util/4.20.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/camel/camel-util/4.20.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="camel-util-4.20.0-javadoc.jar" title="camel-util-4.20.0-javadoc.jar">camel-util-4.20.0-javadoc.jar</a>                     2026-04-23 16:21    993478      
+<a href="camel-util-4.20.0-javadoc.jar.asc" title="camel-util-4.20.0-javadoc.jar.asc">camel-util-4.20.0-javadoc.jar.asc</a>                 2026-04-23 16:21       833      
+<a href="camel-util-4.20.0-javadoc.jar.md5" title="camel-util-4.20.0-javadoc.jar.md5">camel-util-4.20.0-javadoc.jar.md5</a>                 2026-04-23 16:21        32      
+<a href="camel-util-4.20.0-javadoc.jar.sha1" title="camel-util-4.20.0-javadoc.jar.sha1">camel-util-4.20.0-javadoc.jar.sha1</a>                2026-04-23 16:21        40      
+<a href="camel-util-4.20.0-sources.jar" title="camel-util-4.20.0-sources.jar">camel-util-4.20.0-sources.jar</a>                     2026-04-23 16:21    165620      
+<a href="camel-util-4.20.0-sources.jar.asc" title="camel-util-4.20.0-sources.jar.asc">camel-util-4.20.0-sources.jar.asc</a>                 2026-04-23 16:21       833      
+<a href="camel-util-4.20.0-sources.jar.md5" title="camel-util-4.20.0-sources.jar.md5">camel-util-4.20.0-sources.jar.md5</a>                 2026-04-23 16:21        32      
+<a href="camel-util-4.20.0-sources.jar.sha1" title="camel-util-4.20.0-sources.jar.sha1">camel-util-4.20.0-sources.jar.sha1</a>                2026-04-23 16:21        40      
+<a href="camel-util-4.20.0.jar" title="camel-util-4.20.0.jar">camel-util-4.20.0.jar</a>                             2026-04-23 16:21    266977      
+<a href="camel-util-4.20.0.jar.asc" title="camel-util-4.20.0.jar.asc">camel-util-4.20.0.jar.asc</a>                         2026-04-23 16:21       833      
+<a href="camel-util-4.20.0.jar.md5" title="camel-util-4.20.0.jar.md5">camel-util-4.20.0.jar.md5</a>                         2026-04-23 16:21        32      
+<a href="camel-util-4.20.0.jar.sha1" title="camel-util-4.20.0.jar.sha1">camel-util-4.20.0.jar.sha1</a>                        2026-04-23 16:21        40      
+<a href="camel-util-4.20.0.pom" title="camel-util-4.20.0.pom">camel-util-4.20.0.pom</a>                             2026-04-23 16:21      2251      
+<a href="camel-util-4.20.0.pom.asc" title="camel-util-4.20.0.pom.asc">camel-util-4.20.0.pom.asc</a>                         2026-04-23 16:21       833      
+<a href="camel-util-4.20.0.pom.md5" title="camel-util-4.20.0.pom.md5">camel-util-4.20.0.pom.md5</a>                         2026-04-23 16:21        32      
+<a href="camel-util-4.20.0.pom.sha1" title="camel-util-4.20.0.pom.sha1">camel-util-4.20.0.pom.sha1</a>                        2026-04-23 16:21        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 237ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>core</artifactId>
+        <version>4.20.0</version>
+    </parent>
+
+    <artifactId>camel-util</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Camel :: Util</name>
+    <description>The Camel Utilities</description>
+
+    <properties>
+        <firstVersion>3.0.0</firstVersion>
+        <label>core</label>
+    </properties>
+
+    <dependencies>
+
+        <!-- required dependencies by camel-util -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- testing -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- logging -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- Required by camel-spring-xml and possibly others which unpack the sources -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <links>
+                        <link>https://docs.oracle.com/en/java/javase/${jdk.version}/docs/api/</link>
+                        <link>https://docs.oracle.com/javaee/7/api/</link>
+                    </links>
+                    <isOffline>${camel.javadoc.offline}</isOffline>
+                    <linksource>true</linksource>
+                    <maxmemory>256m</maxmemory>
+                    <groups>
+                        <group>
+                            <title>Camel API</title>
+                            <packages>org.apache.camel</packages>
+                        </group>
+                        <group>
+                            <title>Fluent API (DSL) for building EIP rules</title>
+                            <packages>org.apache.camel.builder:org.apache.camel.builder.*</packages>
+                        </group>
+                        <group>
+                            <title>EIP model</title>
+                            <packages>org.apache.camel.model:org.apache.camel.model.*</packages>
+                        </group>
+                        <group>
+                            <title>Camel Components</title>
+                            <packages>org.apache.camel.component:org.apache.camel.component.*</packages>
+                        </group>
+                        <group>
+                            <title>Language APIs and plugins for Expressions and Predicates</title>
+                            <packages>org.apache.camel.language:org.apache.camel.language.*</packages>
+                        </group>
+                        <group>
+                            <title>Processors to implement the Enterprise Integration Patterns</title>
+                            <packages>org.apache.camel.processor:org.apache.camel.processor.*</packages>
+                        </group>
+                        <group>
+                            <title>Strategy APIs for implementors extending Camel</title>
+                            <packages>org.apache.camel.spi</packages>
+                        </group>
+                        <group>
+                            <title>Support APIs for implementors</title>
+                            <packages>org.apache.camel.support:org.apache.camel.support.*</packages>
+                        </group>
+                        <group>
+                            <title>Management (JMX) API</title>
+                            <packages>
+                                org.apache.camel.management:org.apache.camel.management.*:org.apache.camel.api.management.mbean
+                            </packages>
+                        </group>
+                        <group>
+                            <title>Camel Runtime</title>
+                            <packages>org.apache.camel.impl:org.apache.camel.impl.*</packages>
+                        </group>
+                        <group>
+                            <title>Camel Main to run Camel standalone</title>
+                            <packages>org.apache.camel.main</packages>
+                        </group>
+                        <group>
+                            <title>Type conversion helper classes</title>
+                            <packages>org.apache.camel.converter:org.apache.camel.converter.*</packages>
+                        </group>
+                        <group>
+                            <title>Utility classes</title>
+                            <packages>org.apache.camel.util:org.apache.camel.util.*</packages>
+                        </group>
+                    </groups>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>package</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <links>
+                                <link>https://docs.oracle.com/en/java/javase/${jdk.version}/docs/api/</link>
+                                <link>https://docs.oracle.com/javaee/7/api/</link>
+                            </links>
+                            <linksource>true</linksource>
+                            <maxmemory>256m</maxmemory>
+                            <isOffline>${camel.javadoc.offline}</isOffline>
+                            <groups>
+                                <group>
+                                    <title>Camel API</title>
+                                    <packages>org.apache.camel</packages>
+                                </group>
+                                <group>
+                                    <title>Fluent API (DSL) for building EIP rules</title>
+                                    <packages>org.apache.camel.builder:org.apache.camel.builder.*</packages>
+                                </group>
+                                <group>
+                                    <title>EIP model</title>
+                                    <packages>org.apache.camel.model:org.apache.camel.model.*</packages>
+                                </group>
+                                <group>
+                                    <title>Camel Components</title>
+                                    <packages>org.apache.camel.component:org.apache.camel.component.*</packages>
+                                </group>
+                                <group>
+                                    <title>Language APIs and plugins for Expressions and Predicates</title>
+                                    <packages>org.apache.camel.language:org.apache.camel.language.*</packages>
+                                </group>
+                                <group>
+                                    <title>Processors to implement the Enterprise Integration Patterns</title>
+                                    <packages>org.apache.camel.processor:org.apache.camel.processor.*</packages>
+                                </group>
+                                <group>
+                                    <title>Strategy APIs for implementors extending Camel</title>
+                                    <packages>org.apache.camel.spi</packages>
+                                </group>
+                                <group>
+                                    <title>Support APIs for implementors</title>
+                                    <packages>org.apache.camel.support:org.apache.camel.support.*</packages>
+                                </group>
+                                <group>
+                                    <title>Management (JMX) API</title>
+                                    <packages>
+                                        org.apache.camel.management:org.apache.camel.management.*:org.apache.camel.api.management.mbean
+                                    </packages>
+                                </group>
+                                <group>
+                                    <title>Camel Runtime</title>
+                                    <packages>org.apache.camel.impl:org.apache.camel.impl.*</packages>
+                                </group>
+                                <group>
+                                    <title>Camel Main to run Camel standalone</title>
+                                    <packages>org.apache.camel.main</packages>
+                                </group>
+                                <group>
+                                    <title>Type conversion helper classes</title>
+                                    <packages>org.apache.camel.converter:org.apache.camel.converter.*</packages>
+                                </group>
+                                <group>
+                                    <title>Utility classes</title>
+                                    <packages>org.apache.camel.util:org.apache.camel.util.*</packages>
+                                </group>
+                            </groups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>full</id>
+            <activation>
+                <property>
+                    <name>!quickly</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!-- needed for testing the properties component -->
+                            <environmentVariables>
+                                <FOO_SERVICE_HOST>myserver</FOO_SERVICE_HOST>
+                                <FOO_SERVICE_PORT>8081</FOO_SERVICE_PORT>
+                                <CAMEL_KAMELET_AWS_S3_SOURCE_BUCKET_NAME_OR_ARN>mys3arn</CAMEL_KAMELET_AWS_S3_SOURCE_BUCKET_NAME_OR_ARN>
+                            </environmentVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>java-21-sources</id>
+            <activation>
+                <jdk>[21,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>${maven-compiler-plugin-version}</version>
+                        <executions>
+                            <execution>
+                                <id>default-compile</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>compile-java-21</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <release>21</release>
+                                    <compileSourceRoots>${project.basedir}/src/main/java21</compileSourceRoots>
+                                    <multiReleaseOutput>true</multiReleaseOutput>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <manifestEntries>
+                                    <Multi-Release>true</Multi-Release>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>java-25-sources</id>
+            <activation>
+                <jdk>[25,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>${maven-compiler-plugin-version}</version>
+                        <executions>
+                            <execution>
+                                <id>compile-java-25</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <release>25</release>
+                                    <compileSourceRoots>${project.basedir}/src/main/java25</compileSourceRoots>
+                                    <multiReleaseOutput>true</multiReleaseOutput>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
+web search: 
+web search: Maven Central org.apache.camel camel-util 4.20.0 sources javadoc tests jar
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/core/4.20.0/core-4.20.0.pom | sed -n '/<scm>/,/<\\/scm>/p; /<url>/p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:54:36 GMT
+content-type: application/java-archive
+content-length: 165620
+cf-ray: 9f628150adc7e5d9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 719576
+etag: "60e7114f88b3be13bca6186ae1c7409c"
+last-modified: Thu, 23 Apr 2026 16:21:15 GMT
+x-checksum-md5: 60e7114f88b3be13bca6186ae1c7409c
+x-checksum-sha1: 0a40d239d3e4137806a3a3454adc5730b6e58ab1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0-tests.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 110ms:
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+
+ exited 22 in 246ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 21:54:36 GMT
+content-type: text/html
+cf-ray: 9f6281506d47a032-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 223ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:54:36 GMT
+content-type: application/java-archive
+content-length: 993478
+cf-ray: 9f628150bfd001df-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "4dc6a18c01e3455a4c92a7da61383ce6"
+last-modified: Thu, 23 Apr 2026 16:21:15 GMT
+x-checksum-md5: 4dc6a18c01e3455a4c92a7da61383ce6
+x-checksum-sha1: aea72d74cb4f6579fee814fec07d98781a503cc8
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel/4.20.0/camel-4.20.0.pom | sed -n '/<scm>/,/<\\/scm>/p; /<url>/p; /<description>/p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+  <description>Camel Root POM</description>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+                  <description>keep</description>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/apache/camel' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 617ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:54:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"13b2d0a544cd63eeefee31c4b0074590"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=1XFBTltjr7dBBjBpRe7PvJ1d6pWf%2BUNa4W%2BM%2BxpAMxzKFAwR2QbsAiY1eoVkBkhYchVp0JZST15PxaRnMMPicJBWAQcZZtMzXfHTOab8rdGei4%2FY3rkbnKEaFrj04WGuOwl%2BxZ8XaNWVmficKC3xJPEI2amXPDIAwZYXVlL7QUKuRG4OOTvv9zKwSappp8bhnPIeOd0ylpzdougAIzf%2BRpa2y8fzHqLVNuEJGdI%2FyehgaOdzRawFRUmHXm9vIyhNyprUtMgyXsiJspV7Y71k1w%3D%3D--KdSrqO901Ep5rHxU--7VVBg8YnDrSQJC3RL4h8TQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.339278357.1777845281; expires=Mon, 03 May 2027 21:54:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 21:54:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5107:13D90:A8B9F5:81D9CA:69F7C421
+
+
+ succeeded in 675ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:54:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a369e8863908042f37e1e907a85292f6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=xcAnLJj4yzNPIoFu1T3Nox7sV6dZ70NWrfQPDMtZ0zW4j4CweeQNjRLhffxAXO3uR12OVpP7HToN6%2BMvo7jvV9w0UxUu3MjzyrcdX0pbmO14bj5cl%2FOH5cpp10Jt3egNIA%2BGLzEYs8T706U6yaXGdYGz9fbIqWygCMX4TOgtG9SSJurTTIq986s3Yz9HJKUgVNmI0aqDVG08V8f93F8cEcRxqpI0qOdKs6CBdEcCt6tunlrVYOOHa8l2s3EBzjdIHHVieX4YKx33akc33flGiw%3D%3D--pPNEmYXg7cIPqJ%2B5--YNWcDCHam0iva8tOaEc0vQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1143703199.1777845282; expires=Mon, 03 May 2027 21:54:42 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 21:54:42 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5101:F790A:AA7A2C:834908:69F7C421
+
+
+ succeeded in 773ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:54:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3a691f983e0a9d4bbebe071548f8984b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=K4nDa%2BB9RF9Z8hN%2FXRrVj6NEWjpoE52CqWmpFCg%2F3KY7Uab5eV0YTev9%2BzfG%2B7RWNv41lq1Bo3jJOhxNKHvWQ2UmbOfgcZYkfkEw250lkrgzWwZcOvqTRk3nq2DspMp03gQ3oqEjCUasu55%2FGaG0Ya8l%2BiFoo2kt0%2B2sbY60quEkjHqeAVY%2Flix32wTeP8%2B%2Fi1y4MXoj6Tz19X1Cr%2FDYmjtz8J5dlF%2FKPeqm1xeZyFOjQcMMcbsMKScaOgDFseM8V4JRgIQ3WYVQAh996zk%2BWg%3D%3D--uWqvM8Ihvkptramb--otCBsOdikdMc%2BXV5ZU58sg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.200956971.1777845282; expires=Mon, 03 May 2027 21:54:42 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 21:54:42 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5109:95F51:ABD5E2:8430B0:69F7C421
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/camel/camel-4.20.0/pom.xml | sed -n '/<scm>/,/<\\/scm>/p; /<url>/p; /<description>/p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/camel/git/ref/tags/camel-4.20.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/camel/contents/core/camel-util/src/test?ref=camel-4.20.0 | head -80' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/camel/contents/core/camel-util/src/main?ref=camel-4.20.0 | head -80' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 230ms:
+    <description>Camel Root POM</description>
+    <url>https://camel.apache.org</url>
+            <url>https://camel.apache.org</url>
+    <scm>
+        <connection>scm:git:http://gitbox.apache.org/repos/asf/camel.git</connection>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/camel.git</developerConnection>
+        <url>https://gitbox.apache.org/repos/asf?p=camel.git;a=summary</url>
+        <url>https://gitbox.apache.org/repos/asf?p=camel.git;a=summary</url>
+        <tag>camel-4.20.0</tag>
+    </scm>
+        <url>https://issues.apache.org/jira/browse/CAMEL</url>
+            <url>${site-repo-url}</url>
+            <url>https://repo1.maven.org/maven2/</url>
+                                    <description>keep</description>
+                    <url>https://repository.apache.org/snapshots/</url>
+                    <url>https://repository.apache.org/snapshots/</url>
+
+ succeeded in 280ms:
+[
+  {
+    "name": "java",
+    "path": "core/camel-util/src/test/java",
+    "sha": "728e25b97c83e7c3a76bfefc0d350ff64de1fe74",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/test/java?ref=camel-4.20.0",
+    "html_url": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/camel/git/trees/728e25b97c83e7c3a76bfefc0d350ff64de1fe74",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/test/java?ref=camel-4.20.0",
+      "git": "https://api.github.com/repos/apache/camel/git/trees/728e25b97c83e7c3a76bfefc0d350ff64de1fe74",
+      "html": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "core/camel-util/src/test/resources",
+    "sha": "71c14c443b7fb45fbb65f2a532ce962aad99b915",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/test/resources?ref=camel-4.20.0",
+    "html_url": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/test/resources",
+    "git_url": "https://api.github.com/repos/apache/camel/git/trees/71c14c443b7fb45fbb65f2a532ce962aad99b915",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/test/resources?ref=camel-4.20.0",
+      "git": "https://api.github.com/repos/apache/camel/git/trees/71c14c443b7fb45fbb65f2a532ce962aad99b915",
+      "html": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 280ms:
+[
+  {
+    "name": "java",
+    "path": "core/camel-util/src/main/java",
+    "sha": "ae806b19b9687c27a9765d5cdcb881f922136f50",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/main/java?ref=camel-4.20.0",
+    "html_url": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/main/java",
+    "git_url": "https://api.github.com/repos/apache/camel/git/trees/ae806b19b9687c27a9765d5cdcb881f922136f50",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/main/java?ref=camel-4.20.0",
+      "git": "https://api.github.com/repos/apache/camel/git/trees/ae806b19b9687c27a9765d5cdcb881f922136f50",
+      "html": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/main/java"
+    }
+  },
+  {
+    "name": "java21",
+    "path": "core/camel-util/src/main/java21",
+    "sha": "417e2e30112567497b39dd9f339deacd2ab5f31c",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/main/java21?ref=camel-4.20.0",
+    "html_url": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/main/java21",
+    "git_url": "https://api.github.com/repos/apache/camel/git/trees/417e2e30112567497b39dd9f339deacd2ab5f31c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/main/java21?ref=camel-4.20.0",
+      "git": "https://api.github.com/repos/apache/camel/git/trees/417e2e30112567497b39dd9f339deacd2ab5f31c",
+      "html": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/main/java21"
+    }
+  },
+  {
+    "name": "java25",
+    "path": "core/camel-util/src/main/java25",
+    "sha": "1cb8635ce9cf7faaa59e9ccb1ae8f4320ee57e17",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/main/java25?ref=camel-4.20.0",
+    "html_url": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/main/java25",
+    "git_url": "https://api.github.com/repos/apache/camel/git/trees/1cb8635ce9cf7faaa59e9ccb1ae8f4320ee57e17",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/camel/contents/core/camel-util/src/main/java25?ref=camel-4.20.0",
+      "git": "https://api.github.com/repos/apache/camel/git/trees/1cb8635ce9cf7faaa59e9ccb1ae8f4320ee57e17",
+      "html": "https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/main/java25"
+    }
+  }
+]
+
+ succeeded in 294ms:
+{
+  "ref": "refs/tags/camel-4.20.0",
+  "node_id": "MDM6UmVmMjA2MzE3OnJlZnMvdGFncy9jYW1lbC00LjIwLjA=",
+  "url": "https://api.github.com/repos/apache/camel/git/refs/tags/camel-4.20.0",
+  "object": {
+    "sha": "01b749949e4405f7df8fc77751ab575bd60e40a7",
+    "type": "tag",
+    "url": "https://api.github.com/repos/apache/camel/git/tags/01b749949e4405f7df8fc77751ab575bd60e40a7"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0.jar -o /tmp/camel-util-4.20.0.jar && jar tf /tmp/camel-util-4.20.0.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0-javadoc.jar -o /tmp/camel-util-4.20.0-javadoc.jar && jar tf /tmp/camel-util-4.20.0-javadoc.jar | sed -n '1,60p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0-sources.jar -o /tmp/camel-util-4.20.0-sources.jar && jar tf /tmp/camel-util-4.20.0-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/camel/camel-4.20.0/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 217ms:
+# Apache Camel
+
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.camel/apache-camel.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/org.apache.camel/apache-camel)
+[![Javadocs](https://www.javadoc.io/badge/org.apache.camel/apache-camel.svg?color=brightgreen)](https://www.javadoc.io/doc/org.apache.camel/camel-api)
+[![Stack Overflow](https://img.shields.io/:stack%20overflow-apache--camel-brightgreen.svg)](http://stackoverflow.com/questions/tagged/apache-camel)
+[![Chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://camel.zulipchat.com/)
+[![Twitter](https://img.shields.io/twitter/follow/ApacheCamel.svg?label=Follow&style=social)](https://twitter.com/ApacheCamel)
+
+
+[Apache Camel](https://camel.apache.org/) is an Open Source integration framework that empowers you to quickly and easily integrate various systems consuming or producing data.
+
+### Introduction
+
+Camel empowers you to define routing and mediation rules in a variety of domain-specific languages (DSL, such as Java, XML, Groovy and YAML). This means you get smart completion of routing rules in your IDE, whether in a Java or XML editor.
+
+Apache Camel uses URIs to enable easier integration with all kinds of
+transport or messaging model including HTTP, ActiveMQ, JMS, JBI, SCA, MINA
+or CXF together with working with pluggable Data Format options.
+Apache Camel is a small library that has minimal dependencies for easy embedding
+in any Java application. Apache Camel lets you work with the same API regardless of the 
+transport type, making it possible to interact with all the components provided out-of-the-box, 
+with a good understanding of the API.
+
+Apache Camel has powerful Bean Binding and integrated seamlessly with
+popular frameworks such as Spring, Quarkus, and CDI.
+
+Apache Camel has extensive testing support allowing you to easily
+unit test your routes.
+
+## Components
+
+Apache Camel comes alongside several artifacts with components, data formats, languages, and kinds.
+The up-to-date list is available online at the Camel website:
+
+* Components: <https://camel.apache.org/components/latest/>
+* Data Formats: <https://camel.apache.org/components/latest/dataformats/>
+* Languages: <https://camel.apache.org/components/latest/languages/>
+* Miscellaneous: <https://camel.apache.org/components/latest/#_miscellaneous_components>
+
+## Examples
+
+Apache Camel comes with many examples.
+The up to date list is available online at GitHub:
+
+* Examples: <https://github.com/apache/camel-examples/tree/main#welcome-to-the-apache-camel-examples>
+
+## Getting Started
+
+To help you get started, try the following links:
+
+**Getting Started**
+
+<https://camel.apache.org/getting-started.html>
+
+The beginner examples are another powerful alternative pathway for getting started with Apache Camel.
+
+* Examples: <https://github.com/apache/camel-examples/tree/main#welcome-to-the-apache-camel-examples>
+
+**Building**
+
+<https://camel.apache.org/camel-core/contributing/>
+
+**Contributions**
+
+We welcome all kinds of contributions, the details of which are specified here:
+
+<https://github.com/apache/camel/blob/main/CONTRIBUTING.md>
+
+
+Please refer to the website for details of finding the issue tracker, 
+email lists, GitHub, chat
+
+Website: <https://camel.apache.org/>
+
+GitHub (source): <https://github.com/apache/camel>
+
+Issue tracker: <https://issues.apache.org/jira/projects/CAMEL>
+
+Mailing-list: <https://camel.apache.org/community/mailing-list/>
+
+Chat: <https://camel.zulipchat.com/>
+
+StackOverflow: <https://stackoverflow.com/questions/tagged/apache-camel>
+
+Twitter: <https://twitter.com/ApacheCamel>
+
+
+**Support**
+
+For additional help, support, we recommend referencing this page first:
+
+<https://camel.apache.org/community/support/>
+
+**Getting Help**
+
+If you get stuck somewhere, please feel free to reach out to us on either StackOverflow, Chat, or the email mailing list.
+
+Please help us make Apache Camel better — we appreciate any feedback you may have.
+
+Enjoy!
+
+-----------------
+The Camel riders!
+
+# Licensing
+
+The terms for software licensing are detailed in the `LICENSE.txt` file,  
+located in the working directory.
+
+ succeeded in 233ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/services/
+META-INF/services/org/
+META-INF/services/org/apache/
+META-INF/services/org/apache/camel/
+META-INF/versions/
+META-INF/versions/21/
+META-INF/versions/21/org/
+META-INF/versions/21/org/apache/
+META-INF/versions/21/org/apache/camel/
+META-INF/versions/21/org/apache/camel/util/
+META-INF/versions/21/org/apache/camel/util/concurrent/
+META-INF/versions/25/
+META-INF/versions/25/org/
+META-INF/versions/25/org/apache/
+META-INF/versions/25/org/apache/camel/
+META-INF/versions/25/org/apache/camel/util/
+META-INF/versions/25/org/apache/camel/util/concurrent/
+org/
+org/apache/
+org/apache/camel/
+org/apache/camel/util/
+org/apache/camel/util/backoff/
+org/apache/camel/util/concurrent/
+org/apache/camel/util/function/
+META-INF/maven/
+META-INF/maven/org.apache.camel/
+META-INF/maven/org.apache.camel/camel-util/
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/jandex.idx
+META-INF/services/org/apache/camel/other.properties
+META-INF/versions/21/org/apache/camel/util/concurrent/CamelThreadFactory$ThreadFactoryType$1.class
+META-INF/versions/21/org/apache/camel/util/concurrent/CamelThreadFactory$ThreadFactoryType$2.class
+META-INF/versions/21/org/apache/camel/util/concurrent/CamelThreadFactory$ThreadFactoryType.class
+META-INF/versions/21/org/apache/camel/util/concurrent/CamelThreadFactory.class
+META-INF/versions/25/org/apache/camel/util/concurrent/ContextValueFactory$ScopedValueContextValue.class
+META-INF/versions/25/org/apache/camel/util/concurrent/ContextValueFactory$ScopedValueHolder.class
+META-INF/versions/25/org/apache/camel/util/concurrent/ContextValueFactory.class
+org/apache/camel/util/AnnotationHelper.class
+org/apache/camel/util/AntPathMatcher.class
+org/apache/camel/util/BaseOrderedProperties.class
+org/apache/camel/util/BufferCaster.class
+org/apache/camel/util/CamelCaseOrderedProperties.class
+org/apache/camel/util/CamelURIParser.class
+org/apache/camel/util/CaseInsensitiveMap.class
+org/apache/camel/util/CastUtils.class
+org/apache/camel/util/ClassLoadingAwareObjectInputStream.class
+org/apache/camel/util/CollectionHelper.class
+org/apache/camel/util/DoubleMap$Entry.class
+org/apache/camel/util/DoubleMap.class
+org/apache/camel/util/FilePathResolver.class
+org/apache/camel/util/FileUtil.class
+org/apache/camel/util/FilterIterator.class
+org/apache/camel/util/HomeHelper.class
+org/apache/camel/util/HostUtils.class
+org/apache/camel/util/IOHelper$EncodingFileReader.class
+org/apache/camel/util/IOHelper$EncodingFileWriter.class
+org/apache/camel/util/IOHelper$EncodingInputStream.class
+org/apache/camel/util/IOHelper.class
+org/apache/camel/util/ImportantHeaderUtils.class
+org/apache/camel/util/InetAddressUtil.class
+org/apache/camel/util/KeyValueHolder.class
+org/apache/camel/util/LocationHelper.class
+org/apache/camel/util/MimeTypeHelper.class
+org/apache/camel/util/ObjectHelper$Holder.class
+org/apache/camel/util/ObjectHelper.class
+org/apache/camel/util/OgnlHelper.class
+org/apache/camel/util/OrderedLocationProperties.class
+org/apache/camel/util/OrderedProperties.class
+org/apache/camel/util/PackageHelper.class
+org/apache/camel/util/Pair.class
+org/apache/camel/util/PropertiesHelper.class
+org/apache/camel/util/ReferenceCount.class
+org/apache/camel/util/ReflectionHelper$ClassCallback.class
+org/apache/camel/util/ReflectionHelper$FieldCallback.class
+org/apache/camel/util/ReflectionHelper$MethodCallback.class
+org/apache/camel/util/ReflectionHelper.class
+org/apache/camel/util/Scanner$1.class
+
+ succeeded in 238ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/camel/
+org/apache/camel/util/
+org/apache/camel/util/backoff/
+org/apache/camel/util/concurrent/
+org/apache/camel/util/function/
+META-INF/services/
+META-INF/services/org/
+META-INF/services/org/apache/
+META-INF/services/org/apache/camel/
+META-INF/maven/
+META-INF/maven/org.apache.camel/
+META-INF/maven/org.apache.camel/camel-util/
+org/apache/camel/util/AnnotationHelper.java
+org/apache/camel/util/AntPathMatcher.java
+org/apache/camel/util/BaseOrderedProperties.java
+org/apache/camel/util/BufferCaster.java
+org/apache/camel/util/CamelCaseOrderedProperties.java
+org/apache/camel/util/CamelURIParser.java
+org/apache/camel/util/CaseInsensitiveMap.java
+org/apache/camel/util/CastUtils.java
+org/apache/camel/util/ClassLoadingAwareObjectInputStream.java
+org/apache/camel/util/CollectionHelper.java
+org/apache/camel/util/DoubleMap.java
+org/apache/camel/util/FilePathResolver.java
+org/apache/camel/util/FileUtil.java
+org/apache/camel/util/FilterIterator.java
+org/apache/camel/util/HomeHelper.java
+org/apache/camel/util/HostUtils.java
+org/apache/camel/util/IOHelper.java
+org/apache/camel/util/ImportantHeaderUtils.java
+org/apache/camel/util/InetAddressUtil.java
+org/apache/camel/util/KeyValueHolder.java
+org/apache/camel/util/LocationHelper.java
+org/apache/camel/util/MimeTypeHelper.java
+org/apache/camel/util/ObjectHelper.java
+org/apache/camel/util/OgnlHelper.java
+org/apache/camel/util/OrderedLocationProperties.java
+org/apache/camel/util/OrderedProperties.java
+org/apache/camel/util/PackageHelper.java
+org/apache/camel/util/Pair.java
+org/apache/camel/util/PropertiesHelper.java
+org/apache/camel/util/ReferenceCount.java
+org/apache/camel/util/ReflectionHelper.java
+org/apache/camel/util/Scanner.java
+org/apache/camel/util/SensitiveUtils.java
+org/apache/camel/util/SimpleUtils.java
+org/apache/camel/util/SkipIterator.java
+org/apache/camel/util/SkipLastByteInputStream.java
+org/apache/camel/util/StopWatch.java
+org/apache/camel/util/StreamUtils.java
+org/apache/camel/util/StringHelper.java
+org/apache/camel/util/StringQuoteHelper.java
+org/apache/camel/util/TimeUtils.java
+org/apache/camel/util/URIScanner.java
+org/apache/camel/util/URISupport.java
+org/apache/camel/util/UnitUtils.java
+org/apache/camel/util/UnsafeUriCharactersEncoder.java
+org/apache/camel/util/UnwrapHelper.java
+org/apache/camel/util/backoff/BackOff.java
+org/apache/camel/util/backoff/BackOffTimer.java
+org/apache/camel/util/backoff/BackOffTimerTask.java
+org/apache/camel/util/backoff/SimpleBackOffTimer.java
+org/apache/camel/util/backoff/package.html
+org/apache/camel/util/concurrent/AsyncCompletionService.java
+org/apache/camel/util/concurrent/CamelThreadFactory.java
+org/apache/camel/util/concurrent/ContextValue.java
+org/apache/camel/util/concurrent/ContextValueFactory.java
+org/apache/camel/util/concurrent/LockHelper.java
+org/apache/camel/util/concurrent/NamedThreadLocal.java
+org/apache/camel/util/concurrent/Rejectable.java
+org/apache/camel/util/concurrent/RejectableFutureTask.java
+org/apache/camel/util/concurrent/RejectableScheduledThreadPoolExecutor.java
+org/apache/camel/util/concurrent/RejectableThreadPoolExecutor.java
+org/apache/camel/util/concurrent/SizedScheduledExecutorService.java
+org/apache/camel/util/concurrent/SynchronousExecutorService.java
+org/apache/camel/util/concurrent/ThreadFactoryTypeAware.java
+
+ succeeded in 257ms:
+META-INF/
+META-INF/MANIFEST.MF
+legal/
+org/
+org/apache/
+org/apache/camel/
+org/apache/camel/util/
+org/apache/camel/util/backoff/
+org/apache/camel/util/backoff/class-use/
+org/apache/camel/util/class-use/
+org/apache/camel/util/concurrent/
+org/apache/camel/util/concurrent/class-use/
+org/apache/camel/util/function/
+org/apache/camel/util/function/class-use/
+resource-files/
+script-files/
+src-html/
+src-html/org/
+src-html/org/apache/
+src-html/org/apache/camel/
+src-html/org/apache/camel/util/
+src-html/org/apache/camel/util/backoff/
+src-html/org/apache/camel/util/concurrent/
+src-html/org/apache/camel/util/function/
+META-INF/maven/
+META-INF/maven/org.apache.camel/
+META-INF/maven/org.apache.camel/camel-util/
+allclasses-index.html
+allpackages-index.html
+constant-values.html
+deprecated-list.html
+element-list
+help-doc.html
+index-all.html
+index.html
+legal/ADDITIONAL_LICENSE_INFO
+legal/ASSEMBLY_EXCEPTION
+legal/LICENSE
+legal/dejavufonts.md
+legal/jquery.md
+legal/jqueryUI.md
+member-search-index.js
+module-search-index.js
+org/apache/camel/util/AnnotationHelper.html
+org/apache/camel/util/AntPathMatcher.html
+org/apache/camel/util/BufferCaster.html
+org/apache/camel/util/CamelCaseOrderedProperties.html
+org/apache/camel/util/CamelURIParser.html
+org/apache/camel/util/CaseInsensitiveMap.html
+org/apache/camel/util/CastUtils.html
+org/apache/camel/util/ClassLoadingAwareObjectInputStream.html
+org/apache/camel/util/CollectionHelper.html
+org/apache/camel/util/DoubleMap.html
+org/apache/camel/util/FilePathResolver.html
+org/apache/camel/util/FileUtil.html
+org/apache/camel/util/FilterIterator.html
+org/apache/camel/util/HomeHelper.html
+org/apache/camel/util/HostUtils.html
+org/apache/camel/util/IOHelper.EncodingFileReader.html
+org/apache/camel/util/IOHelper.EncodingFileWriter.html
+
+codex
+Maven Central has the sources and javadoc classifiers for `camel-util`, but no `tests.jar`; the tagged GitHub tree exposes `core/camel-util/src/test`, so I’ll use Maven for source/docs and GitHub for tests. The artifact is a regular JVM JAR with `.class` files, so I won’t mark it as `not-for-native-image` or add a language-specific field.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+index 88be2f5f950b5ea1f942ab455538ab11a3741841..17624c49ac341b4fa7fff8e06fa5cbc3d815bc0e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-util/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-javadoc.jar",
++  "description" : "Apache Camel's camel-util module provides shared utility classes used by Camel core, including helpers for strings, URIs, I/O, reflection, properties, and concurrency. It is a JVM library packaged as a Java JAR and supports Camel internals and applications that need these reusable utilities."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+index 88be2f5f950b5ea1f942ab455538ab11a3741841..17624c49ac341b4fa7fff8e06fa5cbc3d815bc0e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-util/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-javadoc.jar",
++  "description" : "Apache Camel's camel-util module provides shared utility classes used by Camel core, including helpers for strings, URIs, I/O, reflection, properties, and concurrency. It is a JVM library packaged as a Java JAR and supports Camel internals and applications that need these reusable utilities."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.camel:camel-util:4.20.0",
+  "repository-url": "https://github.com/apache/camel",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/camel/tree/camel-$version$/core/camel-util/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-javadoc.jar",
+  "description": "Apache Camel's camel-util module provides shared utility classes used by Camel core, including helpers for strings, URIs, I/O, reflection, properties, and concurrency. It is a JVM library packaged as a Java JAR and supports Camel internals and applications that need these reusable utilities."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:55:08 GMT
+content-type: application/java-archive
+content-length: 165620
+cf-ray: 9f62821b48070208-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 719608
+etag: "60e7114f88b3be13bca6186ae1c7409c"
+last-modified: Thu, 23 Apr 2026 16:21:15 GMT
+x-checksum-md5: 60e7114f88b3be13bca6186ae1c7409c
+x-checksum-sha1: 0a40d239d3e4137806a3a3454adc5730b6e58ab1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/4.20.0/camel-util-4.20.0-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:55:08 GMT
+content-type: application/java-archive
+content-length: 993478
+cf-ray: 9f62821b5feabe61-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 133155
+etag: "4dc6a18c01e3455a4c92a7da61383ce6"
+last-modified: Thu, 23 Apr 2026 16:21:15 GMT
+x-checksum-md5: 4dc6a18c01e3455a4c92a7da61383ce6
+x-checksum-sha1: aea72d74cb4f6579fee814fec07d98781a503cc8
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:54:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a369e8863908042f37e1e907a85292f6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=I9XKqkrTPRwAlSYO0b3R3w3Csl9dil2ZXNEnfW9AvsOsnnazZkYozMeW%2BCRilRYisXLa7E%2BZnHPtfJaztNj8x2tN9o88G%2F7xklRRHOxEeKpqREyzylfjgsN%2BGSbFPpeZ4tpwoFhKTMey1cwk6jhX2irb%2FpWI6xmnCB538K7i8ihSHVHxo3%2BJFt6m9Agn5aM9CgcoeGwGuNTtEZT3AbKlrLz7qQdAJXpSHvc7Z9kJ1P9csipkE4dzTNbR7Cfk1IxhTEYL3zvlypR%2BEZh0bGGIDg%3D%3D--Tc3xDbezZe3pKhwy--37jfm%2FJ%2BK%2FJTiy%2BHgjuzPg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.710448553.1777845308; expires=Mon, 03 May 2027 21:55:08 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 21:55:08 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5104:F7C2F:AD9C08:85AC2A:69F7C43C
+
+
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+index 88be2f5f950b5ea1f942ab455538ab11a3741841..17624c49ac341b4fa7fff8e06fa5cbc3d815bc0e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-util/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-javadoc.jar",
++  "description" : "Apache Camel's camel-util module provides shared utility classes used by Camel core, including helpers for strings, URIs, I/O, reflection, properties, and concurrency. It is a JVM library packaged as a Java JAR and supports Camel internals and applications that need these reusable utilities."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+index 88be2f5f950b5ea1f942ab455538ab11a3741841..17624c49ac341b4fa7fff8e06fa5cbc3d815bc0e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-util/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-javadoc.jar",
++  "description" : "Apache Camel's camel-util module provides shared utility classes used by Camel core, including helpers for strings, URIs, I/O, reflection, properties, and concurrency. It is a JVM library packaged as a Java JAR and supports Camel internals and applications that need these reusable utilities."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+index 88be2f5f950b5ea1f942ab455538ab11a3741841..17624c49ac341b4fa7fff8e06fa5cbc3d815bc0e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-util/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-javadoc.jar",
++  "description" : "Apache Camel's camel-util module provides shared utility classes used by Camel core, including helpers for strings, URIs, I/O, reflection, properties, and concurrency. It is a JVM library packaged as a Java JAR and supports Camel internals and applications that need these reusable utilities."
+ }
+
+ succeeded in 379ms:
+web search: 
+web search: https://github.com/apache/camel/tree/camel-4.20.0/core/camel-util/src/test
+web search: 
+web search: repo.maven.apache.org org/apache/camel/camel-util/4.20.0 camel-util-4.20.0-sources.jar camel-util-4.20.0-javadoc.jar
+web search: 
+web search: mvnrepository org.apache.camel camel-util 4.20.0
+web search: 
+web search: 
+codex
+Updated [org.apache.camel-camel-util-4.20.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json) with repository, Maven sources/javadoc URLs, GitHub tagged test URL, and a two-sentence description.
+
+I left `language` absent and did not add `not-for-native-image`; the artifact is a regular JVM JAR with class files. Verified JSON with `jq` and checked the substituted source, test, and documentation URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+index 88be2f5f950b5ea1f942ab455538ab11a3741841..17624c49ac341b4fa7fff8e06fa5cbc3d815bc0e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-util:4.20.0"
++  "coordinates" : "org.apache.camel:camel-util:4.20.0",
++  "repository-url" : "https://github.com/apache/camel",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-util/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util/$version$/camel-util-$version$-javadoc.jar",
++  "description" : "Apache Camel's camel-util module provides shared utility classes used by Camel core, including helpers for strings, URIs, I/O, reflection, properties, and concurrency. It is a JVM library packaged as a Java JAR and supports Camel internals and applications that need these reusable utilities."
+ }
+
+tokens used
+65,800
+Updated [org.apache.camel-camel-util-4.20.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136/build/discovered-artifact-metadata/org.apache.camel-camel-util-4.20.0.json) with repository, Maven sources/javadoc URLs, GitHub tagged test URL, and a two-sentence description.
+
+I left `language` absent and did not add `not-for-native-image`; the artifact is a regular JVM JAR with class files. Verified JSON with `jq` and checked the substituted source, test, and documentation URLs return HTTP 200.
+Ran agent for org.apache.camel:camel-util:4.20.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136/build/agent-artifact-discovery-logs/org.apache.camel-camel-util-4.20.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4761-eecb1136/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 45s
+9 actionable tasks: 4 executed, 5 from cache
