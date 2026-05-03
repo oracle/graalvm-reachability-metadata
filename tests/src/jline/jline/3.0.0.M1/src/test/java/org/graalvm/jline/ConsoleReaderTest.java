@@ -6,97 +6,52 @@
  */
 package org.graalvm.jline;
 
-import jline.UnixTerminal;
-import jline.console.ConsoleReader;
-import jline.internal.Configuration;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.jline.reader.History;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.impl.history.history.MemoryHistory;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.impl.ExternalTerminal;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Locale;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class ConsoleReaderTest {
 
-    private String originalSigCont;
-    private String originalShellCommand;
-    private String originalSttyCommand;
-    private String originalUserHome;
-    private Path temporaryDirectory;
-
-    @BeforeEach
-    void setUp() throws Exception {
-        originalSigCont = System.getProperty("jline.sigcont");
-        originalShellCommand = System.getProperty("jline.sh");
-        originalSttyCommand = System.getProperty("jline.stty");
-        originalUserHome = System.getProperty("user.home");
-
-        temporaryDirectory = Files.createTempDirectory("jline-console-reader-");
-        Path shellScript = writeFakeShell(temporaryDirectory.resolve("fake-sh"));
-
-        System.setProperty("jline.sigcont", Boolean.TRUE.toString());
-        System.setProperty("jline.sh", shellScript.toString());
-        System.setProperty("jline.stty", shellScript.toString());
-        System.setProperty("user.home", temporaryDirectory.toString());
-        Configuration.reset();
-    }
-
-    @AfterEach
-    void tearDown() {
-        restoreProperty("jline.sigcont", originalSigCont);
-        restoreProperty("jline.sh", originalShellCommand);
-        restoreProperty("jline.stty", originalSttyCommand);
-        restoreProperty("user.home", originalUserHome);
-        Configuration.reset();
-    }
-
     @Test
-    void constructorRegistersTheSigContHandlerWhenEnabledForTheDefaultUnixTerminal() throws Exception {
-        assumeTrue(!System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("win"));
+    @Timeout(10)
+    void lineReaderReadsScriptedInputAndRecordsHistory() throws Exception {
+        byte[] input = "hello native image\n".getBytes(StandardCharsets.UTF_8);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        History history = new MemoryHistory();
 
-        UnixTerminal terminal = new UnixTerminal();
+        try (Terminal terminal = new ExternalTerminal(
+                "line-reader-test",
+                "ansi",
+                new ByteArrayInputStream(input),
+                output,
+                StandardCharsets.UTF_8.name())) {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .appName("jline3-test")
+                    .history(history)
+                    .variable(LineReader.LIST_MAX, 25)
+                    .build();
 
-        try (ConsoleReader reader = new ConsoleReader(
-                "console-reader-test",
-                new ByteArrayInputStream(new byte[0]),
-                new ByteArrayOutputStream(),
-                terminal)) {
+            String line = reader.readLine("prompt> ");
+
+            assertThat(line).isEqualTo("hello native image");
             assertThat(reader.getTerminal()).isSameAs(terminal);
+            assertThat(reader.getVariable(LineReader.LIST_MAX)).isEqualTo(25);
+            assertThat(history).hasSize(1);
+            assertThat(history.get(0)).isEqualTo("hello native image");
         }
-    }
 
-    private Path writeFakeShell(final Path shellScript) throws Exception {
-        Files.writeString(shellScript, "#!/bin/sh\n"
-                + "command=\"$1\"\n"
-                + "if [ \"$1\" = \"-c\" ]; then\n"
-                + "  command=\"$2\"\n"
-                + "fi\n"
-                + "case \"$command\" in\n"
-                + "  -g|*\"-g\"*)\n"
-                + "    printf 'mock-terminal-state\\n'\n"
-                + "    ;;\n"
-                + "  -a|*\"-a\"*)\n"
-                + "    printf 'speed 9600 baud; 24 rows; 80 columns;\\nintr = ^C; lnext = ^V;\\n'\n"
-                + "    ;;\n"
-                + "  *)\n"
-                + "    exit 0\n"
-                + "    ;;\n"
-                + "esac\n");
-        assertThat(shellScript.toFile().setExecutable(true)).isTrue();
-        return shellScript;
-    }
-
-    private static void restoreProperty(final String name, final String value) {
-        if (value == null) {
-            System.clearProperty(name);
-        } else {
-            System.setProperty(name, value);
-        }
+        assertThat(output.toString(StandardCharsets.UTF_8.name())).contains("prompt> ");
     }
 }

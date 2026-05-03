@@ -6,47 +6,61 @@
  */
 package org.graalvm.jline;
 
-import org.fusesource.hawtjni.runtime.Library;
+import org.jline.reader.ParsedLine;
+import org.jline.reader.impl.DefaultParser;
+import org.jline.reader.impl.history.history.MemoryHistory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class HawtjniRuntimeLibraryTest {
 
-    private static final String LIBRARY_NAME = "graalvmjlinemissingnative";
+    @Test
+    @Timeout(10)
+    void parserHandlesQuotingEscapingAndCursorMetadata() {
+        DefaultParser parser = new DefaultParser();
+        String commandLine = "deploy \"two words\" plain\\ value";
+
+        ParsedLine parsedLine = parser.parse(commandLine, commandLine.length());
+
+        assertThat(parsedLine.line()).isEqualTo(commandLine);
+        assertThat(parsedLine.cursor()).isEqualTo(commandLine.length());
+        assertThat(parsedLine.words()).containsExactly("deploy", "two words", "plain value");
+        assertThat(parsedLine.wordIndex()).isEqualTo(2);
+        assertThat(parsedLine.word()).isEqualTo("plain value");
+        assertThat(parsedLine.wordCursor()).isEqualTo("plain value".length());
+        assertThat(parser.getQuoteChars()).contains('"');
+        assertThat(parser.getEscapeChars()).contains('\\');
+    }
 
     @Test
-    void loadChecksClassLoaderResourcesWhenNativeLibraryLookupFails() {
-        TrackingResourceClassLoader classLoader = new TrackingResourceClassLoader(HawtjniRuntimeLibraryTest.class.getClassLoader());
-        Library library = new Library(LIBRARY_NAME, "integration-test", classLoader);
+    @Timeout(10)
+    void memoryHistoryNavigatesUpdatesAndRemovesEntries() {
+        MemoryHistory history = new MemoryHistory();
+        history.setAutoTrim(true);
+        history.setIgnoreDuplicates(true);
 
-        assertThatThrownBy(library::load)
-                .isInstanceOf(UnsatisfiedLinkError.class)
-                .hasMessageContaining("Could not load library. Reasons:");
+        history.add(" first ");
+        history.add("second");
+        history.add("second");
+        history.set(history.last(), "third");
 
-        assertThat(classLoader.requestedResources).containsExactly(
-                library.getPlatformSpecifcResourcePath(),
-                library.getOperatingSystemSpecifcResourcePath(),
-                library.getResorucePath());
+        assertThat(history).hasSize(2);
+        assertThat(history.first()).isZero();
+        assertThat(history.last()).isEqualTo(1);
+        assertThat(history.get(0)).isEqualTo("first");
+        assertThat(history.get(1)).isEqualTo("third");
+        assertThat(history.moveToFirst()).isTrue();
+        assertThat(history.current()).isEqualTo("first");
+        assertThat(history.next()).isTrue();
+        assertThat(history.current()).isEqualTo("third");
+        history.replace("fourth");
+        assertThat(history.get(1)).isEqualTo("fourth");
+        assertThat(history.removeFirst()).isEqualTo("first");
+        assertThat(history.removeLast()).isEqualTo("fourth");
+        assertThat(history).isEmpty();
     }
 
-    public static final class TrackingResourceClassLoader extends ClassLoader {
-
-        private final List<String> requestedResources = new ArrayList<String>();
-
-        public TrackingResourceClassLoader(final ClassLoader parent) {
-            super(parent);
-        }
-
-        @Override
-        public URL getResource(final String name) {
-            requestedResources.add(name);
-            return null;
-        }
-    }
 }

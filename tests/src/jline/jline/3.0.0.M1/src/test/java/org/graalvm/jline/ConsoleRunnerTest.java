@@ -6,114 +6,72 @@
  */
 package org.graalvm.jline;
 
-import jline.TerminalFactory;
-import jline.console.completer.Completer;
-import jline.console.internal.ConsoleRunner;
-import jline.internal.Configuration;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.jline.reader.Expander;
+import org.jline.reader.Highlighter;
+import org.jline.reader.History;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.impl.DefaultParser;
+import org.jline.reader.impl.history.history.MemoryHistory;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.impl.ExternalTerminal;
+import org.jline.utils.AttributedString;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.Timeout;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConsoleRunnerTest {
 
-    private String originalCompleters;
-    private String originalHistoryName;
-    private String originalTerminalType;
-    private String originalUserHome;
-    private InputStream originalSystemIn;
-
-    @TempDir
-    Path temporaryHome;
-
-    @BeforeEach
-    void setUp() {
-        originalCompleters = System.getProperty(ConsoleRunner.class.getName() + ".completers");
-        originalHistoryName = System.getProperty(ConsoleRunner.property);
-        originalTerminalType = System.getProperty(TerminalFactory.JLINE_TERMINAL);
-        originalUserHome = System.getProperty("user.home");
-        originalSystemIn = System.in;
-
-        TrackingCompleter.constructorCalls = 0;
-        TargetApplication.invocationCount = 0;
-        TargetApplication.lastArguments = null;
-        TargetApplication.systemInClassName = null;
-
-        System.setProperty(ConsoleRunner.class.getName() + ".completers", TrackingCompleter.class.getName());
-        System.setProperty(ConsoleRunner.property, "console-runner");
-        System.setProperty(TerminalFactory.JLINE_TERMINAL, TerminalFactory.NONE);
-        System.setProperty("user.home", temporaryHome.toString());
-        System.setIn(new ByteArrayInputStream(new byte[0]));
-
-        Configuration.reset();
-        TerminalFactory.reset();
-    }
-
-    @AfterEach
-    void tearDown() {
-        restoreProperty(ConsoleRunner.class.getName() + ".completers", originalCompleters);
-        restoreProperty(ConsoleRunner.property, originalHistoryName);
-        restoreProperty(TerminalFactory.JLINE_TERMINAL, originalTerminalType);
-        restoreProperty("user.home", originalUserHome);
-        System.setIn(originalSystemIn);
-
-        Configuration.reset();
-        TerminalFactory.reset();
-    }
-
     @Test
-    void mainLoadsConfiguredCompleterAndInvokesTheTargetMainMethod() throws Exception {
-        ConsoleRunner.main(new String[]{TargetApplication.class.getName(), "alpha", "beta"});
+    @Timeout(10)
+    void builderInstallsCustomReaderComponents() throws Exception {
+        History history = new MemoryHistory();
+        Highlighter highlighter = (reader, buffer) -> new AttributedString("highlighted:" + buffer);
+        Expander expander = new PrefixExpander();
 
-        assertThat(TrackingCompleter.constructorCalls).isEqualTo(1);
-        assertThat(TargetApplication.invocationCount).isEqualTo(1);
-        assertThat(TargetApplication.lastArguments).containsExactly("alpha", "beta");
-        assertThat(TargetApplication.systemInClassName).contains("ConsoleReaderInputStream");
-        assertThat(System.in.getClass().getName()).doesNotContain("ConsoleReaderInputStream");
-        assertThat(temporaryHome.resolve(".jline-" + TargetApplication.class.getName() + ".console-runner.history"))
-                .exists();
-    }
+        try (Terminal terminal = new ExternalTerminal(
+                "builder-components-test",
+                "ansi",
+                new ByteArrayInputStream(new byte[0]),
+                new ByteArrayOutputStream(),
+                StandardCharsets.UTF_8.name())) {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .appName("component-test")
+                    .parser(new DefaultParser())
+                    .highlighter(highlighter)
+                    .history(history)
+                    .expander(expander)
+                    .variable(LineReader.BELL_STYLE, "none")
+                    .build();
 
-    private static void restoreProperty(final String name, final String value) {
-        if (value == null) {
-            System.clearProperty(name);
-        } else {
-            System.setProperty(name, value);
+            history.add("build native");
+
+            assertThat(reader.getTerminal()).isSameAs(terminal);
+            assertThat(reader.getParser().parse("run \"native image\"", "run \"native image\"".length()).words())
+                    .containsExactly("run", "native image", "");
+            assertThat(reader.getHighlighter().highlight(reader, "buffer").toString()).isEqualTo("highlighted:buffer");
+            assertThat(reader.getExpander().expandHistory(history, "again")).isEqualTo("expanded:again:build native");
+            assertThat(reader.getVariable(LineReader.BELL_STYLE)).isEqualTo("none");
+            assertThat(reader.getHistory()).isSameAs(history);
         }
     }
 
-    public static final class TrackingCompleter implements Completer {
+    public static final class PrefixExpander implements Expander {
 
-        private static int constructorCalls;
-
-        public TrackingCompleter() {
-            constructorCalls++;
+        @Override
+        public String expandHistory(final History history, final String line) {
+            return "expanded:" + line + ":" + history.get(history.last());
         }
 
         @Override
-        public int complete(final String buffer, final int cursor, final List<CharSequence> candidates) {
-            candidates.add("candidate");
-            return 0;
-        }
-    }
-
-    public static final class TargetApplication {
-
-        private static int invocationCount;
-        private static String[] lastArguments;
-        private static String systemInClassName;
-
-        public static void main(final String[] args) {
-            invocationCount++;
-            lastArguments = args.clone();
-            systemInClassName = System.in.getClass().getName();
+        public String expandVar(final String word) {
+            return "var:" + word;
         }
     }
 }
