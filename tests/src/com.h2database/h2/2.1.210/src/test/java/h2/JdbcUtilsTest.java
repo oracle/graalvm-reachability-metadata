@@ -184,7 +184,7 @@ public class JdbcUtilsTest {
 
         @Override
         public Hashtable<?, ?> getEnvironment() {
-            return new Hashtable<>();
+            return new java.util.Hashtable<>();
         }
 
         @Override
