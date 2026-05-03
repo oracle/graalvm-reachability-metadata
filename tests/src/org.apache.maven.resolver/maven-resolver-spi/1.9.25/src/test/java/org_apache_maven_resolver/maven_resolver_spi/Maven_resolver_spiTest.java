@@ -56,6 +56,9 @@ import org.eclipse.aether.spi.connector.transport.PeekTask;
 import org.eclipse.aether.spi.connector.transport.PutTask;
 import org.eclipse.aether.spi.connector.transport.TransportListener;
 import org.eclipse.aether.spi.connector.transport.Transporter;
+import org.eclipse.aether.spi.log.Logger;
+import org.eclipse.aether.spi.log.LoggerFactory;
+import org.eclipse.aether.spi.log.NullLoggerFactory;
 import org.eclipse.aether.spi.synccontext.SyncContextFactory;
 import org.eclipse.aether.transfer.ArtifactTransferException;
 import org.eclipse.aether.transfer.ChecksumFailureException;
@@ -322,6 +325,29 @@ public class Maven_resolver_spiTest {
     }
 
     @Test
+    void nullLoggerFactoryReturnsSafeNoOpAndDelegatedLoggers() {
+        Logger noOpLogger = NullLoggerFactory.INSTANCE.getLogger("org.example.Component");
+
+        assertThat(noOpLogger).isSameAs(NullLoggerFactory.LOGGER);
+        assertThat(noOpLogger.isDebugEnabled()).isFalse();
+        assertThat(noOpLogger.isWarnEnabled()).isFalse();
+        noOpLogger.debug("debug message");
+        noOpLogger.debug("debug message", new IllegalStateException("debug"));
+        noOpLogger.warn("warn message");
+        noOpLogger.warn("warn message", new IllegalStateException("warn"));
+
+        RecordingLoggerFactory recordingFactory = new RecordingLoggerFactory();
+        Logger delegatedLogger = NullLoggerFactory.getSafeLogger(recordingFactory, Maven_resolver_spiTest.class);
+
+        assertThat(delegatedLogger).isSameAs(recordingFactory.logger);
+        assertThat(recordingFactory.requestedNames).containsExactly(Maven_resolver_spiTest.class.getName());
+        assertThat(NullLoggerFactory.getSafeLogger(null, Maven_resolver_spiTest.class))
+                .isSameAs(NullLoggerFactory.LOGGER);
+        assertThat(NullLoggerFactory.getSafeLogger(name -> null, Maven_resolver_spiTest.class))
+                .isSameAs(NullLoggerFactory.LOGGER);
+    }
+
+    @Test
     void serviceProviderInterfacesCanBeImplementedAndComposed() throws Exception {
         Artifact artifact = artifact();
         Metadata metadata = metadata();
@@ -486,6 +512,45 @@ public class Maven_resolver_spiTest {
             byte[] bytes = new byte[data.remaining()];
             data.get(bytes);
             progressed.add(new String(bytes, StandardCharsets.UTF_8));
+        }
+    }
+
+    private static final class RecordingLoggerFactory implements LoggerFactory {
+        private final RecordingLogger logger = new RecordingLogger();
+        private final List<String> requestedNames = new ArrayList<>();
+
+        @Override
+        public Logger getLogger(String name) {
+            requestedNames.add(name);
+            return logger;
+        }
+    }
+
+    private static final class RecordingLogger implements Logger {
+        @Override
+        public boolean isDebugEnabled() {
+            return true;
+        }
+
+        @Override
+        public void debug(String message) {
+        }
+
+        @Override
+        public void debug(String message, Throwable error) {
+        }
+
+        @Override
+        public boolean isWarnEnabled() {
+            return true;
+        }
+
+        @Override
+        public void warn(String message) {
+        }
+
+        @Override
+        public void warn(String message, Throwable error) {
         }
     }
 
