@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import play.TemplateImports;
+import play.api.PlayException;
 import play.core.Build;
 import play.core.BuildDocHandler;
 import play.core.BuildLink;
@@ -197,6 +198,35 @@ public class Play_build_linkTest {
         assertThat(server.isStopped()).isTrue();
     }
 
+    @Test
+    void exceptionSourcesExposeFocusedInterestingLinesForErrorReporting() {
+        SourceBackedPlayException exception = new SourceBackedPlayException(
+                "Compilation error",
+                "Unexpected token in route file",
+                "conf/routes",
+                "GET     /          controllers.HomeController.index\n"
+                        + "GET     /health    controllers.HealthController.check\n"
+                        + "BROKEN  route      controllers.BrokenController.show\n"
+                        + "POST    /items     controllers.ItemController.create\n"
+                        + "GET     /items     controllers.ItemController.list",
+                3,
+                8);
+
+        PlayException.InterestingLines interestingLines = exception.interestingLines(1);
+
+        assertThat(exception).isInstanceOf(PlayException.class);
+        assertThat(exception.sourceName()).isEqualTo("conf/routes");
+        assertThat(exception.line()).isEqualTo(3);
+        assertThat(exception.position()).isEqualTo(8);
+        assertThat(interestingLines.firstLine).isEqualTo(2);
+        assertThat(interestingLines.errorLine).isEqualTo(1);
+        assertThat(interestingLines.focus)
+                .containsExactly(
+                        "GET     /health    controllers.HealthController.check",
+                        "BROKEN  route      controllers.BrokenController.show",
+                        "POST    /items     controllers.ItemController.create");
+    }
+
     private static List<String> importsForFormat(List<String> templateImports, String format) {
         List<String> resolvedImports = new ArrayList<>(templateImports.size());
         for (String templateImport : templateImports) {
@@ -278,6 +308,42 @@ public class Play_build_linkTest {
 
         private Integer lastSourceLine() {
             return lastSourceLine;
+        }
+    }
+
+    private static final class SourceBackedPlayException extends PlayException.ExceptionSource {
+        private final String sourceName;
+        private final String input;
+        private final Integer line;
+        private final Integer position;
+
+        private SourceBackedPlayException(
+                String title, String description, String sourceName, String input, Integer line, Integer position) {
+            super(title, description);
+            this.sourceName = sourceName;
+            this.input = input;
+            this.line = line;
+            this.position = position;
+        }
+
+        @Override
+        public Integer line() {
+            return line;
+        }
+
+        @Override
+        public Integer position() {
+            return position;
+        }
+
+        @Override
+        public String input() {
+            return input;
+        }
+
+        @Override
+        public String sourceName() {
+            return sourceName;
         }
     }
 
