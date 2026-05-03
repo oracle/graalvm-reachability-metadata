@@ -1,0 +1,1308 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded99-6ddc-73e0-9d67-8dc9a07fc4f5
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: dnsjava:dnsjava:2.1.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.1.7" when "$version$" is replaced with "2.1.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+- Set "coordinates" to "dnsjava:dnsjava:2.1.7".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.1.7".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project, then update the JSON in place with version-tokenized URLs where they resolve for `2.1.7`.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json && sed -n '1,200p' build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+-rw-rw-r-- 1 vjovanov vjovanov 46 May  3 13:29 build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+{
+  "coordinates" : "dnsjava:dnsjava:2.1.7"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'dnsjava' -S metadata tests build/discovered-artifact-metadata 2>/dev/null" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 0ms:
+build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json:2:  "coordinates" : "dnsjava:dnsjava:2.1.7"
+
+web search: 
+web search: Maven Central dnsjava dnsjava 2.1.7 sources jar pom scm url
+web search: 
+web search: https://github.com/dnsjava/dnsjava/tree/v2.1.7
+web search: 
+web search: https://repo.maven.apache.org/maven2/dnsjava/dnsjava/
+web search: 
+web search: https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/
+web search: 
+web search: 
+codex
+Maven Central has a sources JAR and javadoc JAR for this exact version, but no test-sources artifact in the directory listing. I’m checking the POM and tagged repository content now so the test URL points at the correct tag.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dnsjava</groupId>
+    <artifactId>dnsjava</artifactId>
+    <version>2.1.7</version>
+    <name>dnsjava</name>
+    <description>dnsjava is an implementation of DNS in Java. It supports all defined record types (including the DNSSEC types), and unknown types. It can be used for queries, zone transfers, and dynamic updates. It includes a cache which can be used by clients, and a minimal implementation of a server. It supports TSIG authenticated messages, partial DNSSEC verification, and EDNS0. </description>
+    <url>http://www.dnsjava.org</url>
+    <licenses>
+        <license>
+            <name>BSD 2-Clause license</name>
+            <url>http://opensource.org/licenses/BSD-2-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/dnsjava/dnsjava</connection>
+        <developerConnection>scm:git:git@github.com:dnsjava/dnsjava</developerConnection>
+        <url>https://github.com/dnsjava/dnsjava</url>
+        <tag>v2.1.6</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>bwelling</id>
+            <name>Brian Wellington</name>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <target.jdk>1.4</target.jdk>
+    </properties>
+
+    <build>
+        <sourceDirectory>./</sourceDirectory>
+        <testSourceDirectory>./tests</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>org/xbill/DNS/spi/</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>services/</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+        
+        <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>${target.jdk}</source>
+                    <target>${target.jdk}</target>
+                    <encoding>iso8859-1</encoding>
+                    <testExcludes>
+                        <!-- Exclude unit tests with external dependencies -->
+                        <exclude>**/DNSSECWithLunaProviderTest.java</exclude>
+                    </testExcludes>
+                    <includes>
+                        <include>*.java</include>
+                        <include>org/**/*.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>org/xbill/DNS/tests/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <includes>
+                        <include>*.java</include>
+                        <include>org/**/*.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>org/xbill/DNS/tests/</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifestEntries>
+                            <Bundle-RequiredExecutionEnvironment>J2SE-1.4</Bundle-RequiredExecutionEnvironment>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.4.0</version>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.xbill.DNS;uses:="org.xbill.DNS.util",org.xbill.DNS.spi;uses:="org.xbill.DNS,sun.net.spi.nameservice",org.xbill.DNS.utils,org.xbill.DNS.windows</Export-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <excludePackageNames>*.tests.*</excludePackageNames>
+                    <sourcepath>./org</sourcepath>
+                    <debug>true</debug>
+                    <windowtitle>dnsjava documentation</windowtitle>
+                    <footer></footer>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-test-sources.jar || true' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 285ms:
+curlHTTP/2 404 
+date: Sun, 03 May 2026 11:29:31 GMT
+content-type: text/html
+cf-ray: 9f5eedad6fa7739d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/dnsjava/dnsjava/tree/v2.1.7/tests/org/xbill/DNS && curl -I -fsSL https://github.com/dnsjava/dnsjava/tree/v2.1.7/org/xbill/DNS && curl -I -fsSL https://javadoc.io/doc/dnsjava/dnsjava/2.1.7' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 1546ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:29:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2de5cd53afa709f38efa90c6bf3f5a6b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Zss%2BCR%2Bsw7OMpweYwk4bnjT%2BqvIWzsp5w3iyFJLB4LSpGM03yQl7NC78baucYOBAMp37aEiqjyzJS0vLWCQSy7N5p2PGAuPe37Rs8dkcHH1jY1uxd%2FbWxbXotmW9FFKATrMk8DpNKKGQ%2FpdtX1eHVgf5vQICSwR9zx2CqaY5EyiPRNc6V6g6PiBF5%2BOL3%2BQJrEbeaEKtP6lSK8GbEDegAVRZUf3limUtXoyxJvEmcOWEMYJIUk2dlsZ4mKET%2By4zbeI1935fKgZ2KJmFl3oWyg%3D%3D--9%2BmhZlbG1zxJbT%2BI--kBQc7Y8QyiDdqpxIopFVTA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1810042686.1777807772; expires=Mon, 03 May 2027 11:29:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 11:29:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:17F6EE:3EBF23D:2EB8930:69F7319C
+
+HTTP/2 200 
+date: Sun, 03 May 2026 11:29:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ab71235657a23024ed1649dcf1d4384e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ULf1FTl1%2B0T0Lq3gZrvMkbzDGfrdSoXi6n2FLW6DT4ysv95PBbVR%2FDQ6ryNBbd4CEejX15Yc1xGgkbtzOZd1GUAwFilnJq%2FwCj9TVKzXrmVB2zh0EQOLSelDbO9f%2Fwbr4Hi5%2F7l6rwLCUVH4ltcpUd%2BLbUC6POq1sP6PLZEnW0PwCjsJzO1To3fTg5SNQ3UKtD0%2B5VPMgfZrSs8i3Os3vK94PZVCxOpeCfoMXFwIKszCcIug%2FeuQee%2FRIrPbpQO5HVAFig%2BNr%2FoTmvmwv5WQTQ%3D%3D--unhdUo%2FFmDqu1Qhk--1PAXJk%2BPzGRLt%2BRIy3%2Fyog%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.129994145.1777807772; expires=Mon, 03 May 2027 11:29:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 11:29:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5110:28D19F:3E24163:2E45D44:69F7319C
+
+HTTP/2 303 
+date: Sun, 03 May 2026 11:29:33 GMT
+content-length: 0
+location: /doc/dnsjava/dnsjava/2.1.7/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=9UdkjWxttvX7w7SnwdIh0%2F7IcFbdJ66Kgu2k4%2Bo%2B%2BOAEDgOgjFj96bSumPzo%2BgTeznHwRcjSk4ihyh86%2F4xdC5QwR9hD5%2FWc1w5gz%2BB1vrc6qrZdvw%2BqmE4GXLsjCEB6xVuDtDAwbBT0"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f5eedb779390396-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 11:29:33 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/dnsjava/dnsjava/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=QlNjG%2B39%2B4IoXJfF8WnWYQaD3pVdxninVPfpclhSkM%2FKfM0rt8sKCCAi0ga35OsUYTKL9vtbYlklxb4N6PdHCH6veEFPhs10XUVDMz%2B2qbxhzWTRP8fgwkARXYsZdMdW1%2B2iY7gV4O8F"}]}
+server: cloudflare
+cf-ray: 9f5eedb83ab40396-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 0ms:
+{
+  "coordinates" : "dnsjava:dnsjava:2.1.7"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"https://repo.maven.apache.org/maven2|\"documentation-url\"\\s*:\\s*\"https://javadoc.io|\"test-code-url\"\\s*:\\s*\"https://github.com/.*/tree/\\"'$version'"\\"'$|"test-code-url"'"\\s*:\\s*\"N/A\"' build/discovered-artifact-metadata metadata -S" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 0ms:
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-ee/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:64:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:22:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/forms/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:21:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/layout/src/test",
+metadata/com.itextpdf/svg/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/svg/src/test",
+metadata/com.itextpdf/io/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/io/src/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/$version$-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/runtime/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.crac/crac/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:29:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:43:    "test-code-url" : "https://github.com/apache/activemq-artemis/tree/$version$/artemis-log-annotation-processor/src/test",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:10:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:21:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:22:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:35:    "test-code-url" : "N/A",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:25:    "test-code-url" : "N/A",
+metadata/com.google.guava/guava-bootstrap/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.commons/commons-collections4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/org.example/library/index.json:11:    "test-code-url": "N/A",
+metadata/com.google.android/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.commons/commons-dbcp2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/$version$/commons-dbcp2-$version$-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/$version$/src/test/java",
+metadata/javax.el/el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-sources.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+metadata/org.slf4j/slf4j-simple/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:45:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.activemq/activemq-openwire-legacy/$version$",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.kerby/kerby-pkix/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-pkix/$version$/kerby-pkix-$version$-sources.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-models/tree/$version$/hibernate-models/src/test",
+metadata/org.slf4j/jcl-over-slf4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:82:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:108:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:128:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-math/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math/$version$/commons-math-$version$-sources.jar",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.kerby/kerby-xdr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-sources.jar",
+metadata/javax.cache/cache-api/index.json:6:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:21:    "test-code-url" : "N/A",
+metadata/javax.portlet/portlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.lz4/lz4-java/index.json:8:    "test-code-url": "https://github.com/lz4/lz4-java/tree/$version$/src/test",
+metadata/com.google.errorprone/error_prone_annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.errorprone/error_prone_annotations/index.json:21:    "test-code-url" : "N/A",
+metadata/com.google.errorprone/error_prone_annotations/index.json:35:    "test-code-url" : "N/A",
+metadata/com.google.errorprone/error_prone_annotations/index.json:49:    "test-code-url" : "N/A",
+metadata/org.springframework.security/spring-security-crypto/index.json:50:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:102:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.parquet/parquet-format-structures/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.scala-lang/scala3-interfaces/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/$version$/scala3-interfaces-$version$-sources.jar",
+metadata/org.scala-lang/scala3-interfaces/index.json:7:    "test-code-url" : "https://github.com/scala/scala3/tree/$version$/tests",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-el/$version$/tomcat-embed-el-$version$-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test/org/apache/el",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:8:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:87:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test",
+metadata/com.univocity/univocity-parsers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/$version$/jboss-logmanager-$version$-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:7:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/$version$/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/$version$/jboss-logmanager-$version$-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:24:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/$version$/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:37:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/$version$/jboss-logmanager-$version$-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:39:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/$version$/src/test",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/relaxng-datatype/src/test",
+metadata/com.sun.xml.bind.external/rngom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/bind/external/rngom/$version$/rngom-$version$-sources.jar",
+metadata/com.sun.xml.bind.external/rngom/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/rngom/src/test",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/abego/treelayout/org.abego.treelayout.core/$version$/org.abego.treelayout.core-$version$-sources.jar",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:7:    "test-code-url" : "N/A",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:21:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/$version$/src/test",
+metadata/org.hamcrest/hamcrest/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/$version$/hamcrest-$version$-sources.jar",
+metadata/com.github.virtuald/curvesapi/index.json:7:    "test-code-url" : "https://github.com/virtuald/curvesapi/tree/$version$/src/test/java",
+metadata/org.apache.openejb/javaee-api/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/openejb/javaee-api/$version$/javaee-api-$version$-sources.jar",
+metadata/org.apache.openejb/javaee-api/index.json:7:    "test-code-url": "N/A",
+metadata/org.apache.lucene/lucene-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+metadata/org.apache.lucene/lucene-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+metadata/org.apache.lucene/lucene-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/$version$/kotlinx-datetime-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/$version$/kotlinx-io-bytestring-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-io/tree/$version$/bytestring/jvm/test",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/$version$/atomicfu-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-atomicfu/tree/$version$/atomicfu/src/jvmTest",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-core-asl/$version$",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/$version$/kotlinx-io-core-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-io/tree/$version$/core/jvm/test",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:8:    "test-code-url": "N/A",
+metadata/io.nats/jnats/index.json:10:    "test-code-url": "https://github.com/nats-io/nats.java/tree/$version$/src/test",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "test-code-url" : "N/A",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.code.findbugs/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:6:    "test-code-url" : "N/A",
+metadata/com.google.code.findbugs/jsr305/index.json:21:    "test-code-url" : "N/A",
+metadata/javax.transaction/transaction-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/transaction-api/$version$/transaction-api-$version$-sources.jar",
+metadata/javax.transaction/transaction-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.transaction/jta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/jta/$version$/jta-$version$-sources.jar",
+metadata/javax.transaction/jta/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:38:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:112:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:114:    "test-code-url" : "N/A",
+metadata/org.fusesource.jansi/jansi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:50:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+metadata/org.apache.ant/ant-antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/ant/ant-antlr/$version$/ant-antlr-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.resteasy/resteasy-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/$version$/resteasy-client-$version$-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/$version$/org.osgi.annotation.versioning-$version$-sources.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.bundle/$version$/org.osgi.annotation.bundle-$version$-sources.jar",
+metadata/org.osgi/osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0-sources.jar",
+metadata/org.osgi/osgi.core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-sources.jar",
+metadata/org.osgi/osgi.core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.service/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.dto/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.dto/$version$/org.osgi.dto-$version$-sources.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/$version$/org.osgi.compendium-$version$-sources.jar",
+metadata/org.osgi/osgi.annotation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-sources.jar",
+metadata/org.osgi/osgi.annotation/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-sources.jar",
+metadata/com.zaxxer/SparseBitSet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/SparseBitSet/$version$/SparseBitSet-$version$-sources.jar",
+metadata/net.java.dev.jna/jna/index.json:10:    "test-code-url": "https://github.com/java-native-access/jna/tree/$version$/test",
+metadata/org.iq80.leveldb/leveldb-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/$version$/leveldb-api-$version$-sources.jar",
+metadata/org.iq80.leveldb/leveldb-api/index.json:7:    "test-code-url" : "https://github.com/dain/leveldb/tree/$version$/leveldb/src/test",
+metadata/com.esotericsoftware/minlog/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/$version$/minlog-$version$-sources.jar",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/$version$/javax.inject-$version$-sources.jar",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish.hk2.external/jakarta.inject/index.json:7:    "test-code-url" : "N/A",
+metadata/org.json/json/index.json:7:    "test-code-url" : "https://github.com/stleary/JSON-java/tree/$version$/src/test/java",
+metadata/com.github.jknack/handlebars-helpers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/$version$/handlebars-helpers-$version$-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/$version$/opengauss-jdbc-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/expression/src/test/java",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/cpu/src/test/java/io/smallrye/common/cpu",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:41:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/$version$/smallrye-common-os-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/os/src/test/java",
+metadata/io.smallrye.common/smallrye-common-os/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/$version$/smallrye-common-os-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:21:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/os/src/test/java",
+metadata/io.smallrye.common/smallrye-common-process/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-process/$version$/smallrye-common-process-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-process/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/process/src/test/java",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-constraint/$version$/smallrye-common-constraint-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/$version$/smallrye-common-ref-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/$version$/smallrye-common-function-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-function/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/$version$/",
+metadata/io.smallrye.common/smallrye-common-function/index.json:39:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/$version$/smallrye-common-function-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-function/index.json:41:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:42:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/$version$/",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/$version$/smallrye-common-resource-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/resource/src/test",
+metadata/io.smallrye.common/smallrye-common-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-net/$version$/smallrye-common-net-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-net/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/net/src/test/java",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpmime/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:75:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:89:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:103:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:117:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.brotli/dec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/brotli/dec/$version$/dec-$version$-sources.jar",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.velocity/velocity-engine-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/$version$/velocity-engine-core-$version$-sources.jar",
+metadata/org.apache.velocity/velocity-engine-core/index.json:7:    "test-code-url" : "https://github.com/apache/velocity-engine/tree/$version$/velocity-engine-core/src/test",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-metrics/$version$/index.html",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:25:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-metrics/$version$/index.html",
+metadata/io.opentelemetry/opentelemetry-api-incubator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-incubator/$version$/opentelemetry-api-incubator-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:7:    "test-code-url" : "N/A",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:26:    "test-code-url" : "N/A",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:42:    "test-code-url" : "N/A",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:59:    "test-code-url" : "N/A",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:75:    "test-code-url" : "N/A",
+metadata/io.opentelemetry/opentelemetry-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api/$version$/opentelemetry-api-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-context/$version$/opentelemetry-context-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-context/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-context/$version$/index.html",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/$version$/opentelemetry-api-events-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/$version$/opentelemetry-api-events-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/$version$/opentelemetry-sdk-extension-autoconfigure-spi-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/$version$/opentelemetry-exporter-logging-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/$version$/opentelemetry-sdk-logs-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/$version$/opentelemetry-sdk-logs-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:44:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/$version$/opentelemetry-sdk-logs-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/$version$/opentelemetry-sdk-logs-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/$version$/plexus-component-annotations-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:7:    "test-code-url" : "N/A",
+metadata/xpp3/xpp3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xpp3/xpp3/$version$/xpp3-$version$-sources.jar",
+metadata/org.apache-extras.beanshell/bsh/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:8:    "test-code-url": "N/A",
+metadata/jakarta.jms/jakarta.jms-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:22:    "test-code-url" : "N/A",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-processor/$version$/jboss-logging-processor-$version$-sources.jar",
+metadata/org.jboss.logging/jboss-logging-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-annotations/$version$/jboss-logging-annotations-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:6:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:21:    "test-code-url" : "N/A",
+metadata/org.rocksdb/rocksdbjni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:43:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-sources.jar",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/$version$/scalajs-javalib-intf-$version$-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-sources.jar",
+metadata/net.sf.py4j/py4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/py4j/py4j/$version$/py4j-$version$-sources.jar",
+metadata/net.sf.py4j/py4j/index.json:7:    "test-code-url" : "https://github.com/py4j/py4j/tree/$version$/py4j-java/src/test/java",
+metadata/portlet-api/portlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/commons-codec/commons-codec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/$version$/commons-codec-$version$-sources.jar",
+metadata/org.scala-sbt/util-interface/index.json:7:    "test-code-url" : "N/A",
+metadata/com.mchange/mchange-commons-java/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/$version$/mchange-commons-java-$version$-sources.jar",
+metadata/org.scala-sbt/compiler-interface/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-sources.jar",
+metadata/org.scala-sbt/compiler-interface/index.json:7:    "test-code-url" : "N/A",
+metadata/org.scala-sbt/compiler-interface/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-sources.jar",
+metadata/org.scala-sbt/compiler-interface/index.json:25:    "test-code-url" : "N/A",
+metadata/org.scala-sbt/compiler-interface/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-sources.jar",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/alpn/alpn-api/$version$/alpn-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:8:    "test-code-url": "N/A",
+metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/$version$/src/test",
+metadata/org.apache.kafka/kafka-clients/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/$version$/kafka-clients-$version$-sources.jar",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:7:    "test-code-url" : "N/A",
+metadata/org.roaringbitmap/shims/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/roaringbitmap/shims/$version$/shims-$version$-sources.jar",
+metadata/org.roaringbitmap/shims/index.json:7:    "test-code-url" : "N/A",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:7:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/gson/src/test",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:27:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/gson/src/test",
+metadata/io.micrometer/micrometer-commons/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-commons/$version$/micrometer-commons-$version$-sources.jar",
+metadata/io.micrometer/micrometer-commons/index.json:28:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-commons/$version$/micrometer-commons-$version$-sources.jar",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:7:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/jackson/src/test",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:22:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/jackson/src/test",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:42:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/jackson/src/test",
+metadata/javax.xml.bind/jaxb-api/index.json:7:    "test-code-url" : "https://github.com/javaee/jaxb-spec/tree/$version$/jaxb-api-test/src/test",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:10:    "test-code-url": "https://github.com/jwtk/jjwt/tree/$version$/extensions/orgjson/src/test",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:26:    "test-code-url": "https://github.com/jwtk/jjwt/tree/$version$/extensions/orgjson/src/test",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:46:    "test-code-url": "https://github.com/jwtk/jjwt/tree/$version$/extensions/orgjson/src/test",
+metadata/com.ibm.async/asyncutil/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/$version$/asyncutil-$version$-sources.jar",
+metadata/io.jsonwebtoken/jjwt-api/index.json:6:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/api/src/test/groovy/io/jsonwebtoken",
+metadata/io.jsonwebtoken/jjwt-api/index.json:21:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/api/src/test/groovy/io/jsonwebtoken",
+metadata/org.jsoup/jsoup/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jsoup/jsoup/$version$/jsoup-$version$-sources.jar",
+metadata/org.jsoup/jsoup/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jsoup/jsoup/$version$/jsoup-$version$-sources.jar",
+metadata/io.jsonwebtoken/jjwt-impl/index.json:7:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/impl/src/test",
+metadata/io.jsonwebtoken/jjwt-impl/index.json:29:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/impl/src/test",
+metadata/org.ow2.asm/asm-tree/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/$version$/asm-tree-$version$-sources.jar",
+metadata/org.ow2.asm/asm-analysis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/$version$/asm-analysis-$version$-sources.jar",
+metadata/org.ow2.asm/asm/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/$version$/asm-$version$-sources.jar",
+metadata/org.ow2.asm/asm/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/$version$/asm-$version$-sources.jar",
+metadata/org.ow2.asm/asm-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/$version$/asm-util-$version$-sources.jar",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:68:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/modules/jdbc-pool/src/test",
+metadata/org.apache.tomcat/tomcat-juli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat-juli/$version$/tomcat-juli-$version$-sources.jar",
+metadata/org.apache.tomcat/tomcat-juli/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test/org/apache/juli",
+metadata/org.apache.tomcat/tomcat-juli/index.json:37:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat-juli/$version$/tomcat-juli-$version$-sources.jar",
+metadata/org.apache.tomcat/tomcat-juli/index.json:39:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test/org/apache/juli",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat-annotations-api/$version$/tomcat-annotations-api-$version$-sources.jar",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:39:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test",
+metadata/com.intellij/annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/intellij/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.intellij/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:21:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:36:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:50:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/$version$/jboss-transaction-api_1.2_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/commons-daemon/commons-daemon/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-daemon/commons-daemon/$version$/commons-daemon-$version$-sources.jar",
+metadata/org.testcontainers/testcontainers/index.json:7:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/$version$/core/src/test",
+metadata/org.testcontainers/testcontainers/index.json:38:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/$version$/core/src/test",
+metadata/org.testcontainers/junit-jupiter/index.json:7:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/$version$/modules/junit-jupiter/src/test",
+metadata/eu.timepit/refined_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/eu/timepit/refined_3/$version$/refined_3-$version$-sources.jar",
+metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/$version$/reactor-core-$version$-sources.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/$version$/sqlite-jdbc-$version$-sources.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:8:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/$version$/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/$version$/sqlite-jdbc-$version$-sources.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:23:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/$version$/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3-sources.jar",
+metadata/org.glassfish.jaxb/xsom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/xsom/$version$/xsom-$version$-sources.jar",
+metadata/org.glassfish.jaxb/xsom/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/xsom/src/test",
+metadata/org.glassfish.jaxb/txw2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/$version$/txw2-$version$-sources.jar",
+metadata/org.glassfish.jaxb/txw2/index.json:7:    "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/$version$/jaxb-ri/txw/runtime/src/test/java",
+metadata/net.i2p.crypto/eddsa/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/net/i2p/crypto/eddsa/$version$/eddsa-$version$-sources.jar",
+metadata/org.glassfish.jaxb/jaxb-runtime/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/runtime/impl/src/test",
+metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/s3/src/test",
+metadata/org.mongodb/mongo-java-driver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mongodb/mongo-java-driver/3.9.0/mongo-java-driver-3.9.0-sources.jar",
+metadata/org.mongodb/mongo-java-driver/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mongodb/mongo-java-driver/$version$/mongo-java-driver-$version$-sources.jar",
+metadata/com.googlecode.concurrent-trees/concurrent-trees/index.json:7:    "test-code-url" : "https://github.com/npgall/concurrent-trees/tree/$version$/code/src/test",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/$version$/surefire-logger-api-$version$-sources.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.undertow/undertow-parser-generator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/undertow/undertow-parser-generator/$version$/undertow-parser-generator-$version$-sources.jar",
+metadata/io.undertow/undertow-parser-generator/index.json:7:    "test-code-url" : "N/A",
+metadata/redis.clients/jedis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/$version$/jedis-$version$-sources.jar",
+metadata/redis.clients/jedis/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/$version$/jedis-$version$-sources.jar",
+metadata/redis.clients/jedis/index.json:51:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/$version$/jedis-$version$-sources.jar",
+metadata/redis.clients/jedis/index.json:74:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/$version$/jedis-$version$-sources.jar",
+metadata/net.sf.proguard/proguard-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-base/$version$/proguard-base-$version$-sources.jar",
+metadata/net.sf.proguard/proguard-base/index.json:7:    "test-code-url" : "N/A",
+metadata/net.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/net.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/$version$/index.html",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.2_spec/$version$/jboss-interceptors-api_1.2_spec-$version$-source-release.zip",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.1_spec/$version$/jboss-interceptors-api_1.1_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/$version$/index.html",
+metadata/com.android.tools.build/builder-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:7:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:22:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:37:    "test-code-url" : "N/A",
+metadata/com.google.auto.service/auto-service-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/$version$/auto-service-annotations-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:7:    "test-code-url" : "https://github.com/weld/api/tree/$version$/weld-spi/src/test/java",
+metadata/org.jboss.weld/weld-spi/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:21:    "test-code-url" : "https://github.com/weld/api/tree/$version$/weld-spi/src/test/java",
+metadata/org.jboss.weld/weld-spi/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:35:    "test-code-url" : "https://github.com/weld/api/tree/$version$/weld-spi/src/test/java",
+metadata/org.jboss.weld/weld-spi/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:49:    "test-code-url" : "https://github.com/weld/api/tree/$version$/weld-spi/src/test/java",
+metadata/org.jboss.weld/weld-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.weld/weld-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:21:    "test-code-url" : "N/A",
+metadata/org.jboss.weld/weld-api/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:35:    "test-code-url" : "N/A",
+metadata/org.jboss.weld/weld-api/index.json:56:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:58:    "test-code-url" : "N/A",
+metadata/org.checkerframework/checker-qual/index.json:6:    "test-code-url" : "N/A",
+metadata/org.checkerframework/checker-qual/index.json:21:    "test-code-url" : "N/A",
+metadata/io.netty.incubator/netty-incubator-codec-classes-quic/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/incubator/netty-incubator-codec-classes-quic/$version$/netty-incubator-codec-classes-quic-$version$-sources.jar",
+metadata/io.netty.incubator/netty-incubator-codec-classes-quic/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/incubator/netty-incubator-codec-classes-quic/$version$/netty-incubator-codec-classes-quic-$version$-sources.jar",
+metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
+metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:7:    "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-json/$version$/selenium-json-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/com.thoughtworks.proxytoys/proxytoys/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/$version$/proxytoys-$version$-sources.jar",
+metadata/com.thoughtworks.proxytoys/proxytoys/index.json:7:    "test-code-url" : "https://github.com/proxytoys/proxytoys/tree/$version$/proxytoys/src/test/java",
+metadata/org.tpolecat/sourcepos_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-sources.jar",
+metadata/com.clickhouse/org.roaringbitmap/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss/jandex/index.json:7:    "test-code-url" : "https://github.com/smallrye/jandex/tree/$version$/src/test/java",
+metadata/xalan/xalan/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/$version$/xalan-$version$-sources.jar",
+metadata/xalan/xalan/index.json:7:    "test-code-url" : "N/A",
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-runtime_2.13/$version$/scalac-scoverage-runtime_2.13-$version$-sources.jar",
+metadata/javax.money/money-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/money/money-api/$version$/money-api-$version$-sources.jar",
+metadata/javax.money/money-api/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-api/tree/$version$/src/test",
+metadata/io.netty/netty-codec-stomp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-stomp/$version$/netty-codec-stomp-$version$-sources.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-sources.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:21:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-sources.jar",
+metadata/io.netty/netty-codec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec/$version$/netty-codec-$version$-sources.jar",
+metadata/io.netty/netty-transport-native-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-epoll/4.1.42.Final/netty-transport-native-epoll-4.1.42.Final-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-sources.jar",
+metadata/io.netty/netty-tcnative-classes/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-tcnative-classes/$version$/netty-tcnative-classes-$version$-sources.jar",
+metadata/io.netty/netty-codec-haproxy/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-sources.jar",
+metadata/io.netty/netty-codec-haproxy/index.json:21:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-sources.jar",
+metadata/io.netty/netty-codec-dns/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-dns/$version$/netty-codec-dns-$version$-sources.jar",
+metadata/io.netty/netty-codec-dns/index.json:21:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-dns/$version$/netty-codec-dns-$version$-sources.jar",
+metadata/io.netty/netty-handler-proxy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final-sources.jar",
+metadata/io.netty/netty-codec-xml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-xml/$version$/netty-codec-xml-$version$-sources.jar",
+metadata/io.netty/netty-codec-memcache/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+metadata/io.netty/netty-codec-memcache/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+metadata/io.netty/netty-resolver-dns-classes-macos/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver-dns-classes-macos/4.1.74.Final/netty-resolver-dns-classes-macos-4.1.74.Final-sources.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-sources.jar",
+metadata/io.netty/netty-transport-classes-kqueue/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-kqueue/$version$/netty-transport-classes-kqueue-$version$-sources.jar",
+metadata/io.netty/netty-transport-native-unix-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-unix-common/$version$/netty-transport-native-unix-common-$version$-sources.jar",
+metadata/io.netty/netty-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+metadata/io.netty/netty-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+metadata/io.netty/netty-common/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+metadata/io.netty/netty-transport-sctp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-sctp/$version$/netty-transport-sctp-$version$-sources.jar",
+metadata/io.netty/netty-transport/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/$version$/netty-transport-$version$-sources.jar",
+metadata/io.netty/netty-transport/index.json:41:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/$version$/netty-transport-$version$-sources.jar",
+metadata/io.netty/netty-resolver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/$version$/netty-resolver-$version$-sources.jar",
+metadata/io.netty/netty-resolver/index.json:7:    "test-code-url" : "N/A",
+metadata/io.netty/netty-resolver/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/$version$/netty-resolver-$version$-sources.jar",
+metadata/io.netty/netty-transport-native-kqueue/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-kqueue/$version$/netty-transport-native-kqueue-$version$-sources.jar",
+metadata/com.atomikos/transactions-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/$version$/transactions-api-$version$-sources.jar",
+metadata/org.opentest4j/opentest4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opentest4j/opentest4j/$version$/opentest4j-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-di/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-di/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-api-meta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-monitor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-sources.jar",
+metadata/org.apache.maven/maven-monitor/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-apache/$version$/maven-resolver-transport-apache-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:8:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-file/$version$/maven-resolver-transport-file-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/com.github.java-json-tools/btf/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/btf/$version$/btf-$version$-sources.jar",
+metadata/com.github.java-json-tools/btf/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.java-json-tools/msg-simple/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/msg-simple/$version$/msg-simple-$version$-sources.jar",
+metadata/com.github.java-json-tools/jackson-coreutils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/jackson-coreutils/2.0/jackson-coreutils-2.0-sources.jar",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/net.sf.kxml/kxml2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/$version$/kxml2-$version$-sources.jar",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin-reporter-java/tree/$version$/core/src/test/java",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:27:    "test-code-url" : "https://github.com/openzipkin/zipkin-reporter-java/tree/$version$/core/src/test/java",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:48:    "test-code-url" : "https://github.com/openzipkin/zipkin-reporter-java/tree/$version$/core/src/test/java",
+metadata/org.tukaani/xz/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/$version$",
+metadata/com.sun.activation/jakarta.activation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/$version$/jakarta.activation-$version$-sources.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:8:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:26:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:96:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:113:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:130:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:147:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:164:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-sqlserver/index.json:8:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-sqlserver/index.json:45:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-sqlserver/index.json:70:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:8:    "test-code-url" : "N/A",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/$version$/quarkus-bootstrap-json-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/json/src/test",
+metadata/io.quarkus/quarkus-classloader-commons/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-classloader-commons/$version$/quarkus-classloader-commons-$version$-sources.jar",
+metadata/io.quarkus/quarkus-classloader-commons/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/classloader-commons/src/test/java",
+metadata/io.quarkus/quarkus-value-registry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-value-registry/$version$/quarkus-value-registry-$version$-sources.jar",
+metadata/io.quarkus/quarkus-value-registry/index.json:7:    "test-code-url" : "N/A",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/app-model/src/test",
+metadata/io.quarkus/quarkus-fs-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-fs-util/$version$/quarkus-fs-util-$version$-sources.jar",
+metadata/io.quarkus/quarkus-fs-util/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus-fs-util/tree/$version$/src/test",
+metadata/io.quarkus/quarkus-class-change-agent/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-class-change-agent/$version$/quarkus-class-change-agent-$version$-sources.jar",
+metadata/io.quarkus/quarkus-class-change-agent/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mariadb/r2dbc-mariadb/index.json:10:    "test-code-url": "https://github.com/mariadb-corporation/mariadb-connector-r2dbc/tree/$version$/src/test",
+metadata/org.hibernate.validator/hibernate-validator/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/validator/hibernate-validator/$version$/hibernate-validator-$version$-sources.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:11:    "test-code-url": "https://github.com/hibernate/hibernate-validator/tree/$version$/engine/src/test",
+metadata/io.github.dmlloyd/jdk-classfile-backport/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/dmlloyd/jdk-classfile-backport/25.1/jdk-classfile-backport-25.1-sources.jar",
+metadata/org.apache.james/apache-mime4j-dom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/$version$/apache-mime4j-dom-$version$-sources.jar",
+metadata/org.apache.james/apache-mime4j-dom/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.james/apache-mime4j-dom/$version$/",
+metadata/org.unbescape/unbescape/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/unbescape/unbescape/$version$/unbescape-$version$-sources.jar",
+metadata/org.unbescape/unbescape/index.json:8:    "test-code-url": "N/A",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.enterprise/cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-sources.jar",
+metadata/javax.enterprise/cdi-api/index.json:7:    "test-code-url" : "N/A",
+metadata/xml-apis/xml-apis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xml-apis/xml-apis/$version$/xml-apis-$version$-sources.jar",
+metadata/xml-apis/xml-apis/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.jsinterop/jsinterop-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/jsinterop/jsinterop-annotations/$version$/jsinterop-annotations-$version$-sources.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:7:    "test-code-url" : "https://github.com/jbosstm/narayana/tree/$version$/ArjunaJTA/jta/tests/classes",
+metadata/javax.inject/javax.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/inject/javax.inject/$version$/javax.inject-$version$-sources.jar",
+metadata/org.jspecify/jspecify/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jspecify/jspecify/$version$/jspecify-$version$-sources.jar",
+metadata/org.asynchttpclient/async-http-client-netty-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/asynchttpclient/async-http-client-netty-utils/$version$/async-http-client-netty-utils-$version$-sources.jar",
+metadata/org.objenesis/objenesis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/$version$/objenesis-$version$-sources.jar",
+metadata/javax.servlet.jsp/jsp-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+metadata/org.atteo.classindex/classindex/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/atteo/classindex/classindex/$version$/classindex-$version$-sources.jar",
+metadata/org.atteo.classindex/classindex/index.json:7:    "test-code-url" : "https://github.com/atteo/classindex/tree/$version$/classindex/src/test",
+metadata/org.hibernate/hibernate-jpamodelgen/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hibernate/hibernate-jpamodelgen/5.6.14.Final/hibernate-jpamodelgen-5.6.14.Final-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/$version$/commons-pool2-$version$-sources.jar",
+metadata/org.slf4j/log4j-over-slf4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/log4j-over-slf4j/$version$/log4j-over-slf4j-$version$-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-sources.jar",
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/$version$/magnolia_3-$version$-sources.jar",
+metadata/com.google.auto.value/auto-value-annotations/index.json:28:    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/$version$/index.html",
+metadata/org.w3c.css/sac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/w3c/css/sac/$version$/sac-$version$-sources.jar",
+metadata/org.w3c.css/sac/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.angus/jakarta.mail/index.json:10:    "test-code-url": "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-sources.jar",
+metadata/mysql/mysql-connector-java/index.json:10:    "test-code-url": "https://github.com/mysql/mysql-connector-j/tree/$version$/src/test",
+metadata/io.dropwizard.metrics/metrics-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-sources.jar",
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/index.json:8:    "test-code-url": "N/A",
+metadata/io.dropwizard.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-graphite/$version$/metrics-graphite-$version$-sources.jar",
+metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+metadata/org.antlr/ST4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/antlr/ST4/$version$/ST4-$version$-sources.jar",
+metadata/org.antlr/ST4/index.json:7:    "test-code-url" : "https://github.com/antlr/stringtemplate4/tree/$version$/test",
+metadata/net.razorvine/pyrolite/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/razorvine/pyrolite/$version$/pyrolite-$version$-sources.jar",
+metadata/net.razorvine/pyrolite/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/razorvine/pyrolite/$version$/pyrolite-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.camel/spi-annotations/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:51:    "test-code-url" : "N/A",
+metadata/org.apache.camel/spi-annotations/index.json:65:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:67:    "test-code-url" : "N/A",
+metadata/org.hibernate.orm/hibernate-jcache/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-jcache/$version$/hibernate-jcache-$version$-sources.jar",
+metadata/org.jetbrains/annotations-java5/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jetbrains/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/org.antlr/antlr-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr3/tree/$version$/runtime/Java/src/test",
+metadata/org.antlr/antlr-runtime/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.antlr/antlr-runtime/$version$/",
+metadata/org.quartz-scheduler/quartz/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/$version$/quartz-$version$-sources.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag-sisu/$version$/smallrye-beanbag-sisu-$version$-sources.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-beanbag/tree/$version$/maven/src/test",
+metadata/io.smallrye.beanbag/smallrye-beanbag/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag/$version$/smallrye-beanbag-$version$-sources.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-beanbag/tree/$version$/maven/src/test",
+metadata/commons-net/commons-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-net/commons-net/$version$/commons-net-$version$-sources.jar",
+metadata/com.android.tools.jack/jack-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.servlet/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.servlet/servlet-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:21:    "test-code-url" : "N/A",
+metadata/javax.servlet/servlet-api/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:35:    "test-code-url" : "N/A",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.android.tools/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:8:    "test-code-url": "N/A",
+metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/$version$/stax2-api-$version$-sources.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:7:    "test-code-url" : "N/A",
+metadata/backport-util-concurrent/backport-util-concurrent/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/backport-util-concurrent/backport-util-concurrent/$version$/backport-util-concurrent-$version$-sources.jar",
+metadata/org.aspectj/aspectjweaver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/$version$/jboss-interceptor-spi-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/$version$/jboss-interceptor-api-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-sources.jar",
+metadata/javax.annotation/jsr250-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/$version$/jsr250-api-$version$-sources.jar",
+metadata/javax.annotation/jsr250-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.annotation/javax.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.junit.platform/junit-platform-engine/index.json:21:    "test-code-url" : "N/A",
+metadata/org.junit.platform/junit-platform-commons/index.json:7:    "test-code-url" : "N/A",
+metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/$version$/mail/src/test",
+metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/tunnelvisionlabs/antlr4-annotations/$version$/antlr4-annotations-$version$-sources.jar",
+metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:31:    "test-code-url" : "N/A",
+metadata/org.javamoney.moneta/moneta-core/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+metadata/org.javamoney.moneta/moneta-core/index.json:21:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-envers/index.json:17:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-envers/$version$/hibernate-envers-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:19:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:21:    "test-code-url": "https://github.com/hibernate/hibernate-orm/tree/$version$/hibernate-core/src/test",
+metadata/org.hibernate.orm/hibernate-core/index.json:65:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:99:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:132:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:157:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:180:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:204:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:227:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.javaslang/javaslang-match/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang-match/$version$/javaslang-match-$version$-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+metadata/com.vaadin.external.google/android-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/$version$/android-json-$version$-sources.jar",
+metadata/com.vaadin.external.google/android-json/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish/javax.ejb/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish/javax.ejb/index.json:23:    "test-code-url" : "https://github.com/javaee/glassfish/tree/$version$/tests/embedded/ejb/ejb-api",
+metadata/org.glassfish/javax.servlet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.servlet/$version$/javax.servlet-$version$-sources.jar",
+metadata/org.glassfish/javax.servlet/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish/javax.servlet/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.servlet/$version$",
+metadata/org.glassfish/javax.annotation/index.json:11:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/$version$/javax.annotation-$version$-sources.jar",
+metadata/org.glassfish/javax.annotation/index.json:13:    "test-code-url" : "N/A",
+metadata/org.glassfish/javax.annotation/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/$version$/javax.annotation-$version$-sources.jar",
+metadata/org.glassfish/javax.annotation/index.json:21:    "test-code-url" : "N/A",
+metadata/org.glassfish/javax.annotation/index.json:22:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.annotation/$version$",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/org.glassfish/javax.transaction/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+metadata/javax.jcr/jcr/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.santuario/xmlsec/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/$version$/xmlsec-$version$-sources.jar",
+metadata/com.github.ghik/silencer-lib_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ghik/silencer-lib_2.13/$version$/silencer-lib_2.13-$version$-sources.jar",
+metadata/org.sonatype.aether/aether-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+metadata/org.sonatype.aether/aether-util/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+metadata/com.codahale.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/codahale/metrics/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.xmlunit/xmlunit-placeholders/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xmlunit/xmlunit-placeholders/$version$/xmlunit-placeholders-$version$-sources.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-sources.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.sonatype.aether/aether-spi/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-sources.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:21:    "test-code-url" : "N/A",
+metadata/aopalliance/aopalliance/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/$version$/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+metadata/org.eclipse.microprofile.openapi/microprofile-openapi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/microprofile/openapi/microprofile-openapi-api/$version$/microprofile-openapi-api-$version$-sources.jar",
+metadata/antlr/antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/commons-fileupload/commons-fileupload/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-fileupload/commons-fileupload/$version$/commons-fileupload-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.arquillian.test/arquillian-test-api/$version$",
+
+codex
+I’m going to keep this as a normal JVM Java artifact: the published JAR has class files and the POM targets Java, so there is no `language` marker and no `not-for-native-image` exclusion. The source URL will use Maven Central’s published sources JAR; the tests come from the `v$version$` GitHub tree because there is no test-sources JAR.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+diff --git a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+index 30703f3934a70fa75e3091fcd91980cd8689cea6..48158c0ae2836a82ef8ac15e99385b9e8957ee98
+--- a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
++++ b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "dnsjava:dnsjava:2.1.7"
++  "coordinates" : "dnsjava:dnsjava:2.1.7",
++  "repository-url" : "https://github.com/dnsjava/dnsjava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/$version$/dnsjava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/dnsjava/dnsjava/tree/v$version$/tests/org/xbill/DNS",
++  "documentation-url" : "https://javadoc.io/doc/dnsjava/dnsjava/$version$",
++  "description" : "dnsjava is a Java implementation of DNS that supports record handling and operations such as queries, zone transfers, and dynamic updates. It also provides cache support, EDNS0, TSIG authenticated messages, partial DNSSEC verification, and a minimal DNS server."
+ }
+
+diff --git a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+index 30703f3934a70fa75e3091fcd91980cd8689cea6..48158c0ae2836a82ef8ac15e99385b9e8957ee98
+--- a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
++++ b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "dnsjava:dnsjava:2.1.7"
++  "coordinates" : "dnsjava:dnsjava:2.1.7",
++  "repository-url" : "https://github.com/dnsjava/dnsjava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/$version$/dnsjava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/dnsjava/dnsjava/tree/v$version$/tests/org/xbill/DNS",
++  "documentation-url" : "https://javadoc.io/doc/dnsjava/dnsjava/$version$",
++  "description" : "dnsjava is a Java implementation of DNS that supports record handling and operations such as queries, zone transfers, and dynamic updates. It also provides cache support, EDNS0, TSIG authenticated messages, partial DNSSEC verification, and a minimal DNS server."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 0ms:
+{
+  "coordinates": "dnsjava:dnsjava:2.1.7",
+  "repository-url": "https://github.com/dnsjava/dnsjava",
+  "source-code-url": "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/$version$/dnsjava-$version$-sources.jar",
+  "test-code-url": "https://github.com/dnsjava/dnsjava/tree/v$version$/tests/org/xbill/DNS",
+  "documentation-url": "https://javadoc.io/doc/dnsjava/dnsjava/$version$",
+  "description": "dnsjava is a Java implementation of DNS that supports record handling and operations such as queries, zone transfers, and dynamic updates. It also provides cache support, EDNS0, TSIG authenticated messages, partial DNSSEC verification, and a minimal DNS server."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-sources.jar && curl -I -fsSL https://github.com/dnsjava/dnsjava/tree/v2.1.7/tests/org/xbill/DNS && curl -I -fsSL https://javadoc.io/doc/dnsjava/dnsjava/2.1.7' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7.jar -o /tmp/dnsjava-2.1.7.jar && jar tf /tmp/dnsjava-2.1.7.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 102ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/xbill/
+org/xbill/DNS/
+org/xbill/DNS/utils/
+org/xbill/DNS/spi/
+META-INF/services/
+org/xbill/DNS/TextParseException.class
+org/xbill/DNS/KEYRecord$Flags.class
+org/xbill/DNS/Master.class
+org/xbill/DNS/WKSRecord$Protocol.class
+org/xbill/DNS/MINFORecord.class
+org/xbill/DNS/ExtendedResolver.class
+org/xbill/DNS/Type.class
+org/xbill/DNS/SOARecord.class
+org/xbill/DNS/ZoneTransferIn.class
+org/xbill/DNS/SIGBase.class
+org/xbill/DNS/TXTRecord.class
+org/xbill/DNS/Options.class
+org/xbill/DNS/TLSARecord.class
+org/xbill/DNS/FormattedTime.class
+org/xbill/DNS/ExtendedResolver$Resolution.class
+org/xbill/DNS/Record.class
+org/xbill/DNS/DNSKEYRecord.class
+org/xbill/DNS/IPSECKEYRecord.class
+org/xbill/DNS/ClientSubnetOption.class
+org/xbill/DNS/NSIDOption.class
+org/xbill/DNS/UDPClient$1.class
+org/xbill/DNS/RPRecord.class
+org/xbill/DNS/SimpleResolver.class
+org/xbill/DNS/DNAMERecord.class
+org/xbill/DNS/DNSSEC$NoSignatureException.class
+org/xbill/DNS/Compression$1.class
+org/xbill/DNS/EDNSOption$Code.class
+org/xbill/DNS/WKSRecord.class
+org/xbill/DNS/DNSSEC.class
+org/xbill/DNS/X25Record.class
+org/xbill/DNS/SPFRecord.class
+org/xbill/DNS/Serial.class
+
+diff --git a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+index 30703f3934a70fa75e3091fcd91980cd8689cea6..48158c0ae2836a82ef8ac15e99385b9e8957ee98
+--- a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
++++ b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "dnsjava:dnsjava:2.1.7"
++  "coordinates" : "dnsjava:dnsjava:2.1.7",
++  "repository-url" : "https://github.com/dnsjava/dnsjava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/$version$/dnsjava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/dnsjava/dnsjava/tree/v$version$/tests/org/xbill/DNS",
++  "documentation-url" : "https://javadoc.io/doc/dnsjava/dnsjava/$version$",
++  "description" : "dnsjava is a Java implementation of DNS that supports record handling and operations such as queries, zone transfers, and dynamic updates. It also provides cache support, EDNS0, TSIG authenticated messages, partial DNSSEC verification, and a minimal DNS server."
+ }
+
+ succeeded in 358ms:
+HTTP/2 303 
+date: Sun, 03 May 2026 11:29:58 GMT
+content-length: 0
+location: /doc/dnsjava/dnsjava/2.1.7/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=VwXolnrjBv7FPPMqGwVdbkkJzXA%2F6g2vL5S3z33rZMDhK1rGLT5%2F7M0qV8Rd2D%2Fwd6yUAhhwx3jRzF2uXCAWboZIWhejfvOLPtMKRqH0abE2YXlWklv6MTkEvnCVVvY8aBD3XP6q%2B1KO"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f5eee542da9bb0a-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 11:29:58 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/dnsjava/dnsjava/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=BqxC8ZmetTaKODsBc8tsE63RDKoEZJE%2BmOHy%2BzSVFjTIS5ySYZmOM1n73Iq%2B237dS6EKgwSFaTQXd8FxvzUSxusu2tPG%2B01Hht%2BCwow3noesvwdsxc%2BQG7ldY3%2F8Y%2F5La1pSdrvKW0eM"}]}
+server: cloudflare
+cf-ray: 9f5eee54ee54bb0a-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+index 30703f3934a70fa75e3091fcd91980cd8689cea6..48158c0ae2836a82ef8ac15e99385b9e8957ee98
+--- a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
++++ b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "dnsjava:dnsjava:2.1.7"
++  "coordinates" : "dnsjava:dnsjava:2.1.7",
++  "repository-url" : "https://github.com/dnsjava/dnsjava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/$version$/dnsjava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/dnsjava/dnsjava/tree/v$version$/tests/org/xbill/DNS",
++  "documentation-url" : "https://javadoc.io/doc/dnsjava/dnsjava/$version$",
++  "description" : "dnsjava is a Java implementation of DNS that supports record handling and operations such as queries, zone transfers, and dynamic updates. It also provides cache support, EDNS0, TSIG authenticated messages, partial DNSSEC verification, and a minimal DNS server."
+ }
+
+web search: 
+web search: https://github.com/dnsjava/dnsjava/tree/v2.1.7/tests/org/xbill/DNS
+web search: 
+web search: https://repo.maven.apache.org/maven2/dnsjava/dnsjava/2.1.7/dnsjava-2.1.7-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/dnsjava/dnsjava/2.1.7
+exec
+/usr/bin/bash -lc 'git status --short --ignored -- build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be
+ succeeded in 133ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+index 30703f3934a70fa75e3091fcd91980cd8689cea6..48158c0ae2836a82ef8ac15e99385b9e8957ee98
+--- a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
++++ b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "dnsjava:dnsjava:2.1.7"
++  "coordinates" : "dnsjava:dnsjava:2.1.7",
++  "repository-url" : "https://github.com/dnsjava/dnsjava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/$version$/dnsjava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/dnsjava/dnsjava/tree/v$version$/tests/org/xbill/DNS",
++  "documentation-url" : "https://javadoc.io/doc/dnsjava/dnsjava/$version$",
++  "description" : "dnsjava is a Java implementation of DNS that supports record handling and operations such as queries, zone transfers, and dynamic updates. It also provides cache support, EDNS0, TSIG authenticated messages, partial DNSSEC verification, and a minimal DNS server."
+ }
+
+codex
+Updated [dnsjava-dnsjava-2.1.7.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json) with repository, Maven Central sources, tagged GitHub tests, versioned Javadoc, and a two-sentence description. The upstream POM identifies the GitHub repository and Java artifact, the tagged tests exist under `v2.1.7`, and the versioned Javadoc renders for `2.1.7`. citeturn1search2turn0view2turn1search3
+
+I left `language` absent and did not set `not-for-native-image`; the published artifact is a JVM JAR with `.class` files. Verified JSON validity with `jq` and checked the resolved source, test, and documentation URLs with `curl`.
+diff --git a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+index 30703f3934a70fa75e3091fcd91980cd8689cea6..48158c0ae2836a82ef8ac15e99385b9e8957ee98
+--- a/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
++++ b/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "dnsjava:dnsjava:2.1.7"
++  "coordinates" : "dnsjava:dnsjava:2.1.7",
++  "repository-url" : "https://github.com/dnsjava/dnsjava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/$version$/dnsjava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/dnsjava/dnsjava/tree/v$version$/tests/org/xbill/DNS",
++  "documentation-url" : "https://javadoc.io/doc/dnsjava/dnsjava/$version$",
++  "description" : "dnsjava is a Java implementation of DNS that supports record handling and operations such as queries, zone transfers, and dynamic updates. It also provides cache support, EDNS0, TSIG authenticated messages, partial DNSSEC verification, and a minimal DNS server."
+ }
+
+tokens used
+62,518
+Updated [dnsjava-dnsjava-2.1.7.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be/build/discovered-artifact-metadata/dnsjava-dnsjava-2.1.7.json) with repository, Maven Central sources, tagged GitHub tests, versioned Javadoc, and a two-sentence description. The upstream POM identifies the GitHub repository and Java artifact, the tagged tests exist under `v2.1.7`, and the versioned Javadoc renders for `2.1.7`. citeturn1search2turn0view2turn1search3
+
+I left `language` absent and did not set `not-for-native-image`; the published artifact is a JVM JAR with `.class` files. Verified JSON validity with `jq` and checked the resolved source, test, and documentation URLs with `curl`.
+Ran agent for dnsjava:dnsjava:2.1.7 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be/build/agent-artifact-discovery-logs/dnsjava-dnsjava-2.1.7.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2989-f02451be/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 20s
+9 actionable tasks: 4 executed, 5 from cache
