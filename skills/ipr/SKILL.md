@@ -1,13 +1,14 @@
 ---
 name: ipr
-description: Create a GitHub issue and pull request in oracle/graalvm-reachability-metadata, link the PR to the issue, and request reviews from kimeta, jormundur00, and vjovanov.
+description: Create a GitHub issue and pull request in oracle/graalvm-reachability-metadata, link the PR to the issue, and request reviews from the standard reviewer set except the PR author.
 argument-hint: "[title-or-summary]"
 ---
 
 # Issue + PR + Reviewers
 
 Use this skill when asked to create an issue and PR for
-`oracle/graalvm-reachability-metadata` and request the standard reviewer set.
+`oracle/graalvm-reachability-metadata` and request the standard reviewer set
+other than the PR author.
 
 Standard reviewers:
 
@@ -61,10 +62,12 @@ Fixes #ISSUE_NUMBER"
      the issue link instead of creating a duplicate.
 
 5. Request reviewers.
+   - Request only the standard reviewers other than the PR author. For PRs
+     authored by `vjovanov`, request `kimeta` and `jormundur00`.
    ```bash
    gh pr edit PR_NUMBER \
      -R oracle/graalvm-reachability-metadata \
-     --add-reviewer kimeta,jormundur00,vjovanov
+     --add-reviewer kimeta,jormundur00
    ```
 
 6. Verify the final state.
@@ -74,7 +77,7 @@ Fixes #ISSUE_NUMBER"
    ```
    Confirm:
    - the PR exists and links to the created issue
-   - review requests include `kimeta`, `jormundur00`, and `vjovanov`
+   - review requests include the standard reviewers other than the PR author
    - the issue is open unless the PR has already been merged
 
 ## Decision Rules
@@ -82,9 +85,11 @@ Fixes #ISSUE_NUMBER"
 - Do not guess issue or PR content when the title/body materially matters.
   Ask for the missing content if it cannot be inferred from the current branch,
   commit messages, or user request.
-- If one of the standard reviewers cannot be requested because GitHub rejects
-  the account or permissions, continue requesting the remaining reviewers and
-  report the failure explicitly.
+- If GitHub rejects a reviewer because they are the PR author, treat that as
+  expected and request the other standard reviewers.
+- If one of the requested standard reviewers cannot be requested because GitHub
+  rejects the account or permissions, continue requesting the remaining
+  reviewers and report the failure explicitly.
 - If the PR already has one of the reviewers assigned, leave it as-is.
 - Do not add labels, assignees, projects, or milestones unless the user asks or
   repository automation requires them.

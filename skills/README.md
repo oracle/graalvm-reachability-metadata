@@ -48,7 +48,7 @@ It resolves each linked issue, clears all assignees, and moves project status ba
 
 ### `ipr`
 
-Creates a GitHub issue and pull request for `oracle/graalvm-reachability-metadata`, links the PR to the issue, and requests reviews from `kimeta`, `jormundur00`, and `vjovanov`.
+Creates a GitHub issue and pull request for `oracle/graalvm-reachability-metadata`, links the PR to the issue, and requests reviews from the standard reviewers other than the PR author.
 
 ## Loading Locally
 
