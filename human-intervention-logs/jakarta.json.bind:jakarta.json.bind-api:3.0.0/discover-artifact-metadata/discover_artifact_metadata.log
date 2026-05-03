@@ -1,0 +1,1846 @@
+Starting a Gradle Daemon, 1 busy and 5 incompatible and 73 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019def09-fbf1-76a2-b4a3-94795988b2f4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.json.bind:jakarta.json.bind-api:3.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0.0" when "$version$" is replaced with "3.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+- Set "coordinates" to "jakarta.json.bind:jakarta.json.bind-api:3.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from authoritative sources first, then update the JSON in place using the repository’s existing formatting.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+{
+  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'jakarta\\.json\\.bind|jsonb|jakarta\\.json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' -n build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+web search: 
+web search: jakarta.json.bind jakarta.json.bind-api 3.0.0 maven pom scm url sources jar tests jar
+codex
+The artifact has a published Maven Central entry with source and javadoc jars. I’m checking the POM and upstream repository/tag now, because the test-suite URL usually needs the VCS tag when Maven does not publish test artifacts.
+exec
+/usr/bin/bash -lc "find . -path './build/discovered-artifact-metadata/*.json' -type f | head -40 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+{
+  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/json/bind/jakarta.json.bind-api/3.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/json/bind/jakarta.json.bind-api/3.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.json.bind-api-3.0.0-javadoc.jar" title="jakarta.json.bind-api-3.0.0-javadoc.jar">jakarta.json.bind-api-3.0.0-javadoc.jar</a>           2022-02-24 13:29    607937      
+<a href="jakarta.json.bind-api-3.0.0-javadoc.jar.asc" title="jakarta.json.bind-api-3.0.0-javadoc.jar.asc">jakarta.json.bind-api-3.0.0-javadoc.jar.asc</a>       2022-02-24 13:29       833      
+<a href="jakarta.json.bind-api-3.0.0-javadoc.jar.md5" title="jakarta.json.bind-api-3.0.0-javadoc.jar.md5">jakarta.json.bind-api-3.0.0-javadoc.jar.md5</a>       2022-02-24 13:29        32      
+<a href="jakarta.json.bind-api-3.0.0-javadoc.jar.sha1" title="jakarta.json.bind-api-3.0.0-javadoc.jar.sha1">jakarta.json.bind-api-3.0.0-javadoc.jar.sha1</a>      2022-02-24 13:29        40      
+<a href="jakarta.json.bind-api-3.0.0-sources.jar" title="jakarta.json.bind-api-3.0.0-sources.jar">jakarta.json.bind-api-3.0.0-sources.jar</a>           2022-02-24 13:29     46678      
+<a href="jakarta.json.bind-api-3.0.0-sources.jar.asc" title="jakarta.json.bind-api-3.0.0-sources.jar.asc">jakarta.json.bind-api-3.0.0-sources.jar.asc</a>       2022-02-24 13:29       833      
+<a href="jakarta.json.bind-api-3.0.0-sources.jar.md5" title="jakarta.json.bind-api-3.0.0-sources.jar.md5">jakarta.json.bind-api-3.0.0-sources.jar.md5</a>       2022-02-24 13:29        32      
+<a href="jakarta.json.bind-api-3.0.0-sources.jar.sha1" title="jakarta.json.bind-api-3.0.0-sources.jar.sha1">jakarta.json.bind-api-3.0.0-sources.jar.sha1</a>      2022-02-24 13:29        40      
+<a href="jakarta.json.bind-api-3.0.0.jar" title="jakarta.json.bind-api-3.0.0.jar">jakarta.json.bind-api-3.0.0.jar</a>                   2022-02-24 13:29     36845      
+<a href="jakarta.json.bind-api-3.0.0.jar.asc" title="jakarta.json.bind-api-3.0.0.jar.asc">jakarta.json.bind-api-3.0.0.jar.asc</a>               2022-02-24 13:29       833      
+<a href="jakarta.json.bind-api-3.0.0.jar.md5" title="jakarta.json.bind-api-3.0.0.jar.md5">jakarta.json.bind-api-3.0.0.jar.md5</a>               2022-02-24 13:29        32      
+<a href="jakarta.json.bind-api-3.0.0.jar.sha1" title="jakarta.json.bind-api-3.0.0.jar.sha1">jakarta.json.bind-api-3.0.0.jar.sha1</a>              2022-02-24 13:29        40      
+<a href="jakarta.json.bind-api-3.0.0.pom" title="jakarta.json.bind-api-3.0.0.pom">jakarta.json.bind-api-3.0.0.pom</a>                   2022-02-24 13:29     21994      
+<a href="jakarta.json.bind-api-3.0.0.pom.asc" title="jakarta.json.bind-api-3.0.0.pom.asc">jakarta.json.bind-api-3.0.0.pom.asc</a>               2022-02-24 13:29       833      
+<a href="jakarta.json.bind-api-3.0.0.pom.md5" title="jakarta.json.bind-api-3.0.0.pom.md5">jakarta.json.bind-api-3.0.0.pom.md5</a>               2022-02-24 13:29        32      
+<a href="jakarta.json.bind-api-3.0.0.pom.sha1" title="jakarta.json.bind-api-3.0.0.pom.sha1">jakarta.json.bind-api-3.0.0.pom.sha1</a>              2022-02-24 13:29        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0.pom | sed -n '1,240p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2016, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <groupId>jakarta.json.bind</groupId>
+    <artifactId>jakarta.json.bind-api</artifactId>
+    <version>3.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>JSON-B API</name>
+    <description>Jakarta JSON Binding is a standard binding layer for converting Java objects to/from JSON documents.</description>
+    <inceptionYear>2016</inceptionYear>
+    <url>https://eclipse-ee4j.github.io/jsonb-api</url>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jsonb-api/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Mailing list</name>
+            <archive>jsonb-dev@eclipse.org</archive>
+        </mailingList>
+    </mailingLists>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License 2.0</name>
+            <url>https://projects.eclipse.org/license/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GNU General Public License, version 2 with the GNU Classpath Exception</name>
+            <url>https://projects.eclipse.org/license/secondary-gpl-2.0-cp</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-ee4j/jsonb-api.git</connection>
+        <developerConnection>scm:git:git@github.com:eclipse-ee4j/jsonb-api.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jsonb-api</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+          	<id>m0mus</id>
+            <name>Dmitry Kornilov</name>
+            <email>dmitry.kornilov@oracle.com</email>
+            <url>https://dmitrykornilov.net</url>
+            <organization>Oracle</organization>
+            <roles>
+                <role>Project Lead</role>
+            </roles>
+            <timezone>CET</timezone>
+        </developer>
+    </developers>
+
+    <properties>
+        <release.spec.feedback>jsonb-dev@eclipse.org</release.spec.feedback>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <milestone.number>01</milestone.number>
+        <new.spec.version>3.0.0</new.spec.version>
+        <non.final>false</non.final>
+        <skip.release.tests>false</skip.release.tests>
+        <spec.version>3.0</spec.version>
+        <jakarta.json.version>2.1.0</jakarta.json.version>
+        <!-- The version of JSON-B API to compare against to verify we follow semantic versioning rules -->
+        <baseline.compare.version>2.0.0</baseline.compare.version>
+        <api_package>jakarta.json.bind</api_package>
+        <legal.doc.source>${project.basedir}/..</legal.doc.source>
+        <vendor.name>Oracle Corporation</vendor.name>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.json</groupId>
+                <artifactId>jakarta.json-api</artifactId>
+                <version>${jakarta.json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.1</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>final</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Final API bundle version properties -->
+                <non.final>false</non.final>
+            </properties>
+        </profile>
+        <profile>
+            <!-- Use it with release-perform goal to skip another test run. -->
+            <id>skip-tests</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <skip.release.tests>true</skip.release.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>3.0.5</version>
+                    <configuration>
+                        <effort>Max</effort>
+                        <threshold>Low</threshold>
+                        <xmlOutput>true</xmlOutput>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>analyze-compile</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                    <configuration>
+                        <compilerArgs>
+                            <arg>-Xlint:all</arg>
+                        </compilerArgs>
+                        <release>11</release>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <!-- This plugin generates the buildNumber property used in maven-bundle-plugin -->
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.4</version>
+                    <configuration>
+                        <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
+                        <items>
+                            <item>timestamp</item>
+                        </items>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>create</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <!-- This plugin generates the spec.* properties used in maven-bundle-plugin -->
+                    <groupId>org.glassfish.build</groupId>
+                    <artifactId>spec-version-maven-plugin</artifactId>
+                    <version>1.5</version>
+                    <configuration>
+                        <specMode>jakarta</specMode>
+                        <spec>
+                            <nonFinal>${non.final}</nonFinal>
+                            <jarType>api</jarType>
+                            <specVersion>${spec.version}</specVersion>
+                            <newSpecVersion>${new.spec.version}</newSpecVersion>
+                            <specBuild>${milestone.number}</specBuild>
+                            <specImplVersion>${project.version}</specImplVersion>
+
+web search: 
+web search: site:mvnrepository.com jakarta.json.bind-api 3.0.0
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jsonb-api.git | rg '3\\.0\\.0|jsonb|3\\.0'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0-sources.jar -o /tmp/jakarta-jsonb-api-sources.jar && jar tf /tmp/jakarta-jsonb-api-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+jakarta/
+jakarta/json/
+jakarta/json/bind/
+jakarta/json/bind/adapter/
+jakarta/json/bind/annotation/
+jakarta/json/bind/config/
+jakarta/json/bind/serializer/
+jakarta/json/bind/spi/
+META-INF/maven/
+META-INF/maven/jakarta.json.bind/
+META-INF/maven/jakarta.json.bind/jakarta.json.bind-api/
+jakarta/json/bind/Jsonb.java
+jakarta/json/bind/JsonbConfig.java
+jakarta/json/bind/annotation/JsonbCreator.java
+jakarta/json/bind/annotation/JsonbNumberFormat.java
+jakarta/json/bind/annotation/JsonbPropertyOrder.java
+jakarta/json/bind/annotation/JsonbTypeAdapter.java
+jakarta/json/bind/annotation/JsonbTypeSerializer.java
+jakarta/json/bind/annotation/package-info.java
+jakarta/json/bind/config/PropertyNamingStrategy.java
+jakarta/json/bind/config/PropertyVisibilityStrategy.java
+jakarta/json/bind/serializer/DeserializationContext.java
+jakarta/json/bind/serializer/JsonbSerializer.java
+jakarta/json/bind/serializer/package-info.java
+jakarta/json/bind/spi/package-info.java
+module-info.java
+META-INF/maven/jakarta.json.bind/jakarta.json.bind-api/pom.properties
+jakarta/json/bind/JsonbBuilder.java
+jakarta/json/bind/JsonbException.java
+jakarta/json/bind/adapter/JsonbAdapter.java
+jakarta/json/bind/adapter/package-info.java
+jakarta/json/bind/annotation/JsonbAnnotation.java
+jakarta/json/bind/annotation/JsonbDateFormat.java
+jakarta/json/bind/annotation/JsonbNillable.java
+jakarta/json/bind/annotation/JsonbProperty.java
+jakarta/json/bind/annotation/JsonbSubtype.java
+jakarta/json/bind/annotation/JsonbTransient.java
+jakarta/json/bind/annotation/JsonbTypeDeserializer.java
+jakarta/json/bind/annotation/JsonbTypeInfo.java
+jakarta/json/bind/annotation/JsonbVisibility.java
+jakarta/json/bind/config/BinaryDataStrategy.java
+jakarta/json/bind/config/PropertyOrderStrategy.java
+jakarta/json/bind/config/package-info.java
+jakarta/json/bind/package-info.java
+jakarta/json/bind/serializer/JsonbDeserializer.java
+jakarta/json/bind/serializer/SerializationContext.java
+jakarta/json/bind/spi/JsonbProvider.java
+META-INF/maven/jakarta.json.bind/jakarta.json.bind-api/pom.xml
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0.jar -o /tmp/jakarta-jsonb-api.jar && jar tf /tmp/jakarta-jsonb-api.jar | sed -n '1,180p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+jakarta/
+jakarta/json/
+jakarta/json/bind/
+jakarta/json/bind/annotation/
+jakarta/json/bind/serializer/
+jakarta/json/bind/config/
+jakarta/json/bind/adapter/
+jakarta/json/bind/spi/
+META-INF/maven/
+META-INF/maven/jakarta.json.bind/
+META-INF/maven/jakarta.json.bind/jakarta.json.bind-api/
+META-INF/LICENSE.md
+jakarta/json/bind/serializer/JsonbDeserializer.class
+jakarta/json/bind/serializer/JsonbSerializer.class
+jakarta/json/bind/serializer/SerializationContext.class
+jakarta/json/bind/config/PropertyOrderStrategy.class
+jakarta/json/bind/config/BinaryDataStrategy.class
+jakarta/json/bind/JsonbException.class
+jakarta/json/bind/adapter/JsonbAdapter.class
+jakarta/json/bind/JsonbConfig.class
+META-INF/maven/jakarta.json.bind/jakarta.json.bind-api/pom.xml
+META-INF/NOTICE.md
+module-info.class
+jakarta/json/bind/annotation/JsonbSubtype.class
+jakarta/json/bind/annotation/JsonbAnnotation.class
+jakarta/json/bind/annotation/JsonbProperty.class
+jakarta/json/bind/annotation/JsonbDateFormat.class
+jakarta/json/bind/annotation/JsonbTypeAdapter.class
+jakarta/json/bind/annotation/JsonbTransient.class
+jakarta/json/bind/annotation/JsonbTypeSerializer.class
+jakarta/json/bind/annotation/JsonbTypeDeserializer.class
+jakarta/json/bind/annotation/JsonbVisibility.class
+jakarta/json/bind/annotation/JsonbCreator.class
+jakarta/json/bind/annotation/JsonbTypeInfo.class
+jakarta/json/bind/annotation/JsonbNumberFormat.class
+jakarta/json/bind/annotation/JsonbPropertyOrder.class
+jakarta/json/bind/annotation/JsonbNillable.class
+jakarta/json/bind/serializer/DeserializationContext.class
+jakarta/json/bind/config/PropertyNamingStrategy.class
+jakarta/json/bind/config/PropertyVisibilityStrategy.class
+jakarta/json/bind/Jsonb.class
+jakarta/json/bind/JsonbBuilder.class
+jakarta/json/bind/spi/JsonbProvider.class
+META-INF/maven/jakarta.json.bind/jakarta.json.bind-api/pom.properties
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jsonb-api/contents?ref=3.0.0 | sed -n '1,180p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 328ms:
+97910b6b61f64e103c89970f213e4494c3489e69	refs/tags/3.0.0
+9dc1f518ec6663cbe29c94a1d2ad96694184f89c	refs/tags/3.0.0^{}
+7d7582f5b90f730eb3333fe21768fc8d5dcdeeb6	refs/tags/3.0.0-RC1-RELEASE
+d941bad9544f183254436f76b8b4644717cb1539	refs/tags/3.0.0-RC1-RELEASE^{}
+b0c7c4d1558d92c70ed4a1f7032d8d5208898502	refs/tags/3.0.0-tck
+3326d1215dc3a3f35b7279b59bd7b79fc01aff3b	refs/tags/3.0.0-tck^{}
+3f995d865b602e6b9dbc0946c94bd484a450e95e	refs/tags/3.0.1
+2f3154010a16cb4569595c3c16125661f9407038	refs/tags/3.0.1^{}
+
+ succeeded in 323ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "577e99825856fe47ebce1210b04e278a4626f8ff",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/.github?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/.github",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/577e99825856fe47ebce1210b04e278a4626f8ff",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/.github?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/577e99825856fe47ebce1210b04e278a4626f8ff",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "8b815bee79e2b1a096bd85ce5437a3e211316a00",
+    "size": 205,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/.gitignore?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/.gitignore",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/8b815bee79e2b1a096bd85ce5437a3e211316a00",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/jsonb-api/3.0.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/.gitignore?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/8b815bee79e2b1a096bd85ce5437a3e211316a00",
+      "html": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/.gitignore"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "590907985bb4ffbfbe28366dc89ece351d196cc8",
+    "size": 1511,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/CONTRIBUTING.md?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/590907985bb4ffbfbe28366dc89ece351d196cc8",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/jsonb-api/3.0.0/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/CONTRIBUTING.md?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/590907985bb4ffbfbe28366dc89ece351d196cc8",
+      "html": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE.md",
+    "path": "LICENSE.md",
+    "sha": "5de3d1b40c199fba101ae1602548c5042587ed7b",
+    "size": 35084,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/LICENSE.md?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/LICENSE.md",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/5de3d1b40c199fba101ae1602548c5042587ed7b",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/jsonb-api/3.0.0/LICENSE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/LICENSE.md?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/5de3d1b40c199fba101ae1602548c5042587ed7b",
+      "html": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/LICENSE.md"
+    }
+  },
+  {
+    "name": "NOTICE.md",
+    "path": "NOTICE.md",
+    "sha": "2d0795f78f6a0c3fcddcc19842508e6e82992bea",
+    "size": 1706,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/NOTICE.md?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/NOTICE.md",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/2d0795f78f6a0c3fcddcc19842508e6e82992bea",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/jsonb-api/3.0.0/NOTICE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/NOTICE.md?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/2d0795f78f6a0c3fcddcc19842508e6e82992bea",
+      "html": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/NOTICE.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "c3f391d8dd6f115f3f25adaa55364278b40f8273",
+    "size": 2879,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/README.md?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/README.md",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/c3f391d8dd6f115f3f25adaa55364278b40f8273",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/jsonb-api/3.0.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/README.md?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/c3f391d8dd6f115f3f25adaa55364278b40f8273",
+      "html": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/README.md"
+    }
+  },
+  {
+    "name": "api",
+    "path": "api",
+    "sha": "d7a606e7f9f4f0bd02ad326855ea6c63d18cebb6",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/api?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/api",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/d7a606e7f9f4f0bd02ad326855ea6c63d18cebb6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/api?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/d7a606e7f9f4f0bd02ad326855ea6c63d18cebb6",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/api"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "docs",
+    "sha": "7896dc2d410bff127a0110a808e291ed804847e1",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/docs?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/docs",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/7896dc2d410bff127a0110a808e291ed804847e1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/docs?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/7896dc2d410bff127a0110a808e291ed804847e1",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/docs"
+    }
+  },
+  {
+    "name": "etc",
+    "path": "etc",
+    "sha": "bf474055084c2042c5432d25d8212c06f45ee8de",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/etc?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/etc",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/bf474055084c2042c5432d25d8212c06f45ee8de",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/etc?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/bf474055084c2042c5432d25d8212c06f45ee8de",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/etc"
+    }
+  },
+  {
+    "name": "spec",
+    "path": "spec",
+    "sha": "501e8964dd72f558f66b648af46d0655892e599d",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/spec?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/spec",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/501e8964dd72f558f66b648af46d0655892e599d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/spec?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/501e8964dd72f558f66b648af46d0655892e599d",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/spec"
+    }
+  },
+  {
+    "name": "tck-dist",
+    "path": "tck-dist",
+    "sha": "d292e0b135d13abe2b15b0593971347138e9c67b",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/tck-dist?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/tck-dist",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/d292e0b135d13abe2b15b0593971347138e9c67b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/tck-dist?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/d292e0b135d13abe2b15b0593971347138e9c67b",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/tck-dist"
+    }
+  },
+  {
+    "name": "tck-docs",
+    "path": "tck-docs",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jsonb-api/contents?ref=3.0.0 | sed -n '180,360p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+    "path": "tck-docs",
+    "sha": "1872e1b4b5b01621c8e7e47415fd5f4f5bbc6461",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/tck-docs?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/tck-docs",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/1872e1b4b5b01621c8e7e47415fd5f4f5bbc6461",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/tck-docs?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/1872e1b4b5b01621c8e7e47415fd5f4f5bbc6461",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/tck-docs"
+    }
+  },
+  {
+    "name": "tck",
+    "path": "tck",
+    "sha": "97b37b06d784ab24f4981f06c1fa4ee9c5eb7248",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/tck?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/tck",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/97b37b06d784ab24f4981f06c1fa4ee9c5eb7248",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/tck?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/97b37b06d784ab24f4981f06c1fa4ee9c5eb7248",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/tck"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jsonb-api/contents/docs?ref=3.0.0 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jsonb-api/contents/tck-tests?ref=3.0.0 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jsonb-api/contents/api?ref=3.0.0 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 291ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 321ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "docs/pom.xml",
+    "sha": "9ddc0d32c6f9a9ee5da69eaa9e8a91348e0b7e41",
+    "size": 5144,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/docs/pom.xml?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/docs/pom.xml",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/9ddc0d32c6f9a9ee5da69eaa9e8a91348e0b7e41",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/jsonb-api/3.0.0/docs/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/docs/pom.xml?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/9ddc0d32c6f9a9ee5da69eaa9e8a91348e0b7e41",
+      "html": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/docs/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "docs/src",
+    "sha": "60d99859f96607e3ccee9098307ac31bd965ec05",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/docs/src?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/docs/src",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/60d99859f96607e3ccee9098307ac31bd965ec05",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/docs/src?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/60d99859f96607e3ccee9098307ac31bd965ec05",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/docs/src"
+    }
+  }
+]
+
+ succeeded in 319ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "api/pom.xml",
+    "sha": "0452a25451820789bfa2a078a9885cee382785bd",
+    "size": 21994,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/api/pom.xml?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/api/pom.xml",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/0452a25451820789bfa2a078a9885cee382785bd",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/jsonb-api/3.0.0/api/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/api/pom.xml?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/blobs/0452a25451820789bfa2a078a9885cee382785bd",
+      "html": "https://github.com/jakartaee/jsonb-api/blob/3.0.0/api/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "api/src",
+    "sha": "a1fcc4b9d22bf398a2965adb5fd15f74347dd4fb",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/jsonb-api/contents/api/src?ref=3.0.0",
+    "html_url": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/api/src",
+    "git_url": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/a1fcc4b9d22bf398a2965adb5fd15f74347dd4fb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/jsonb-api/contents/api/src?ref=3.0.0",
+      "git": "https://api.github.com/repos/jakartaee/jsonb-api/git/trees/a1fcc4b9d22bf398a2965adb5fd15f74347dd4fb",
+      "html": "https://github.com/jakartaee/jsonb-api/tree/3.0.0/api/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/json/bind</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/json/bind</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.json.bind-api/" title="jakarta.json.bind-api/">jakarta.json.bind-api/</a>                                           -         -      
+<a href="jakarta.json.bind-tck/" title="jakarta.json.bind-tck/">jakarta.json.bind-tck/</a>                                           -         -      
+<a href="jakarta.json.bind-tck-dist/" title="jakarta.json.bind-tck-dist/">jakarta.json.bind-tck-dist/</a>                                      -         -      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jsonb-api/git/trees/3.0.0?recursive=1 | rg '\"path\": \"(api/src|tck).*(test|Test|src/test|\\.java)\"|\"path\": \"api/src' | head -200" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jsonb-api/releases/tags/3.0.0 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/jakartaee/jsonb-api/3.0.0/README.md | sed -n '1,180p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 164ms:
+# Jakarta JSON Binding (JSON-B)
+
+[![Maven Central](https://img.shields.io/maven-central/v/jakarta.json.bind/jakarta.json.bind-api.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/jakarta.json.bind/jakarta.json.bind-api)
+[![Javadoc](https://javadoc.io/badge2/jakarta.json.bind/jakarta.json.bind-api/javadoc.io.svg)](https://javadoc.io/doc/jakarta.json.bind/jakarta.json.bind-api)
+[![Snapshots](https://img.shields.io/nexus/s/https/jakarta.oss.sonatype.org/jakarta.json.bind/jakarta.json.bind-api.svg?label=Snapshots)](https://jakarta.oss.sonatype.org/content/repositories/staging/jakarta/json/bind/jakarta.json.bind-api/)
+[![Gitter](https://badges.gitter.im/eclipse/jsonb.svg)](https://gitter.im/eclipse/jsonb)
+[![License](https://img.shields.io/badge/License-EPL%202.0-green.svg)](https://opensource.org/licenses/EPL-2.0)
+
+JSON-B is a standard binding layer for converting Java objects to/from JSON messages. It defines a default mapping algorithm for converting existing Java classes to JSON, while enabling developers to customize the mapping process through the use of Java annotations.
+
+## Get it
+
+### Maven
+```xml
+<!-- https://mvnrepository.com/artifact/jakarta.json.bind/jakarta.json.bind-api -->
+<dependency>
+    <groupId>jakarta.json.bind</groupId>
+    <artifactId>jakarta.json.bind-api</artifactId>
+    <version>2.0.0</version>
+</dependency>
+```
+
+## Mapping a simple class
+
+Suppose we have the following Java object, which we want to represent with JSON data:
+```java
+public class User {
+  public long id;
+  public String name;
+  public int age;
+}
+```
+
+Using the default mapping, this class can be serialized (as-is) to a JSON string:
+```java
+Jsonb jsonb = JsonbBuilder.create();
+
+User bob = new User();
+bob.id = 1234;
+bob.name = "Bob";
+bob.age = 42;
+
+String bobJson = jsonb.toJson(bob);
+System.out.println(bobJson); // {"id":1234,"name":"Bob","age":42}
+```
+
+Likewise, JSON data can be deserialized back into Java objects:
+```java
+Jsonb jsonb = JsonbBuilder.create();
+
+String aliceJson = "{\"id\":5678,\"name\":\"Alice\",\"age\":42}";
+User alice = jsonb.fromJson(aliceJson, User.class);
+```
+
+## How to run the TCK tests
+
+The JSON-B TCK tests are produced as a Maven artifact where the tests use Arquillian + JUnit. To run the TCK tests using your implementation,
+include the TCK module and apply the appropriate Arquillian container. See the [Eclipse Yasson](https://github.com/eclipse-ee4j/yasson) repository for an example of this.
+
+## Links
+
+- [Official web site](https://eclipse-ee4j.github.io/jsonb-api)
+- [Eclipse project](https://projects.eclipse.org/projects/ee4j.jsonb)
+- [User's Guide](https://eclipse-ee4j.github.io/jsonb-api/docs/user-guide.html)
+- [Jenkins Builds](https://ci.eclipse.org/jsonb/view/all/)
+- [Mailing list](https://www.eclipse.org/lists/jsonb-dev/)
+- [Yasson (Compatible Implementation)](https://github.com/eclipse-ee4j/yasson)
+
+ succeeded in 337ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 487ms:
+      "path": "api/src",
+      "path": "api/src/main",
+      "path": "api/src/main/java",
+      "path": "api/src/main/java/jakarta",
+      "path": "api/src/main/java/jakarta/json",
+      "path": "api/src/main/java/jakarta/json/bind",
+      "path": "api/src/main/java/jakarta/json/bind/Jsonb.java",
+      "path": "api/src/main/java/jakarta/json/bind/JsonbBuilder.java",
+      "path": "api/src/main/java/jakarta/json/bind/JsonbConfig.java",
+      "path": "api/src/main/java/jakarta/json/bind/JsonbException.java",
+      "path": "api/src/main/java/jakarta/json/bind/adapter",
+      "path": "api/src/main/java/jakarta/json/bind/adapter/JsonbAdapter.java",
+      "path": "api/src/main/java/jakarta/json/bind/adapter/package-info.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbAnnotation.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbCreator.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbDateFormat.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbNillable.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbNumberFormat.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbProperty.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbPropertyOrder.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbSubtype.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbTransient.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbTypeAdapter.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbTypeDeserializer.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbTypeInfo.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbTypeSerializer.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/JsonbVisibility.java",
+      "path": "api/src/main/java/jakarta/json/bind/annotation/package-info.java",
+      "path": "api/src/main/java/jakarta/json/bind/config",
+      "path": "api/src/main/java/jakarta/json/bind/config/BinaryDataStrategy.java",
+      "path": "api/src/main/java/jakarta/json/bind/config/PropertyNamingStrategy.java",
+      "path": "api/src/main/java/jakarta/json/bind/config/PropertyOrderStrategy.java",
+      "path": "api/src/main/java/jakarta/json/bind/config/PropertyVisibilityStrategy.java",
+      "path": "api/src/main/java/jakarta/json/bind/config/package-info.java",
+      "path": "api/src/main/java/jakarta/json/bind/package-info.java",
+      "path": "api/src/main/java/jakarta/json/bind/serializer",
+      "path": "api/src/main/java/jakarta/json/bind/serializer/DeserializationContext.java",
+      "path": "api/src/main/java/jakarta/json/bind/serializer/JsonbDeserializer.java",
+      "path": "api/src/main/java/jakarta/json/bind/serializer/JsonbSerializer.java",
+      "path": "api/src/main/java/jakarta/json/bind/serializer/SerializationContext.java",
+      "path": "api/src/main/java/jakarta/json/bind/serializer/package-info.java",
+      "path": "api/src/main/java/jakarta/json/bind/spi",
+      "path": "api/src/main/java/jakarta/json/bind/spi/JsonbProvider.java",
+      "path": "api/src/main/java/jakarta/json/bind/spi/package-info.java",
+      "path": "api/src/main/java/module-info.java",
+      "path": "api/src/main/javadoc",
+      "path": "api/src/main/javadoc/doc-files",
+      "path": "api/src/main/javadoc/doc-files/EFSL.html",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/MappingTester.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/SimpleMappingTester.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/TypeContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/annotation/AnnotationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/builder/JsonbBuilderTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/config/JsonbConfigTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/exception/JsonbExceptionTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/jsonb/JsonbTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/jsonbadapter/JsonbAdapterTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedAdaptedContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedDateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedDoubleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedNillableContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedNillablePropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedPropertyOrderContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedPropertyVisibilityContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedSerializedArrayContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedSerializedContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleContainerAdapted.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleContainerArrayDeserializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleContainerArraySerializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleContainerContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleContainerDeserializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleContainerSerializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleIntegerAdapter.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleIntegerDeserializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleIntegerSerializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimplePartiallyAnnotatedPropertyOrderContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimplePropertyNamingStrategy.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimplePropertyVisibilityStrategy.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleStringAdapter.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/api/model/SimpleVisibilityStrategy.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/cdi/customizedmapping/adapters/AdaptersCustomizationCDITest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/cdi/customizedmapping/adapters/model/AnimalShelterInjectedAdapter.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/cdi/customizedmapping/adapters/model/adapter/InjectedAdapter.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/cdi/customizedmapping/adapters/model/adapter/InjectedListAdapter.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/cdi/customizedmapping/serializers/SerializersCustomizationCDITest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/cdi/customizedmapping/serializers/model/AnimalShelterWithInjectedSerializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/cdi/customizedmapping/serializers/model/serializer/AnimalDeserializerInjected.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/cdi/customizedmapping/serializers/model/serializer/AnimalListDeserializerInjected.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/AdaptersCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/model/Animal.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/model/AnimalShelter.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/model/AnimalShelterAdapted.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/model/Cat.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/model/Dog.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/model/adapter/AnimalAdapter.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/model/adapter/AnimalIdentifier.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/model/adapter/AnimalJson.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/adapters/model/adapter/AnimalListAdapter.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/binarydata/BinaryDataCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/binarydata/model/BinaryDataContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/DateFormatCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/AnnotatedAccessorsDateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/AnnotatedFieldDateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/AnnotatedTypeDateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/AnnotatedTypeFieldOverrideDateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/DateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/customized/CustomizedPackageDateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/customized/CustomizedPackageTypeOverrideDateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/customized/CustomizedPackageTypeOverrideFieldOverrideDateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/customized/package-info.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/ijson/IJsonSupportTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/ijson/model/BinaryDataContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/ijson/model/CalendarContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/ijson/model/DateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/ijson/model/DurationContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/ijson/model/GregorianCalendarContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/ijson/model/InstantContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/ijson/model/LocalDateContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/ijson/model/LocalDateTimeContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/InstantiationCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/OptionalCreatorParametersTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/CreatorPlusFactoryContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/CreatorWithAdapterContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/CreatorWithDeserializerContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/IllegalInstanceFactoryCreatorContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/MultipleCreatorsContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/MultipleFactoryCreatorsContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/OptionalTypeContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/PrimitiveTypeContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/SimpleCreatorContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/SimpleCreatorParamContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/SimpleCreatorPlusFieldsContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/SimpleCreatorRenameContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/SimpleFactoryCreatorContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/NullHandlingCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/NillableContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/NillablePropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/NillablePropertyNonNillableContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/NonNillableAndNillablePropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/NonNillableContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/NonNillablePropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/NonNillablePropertyNillableContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/SimpleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nillable/NillablePackageNillablePropertyNonNillableContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nillable/NillablePackageNonNillablePropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nillable/NillablePackageSimpleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nillable/package-info.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nonnillable/NonNillablePackageNillableContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nonnillable/NonNillablePackageNonNillablePropertyNillableContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nonnillable/NonNillablePackageSimpleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nonnillable/package-info.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/numberformat/NumberFormatCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/AccessorCustomizedDoubleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/FieldCustomizedDoubleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/TypeCustomizedDoubleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/TypeCustomizedFieldOverriddenDoubleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/customized/PackageCustomizedDoubleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/customized/PackageCustomizedTypeOverriddenDoubleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/customized/PackageCustomizedTypeOverriddenFieldOverriddenDoubleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/customized/package-info.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/PropertyNameCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/DuplicateNameContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/PropertyNameCustomizationAccessorsContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/PropertyNameCustomizationContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/StringContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientAnnotatedPropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientGetterAnnotatedPropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientGetterPlusCustomizationAnnotatedFieldContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientGetterPlusCustomizationAnnotatedGetterContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientPlusCustomizationAnnotatedGetterContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientPlusCustomizationAnnotatedPropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientPlusCustomizationAnnotatedSetterContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientPropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientSetterAnnotatedPropertyContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientSetterPlusCustomizationAnnotatedFieldContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/TransientSetterPlusCustomizationAnnotatedSetterContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertyorder/PropertyOrderCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertyorder/model/CustomOrderContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertyorder/model/PartialOrderContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertyorder/model/RenamedPropertiesContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertyorder/model/SimpleContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/propertyorder/model/SimpleOrderContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/SerializersCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/Animal.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/AnimalShelter.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/AnimalShelterWithSerializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/Cat.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/Dog.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/serializer/AnimalBuilder.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/serializer/AnimalDeserializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/serializer/AnimalListDeserializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/serializer/AnimalListSerializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/serializers/model/serializer/AnimalSerializer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/visibility/VisibilityCustomizationTest.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/visibility/model/CustomFieldVisibilityStrategy.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/visibility/model/CustomVisibilityAnnotatedContainer.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/visibility/model/CustomVisibilityStrategy.java",
+      "path": "tck/src/main/java/ee/jakarta/tck/json/bind/customizedmapping/visibility/model/SimpleContainer.java",
+
+codex
+There is also a Maven-published TCK artifact under the same group, so I’m using Maven Central for source, test-suite, and javadoc URLs where available. The main jar contains JVM `.class` files, so this remains a Native Image metadata candidate and does not get `not-for-native-image`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/3.0.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/json/bind/jakarta.json.bind-tck/3.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/json/bind/jakarta.json.bind-tck/3.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.json.bind-tck-3.0.0-javadoc.jar" title="jakarta.json.bind-tck-3.0.0-javadoc.jar">jakarta.json.bind-tck-3.0.0-javadoc.jar</a>           2022-02-28 17:04   2525962      
+<a href="jakarta.json.bind-tck-3.0.0-javadoc.jar.asc" title="jakarta.json.bind-tck-3.0.0-javadoc.jar.asc">jakarta.json.bind-tck-3.0.0-javadoc.jar.asc</a>       2022-02-28 17:04       833      
+<a href="jakarta.json.bind-tck-3.0.0-javadoc.jar.md5" title="jakarta.json.bind-tck-3.0.0-javadoc.jar.md5">jakarta.json.bind-tck-3.0.0-javadoc.jar.md5</a>       2022-02-28 17:04        32      
+<a href="jakarta.json.bind-tck-3.0.0-javadoc.jar.sha1" title="jakarta.json.bind-tck-3.0.0-javadoc.jar.sha1">jakarta.json.bind-tck-3.0.0-javadoc.jar.sha1</a>      2022-02-28 17:04        40      
+<a href="jakarta.json.bind-tck-3.0.0-sources.jar" title="jakarta.json.bind-tck-3.0.0-sources.jar">jakarta.json.bind-tck-3.0.0-sources.jar</a>           2022-02-28 17:04    349586      
+<a href="jakarta.json.bind-tck-3.0.0-sources.jar.asc" title="jakarta.json.bind-tck-3.0.0-sources.jar.asc">jakarta.json.bind-tck-3.0.0-sources.jar.asc</a>       2022-02-28 17:04       833      
+<a href="jakarta.json.bind-tck-3.0.0-sources.jar.md5" title="jakarta.json.bind-tck-3.0.0-sources.jar.md5">jakarta.json.bind-tck-3.0.0-sources.jar.md5</a>       2022-02-28 17:04        32      
+<a href="jakarta.json.bind-tck-3.0.0-sources.jar.sha1" title="jakarta.json.bind-tck-3.0.0-sources.jar.sha1">jakarta.json.bind-tck-3.0.0-sources.jar.sha1</a>      2022-02-28 17:04        40      
+<a href="jakarta.json.bind-tck-3.0.0.jar" title="jakarta.json.bind-tck-3.0.0.jar">jakarta.json.bind-tck-3.0.0.jar</a>                   2022-02-28 17:04    477273      
+<a href="jakarta.json.bind-tck-3.0.0.jar.asc" title="jakarta.json.bind-tck-3.0.0.jar.asc">jakarta.json.bind-tck-3.0.0.jar.asc</a>               2022-02-28 17:04       833      
+<a href="jakarta.json.bind-tck-3.0.0.jar.md5" title="jakarta.json.bind-tck-3.0.0.jar.md5">jakarta.json.bind-tck-3.0.0.jar.md5</a>               2022-02-28 17:04        32      
+<a href="jakarta.json.bind-tck-3.0.0.jar.sha1" title="jakarta.json.bind-tck-3.0.0.jar.sha1">jakarta.json.bind-tck-3.0.0.jar.sha1</a>              2022-02-28 17:04        40      
+<a href="jakarta.json.bind-tck-3.0.0.pom" title="jakarta.json.bind-tck-3.0.0.pom">jakarta.json.bind-tck-3.0.0.pom</a>                   2022-02-28 17:04      6939      
+<a href="jakarta.json.bind-tck-3.0.0.pom.asc" title="jakarta.json.bind-tck-3.0.0.pom.asc">jakarta.json.bind-tck-3.0.0.pom.asc</a>               2022-02-28 17:04       833      
+<a href="jakarta.json.bind-tck-3.0.0.pom.md5" title="jakarta.json.bind-tck-3.0.0.pom.md5">jakarta.json.bind-tck-3.0.0.pom.md5</a>               2022-02-28 17:04        32      
+<a href="jakarta.json.bind-tck-3.0.0.pom.sha1" title="jakarta.json.bind-tck-3.0.0.pom.sha1">jakarta.json.bind-tck-3.0.0.pom.sha1</a>              2022-02-28 17:04        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck-dist/3.0.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/json/bind/jakarta.json.bind-tck-dist/3.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/json/bind/jakarta.json.bind-tck-dist/3.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.json.bind-tck-dist-3.0.0.pom" title="jakarta.json.bind-tck-dist-3.0.0.pom">jakarta.json.bind-tck-dist-3.0.0.pom</a>              2022-02-28 17:05      3997      
+<a href="jakarta.json.bind-tck-dist-3.0.0.pom.asc" title="jakarta.json.bind-tck-dist-3.0.0.pom.asc">jakarta.json.bind-tck-dist-3.0.0.pom.asc</a>          2022-02-28 17:05       833      
+<a href="jakarta.json.bind-tck-dist-3.0.0.pom.md5" title="jakarta.json.bind-tck-dist-3.0.0.pom.md5">jakarta.json.bind-tck-dist-3.0.0.pom.md5</a>          2022-02-28 17:05        32      
+<a href="jakarta.json.bind-tck-dist-3.0.0.pom.sha1" title="jakarta.json.bind-tck-dist-3.0.0.pom.sha1">jakarta.json.bind-tck-dist-3.0.0.pom.sha1</a>         2022-02-28 17:05        40      
+<a href="jakarta.json.bind-tck-dist-3.0.0.zip" title="jakarta.json.bind-tck-dist-3.0.0.zip">jakarta.json.bind-tck-dist-3.0.0.zip</a>              2022-02-28 17:05    800230      
+<a href="jakarta.json.bind-tck-dist-3.0.0.zip.asc" title="jakarta.json.bind-tck-dist-3.0.0.zip.asc">jakarta.json.bind-tck-dist-3.0.0.zip.asc</a>          2022-02-28 17:05       833      
+<a href="jakarta.json.bind-tck-dist-3.0.0.zip.md5" title="jakarta.json.bind-tck-dist-3.0.0.zip.md5">jakarta.json.bind-tck-dist-3.0.0.zip.md5</a>          2022-02-28 17:05        32      
+<a href="jakarta.json.bind-tck-dist-3.0.0.zip.sha1" title="jakarta.json.bind-tck-dist-3.0.0.zip.sha1">jakarta.json.bind-tck-dist-3.0.0.zip.sha1</a>         2022-02-28 17:05        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/3.0.0/jakarta.json.bind-tck-3.0.0.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0-javadoc.jar -o /tmp/jakarta-jsonb-api-javadoc.jar && jar tf /tmp/jakarta-jsonb-api-javadoc.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 321ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2021, 2022 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2020 IBM and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <groupId>jakarta.json.bind</groupId>
+    <artifactId>jakarta.json.bind-tck</artifactId>
+    <version>3.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>JSON-B TCK</name>
+    <description>Jakarta JSON Binding TCK Tests</description>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License 2.0</name>
+            <url>https://projects.eclipse.org/license/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GNU General Public License, version 2 with the GNU Classpath Exception</name>
+            <url>https://projects.eclipse.org/license/secondary-gpl-2.0-cp</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.json.bind</groupId>
+            <artifactId>jakarta.json.bind-api</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <version>2.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <version>2.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.tools</groupId>
+            <artifactId>sigtest-maven-plugin</artifactId>
+            <version>1.4</version>
+        </dependency>
+    </dependencies>
+
+    <!-- TODO: Temporarily enable snapshot repository -->
+    <repositories>
+        <repository>
+            <id>jakarta-snapshots</id>
+            <url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
+        </repository>
+    </repositories>
+
+
+    <build>
+        <plugins>
+            <!--
+            <plugin>
+                <groupId>org.netbeans.tools</groupId>
+                <artifactId>sigtest-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <FileName>${project.build.directory}/jakarta.json.bind.sig_${version}</FileName>
+                    <packages>"jakarta.json.bind","jakarta.json.bind.adapter","jakarta.json.bind.annotation","jakarta.json.bind.config","jakarta.json.bind.serializer","jakarta.json.bind.spi"</packages>
+                </configuration>
+            </plugin>
+            -->
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.copyright</groupId>
+                <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <excludeFile>${basedir}/../etc/config/copyright-exclude</excludeFile>
+                    <scm>git</scm>
+                    <debug>false</debug>
+                    <scmOnly>true</scmOnly>
+                    <warn>false</warn>
+                    <!-- for use with repair -->
+                    <update>false</update>
+                    <!-- check that year is correct -->
+                    <ignoreYear>false</ignoreYear>
+                    <templateFile>${basedir}/../etc/config/epl-copyright.txt</templateFile>
+                    <bsdTemplateFile>${basedir}/../etc/config/edl-copyright.txt</bsdTemplateFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>copyright</goal>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
+            </plugin>
+             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+              </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+ succeeded in 553ms:
+META-INF/MANIFEST.MF
+META-INF/
+doc-files/
+src/
+src/jakarta.json.bind/
+jakarta.json.bind/
+jakarta.json.bind/jakarta/
+jakarta.json.bind/jakarta/json/
+jakarta.json.bind/jakarta/json/bind/
+jakarta.json.bind/jakarta/json/bind/adapter/
+jakarta.json.bind/jakarta/json/bind/adapter/class-use/
+jakarta.json.bind/jakarta/json/bind/annotation/
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/
+jakarta.json.bind/jakarta/json/bind/config/
+jakarta.json.bind/jakarta/json/bind/config/class-use/
+jakarta.json.bind/jakarta/json/bind/serializer/
+jakarta.json.bind/jakarta/json/bind/serializer/class-use/
+jakarta.json.bind/jakarta/json/bind/spi/
+jakarta.json.bind/jakarta/json/bind/spi/class-use/
+jakarta.json.bind/jakarta/json/bind/class-use/
+resources/
+jquery/
+jquery/external/
+jquery/external/jquery/
+jquery/jszip/
+jquery/jszip/dist/
+jquery/jszip-utils/
+jquery/jszip-utils/dist/
+jquery/images/
+doc-files/EFSL.html
+jakarta.json.bind/jakarta/json/bind/adapter/package-summary.html
+jakarta.json.bind/jakarta/json/bind/adapter/package-tree.html
+jakarta.json.bind/jakarta/json/bind/adapter/class-use/JsonbAdapter.html
+jakarta.json.bind/jakarta/json/bind/adapter/package-use.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbCreator.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbDateFormat.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbNumberFormat.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbPropertyOrder.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbTransient.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbTypeAdapter.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbTypeInfo.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbVisibility.html
+jakarta.json.bind/jakarta/json/bind/annotation/package-summary.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbAnnotation.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbDateFormat.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbNumberFormat.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbProperty.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbSubtype.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbTypeAdapter.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbTypeInfo.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbVisibility.html
+jakarta.json.bind/jakarta/json/bind/annotation/package-use.html
+jakarta.json.bind/jakarta/json/bind/JsonbBuilder.html
+jakarta.json.bind/jakarta/json/bind/JsonbConfig.html
+jakarta.json.bind/jakarta/json/bind/config/PropertyNamingStrategy.html
+jakarta.json.bind/jakarta/json/bind/config/PropertyVisibilityStrategy.html
+jakarta.json.bind/jakarta/json/bind/config/package-summary.html
+jakarta.json.bind/jakarta/json/bind/config/class-use/BinaryDataStrategy.html
+jakarta.json.bind/jakarta/json/bind/config/class-use/PropertyOrderStrategy.html
+jakarta.json.bind/jakarta/json/bind/config/class-use/PropertyVisibilityStrategy.html
+jakarta.json.bind/jakarta/json/bind/serializer/DeserializationContext.html
+jakarta.json.bind/jakarta/json/bind/serializer/JsonbSerializer.html
+jakarta.json.bind/jakarta/json/bind/serializer/SerializationContext.html
+jakarta.json.bind/jakarta/json/bind/serializer/package-tree.html
+jakarta.json.bind/jakarta/json/bind/serializer/class-use/DeserializationContext.html
+jakarta.json.bind/jakarta/json/bind/serializer/class-use/JsonbSerializer.html
+jakarta.json.bind/jakarta/json/bind/serializer/package-use.html
+jakarta.json.bind/jakarta/json/bind/spi/package-summary.html
+jakarta.json.bind/jakarta/json/bind/spi/package-tree.html
+jakarta.json.bind/jakarta/json/bind/spi/class-use/JsonbProvider.html
+jakarta.json.bind/jakarta/json/bind/package-summary.html
+jakarta.json.bind/jakarta/json/bind/package-tree.html
+jakarta.json.bind/jakarta/json/bind/class-use/JsonbBuilder.html
+jakarta.json.bind/jakarta/json/bind/class-use/JsonbException.html
+jakarta.json.bind/jakarta/json/bind/package-use.html
+element-list
+constant-values.html
+overview-tree.html
+module-search-index.zip
+package-search-index.zip
+type-search-index.zip
+member-search-index.js
+allclasses-index.html
+allpackages-index.html
+deprecated-list.html
+allclasses.html
+index.html
+help-doc.html
+stylesheet.css
+script.js
+search.js
+jquery/jquery-3.3.1.js
+jquery/jszip/dist/jszip.js
+jquery/jszip-utils/dist/jszip-utils.min.js
+jquery/jszip-utils/dist/jszip-utils-ie.js
+jquery/images/ui-bg_flat_0_aaaaaa_40x100.png
+jquery/images/ui-icons_454545_256x240.png
+jquery/images/ui-bg_highlight-soft_75_cccccc_1x100.png
+jquery/images/ui-icons_2e83ff_256x240.png
+jquery/images/ui-bg_glass_65_ffffff_1x400.png
+jquery/images/ui-bg_glass_55_fbf9ee_1x400.png
+jquery/images/ui-icons_222222_256x240.png
+jquery/images/ui-bg_flat_75_ffffff_40x100.png
+jakarta.json.bind/jakarta/json/bind/adapter/JsonbAdapter.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbAnnotation.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbNillable.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbProperty.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbSubtype.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbTypeDeserializer.html
+jakarta.json.bind/jakarta/json/bind/annotation/JsonbTypeSerializer.html
+jakarta.json.bind/jakarta/json/bind/annotation/package-tree.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbCreator.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbNillable.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbPropertyOrder.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbTransient.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbTypeDeserializer.html
+jakarta.json.bind/jakarta/json/bind/annotation/class-use/JsonbTypeSerializer.html
+jakarta.json.bind/jakarta/json/bind/Jsonb.html
+jakarta.json.bind/jakarta/json/bind/JsonbException.html
+jakarta.json.bind/jakarta/json/bind/config/BinaryDataStrategy.html
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/eclipse-ee4j/jsonb-api | sed -n '1,40p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/jakartaee/jsonb-api | sed -n '1,40p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/3.0.0/jakarta.json.bind-tck-3.0.0-sources.jar -o /tmp/jakarta-jsonb-tck-sources.jar && jar tf /tmp/jakarta-jsonb-tck-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 507ms:
+META-INF/MANIFEST.MF
+META-INF/
+ee/
+ee/jakarta/
+ee/jakarta/tck/
+ee/jakarta/tck/json/
+ee/jakarta/tck/json/bind/
+ee/jakarta/tck/json/bind/api/
+ee/jakarta/tck/json/bind/api/annotation/
+ee/jakarta/tck/json/bind/api/builder/
+ee/jakarta/tck/json/bind/api/config/
+ee/jakarta/tck/json/bind/api/exception/
+ee/jakarta/tck/json/bind/api/jsonb/
+ee/jakarta/tck/json/bind/api/jsonbadapter/
+ee/jakarta/tck/json/bind/api/model/
+ee/jakarta/tck/json/bind/cdi/
+ee/jakarta/tck/json/bind/cdi/customizedmapping/
+ee/jakarta/tck/json/bind/cdi/customizedmapping/adapters/
+ee/jakarta/tck/json/bind/cdi/customizedmapping/adapters/model/
+ee/jakarta/tck/json/bind/cdi/customizedmapping/adapters/model/adapter/
+ee/jakarta/tck/json/bind/cdi/customizedmapping/serializers/
+ee/jakarta/tck/json/bind/cdi/customizedmapping/serializers/model/
+ee/jakarta/tck/json/bind/cdi/customizedmapping/serializers/model/serializer/
+ee/jakarta/tck/json/bind/customizedmapping/
+ee/jakarta/tck/json/bind/customizedmapping/adapters/
+ee/jakarta/tck/json/bind/customizedmapping/adapters/model/
+ee/jakarta/tck/json/bind/customizedmapping/adapters/model/adapter/
+ee/jakarta/tck/json/bind/customizedmapping/binarydata/
+ee/jakarta/tck/json/bind/customizedmapping/binarydata/model/
+ee/jakarta/tck/json/bind/customizedmapping/dateformat/
+ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/
+ee/jakarta/tck/json/bind/customizedmapping/dateformat/model/customized/
+ee/jakarta/tck/json/bind/customizedmapping/ijson/
+ee/jakarta/tck/json/bind/customizedmapping/ijson/model/
+ee/jakarta/tck/json/bind/customizedmapping/instantiation/
+ee/jakarta/tck/json/bind/customizedmapping/instantiation/model/
+ee/jakarta/tck/json/bind/customizedmapping/nullhandling/
+ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/
+ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nillable/
+ee/jakarta/tck/json/bind/customizedmapping/nullhandling/model/nonnillable/
+ee/jakarta/tck/json/bind/customizedmapping/numberformat/
+ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/
+ee/jakarta/tck/json/bind/customizedmapping/numberformat/model/customized/
+ee/jakarta/tck/json/bind/customizedmapping/propertynames/
+ee/jakarta/tck/json/bind/customizedmapping/propertynames/model/
+ee/jakarta/tck/json/bind/customizedmapping/propertyorder/
+ee/jakarta/tck/json/bind/customizedmapping/propertyorder/model/
+ee/jakarta/tck/json/bind/customizedmapping/serializers/
+ee/jakarta/tck/json/bind/customizedmapping/serializers/model/
+ee/jakarta/tck/json/bind/customizedmapping/serializers/model/serializer/
+ee/jakarta/tck/json/bind/customizedmapping/visibility/
+ee/jakarta/tck/json/bind/customizedmapping/visibility/model/
+ee/jakarta/tck/json/bind/customizedmapping/visibility/model/customized/
+ee/jakarta/tck/json/bind/defaultmapping/
+ee/jakarta/tck/json/bind/defaultmapping/arrays/
+ee/jakarta/tck/json/bind/defaultmapping/arrays/model/
+ee/jakarta/tck/json/bind/defaultmapping/attributeorder/
+ee/jakarta/tck/json/bind/defaultmapping/attributeorder/model/
+ee/jakarta/tck/json/bind/defaultmapping/basictypes/
+ee/jakarta/tck/json/bind/defaultmapping/basictypes/model/
+ee/jakarta/tck/json/bind/defaultmapping/bignumbers/
+ee/jakarta/tck/json/bind/defaultmapping/classes/
+ee/jakarta/tck/json/bind/defaultmapping/classes/model/
+ee/jakarta/tck/json/bind/defaultmapping/collections/
+ee/jakarta/tck/json/bind/defaultmapping/collections/model/
+ee/jakarta/tck/json/bind/defaultmapping/dates/
+ee/jakarta/tck/json/bind/defaultmapping/dates/model/
+ee/jakarta/tck/json/bind/defaultmapping/enums/
+ee/jakarta/tck/json/bind/defaultmapping/enums/model/
+ee/jakarta/tck/json/bind/defaultmapping/generics/
+ee/jakarta/tck/json/bind/defaultmapping/generics/model/
+ee/jakarta/tck/json/bind/defaultmapping/identifiers/
+ee/jakarta/tck/json/bind/defaultmapping/identifiers/model/
+ee/jakarta/tck/json/bind/defaultmapping/ignore/
+ee/jakarta/tck/json/bind/defaultmapping/ignore/model/
+ee/jakarta/tck/json/bind/defaultmapping/interfaces/
+ee/jakarta/tck/json/bind/defaultmapping/interfaces/model/
+ee/jakarta/tck/json/bind/defaultmapping/jsonptypes/
+ee/jakarta/tck/json/bind/defaultmapping/jsonptypes/model/
+ee/jakarta/tck/json/bind/defaultmapping/nullvalue/
+ee/jakarta/tck/json/bind/defaultmapping/nullvalue/model/
+ee/jakarta/tck/json/bind/defaultmapping/polymorphictypes/
+ee/jakarta/tck/json/bind/defaultmapping/polymorphictypes/model/
+ee/jakarta/tck/json/bind/defaultmapping/specifictypes/
+ee/jakarta/tck/json/bind/defaultmapping/specifictypes/model/
+ee/jakarta/tck/json/bind/defaultmapping/uniqueness/
+ee/jakarta/tck/json/bind/defaultmapping/uniqueness/model/
+ee/jakarta/tck/json/bind/defaultmapping/untyped/
+ee/jakarta/tck/json/bind/signaturetest/
+ee/jakarta/tck/json/bind/signaturetest/jsonb/
+META-INF/maven/
+META-INF/maven/jakarta.json.bind/
+META-INF/maven/jakarta.json.bind/jakarta.json.bind-tck/
+ee/jakarta/tck/json/bind/MappingTester.java
+ee/jakarta/tck/json/bind/SimpleMappingTester.java
+ee/jakarta/tck/json/bind/TypeContainer.java
+ee/jakarta/tck/json/bind/api/annotation/AnnotationTest.java
+ee/jakarta/tck/json/bind/api/builder/JsonbBuilderTest.java
+ee/jakarta/tck/json/bind/api/config/JsonbConfigTest.java
+ee/jakarta/tck/json/bind/api/exception/JsonbExceptionTest.java
+ee/jakarta/tck/json/bind/api/jsonb/JsonbTest.java
+ee/jakarta/tck/json/bind/api/jsonbadapter/JsonbAdapterTest.java
+ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedAdaptedContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedDateContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedDoubleContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedNillableContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedNillablePropertyContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedPropertyOrderContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedPropertyVisibilityContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedSerializedArrayContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleAnnotatedSerializedContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleContainerAdapted.java
+ee/jakarta/tck/json/bind/api/model/SimpleContainerArrayDeserializer.java
+ee/jakarta/tck/json/bind/api/model/SimpleContainerArraySerializer.java
+ee/jakarta/tck/json/bind/api/model/SimpleContainerContainer.java
+ee/jakarta/tck/json/bind/api/model/SimpleContainerDeserializer.java
+ee/jakarta/tck/json/bind/api/model/SimpleContainerSerializer.java
+ee/jakarta/tck/json/bind/api/model/SimpleIntegerAdapter.java
+ee/jakarta/tck/json/bind/api/model/SimpleIntegerDeserializer.java
+
+ succeeded in 773ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 18:12:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c12236b4ac8b8e8ebdacbe6f403b597a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=%2FykTaM0afvB%2BFz4zdBiwzMMrMMoQ5WVPNEAbmfgrHR8YUmfsJvRC5x%2FTeFdH2OSFXzJUUW1OJmDlk1dE6LKAZi8D48TimE4DODjEAkrCZlEIC8ukzx3sWtqC%2B2LT%2Fk0TvDmp2SbVTLckF8CNwodJ4HiHU5gjphlbuzq5uuzpVuXGcdaMoUMKr9bVDBt5aReBc8jKIoSVWFV3gZjhiTv%2Fm%2FugMKlJixGORLxp2y1RI%2FynEQQ6NEdUq28MRYllVAK013Ta07rEYyjQfTe%2Fk6wr3g%3D%3D--732adgUPRYpzTghj--BNMOLwHmeF0VKFWtLi%2F40g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2045350458.1777831958; expires=Mon, 03 May 2027 18:12:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:12:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5110:28D19F:81EFFCA:60642EA:69F79016
+
+
+ succeeded in 774ms:
+HTTP/2 301 
+date: Sun, 03 May 2026 18:12:38 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/jakartaee/jsonb-api
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=q8ovP84%2Bd0heMyr%2BAZ0es8Vx73R%2F7PH3Os4kxv%2B7WEtMDOq6FN50Yy197W6zdvCtzeljDwnG9%2BBX8v%2BajHNANvoCHD9QhLvK9F15YGl3brgbRxfkHJXnSBnT0dgvQnaeNjVBjLSgfnPRnkfdvqfdi8bA5%2BD8Is1mruGbAZCBq28LpFN9xOjL7ctHnlP7hXOVgsALtw5JHqTwrToiZ7JnxKFaN6Z7B0SRmgNcvfC7M0vOPVrtoBxb3oMELt5zZx6II1HODUP9%2BnDKZRlcc8p6Jw%3D%3D--VyOi15roL9jL7hhq--ID9pbDBNk0qzsvaqCyjrhg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1584576705.1777831958; expires=Mon, 03 May 2027 18:12:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:12:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:16A0:14AA215:F255F6:69F79016
+
+HTTP/2 200 
+date: Sun, 03 May 2026 18:12:39 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c12236b4ac8b8e8ebdacbe6f403b597a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=%2BHcBwXFPx%2BmTE2IJwIVFdehDMhxaEH5qwebAwysr%2Fst0WwC7DgLsBYOhaCQKft3cYVXDCcPchVpEFshJQQ0FlxS%2Bb79COd7Epmw6ymt86GdJ3%2Fhue5xnoop0NxVQGWzb3xSdulm83w8lf%2FjRlE0dyWU4Gasm3CZXJ7bOpFQxm6mPluD9Hv9iNvlf%2BW8NMHgDGd7Sx9R1sMzWfkyVLf9RDs33M%2FIMbHmXY8Xc5o%2FnYcB%2FCoqtmc5iiGDXqdTJmLyDXS%2Bht88FF65Ydvy2nSRNZQ%3D%3D--gso813aDlMwXs2Mj--buHEQWMv9u5oIzH%2BmCOIXQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1148450410.1777831958; expires=Mon, 03 May 2027 18:12:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 18:12:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:16A0:14AA3C1:F25730:69F79016
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/
+web search: 
+web search: repo1.maven.org jakarta.json.bind-tck 3.0.0 sources jar
+codex
+I’m about to replace the placeholder JSON with the discovered Maven Central and repository values. The output will omit `language` and `not-for-native-image` because this is a Java/JVM API jar, not a Kotlin/Groovy/Scala-specific or non-JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+diff --git a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+index a47c2aee5a8a0eb7fe8b82867e0064eaca3965b4..1355997b403bd29d02d50e3e2d87fbe3eeadc69c
+--- a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0"
++  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0",
++  "repository-url" : "https://github.com/jakartaee/jsonb-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
++  "description" : "Jakarta JSON Binding (JSON-B) is a standard Java API for binding Java objects to JSON documents and reading JSON documents back into Java objects. It defines annotations, configuration options, serializers, deserializers, adapters, and a provider SPI used by JSON-B implementations."
+ }
+
+diff --git a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+index a47c2aee5a8a0eb7fe8b82867e0064eaca3965b4..1355997b403bd29d02d50e3e2d87fbe3eeadc69c
+--- a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0"
++  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0",
++  "repository-url" : "https://github.com/jakartaee/jsonb-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
++  "description" : "Jakarta JSON Binding (JSON-B) is a standard Java API for binding Java objects to JSON documents and reading JSON documents back into Java objects. It defines annotations, configuration options, serializers, deserializers, adapters, and a provider SPI used by JSON-B implementations."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+{
+  "coordinates": "jakarta.json.bind:jakarta.json.bind-api:3.0.0",
+  "repository-url": "https://github.com/jakartaee/jsonb-api",
+  "source-code-url": "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+  "test-code-url": "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+  "description": "Jakarta JSON Binding (JSON-B) is a standard Java API for binding Java objects to JSON documents and reading JSON documents back into Java objects. It defines annotations, configuration options, serializers, deserializers, adapters, and a provider SPI used by JSON-B implementations."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/jakartaee/jsonb-api \\
+  https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0-sources.jar \\
+  https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/3.0.0/jakarta.json.bind-tck-3.0.0-sources.jar \\
+  https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0-javadoc.jar; do \\
+  status="'$(curl -fsSIL -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$status" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+diff --git a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+index a47c2aee5a8a0eb7fe8b82867e0064eaca3965b4..1355997b403bd29d02d50e3e2d87fbe3eeadc69c
+--- a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0"
++  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0",
++  "repository-url" : "https://github.com/jakartaee/jsonb-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
++  "description" : "Jakarta JSON Binding (JSON-B) is a standard Java API for binding Java objects to JSON documents and reading JSON documents back into Java objects. It defines annotations, configuration options, serializers, deserializers, adapters, and a provider SPI used by JSON-B implementations."
+ }
+
+ succeeded in 178ms:
+200 https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/3.0.0/jakarta.json.bind-tck-3.0.0-sources.jar
+200 https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0-javadoc.jar
+
+web search: 
+web search: Maven Central jakarta.json.bind-api 3.0.0 sources javadoc jar
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0",
+     3	  "repository-url" : "https://github.com/jakartaee/jsonb-api",
+     4	  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+     5	  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+     6	  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+     7	  "description" : "Jakarta JSON Binding (JSON-B) is a standard Java API for binding Java objects to JSON documents and reading JSON documents back into Java objects. It defines annotations, configuration options, serializers, deserializers, adapters, and a provider SPI used by JSON-B implementations."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+index a47c2aee5a8a0eb7fe8b82867e0064eaca3965b4..1355997b403bd29d02d50e3e2d87fbe3eeadc69c
+--- a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0"
++  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0",
++  "repository-url" : "https://github.com/jakartaee/jsonb-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
++  "description" : "Jakarta JSON Binding (JSON-B) is a standard Java API for binding Java objects to JSON documents and reading JSON documents back into Java objects. It defines annotations, configuration options, serializers, deserializers, adapters, and a provider SPI used by JSON-B implementations."
+ }
+
+web search: 
+web search: https://central.sonatype.com/artifact/jakarta.json.bind/jakarta.json.bind-api/3.0.0
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/
+web search: 
+web search: repo1.maven.org/maven2 jakarta.json.bind-tck 3.0.0 sources.jar
+web search: 
+web search: https://jarcasting.com/artifacts/jakarta.json.bind/jakarta.json.bind-tck/
+codex
+Updated [jakarta.json.bind-jakarta.json.bind-api-3.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json:1).
+
+I used Maven Central for the API sources and javadoc jars, and the Maven-published JSON-B TCK sources jar for the test suite URL. The artifact is a JVM `jar`, not Kotlin/Groovy/Scala-specific and not marked `not-for-native-image`. ([repo1.maven.org](https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/))
+
+Validation done: JSON parses with `jq`, and all substituted `3.0.0` URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+index a47c2aee5a8a0eb7fe8b82867e0064eaca3965b4..1355997b403bd29d02d50e3e2d87fbe3eeadc69c
+--- a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0"
++  "coordinates" : "jakarta.json.bind:jakarta.json.bind-api:3.0.0",
++  "repository-url" : "https://github.com/jakartaee/jsonb-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
++  "description" : "Jakarta JSON Binding (JSON-B) is a standard Java API for binding Java objects to JSON documents and reading JSON documents back into Java objects. It defines annotations, configuration options, serializers, deserializers, adapters, and a provider SPI used by JSON-B implementations."
+ }
+
+tokens used
+91,142
+Updated [jakarta.json.bind-jakarta.json.bind-api-3.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a/build/discovered-artifact-metadata/jakarta.json.bind-jakarta.json.bind-api-3.0.0.json:1).
+
+I used Maven Central for the API sources and javadoc jars, and the Maven-published JSON-B TCK sources jar for the test suite URL. The artifact is a JVM `jar`, not Kotlin/Groovy/Scala-specific and not marked `not-for-native-image`. ([repo1.maven.org](https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/))
+
+Validation done: JSON parses with `jq`, and all substituted `3.0.0` URLs returned HTTP 200.
+Ran agent for jakarta.json.bind:jakarta.json.bind-api:3.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a/build/agent-artifact-discovery-logs/jakarta.json.bind-jakarta.json.bind-api-3.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2826-a84f805a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 44s
+9 actionable tasks: 4 executed, 5 from cache
