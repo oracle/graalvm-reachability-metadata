@@ -35,6 +35,17 @@ class Sourcepos_3Test {
   }
 
   @Test
+  def exposesCompanionInstanceForExplicitExpansion(): Unit = {
+    val explicit: SourcePos = SourcePos.instance
+    val passedExplicitly: SourcePos = captureContextualSourcePosition(using SourcePos.instance)
+
+    assertPointsAtThisTest(explicit)
+    assertPointsAtThisTest(passedExplicitly)
+    assertEquals(explicit.line + 1, passedExplicitly.line)
+    assertNotEquals(explicit, passedExplicitly)
+  }
+
+  @Test
   def supportsValueSemanticsCopyingAndStringRendering(): Unit = {
     val position: SourcePos = SourcePos("Main.scala", 42)
     val samePosition: SourcePos = SourcePos.apply("Main.scala", 42)
