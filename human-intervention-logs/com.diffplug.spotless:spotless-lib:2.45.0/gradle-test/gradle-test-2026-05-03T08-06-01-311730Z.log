@@ -1,0 +1,122 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.diffplug.spotless:spotless-lib:2.45.0
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-1cb3ae7c/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :writeKtfmtClasspathProperties
+> Task :processTestResources
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.jetbrains.kotlin.com.intellij.util.containers.ConcurrentIntObjectHashMap (file:/home/vjovanov/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-compiler-embeddable/1.8.22/e2cf111da088dc807a74157741b4cd4b664edfb7/kotlin-compiler-embeddable-1.8.22.jar)
+WARNING: Please consider reporting this to the maintainers of class org.jetbrains.kotlin.com.intellij.util.containers.ConcurrentIntObjectHashMap
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+
+> Task :test FAILED
+
+KtfmtStepInnerStateTest > formatsWithFallbackFormatterApisBeforeGlueFormatterWasAvailable() FAILED
+    java.lang.IllegalArgumentException: 25.0.2
+        at org.jetbrains.kotlin.com.intellij.util.lang.JavaVersion.parse(JavaVersion.java:298)
+        at org.jetbrains.kotlin.com.intellij.util.lang.JavaVersion.current(JavaVersion.java:172)
+        at org.jetbrains.kotlin.com.intellij.openapi.util.SystemInfo.isJavaVersionAtLeast(SystemInfo.java:227)
+        at org.jetbrains.kotlin.cli.jvm.modules.JavaVersionUtilsKt.isAtLeastJava9(javaVersionUtils.kt:11)
+        at org.jetbrains.kotlin.cli.jvm.modules.CoreJrtFileSystem$handlers$1.fun(CoreJrtFileSystem.kt:39)
+        at org.jetbrains.kotlin.cli.jvm.modules.CoreJrtFileSystem$handlers$1.fun(CoreJrtFileSystem.kt:32)
+        at org.jetbrains.kotlin.com.intellij.util.containers.ConcurrentFactoryMap$2.create(ConcurrentFactoryMap.java:174)
+        at org.jetbrains.kotlin.com.intellij.util.containers.ConcurrentFactoryMap.get(ConcurrentFactoryMap.java:40)
+        at org.jetbrains.kotlin.cli.jvm.modules.CoreJrtFileSystem.findFileByPath(CoreJrtFileSystem.kt:63)
+        at org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment.<init>(KotlinCoreEnvironment.kt:245)
+        at org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment.<init>(KotlinCoreEnvironment.kt:111)
+        at org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment$Companion.createForProduction(KotlinCoreEnvironment.kt:485)
+        at com.facebook.ktfmt.format.Parser.parse(Parser.kt:45)
+        at com.facebook.ktfmt.format.Formatter.sortedAndDistinctImports(Formatter.kt:135)
+        at com.facebook.ktfmt.format.Formatter.format(Formatter.kt:83)
+        at com.facebook.ktfmt.format.Formatter.format(Formatter.kt:63)
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.lambda$getFormatterFuncFallback$0(KtfmtStep.java:236)
+        at com.diffplug.spotless.FormatterFunc.apply(FormatterFunc.java:32)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:82)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.assertFormats(KtfmtStepInnerStateTest.java:76)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatsWithFallbackFormatterApisBeforeGlueFormatterWasAvailable(KtfmtStepInnerStateTest.java:56)
+
+3 tests completed, 1 failed
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-1cb3ae7c/tests/src/com.diffplug.spotless/spotless-lib/2.45.0/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-1cb3ae7c/tests/src/com.diffplug.spotless/spotless-lib/2.45.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+16 actionable tasks: 4 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-1cb3ae7c/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.diffplug.spotless:spotless-lib:2.45.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date

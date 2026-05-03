@@ -1,0 +1,126 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.diffplug.spotless:spotless-lib:2.45.0
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-1cb3ae7c/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :writeKtfmtClasspathProperties
+> Task :processTestResources
+> Task :testClasses
+
+3 tests completed, 2 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-1cb3ae7c/tests/src/com.diffplug.spotless/spotless-lib/2.45.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 13s
+
+> Task :test FAILED
+
+KtfmtStepInnerStateTest > createsModernFormatterForEveryStyleAndOptionsConstructorShape() FAILED
+    java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory
+        at com.diffplug.spotless.SpotlessCache.<clinit>(SpotlessCache.java:40)
+        at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.assertFormats(KtfmtStepInnerStateTest.java:76)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsModernFormatterForEveryStyleAndOptionsConstructorShape(KtfmtStepInnerStateTest.java:40)
+
+        Caused by:
+        java.lang.ClassNotFoundException: org.slf4j.LoggerFactory
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+            ... 7 more
+
+KtfmtStepInnerStateTest > formatsWithFallbackFormatterApisBeforeGlueFormatterWasAvailable() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class com.diffplug.spotless.SpotlessCache
+        at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+        at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+        at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+        at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.assertFormats(KtfmtStepInnerStateTest.java:76)
+        at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.formatsWithFallbackFormatterApisBeforeGlueFormatterWasAvailable(KtfmtStepInnerStateTest.java:56)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory [in thread "junit-timeout-thread-1"]
+            at com.diffplug.spotless.SpotlessCache.<clinit>(SpotlessCache.java:40)
+            at com.diffplug.spotless.JarState.getClassLoader(JarState.java:96)
+            at com.diffplug.spotless.kotlin.KtfmtStep$State.createFormat(KtfmtStep.java:175)
+            at com.diffplug.spotless.FormatterStepImpl$Standard.format(FormatterStepImpl.java:80)
+            at com.diffplug.spotless.FormatterStep$Strict.format(FormatterStep.java:103)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.assertFormats(KtfmtStepInnerStateTest.java:76)
+            at com_diffplug_spotless.spotless_lib.KtfmtStepInnerStateTest.createsModernFormatterForEveryStyleAndOptionsConstructorShape(KtfmtStepInnerStateTest.java:40)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-1cb3ae7c/tests/src/com.diffplug.spotless/spotless-lib/2.45.0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+16 actionable tasks: 5 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-1cb3ae7c/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.diffplug.spotless:spotless-lib:2.45.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 16s
+9 actionable tasks: 1 executed, 8 up-to-date
