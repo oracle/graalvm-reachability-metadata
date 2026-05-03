@@ -1,0 +1,950 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dec56-56c3-7782-9eb5-a904d4360502
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sf.trove4j:core:3.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.1.0" when "$version$" is replaced with "3.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/metadata/net.sf.trove4j/core/index.json
+- Entry selector: "metadata-version" = "3.1.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "3.1.0".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "3.1.0".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "3.1.0".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "3.1.0" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar
+- repository-url: https://bitbucket.org/trove4j/trove
+- test-code-url: https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/
+- documentation-url: https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar
+- description: Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.1.0
+- Entry metadata-version: 3.1.0
+- Entry test-version: 3.1.0
+codex
+I’ll verify the existing metadata URLs against Maven and the upstream repository first, then I’ll only patch fields that are actually missing or demonstrably stale for `3.1.0`.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/net.sf.trove4j/core/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+4:    "metadata-version" : "3.1.0",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
+6:    "repository-url" : "https://bitbucket.org/trove4j/trove",
+7:    "test-code-url" : "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
+9:    "description" : "Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications.",
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-sources.jar && curl -I -L --fail https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-javadoc.jar && curl -I -L --fail https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 496ms:
+
+  0 16652    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Sun, 03 May 2026 05:36:26 GMT
+content-type: text/html; charset=utf-8
+content-length: 16652
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+x-view-name: bitbucket.apps.repo2.views.SourceView
+x-dc-location: Micros-3
+x-served-by: 69e0b7ec0d98
+x-version: f72aa25e582f
+x-static-version: f72aa25e582f
+x-request-count: 3330
+x-render-time: 0.2522757053375244
+x-b3-traceid: a08eeaf11b864fd29607c56ca8c22588
+x-b3-spanid: 3b32393db909366a
+x-frame-options: SAMEORIGIN
+content-security-policy: style-src 'self' 'unsafe-inline' https://aui-cdn.atlassian.com/ https://cdn.cookielaw.org/ https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io pendo-static-6291417196199936.storage.googleapis.com https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; font-src 'self' https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net; object-src 'none'; frame-ancestors 'self' start.atlassian.com start.stg.atlassian.com atlaskit.atlassian.com bitbucket.org app.pendo.io; script-src 'unsafe-eval' 'strict-dynamic' 'unsafe-inline' 'self' http: https: https://remote-app-switcher.stg-east.frontend.public.atl-paas.net https://remote-app-switcher.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io data.pendo.io pendo-io-static.storage.googleapis.com pendo-static-6291417196199936.storage.googleapis.com https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ 'nonce-VQsNbOKCS4bn5Uq7lcMCmQ=='; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; connect-src bitbucket.org *.bitbucket.org bb-inf.net *.bb-inf.net atlassianblog.wpengine.com id.atlassian.com api.atlassian.com api.stg.atlassian.com wss://bitbucketci-ws-service.services.atlassian.com/ wss://bitbucketci-ws-service.stg.services.atlassian.com/ wss://bitbucketci-ws-service.dev.services.atlassian.com/ analytics.atlassian.com atlassian-cookies--categories.us-east-1.prod.public.atl-paas.net as.atlassian.com api-private.stg.atlassian.com api-private.atlassian.com xp.atlassian.com atl-global.atlassian.com cofs.staging.public.atl-paas.net cofs.prod.public.atl-paas.net fd-assets.prod.atl-paas.net flight-deck-assets-bifrost.prod-east.frontend.public.atl-paas.net intake.opbeat.com api.media.atlassian.com api.segment.io xid.statuspage.io xid.atlassian.com xid.sourcetreeapp.com www.google-analytics.com sentry.io *.ingest.sentry.io statsigapi.net fd-config.us-east-1.prod.public.atl-paas.net fd-config-bifrost.prod-east.frontend.public.atl-paas.net micros--prod-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--prod-east--bitbucketci-file-service--files.s3.amazonaws.com micros--stg-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--stg-east--bitbucketci-file-service--files.s3.amazonaws.com micros--ddev--bitbucketci-file-service--files.s3.ap-southeast-2.amazonaws.com app.pendo.io data.pendo.io pendo-static-6291417196199936.storage.googleapis.com bqlf8qjztdtr.statuspage.io wss://bitbucket.org/gateway/api/bbc-aps/subscriptions wss://bitbucket.org/gateway/api/graphql/subscriptions https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; base-uri 'self'; report-uri https://web-security-reports.services.atlassian.com/csp-report/bb-website
+expires: Sun, 03 May 2026 05:36:26 GMT
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+set-cookie: csrftoken=S7TgenavAJoVmtIzjQxT1DGZxaLbRzUq; expires=Sun, 02 May 2027 05:36:26 GMT; Max-Age=31449600; Path=/; SameSite=Lax; Secure
+x-usage-quota-remaining: 995372.756
+x-usage-request-cost: 4697.80
+x-usage-user-time: 0.128516
+x-usage-system-time: 0.008418
+x-usage-input-ops: 16
+x-usage-output-ops: 0
+x-envoy-attempt-count: 1
+age: 0
+accept-ranges: bytes
+x-cache: MISS
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+atl-traceid: a08eeaf11b864fd29607c56ca8c22588
+atl-request-id: a08eeaf1-1b86-4fd2-9607-c56ca8c22588
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+report-to: {"endpoints": [{"url": "https://dz8aopenkvv6s.cloudfront.net"}], "group": "endpoint-1", "include_subdomains": true, "max_age": 600}
+nel: {"failure_fraction": 0.01, "include_subdomains": true, "max_age": 600, "report_to": "endpoint-1"}
+server-timing: atl-edge;dur=364,atl-edge-internal;dur=2,atl-edge-upstream;dur=364,atl-edge-pop;desc="aws-eu-central-1"
+
+
+web search: 
+web search: net.sf.trove4j core 3.1.0 Maven repository sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/
+codex
+The Maven Central directory confirms `3.1.0` has source and javadoc jars, and it does not list a test jar. I’m checking the upstream repo metadata now to make sure the existing test-suite URL is tied to the correct release revision rather than just an arbitrary branch path.
+exec
+/usr/bin/bash -lc 'curl -sL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.trove4j</groupId>
+  <artifactId>core</artifactId>
+  <version>3.1.0</version>
+  <name>Trove (core)</name>
+  <description>High performance collections for Java</description>
+  <url>https://bitbucket.org/trove4j/trove/src/master/</url>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License 2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Rob Eden</name>
+      <email>robeden1@gmail.com</email>
+    </developer>
+    <developer>
+      <name>Johan Parent</name>
+      <email>jparent@users.sourceforge.net</email>
+    </developer>
+    <developer>
+      <name>Jeff Randall</name>
+      <email>randall@uph.com</email>
+    </developer>
+    <developer>
+      <name>Eric D. Friedman</name>
+      <email>ericdf@users.sourceforge.net</email>
+    </developer>
+  </developers>
+  <scm>
+    <url>https://bitbucket.org/trove4j/trove/src/master/</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/refs/tags?pagelen=100'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 226ms:
+{"values": [], "pagelen": 100, "size": 0, "page": 1}
+ succeeded in 287ms:
+{"type": "commit", "hash": "24dd57f48bf385fa41a878f8fad7ac44d8b1d53a", "date": "2017-11-15T16:49:38+00:00", "author": {"type": "author", "raw": "Jim Davies <jim.davies@scribble7.com>", "user": {"display_name": "Jim Davies", "links": {"self": {"href": "https://api.bitbucket.org/2.0/users/%7B06540e9f-6cd0-4afd-afdd-4dc9d782a603%7D"}, "avatar": {"href": "https://secure.gravatar.com/avatar/4844a1a19ebe7f91d93171d2bfa4509d?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FJD-6.png"}, "html": {"href": "https://bitbucket.org/%7B06540e9f-6cd0-4afd-afdd-4dc9d782a603%7D/"}}, "type": "user", "uuid": "{06540e9f-6cd0-4afd-afdd-4dc9d782a603}", "account_id": "59fa31f3a9ec9c6675cfb18c", "nickname": "Jim"}}, "message": "Issue 66: All decorators now check that the map, set or list being passed in is not null, and throw an NPF immediately if it is. This is in line with the behaviour of the Java Collections API.\n", "summary": {"type": "rendered", "raw": "Issue 66: All decorators now check that the map, set or list being passed in is not null, and throw an NPF immediately if it is. This is in line with the behaviour of the Java Collections API.\n", "markup": "markdown", "html": "<p>Issue 66: All decorators now check that the map, set or list being passed in is not null, and throw an NPF immediately if it is. This is in line with the behaviour of the Java Collections API.</p>"}, "links": {"self": {"href": "https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}, "html": {"href": "https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}, "diff": {"href": "https://api.bitbucket.org/2.0/repositories/trove4j/trove/diff/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}, "approve": {"href": "https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/approve"}, "comments": {"href": "https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/comments"}, "statuses": {"href": "https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/statuses"}, "patch": {"href": "https://api.bitbucket.org/2.0/repositories/trove4j/trove/patch/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}}, "parents": [{"hash": "b1bcddd2ccedbef9dacc43e59703ddfa420300ac", "links": {"self": {"href": "https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/b1bcddd2ccedbef9dacc43e59703ddfa420300ac"}, "html": {"href": "https://bitbucket.org/trove4j/trove/commits/b1bcddd2ccedbef9dacc43e59703ddfa420300ac"}}, "type": "commit"}], "rendered": {"message": {"type": "rendered", "raw": "Issue 66: All decorators now check that the map, set or list being passed in is not null, and throw an NPF immediately if it is. This is in line with the behaviour of the Java Collections API.\n", "markup": "markdown", "html": "<p>Issue 66: All decorators now check that the map, set or list being passed in is not null, and throw an NPF immediately if it is. This is in line with the behaviour of the Java Collections API.</p>"}}, "repository": {"type": "repository", "full_name": "trove4j/trove", "links": {"self": {"href": "https://api.bitbucket.org/2.0/repositories/trove4j/trove"}, "html": {"href": "https://bitbucket.org/trove4j/trove"}, "avatar": {"href": "https://bytebucket.org/ravatar/%7Bde86770d-32d0-4876-bf1a-09ab9540b893%7D?ts=101895"}}, "name": "Trove", "uuid": "{de86770d-32d0-4876-bf1a-09ab9540b893}"}, "participants": []}
+exec
+/usr/bin/bash -lc "curl -sL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/sf/trove4j/core/3.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/sf/trove4j/core/3.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="core-3.1.0-javadoc.jar" title="core-3.1.0-javadoc.jar">core-3.1.0-javadoc.jar</a>                            2018-08-03 02:23   4645895      
+<a href="core-3.1.0-javadoc.jar.asc" title="core-3.1.0-javadoc.jar.asc">core-3.1.0-javadoc.jar.asc</a>                        2018-08-03 02:23       874      
+<a href="core-3.1.0-javadoc.jar.asc.md5" title="core-3.1.0-javadoc.jar.asc.md5">core-3.1.0-javadoc.jar.asc.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.asc.sha1" title="core-3.1.0-javadoc.jar.asc.sha1">core-3.1.0-javadoc.jar.asc.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-javadoc.jar.md5" title="core-3.1.0-javadoc.jar.md5">core-3.1.0-javadoc.jar.md5</a>                        2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.md5.md5" title="core-3.1.0-javadoc.jar.md5.md5">core-3.1.0-javadoc.jar.md5.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.md5.sha1" title="core-3.1.0-javadoc.jar.md5.sha1">core-3.1.0-javadoc.jar.md5.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-javadoc.jar.sha1" title="core-3.1.0-javadoc.jar.sha1">core-3.1.0-javadoc.jar.sha1</a>                       2018-08-03 02:23        40      
+<a href="core-3.1.0-javadoc.jar.sha1.md5" title="core-3.1.0-javadoc.jar.sha1.md5">core-3.1.0-javadoc.jar.sha1.md5</a>                   2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.sha1.sha1" title="core-3.1.0-javadoc.jar.sha1.sha1">core-3.1.0-javadoc.jar.sha1.sha1</a>                  2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar" title="core-3.1.0-sources.jar">core-3.1.0-sources.jar</a>                            2018-08-03 02:23   1828003      
+<a href="core-3.1.0-sources.jar.asc" title="core-3.1.0-sources.jar.asc">core-3.1.0-sources.jar.asc</a>                        2018-08-03 02:23       874      
+<a href="core-3.1.0-sources.jar.asc.md5" title="core-3.1.0-sources.jar.asc.md5">core-3.1.0-sources.jar.asc.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.asc.sha1" title="core-3.1.0-sources.jar.asc.sha1">core-3.1.0-sources.jar.asc.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar.md5" title="core-3.1.0-sources.jar.md5">core-3.1.0-sources.jar.md5</a>                        2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.md5.md5" title="core-3.1.0-sources.jar.md5.md5">core-3.1.0-sources.jar.md5.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.md5.sha1" title="core-3.1.0-sources.jar.md5.sha1">core-3.1.0-sources.jar.md5.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar.sha1" title="core-3.1.0-sources.jar.sha1">core-3.1.0-sources.jar.sha1</a>                       2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar.sha1.md5" title="core-3.1.0-sources.jar.sha1.md5">core-3.1.0-sources.jar.sha1.md5</a>                   2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.sha1.sha1" title="core-3.1.0-sources.jar.sha1.sha1">core-3.1.0-sources.jar.sha1.sha1</a>                  2018-08-03 02:23        40      
+<a href="core-3.1.0.jar" title="core-3.1.0.jar">core-3.1.0.jar</a>                                    2018-08-03 02:23   2560395      
+<a href="core-3.1.0.jar.asc" title="core-3.1.0.jar.asc">core-3.1.0.jar.asc</a>                                2018-08-03 02:23       874      
+<a href="core-3.1.0.jar.asc.md5" title="core-3.1.0.jar.asc.md5">core-3.1.0.jar.asc.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.asc.sha1" title="core-3.1.0.jar.asc.sha1">core-3.1.0.jar.asc.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.jar.md5" title="core-3.1.0.jar.md5">core-3.1.0.jar.md5</a>                                2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.md5.md5" title="core-3.1.0.jar.md5.md5">core-3.1.0.jar.md5.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.md5.sha1" title="core-3.1.0.jar.md5.sha1">core-3.1.0.jar.md5.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.jar.sha1" title="core-3.1.0.jar.sha1">core-3.1.0.jar.sha1</a>                               2018-08-03 02:23        40      
+<a href="core-3.1.0.jar.sha1.md5" title="core-3.1.0.jar.sha1.md5">core-3.1.0.jar.sha1.md5</a>                           2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.sha1.sha1" title="core-3.1.0.jar.sha1.sha1">core-3.1.0.jar.sha1.sha1</a>                          2018-08-03 02:23        40      
+<a href="core-3.1.0.pom" title="core-3.1.0.pom">core-3.1.0.pom</a>                                    2018-08-03 02:23      1307      
+<a href="core-3.1.0.pom.asc" title="core-3.1.0.pom.asc">core-3.1.0.pom.asc</a>                                2018-08-03 02:23       874      
+<a href="core-3.1.0.pom.asc.md5" title="core-3.1.0.pom.asc.md5">core-3.1.0.pom.asc.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.asc.sha1" title="core-3.1.0.pom.asc.sha1">core-3.1.0.pom.asc.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.pom.md5" title="core-3.1.0.pom.md5">core-3.1.0.pom.md5</a>                                2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.md5.md5" title="core-3.1.0.pom.md5.md5">core-3.1.0.pom.md5.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.md5.sha1" title="core-3.1.0.pom.md5.sha1">core-3.1.0.pom.md5.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.pom.sha1" title="core-3.1.0.pom.sha1">core-3.1.0.pom.sha1</a>                               2018-08-03 02:23        40      
+<a href="core-3.1.0.pom.sha1.md5" title="core-3.1.0.pom.sha1.md5">core-3.1.0.pom.sha1.md5</a>                           2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.sha1.sha1" title="core-3.1.0.pom.sha1.sha1">core-3.1.0.pom.sha1.sha1</a>                          2018-08-03 02:23        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -sL https://bitbucket.org/trove4j/trove/raw/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/pom.xml | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-tests.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 258ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Sun, 03 May 2026 05:36:46 GMT
+content-type: text/html
+cf-ray: 9f5ce8f38c6b03b5-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 341ms:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta id="bb-bootstrap" data-current-user="{&quot;isAuthenticated&quot;: false, &quot;isKbdShortcutsEnabled&quot;: true, &quot;isSshEnabled&quot;: false}"
+
+
+    data-target-workspace-uuid="327ec5f3-b982-4aa3-8060-b84d8c6bc950"
+ />
+  <script nonce="tJN4cprm0LIUq3+rAMY4kg==">
+
+if (window.performance) {
+
+  
+  window.performance.okayToSendMetrics = !document.hidden && 'onvisibilitychange' in document;
+
+  if (window.performance.okayToSendMetrics) {
+
+    
+    window.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        window.performance.okayToSendMetrics = false;
+      }
+    });
+  }
+
+  
+  
+}
+</script>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <title>404 &mdash; Bitbucket</title>
+  
+
+
+<meta name="bb-env" content="production" />
+<meta id="bb-canon-url" name="bb-canon-url" content="https://bitbucket.org">
+<meta name="bb-api-canon-url" content="https://api.bitbucket.org">
+
+
+
+<meta name="bitbucket-commit-hash" content="f72aa25e582f">
+<meta name="bb-app-node" content="0302676d8fd5">
+<meta name="bb-dce-env" content="micros">
+<meta name="bb-view-name" content="bitbucket.apps.repo2.views.filebrowse_raw">
+<meta name="ignore-whitespace" content="False">
+<meta name="tab-size" content="None">
+<meta name="locale" content="en">
+<meta name="application-name" content="Bitbucket">
+<meta name="apple-mobile-web-app-title" content="Bitbucket">
+<meta name="slack-app-id" content="A8W8QLZD1">
+<meta name="statuspage-api-host" content="https://bqlf8qjztdtr.statuspage.io">
+
+
+<meta name="theme-color" content="#0049B0">
+<meta name="msapplication-TileColor" content="#0052CC">
+<meta name="msapplication-TileImage" content="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/img/logos/bitbucket/mstile-150x150.png">
+<link rel="apple-touch-icon" sizes="180x180" type="image/png" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/img/logos/bitbucket/apple-touch-icon.png">
+
+
+<link rel="icon" sizes="192x192" type="image/png" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/img/logos/bitbucket/android-chrome-old-192x192.png">
+
+
+
+
+<link rel="icon" sizes="16x16 24x24 32x32 64x64" type="image/x-icon" href="/favicon.ico?v=2">
+
+
+
+<link rel="mask-icon" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/img/logos/bitbucket/safari-pinned-tab.svg" color="#0052CC">
+
+
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Bitbucket">
+
+  <meta name="description" content="">
+  
+  <link
+  rel="preconnect"
+  href="https://ds-cdn.prod-east.frontend.public.atl-paas.net" />
+<link
+  rel="preload"
+  href="https://ds-cdn.prod-east.frontend.public.atl-paas.net/assets/fonts/atlassian-sans/v4/AtlassianSans-latin.woff2"
+  as="font" type="font/woff2" crossorigin />
+<link
+  rel="preload stylesheet"
+  href="https://ds-cdn.prod-east.frontend.public.atl-paas.net/assets/font-rules/v6/atlassian-fonts.css"
+  as="style" crossorigin />
+<script nonce="tJN4cprm0LIUq3+rAMY4kg==">
+  window.__theme_settings__ = {"typographyTheme": "typography-refreshed"};
+</script>
+<script src="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/dist/webpack/theme-init.js" nonce="tJN4cprm0LIUq3+rAMY4kg=="></script>
+  
+    
+
+
+<link rel="stylesheet" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/css/entry/vendor-aui-8.css" />
+<link rel="stylesheet" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/css/entry/app.css" />
+
+
+
+<link rel="stylesheet" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/css/themes/atlaskit-tokens-light-brand-refresh.css">
+<link rel="stylesheet" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/css/themes/atlaskit-tokens-dark-brand-refresh.css">
+<link rel="stylesheet" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/css/themes/atlaskit-tokens-spacing.css">
+<link rel="stylesheet" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/css/themes/atlaskit-tokens-typography-refreshed.css">
+
+<link rel="stylesheet" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/css/entry/adg3-skeleton-nav.css">
+<link rel="stylesheet" href="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/css/entry/adg3.css">
+  
+  <script nonce="tJN4cprm0LIUq3+rAMY4kg==">
+  window.__sentry__ = {"dsn": "https://ea49358f525d4019945839a3d7a8292a@o55978.ingest.sentry.io/159509", "release": "20260501.193700", "environment": "production", "tags": {"dc_location": "Micros-3", "micros_deployment_id": "q4k5jvpp5ivj5tuk", "micros_service": "bbc-website", "micros_envtype": "prod", "micros_service_version": "193700", "micros_instance_id": "i-0163a105bd5302426", "micros_zone": "us-east-1.prod.atl-paas.net", "revision": "f72aa25e582f"}};
+</script>
+<script src="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/dist/webpack/sentry.js" nonce="tJN4cprm0LIUq3+rAMY4kg=="></script>
+  <script src="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/dist/webpack/early.js" nonce="tJN4cprm0LIUq3+rAMY4kg=="></script>
+  
+  
+
+  
+</head>
+<body
+    class="production adg3 aui-8 aui-legacy-focus "
+    data-static-url="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/"
+data-base-url="https://bitbucket.org"
+data-no-avatar-image="https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/f72aa25e582f/img/default_avatar/user_blue.svg"
+data-current-user="{&quot;isAuthenticated&quot;: false, &quot;isKbdShortcutsEnabled&quot;: true, &quot;isSshEnabled&quot;: false}"
+data-atlassian-id="{&quot;loginUrl&quot;: &quot;https://id.atlassian.com/login?prompt=login&amp;continue=https%3A%2F%2Fbitbucket.org%2Ftrove4j%2Ftrove%2Fraw%2F24dd57f48bf385fa41a878f8fad7ac44d8b1d53a%2Fcore%2Fpom.xml&quot;, &quot;loginStatusUrl&quot;: &quot;https://id.atlassian.com/profile/rest/profile&quot;}"
+data-settings="{&quot;MENTIONS_MIN_QUERY_LENGTH&quot;: 1}"
+data-switch-create-pullrequest-commit-status="true"
+
+data-current-repo="{&quot;id&quot;: 2174723, &quot;uuid&quot;: &quot;de86770d-32d0-4876-bf1a-09ab9540b893&quot;, &quot;scm&quot;: &quot;git&quot;, &quot;readOnly&quot;: false, &quot;language&quot;: &quot;java&quot;, &quot;pygmentsLanguage&quot;: &quot;java&quot;, &quot;slug&quot;: &quot;trove&quot;, &quot;fullslug&quot;: &quot;trove4j/trove&quot;, &quot;baseUrl&quot;: &quot;trove4j&quot;, &quot;owner&quot;: {&quot;uuid&quot;: &quot;327ec5f3-b982-4aa3-8060-b84d8c6bc950&quot;, &quot;username&quot;: &quot;trove4j&quot;, &quot;isTeam&quot;: true}, &quot;workspace&quot;: {&quot;uuid&quot;: &quot;327ec5f3-b982-4aa3-8060-b84d8c6bc950&quot;, &quot;slug&quot;: &quot;trove4j&quot;}, &quot;is_private&quot;: false, &quot;mainbranch&quot;: {&quot;name&quot;: &quot;master&quot;}, &quot;analyticsKey&quot;: &quot;UA-38690273-1&quot;}"
+
+
+
+
+
+
+
+
+>
+<div id="page">
+  
+    <div id="adg3-banner-root"></div>
+
+    <div id="wrapper">
+      
+  
+
+<div id="account-warning" data-module="header/account-warning"
+  data-unconfirmed-addresses="false"
+  data-no-addresses="false"
+  
+></div>
+
+
+
+      
+  
+<header id="aui-message-bar">
+  
+</header>
+
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/pom.xml' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/?pagelen=10'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/?pagelen=100' | head -c 12000" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 201ms:
+{"type":"error","error":{"message":"No such file or directory: core/pom.xml"}}
+ succeeded in 256ms:
+{"values":[{"path":"core/src/test/java/gnu","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/gnu/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/gnu/?format=meta"}}}],"pagelen":10,"page":1}
+ succeeded in 329ms:
+{"values":[{"path":"benchmarks","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/benchmarks/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/benchmarks/?format=meta"}}},{"path":"core","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/?format=meta"}}},{"path":"experimental","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/experimental/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/experimental/?format=meta"}}},{"path":"generator","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/generator/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/generator/?format=meta"}}},{"path":"gradle","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradle/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradle/?format=meta"}}},{"path":"resources","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/resources/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/resources/?format=meta"}}},{"path":".gitignore","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":".gitignore","size":112,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/.gitignore"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/.gitignore?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/.gitignore"}}},{"path":"AUTHORS.txt","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"AUTHORS.txt","size":543,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/AUTHORS.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/AUTHORS.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/AUTHORS.txt"}}},{"path":"CHANGES.txt","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"CHANGES.txt","size":20474,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/CHANGES.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/CHANGES.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/CHANGES.txt"}}},{"path":"LICENSE.txt","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"LICENSE.txt","size":26976,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/LICENSE.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/LICENSE.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/LICENSE.txt"}}},{"path":"README-license.txt","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"README-license.txt","size":778,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README-license.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README-license.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README-license.txt"}}},{"path":"README.md","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"README.md","size":4027,"mimetype":"text/markdown","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README.md"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README.md?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README.md"}}},{"path":"bitbucket-pipelines.yml","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"bitbucket-pipelines.yml","size":132,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/bitbucket-pipelines.yml"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/bitbucket-pipelines.yml?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/bitbucket-pipelines.yml"}}},{"path":"build.gradle","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"build.gradle","size":2235,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.gradle"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.gradle?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.gradle"}}},{"path":"build.xml","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"build.xml","size":17345,"mimetype":"application/xml","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.xml"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.xml?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.xml"}}},{"path":"gradlew","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html"
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.gradle' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README.md' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradle.properties' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 202ms:
+///////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2009-2010, Rob Eden All Rights Reserved.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+///////////////////////////////////////////////////////////////////////////////
+
+apply plugin: 'base'
+
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'osgi'
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+    }
+
+
+    jar {
+        manifest {
+            attributes 'Implementation-Title': 'Trove',
+                    'Implementation-Version': "${version}",
+                    'Implementation-URL': 'https://bitbucket.org/robeden/trove/',
+                    'Sealed': 'false'
+
+            // OSGI stuff
+            instruction 'Bundle-Name', 'Trove'
+            instruction 'Bundle-SymbolicName', 'gnu.trove'
+            instruction 'Bundle-Version', "${version}"
+            instruction 'Bundle-Vendor', 'Trove Development Team'
+            instruction 'Bundle-License', 'http://www.gnu.org/licenses/lgpl-2.1.html'
+            instruction 'Bundle-ContactAddress:', 'http://trove.starlight-systems.com/contacts'
+        }
+    }
+}
+
+
+
+task assembleDistDir {
+    outputs.dir file("${buildDir}/dist")
+    subprojects.each { project ->
+        inputs.dir project.buildDir
+    }
+
+    dependsOn(subprojects.jar)
+    dependsOn(subprojects.javadoc)
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
+
+ succeeded in 188ms:
+{"type":"error","error":{"message":"No such file or directory: gradle.properties"}}
+ succeeded in 209ms:
+# GNU Trove: High performance collections for Java
+
+
+## Objectives
+
+The GNU Trove library has two objectives:
+
+1. Provide "free" (as in "free speech" and "free beer"), fast,
+   lightweight implementations of the java.util Collections API.
+   These implementations are designed to be pluggable replacements
+   for their JDK equivalents.
+2. Whenever possible, provide the same collections support for
+   primitive types. This gap in the JDK is often addressed by using
+   the "wrapper" classes (java.lang.Integer, java.lang.Float, etc.)
+   with Object-based collections. For most applications, however,
+   collections which store primitives directly will require less
+   space and yield significant performance gains.
+
+## Hashtable techniques
+
+The Trove maps/sets use open addressing instead of the chaining
+approach taken by the JDK hashtables. This eliminates the need to
+create Map.Entry wrappper objects for every item in a table and so
+reduces the O (big-oh) in the performance of the hashtable algorithm.
+The size of the tables used in Trove's maps/sets is always a prime
+number, improving the probability of an optimal distribution of
+entries across the table, and so reducing the likelihood of
+performance-degrading collisions. Trove sets are not backed by maps,
+and so using a THashSet does not result in the allocation of an unused
+"values" array.
+
+## Hashing strategies
+
+Trove's maps/sets support the use of custom hashing strategies,
+allowing you to tune collections based on characteristics of the input
+data. This feature also allows you to define hash functions when it is
+not feasible to override Object.hashCode(). For example, the
+java.lang.String class is final, and its implementation of hashCode()
+takes O(n) time to complete. In some applications, however, it may be
+possible for a custom hashing function to save time by skipping
+portions of the string that are invariant.
+
+Using java.util.HashMap, it is not possible to use Java language
+arrays as keys. For example, this code:
+
+```
+char[] foo, bar;
+foo = new char[] {'a','b','c'};
+bar = new char[] {'a','b','c'};
+System.out.println(foo.hashCode() == bar.hashCode() ? "equal" : "not equal");
+System.out.println(foo.equals(bar) ? "equal" : "not equal");
+```
+
+...produces this output:
+
+    not equal
+    not equal
+
+
+And so an entry stored in a java.util.HashMap with foo as a key could
+not be retrieved with bar, since there is no way to override
+hashCode() or equals() on language array objects.
+
+In a gnu.trove.map.hash.TCustomHashMap, however, you can implement a
+gnu.trove.strategy.HashingStrategy to enable hashing on arrays:
+
+```
+class CharArrayStrategy implements HashingStrategy {
+    public int computeHashCode(Object o) {
+        char[] c = (char[])o;
+        // use the shift-add-xor class of string hashing functions
+        // cf. Ramakrishna and Zobel,
+        //     "Performance in Practice of String Hashing Functions"
+        int h = 31; // seed chosen at random
+        for (int i = 0; i < c.length; i++) { // could skip invariants
+            // L=5, R=2 works well for ASCII input
+            h = h ^ ((h << 5) + (h >> 2) + c[i]);
+        }
+        return h;
+    }
+
+    public boolean equals(Object o1, Object o2) {
+        char[] c1 = (char[])o1;
+        char[] c2 = (char[])o2;
+        // could drop this check for fixed-length keys
+        if (c1.length != c2.length) {
+            return false;
+        }
+        // could skip invariants
+        for (int i = 0, len = c1.length; i < len; i++) {
+            if (c1[i] != c2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```
+
+
+## Iterators in primitive collections
+
+Trove's primitive mappings include access through Iterators as well
+as procedures and functions. The API documentation on those classes
+contains several examples showing how these can be used effectively
+and explaining why their semantics differ from those of
+java.util.Iterator.
+
+_________________________________________________________________
+
+Last modified: Nov 9, 2017
+
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/build.gradle' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/settings.gradle' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/?pagelen=100' | rg 'properties|version|pom|ivy|gradle'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 210ms:
+jar {
+    baseName 'trove'
+}
+
+
+dependencies {
+    compile project( ':generator' )
+}
+
+
+task( generateTemplates, type: JavaExec ) {
+    main = 'gnu.trove.generator.Generator'
+    classpath = configurations.runtime
+    args = [ 'src/main/templates', "${buildDir}/generated-src" ]
+}
+
+
+sourceSets {
+    main {
+        java.srcDirs += "${buildDir}/generated-src"
+//        runtimeClasspath += sourceSets.codeGen.output
+    }
+}
+compileJava.dependsOn( generateTemplates )
+ succeeded in 220ms:
+include 'generator', 'core', 'experimental'
+ succeeded in 297ms:
+{"values":[{"path":"benchmarks","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/benchmarks/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/benchmarks/?format=meta"}}},{"path":"core","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/?format=meta"}}},{"path":"experimental","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/experimental/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/experimental/?format=meta"}}},{"path":"generator","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/generator/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/generator/?format=meta"}}},{"path":"gradle","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradle/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradle/?format=meta"}}},{"path":"resources","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_directory","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/resources/"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/resources/?format=meta"}}},{"path":".gitignore","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":".gitignore","size":112,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/.gitignore"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/.gitignore?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/.gitignore"}}},{"path":"AUTHORS.txt","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"AUTHORS.txt","size":543,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/AUTHORS.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/AUTHORS.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/AUTHORS.txt"}}},{"path":"CHANGES.txt","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"CHANGES.txt","size":20474,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/CHANGES.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/CHANGES.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/CHANGES.txt"}}},{"path":"LICENSE.txt","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"LICENSE.txt","size":26976,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/LICENSE.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/LICENSE.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/LICENSE.txt"}}},{"path":"README-license.txt","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"README-license.txt","size":778,"mimetype":"text/plain","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README-license.txt"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README-license.txt?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README-license.txt"}}},{"path":"README.md","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"README.md","size":4027,"mimetype":"text/markdown","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README.md"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README.md?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/README.md"}}},{"path":"bitbucket-pipelines.yml","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"bitbucket-pipelines.yml","size":132,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/bitbucket-pipelines.yml"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/bitbucket-pipelines.yml?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/bitbucket-pipelines.yml"}}},{"path":"build.gradle","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"build.gradle","size":2235,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.gradle"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.gradle?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.gradle"}}},{"path":"build.xml","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"build.xml","size":17345,"mimetype":"application/xml","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.xml"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.xml?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/build.xml"}}},{"path":"gradlew","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"gradlew","size":5080,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradlew"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradlew?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradlew"}}},{"path":"gradlew.bat","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"gradlew.bat","size":2404,"mimetype":"application/x-msdos-program","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradlew.bat"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradlew.bat?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/gradlew.bat"}}},{"path":"pom.xml","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":["executable"],"escaped_path":"pom.xml","size":7993,"mimetype":"application/xml","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/pom.xml"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/pom.xml?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/pom.xml"}}},{"path":"settings.gradle","commit":{"hash":"24dd57f48bf385fa41a878f8fad7ac44d8b1d53a","links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/commit/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"},"html":{"href":"https://bitbucket.org/trove4j/trove/commits/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a"}},"type":"commit"},"type":"commit_file","attributes":[],"escaped_path":"settings.gradle","size":43,"mimetype":null,"links":{"self":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/settings.gradle"},"meta":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/settings.gradle?format=meta"},"history":{"href":"https://api.bitbucket.org/2.0/repositories/trove4j/trove/filehistory/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/settings.gradle"}}}],"pagelen":100,"page":1}
+
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/pom.xml' | rg -n '<version>|<artifactId>|<groupId>|<scm>|<url>'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -sL 'https://api.bitbucket.org/2.0/repositories/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/CHANGES.txt' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -I -L --fail 'https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 212ms:
+7:    <groupId>net.sf.trove4j</groupId>
+8:    <artifactId>trove4j</artifactId>
+9:    <version>3.0rc-SNAPSHOT</version>
+15:    <url>http://trove4j.sourceforge.net/</url>
+19:            <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+24:    <scm>
+25:        <url>https://trove4j.svn.sourceforge.net/svnroot/trove4j</url>
+30:            <url>ftp://ftp.site/maven2</url>
+49:                <groupId>org.apache.maven.plugins</groupId>
+50:                <artifactId>maven-compiler-plugin</artifactId>
+51:                <version>2.3.2</version>
+59:                <groupId>org.apache.maven.plugins</groupId>
+60:                <artifactId>maven-antrun-plugin</artifactId>
+61:                <version>1.6</version>
+92:                        <groupId>com.sun</groupId>
+93:                        <artifactId>tools</artifactId>
+94:                        <version>1.5.0</version>
+101:                <groupId>org.apache.felix</groupId>
+102:                <artifactId>maven-bundle-plugin</artifactId>
+103:                <version>2.3.7</version>
+116:                <groupId>org.apache.maven.plugins</groupId>
+117:                <artifactId>maven-jar-plugin</artifactId>
+118:                <version>2.3.1</version>
+127:                <groupId>org.apache.maven.plugins</groupId>
+128:                <artifactId>maven-source-plugin</artifactId>
+129:                <version>2.1.2</version>
+141:                <groupId>org.apache.maven.plugins</groupId>
+142:                <artifactId>maven-javadoc-plugin</artifactId>
+143:                <version>2.7</version>
+163:                <groupId>org.apache.maven.wagon</groupId>
+164:                <artifactId>wagon-ftp</artifactId>
+165:                <version>1.0-alpha-6</version>
+173:            <groupId>junit</groupId>
+174:            <artifactId>junit</artifactId>
+175:            <version>3.8.2</version>
+180:            <groupId>colt</groupId>
+181:            <artifactId>colt</artifactId>
+182:            <version>1.2.0</version>
+188:                    <groupId>net.sf.trove4j</groupId>
+189:                    <artifactId>trove4j</artifactId>
+190:                    <version>2.1.0</version>
+
+ succeeded in 209ms:
+--- 3.0.5 ---
+Note:
+  - Issue tracking is now done on BitBucket (https://bitbucket.org/robeden/trove) so
+    numbers will look considerably shorter.
+Bugs Fixed:
+  - [2]  Incorrect Equals in all primitive HashMaps
+  - [43] Incorrect javadoc for TObjectIntMap.get()
+  - [46] TObjectDoubleHashMap.adjustValue() and .adjustOrPutValue() javadocs need clarification
+
+--- 3.0.4 ---
+Bugs Fixed:
+  - [3552578] TUnmodifiableIntList equals is broken
+
+--- 3.0.3 ---
+Bugs Fixed:
+  - [3445639] ArrayIndexOutOfBoundsException from TIntHashSet.retainAll
+  - [3460395] no_entry_value is set always to 0 in map default constructor
+
+--- 3.0.2 ---
+Bug Fixed:
+  - [3429703] TIntObjectHashMap losing entry
+  - [3431135] ArrayIndexOutOfBoundsException at TIntIntHashMap.keys
+  - [3432212] entrySet() does not unwrap in cased of no_entry_value or no_entrykey
+  - [3432175] Decorator entrySet() -keySet() impl - Minor problem with the way null keys are unwarped
+
+--- 3.0.1 ---
+Bugs Fixed:
+  - fix for ClassCastException in equals(T,T) when comparing with REMOVED
+  - [3408129] Benchmarks don't run correctly
+  - [3394094] Args to gnu.trove.generator.Generator not basedir-relative
+  - Re-introduce TLinkableAdapter class
+New Features:
+  - [3412967] Need TMap interface
+  - .zip and .tgz files now expand into a sub-directory
+  - Documentation for generator patterns and replicated blocks
+  - Maven artifact generation now a bit more automatic
+
+--- 3.0.0 ---
+  - !!! Major restructuring of classes and packages !!!
+    Interfaces have been broken out to allow for alternate implementations.
+    The package changes will require code migration, although it should mainly
+    consist of simply updating import statements. However, because everything is
+    in new packages, both Trove 2.x and Trove 3.x can co-exist in a classpath
+    (to hopefully ease the migration burden).
+  - Broke out classes that allow custom hashing for performance reasons.
+    New collections are:
+       - TCustomHashMap
+       - TCustomHashSet
+       - TObject*CustomHashMap (ex: TObjectIntCustomHashMap)
+    IdentityHashingStrategy is available for identity-based hash maps.
+  - [ 3152276 ] Add sum() method to T*List
+  - [ 3159432 ] THashMap.entrySet().remove() throws on non-Entries
+  - [ 3153005 ] fix for null keys in Object maps
+  - Benchmarks for comparing different libraries. Currently java.util, Colt,
+    Trove 2 and Trove 3.
+  - Fixes to serialVersionUID's and where Serializable is marked. For example,
+    Serializable has been removed from the interfaces for various collections
+    (to better match how it's done in java.util).
+  - Many bug fixes, particularly to TLinkedList.
+
+--- 2.1.0 ---
+No substantial changes.
+
+--- 2.1.0 a3 ---
+Bugs fixed:
+  - [ 2685774 ] THashMap serialization bug in 2.0.4
+
+--- 2.1.0 a2 ---
+Bugs fixed:
+  - [ 2166456 ] clone() for TObject<XXX>HashMap is inefficient
+  - [ 2166768 ] add toString() method to maps. Thanks to Ozgur Aydinli.
+  - [ 2688770 ] TxxxArrayList serializes full capacity instead of full size
+  - [ 2687519 ] Primitive Lists hashCode is calculated w/o regard for order
+  - Fixed issues related to removing items multiple times from TLinkedList
+    and using removeFirst/Last when no items are in the list.
+
+New Features
+  - [ 2126522 ] add putAll() to the HashMaps. Thanks to Ozgur Aydinli.
+
+--- 2.1.0 a1 ---
+
+ succeeded in 389ms:
+
+  0 16633    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Sun, 03 May 2026 05:37:08 GMT
+content-type: text/html; charset=utf-8
+content-length: 16633
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+x-view-name: bitbucket.apps.repo2.views.SourceView
+x-dc-location: Micros-3
+x-served-by: f1f5b4292c24
+x-version: f72aa25e582f
+x-static-version: f72aa25e582f
+x-request-count: 3531
+x-render-time: 0.25813794136047363
+x-b3-traceid: b8420b9a4ffd42df8b052caa332d2012
+x-b3-spanid: 7a1c6c8d58deb2bf
+x-frame-options: SAMEORIGIN
+content-security-policy: object-src 'none'; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; base-uri 'self'; connect-src bitbucket.org *.bitbucket.org bb-inf.net *.bb-inf.net atlassianblog.wpengine.com id.atlassian.com api.atlassian.com api.stg.atlassian.com wss://bitbucketci-ws-service.services.atlassian.com/ wss://bitbucketci-ws-service.stg.services.atlassian.com/ wss://bitbucketci-ws-service.dev.services.atlassian.com/ analytics.atlassian.com atlassian-cookies--categories.us-east-1.prod.public.atl-paas.net as.atlassian.com api-private.stg.atlassian.com api-private.atlassian.com xp.atlassian.com atl-global.atlassian.com cofs.staging.public.atl-paas.net cofs.prod.public.atl-paas.net fd-assets.prod.atl-paas.net flight-deck-assets-bifrost.prod-east.frontend.public.atl-paas.net intake.opbeat.com api.media.atlassian.com api.segment.io xid.statuspage.io xid.atlassian.com xid.sourcetreeapp.com www.google-analytics.com sentry.io *.ingest.sentry.io statsigapi.net fd-config.us-east-1.prod.public.atl-paas.net fd-config-bifrost.prod-east.frontend.public.atl-paas.net micros--prod-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--prod-east--bitbucketci-file-service--files.s3.amazonaws.com micros--stg-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--stg-east--bitbucketci-file-service--files.s3.amazonaws.com micros--ddev--bitbucketci-file-service--files.s3.ap-southeast-2.amazonaws.com app.pendo.io data.pendo.io pendo-static-6291417196199936.storage.googleapis.com bqlf8qjztdtr.statuspage.io wss://bitbucket.org/gateway/api/bbc-aps/subscriptions wss://bitbucket.org/gateway/api/graphql/subscriptions https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; script-src 'unsafe-eval' 'strict-dynamic' 'unsafe-inline' 'self' http: https: https://remote-app-switcher.stg-east.frontend.public.atl-paas.net https://remote-app-switcher.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io data.pendo.io pendo-io-static.storage.googleapis.com pendo-static-6291417196199936.storage.googleapis.com https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ 'nonce-5rYFFvfuDQMebajagRCAwg=='; frame-ancestors 'self' start.atlassian.com start.stg.atlassian.com atlaskit.atlassian.com bitbucket.org app.pendo.io; style-src 'self' 'unsafe-inline' https://aui-cdn.atlassian.com/ https://cdn.cookielaw.org/ https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io pendo-static-6291417196199936.storage.googleapis.com https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; font-src 'self' https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net; report-uri https://web-security-reports.services.atlassian.com/csp-report/bb-website
+expires: Sun, 03 May 2026 05:37:08 GMT
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+set-cookie: csrftoken=ouQRDJkhuOM7QKsYtse8hBpvcG5PomnZ; expires=Sun, 02 May 2027 05:37:08 GMT; Max-Age=31449600; Path=/; SameSite=Lax; Secure
+x-usage-quota-remaining: 995689.445
+x-usage-request-cost: 4383.20
+x-usage-user-time: 0.115142
+x-usage-system-time: 0.010354
+x-usage-input-ops: 24
+x-usage-output-ops: 0
+x-envoy-attempt-count: 1
+age: 0
+accept-ranges: bytes
+x-cache: MISS
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+atl-traceid: b8420b9a4ffd42df8b052caa332d2012
+atl-request-id: b8420b9a-4ffd-42df-8b05-2caa332d2012
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+report-to: {"endpoints": [{"url": "https://dz8aopenkvv6s.cloudfront.net"}], "group": "endpoint-1", "include_subdomains": true, "max_age": 600}
+nel: {"failure_fraction": 0.01, "include_subdomains": true, "max_age": 600, "report_to": "endpoint-1"}
+server-timing: atl-edge;dur=370,atl-edge-internal;dur=3,atl-edge-upstream;dur=369,atl-edge-pop;desc="aws-eu-central-1"
+
+
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.1.0\")' metadata/net.sf.trove4j/core/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.1.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
+  "repository-url": "https://bitbucket.org/trove4j/trove",
+  "test-code-url": "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
+  "description": "Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications.",
+  "tested-versions": [
+    "3.1.0"
+  ],
+  "allowed-packages": [
+    "gnu.trove"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/net.sf.trove4j/core/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+?? metadata/net.sf.trove4j/core/index.json
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 net sf trove4j core 3.1.0 core-3.1.0-sources.jar core-3.1.0-javadoc.jar
+web search: 
+web search: site:bitbucket.org/trove4j/trove 24dd57f48bf385fa41a878f8fad7ac44d8b1d53a "core/src/test/java"
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/
+codex
+The existing `source-code-url`, `documentation-url`, and repository root already match the verified Maven/POM metadata. The upstream repository has no Bitbucket tags, and there is no Maven test jar, so the existing commit-pinned Bitbucket test directory is the best version-fixed test-suite URL; this library is plain Java, so the `language` field should remain absent.
+exec
+/usr/bin/bash -lc 'jq empty metadata/net.sf.trove4j/core/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/net.sf.trove4j/core/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+web search: 
+web search: Maven Central net.sf.trove4j core 3.1.0 javadoc sources
+codex
+No file edit was needed in [index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/metadata/net.sf.trove4j/core/index.json:1). The existing `3.1.0` entry already has the verified Maven Central source and javadoc jar URLs, the canonical Bitbucket repository root, the commit-pinned Bitbucket test-suite URL, and a two-sentence description; `language` remains absent because this is a Java library, not Kotlin/Groovy/Scala. Maven Central lists the `core-3.1.0-sources.jar` and `core-3.1.0-javadoc.jar`, and Sonatype’s artifact metadata identifies Trove core as “High performance collections for Java” with the Bitbucket project URL. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/?utm_source=openai))
+
+Validation run:
+`jq empty metadata/net.sf.trove4j/core/index.json`
+
+Selected values:
+```json
+{
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
+  "repository-url": "https://bitbucket.org/trove4j/trove",
+  "test-code-url": "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar"
+}
+```
+tokens used
+72,255
+No file edit was needed in [index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/metadata/net.sf.trove4j/core/index.json:1). The existing `3.1.0` entry already has the verified Maven Central source and javadoc jar URLs, the canonical Bitbucket repository root, the commit-pinned Bitbucket test-suite URL, and a two-sentence description; `language` remains absent because this is a Java library, not Kotlin/Groovy/Scala. Maven Central lists the `core-3.1.0-sources.jar` and `core-3.1.0-javadoc.jar`, and Sonatype’s artifact metadata identifies Trove core as “High performance collections for Java” with the Bitbucket project URL. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/?utm_source=openai))
+
+Validation run:
+`jq empty metadata/net.sf.trove4j/core/index.json`
+
+Selected values:
+```json
+{
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
+  "repository-url": "https://bitbucket.org/trove4j/trove",
+  "test-code-url": "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar"
+}
+```
+Ran agent for net.sf.trove4j:core:3.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/build/agent-url-discovery-logs/net.sf.trove4j-core-3.1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 45s
+9 actionable tasks: 1 executed, 8 up-to-date

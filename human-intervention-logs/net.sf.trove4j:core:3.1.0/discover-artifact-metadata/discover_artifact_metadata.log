@@ -1,0 +1,942 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dec54-595b-74c3-ba79-c3daf2cf6194
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sf.trove4j:core:3.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.1.0" when "$version$" is replaced with "3.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+- Set "coordinates" to "net.sf.trove4j:core:3.1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project/tag before editing the JSON, then I’ll check the file shape so the update matches the repository’s formatting.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+{
+  "coordinates" : "net.sf.trove4j:core:3.1.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"net\\.sf\\.trove4j|trove4j|\\\"language\\\"|not-for-native-image\" metadata build/discovered-artifact-metadata || true" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json:2:  "coordinates" : "net.sf.trove4j:core:3.1.0"
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:28:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:46:    "language" : {
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+
+codex
+The local metadata stub only has `coordinates`, so I’m checking the project’s existing URL conventions before choosing Maven artifact URLs versus upstream repository URLs.
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+
+exec
+/usr/bin/bash -lc 'rg -n "source-code-url|test-code-url|documentation-url" metadata build/discovered-artifact-metadata | head -80' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/com.google.guava/guava-bootstrap/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/guava/guava-bootstrap/$version$/guava-bootstrap-$version$-sources.jar",
+metadata/com.google.guava/guava-bootstrap/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.guava/guava-bootstrap/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/guava/guava-bootstrap/$version$/guava-bootstrap-$version$-javadoc.jar",
+metadata/com.codahale.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/codahale/metrics/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/com.codahale.metrics/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/com.codahale.metrics/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/codahale/metrics/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.google.android/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-$version$/src/test",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.example/library/index.json:9:    "source-code-url": "N/A",
+metadata/org.example/library/index.json:11:    "test-code-url": "N/A",
+metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:8:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:22:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/$version$/opengauss-jdbc-$version$-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:10:    "test-code-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_6_1/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:23:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_5/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:38:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_4_2/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+
+web search: 
+web search: Maven net.sf.trove4j core 3.1.0 sources jar javadoc test-sources
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/
+web search: 
+web search: site:bitbucket.org/trove4j/trove trove4j 3.1.0 tag
+codex
+Maven Central has the main JAR, sources JAR, and Javadoc JAR for `3.1.0`, but no test-sources artifact in the directory listing. I’m now checking the SCM tags so the test URL can land on the right upstream revision.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.trove4j</groupId>
+  <artifactId>core</artifactId>
+  <version>3.1.0</version>
+  <name>Trove (core)</name>
+  <description>High performance collections for Java</description>
+  <url>https://bitbucket.org/trove4j/trove/src/master/</url>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License 2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Rob Eden</name>
+      <email>robeden1@gmail.com</email>
+    </developer>
+    <developer>
+      <name>Johan Parent</name>
+      <email>jparent@users.sourceforge.net</email>
+    </developer>
+    <developer>
+      <name>Jeff Randall</name>
+      <email>randall@uph.com</email>
+    </developer>
+    <developer>
+      <name>Eric D. Friedman</name>
+      <email>ericdf@users.sourceforge.net</email>
+    </developer>
+  </developers>
+  <scm>
+    <url>https://bitbucket.org/trove4j/trove/src/master/</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://bitbucket.org/trove4j/trove.git | rg \"3\\.1|3_1|trove|release|ffd7590\" || true" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 235ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 05:34:27 GMT
+content-type: text/html
+cf-ray: 9f5ce58e28ba985f-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 406ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/sf/trove4j/core/3.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/sf/trove4j/core/3.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="core-3.1.0-javadoc.jar" title="core-3.1.0-javadoc.jar">core-3.1.0-javadoc.jar</a>                            2018-08-03 02:23   4645895      
+<a href="core-3.1.0-javadoc.jar.asc" title="core-3.1.0-javadoc.jar.asc">core-3.1.0-javadoc.jar.asc</a>                        2018-08-03 02:23       874      
+<a href="core-3.1.0-javadoc.jar.asc.md5" title="core-3.1.0-javadoc.jar.asc.md5">core-3.1.0-javadoc.jar.asc.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.asc.sha1" title="core-3.1.0-javadoc.jar.asc.sha1">core-3.1.0-javadoc.jar.asc.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-javadoc.jar.md5" title="core-3.1.0-javadoc.jar.md5">core-3.1.0-javadoc.jar.md5</a>                        2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.md5.md5" title="core-3.1.0-javadoc.jar.md5.md5">core-3.1.0-javadoc.jar.md5.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.md5.sha1" title="core-3.1.0-javadoc.jar.md5.sha1">core-3.1.0-javadoc.jar.md5.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-javadoc.jar.sha1" title="core-3.1.0-javadoc.jar.sha1">core-3.1.0-javadoc.jar.sha1</a>                       2018-08-03 02:23        40      
+<a href="core-3.1.0-javadoc.jar.sha1.md5" title="core-3.1.0-javadoc.jar.sha1.md5">core-3.1.0-javadoc.jar.sha1.md5</a>                   2018-08-03 02:23        32      
+<a href="core-3.1.0-javadoc.jar.sha1.sha1" title="core-3.1.0-javadoc.jar.sha1.sha1">core-3.1.0-javadoc.jar.sha1.sha1</a>                  2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar" title="core-3.1.0-sources.jar">core-3.1.0-sources.jar</a>                            2018-08-03 02:23   1828003      
+<a href="core-3.1.0-sources.jar.asc" title="core-3.1.0-sources.jar.asc">core-3.1.0-sources.jar.asc</a>                        2018-08-03 02:23       874      
+<a href="core-3.1.0-sources.jar.asc.md5" title="core-3.1.0-sources.jar.asc.md5">core-3.1.0-sources.jar.asc.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.asc.sha1" title="core-3.1.0-sources.jar.asc.sha1">core-3.1.0-sources.jar.asc.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar.md5" title="core-3.1.0-sources.jar.md5">core-3.1.0-sources.jar.md5</a>                        2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.md5.md5" title="core-3.1.0-sources.jar.md5.md5">core-3.1.0-sources.jar.md5.md5</a>                    2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.md5.sha1" title="core-3.1.0-sources.jar.md5.sha1">core-3.1.0-sources.jar.md5.sha1</a>                   2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar.sha1" title="core-3.1.0-sources.jar.sha1">core-3.1.0-sources.jar.sha1</a>                       2018-08-03 02:23        40      
+<a href="core-3.1.0-sources.jar.sha1.md5" title="core-3.1.0-sources.jar.sha1.md5">core-3.1.0-sources.jar.sha1.md5</a>                   2018-08-03 02:23        32      
+<a href="core-3.1.0-sources.jar.sha1.sha1" title="core-3.1.0-sources.jar.sha1.sha1">core-3.1.0-sources.jar.sha1.sha1</a>                  2018-08-03 02:23        40      
+<a href="core-3.1.0.jar" title="core-3.1.0.jar">core-3.1.0.jar</a>                                    2018-08-03 02:23   2560395      
+<a href="core-3.1.0.jar.asc" title="core-3.1.0.jar.asc">core-3.1.0.jar.asc</a>                                2018-08-03 02:23       874      
+<a href="core-3.1.0.jar.asc.md5" title="core-3.1.0.jar.asc.md5">core-3.1.0.jar.asc.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.asc.sha1" title="core-3.1.0.jar.asc.sha1">core-3.1.0.jar.asc.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.jar.md5" title="core-3.1.0.jar.md5">core-3.1.0.jar.md5</a>                                2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.md5.md5" title="core-3.1.0.jar.md5.md5">core-3.1.0.jar.md5.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.md5.sha1" title="core-3.1.0.jar.md5.sha1">core-3.1.0.jar.md5.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.jar.sha1" title="core-3.1.0.jar.sha1">core-3.1.0.jar.sha1</a>                               2018-08-03 02:23        40      
+<a href="core-3.1.0.jar.sha1.md5" title="core-3.1.0.jar.sha1.md5">core-3.1.0.jar.sha1.md5</a>                           2018-08-03 02:23        32      
+<a href="core-3.1.0.jar.sha1.sha1" title="core-3.1.0.jar.sha1.sha1">core-3.1.0.jar.sha1.sha1</a>                          2018-08-03 02:23        40      
+<a href="core-3.1.0.pom" title="core-3.1.0.pom">core-3.1.0.pom</a>                                    2018-08-03 02:23      1307      
+<a href="core-3.1.0.pom.asc" title="core-3.1.0.pom.asc">core-3.1.0.pom.asc</a>                                2018-08-03 02:23       874      
+<a href="core-3.1.0.pom.asc.md5" title="core-3.1.0.pom.asc.md5">core-3.1.0.pom.asc.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.asc.sha1" title="core-3.1.0.pom.asc.sha1">core-3.1.0.pom.asc.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.pom.md5" title="core-3.1.0.pom.md5">core-3.1.0.pom.md5</a>                                2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.md5.md5" title="core-3.1.0.pom.md5.md5">core-3.1.0.pom.md5.md5</a>                            2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.md5.sha1" title="core-3.1.0.pom.md5.sha1">core-3.1.0.pom.md5.sha1</a>                           2018-08-03 02:23        40      
+<a href="core-3.1.0.pom.sha1" title="core-3.1.0.pom.sha1">core-3.1.0.pom.sha1</a>                               2018-08-03 02:23        40      
+<a href="core-3.1.0.pom.sha1.md5" title="core-3.1.0.pom.sha1.md5">core-3.1.0.pom.sha1.md5</a>                           2018-08-03 02:23        32      
+<a href="core-3.1.0.pom.sha1.sha1" title="core-3.1.0.pom.sha1.sha1">core-3.1.0.pom.sha1.sha1</a>                          2018-08-03 02:23        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:34:32 GMT
+content-type: application/java-archive
+content-length: 1828003
+cf-ray: 9f5ce5aab993c8a4-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2018109
+etag: "998cc29e48f25ecbf9b882919b2ff294"
+last-modified: Fri, 03 Aug 2018 02:23:29 GMT
+x-checksum-md5: 998cc29e48f25ecbf9b882919b2ff294
+x-checksum-sha1: 24f13b6f943bc45fab11850f4e51f2cac8498335
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 05:34:32 GMT
+content-type: application/java-archive
+content-length: 4645895
+cf-ray: 9f5ce5ab0e47a032-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1628733
+etag: "f7bc1efb959fe27d7e26fa0702eadabd"
+last-modified: Fri, 03 Aug 2018 02:23:29 GMT
+x-checksum-md5: f7bc1efb959fe27d7e26fa0702eadabd
+x-checksum-sha1: 0c329d1160533e1c4fee778c497f99560773050a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git ls-remote https://bitbucket.org/trove4j/trove.git 2>&1 | head -40' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 340ms:
+1f89c102b9f7c8ec71b7d6c29be1852a429593d2	HEAD
+6c91d1cba154e8ca88213845f7c02ef5f8e061a8	refs/heads/bug/27
+3e163b0ff742efbc8bf0bf1cd29ef68bffa82809	refs/heads/bug/29
+291edefba83db1ec1adc339ea0bd42c32bfa16aa	refs/heads/bug/37
+abe790460fabac34cdd1d6a0f92ba8b50fce584c	refs/heads/bug/6
+8a41bfb36639b7e3e1d64772349d586990575e2b	refs/heads/build-cleanup
+3daabb64beaba99427282c91c11365465328a092	refs/heads/issue/53
+1f89c102b9f7c8ec71b7d6c29be1852a429593d2	refs/heads/master
+24dd57f48bf385fa41a878f8fad7ac44d8b1d53a	refs/heads/release/3.1
+6422b90024ccae1e67d87396f502af0e9e8d90a7	refs/heads/release/3.2
+9a049e36b0bdfef97b8680447b2f64b862ab337c	refs/heads/remove_gradle
+f2c0ffc1e9c51b26d6a66eb08f353a9f5029aac2	refs/heads/task/40
+
+exec
+/usr/bin/bash -lc 'git ls-remote --refs https://bitbucket.org/trove4j/trove.git | wc -l' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://bitbucket.org/trove4j/trove.git' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc 'git ls-remote --refs https://bitbucket.org/trove4j/trove.git | rg "refs/tags|release"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 353ms:
+6c91d1cba154e8ca88213845f7c02ef5f8e061a8	refs/heads/bug/27
+3e163b0ff742efbc8bf0bf1cd29ef68bffa82809	refs/heads/bug/29
+291edefba83db1ec1adc339ea0bd42c32bfa16aa	refs/heads/bug/37
+abe790460fabac34cdd1d6a0f92ba8b50fce584c	refs/heads/bug/6
+8a41bfb36639b7e3e1d64772349d586990575e2b	refs/heads/build-cleanup
+3daabb64beaba99427282c91c11365465328a092	refs/heads/issue/53
+1f89c102b9f7c8ec71b7d6c29be1852a429593d2	refs/heads/master
+24dd57f48bf385fa41a878f8fad7ac44d8b1d53a	refs/heads/release/3.1
+6422b90024ccae1e67d87396f502af0e9e8d90a7	refs/heads/release/3.2
+9a049e36b0bdfef97b8680447b2f64b862ab337c	refs/heads/remove_gradle
+f2c0ffc1e9c51b26d6a66eb08f353a9f5029aac2	refs/heads/task/40
+
+ succeeded in 355ms:
+11
+
+ succeeded in 362ms:
+24dd57f48bf385fa41a878f8fad7ac44d8b1d53a	refs/heads/release/3.1
+6422b90024ccae1e67d87396f502af0e9e8d90a7	refs/heads/release/3.2
+
+codex
+The upstream repository does not expose version tags through Git; it exposes a `release/3.1` branch. I’m inspecting that branch to confirm whether tests are present and where the core module lives.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0.pom | rg -n "<description>|<url>|<scm>|</scm>"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+9:  <description>High performance collections for Java</description>
+10:  <url>https://bitbucket.org/trove4j/trove/src/master/</url>
+14:      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+36:  <scm>
+37:    <url>https://bitbucket.org/trove4j/trove/src/master/</url>
+38:  </scm>
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:34:45 GMT
+content-type: application/java-archive
+content-length: 2560395
+cf-ray: 9f5ce6011cd8be85-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 829036
+etag: "db61170eb992d933f4119172326df9b6"
+last-modified: Fri, 03 Aug 2018 02:23:29 GMT
+x-checksum-md5: db61170eb992d933f4119172326df9b6
+x-checksum-sha1: 5fd0207b685536b29dd65c86f4b3bf89befb885c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rm -rf /tmp/trove4j-release-3.1 && git clone --depth 1 --branch release/3.1 https://bitbucket.org/trove4j/trove.git /tmp/trove4j-release-3.1 && find /tmp/trove4j-release-3.1 -maxdepth 4 -type d | sed 's#/tmp/trove4j-release-3.1/##' | rg '("'^core|test|src)'"' | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 1840ms:
+experimental/src
+experimental/src/test
+experimental/src/test/java
+experimental/src/main
+experimental/src/main/java
+experimental/src/main/templates
+core
+core/src
+core/src/test
+core/src/test/java
+core/src/main
+core/src/main/java
+core/src/main/templates
+generator/src
+generator/src/test
+generator/src/test/java
+generator/src/main
+generator/src/main/java
+benchmarks/src
+benchmarks/src/gnu
+benchmarks/src/gnu/trove
+
+exec
+/usr/bin/bash -lc 'find /tmp/trove4j-release-3.1/core/src/test -maxdepth 3 -type f | head -30' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n \"version|3\\.1\\.0|group|artifact|description|javadoc\" /tmp/trove4j-release-3.1/build.gradle /tmp/trove4j-release-3.1/core/build.gradle /tmp/trove4j-release-3.1/README* /tmp/trove4j-release-3.1/core/src/test -g '"'!**/*.class'"' | head -100" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+/tmp/trove4j-release-3.1/build.gradle:7:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/build.gradle:33:        testCompile group: 'junit', name: 'junit', version: '4.11'
+/tmp/trove4j-release-3.1/build.gradle:40:                    'Implementation-Version': "${version}",
+/tmp/trove4j-release-3.1/build.gradle:47:            instruction 'Bundle-Version', "${version}"
+/tmp/trove4j-release-3.1/build.gradle:64:    dependsOn(subprojects.javadoc)
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/stack/array/TStackTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/TDecoratorsTest.java:7:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/THashMapTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/THashMapTest.java:47: * @version $Id: THashMapTest.java,v 1.1.2.7 2010/03/02 04:09:50 robeden Exp $
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/THashMapTest.java:679:     * http://sourceforge.net/tracker/index.php?func=detail&aid=1428614&group_id=39235&atid=424682
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/TObjectPrimitiveHashMapTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/list/array/TArrayListTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/list/array/TArrayListTest.java:232:        System.out.println("Java version: " + System.getProperty("java.version"));
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/set/hash/THashSetTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/set/hash/THashSetTest.java:41: * @version $Id: THashSetTest.java,v 1.1.2.3 2010/03/02 04:09:50 robeden Exp $
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/impl/PrimeFinderTest.java:7:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/impl/PrimeFinderTest.java:32: * @version $Id: PrimeFinderTest.java,v 1.1.2.1 2009/11/07 03:55:33 robeden Exp $
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/decorator/TPrimitiveObjectMapDecoratorTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/decorator/TPrimitiveSetDecoratorTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/decorator/TObjectPrimitiveMapDecoratorTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/decorator/TPrimitivePrimitiveMapDecoratorTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/impl/hash/HashTestKit.java:8: * // version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/TPrimitiveObjectHashMapTest.java:9:// version 2.1 of the License, or (at your option) any later version.
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/TPrimitivePrimitiveHashMapTest.java:8:// version 2.1 of the License, or (at your option) any later version.
+
+exec
+/usr/bin/bash -lc 'jar tf <(curl -fsSL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0.jar) | head -20' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 4ms:
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "sed -n '1,140p' /tmp/trove4j-release-3.1/build.gradle" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc 'find /tmp/trove4j-release-3.1/core/src/test -type f | head -30' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/set/hash/THashSetTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/set/hash/TPrimitiveHashSetTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/set/hash/TCustomHashSetTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/list/array/TArrayListTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/list/array/TPrimitiveArrayListTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/impl/hash/THashTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/impl/hash/HashTestKit.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/impl/hash/TObjectHashTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/impl/PrimeFinderTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/decorator/TPrimitiveSetDecoratorTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/decorator/TPrimitivePrimitiveMapDecoratorTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/decorator/TObjectPrimitiveMapDecoratorTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/decorator/TPrimitiveObjectMapDecoratorTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/decorator/TPimativeListDecoratorTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/ArrayHashingStrategy.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/TCustomHashMapTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/TObjectPrimitiveHashMapTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/TObjectPrimitiveCustomHashMapTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/NoEntryValueTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/TPrimitiveObjectHashMapTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/TPrimitivePrimitiveHashMapTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/map/hash/THashMapTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/strategy/IdentityHashingStrategyTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/TDecoratorsTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/TCollectionsTest.java
+/tmp/trove4j-release-3.1/core/src/test/java/gnu/trove/stack/array/TStackTest.java
+
+ succeeded in 0ms:
+///////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2009-2010, Rob Eden All Rights Reserved.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+///////////////////////////////////////////////////////////////////////////////
+
+apply plugin: 'base'
+
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'osgi'
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+    }
+
+
+    jar {
+        manifest {
+            attributes 'Implementation-Title': 'Trove',
+                    'Implementation-Version': "${version}",
+                    'Implementation-URL': 'https://bitbucket.org/robeden/trove/',
+                    'Sealed': 'false'
+
+            // OSGI stuff
+            instruction 'Bundle-Name', 'Trove'
+            instruction 'Bundle-SymbolicName', 'gnu.trove'
+            instruction 'Bundle-Version', "${version}"
+            instruction 'Bundle-Vendor', 'Trove Development Team'
+            instruction 'Bundle-License', 'http://www.gnu.org/licenses/lgpl-2.1.html'
+            instruction 'Bundle-ContactAddress:', 'http://trove.starlight-systems.com/contacts'
+        }
+    }
+}
+
+
+
+task assembleDistDir {
+    outputs.dir file("${buildDir}/dist")
+    subprojects.each { project ->
+        inputs.dir project.buildDir
+    }
+
+    dependsOn(subprojects.jar)
+    dependsOn(subprojects.javadoc)
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -o /tmp/trove-core-3.1.0.jar https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0.jar && jar tf /tmp/trove-core-3.1.0.jar | head -40' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 1967ms:
+META-INF/
+META-INF/MANIFEST.MF
+gnu/
+gnu/trove/
+gnu/trove/TByteCollection.class
+gnu/trove/function/
+gnu/trove/function/TFloatFunction.class
+gnu/trove/function/TObjectFunction.class
+gnu/trove/function/TLongFunction.class
+gnu/trove/function/TDoubleFunction.class
+gnu/trove/function/TByteFunction.class
+gnu/trove/function/TShortFunction.class
+gnu/trove/function/TIntFunction.class
+gnu/trove/function/TCharFunction.class
+gnu/trove/TIntCollection.class
+gnu/trove/strategy/
+gnu/trove/strategy/HashingStrategy.class
+gnu/trove/strategy/IdentityHashingStrategy.class
+gnu/trove/map/
+gnu/trove/map/TLongLongMap.class
+gnu/trove/map/TCharLongMap.class
+gnu/trove/map/TIntDoubleMap.class
+gnu/trove/map/TIntByteMap.class
+gnu/trove/map/TIntObjectMap.class
+gnu/trove/map/TShortLongMap.class
+gnu/trove/map/TFloatLongMap.class
+gnu/trove/map/TIntCharMap.class
+gnu/trove/map/TObjectFloatMap.class
+gnu/trove/map/TObjectCharMap.class
+gnu/trove/map/custom_hash/
+gnu/trove/map/custom_hash/TObjectFloatCustomHashMap.class
+gnu/trove/map/custom_hash/TObjectFloatCustomHashMap$TObjectFloatHashIterator.class
+gnu/trove/map/custom_hash/TObjectShortCustomHashMap.class
+gnu/trove/map/custom_hash/TObjectDoubleCustomHashMap.class
+gnu/trove/map/custom_hash/TObjectCharCustomHashMap$MapBackedView.class
+gnu/trove/map/custom_hash/TObjectByteCustomHashMap$2.class
+gnu/trove/map/custom_hash/TObjectFloatCustomHashMap$TFloatValueCollection$1.class
+gnu/trove/map/custom_hash/TObjectByteCustomHashMap$TByteValueCollection$1.class
+gnu/trove/map/custom_hash/TObjectCharCustomHashMap$1.class
+gnu/trove/map/custom_hash/TObjectLongCustomHashMap$KeyView.class
+
+exec
+/usr/bin/bash -lc 'git -C /tmp/trove4j-release-3.1 log --oneline --decorate -5' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+24dd57f48b (grafted, HEAD -> release/3.1, origin/release/3.1) Issue 66: All decorators now check that the map, set or list being passed in is not null, and throw an NPF immediately if it is. This is in line with the behaviour of the Java Collections API.
+
+exec
+/usr/bin/bash -lc "find /tmp/trove4j-release-3.1 -maxdepth 2 -type f -name 'gradle.properties' -o -name '*.properties' -o -name 'settings.gradle' | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+include 'generator', 'core', 'experimental'
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/sf/trove4j/core/maven-metadata.xml | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 170ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>net.sf.trove4j</groupId>
+  <artifactId>core</artifactId>
+  <versioning>
+    <latest>3.1.0</latest>
+    <release>3.1.0</release>
+    <versions>
+      <version>3.1.0</version>
+    </versions>
+    <lastUpdated>20180803023411</lastUpdated>
+  </versioning>
+</metadata>
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 net sf trove4j core 3.1.0 core-3.1.0.pom
+web search: 
+web search: site:bitbucket.org/trove4j/trove/src/release/3.1/core/src/test/java trove4j
+web search: 
+web search: https://central.sonatype.com/artifact/net.sf.trove4j/core
+exec
+/usr/bin/bash -lc "curl -fsI -L 'https://bitbucket.org/trove4j/trove/src/release/3.1/core/src/test/java/' | sed -n '1,30p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -fsI -L 'https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/' | sed -n '1,30p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+exec
+/usr/bin/bash -lc "curl -fsI -L 'https://bitbucket.org/trove4j/trove/src/release%2F3.1/core/src/test/java/' | sed -n '1,30p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 383ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:35:27 GMT
+content-type: text/html; charset=utf-8
+content-length: 16652
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+x-view-name: bitbucket.apps.repo2.views.SourceView
+x-dc-location: Micros-3
+x-served-by: 69e0b7ec0d98
+x-version: f72aa25e582f
+x-static-version: f72aa25e582f
+x-request-count: 3778
+x-render-time: 0.24334168434143066
+x-b3-traceid: 2cc1a66237324ffe9f9bbc03d71f6254
+x-b3-spanid: ce00be003b3b9aa7
+x-frame-options: SAMEORIGIN
+content-security-policy: style-src 'self' 'unsafe-inline' https://aui-cdn.atlassian.com/ https://cdn.cookielaw.org/ https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io pendo-static-6291417196199936.storage.googleapis.com https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; font-src 'self' https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net; object-src 'none'; frame-ancestors 'self' start.atlassian.com start.stg.atlassian.com atlaskit.atlassian.com bitbucket.org app.pendo.io; script-src 'unsafe-eval' 'strict-dynamic' 'unsafe-inline' 'self' http: https: https://remote-app-switcher.stg-east.frontend.public.atl-paas.net https://remote-app-switcher.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io data.pendo.io pendo-io-static.storage.googleapis.com pendo-static-6291417196199936.storage.googleapis.com https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ 'nonce-IUQ94l8B6mPfbSrkSCYvrQ=='; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; connect-src bitbucket.org *.bitbucket.org bb-inf.net *.bb-inf.net atlassianblog.wpengine.com id.atlassian.com api.atlassian.com api.stg.atlassian.com wss://bitbucketci-ws-service.services.atlassian.com/ wss://bitbucketci-ws-service.stg.services.atlassian.com/ wss://bitbucketci-ws-service.dev.services.atlassian.com/ analytics.atlassian.com atlassian-cookies--categories.us-east-1.prod.public.atl-paas.net as.atlassian.com api-private.stg.atlassian.com api-private.atlassian.com xp.atlassian.com atl-global.atlassian.com cofs.staging.public.atl-paas.net cofs.prod.public.atl-paas.net fd-assets.prod.atl-paas.net flight-deck-assets-bifrost.prod-east.frontend.public.atl-paas.net intake.opbeat.com api.media.atlassian.com api.segment.io xid.statuspage.io xid.atlassian.com xid.sourcetreeapp.com www.google-analytics.com sentry.io *.ingest.sentry.io statsigapi.net fd-config.us-east-1.prod.public.atl-paas.net fd-config-bifrost.prod-east.frontend.public.atl-paas.net micros--prod-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--prod-east--bitbucketci-file-service--files.s3.amazonaws.com micros--stg-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--stg-east--bitbucketci-file-service--files.s3.amazonaws.com micros--ddev--bitbucketci-file-service--files.s3.ap-southeast-2.amazonaws.com app.pendo.io data.pendo.io pendo-static-6291417196199936.storage.googleapis.com bqlf8qjztdtr.statuspage.io wss://bitbucket.org/gateway/api/bbc-aps/subscriptions wss://bitbucket.org/gateway/api/graphql/subscriptions https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; base-uri 'self'; report-uri https://web-security-reports.services.atlassian.com/csp-report/bb-website
+expires: Sun, 03 May 2026 05:35:27 GMT
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+set-cookie: csrftoken=fWR3ovlJU5biUbywer9y8jcy9Sj59msi; expires=Sun, 02 May 2027 05:35:27 GMT; Max-Age=31449600; Path=/; SameSite=Lax; Secure
+x-usage-quota-remaining: 993043.396
+x-usage-request-cost: 7025.03
+x-usage-user-time: 0.124893
+x-usage-system-time: 0.007858
+x-usage-input-ops: 312
+x-usage-output-ops: 0
+x-envoy-attempt-count: 1
+age: 0
+
+ succeeded in 393ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 05:35:27 GMT
+content-type: text/html; charset=utf-8
+content-length: 22154
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+x-view-name: bitbucket.apps.repo2.views.SourceView
+x-dc-location: Micros-3
+x-served-by: 361a61ef9b3d
+x-version: f72aa25e582f
+x-static-version: f72aa25e582f
+x-request-count: 570
+x-render-time: 0.25667595863342285
+x-b3-traceid: a2792ab4618d40589a91e88898fdd3c8
+x-b3-spanid: 7bf37e76782b9076
+x-frame-options: SAMEORIGIN
+content-security-policy: style-src 'self' 'unsafe-inline' https://aui-cdn.atlassian.com/ https://cdn.cookielaw.org/ https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io pendo-static-6291417196199936.storage.googleapis.com https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; object-src 'none'; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; script-src 'unsafe-eval' 'strict-dynamic' 'unsafe-inline' 'self' http: https: https://remote-app-switcher.stg-east.frontend.public.atl-paas.net https://remote-app-switcher.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io data.pendo.io pendo-io-static.storage.googleapis.com pendo-static-6291417196199936.storage.googleapis.com https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ 'nonce-aMJRjfhtaqixnhmQ3b0hNw=='; font-src 'self' https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net; connect-src bitbucket.org *.bitbucket.org bb-inf.net *.bb-inf.net atlassianblog.wpengine.com id.atlassian.com api.atlassian.com api.stg.atlassian.com wss://bitbucketci-ws-service.services.atlassian.com/ wss://bitbucketci-ws-service.stg.services.atlassian.com/ wss://bitbucketci-ws-service.dev.services.atlassian.com/ analytics.atlassian.com atlassian-cookies--categories.us-east-1.prod.public.atl-paas.net as.atlassian.com api-private.stg.atlassian.com api-private.atlassian.com xp.atlassian.com atl-global.atlassian.com cofs.staging.public.atl-paas.net cofs.prod.public.atl-paas.net fd-assets.prod.atl-paas.net flight-deck-assets-bifrost.prod-east.frontend.public.atl-paas.net intake.opbeat.com api.media.atlassian.com api.segment.io xid.statuspage.io xid.atlassian.com xid.sourcetreeapp.com www.google-analytics.com sentry.io *.ingest.sentry.io statsigapi.net fd-config.us-east-1.prod.public.atl-paas.net fd-config-bifrost.prod-east.frontend.public.atl-paas.net micros--prod-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--prod-east--bitbucketci-file-service--files.s3.amazonaws.com micros--stg-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--stg-east--bitbucketci-file-service--files.s3.amazonaws.com micros--ddev--bitbucketci-file-service--files.s3.ap-southeast-2.amazonaws.com app.pendo.io data.pendo.io pendo-static-6291417196199936.storage.googleapis.com bqlf8qjztdtr.statuspage.io wss://bitbucket.org/gateway/api/bbc-aps/subscriptions wss://bitbucket.org/gateway/api/graphql/subscriptions https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; frame-ancestors 'self' start.atlassian.com start.stg.atlassian.com atlaskit.atlassian.com bitbucket.org app.pendo.io; base-uri 'self'; report-uri https://web-security-reports.services.atlassian.com/csp-report/bb-website
+expires: Sun, 03 May 2026 05:35:27 GMT
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+set-cookie: csrftoken=VmuYHlpXU54JJcmOWez3se4xrUJ3ySJL; expires=Sun, 02 May 2027 05:35:27 GMT; Max-Age=31449600; Path=/; SameSite=Lax; Secure
+x-usage-quota-remaining: 993184.351
+x-usage-request-cost: 6888.53
+x-usage-user-time: 0.126263
+x-usage-system-time: 0.006393
+x-usage-input-ops: 296
+x-usage-output-ops: 0
+x-envoy-attempt-count: 1
+age: 0
+
+ succeeded in 384ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 05:35:27 GMT
+content-type: text/html; charset=utf-8
+content-length: 22154
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+x-view-name: bitbucket.apps.repo2.views.SourceView
+x-dc-location: Micros-3
+x-served-by: 0302676d8fd5
+x-version: f72aa25e582f
+x-static-version: f72aa25e582f
+x-request-count: 2850
+x-render-time: 0.262298583984375
+x-b3-traceid: b3568061f37949b9a9964961407f93c8
+x-b3-spanid: 9485d0f3f91cc6e0
+x-frame-options: SAMEORIGIN
+content-security-policy: style-src 'self' 'unsafe-inline' https://aui-cdn.atlassian.com/ https://cdn.cookielaw.org/ https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io pendo-static-6291417196199936.storage.googleapis.com https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; font-src 'self' https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net https://ds-cdn.prod-east.frontend.public.atl-paas.net https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net; connect-src bitbucket.org *.bitbucket.org bb-inf.net *.bb-inf.net atlassianblog.wpengine.com id.atlassian.com api.atlassian.com api.stg.atlassian.com wss://bitbucketci-ws-service.services.atlassian.com/ wss://bitbucketci-ws-service.stg.services.atlassian.com/ wss://bitbucketci-ws-service.dev.services.atlassian.com/ analytics.atlassian.com atlassian-cookies--categories.us-east-1.prod.public.atl-paas.net as.atlassian.com api-private.stg.atlassian.com api-private.atlassian.com xp.atlassian.com atl-global.atlassian.com cofs.staging.public.atl-paas.net cofs.prod.public.atl-paas.net fd-assets.prod.atl-paas.net flight-deck-assets-bifrost.prod-east.frontend.public.atl-paas.net intake.opbeat.com api.media.atlassian.com api.segment.io xid.statuspage.io xid.atlassian.com xid.sourcetreeapp.com www.google-analytics.com sentry.io *.ingest.sentry.io statsigapi.net fd-config.us-east-1.prod.public.atl-paas.net fd-config-bifrost.prod-east.frontend.public.atl-paas.net micros--prod-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--prod-east--bitbucketci-file-service--files.s3.amazonaws.com micros--stg-west--bitbucketci-file-service--files.s3.us-west-1.amazonaws.com micros--stg-east--bitbucketci-file-service--files.s3.amazonaws.com micros--ddev--bitbucketci-file-service--files.s3.ap-southeast-2.amazonaws.com app.pendo.io data.pendo.io pendo-static-6291417196199936.storage.googleapis.com bqlf8qjztdtr.statuspage.io wss://bitbucket.org/gateway/api/bbc-aps/subscriptions wss://bitbucket.org/gateway/api/graphql/subscriptions https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/; object-src 'none'; frame-ancestors 'self' start.atlassian.com start.stg.atlassian.com atlaskit.atlassian.com bitbucket.org app.pendo.io; base-uri 'self'; script-src 'unsafe-eval' 'strict-dynamic' 'unsafe-inline' 'self' http: https: https://remote-app-switcher.stg-east.frontend.public.atl-paas.net https://remote-app-switcher.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.adev.frontend.public.atl-paas.net https://bbc-frontbucket-static.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.stg-east.frontend.public.atl-paas.net https://bbc-frontbucket-static.prod-east.frontend.public.atl-paas.net https://bbc-frontbucket-exp.prod-east.frontend.public.atl-paas.net app.pendo.io cdn.pendo.io data.pendo.io pendo-io-static.storage.googleapis.com pendo-static-6291417196199936.storage.googleapis.com https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.staging.public.atl-paas.net/ https://bbc-object-storage--frontbucket.us-east-1.prod.public.atl-paas.net/ 'nonce-WhKC4HO1xQBHu7aecZ3Svg=='; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; report-uri https://web-security-reports.services.atlassian.com/csp-report/bb-website
+expires: Sun, 03 May 2026 05:35:27 GMT
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+set-cookie: csrftoken=Spr8TcHxFvttVwR09kA1hNS0Rct5Cvcp; expires=Sun, 02 May 2027 05:35:27 GMT; Max-Age=31449600; Path=/; SameSite=Lax; Secure
+x-usage-quota-remaining: 992950.353
+x-usage-request-cost: 7123.53
+x-usage-user-time: 0.133611
+x-usage-system-time: 0.006095
+x-usage-input-ops: 296
+x-usage-output-ops: 0
+x-envoy-attempt-count: 1
+age: 0
+
+codex
+I’m going to write Maven Central URLs for source and Javadoc because those versioned artifacts exist, and an exact upstream commit URL for tests because Central does not publish test sources for this artifact. The JAR contains JVM `.class` files, so I’m leaving `not-for-native-image` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+diff --git a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+index 6dca82d0dbb12a037d8f2a11cdbd3d19ffa14c88..20fbc1dd2d843558d0e7048ce7af3f2d71881e6a
+--- a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
++++ b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.trove4j:core:3.1.0"
++  "coordinates" : "net.sf.trove4j:core:3.1.0",
++  "repository-url" : "https://bitbucket.org/trove4j/trove",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
++  "test-code-url" : "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
++  "description" : "Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+index 6dca82d0dbb12a037d8f2a11cdbd3d19ffa14c88..20fbc1dd2d843558d0e7048ce7af3f2d71881e6a
+--- a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
++++ b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.trove4j:core:3.1.0"
++  "coordinates" : "net.sf.trove4j:core:3.1.0",
++  "repository-url" : "https://bitbucket.org/trove4j/trove",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
++  "test-code-url" : "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
++  "description" : "Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications."
+ }
+
+codex
+The metadata file is updated. I’m doing a quick syntax check and re-checking the rendered URLs so we don’t leave a typo in the generated metadata.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+{
+  "coordinates": "net.sf.trove4j:core:3.1.0",
+  "repository-url": "https://bitbucket.org/trove4j/trove",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
+  "test-code-url": "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
+  "description": "Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-sources.jar >/tmp/trove-src-head.txt && curl -fsI https://repo.maven.apache.org/maven2/net/sf/trove4j/core/3.1.0/core-3.1.0-javadoc.jar >/tmp/trove-javadoc-head.txt && printf 'source OK\\ndoc OK\\n'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+source OK
+doc OK
+
+exec
+/usr/bin/bash -lc "curl -fsI -L 'https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/' | sed -n '1,8p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+diff --git a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+index 6dca82d0dbb12a037d8f2a11cdbd3d19ffa14c88..20fbc1dd2d843558d0e7048ce7af3f2d71881e6a
+--- a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
++++ b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.trove4j:core:3.1.0"
++  "coordinates" : "net.sf.trove4j:core:3.1.0",
++  "repository-url" : "https://bitbucket.org/trove4j/trove",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
++  "test-code-url" : "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
++  "description" : "Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications."
+ }
+
+ succeeded in 392ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 05:35:41 GMT
+content-type: text/html; charset=utf-8
+content-length: 16652
+server: AtlassianEdge
+vary: Cookie, Accept-Language, origin, Accept-Encoding
+x-used-mesh: False
+content-language: en
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+ succeeded in 0ms:
+{
+  "coordinates" : "net.sf.trove4j:core:3.1.0",
+  "repository-url" : "https://bitbucket.org/trove4j/trove",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
+  "test-code-url" : "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
+  "description" : "Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json && git ls-files --stage build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550
+diff --git a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+index 6dca82d0dbb12a037d8f2a11cdbd3d19ffa14c88..20fbc1dd2d843558d0e7048ce7af3f2d71881e6a
+--- a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
++++ b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.trove4j:core:3.1.0"
++  "coordinates" : "net.sf.trove4j:core:3.1.0",
++  "repository-url" : "https://bitbucket.org/trove4j/trove",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
++  "test-code-url" : "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
++  "description" : "Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications."
+ }
+
+ succeeded in 134ms:
+web search: 
+web search: net.sf.trove4j core 3.1.0 Maven Central sources javadoc pom bitbucket
+web search: 
+web search: 
+web search: 
+web search: "24dd57f48bf385fa41a878f8fad7ac44d8b1d53a" trove4j
+codex
+Updated [net.sf.trove4j-core-3.1.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json).
+
+I set the Bitbucket repository root, Maven Central source and Javadoc JAR URLs, and the upstream test-suite URL pinned to the `release/3.1` commit. Maven Central confirms `core-3.1.0` has sources and Javadoc artifacts, and the POM points at the Trove Bitbucket project/SCM URL. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; the artifact is a JVM JAR with `.class` files, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. Validation done with `jq` plus HTTP checks for the rendered source, docs, and test URLs.
+diff --git a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+index 6dca82d0dbb12a037d8f2a11cdbd3d19ffa14c88..20fbc1dd2d843558d0e7048ce7af3f2d71881e6a
+--- a/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
++++ b/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.trove4j:core:3.1.0"
++  "coordinates" : "net.sf.trove4j:core:3.1.0",
++  "repository-url" : "https://bitbucket.org/trove4j/trove",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-sources.jar",
++  "test-code-url" : "https://bitbucket.org/trove4j/trove/src/24dd57f48bf385fa41a878f8fad7ac44d8b1d53a/core/src/test/java/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/trove4j/core/$version$/core-$version$-javadoc.jar",
++  "description" : "Trove is a high-performance collection library for Java focused on primitive collections and memory-efficient data structures. The core artifact provides the main collection interfaces, hash maps, sets, lists, stacks, decorators, and helper classes used by JVM applications."
+ }
+
+tokens used
+87,919
+Updated [net.sf.trove4j-core-3.1.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/build/discovered-artifact-metadata/net.sf.trove4j-core-3.1.0.json).
+
+I set the Bitbucket repository root, Maven Central source and Javadoc JAR URLs, and the upstream test-suite URL pinned to the `release/3.1` commit. Maven Central confirms `core-3.1.0` has sources and Javadoc artifacts, and the POM points at the Trove Bitbucket project/SCM URL. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/trove4j/core/3.1.0/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; the artifact is a JVM JAR with `.class` files, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. Validation done with `jq` plus HTTP checks for the rendered source, docs, and test URLs.
+Ran agent for net.sf.trove4j:core:3.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/build/agent-artifact-discovery-logs/net.sf.trove4j-core-3.1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2695-47ba5550/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 59s
+9 actionable tasks: 4 executed, 5 from cache
