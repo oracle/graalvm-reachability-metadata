@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.graalvm.internal.tck.Coordinates;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
+import org.graalvm.internal.tck.utils.MetadataGenerationUtils;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
@@ -87,7 +88,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
             throw new IllegalArgumentException("Cannot find tests directory for " + coordinate + ": " + testsDirectory);
         }
 
-        Set<String> testPackages = discoverTestPackages(testsDirectory);
+        Set<String> testPackages = MetadataGenerationUtils.discoverTestPackages(testsDirectory);
         Set<String> testResources = discoverTestResources(testsDirectory);
 
         ObjectNode libraryMetadata = requireObjectNode(objectMapper.readTree(metadataFile.toFile()), metadataFile);
@@ -99,7 +100,8 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         ObjectNode retainedTestMetadata = retainTestOnlyMetadata(existingTestMetadata, testPackages, testResources);
 
         splitReflection(libraryMetadata, movedMetadata, testPackages);
-        splitResources(libraryMetadata, movedMetadata, testResources);
+        splitSerialization(libraryMetadata, movedMetadata, testPackages);
+        splitResources(libraryMetadata, movedMetadata, testPackages, testResources);
 
         ObjectNode finalTestMetadata = mergeReachabilityMetadata(retainedTestMetadata, movedMetadata);
 
@@ -162,34 +164,6 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         return objectMapper.readValue(indexFile.toFile(), new TypeReference<>() {});
     }
 
-    private Set<String> discoverTestPackages(Path testsDirectory) throws IOException {
-        Set<String> packages = new LinkedHashSet<>();
-        discoverTestPackages(testsDirectory.resolve("src/test/java"), packages);
-        discoverTestPackages(testsDirectory.resolve("src/test/kotlin"), packages);
-        discoverTestPackages(testsDirectory.resolve("src/test/groovy"), packages);
-        discoverTestPackages(testsDirectory.resolve("src/test/scala"), packages);
-        return packages;
-    }
-
-    private void discoverTestPackages(Path sourceRoot, Set<String> packages) throws IOException {
-        if (!Files.isDirectory(sourceRoot)) {
-            return;
-        }
-        try (var pathStream = Files.walk(sourceRoot)) {
-            pathStream.filter(Files::isRegularFile)
-                    .forEach(path -> {
-                        Path relativeParent = sourceRoot.relativize(path).getParent();
-                        if (relativeParent == null) {
-                            return;
-                        }
-                        String packageName = relativeParent.toString().replace('/', '.').replace('\\', '.');
-                        if (!packageName.isBlank()) {
-                            packages.add(packageName);
-                        }
-                    });
-        }
-    }
-
     private Set<String> discoverTestResources(Path testsDirectory) throws IOException {
         Set<String> resources = new LinkedHashSet<>();
         Path resourceRoot = testsDirectory.resolve("src/test/resources");
@@ -208,7 +182,15 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
     }
 
     private void splitReflection(ObjectNode source, ObjectNode moved, Set<String> testPackages) {
-        JsonNode field = source.get("reflection");
+        splitTypeKeyedArray(source, moved, "reflection", testPackages);
+    }
+
+    private void splitSerialization(ObjectNode source, ObjectNode moved, Set<String> testPackages) {
+        splitTypeKeyedArray(source, moved, "serialization", testPackages);
+    }
+
+    private void splitTypeKeyedArray(ObjectNode source, ObjectNode moved, String fieldName, Set<String> testPackages) {
+        JsonNode field = source.get(fieldName);
         if (!(field instanceof ArrayNode sourceEntries)) {
             return;
         }
@@ -216,45 +198,65 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         ArrayNode keptEntries = objectMapper.createArrayNode();
         ArrayNode movedEntries = objectMapper.createArrayNode();
         for (JsonNode entry : sourceEntries) {
-            JsonNode typeNode = entry.isObject() ? entry.get("type") : null;
-            boolean testOnly = isTestOnlyReflectionType(typeNode, testPackages);
-            if (testOnly) {
+            if (isTestOnlyEntry(entry, testPackages)) {
                 movedEntries.add(entry.deepCopy());
             } else {
                 keptEntries.add(entry);
             }
         }
 
-        applySplitResult(source, moved, "reflection", keptEntries, movedEntries);
+        applySplitResult(source, moved, fieldName, keptEntries, movedEntries);
     }
 
-    private boolean isTestOnlyReflectionType(JsonNode typeNode, Set<String> testPackages) {
+    private boolean isTestOnlyEntry(JsonNode entry, Set<String> testPackages) {
+        if (entry == null || !entry.isObject()) {
+            return false;
+        }
+        if (typeReferencesTestPackage(entry.get("type"), testPackages)) {
+            return true;
+        }
+        JsonNode condition = entry.get("condition");
+        if (condition != null && condition.isObject()) {
+            JsonNode typeReached = condition.get("typeReached");
+            if (typeReached != null && typeReached.isTextual()
+                    && referencesAnyTestPackage(typeReached.asText(), testPackages)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean typeReferencesTestPackage(JsonNode typeNode, Set<String> testPackages) {
         if (typeNode == null) {
             return false;
         }
         if (typeNode.isTextual()) {
-            return testPackages.stream().anyMatch(testPackage -> referencesTestPackage(typeNode.asText(), testPackage));
+            return referencesAnyTestPackage(typeNode.asText(), testPackages);
         }
         if (typeNode.isObject()) {
             JsonNode proxyNode = typeNode.get("proxy");
             if (!(proxyNode instanceof ArrayNode proxyArray) || proxyArray.isEmpty()) {
                 return false;
             }
-            boolean referencesAnyTestPackage = false;
+            boolean any = false;
             for (JsonNode proxyType : proxyArray) {
                 if (!proxyType.isTextual()) {
                     return false;
                 }
-                if (testPackages.stream().anyMatch(testPackage -> referencesTestPackage(proxyType.asText(), testPackage))) {
-                    referencesAnyTestPackage = true;
+                if (referencesAnyTestPackage(proxyType.asText(), testPackages)) {
+                    any = true;
                 }
             }
-            return referencesAnyTestPackage;
+            return any;
         }
         return false;
     }
 
-    private void splitResources(ObjectNode source, ObjectNode moved, Set<String> testResources) {
+    private boolean referencesAnyTestPackage(String value, Set<String> testPackages) {
+        return testPackages.stream().anyMatch(testPackage -> referencesTestPackage(value, testPackage));
+    }
+
+    private void splitResources(ObjectNode source, ObjectNode moved, Set<String> testPackages, Set<String> testResources) {
         JsonNode field = source.get("resources");
         if (!(field instanceof ArrayNode sourceEntries)) {
             return;
@@ -264,9 +266,9 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         ArrayNode movedEntries = objectMapper.createArrayNode();
         for (JsonNode entry : sourceEntries) {
             JsonNode globNode = entry.isObject() ? entry.get("glob") : null;
-            boolean testOnly = globNode != null && globNode.isTextual()
+            boolean globIsTestResource = globNode != null && globNode.isTextual()
                     && testResources.contains(normalizeResourcePath(globNode.asText()));
-            if (testOnly) {
+            if (globIsTestResource || isTestOnlyEntry(entry, testPackages)) {
                 movedEntries.add(entry.deepCopy());
             } else {
                 keptEntries.add(entry);
@@ -303,7 +305,8 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
     private ObjectNode retainTestOnlyMetadata(ObjectNode existingMetadata, Set<String> testPackages, Set<String> testResources) {
         ObjectNode retainedMetadata = objectMapper.createObjectNode();
         splitReflection(existingMetadata.deepCopy(), retainedMetadata, testPackages);
-        splitResources(existingMetadata.deepCopy(), retainedMetadata, testResources);
+        splitSerialization(existingMetadata.deepCopy(), retainedMetadata, testPackages);
+        splitResources(existingMetadata.deepCopy(), retainedMetadata, testPackages, testResources);
         return retainedMetadata;
     }
 
@@ -317,6 +320,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
     private ObjectNode mergeReachabilityMetadata(ObjectNode existing, ObjectNode additions) {
         ObjectNode merged = existing.deepCopy();
         mergeArrayField(merged, additions, "reflection");
+        mergeArrayField(merged, additions, "serialization");
         mergeArrayField(merged, additions, "resources");
         return merged;
     }

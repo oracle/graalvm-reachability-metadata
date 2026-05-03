@@ -94,8 +94,9 @@ public final class MetadataGenerationUtils {
     }
 
     /**
-     * Creates a user-code-filter.json file including the given packages (and excluding all others),
-     * used to restrict metadata generation to user code.
+     * Creates a user-code-filter.json file including the given library packages plus any
+     * packages discovered under the tests' source roots (so the agent records events whose
+     * call stack only contains test + JDK frames, e.g. test-driven serialization).
      */
     public static void addUserCodeFilterFile(Path testsDirectory, List<String> packages) throws IOException {
         GeneralUtils.printInfo("Generating " + USER_CODE_FILTER_FILE);
@@ -104,8 +105,20 @@ public final class MetadataGenerationUtils {
         // add exclude classes
         filterFileRules.add(Map.of("excludeClasses", "**"));
 
-        // add include classes
-        packages.forEach(p -> filterFileRules.add(Map.of("includeClasses", p + ".**")));
+        // include library packages
+        Set<String> seen = new LinkedHashSet<>();
+        for (String p : packages) {
+            if (seen.add(p)) {
+                filterFileRules.add(Map.of("includeClasses", p + ".**"));
+            }
+        }
+
+        // include test packages so the agent records events triggered solely from test code
+        for (String p : discoverTestPackages(testsDirectory)) {
+            if (seen.add(p)) {
+                filterFileRules.add(Map.of("includeClasses", p + ".**"));
+            }
+        }
 
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
@@ -115,6 +128,34 @@ public final class MetadataGenerationUtils {
             json = json + System.lineSeparator();
         }
         Files.writeString(out, json, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Walks the conventional test source roots and returns the package names they contain.
+     * Shared with SplitTestOnlyMetadataTask so the same set drives both filter generation
+     * and the test-only split.
+     */
+    public static Set<String> discoverTestPackages(Path testsDirectory) throws IOException {
+        Set<String> packages = new LinkedHashSet<>();
+        for (String sourceSet : List.of("src/test/java", "src/test/kotlin", "src/test/groovy", "src/test/scala")) {
+            Path sourceRoot = testsDirectory.resolve(sourceSet);
+            if (!Files.isDirectory(sourceRoot)) {
+                continue;
+            }
+            try (var pathStream = Files.walk(sourceRoot)) {
+                pathStream.filter(Files::isRegularFile).forEach(path -> {
+                    Path relativeParent = sourceRoot.relativize(path).getParent();
+                    if (relativeParent == null) {
+                        return;
+                    }
+                    String packageName = relativeParent.toString().replace('/', '.').replace('\\', '.');
+                    if (!packageName.isBlank()) {
+                        packages.add(packageName);
+                    }
+                });
+            }
+        }
+        return packages;
     }
 
     /**
