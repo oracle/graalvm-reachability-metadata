@@ -32,6 +32,8 @@ import org.roaringbitmap.buffer.MutableRoaringBitmap;
 import org.roaringbitmap.insights.BitmapAnalyser;
 import org.roaringbitmap.insights.BitmapStatistics;
 import org.roaringbitmap.longlong.LongIterator;
+import org.roaringbitmap.longlong.PeekableLongIterator;
+import org.roaringbitmap.longlong.Roaring64Bitmap;
 import org.roaringbitmap.longlong.Roaring64NavigableMap;
 
 public class Org_roaringbitmapTest {
@@ -247,6 +249,36 @@ public class Org_roaringbitmapTest {
         Assertions.assertThat(rangeBitmap.gtCardinality(15, evenPositions)).isEqualTo(1L);
         Assertions.assertThat(rangeBitmap.gteCardinality(15, evenPositions)).isEqualTo(2L);
         Assertions.assertThat(rangeBitmap.betweenCardinality(10, 21, evenPositions)).isEqualTo(2L);
+    }
+
+    @Test
+    void roaring64BitmapSupportsBoundedIterationAndRangeTraversal() {
+        long highValue = 1L << 32;
+        long farValue = 1L << 40;
+        Roaring64Bitmap bitmap = Roaring64Bitmap.bitmapOf(2L, 5L, highValue, highValue + 3L, farValue);
+        bitmap.addRange(10L, 13L);
+
+        Assertions.assertThat(bitmap.toArray()).containsExactly(2L, 5L, 10L, 11L, 12L, highValue, highValue + 3L, farValue);
+        Assertions.assertThat(bitmap.contains(highValue + 3L)).isTrue();
+        Assertions.assertThat(bitmap.getLongCardinality()).isEqualTo(8L);
+        Assertions.assertThat(bitmap.rankLong(11L)).isEqualTo(4L);
+        Assertions.assertThat(bitmap.select(5L)).isEqualTo(highValue);
+        Assertions.assertThat(bitmap.first()).isEqualTo(2L);
+        Assertions.assertThat(bitmap.last()).isEqualTo(farValue);
+
+        PeekableLongIterator fromMiddle = bitmap.getLongIteratorFrom(11L);
+        Assertions.assertThat(fromMiddle.peekNext()).isEqualTo(11L);
+        Assertions.assertThat(fromMiddle.next()).isEqualTo(11L);
+        fromMiddle.advanceIfNeeded(highValue + 1L);
+        Assertions.assertThat(fromMiddle.next()).isEqualTo(highValue + 3L);
+
+        PeekableLongIterator reverseFromGap = bitmap.getReverseLongIteratorFrom(highValue + 2L);
+        Assertions.assertThat(reverseFromGap.peekNext()).isEqualTo(highValue);
+        Assertions.assertThat(reverseFromGap.next()).isEqualTo(highValue);
+
+        List<Long> valuesInRange = new ArrayList<>();
+        bitmap.forEachInRange(4L, 10, valuesInRange::add);
+        Assertions.assertThat(valuesInRange).containsExactly(5L, 10L, 11L, 12L);
     }
 
     @Test
