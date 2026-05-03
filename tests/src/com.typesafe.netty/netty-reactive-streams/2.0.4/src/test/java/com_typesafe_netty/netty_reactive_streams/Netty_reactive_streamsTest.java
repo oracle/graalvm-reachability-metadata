@@ -121,6 +121,31 @@ public class Netty_reactive_streamsTest {
     }
 
     @Test
+    void handlerPublisherClosesChannelAndDiscardsBufferedMessagesWhenSubscriberCancels() throws Exception {
+        EmbeddedChannel channel = new EmbeddedChannel();
+        try {
+            HandlerPublisher<String> publisher = new HandlerPublisher<>(channel.eventLoop(), String.class);
+            channel.pipeline().addLast(publisher);
+
+            RecordingSubscriber<String> subscriber = new RecordingSubscriber<>();
+            publisher.subscribe(subscriber);
+            runPendingTasks(channel);
+            subscriber.awaitSubscription();
+
+            channel.writeInbound("queued");
+            subscriber.cancel();
+            runPendingTasks(channel);
+
+            assertThat(channel.isOpen()).isFalse();
+            assertThat(subscriber.items()).isEmpty();
+            assertThat(subscriber.error()).isNull();
+            assertThat(subscriber.completed()).isFalse();
+        } finally {
+            channel.finishAndReleaseAll();
+        }
+    }
+
+    @Test
     void handlerPublisherReplaysExceptionRaisedBeforeSubscriberArrives() throws Exception {
         EmbeddedChannel channel = new EmbeddedChannel();
         try {
@@ -292,6 +317,10 @@ public class Netty_reactive_streamsTest {
 
         void request(long demand) {
             subscription.get().request(demand);
+        }
+
+        void cancel() {
+            subscription.get().cancel();
         }
 
         List<T> items() {
