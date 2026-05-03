@@ -8,8 +8,14 @@ package org_jline.jline_terminal_jni;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.jline.terminal.Attributes;
 import org.jline.terminal.Size;
@@ -84,6 +90,37 @@ public class Jline_terminal_jniTest {
     }
 
     @Test
+    void nativePtyExposesConnectedMasterAndSlaveStreams() throws Exception {
+        TerminalProvider provider = TerminalProvider.load("jni");
+        Attributes attributes = attributesForPty();
+        Size requestedSize = new Size(80, 24);
+
+        if (isSupportedPosixOperatingSystem()) {
+            try (Pty pty = ((JniTerminalProvider) provider).open(attributes, requestedSize)) {
+                byte[] payload = "jni-pty-payload".getBytes(StandardCharsets.UTF_8);
+                InputStream masterInput = pty.getMasterInput();
+                OutputStream slaveOutput = pty.getSlaveOutput();
+                ExecutorService executor = newDaemonSingleThreadExecutor("jni-pty-reader");
+                Future<byte[]> readFromMaster = executor.submit(() -> masterInput.readNBytes(payload.length));
+
+                try {
+                    slaveOutput.write(payload);
+                    slaveOutput.flush();
+
+                    assertThat(readFromMaster.get(5, TimeUnit.SECONDS)).containsExactly(payload);
+                } finally {
+                    readFromMaster.cancel(true);
+                    executor.shutdownNow();
+                    assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+                }
+            }
+        } else {
+            assertThatThrownBy(() -> ((JniTerminalProvider) provider).open(attributes, requestedSize))
+                    .isInstanceOf(UnsupportedOperationException.class);
+        }
+    }
+
+    @Test
     void terminalBuilderCreatesJniBackedTerminalForExplicitStreams() throws Exception {
         if (isSupportedPosixOperatingSystem()) {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -115,6 +152,14 @@ public class Jline_terminal_jniTest {
             assertThatThrownBy(() -> buildTerminal(new ByteArrayOutputStream()))
                     .isInstanceOf(UnsupportedOperationException.class);
         }
+    }
+
+    private static ExecutorService newDaemonSingleThreadExecutor(String threadName) {
+        return Executors.newSingleThreadExecutor(runnable -> {
+            Thread thread = new Thread(runnable, threadName);
+            thread.setDaemon(true);
+            return thread;
+        });
     }
 
     private static Terminal buildTerminal(ByteArrayOutputStream output) throws Exception {
