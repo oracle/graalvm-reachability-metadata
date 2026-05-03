@@ -9,10 +9,12 @@ package io_undertow.undertow_servlet;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.PathHandler;
+import io.undertow.server.handlers.resource.PathResourceManager;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
+import io.undertow.servlet.handlers.DefaultServlet;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.AsyncEvent;
@@ -194,6 +196,38 @@ public class Undertow_servletTest {
             }
         } finally {
             deleteRecursively(uploadDirectory);
+        }
+    }
+
+    @Test
+    void defaultServletServesStaticResourcesAndWelcomePages() throws Exception {
+        Path documentRoot = Files.createTempDirectory("undertow-servlet-static");
+        try {
+            Files.createDirectories(documentRoot.resolve("assets"));
+            Files.writeString(documentRoot.resolve("index.html"), "welcome from index", StandardCharsets.UTF_8);
+            Files.writeString(documentRoot.resolve("assets/message.txt"), "served from resource manager",
+                    StandardCharsets.UTF_8);
+
+            DeploymentInfo deploymentInfo = baseDeployment("/static")
+                    .setResourceManager(new PathResourceManager(documentRoot))
+                    .addWelcomePage("index.html")
+                    .addServlet(Servlets.servlet("default", DefaultServlet.class,
+                                    new ImmediateInstanceFactory<>(new DefaultServlet()))
+                            .addMapping("/"));
+
+            try (ManagedServer server = start(deploymentInfo); HttpClient client = newHttpClient()) {
+                HttpResponse<String> welcomeResponse = client.send(get(server.uri("/")).build(),
+                        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                HttpResponse<String> assetResponse = client.send(get(server.uri("/assets/message.txt")).build(),
+                        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+                assertThat(welcomeResponse.statusCode()).isEqualTo(200);
+                assertThat(welcomeResponse.body()).isEqualTo("welcome from index");
+                assertThat(assetResponse.statusCode()).isEqualTo(200);
+                assertThat(assetResponse.body()).isEqualTo("served from resource manager");
+            }
+        } finally {
+            deleteRecursively(documentRoot);
         }
     }
 
