@@ -1,0 +1,147 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: io.grpc:grpc-xds:1.68.0
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/home/vjovanov/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/3.25.3/d3200261955f3298e0d85c9892201e70492ce8eb/protobuf-java-3.25.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+> Task :test
+
+Grpc_xdsTest > ringHashGlobalCapCanBeChangedAndRestored() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: 
+      null
+     but was: 
+      Status{code=UNAVAILABLE, description=Failed parsing configuration for ring_hash_experimental, cause=java.lang.IllegalArgumentException: value '4096' for key 'minRingSize' is not a long integer
+      	at io.grpc.internal.JsonUtil.getNumberAsLong(JsonUtil.java:210)
+      	at io.grpc.xds.RingHashLoadBalancerProvider.parseLoadBalancingPolicyConfigInternal(RingHashLoadBalancerProvider.java:82)
+      	at io.grpc.xds.RingHashLoadBalancerProvider.parseLoadBalancingPolicyConfig(RingHashLoadBalancerProvider.java:72)
+      	at io_grpc.grpc_xds.Grpc_xdsTest.ringHashGlobalCapCanBeChangedAndRestored(Grpc_xdsTest.java:129)
+      	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+      	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+      	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+      	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+      	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+      	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+      	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+      	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+      	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+      	at java.base/java.lang.Thread.run(Thread.java:1474)
+      }
+        at java.base@25.0.2/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.2/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//io_grpc.grpc_xds.Grpc_xdsTest.assertValidConfig(Grpc_xdsTest.java:351)
+        at app//io_grpc.grpc_xds.Grpc_xdsTest.ringHashGlobalCapCanBeChangedAndRestored(Grpc_xdsTest.java:129)
+
+Grpc_xdsTest > loadBalancerProvidersExposePolicyNamesAndParseServiceConfigs() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: 
+      null
+     but was: 
+      Status{code=UNAVAILABLE, description=Failed to parse least_request_experimental LB config: {choiceCount=3}, cause=java.lang.IllegalArgumentException: value '3' for key 'choiceCount' is not an integer
+      	at io.grpc.internal.JsonUtil.getNumberAsInteger(JsonUtil.java:179)
+      	at io.grpc.xds.LeastRequestLoadBalancerProvider.parseLoadBalancingPolicyConfig(LeastRequestLoadBalancerProvider.java:65)
+      	at io_grpc.grpc_xds.Grpc_xdsTest.loadBalancerProvidersExposePolicyNamesAndParseServiceConfigs(Grpc_xdsTest.java:106)
+      	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+      	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+      	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+      	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+      	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+      	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+      	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+      	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+      	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+      	at java.base/java.lang.Thread.run(Thread.java:1474)
+      }
+        at java.base@25.0.2/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.2/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//io_grpc.grpc_xds.Grpc_xdsTest.assertValidConfig(Grpc_xdsTest.java:351)
+        at app//io_grpc.grpc_xds.Grpc_xdsTest.loadBalancerProvidersExposePolicyNamesAndParseServiceConfigs(Grpc_xdsTest.java:106)
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/tests/src/io.grpc/grpc-xds/1.68.0/build/reports/problems/problems-report.html
+
+8 tests completed, 2 failed
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/tests/src/io.grpc/grpc-xds/1.68.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.grpc:grpc-xds:1.68.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 6s
+9 actionable tasks: 1 executed, 8 up-to-date

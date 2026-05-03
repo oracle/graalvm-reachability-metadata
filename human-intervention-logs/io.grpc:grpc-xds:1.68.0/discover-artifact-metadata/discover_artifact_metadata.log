@@ -1,0 +1,748 @@
+Starting a Gradle Daemon, 8 busy and 7 incompatible and 189 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded2d-e9b3-7801-9c82-e453b3acb1cc
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.grpc:grpc-xds:1.68.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.68.0" when "$version$" is replaced with "1.68.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+- Set "coordinates" to "io.grpc:grpc-xds:1.68.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.68.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream repo/tag, then update the JSON in place. I’m going to prefer Maven source/test artifacts if they exist, per your instructions.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json && sed -n '1,200p' build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+-rw-rw-r-- 1 vjovanov vjovanov 48 May  3 11:31 build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+{
+  "coordinates" : "io.grpc:grpc-xds:1.68.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'grpc-xds|io.grpc' metadata build/discovered-artifact-metadata || true" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json:2:  "coordinates" : "io.grpc:grpc-xds:1.68.0"
+metadata/io.grpc/grpc-context/1.57.0/reachability-metadata.json:5:        "typeReached": "io.grpc.Context$LazyStorage"
+metadata/io.grpc/grpc-context/1.57.0/reachability-metadata.json:7:      "type": "io.grpc.override.ContextStorageOverride"
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/test/java/io/grpc",
+metadata/io.grpc/grpc-context/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-api/$version$/grpc-api-$version$-javadoc.jar",
+metadata/io.grpc/grpc-context/index.json:58:      "io.grpc"
+metadata/io.grpc/grpc-context/index.json:63:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/$version$/grpc-context-$version$-sources.jar",
+metadata/io.grpc/grpc-context/index.json:66:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/$version$/grpc-context-$version$-javadoc.jar",
+metadata/io.grpc/grpc-context/index.json:149:      "io.grpc"
+metadata/io.grpc/grpc-netty/1.51.0/reachability-metadata.json:5:        "typeReached": "io.grpc.netty.NettyServer"
+metadata/io.grpc/grpc-netty/1.51.0/reachability-metadata.json:12:        "typeReached": "io.grpc.netty.NettyChannelBuilder"
+metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/$version$/grpc-netty-$version$-sources.jar",
+metadata/io.grpc/grpc-netty/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/$version$/grpc-netty-$version$-javadoc.jar",
+metadata/io.grpc/grpc-netty/index.json:71:      "io.grpc"
+metadata/io.grpc/grpc-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/$version$/grpc-core-$version$-sources.jar",
+metadata/io.grpc/grpc-core/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/$version$/grpc-core-$version$-javadoc.jar",
+metadata/io.grpc/grpc-core/index.json:31:      "io.grpc"
+metadata/io.grpc/grpc-core/1.69.0/reachability-metadata.json:5:        "typeReached": "io.grpc.internal.InstantTimeProvider"
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/grpc/grpc-xds/1.68.0/grpc-xds-1.68.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.grpc</groupId>
+  <artifactId>grpc-xds</artifactId>
+  <version>1.68.0</version>
+  <name>io.grpc:grpc-xds</name>
+  <description>gRPC: XDS plugin</description>
+  <url>https://github.com/grpc/grpc-java</url>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>https://opensource.org/licenses/Apache-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>grpc.io</id>
+      <name>gRPC Contributors</name>
+      <email>grpc-io@googlegroups.com</email>
+      <url>https://grpc.io/</url>
+      <organization>gRPC Authors</organization>
+      <organizationUrl>https://www.google.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/grpc/grpc-java.git</connection>
+    <developerConnection>scm:git:git@github.com:grpc/grpc-java.git</developerConnection>
+    <url>https://github.com/grpc/grpc-java</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>1.68.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>1.68.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-core</artifactId>
+      <version>1.68.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-util</artifactId>
+      <version>1.68.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-services</artifactId>
+      <version>1.68.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-auth</artifactId>
+      <version>1.68.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-alts</artifactId>
+      <version>1.68.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.2.1-android</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.11.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.re2j</groupId>
+      <artifactId>re2j</artifactId>
+      <version>1.7</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value-annotations</artifactId>
+      <version>1.11.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>3.25.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+      <version>1.68.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+codex
+The POM points to `grpc/grpc-java` and Maven Central has the normal published artifact. I’m checking the repository tag and whether Maven also publishes source, javadoc, and any test-source/test-jar classifiers for this module.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/grpc/grpc-xds/1.68.0/ | sed -n '1,240p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/grpc/grpc-xds/1.68.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/grpc/grpc-xds/1.68.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="grpc-xds-1.68.0-javadoc.jar" title="grpc-xds-1.68.0-javadoc.jar">grpc-xds-1.68.0-javadoc.jar</a>                       2024-09-19 14:55    388279      
+<a href="grpc-xds-1.68.0-javadoc.jar.asc" title="grpc-xds-1.68.0-javadoc.jar.asc">grpc-xds-1.68.0-javadoc.jar.asc</a>                   2024-09-19 14:55       659      
+<a href="grpc-xds-1.68.0-javadoc.jar.md5" title="grpc-xds-1.68.0-javadoc.jar.md5">grpc-xds-1.68.0-javadoc.jar.md5</a>                   2024-09-19 14:55        32      
+<a href="grpc-xds-1.68.0-javadoc.jar.sha1" title="grpc-xds-1.68.0-javadoc.jar.sha1">grpc-xds-1.68.0-javadoc.jar.sha1</a>                  2024-09-19 14:55        40      
+<a href="grpc-xds-1.68.0-javadoc.jar.sha256" title="grpc-xds-1.68.0-javadoc.jar.sha256">grpc-xds-1.68.0-javadoc.jar.sha256</a>                2024-09-19 14:55        64      
+<a href="grpc-xds-1.68.0-javadoc.jar.sha512" title="grpc-xds-1.68.0-javadoc.jar.sha512">grpc-xds-1.68.0-javadoc.jar.sha512</a>                2024-09-19 14:55       128      
+<a href="grpc-xds-1.68.0-sources.jar" title="grpc-xds-1.68.0-sources.jar">grpc-xds-1.68.0-sources.jar</a>                       2024-09-19 14:55   4274851      
+<a href="grpc-xds-1.68.0-sources.jar.asc" title="grpc-xds-1.68.0-sources.jar.asc">grpc-xds-1.68.0-sources.jar.asc</a>                   2024-09-19 14:55       659      
+<a href="grpc-xds-1.68.0-sources.jar.md5" title="grpc-xds-1.68.0-sources.jar.md5">grpc-xds-1.68.0-sources.jar.md5</a>                   2024-09-19 14:55        32      
+<a href="grpc-xds-1.68.0-sources.jar.sha1" title="grpc-xds-1.68.0-sources.jar.sha1">grpc-xds-1.68.0-sources.jar.sha1</a>                  2024-09-19 14:55        40      
+<a href="grpc-xds-1.68.0-sources.jar.sha256" title="grpc-xds-1.68.0-sources.jar.sha256">grpc-xds-1.68.0-sources.jar.sha256</a>                2024-09-19 14:55        64      
+<a href="grpc-xds-1.68.0-sources.jar.sha512" title="grpc-xds-1.68.0-sources.jar.sha512">grpc-xds-1.68.0-sources.jar.sha512</a>                2024-09-19 14:55       128      
+<a href="grpc-xds-1.68.0.jar" title="grpc-xds-1.68.0.jar">grpc-xds-1.68.0.jar</a>                               2024-09-19 14:55   9673788      
+<a href="grpc-xds-1.68.0.jar.asc" title="grpc-xds-1.68.0.jar.asc">grpc-xds-1.68.0.jar.asc</a>                           2024-09-19 14:55       659      
+<a href="grpc-xds-1.68.0.jar.md5" title="grpc-xds-1.68.0.jar.md5">grpc-xds-1.68.0.jar.md5</a>                           2024-09-19 14:55        32      
+<a href="grpc-xds-1.68.0.jar.sha1" title="grpc-xds-1.68.0.jar.sha1">grpc-xds-1.68.0.jar.sha1</a>                          2024-09-19 14:55        40      
+<a href="grpc-xds-1.68.0.jar.sha256" title="grpc-xds-1.68.0.jar.sha256">grpc-xds-1.68.0.jar.sha256</a>                        2024-09-19 14:55        64      
+<a href="grpc-xds-1.68.0.jar.sha512" title="grpc-xds-1.68.0.jar.sha512">grpc-xds-1.68.0.jar.sha512</a>                        2024-09-19 14:55       128      
+<a href="grpc-xds-1.68.0.pom" title="grpc-xds-1.68.0.pom">grpc-xds-1.68.0.pom</a>                               2024-09-19 14:55      3533      
+<a href="grpc-xds-1.68.0.pom.asc" title="grpc-xds-1.68.0.pom.asc">grpc-xds-1.68.0.pom.asc</a>                           2024-09-19 14:55       659      
+<a href="grpc-xds-1.68.0.pom.md5" title="grpc-xds-1.68.0.pom.md5">grpc-xds-1.68.0.pom.md5</a>                           2024-09-19 14:55        32      
+<a href="grpc-xds-1.68.0.pom.sha1" title="grpc-xds-1.68.0.pom.sha1">grpc-xds-1.68.0.pom.sha1</a>                          2024-09-19 14:55        40      
+<a href="grpc-xds-1.68.0.pom.sha256" title="grpc-xds-1.68.0.pom.sha256">grpc-xds-1.68.0.pom.sha256</a>                        2024-09-19 14:55        64      
+<a href="grpc-xds-1.68.0.pom.sha512" title="grpc-xds-1.68.0.pom.sha512">grpc-xds-1.68.0.pom.sha512</a>                        2024-09-19 14:55       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/grpc/grpc-java.git 'refs/tags/v1.68.0' 'refs/tags/1.68.0'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/xds/src/main/java/io/grpc/xds/XdsNameResolverProvider.java | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/xds/README.md | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+ succeeded in 149ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 163ms:
+/*
+ * Copyright 2019 The gRPC Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.grpc.xds;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.base.Preconditions;
+import io.grpc.Internal;
+import io.grpc.NameResolver.Args;
+import io.grpc.NameResolverProvider;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+import javax.annotation.Nullable;
+
+/**
+ * A provider for {@link XdsNameResolver}.
+ *
+ * <p>It resolves a target URI whose scheme is {@code "xds"}. The authority of the
+ * target URI is never used for current release. The path of the target URI, excluding the leading
+ * slash {@code '/'}, will indicate the name to use in the VHDS query.
+ *
+ * <p>This class should not be directly referenced in code. The resolver should be accessed
+ * through {@link io.grpc.NameResolverRegistry} with the URI scheme "xds".
+ */
+@Internal
+public final class XdsNameResolverProvider extends NameResolverProvider {
+
+  private static final String SCHEME = "xds";
+  private final String scheme;
+  private final Map<String, ?> bootstrapOverride;
+
+  public XdsNameResolverProvider() {
+    this(SCHEME, null);
+  }
+
+  private XdsNameResolverProvider(String scheme,
+                                 @Nullable Map<String, ?> bootstrapOverride) {
+    this.scheme = checkNotNull(scheme, "scheme");
+    this.bootstrapOverride = bootstrapOverride;
+  }
+
+  /**
+   * A convenient method to allow creating a {@link XdsNameResolverProvider} with custom scheme
+   * and bootstrap.
+   */
+  public static XdsNameResolverProvider createForTest(String scheme,
+                                                      @Nullable Map<String, ?> bootstrapOverride) {
+    return new XdsNameResolverProvider(scheme, bootstrapOverride);
+  }
+
+  @Override
+  public XdsNameResolver newNameResolver(URI targetUri, Args args) {
+    if (scheme.equals(targetUri.getScheme())) {
+      String targetPath = checkNotNull(targetUri.getPath(), "targetPath");
+      Preconditions.checkArgument(
+          targetPath.startsWith("/"),
+          "the path component (%s) of the target (%s) must start with '/'",
+          targetPath,
+          targetUri);
+      String name = targetPath.substring(1);
+      return new XdsNameResolver(
+
+ succeeded in 314ms:
+d33fba366d6feeacf27b377a1d70ee7c8703a23d	refs/tags/v1.68.0
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code}\\n' https://github.com/grpc/grpc-java/tree/v1.68.0/xds/src/test/java/io/grpc/xds" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code}\\n' https://github.com/grpc/grpc-java/tree/v1.68.0/xds/src/test/java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/grpc-xds-1.68.0.jar https://repo1.maven.org/maven2/io/grpc/grpc-xds/1.68.0/grpc-xds-1.68.0.jar && jar tf /tmp/grpc-xds-1.68.0.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds?ref=v1.68.0 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+ succeeded in 303ms:
+[
+  {
+    "name": "AddressFilterTest.java",
+    "path": "xds/src/test/java/io/grpc/xds/AddressFilterTest.java",
+    "sha": "7d92e2ba1ce36e192181ee1fe0a4a43e62e2a87f",
+    "size": 2640,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/AddressFilterTest.java?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/AddressFilterTest.java",
+    "git_url": "https://api.github.com/repos/grpc/grpc-java/git/blobs/7d92e2ba1ce36e192181ee1fe0a4a43e62e2a87f",
+    "download_url": "https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/xds/src/test/java/io/grpc/xds/AddressFilterTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/AddressFilterTest.java?ref=v1.68.0",
+      "git": "https://api.github.com/repos/grpc/grpc-java/git/blobs/7d92e2ba1ce36e192181ee1fe0a4a43e62e2a87f",
+      "html": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/AddressFilterTest.java"
+    }
+  },
+  {
+    "name": "CdsLoadBalancer2Test.java",
+    "path": "xds/src/test/java/io/grpc/xds/CdsLoadBalancer2Test.java",
+    "sha": "0884587cd9506657a706c90a961b49e6bf95400b",
+    "size": 39661,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/CdsLoadBalancer2Test.java?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/CdsLoadBalancer2Test.java",
+    "git_url": "https://api.github.com/repos/grpc/grpc-java/git/blobs/0884587cd9506657a706c90a961b49e6bf95400b",
+    "download_url": "https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/xds/src/test/java/io/grpc/xds/CdsLoadBalancer2Test.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/CdsLoadBalancer2Test.java?ref=v1.68.0",
+      "git": "https://api.github.com/repos/grpc/grpc-java/git/blobs/0884587cd9506657a706c90a961b49e6bf95400b",
+      "html": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/CdsLoadBalancer2Test.java"
+    }
+  },
+  {
+    "name": "CdsLoadBalancerProviderTest.java",
+    "path": "xds/src/test/java/io/grpc/xds/CdsLoadBalancerProviderTest.java",
+    "sha": "0cd3d7306bc59a9f9c2a5a8b4a3de35c6fa9a107",
+    "size": 2847,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/CdsLoadBalancerProviderTest.java?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/CdsLoadBalancerProviderTest.java",
+    "git_url": "https://api.github.com/repos/grpc/grpc-java/git/blobs/0cd3d7306bc59a9f9c2a5a8b4a3de35c6fa9a107",
+    "download_url": "https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/xds/src/test/java/io/grpc/xds/CdsLoadBalancerProviderTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/CdsLoadBalancerProviderTest.java?ref=v1.68.0",
+      "git": "https://api.github.com/repos/grpc/grpc-java/git/blobs/0cd3d7306bc59a9f9c2a5a8b4a3de35c6fa9a107",
+      "html": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/CdsLoadBalancerProviderTest.java"
+    }
+  },
+  {
+    "name": "ClusterImplLoadBalancerProviderTest.java",
+    "path": "xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerProviderTest.java",
+    "sha": "8ecd1d6f9c8b38fd35c1e7d7bdcaaacdb0feb480",
+    "size": 1767,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerProviderTest.java?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerProviderTest.java",
+    "git_url": "https://api.github.com/repos/grpc/grpc-java/git/blobs/8ecd1d6f9c8b38fd35c1e7d7bdcaaacdb0feb480",
+    "download_url": "https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerProviderTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerProviderTest.java?ref=v1.68.0",
+      "git": "https://api.github.com/repos/grpc/grpc-java/git/blobs/8ecd1d6f9c8b38fd35c1e7d7bdcaaacdb0feb480",
+      "html": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerProviderTest.java"
+    }
+  },
+  {
+    "name": "ClusterImplLoadBalancerTest.java",
+    "path": "xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerTest.java",
+    "sha": "0082a2aa59d698dee5e5ff2e58276fc71285425b",
+    "size": 51432,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerTest.java?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerTest.java",
+    "git_url": "https://api.github.com/repos/grpc/grpc-java/git/blobs/0082a2aa59d698dee5e5ff2e58276fc71285425b",
+    "download_url": "https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerTest.java?ref=v1.68.0",
+      "git": "https://api.github.com/repos/grpc/grpc-java/git/blobs/0082a2aa59d698dee5e5ff2e58276fc71285425b",
+      "html": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterImplLoadBalancerTest.java"
+    }
+  },
+  {
+    "name": "ClusterManagerLoadBalancerProviderTest.java",
+    "path": "xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerProviderTest.java",
+    "sha": "4094365852061a0f896766923b090fb9821fbbd2",
+    "size": 5406,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerProviderTest.java?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerProviderTest.java",
+    "git_url": "https://api.github.com/repos/grpc/grpc-java/git/blobs/4094365852061a0f896766923b090fb9821fbbd2",
+    "download_url": "https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerProviderTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerProviderTest.java?ref=v1.68.0",
+      "git": "https://api.github.com/repos/grpc/grpc-java/git/blobs/4094365852061a0f896766923b090fb9821fbbd2",
+      "html": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerProviderTest.java"
+    }
+  },
+  {
+    "name": "ClusterManagerLoadBalancerTest.java",
+    "path": "xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerTest.java",
+    "sha": "aa0e205dd8f686e3d39328df97264864d1bb5e71",
+    "size": 16969,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerTest.java?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerTest.java",
+    "git_url": "https://api.github.com/repos/grpc/grpc-java/git/blobs/aa0e205dd8f686e3d39328df97264864d1bb5e71",
+    "download_url": "https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerTest.java?ref=v1.68.0",
+      "git": "https://api.github.com/repos/grpc/grpc-java/git/blobs/aa0e205dd8f686e3d39328df97264864d1bb5e71",
+      "html": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterManagerLoadBalancerTest.java"
+    }
+  },
+  {
+    "name": "ClusterResolverLoadBalancerProviderTest.java",
+    "path": "xds/src/test/java/io/grpc/xds/ClusterResolverLoadBalancerProviderTest.java",
+    "sha": "a201ecfaa4ba0298f4601c22a51b0cf5fd115337",
+    "size": 3041,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/xds/src/test/java/io/grpc/xds/ClusterResolverLoadBalancerProviderTest.java?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/blob/v1.68.0/xds/src/test/java/io/grpc/xds/ClusterResolverLoadBalancerProviderTest.java",
+
+ succeeded in 697ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/grpc/
+io/grpc/xds/
+io/grpc/xds/AutoValue_VirtualHost_Route_RouteMatch_PathMatcher.class
+io/grpc/xds/XdsServerWrapper$ConfigApplyingInterceptor$5.class
+io/grpc/xds/WeightedTargetLoadBalancerProvider.class
+io/grpc/xds/PriorityLoadBalancer.class
+io/grpc/xds/LeastRequestLoadBalancer$LeastRequestLbState$1.class
+io/grpc/xds/XdsNameResolver.class
+io/grpc/xds/PriorityLoadBalancer$ChildLbState$FailOverTask.class
+io/grpc/xds/ClusterManagerLoadBalancer$ClusterManagerLbState$ClusterManagerChildHelper.class
+io/grpc/xds/XdsClusterResource$CdsUpdate$ClusterType.class
+io/grpc/xds/package-info.class
+io/grpc/xds/WeightedRandomPicker.class
+io/grpc/xds/FilterChainMatchingProtocolNegotiators$1.class
+io/grpc/xds/XdsEndpointResource$EdsUpdate.class
+io/grpc/xds/FilterChainSelectorManager$CloserComparator.class
+io/grpc/xds/WeightedTargetLoadBalancerProvider$WeightedPolicySelection.class
+io/grpc/xds/ClusterResolverLoadBalancer$ClusterResolverLbState$RefreshableHelper.class
+io/grpc/xds/RingHashOptions.class
+io/grpc/xds/ClusterResolverLoadBalancer$1.class
+io/grpc/xds/XdsServerWrapper$RestartTask.class
+io/grpc/xds/ClusterResolverLoadBalancerProvider.class
+io/grpc/xds/CsdsService$CsdsServiceInternal.class
+io/grpc/xds/FaultFilter$1FaultInjectionInterceptor$1DeadlineInsightForwardingCall$1.class
+io/grpc/xds/XdsServerWrapper$DiscoveryState$RouteDiscoveryState.class
+io/grpc/xds/ClusterManagerLoadBalancer$ClusterManagerLbState.class
+io/grpc/xds/PriorityLoadBalancerProvider.class
+io/grpc/xds/LoadBalancerConfigFactory$LoadBalancingPolicyConverter.class
+io/grpc/xds/XdsEndpointResource.class
+io/grpc/xds/ClusterManagerLoadBalancer$1.class
+io/grpc/xds/AutoValue_EnvoyServerProtoData_CidrRange.class
+io/grpc/xds/RouteLookupServiceClusterSpecifierPlugin$RlsPluginConfig.class
+io/grpc/xds/FilterChainMatchingProtocolNegotiators$FilterChainSelectorManagerDeregister.class
+io/grpc/xds/ClusterResolverLoadBalancer$ClusterResolverLbState$LogicalDnsClusterState$NameResolverListener$1.class
+io/grpc/xds/AutoValue_XdsListenerResource_LdsUpdate.class
+io/grpc/xds/SharedXdsClientPoolProvider$RefCountedXdsClientObjectPool.class
+io/grpc/xds/XdsClusterResource$1.class
+io/grpc/xds/XdsServerBuilder$DefaultListener.class
+io/grpc/xds/LoadBalancerConfigFactory.class
+io/grpc/xds/XdsServerWrapper$ConfigApplyingInterceptor$4.class
+io/grpc/xds/WeightedRoundRobinLoadBalancer$WeightedChildLbState$OrcaReportListener.class
+io/grpc/xds/XdsServerWrapper$2.class
+io/grpc/xds/ClusterResolverLoadBalancerProvider$ClusterResolverConfig.class
+io/grpc/xds/XdsNameResolver$ResolveState$RouteDiscoveryState.class
+io/grpc/xds/AutoValue_VirtualHost_Route_RouteAction.class
+io/grpc/xds/XdsNameResolver$ConfigSelector.class
+io/grpc/xds/XdsListenerResource$1.class
+io/grpc/xds/AutoValue_Endpoints_DropOverload.class
+io/grpc/xds/ClusterImplLoadBalancer.class
+io/grpc/xds/XdsRouteConfigureResource$RdsUpdate.class
+io/grpc/xds/FilterRegistry.class
+io/grpc/xds/RingHashLoadBalancerProvider.class
+io/grpc/xds/VirtualHost$Route$RouteAction$HashPolicy$Type.class
+io/grpc/xds/LoadBalancerConfigFactory$LegacyLoadBalancingPolicyConverter.class
+io/grpc/xds/FaultConfig$FaultAbort.class
+io/grpc/xds/AutoValue_VirtualHost.class
+io/grpc/xds/RingHashLoadBalancer$RingHashConfig.class
+io/grpc/xds/LeastRequestLoadBalancer$ReadyPicker.class
+io/grpc/xds/InternalGrpcBootstrapperImpl.class
+io/grpc/xds/AutoValue_VirtualHost_Route_RouteAction_HashPolicy.class
+io/grpc/xds/LeastRequestLoadBalancer$1.class
+io/grpc/xds/AutoValue_FaultConfig.class
+io/grpc/xds/ClusterImplLoadBalancerProvider$ClusterImplConfig.class
+io/grpc/xds/XdsServerBuilder.class
+io/grpc/xds/XdsServerWrapper$DiscoveryState.class
+io/grpc/xds/AutoValue_FaultConfig_FractionalPercent.class
+io/grpc/xds/XdsServerWrapper$DiscoveryState$RouteDiscoveryState$2.class
+io/grpc/xds/AutoValue_Endpoints_LbEndpoint.class
+io/grpc/xds/GrpcXdsTransportFactory$EventHandlerToCallListenerAdapter.class
+io/grpc/xds/XdsServerWrapper$1.class
+io/grpc/xds/ThreadSafeRandom.class
+io/grpc/xds/WeightedRoundRobinLoadBalancer$WeightedRoundRobinLoadBalancerConfig$Builder.class
+io/grpc/xds/RouterFilter$1.class
+io/grpc/xds/PriorityLoadBalancer$ChildLbState$ChildHelper.class
+io/grpc/xds/FilterChainMatchingProtocolNegotiators$GracefullyShutdownChannelRunnable.class
+io/grpc/xds/VirtualHost$Route$RouteMatch.class
+io/grpc/xds/XdsNameResolverProvider.class
+
+ succeeded in 705ms:
+200
+
+ succeeded in 890ms:
+200
+
+codex
+Maven Central publishes `sources.jar` and `javadoc.jar` for `grpc-xds` 1.68.0, but no test artifact in that version directory. The GitHub tag `v1.68.0` exists and the module’s tests are present under `xds/src/test/java/io/grpc/xds`, so I’ll use Maven for sources/docs and GitHub for tests.
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"description\"' build/discovered-artifact-metadata metadata/io.grpc -g '*.json' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+ succeeded in 0ms:
+metadata/io.grpc/grpc-context/index.json:5:    "source-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/context/java",
+metadata/io.grpc/grpc-context/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/test/java/io/grpc",
+metadata/io.grpc/grpc-context/index.json:9:    "description" : "grpc-context provides gRPC Java's context propagation API for carrying scoped values, deadlines, and cancellation state across API boundaries and threads. It lets applications bind request-scoped state to the current execution and propagate that state through asynchronous work.",
+metadata/io.grpc/grpc-context/index.json:63:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/$version$/grpc-context-$version$-sources.jar",
+metadata/io.grpc/grpc-context/index.json:64:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-context/index.json:65:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/context/src/test",
+metadata/io.grpc/grpc-context/index.json:67:    "description" : "grpc-context provides gRPC's context propagation API for carrying scoped values and cancellation state across API boundaries and threads. It lets applications associate request-scoped data with the current execution and propagate that state through asynchronous work.",
+metadata/io.grpc/grpc-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/$version$/grpc-core-$version$-sources.jar",
+metadata/io.grpc/grpc-core/index.json:7:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-core/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/core/src/test",
+metadata/io.grpc/grpc-core/index.json:10:    "description" : "Core runtime classes for gRPC Java, including channels, calls, name resolution, load balancing, deadlines, and transport abstractions. It provides the foundational client and server behavior that higher-level gRPC Java transports and stubs build on.",
+metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/$version$/grpc-netty-$version$-sources.jar",
+metadata/io.grpc/grpc-netty/index.json:7:    "repository-url" : "https://github.com/grpc/grpc-java",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/netty/src/test",
+metadata/io.grpc/grpc-netty/index.json:10:    "description" : "grpc-netty is gRPC Java's main Netty-based transport implementation for both clients and servers. It provides HTTP/2 networking integration on top of Netty for gRPC communication.",
+
+codex
+I’m updating the discovered metadata now with the confirmed repository root, Maven source/javadoc URLs, the tagged GitHub test tree, and a two-sentence description. Since the artifact is a normal JVM JAR with `.class` files, I’m leaving the Native Image exclusion fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+index dbab532b5c270b44f19a7e2f8e1210f082776ebc..735c2cd3d309fa2ef81399ec1251094b1d167ab1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-xds:1.68.0"
++  "coordinates" : "io.grpc:grpc-xds:1.68.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-sources.jar",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/xds/src/test/java/io/grpc/xds",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-javadoc.jar",
++  "description" : "grpc-xds provides gRPC Java support for xDS APIs, including xDS name resolution and control-plane driven load balancing and security configuration. It lets Java gRPC clients and servers integrate with Envoy-compatible service mesh control planes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+index dbab532b5c270b44f19a7e2f8e1210f082776ebc..735c2cd3d309fa2ef81399ec1251094b1d167ab1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-xds:1.68.0"
++  "coordinates" : "io.grpc:grpc-xds:1.68.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-sources.jar",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/xds/src/test/java/io/grpc/xds",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-javadoc.jar",
++  "description" : "grpc-xds provides gRPC Java support for xDS APIs, including xDS name resolution and control-plane driven load balancing and security configuration. It lets Java gRPC clients and servers integrate with Envoy-compatible service mesh control planes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+ succeeded in 0ms:
+{
+  "coordinates": "io.grpc:grpc-xds:1.68.0",
+  "source-code-url": "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-sources.jar",
+  "repository-url": "https://github.com/grpc/grpc-java",
+  "test-code-url": "https://github.com/grpc/grpc-java/tree/v$version$/xds/src/test/java/io/grpc/xds",
+  "documentation-url": "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-javadoc.jar",
+  "description": "grpc-xds provides gRPC Java support for xDS APIs, including xDS name resolution and control-plane driven load balancing and security configuration. It lets Java gRPC clients and servers integrate with Envoy-compatible service mesh control planes."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/io/grpc/grpc-xds/1.68.0/grpc-xds-1.68.0-sources.jar \\
+  https://github.com/grpc/grpc-java/tree/v1.68.0/xds/src/test/java/io/grpc/xds \\
+  https://repo1.maven.org/maven2/io/grpc/grpc-xds/1.68.0/grpc-xds-1.68.0-javadoc.jar; do \\
+  printf '%s ' \""'$url"; curl -fsSL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; '"\\
+done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+index dbab532b5c270b44f19a7e2f8e1210f082776ebc..735c2cd3d309fa2ef81399ec1251094b1d167ab1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-xds:1.68.0"
++  "coordinates" : "io.grpc:grpc-xds:1.68.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-sources.jar",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/xds/src/test/java/io/grpc/xds",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-javadoc.jar",
++  "description" : "grpc-xds provides gRPC Java support for xDS APIs, including xDS name resolution and control-plane driven load balancing and security configuration. It lets Java gRPC clients and servers integrate with Envoy-compatible service mesh control planes."
+ }
+
+ succeeded in 916ms:
+200
+https://github.com/grpc/grpc-java/tree/v1.68.0/xds/src/test/java/io/grpc/xds 200
+https://repo1.maven.org/maven2/io/grpc/grpc-xds/1.68.0/grpc-xds-1.68.0-javadoc.jar 200
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+index dbab532b5c270b44f19a7e2f8e1210f082776ebc..735c2cd3d309fa2ef81399ec1251094b1d167ab1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-xds:1.68.0"
++  "coordinates" : "io.grpc:grpc-xds:1.68.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-sources.jar",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/xds/src/test/java/io/grpc/xds",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-javadoc.jar",
++  "description" : "grpc-xds provides gRPC Java support for xDS APIs, including xDS name resolution and control-plane driven load balancing and security configuration. It lets Java gRPC clients and servers integrate with Envoy-compatible service mesh control planes."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json && sed -n '1,120p' build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+index dbab532b5c270b44f19a7e2f8e1210f082776ebc..735c2cd3d309fa2ef81399ec1251094b1d167ab1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-xds:1.68.0"
++  "coordinates" : "io.grpc:grpc-xds:1.68.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-sources.jar",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/xds/src/test/java/io/grpc/xds",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-javadoc.jar",
++  "description" : "grpc-xds provides gRPC Java support for xDS APIs, including xDS name resolution and control-plane driven load balancing and security configuration. It lets Java gRPC clients and servers integrate with Envoy-compatible service mesh control planes."
+ }
+
+ succeeded in 222ms:
+{
+  "coordinates" : "io.grpc:grpc-xds:1.68.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-sources.jar",
+  "repository-url" : "https://github.com/grpc/grpc-java",
+  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/xds/src/test/java/io/grpc/xds",
+  "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-javadoc.jar",
+  "description" : "grpc-xds provides gRPC Java support for xDS APIs, including xDS name resolution and control-plane driven load balancing and security configuration. It lets Java gRPC clients and servers integrate with Envoy-compatible service mesh control planes."
+}
+
+codex
+Updated [io.grpc-grpc-xds-1.68.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json) with the discovered metadata.
+
+I verified the JSON with `jq`, confirmed the source, test, and documentation URLs render for `1.68.0` with HTTP 200, and left `language` plus `not-for-native-image` fields absent because this is a normal Java/JVM artifact with class files.
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+index dbab532b5c270b44f19a7e2f8e1210f082776ebc..735c2cd3d309fa2ef81399ec1251094b1d167ab1
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-xds:1.68.0"
++  "coordinates" : "io.grpc:grpc-xds:1.68.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-sources.jar",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/xds/src/test/java/io/grpc/xds",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-xds/$version$/grpc-xds-$version$-javadoc.jar",
++  "description" : "grpc-xds provides gRPC Java support for xDS APIs, including xDS name resolution and control-plane driven load balancing and security configuration. It lets Java gRPC clients and servers integrate with Envoy-compatible service mesh control planes."
+ }
+
+tokens used
+22,695
+Updated [io.grpc-grpc-xds-1.68.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/build/discovered-artifact-metadata/io.grpc-grpc-xds-1.68.0.json) with the discovered metadata.
+
+I verified the JSON with `jq`, confirmed the source, test, and documentation URLs render for `1.68.0` with HTTP 200, and left `language` plus `not-for-native-image` fields absent because this is a normal Java/JVM artifact with class files.
+Ran agent for io.grpc:grpc-xds:1.68.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/build/agent-artifact-discovery-logs/io.grpc-grpc-xds-1.68.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4740-6e4bb641/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 59s
+9 actionable tasks: 4 executed, 5 from cache
