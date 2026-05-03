@@ -1,0 +1,1929 @@
+Starting a Gradle Daemon, 4 busy and 11 incompatible and 212 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded77-f2d8-7e13-932f-2269a2ede54f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.ws.rs:jsr311-api:1.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1.1" when "$version$" is replaced with "1.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+- Set "coordinates" to "javax.ws.rs:jsr311-api:1.1.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the Maven artifact metadata and upstream project/tag layout first, then update the JSON directly with the most defensible URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json && sed -n '1,220p' build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+-rw-rw-r-- 1 vjovanov vjovanov 53 May  3 12:52 build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+{
+  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
+}
+
+exec
+/usr/bin/bash -lc "find . -name 'javax.ws.rs-jsr311-api-*.json' -o -path '*javax.ws.rs*' | head -50" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+./build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+./build/agent-artifact-discovery-logs/javax.ws.rs-jsr311-api-1.1.1.log
+
+web search: 
+web search: Maven javax.ws.rs jsr311-api 1.1.1 pom scm source code url
+codex
+Maven Central has the binary, sources jar, and javadoc jar for `1.1.1`, so I’m using those for source and documentation unless the POM gives a better authoritative upstream URL. Next I’m checking whether the original project exposes a versioned test tree.
+exec
+/usr/bin/bash -lc 'curl -L --fail --silent https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.ws.rs</groupId>
+  <artifactId>jsr311-api</artifactId>
+  <packaging>jar</packaging>
+  <version>1.1.1</version>
+  <name>jsr311-api</name>
+  <url>https://jsr311.dev.java.net</url>
+
+<!--
+  <scm>
+    <connection>scm:svn:https://jsr311.dev.java.net/svn/jsr311/trunk/src</connection>
+    <developerConnection>scm:svn:https://jsr311.dev.java.net/svn/jsr311/trunk/src</developerConnection>
+  </scm>
+-->
+
+
+    <organization>
+        <name>Sun Microsystems, Inc</name>
+        <url>http://www.sun.com/</url>
+    </organization>
+
+    <issueManagement>
+        <system>bugzilla</system>
+        <url>https://jsr311.dev.java.net/servlets/ProjectIssues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>JSR311 Dev List</name>
+            <archive>dev@jsr311.dev.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JSR311 Users List</name>
+            <archive>users@jsr311.dev.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JSR311 Announce List</name>
+            <archive>announce@jsr311.dev.java.net</archive>
+        </mailingList>
+    </mailingLists>
+
+    <licenses>
+        <license>
+            <name>
+                CDDL License
+            </name>
+            <url>http://www.opensource.org/licenses/cddl1.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
+
+    <plugins>
+      <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+              <source>1.5</source>
+              <target>1.5</target>
+          </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+            <manifestEntries>
+              <Specification-Title>JAX-RS: Java API for RESTful Web Services</Specification-Title>
+              <Specification-Version>${project.version}</Specification-Version>
+              <Specification-Vendor>Sun Microsystems, Inc.</Specification-Vendor>
+              <Extension-Name>javax.ws.rs</Extension-Name>
+              <Build-Id>${buildNumber}</Build-Id>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <configuration>
+            <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
+            <items>
+              <item>timestamp</item>
+            </items>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>validate</phase>
+              <goals>
+                <goal>create</goal>
+              </goals>
+            </execution>
+          </executions>
+       </plugin>
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>validate</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+       </plugin>
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <configuration>
+              <instructions>
+                <Export-Package>javax.ws.rs.*</Export-Package>
+                <Import-Package></Import-Package>
+                <Bundle-Version>1.1.1</Bundle-Version> 
+              </instructions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+        <extensions>
+          <extension>
+            <groupId>org.jvnet.wagon-svn</groupId>
+              <artifactId>wagon-svn</artifactId>
+              <version>1.8</version>
+          </extension>
+        </extensions>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+    <distributionManagement>
+      <repository>
+        <uniqueVersion>false</uniqueVersion>
+        <id>java.net-m2-repository</id>
+        <url>java-net:/maven2-repository/trunk/repository/</url>
+      </repository>
+    </distributionManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1.jar -o /tmp/jsr311-api-1.1.1.jar && jar tf /tmp/jsr311-api-1.1.1.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/ws/
+javax/ws/rs/
+javax/ws/rs/core/
+javax/ws/rs/ext/
+javax/ws/rs/core/GenericEntity.class
+javax/ws/rs/core/Response$StatusType.class
+javax/ws/rs/core/HttpHeaders.class
+javax/ws/rs/core/MultivaluedMap.class
+javax/ws/rs/core/UriInfo.class
+javax/ws/rs/core/PathSegment.class
+javax/ws/rs/core/CacheControl.class
+javax/ws/rs/core/Application.class
+javax/ws/rs/core/StreamingOutput.class
+javax/ws/rs/core/Response$ResponseBuilder.class
+javax/ws/rs/core/Context.class
+javax/ws/rs/core/Cookie.class
+javax/ws/rs/core/MediaType$1.class
+javax/ws/rs/core/Response$Status.class
+javax/ws/rs/core/Request.class
+javax/ws/rs/core/SecurityContext.class
+javax/ws/rs/core/MediaType.class
+javax/ws/rs/core/EntityTag.class
+javax/ws/rs/core/Variant.class
+javax/ws/rs/core/Variant$VariantListBuilder.class
+javax/ws/rs/core/Response.class
+javax/ws/rs/core/UriBuilderException.class
+javax/ws/rs/core/Response$Status$Family.class
+javax/ws/rs/core/NewCookie.class
+javax/ws/rs/core/UriBuilder.class
+javax/ws/rs/Encoded.class
+javax/ws/rs/MatrixParam.class
+javax/ws/rs/POST.class
+javax/ws/rs/GET.class
+javax/ws/rs/PUT.class
+javax/ws/rs/DefaultValue.class
+javax/ws/rs/DELETE.class
+javax/ws/rs/HeaderParam.class
+javax/ws/rs/OPTIONS.class
+javax/ws/rs/Produces.class
+javax/ws/rs/ext/RuntimeDelegate.class
+javax/ws/rs/ext/Providers.class
+javax/ws/rs/ext/Provider.class
+javax/ws/rs/ext/RuntimeDelegate$HeaderDelegate.class
+javax/ws/rs/ext/MessageBodyReader.class
+javax/ws/rs/ext/ExceptionMapper.class
+javax/ws/rs/ext/FactoryFinder$1.class
+javax/ws/rs/ext/MessageBodyWriter.class
+javax/ws/rs/ext/ContextResolver.class
+javax/ws/rs/ext/FactoryFinder.class
+javax/ws/rs/HEAD.class
+javax/ws/rs/ApplicationPath.class
+javax/ws/rs/WebApplicationException.class
+javax/ws/rs/PathParam.class
+javax/ws/rs/Path.class
+javax/ws/rs/HttpMethod.class
+javax/ws/rs/FormParam.class
+javax/ws/rs/QueryParam.class
+javax/ws/rs/Consumes.class
+javax/ws/rs/CookieParam.class
+META-INF/maven/
+META-INF/maven/javax.ws.rs/
+META-INF/maven/javax.ws.rs/jsr311-api/
+META-INF/maven/javax.ws.rs/jsr311-api/pom.xml
+META-INF/maven/javax.ws.rs/jsr311-api/pom.properties
+
+exec
+/usr/bin/bash -lc 'curl -I -L --silent https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar && curl -I -L --silent https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 10:52:47 GMT
+content-type: application/java-archive
+content-length: 70022
+cf-ray: 9f5eb7de198da43d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1810767
+etag: "eb66adf35b969cf069b6f3b4f0915892"
+last-modified: Mon, 09 Nov 2009 12:56:05 GMT
+x-checksum-md5: eb66adf35b969cf069b6f3b4f0915892
+x-checksum-sha1: bcc4b7b569ef8bb9b82e48cf23b5aaac29a4fb4e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 10:52:47 GMT
+content-type: application/java-archive
+content-length: 304118
+cf-ray: 9f5eb7de78e2343e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2084538
+etag: "da85dac7761b1763c3e6ba431ae40e02"
+last-modified: Mon, 09 Nov 2009 12:56:05 GMT
+x-checksum-md5: da85dac7761b1763c3e6ba431ae40e02
+x-checksum-sha1: ffe3425e304f0836912d2b8abfb5302100b39423
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent https://raw.githubusercontent.com/javaee/jsr311/master/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 147ms:
+web search: 
+web search: site:github.com javax.ws.rs jsr311-api 1.1.1
+web search: 
+web search: "JSR311" "dev.java.net" "github"
+exec
+/usr/bin/bash -lc 'curl -L --fail --silent https://search.maven.org/solrsearch/select?q=g:%22javax.ws.rs%22%20AND%20a:%22jsr311-api%22%20AND%20v:%221.1.1%22&core=gav&rows=20&wt=json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 51ms:
+exec
+/usr/bin/bash -lc "curl -L --fail --silent https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/ws/rs/jsr311-api/1.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/ws/rs/jsr311-api/1.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsr311-api-1.1.1-javadoc.jar" title="jsr311-api-1.1.1-javadoc.jar">jsr311-api-1.1.1-javadoc.jar</a>                      2009-11-23 23:41    304118      
+<a href="jsr311-api-1.1.1-javadoc.jar.md5" title="jsr311-api-1.1.1-javadoc.jar.md5">jsr311-api-1.1.1-javadoc.jar.md5</a>                  2009-11-23 23:41        32      
+<a href="jsr311-api-1.1.1-javadoc.jar.sha1" title="jsr311-api-1.1.1-javadoc.jar.sha1">jsr311-api-1.1.1-javadoc.jar.sha1</a>                 2009-11-23 23:41        40      
+<a href="jsr311-api-1.1.1-sources.jar" title="jsr311-api-1.1.1-sources.jar">jsr311-api-1.1.1-sources.jar</a>                      2009-11-23 23:41     70022      
+<a href="jsr311-api-1.1.1-sources.jar.md5" title="jsr311-api-1.1.1-sources.jar.md5">jsr311-api-1.1.1-sources.jar.md5</a>                  2009-11-23 23:41        32      
+<a href="jsr311-api-1.1.1-sources.jar.sha1" title="jsr311-api-1.1.1-sources.jar.sha1">jsr311-api-1.1.1-sources.jar.sha1</a>                 2009-11-23 23:41        40      
+<a href="jsr311-api-1.1.1.jar" title="jsr311-api-1.1.1.jar">jsr311-api-1.1.1.jar</a>                              2009-11-23 23:41     46367      
+<a href="jsr311-api-1.1.1.jar.md5" title="jsr311-api-1.1.1.jar.md5">jsr311-api-1.1.1.jar.md5</a>                          2009-11-23 23:41        32      
+<a href="jsr311-api-1.1.1.jar.sha1" title="jsr311-api-1.1.1.jar.sha1">jsr311-api-1.1.1.jar.sha1</a>                         2009-11-23 23:41        40      
+<a href="jsr311-api-1.1.1.pom" title="jsr311-api-1.1.1.pom">jsr311-api-1.1.1.pom</a>                              2009-11-23 23:41      5469      
+<a href="jsr311-api-1.1.1.pom.md5" title="jsr311-api-1.1.1.pom.md5">jsr311-api-1.1.1.pom.md5</a>                          2009-11-23 23:41        55      
+<a href="jsr311-api-1.1.1.pom.sha1" title="jsr311-api-1.1.1.pom.sha1">jsr311-api-1.1.1.pom.sha1</a>                         2009-11-23 23:41        63      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -L --fail --silent -o /tmp/jsr311-api-1.1.1-sources.jar https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar && jar tf /tmp/jsr311-api-1.1.1-sources.jar | sed -n '1,140p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/ws/
+javax/ws/rs/
+javax/ws/rs/core/
+javax/ws/rs/ext/
+javax/ws/rs/PathParam.java
+javax/ws/rs/Path.java
+javax/ws/rs/package-info.java
+javax/ws/rs/Consumes.java
+javax/ws/rs/DefaultValue.java
+javax/ws/rs/HeaderParam.java
+javax/ws/rs/WebApplicationException.java
+javax/ws/rs/Encoded.java
+javax/ws/rs/GET.java
+javax/ws/rs/OPTIONS.java
+javax/ws/rs/core/NewCookie.java
+javax/ws/rs/core/CacheControl.java
+javax/ws/rs/core/SecurityContext.java
+javax/ws/rs/core/Request.java
+javax/ws/rs/core/EntityTag.java
+javax/ws/rs/core/package-info.java
+javax/ws/rs/core/GenericEntity.java
+javax/ws/rs/core/HttpHeaders.java
+javax/ws/rs/core/UriInfo.java
+javax/ws/rs/core/Application.java
+javax/ws/rs/core/MultivaluedMap.java
+javax/ws/rs/core/Response.java
+javax/ws/rs/core/StreamingOutput.java
+javax/ws/rs/core/UriBuilderException.java
+javax/ws/rs/core/Variant.java
+javax/ws/rs/core/UriBuilder.java
+javax/ws/rs/core/Context.java
+javax/ws/rs/core/PathSegment.java
+javax/ws/rs/core/Cookie.java
+javax/ws/rs/core/MediaType.java
+javax/ws/rs/HEAD.java
+javax/ws/rs/QueryParam.java
+javax/ws/rs/POST.java
+javax/ws/rs/Produces.java
+javax/ws/rs/CookieParam.java
+javax/ws/rs/FormParam.java
+javax/ws/rs/ApplicationPath.java
+javax/ws/rs/HttpMethod.java
+javax/ws/rs/MatrixParam.java
+javax/ws/rs/PUT.java
+javax/ws/rs/DELETE.java
+javax/ws/rs/ext/MessageBodyWriter.java
+javax/ws/rs/ext/ExceptionMapper.java
+javax/ws/rs/ext/package-info.java
+javax/ws/rs/ext/Provider.java
+javax/ws/rs/ext/FactoryFinder.java
+javax/ws/rs/ext/ContextResolver.java
+javax/ws/rs/ext/Providers.java
+javax/ws/rs/ext/RuntimeDelegate.java
+javax/ws/rs/ext/MessageBodyReader.java
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent -o /tmp/jsr311-api-1.1.1-javadoc.jar https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar && jar tf /tmp/jsr311-api-1.1.1-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 100ms:
+META-INF/
+META-INF/MANIFEST.MF
+resources/
+javax/
+javax/ws/
+javax/ws/rs/
+javax/ws/rs/class-use/
+javax/ws/rs/core/
+javax/ws/rs/core/class-use/
+javax/ws/rs/ext/
+javax/ws/rs/ext/class-use/
+allclasses-noframe.html
+resources/inherit.gif
+deprecated-list.html
+options
+index-all.html
+package-list
+javax/ws/rs/package-use.html
+javax/ws/rs/Produces.html
+javax/ws/rs/class-use/POST.html
+javax/ws/rs/class-use/MatrixParam.html
+javax/ws/rs/class-use/CookieParam.html
+javax/ws/rs/class-use/WebApplicationException.html
+javax/ws/rs/class-use/DefaultValue.html
+javax/ws/rs/class-use/HEAD.html
+javax/ws/rs/class-use/Produces.html
+javax/ws/rs/class-use/PathParam.html
+javax/ws/rs/class-use/ApplicationPath.html
+javax/ws/rs/class-use/PUT.html
+javax/ws/rs/class-use/QueryParam.html
+javax/ws/rs/class-use/HeaderParam.html
+javax/ws/rs/class-use/DELETE.html
+javax/ws/rs/class-use/FormParam.html
+javax/ws/rs/class-use/Path.html
+javax/ws/rs/class-use/OPTIONS.html
+javax/ws/rs/class-use/HttpMethod.html
+javax/ws/rs/class-use/Encoded.html
+javax/ws/rs/class-use/Consumes.html
+javax/ws/rs/class-use/GET.html
+javax/ws/rs/PathParam.html
+javax/ws/rs/DELETE.html
+javax/ws/rs/package-tree.html
+javax/ws/rs/OPTIONS.html
+javax/ws/rs/core/NewCookie.html
+javax/ws/rs/core/UriInfo.html
+javax/ws/rs/core/Response.Status.Family.html
+javax/ws/rs/core/package-summary.html
+javax/ws/rs/core/MultivaluedMap.html
+javax/ws/rs/core/EntityTag.html
+javax/ws/rs/core/UriBuilder.html
+javax/ws/rs/core/CacheControl.html
+javax/ws/rs/core/GenericEntity.html
+javax/ws/rs/core/Response.html
+javax/ws/rs/core/Variant.VariantListBuilder.html
+javax/ws/rs/core/Application.html
+javax/ws/rs/core/Response.ResponseBuilder.html
+javax/ws/rs/core/StreamingOutput.html
+javax/ws/rs/core/HttpHeaders.html
+javax/ws/rs/core/Request.html
+javax/ws/rs/core/UriBuilderException.html
+javax/ws/rs/core/package-use.html
+javax/ws/rs/core/package-tree.html
+javax/ws/rs/core/PathSegment.html
+javax/ws/rs/core/Response.Status.html
+javax/ws/rs/core/Response.StatusType.html
+javax/ws/rs/core/SecurityContext.html
+javax/ws/rs/core/Variant.html
+javax/ws/rs/core/package-frame.html
+javax/ws/rs/core/Cookie.html
+javax/ws/rs/core/class-use/Response.ResponseBuilder.html
+javax/ws/rs/core/class-use/EntityTag.html
+javax/ws/rs/core/class-use/Application.html
+javax/ws/rs/core/class-use/Request.html
+javax/ws/rs/core/class-use/MultivaluedMap.html
+javax/ws/rs/core/class-use/HttpHeaders.html
+javax/ws/rs/core/class-use/Response.Status.Family.html
+javax/ws/rs/core/class-use/NewCookie.html
+javax/ws/rs/core/class-use/StreamingOutput.html
+javax/ws/rs/core/class-use/Variant.VariantListBuilder.html
+javax/ws/rs/core/class-use/Response.html
+
+web search: 
+web search: "jsr311.dev.java.net"
+codex
+The original POM points at the old `jsr311.dev.java.net` project and declares `src` and `test` directories, but Maven Central only publishes the binary, sources, and javadoc artifacts for this version. I’m checking the migrated `jax-rs/api` repository now to avoid inventing a test URL if the historical tag is not actually present.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jax-rs/api.git | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "curl -L --fail --silent https://api.github.com/repos/jax-rs/api | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/jax-rs/api.git | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "curl -L --fail --silent 'https://search.maven.org/solrsearch/select?q=g:%22javax.ws.rs%22%20AND%20a:%22jsr311-api%22%20AND%20v:%221.1.1%22&core=gav&rows=20&wt=json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 101ms:
+ succeeded in 214ms:
+{
+  "id": 333546338,
+  "node_id": "MDEwOlJlcG9zaXRvcnkzMzM1NDYzMzg=",
+  "name": "api",
+  "full_name": "jax-rs/api",
+  "private": false,
+  "owner": {
+    "login": "jax-rs",
+    "id": 9721421,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjk3MjE0MjE=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/9721421?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/jax-rs",
+    "html_url": "https://github.com/jax-rs",
+    "followers_url": "https://api.github.com/users/jax-rs/followers",
+    "following_url": "https://api.github.com/users/jax-rs/following{/other_user}",
+    "gists_url": "https://api.github.com/users/jax-rs/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/jax-rs/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/jax-rs/subscriptions",
+    "organizations_url": "https://api.github.com/users/jax-rs/orgs",
+    "repos_url": "https://api.github.com/users/jax-rs/repos",
+    "events_url": "https://api.github.com/users/jax-rs/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/jax-rs/received_events",
+    "type": "Organization",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "html_url": "https://github.com/jax-rs/api",
+  "description": "JAX-RS API Source Code",
+  "fork": false,
+  "url": "https://api.github.com/repos/jax-rs/api",
+  "forks_url": "https://api.github.com/repos/jax-rs/api/forks",
+  "keys_url": "https://api.github.com/repos/jax-rs/api/keys{/key_id}",
+  "collaborators_url": "https://api.github.com/repos/jax-rs/api/collaborators{/collaborator}",
+  "teams_url": "https://api.github.com/repos/jax-rs/api/teams",
+  "hooks_url": "https://api.github.com/repos/jax-rs/api/hooks",
+  "issue_events_url": "https://api.github.com/repos/jax-rs/api/issues/events{/number}",
+  "events_url": "https://api.github.com/repos/jax-rs/api/events",
+  "assignees_url": "https://api.github.com/repos/jax-rs/api/assignees{/user}",
+  "branches_url": "https://api.github.com/repos/jax-rs/api/branches{/branch}",
+  "tags_url": "https://api.github.com/repos/jax-rs/api/tags",
+  "blobs_url": "https://api.github.com/repos/jax-rs/api/git/blobs{/sha}",
+  "git_tags_url": "https://api.github.com/repos/jax-rs/api/git/tags{/sha}",
+  "git_refs_url": "https://api.github.com/repos/jax-rs/api/git/refs{/sha}",
+  "trees_url": "https://api.github.com/repos/jax-rs/api/git/trees{/sha}",
+  "statuses_url": "https://api.github.com/repos/jax-rs/api/statuses/{sha}",
+  "languages_url": "https://api.github.com/repos/jax-rs/api/languages",
+  "stargazers_url": "https://api.github.com/repos/jax-rs/api/stargazers",
+  "contributors_url": "https://api.github.com/repos/jax-rs/api/contributors",
+  "subscribers_url": "https://api.github.com/repos/jax-rs/api/subscribers",
+  "subscription_url": "https://api.github.com/repos/jax-rs/api/subscription",
+  "commits_url": "https://api.github.com/repos/jax-rs/api/commits{/sha}",
+  "git_commits_url": "https://api.github.com/repos/jax-rs/api/git/commits{/sha}",
+  "comments_url": "https://api.github.com/repos/jax-rs/api/comments{/number}",
+  "issue_comment_url": "https://api.github.com/repos/jax-rs/api/issues/comments{/number}",
+  "contents_url": "https://api.github.com/repos/jax-rs/api/contents/{+path}",
+  "compare_url": "https://api.github.com/repos/jax-rs/api/compare/{base}...{head}",
+  "merges_url": "https://api.github.com/repos/jax-rs/api/merges",
+  "archive_url": "https://api.github.com/repos/jax-rs/api/{archive_format}{/ref}",
+  "downloads_url": "https://api.github.com/repos/jax-rs/api/downloads",
+  "issues_url": "https://api.github.com/repos/jax-rs/api/issues{/number}",
+  "pulls_url": "https://api.github.com/repos/jax-rs/api/pulls{/number}",
+  "milestones_url": "https://api.github.com/repos/jax-rs/api/milestones{/number}",
+  "notifications_url": "https://api.github.com/repos/jax-rs/api/notifications{?since,all,participating}",
+  "labels_url": "https://api.github.com/repos/jax-rs/api/labels{/name}",
+  "releases_url": "https://api.github.com/repos/jax-rs/api/releases{/id}",
+  "deployments_url": "https://api.github.com/repos/jax-rs/api/deployments",
+  "created_at": "2021-01-27T20:09:04Z",
+  "updated_at": "2024-02-25T02:07:48Z",
+  "pushed_at": "2021-01-27T20:17:52Z",
+  "git_url": "git://github.com/jax-rs/api.git",
+  "ssh_url": "git@github.com:jax-rs/api.git",
+  "clone_url": "https://github.com/jax-rs/api.git",
+  "svn_url": "https://github.com/jax-rs/api",
+  "homepage": null,
+  "size": 2,
+  "stargazers_count": 2,
+  "watchers_count": 2,
+  "language": null,
+  "has_issues": false,
+  "has_projects": true,
+  "has_downloads": true,
+  "has_wiki": true,
+  "has_pages": false,
+  "has_discussions": false,
+  "forks_count": 2,
+  "mirror_url": null,
+  "archived": true,
+  "disabled": false,
+  "open_issues_count": 0,
+  "license": null,
+  "allow_forking": true,
+  "is_template": false,
+  "web_commit_signoff_required": false,
+  "has_pull_requests": true,
+  "pull_request_creation_policy": "all",
+  "topics": [
+
+  ],
+  "visibility": "public",
+  "forks": 2,
+  "open_issues": 0,
+  "watchers": 2,
+  "default_branch": "main",
+  "temp_clone_token": null,
+  "custom_properties": {
+
+  },
+  "organization": {
+    "login": "jax-rs",
+    "id": 9721421,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjk3MjE0MjE=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/9721421?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/jax-rs",
+    "html_url": "https://github.com/jax-rs",
+    "followers_url": "https://api.github.com/users/jax-rs/followers",
+    "following_url": "https://api.github.com/users/jax-rs/following{/other_user}",
+    "gists_url": "https://api.github.com/users/jax-rs/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/jax-rs/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/jax-rs/subscriptions",
+    "organizations_url": "https://api.github.com/users/jax-rs/orgs",
+    "repos_url": "https://api.github.com/users/jax-rs/repos",
+    "events_url": "https://api.github.com/users/jax-rs/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/jax-rs/received_events",
+    "type": "Organization",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "network_count": 2,
+  "subscribers_count": 6
+}
+
+ succeeded in 325ms:
+ succeeded in 301ms:
+5a67800cb24683472692ef6b74baa9100948350a	refs/heads/main
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent https://api.github.com/repos/jax-rs/api/contents/?ref=main | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "curl -L --fail --silent 'https://api.github.com/search/repositories?q=jsr311-api' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "curl -L --fail --silent 'https://api.github.com/search/code?q=%22javax.ws.rs%22+%22jsr311-api%22+filename:pom.xml' | sed -n '1,180p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 109ms:
+ succeeded in 174ms:
+[
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "b213dab8377de11d49b055f25be2aa33a3eca5c8",
+    "size": 264,
+    "url": "https://api.github.com/repos/jax-rs/api/contents/README.md?ref=main",
+    "html_url": "https://github.com/jax-rs/api/blob/main/README.md",
+    "git_url": "https://api.github.com/repos/jax-rs/api/git/blobs/b213dab8377de11d49b055f25be2aa33a3eca5c8",
+    "download_url": "https://raw.githubusercontent.com/jax-rs/api/main/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jax-rs/api/contents/README.md?ref=main",
+      "git": "https://api.github.com/repos/jax-rs/api/git/blobs/b213dab8377de11d49b055f25be2aa33a3eca5c8",
+      "html": "https://github.com/jax-rs/api/blob/main/README.md"
+    }
+  }
+]
+
+ succeeded in 343ms:
+{
+  "total_count": 3,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 4080111,
+      "node_id": "MDEwOlJlcG9zaXRvcnk0MDgwMTEx",
+      "name": "jsr311-api",
+      "full_name": "neo4j/jsr311-api",
+      "private": false,
+      "owner": {
+        "login": "neo4j",
+        "id": 201120,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjIwMTEyMA==",
+        "avatar_url": "https://avatars.githubusercontent.com/u/201120?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/neo4j",
+        "html_url": "https://github.com/neo4j",
+        "followers_url": "https://api.github.com/users/neo4j/followers",
+        "following_url": "https://api.github.com/users/neo4j/following{/other_user}",
+        "gists_url": "https://api.github.com/users/neo4j/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/neo4j/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/neo4j/subscriptions",
+        "organizations_url": "https://api.github.com/users/neo4j/orgs",
+        "repos_url": "https://api.github.com/users/neo4j/repos",
+        "events_url": "https://api.github.com/users/neo4j/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/neo4j/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/neo4j/jsr311-api",
+      "description": "Forked from revision 612",
+      "fork": false,
+      "url": "https://api.github.com/repos/neo4j/jsr311-api",
+      "forks_url": "https://api.github.com/repos/neo4j/jsr311-api/forks",
+      "keys_url": "https://api.github.com/repos/neo4j/jsr311-api/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/neo4j/jsr311-api/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/neo4j/jsr311-api/teams",
+      "hooks_url": "https://api.github.com/repos/neo4j/jsr311-api/hooks",
+      "issue_events_url": "https://api.github.com/repos/neo4j/jsr311-api/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/neo4j/jsr311-api/events",
+      "assignees_url": "https://api.github.com/repos/neo4j/jsr311-api/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/neo4j/jsr311-api/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/neo4j/jsr311-api/tags",
+      "blobs_url": "https://api.github.com/repos/neo4j/jsr311-api/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/neo4j/jsr311-api/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/neo4j/jsr311-api/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/neo4j/jsr311-api/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/neo4j/jsr311-api/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/neo4j/jsr311-api/languages",
+      "stargazers_url": "https://api.github.com/repos/neo4j/jsr311-api/stargazers",
+      "contributors_url": "https://api.github.com/repos/neo4j/jsr311-api/contributors",
+      "subscribers_url": "https://api.github.com/repos/neo4j/jsr311-api/subscribers",
+      "subscription_url": "https://api.github.com/repos/neo4j/jsr311-api/subscription",
+      "commits_url": "https://api.github.com/repos/neo4j/jsr311-api/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/neo4j/jsr311-api/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/neo4j/jsr311-api/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/neo4j/jsr311-api/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/neo4j/jsr311-api/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/neo4j/jsr311-api/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/neo4j/jsr311-api/merges",
+      "archive_url": "https://api.github.com/repos/neo4j/jsr311-api/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/neo4j/jsr311-api/downloads",
+      "issues_url": "https://api.github.com/repos/neo4j/jsr311-api/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/neo4j/jsr311-api/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/neo4j/jsr311-api/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/neo4j/jsr311-api/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/neo4j/jsr311-api/labels{/name}",
+      "releases_url": "https://api.github.com/repos/neo4j/jsr311-api/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/neo4j/jsr311-api/deployments",
+      "created_at": "2012-04-19T20:54:09Z",
+      "updated_at": "2020-04-13T15:10:36Z",
+      "pushed_at": "2023-12-16T16:33:19Z",
+      "git_url": "git://github.com/neo4j/jsr311-api.git",
+      "ssh_url": "git@github.com:neo4j/jsr311-api.git",
+      "clone_url": "https://github.com/neo4j/jsr311-api.git",
+      "svn_url": "https://github.com/neo4j/jsr311-api",
+      "homepage": null,
+      "size": 74,
+      "stargazers_count": 6,
+      "watchers_count": 6,
+      "language": "Java",
+      "has_issues": true,
+      "has_projects": true,
+      "has_downloads": true,
+      "has_wiki": true,
+      "has_pages": false,
+      "has_discussions": false,
+      "forks_count": 5,
+      "mirror_url": null,
+      "archived": false,
+      "disabled": false,
+      "open_issues_count": 4,
+      "license": null,
+      "allow_forking": true,
+      "is_template": false,
+      "web_commit_signoff_required": false,
+      "has_pull_requests": true,
+      "pull_request_creation_policy": "all",
+      "topics": [
+
+      ],
+      "visibility": "public",
+      "forks": 5,
+      "open_issues": 4,
+      "watchers": 6,
+      "default_branch": "master",
+      "score": 1.0
+    },
+    {
+      "id": 192414842,
+      "node_id": "MDEwOlJlcG9zaXRvcnkxOTI0MTQ4NDI=",
+      "name": "mvn-jsr311-api",
+      "full_name": "clearlinux-pkgs/mvn-jsr311-api",
+      "private": false,
+      "owner": {
+        "login": "clearlinux-pkgs",
+        "id": 14979720,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjE0OTc5NzIw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/14979720?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/clearlinux-pkgs",
+        "html_url": "https://github.com/clearlinux-pkgs",
+        "followers_url": "https://api.github.com/users/clearlinux-pkgs/followers",
+        "following_url": "https://api.github.com/users/clearlinux-pkgs/following{/other_user}",
+        "gists_url": "https://api.github.com/users/clearlinux-pkgs/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/clearlinux-pkgs/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/clearlinux-pkgs/subscriptions",
+        "organizations_url": "https://api.github.com/users/clearlinux-pkgs/orgs",
+        "repos_url": "https://api.github.com/users/clearlinux-pkgs/repos",
+        "events_url": "https://api.github.com/users/clearlinux-pkgs/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/clearlinux-pkgs/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/clearlinux-pkgs/mvn-jsr311-api",
+      "description": null,
+      "fork": false,
+      "url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api",
+      "forks_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/forks",
+      "keys_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/teams",
+      "hooks_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/hooks",
+      "issue_events_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/events",
+      "assignees_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/tags",
+      "blobs_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/languages",
+      "stargazers_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/stargazers",
+      "contributors_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/contributors",
+      "subscribers_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/subscribers",
+      "subscription_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/subscription",
+      "commits_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/merges",
+      "archive_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/downloads",
+      "issues_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/labels{/name}",
+      "releases_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/clearlinux-pkgs/mvn-jsr311-api/deployments",
+      "created_at": "2019-06-17T20:34:17Z",
+      "updated_at": "2023-01-27T19:51:10Z",
+      "pushed_at": "2019-06-17T20:34:22Z",
+      "git_url": "git://github.com/clearlinux-pkgs/mvn-jsr311-api.git",
+      "ssh_url": "git@github.com:clearlinux-pkgs/mvn-jsr311-api.git",
+      "clone_url": "https://github.com/clearlinux-pkgs/mvn-jsr311-api.git",
+      "svn_url": "https://github.com/clearlinux-pkgs/mvn-jsr311-api",
+      "homepage": null,
+      "size": 2,
+      "stargazers_count": 0,
+      "watchers_count": 0,
+      "language": "Makefile",
+      "has_issues": false,
+      "has_projects": true,
+      "has_downloads": true,
+      "has_wiki": true,
+      "has_pages": false,
+      "has_discussions": false,
+      "forks_count": 0,
+      "mirror_url": null,
+      "archived": true,
+      "disabled": false,
+      "open_issues_count": 0,
+      "license": null,
+      "allow_forking": true,
+      "is_template": false,
+      "web_commit_signoff_required": false,
+      "has_pull_requests": true,
+      "pull_request_creation_policy": "all",
+      "topics": [
+
+      ],
+      "visibility": "public",
+      "forks": 0,
+      "open_issues": 0,
+      "watchers": 0,
+      "default_branch": "master",
+      "score": 1.0
+    },
+    {
+      "id": 57545861,
+      "node_id": "MDEwOlJlcG9zaXRvcnk1NzU0NTg2MQ==",
+      "name": "sbt-swagger",
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/neo4j/jsr311-api.git | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "curl -L --fail --silent https://raw.githubusercontent.com/neo4j/jsr311-api/master/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/neo4j/jsr311-api.git | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "curl -L --fail --silent https://api.github.com/repos/neo4j/jsr311-api/contents/?ref=master | sed -n '1,240p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 184ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.neo4j.3rdparty.javax.ws.rs</groupId>
+    <artifactId>jsr311-api</artifactId>
+    <packaging>jar</packaging>
+    <version>1.1.2.r612</version>
+    <name>jsr311-api</name>
+    <url>https://jsr311.dev.java.net</url>
+    <description>JSR 311 forked from r612.</description>
+
+    <!--
+      <scm>
+        <connection>scm:svn:https://jsr311.dev.java.net/svn/jsr311/trunk/src</connection>
+        <developerConnection>scm:svn:https://jsr311.dev.java.net/svn/jsr311/trunk/src</developerConnection>
+      </scm>
+    -->
+
+    <scm>
+        <connection>scm:git:git://github.com/neo4j/jsr311-api.git</connection>
+        <developerConnection>scm:git:git@github.com:neo4j/jsr311-api.git</developerConnection>
+        <url>https://github.com/neo4j/jsr311-api</url>
+    </scm>
+
+
+    <organization>
+        <name>Oracle Corporation</name>
+        <url>http://www.oracle.com/</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>neo4j</id>
+            <name>The Neo4j Team</name>
+            <url>http://neo4j.org/</url>
+            <organization>Neo Technology</organization>
+            <organizationUrl>http://neotechnology.com/</organizationUrl>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>bugzilla</system>
+        <url>https://jsr311.dev.java.net/servlets/ProjectIssues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>JSR311 Dev List</name>
+            <archive>dev@jsr311.dev.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JSR311 Users List</name>
+            <archive>users@jsr311.dev.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JSR311 Announce List</name>
+            <archive>announce@jsr311.dev.java.net</archive>
+        </mailingList>
+    </mailingLists>
+
+    <licenses>
+        <license>
+            <name>CDDL 1.1</name>
+            <url>https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifestEntries>
+                            <Specification-Title>JAX-RS: Java API for RESTful Web Services</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>Sun Microsystems, Inc.</Specification-Vendor>
+                            <Extension-Name>javax.ws.rs</Extension-Name>
+                            <Build-Id>${buildNumber}</Build-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.0-beta-3</version>
+                <configuration>
+                    <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
+                    <items>
+                        <item>timestamp</item>
+                    </items>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <instructions>
+                                <Export-Package>javax.ws.rs.*</Export-Package>
+                                <Import-Package></Import-Package>
+                                <Bundle-Version>1.1.2</Bundle-Version>
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <keyname>Neo Technology Build Server</keyname>
+                    <useAgent>true</useAgent>
+                </configuration>
+                <executions>
+
+ succeeded in 172ms:
+[
+  {
+    "name": ".cvsignore",
+    "path": ".cvsignore",
+    "sha": "9d0b71a3c79d2d3afbfa99269fea4280f5e73344",
+    "size": 11,
+    "url": "https://api.github.com/repos/neo4j/jsr311-api/contents/.cvsignore?ref=master",
+    "html_url": "https://github.com/neo4j/jsr311-api/blob/master/.cvsignore",
+    "git_url": "https://api.github.com/repos/neo4j/jsr311-api/git/blobs/9d0b71a3c79d2d3afbfa99269fea4280f5e73344",
+    "download_url": "https://raw.githubusercontent.com/neo4j/jsr311-api/master/.cvsignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/neo4j/jsr311-api/contents/.cvsignore?ref=master",
+      "git": "https://api.github.com/repos/neo4j/jsr311-api/git/blobs/9d0b71a3c79d2d3afbfa99269fea4280f5e73344",
+      "html": "https://github.com/neo4j/jsr311-api/blob/master/.cvsignore"
+    }
+  },
+  {
+    "name": "README.txt",
+    "path": "README.txt",
+    "sha": "3f71b68a3646723999db12b71564d9ef52364242",
+    "size": 189,
+    "url": "https://api.github.com/repos/neo4j/jsr311-api/contents/README.txt?ref=master",
+    "html_url": "https://github.com/neo4j/jsr311-api/blob/master/README.txt",
+    "git_url": "https://api.github.com/repos/neo4j/jsr311-api/git/blobs/3f71b68a3646723999db12b71564d9ef52364242",
+    "download_url": "https://raw.githubusercontent.com/neo4j/jsr311-api/master/README.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/neo4j/jsr311-api/contents/README.txt?ref=master",
+      "git": "https://api.github.com/repos/neo4j/jsr311-api/git/blobs/3f71b68a3646723999db12b71564d9ef52364242",
+      "html": "https://github.com/neo4j/jsr311-api/blob/master/README.txt"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "docs",
+    "sha": "b67f437b82c1c7622ba0c3b9282f27617971c475",
+    "size": 0,
+    "url": "https://api.github.com/repos/neo4j/jsr311-api/contents/docs?ref=master",
+    "html_url": "https://github.com/neo4j/jsr311-api/tree/master/docs",
+    "git_url": "https://api.github.com/repos/neo4j/jsr311-api/git/trees/b67f437b82c1c7622ba0c3b9282f27617971c475",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/neo4j/jsr311-api/contents/docs?ref=master",
+      "git": "https://api.github.com/repos/neo4j/jsr311-api/git/trees/b67f437b82c1c7622ba0c3b9282f27617971c475",
+      "html": "https://github.com/neo4j/jsr311-api/tree/master/docs"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "8dabfdeb00c1eb62b9396545944d2e616adbe121",
+    "size": 10259,
+    "url": "https://api.github.com/repos/neo4j/jsr311-api/contents/pom.xml?ref=master",
+    "html_url": "https://github.com/neo4j/jsr311-api/blob/master/pom.xml",
+    "git_url": "https://api.github.com/repos/neo4j/jsr311-api/git/blobs/8dabfdeb00c1eb62b9396545944d2e616adbe121",
+    "download_url": "https://raw.githubusercontent.com/neo4j/jsr311-api/master/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/neo4j/jsr311-api/contents/pom.xml?ref=master",
+      "git": "https://api.github.com/repos/neo4j/jsr311-api/git/blobs/8dabfdeb00c1eb62b9396545944d2e616adbe121",
+      "html": "https://github.com/neo4j/jsr311-api/blob/master/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "c091a8143ce2fc2bf75f72765fd25ff4555e0b2c",
+    "size": 0,
+    "url": "https://api.github.com/repos/neo4j/jsr311-api/contents/src?ref=master",
+    "html_url": "https://github.com/neo4j/jsr311-api/tree/master/src",
+    "git_url": "https://api.github.com/repos/neo4j/jsr311-api/git/trees/c091a8143ce2fc2bf75f72765fd25ff4555e0b2c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/neo4j/jsr311-api/contents/src?ref=master",
+      "git": "https://api.github.com/repos/neo4j/jsr311-api/git/trees/c091a8143ce2fc2bf75f72765fd25ff4555e0b2c",
+      "html": "https://github.com/neo4j/jsr311-api/tree/master/src"
+    }
+  },
+  {
+    "name": "test",
+    "path": "test",
+    "sha": "2fff9dcd0647cac16c20d5288f359b289aa3d220",
+    "size": 0,
+    "url": "https://api.github.com/repos/neo4j/jsr311-api/contents/test?ref=master",
+    "html_url": "https://github.com/neo4j/jsr311-api/tree/master/test",
+    "git_url": "https://api.github.com/repos/neo4j/jsr311-api/git/trees/2fff9dcd0647cac16c20d5288f359b289aa3d220",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/neo4j/jsr311-api/contents/test?ref=master",
+      "git": "https://api.github.com/repos/neo4j/jsr311-api/git/trees/2fff9dcd0647cac16c20d5288f359b289aa3d220",
+      "html": "https://github.com/neo4j/jsr311-api/tree/master/test"
+    }
+  }
+]
+
+ succeeded in 324ms:
+ succeeded in 336ms:
+9a629f0fdc6e050a02865bb055267208d82d9d92	refs/heads/dependabot/maven/junit-junit-4.13.1
+e2b1877103cb0c666b006e0efe1cd754d2f0852f	refs/heads/master
+
+exec
+/usr/bin/bash -lc "curl -I -L --silent https://jsr311.dev.java.net | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "curl -L --fail --silent https://raw.githubusercontent.com/neo4j/jsr311-api/master/README.txt && printf '\\n---test list---\\n' && curl -L --fail --silent https://api.github.com/repos/neo4j/jsr311-api/contents/test?ref=master | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "curl -I -L --silent https://jsr311.dev.java.net/svn/jsr311/trunk/src | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+exec
+/usr/bin/bash -lc "curl -L --fail --silent https://api.github.com/repos/neo4j/jsr311-api/commits/master | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 279ms:
+{
+  "sha": "e2b1877103cb0c666b006e0efe1cd754d2f0852f",
+  "node_id": "MDY6Q29tbWl0NDA4MDExMTplMmIxODc3MTAzY2IwYzY2NmIwMDZlMGVmZTFjZDc1NGQyZjA4NTJm",
+  "commit": {
+    "author": {
+      "name": "Anders Nawroth",
+      "email": "anders@neotechnology.com",
+      "date": "2012-05-07T14:44:19Z"
+    },
+    "committer": {
+      "name": "Anders Nawroth",
+      "email": "anders@neotechnology.com",
+      "date": "2012-05-07T14:44:19Z"
+    },
+    "message": "Changes to make it deployable.",
+    "tree": {
+      "sha": "f7be2e41855bd8a10a418ad87123bc8daf124e8d",
+      "url": "https://api.github.com/repos/neo4j/jsr311-api/git/trees/f7be2e41855bd8a10a418ad87123bc8daf124e8d"
+    },
+    "url": "https://api.github.com/repos/neo4j/jsr311-api/git/commits/e2b1877103cb0c666b006e0efe1cd754d2f0852f",
+    "comment_count": 0,
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "url": "https://api.github.com/repos/neo4j/jsr311-api/commits/e2b1877103cb0c666b006e0efe1cd754d2f0852f",
+  "html_url": "https://github.com/neo4j/jsr311-api/commit/e2b1877103cb0c666b006e0efe1cd754d2f0852f",
+  "comments_url": "https://api.github.com/repos/neo4j/jsr311-api/commits/e2b1877103cb0c666b006e0efe1cd754d2f0852f/comments",
+  "author": {
+    "login": "nawroth",
+    "id": 140027,
+    "node_id": "MDQ6VXNlcjE0MDAyNw==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/140027?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/nawroth",
+    "html_url": "https://github.com/nawroth",
+    "followers_url": "https://api.github.com/users/nawroth/followers",
+    "following_url": "https://api.github.com/users/nawroth/following{/other_user}",
+    "gists_url": "https://api.github.com/users/nawroth/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/nawroth/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/nawroth/subscriptions",
+    "organizations_url": "https://api.github.com/users/nawroth/orgs",
+    "repos_url": "https://api.github.com/users/nawroth/repos",
+    "events_url": "https://api.github.com/users/nawroth/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/nawroth/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "nawroth",
+    "id": 140027,
+    "node_id": "MDQ6VXNlcjE0MDAyNw==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/140027?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/nawroth",
+    "html_url": "https://github.com/nawroth",
+    "followers_url": "https://api.github.com/users/nawroth/followers",
+    "following_url": "https://api.github.com/users/nawroth/following{/other_user}",
+    "gists_url": "https://api.github.com/users/nawroth/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/nawroth/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/nawroth/subscriptions",
+    "organizations_url": "https://api.github.com/users/nawroth/orgs",
+    "repos_url": "https://api.github.com/users/nawroth/repos",
+    "events_url": "https://api.github.com/users/nawroth/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/nawroth/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "41dc41af8564408a981ba22392d45f4dd55feca2",
+      "url": "https://api.github.com/repos/neo4j/jsr311-api/commits/41dc41af8564408a981ba22392d45f4dd55feca2",
+      "html_url": "https://github.com/neo4j/jsr311-api/commit/41dc41af8564408a981ba22392d45f4dd55feca2"
+    }
+  ],
+  "stats": {
+    "total": 41,
+    "additions": 38,
+    "deletions": 3
+  },
+  "files": [
+    {
+      "sha": "8dabfdeb00c1eb62b9396545944d2e616adbe121",
+      "filename": "pom.xml",
+      "status": "modified",
+      "additions": 38,
+      "deletions": 3,
+      "changes": 41,
+      "blob_url": "https://github.com/neo4j/jsr311-api/blob/e2b1877103cb0c666b006e0efe1cd754d2f0852f/pom.xml",
+      "raw_url": "https://github.com/neo4j/jsr311-api/raw/e2b1877103cb0c666b006e0efe1cd754d2f0852f/pom.xml",
+      "contents_url": "https://api.github.com/repos/neo4j/jsr311-api/contents/pom.xml?ref=e2b1877103cb0c666b006e0efe1cd754d2f0852f",
+      "patch": "@@ -50,6 +50,7 @@\n     <version>1.1.2.r612</version>\n     <name>jsr311-api</name>\n     <url>https://jsr311.dev.java.net</url>\n+    <description>JSR 311 forked from r612.</description>\n \n     <!--\n       <scm>\n@@ -58,12 +59,28 @@\n       </scm>\n     -->\n \n+    <scm>\n+        <connection>scm:git:git://github.com/neo4j/jsr311-api.git</connection>\n+        <developerConnection>scm:git:git@github.com:neo4j/jsr311-api.git</developerConnection>\n+        <url>https://github.com/neo4j/jsr311-api</url>\n+    </scm>\n+\n \n     <organization>\n         <name>Oracle Corporation</name>\n         <url>http://www.oracle.com/</url>\n     </organization>\n \n+    <developers>\n+        <developer>\n+            <id>neo4j</id>\n+            <name>The Neo4j Team</name>\n+            <url>http://neo4j.org/</url>\n+            <organization>Neo Technology</organization>\n+            <organizationUrl>http://neotechnology.com/</organizationUrl>\n+        </developer>\n+    </developers>\n+\n     <issueManagement>\n         <system>bugzilla</system>\n         <url>https://jsr311.dev.java.net/servlets/ProjectIssues</url>\n@@ -192,6 +209,24 @@\n                     </execution>\n                 </executions>\n             </plugin>\n+            <plugin>\n+                <groupId>org.apache.maven.plugins</groupId>\n+                <artifactId>maven-gpg-plugin</artifactId>\n+                <version>1.4</version>\n+                <configuration>\n+                    <keyname>Neo Technology Build Server</keyname>\n+                    <useAgent>true</useAgent>\n+                </configuration>\n+                <executions>\n+                    <execution>\n+                        <id>sign-artifacts</id>\n+                        <phase>verify</phase>\n+                        <goals>\n+                            <goal>sign</goal>\n+                        </goals>\n+                    </execution>\n+                </executions>\n+            </plugin>\n         </plugins>\n         <extensions>\n             <extension>\n@@ -221,9 +256,9 @@\n \n     <distributionManagement>\n         <repository>\n-            <uniqueVersion>false</uniqueVersion>\n-            <id>java.net-m2-repository</id>\n-            <url>java-net:/maven2-repository/trunk/repository/</url>\n+            <id>sonatype-nexus-staging</id>\n+            <name>Nexus Release Repository</name>\n+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>\n         </repository>\n     </distributionManagement>\n "
+    }
+  ]
+}
+
+ succeeded in 356ms:
+A REST-based API that empowers/enables developers to rapidly build Web
+applications in Java that are characteristic of the best designed parts of the
+Web.
+
+Type 'ant' to build the project.
+
+---test list---
+[
+  {
+    "name": "javax",
+    "path": "test/javax",
+    "sha": "40b2b239946ff0ff7e5f19c54f4bd22e2ff533ae",
+    "size": 0,
+    "url": "https://api.github.com/repos/neo4j/jsr311-api/contents/test/javax?ref=master",
+    "html_url": "https://github.com/neo4j/jsr311-api/tree/master/test/javax",
+    "git_url": "https://api.github.com/repos/neo4j/jsr311-api/git/trees/40b2b239946ff0ff7e5f19c54f4bd22e2ff533ae",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/neo4j/jsr311-api/contents/test/javax?ref=master",
+      "git": "https://api.github.com/repos/neo4j/jsr311-api/git/trees/40b2b239946ff0ff7e5f19c54f4bd22e2ff533ae",
+      "html": "https://github.com/neo4j/jsr311-api/tree/master/test/javax"
+    }
+  }
+]
+
+2026-05-03T10:53:41.742412Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+2026-05-03T10:53:41.742482Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+exec
+/usr/bin/bash -lc "ps -ef | rg 'curl -I -L --silent https://jsr311.dev.java.net' || true" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+vjovanov 1181138 1162152  0 12:53 ?        00:00:00 /usr/bin/bash -c curl -I -L --silent https://jsr311.dev.java.net | sed -n '1,80p'
+vjovanov 1181141 1162152  0 12:53 ?        00:00:00 /usr/bin/bash -c curl -I -L --silent https://jsr311.dev.java.net/svn/jsr311/trunk/src | sed -n '1,80p'
+vjovanov 1181146 1181138  0 12:53 ?        00:00:00 curl -I -L --silent https://jsr311.dev.java.net
+vjovanov 1181150 1181141  0 12:53 ?        00:00:00 curl -I -L --silent https://jsr311.dev.java.net/svn/jsr311/trunk/src
+vjovanov 1184218 1162152  0 12:53 ?        00:00:00 /usr/bin/bash -c ps -ef | rg 'curl -I -L --silent https://jsr311.dev.java.net' || true
+vjovanov 1184227 1184218  0 12:53 ?        00:00:00 rg curl -I -L --silent https://jsr311.dev.java.net
+
+exec
+/usr/bin/bash -lc 'kill 1181138 1181141 1181146 1181150 || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+ exited -1 in 34730ms:
+ exited -1 in 34731ms:
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+{
+  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -n metadata build | head -20" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-session/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:50:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:65:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:91:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:112:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:7:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:24:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:63:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/org.yaml/snakeyaml/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+metadata/org.eclipse.jetty/jetty-ee/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+
+exec
+/usr/bin/bash -lc "rg '\"not-for-native-image\"|\"language\"' -n metadata build | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+metadata/eu.timepit/refined_3/index.json:10:    "language" : {
+metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:28:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:46:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:3:    "not-for-native-image": true,
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.eclipse.jetty/jetty-http/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "9.4.1.v20170120",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse/jetty.project",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+    "tested-versions" : [
+      "9.4.1.v20170120",
+      "9.4.1.v20180619",
+      "9.4.2.v20170220",
+      "9.4.2.v20180619",
+      "9.4.3.v20170317",
+      "9.4.3.v20180619",
+      "9.4.4.v20170414",
+      "9.4.4.v20180619",
+      "9.4.5.v20170502",
+      "9.4.5.v20180619",
+      "9.4.6.v20170531",
+      "9.4.6.v20180619",
+      "9.4.7.RC0",
+      "9.4.7.v20170914",
+      "9.4.7.v20180619",
+      "9.4.8.v20171121",
+      "9.4.8.v20180619",
+      "9.4.9.v20180320",
+      "9.4.10.RC0",
+      "9.4.10.RC1",
+      "9.4.10.v20180503",
+      "9.4.11.v20180605",
+      "9.4.12.RC0",
+      "9.4.12.RC1",
+      "9.4.12.RC2",
+      "9.4.12.v20180830",
+      "9.4.13.v20181111",
+      "9.4.14.v20181114",
+      "9.4.15.v20190215",
+      "9.4.16.v20190411",
+
+exec
+/usr/bin/bash -lc "sed -n '1,30p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,30p' metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the JVM artifact is published separately as kotlinx-io-core-jvm.",
+    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+  }
+]
+
+codex
+The artifact is a normal JVM JAR with `.class` files under `javax/ws/rs`, so I’m leaving the Native Image exclusion fields out. I also found no versioned test artifact on Maven Central and no trustworthy upstream `1.1.1` test tag, so the test URL will be `N/A`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+{
+  "coordinates": "javax.ws.rs:jsr311-api:1.1.1",
+  "source-code-url": "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
+  "repository-url": "https://jsr311.dev.java.net",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
+  "description": "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -L --fail --max-time 15 --silent https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar | sed -n '1,20p' && curl -I -L --fail --max-time 15 --silent https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 101ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 10:54:31 GMT
+content-type: application/java-archive
+content-length: 304118
+cf-ray: 9f5eba68f9aecd00-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2084642
+etag: "da85dac7761b1763c3e6ba431ae40e02"
+last-modified: Mon, 09 Nov 2009 12:56:05 GMT
+x-checksum-md5: da85dac7761b1763c3e6ba431ae40e02
+x-checksum-sha1: ffe3425e304f0836912d2b8abfb5302100b39423
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json && sed -n '1,120p' build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+ succeeded in 128ms:
+{
+  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
+  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
+  "repository-url" : "https://jsr311.dev.java.net",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
+  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 10 --silent https://jsr311.dev.java.net || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+ succeeded in 9964ms:
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '60,120p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+        },
+        "documentation-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the project documentation for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional two-sentence explanation of what the library does."
+        },
+        "language": {
+          "$ref": "#/$defs/libraryLanguage"
+        },
+        "test-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the test source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "latest": {
+          "type": "boolean",
+          "description": "Marks this entry as the latest/default metadata for currently supported versions."
+        },
+        "default-for": {
+          "type": "string",
+          "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+        },
+        "override": {
+          "type": "boolean",
+          "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+        },
+        "allowed-packages": {
+          "type": "array",
+          "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "skipped-versions": {
+          "type": "array",
+          "description": "Versions explicitly excluded from support, each with a reason.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "version", "reason" ],
+            "properties": {
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+
+exec
+/usr/bin/bash -lc "rg 'repository-url|source-code-url|documentation-url|test-code-url' -n README.md docs src build.gradle settings.gradle gradle | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+rg: src: No such file or directory (os error 2)
+docs/CONTRIBUTING.md:108:* `source-code-url`: URL to the metadata source code location for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+docs/CONTRIBUTING.md:110:* `test-code-url`: URL to the test source code location for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+docs/CONTRIBUTING.md:111:* `documentation-url`: URL to the project documentation for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
+docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/$version$",
+docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/$version$",
+docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+docs/FUNCTIONAL_SPEC.md:163:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.0.1` → `v2.0.2` or `v2.0.x` → `v2.1.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`); patch bumps refine validation of those same auxiliary fields. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+web search: 
+web search: JAX-RS API Source Code GitHub javax.ws.rs JSR 311 1.1
+web search: 
+web search: https://central.sonatype.com/artifact/javax.ws.rs/jsr311-api
+exec
+/usr/bin/bash -lc "ps -ef | rg 'jsr311.dev.java.net|curl -I -L --max-time' || true" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269
+ succeeded in 0ms:
+vjovanov 1191568 1162152  0 12:55 ?        00:00:00 /usr/bin/bash -c ps -ef | rg 'jsr311.dev.java.net|curl -I -L --max-time' || true
+vjovanov 1191570 1191568  0 12:55 ?        00:00:00 rg jsr311.dev.java.net|curl -I -L --max-time
+
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+Updated [javax.ws.rs-jsr311-api-1.1.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json).
+
+Set Maven Central source and javadoc URLs with `$version$`; left `test-code-url` as `N/A` because the `1.1.1` Central directory lists sources/javadoc/binary/POM artifacts but no tests artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/))
+
+I also left `language` and `not-for-native-image` absent: this is a normal JVM API JAR with `.class` files, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+index 2745151ae873239f249f13515d49ce94b97fcb8d..373d9b98505639dfa186c3a027637b23c1176654
+--- a/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
++++ b/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1"
++  "coordinates" : "javax.ws.rs:jsr311-api:1.1.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-sources.jar",
++  "repository-url" : "https://jsr311.dev.java.net",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/$version$/jsr311-api-$version$-javadoc.jar",
++  "description" : "jsr311-api is the Java API artifact for JSR 311/JAX-RS 1.1, defining the javax.ws.rs annotations, core types, and extension SPI used to build RESTful web services on the JVM. It contains API classes rather than a full server runtime, so applications pair it with an implementation such as Jersey, RESTEasy, or another JAX-RS provider."
+ }
+
+tokens used
+88,472
+Updated [javax.ws.rs-jsr311-api-1.1.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269/build/discovered-artifact-metadata/javax.ws.rs-jsr311-api-1.1.1.json).
+
+Set Maven Central source and javadoc URLs with `$version$`; left `test-code-url` as `N/A` because the `1.1.1` Central directory lists sources/javadoc/binary/POM artifacts but no tests artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/))
+
+I also left `language` and `not-for-native-image` absent: this is a normal JVM API JAR with `.class` files, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. Validated the JSON with `jq`.
+Ran agent for javax.ws.rs:jsr311-api:1.1.1 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269/build/agent-artifact-discovery-logs/javax.ws.rs-jsr311-api-1.1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2839-74e73269/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 57s
+9 actionable tasks: 4 executed, 5 from cache
