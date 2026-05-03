@@ -225,6 +225,32 @@ class Sangria_marshalling_api_3Test {
   }
 
   @Test
+  def marshallingUtilUsesEnumNodesForStringEnumInputs(): Unit = {
+    given InputUnmarshaller[NamedInputValue] = new InputUnmarshaller[NamedInputValue] {
+      override def getRootMapValue(node: NamedInputValue, key: String): Option[NamedInputValue] = None
+      override def isMapNode(node: NamedInputValue): Boolean = false
+      override def getMapValue(node: NamedInputValue, key: String): Option[NamedInputValue] = None
+      override def getMapKeys(node: NamedInputValue): Iterable[String] = Nil
+      override def isListNode(node: NamedInputValue): Boolean = false
+      override def getListValue(node: NamedInputValue): Seq[NamedInputValue] = Nil
+      override def isDefined(node: NamedInputValue): Boolean = true
+      override def isScalarNode(node: NamedInputValue): Boolean = true
+      override def isEnumNode(node: NamedInputValue): Boolean = node.isEnum
+      override def isVariableNode(node: NamedInputValue): Boolean = false
+      override def getScalarValue(node: NamedInputValue): Any = node.value
+      override def getScalaScalarValue(node: NamedInputValue): Any = node.value
+      override def getVariableName(node: NamedInputValue): String = throw new IllegalArgumentException("variables are not supported")
+      override def render(node: NamedInputValue): String = node.value.toString
+    }
+
+    val marshaller: LabeledScalarMarshaller = new LabeledScalarMarshaller
+    given ResultMarshallerForType[String] = SimpleResultMarshallerForType[String](marshaller)
+
+    assertEquals("enum:Conversion:ACTIVE", MarshallingUtil.convert[NamedInputValue, String](NamedInputValue("ACTIVE", isEnum = true)))
+    assertEquals("scalar:Conversion:15", MarshallingUtil.convert[NamedInputValue, String](NamedInputValue(15, isEnum = true)))
+  }
+
+  @Test
   def marshallingUtilRejectsVariableNodesDuringConversion(): Unit = {
     given InputUnmarshaller[VariableInput] = new InputUnmarshaller[VariableInput] {
       override def getRootMapValue(node: VariableInput, key: String): Option[VariableInput] = None
@@ -292,5 +318,23 @@ class Sangria_marshalling_api_3Test {
     assertEquals(value, unmarshaller.getScalaScalarValue(rawValue))
   }
 
+  private final class LabeledScalarMarshaller extends ResultMarshaller {
+    override type Node = String
+    override type MapBuilder = Vector[(String, Node)]
+
+    override def emptyMapNode(keys: Seq[String]): MapBuilder = Vector.empty
+    override def addMapNodeElem(builder: MapBuilder, key: String, value: Node, optional: Boolean): MapBuilder = builder :+ (key -> value)
+    override def mapNode(builder: MapBuilder): Node = builder.map { case (key, value) => s"$key=$value" }.mkString("map(", ",", ")")
+    override def mapNode(keyValues: Seq[(String, Node)]): Node = keyValues.map { case (key, value) => s"$key=$value" }.mkString("map(", ",", ")")
+    override def arrayNode(values: Vector[Node]): Node = values.mkString("list(", ",", ")")
+    override def optionalArrayNodeValue(value: Option[Node]): Node = value.getOrElse(nullNode)
+    override def scalarNode(value: Any, typeName: String, info: Set[ScalarValueInfo]): Node = s"scalar:$typeName:$value"
+    override def enumNode(value: String, typeName: String): Node = s"enum:$typeName:$value"
+    override def nullNode: Node = "null"
+    override def renderCompact(node: Node): String = node
+    override def renderPretty(node: Node): String = node
+  }
+
+  private final case class NamedInputValue(value: Any, isEnum: Boolean)
   private final case class VariableInput(name: String)
 }
