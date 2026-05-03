@@ -128,6 +128,36 @@ class Zio_config_typesafe_3Test {
   }
 
   @Test
+  def readsObjectTablesWithDynamicKeysFromHocon(): Unit = {
+    val hocon: String = """
+      tenants {
+        alpha {
+          url = "jdbc:postgresql://alpha.example.test/app"
+          pool-size = 4
+        }
+        beta {
+          url = "jdbc:postgresql://beta.example.test/app"
+          pool-size = 8
+        }
+      }
+      """
+    val provider: ConfigProvider = TypesafeConfigProvider.fromHoconString(hocon)
+    val tenantDescriptor: Config[DatabaseConfig] = Config
+      .string("url")
+      .zipWith(Config.int("pool-size"))((url: String, poolSize: Int) => DatabaseConfig(url, poolSize))
+    val descriptor: Config[Map[String, DatabaseConfig]] = Config.table("tenants", tenantDescriptor)
+
+    val parsed: Map[String, DatabaseConfig] = unsafeRun(read(descriptor.from(provider)))
+
+    assertThat(parsed).isEqualTo(
+      Map(
+        "alpha" -> DatabaseConfig("jdbc:postgresql://alpha.example.test/app", 4),
+        "beta" -> DatabaseConfig("jdbc:postgresql://beta.example.test/app", 8)
+      )
+    )
+  }
+
+  @Test
   def decodesEmptyListsFromHocon(): Unit = {
     val hocon: String = """
       deployment {
