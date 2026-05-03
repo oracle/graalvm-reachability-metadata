@@ -17,6 +17,7 @@ import zio.Runtime
 import zio.Unsafe
 import zio.ZIO
 import zio.http.Body
+import zio.http.Boundary
 import zio.http.Cookie
 import zio.http.Form
 import zio.http.FormField
@@ -58,6 +59,31 @@ class Zio_http_3Test {
     val decodedForm: Form = unsafeRun(encodedFormBody.asURLEncodedForm)
     assertThat(decodedForm.get("name").contains(FormField.Simple("name", "zio"))).isTrue()
     assertThat(decodedForm.toQueryParams.getAll("kind")).isEqualTo(Chunk("http"))
+  }
+
+  @Test
+  def multipartFormsEncodeAndDecodeTextAndBinaryParts(): Unit = {
+    val binaryData: Chunk[Byte] = Chunk.fromArray("file-content".getBytes(StandardCharsets.UTF_8))
+    val form: Form = Form(
+      Chunk[FormField](
+        FormField.simpleField("description", "native friendly"),
+        FormField.binaryField("attachment", binaryData, MediaType.text.plain, None, Some("note.txt")),
+      ),
+    )
+    val boundary: Boundary = Boundary("zio-http-test-boundary")
+    val multipartBody: Body = Body.fromMultipartForm(form, boundary)
+
+    assertThat(multipartBody.mediaType).isEqualTo(Some(MediaType.multipart.`form-data`))
+    assertThat(multipartBody.contentType.flatMap(_.boundary).map(_.id)).isEqualTo(Some("zio-http-test-boundary"))
+
+    val decodedForm: Form = unsafeRun(multipartBody.asMultipartForm)
+    assertThat(decodedForm.formData.size).isEqualTo(2)
+    assertThat(unsafeRun(decodedForm.get("description").get.asText)).isEqualTo("native friendly")
+
+    val attachment: FormField = decodedForm.get("attachment").get
+    assertThat(attachment.filename).isEqualTo(Some("note.txt"))
+    assertThat(attachment.contentType).isEqualTo(MediaType.text.plain)
+    assertThat(unsafeRun(attachment.asChunk)).isEqualTo(binaryData)
   }
 
   @Test
