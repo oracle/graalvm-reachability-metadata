@@ -27,13 +27,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpVersion;
-import org.apache.http.ProtocolVersion;
 import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.eclipse.aether.ConfigurationProperties;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -45,10 +41,6 @@ import org.eclipse.aether.transfer.NoTransporterException;
 import org.eclipse.aether.transport.http.ChecksumExtractor;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.transport.http.Nexus2ChecksumExtractor;
-import org.eclipse.aether.transport.http.RFC9457.HttpRFC9457Exception;
-import org.eclipse.aether.transport.http.RFC9457.RFC9457Parser;
-import org.eclipse.aether.transport.http.RFC9457.RFC9457Payload;
-import org.eclipse.aether.transport.http.RFC9457.RFC9457Reporter;
 import org.eclipse.aether.transport.http.XChecksumChecksumExtractor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -93,57 +85,6 @@ public class Maven_resolver_transport_httpTest {
         assertThat(request.getAllHeaders()).isEmpty();
         assertThat(extractor.retryWithoutExtractor(new HttpResponseException(400, "Bad Request"))).isFalse();
         assertThat(extractor.extractChecksums(response(200, "OK"))).isNull();
-    }
-
-    @Test
-    void rfc9457ParserAndReporterExposeProblemDetails() throws Exception {
-        String problem = """
-                {
-                  "type": "https://example.invalid/problems/quota",
-                  "title": "Quota exceeded",
-                  "status": 429,
-                  "detail": "Too many artifact requests",
-                  "instance": "urn:request:123"
-                }
-                """;
-
-        RFC9457Payload parsed = RFC9457Parser.parse(problem);
-        assertThat(parsed.getType()).isEqualTo(URI.create("https://example.invalid/problems/quota"));
-        assertThat(parsed.getStatus()).isEqualTo(429);
-        assertThat(parsed.getTitle()).isEqualTo("Quota exceeded");
-        assertThat(parsed.getDetail()).isEqualTo("Too many artifact requests");
-        assertThat(parsed.getInstance()).isEqualTo(URI.create("urn:request:123"));
-        assertThat(parsed.toString()).contains("Quota exceeded", "Too many artifact requests");
-
-        CloseableBasicHttpResponse response = closeableResponse(429, "Too Many Requests");
-        response.addHeader(HttpHeaders.CONTENT_TYPE, "application/problem+json");
-        response.setEntity(new StringEntity(problem, StandardCharsets.UTF_8));
-
-        RFC9457Reporter reporter = RFC9457Reporter.INSTANCE;
-        assertThat(reporter.isRFC9457Message(response)).isTrue();
-        assertThatExceptionOfType(HttpRFC9457Exception.class)
-                .isThrownBy(() -> reporter.generateException(response))
-                .satisfies(exception -> {
-                    assertThat(exception.getStatusCode()).isEqualTo(429);
-                    assertThat(exception.getReasonPhrase()).isEqualTo("Too Many Requests (429)");
-                    assertThat(exception.getPayload().getTitle()).isEqualTo("Quota exceeded");
-                    assertThat(exception.getMessage()).contains("Quota exceeded");
-                });
-
-        CloseableBasicHttpResponse emptyProblemResponse = closeableResponse(503, "");
-        emptyProblemResponse.addHeader(HttpHeaders.CONTENT_TYPE, "application/problem+json");
-        emptyProblemResponse.setEntity(new StringEntity("", StandardCharsets.UTF_8));
-        assertThatExceptionOfType(HttpRFC9457Exception.class)
-                .isThrownBy(() -> reporter.generateException(emptyProblemResponse))
-                .satisfies(exception -> {
-                    assertThat(exception.getStatusCode()).isEqualTo(503);
-                    assertThat(exception.getReasonPhrase()).isEmpty();
-                    assertThat(exception.getPayload()).isSameAs(RFC9457Payload.INSTANCE);
-                });
-
-        CloseableBasicHttpResponse ordinaryJsonResponse = closeableResponse(500, "Server Error");
-        ordinaryJsonResponse.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-        assertThat(reporter.isRFC9457Message(ordinaryJsonResponse)).isFalse();
     }
 
     @Test
@@ -231,7 +172,7 @@ public class Maven_resolver_transport_httpTest {
     }
 
     @Test
-    void transporterPerformsPeekGetPutAndReportsProblemJson() throws Exception {
+    void transporterPerformsPeekGetPutAndReturnsProblemJsonAsStatusError() throws Exception {
         AtomicReference<String> uploadedBody = new AtomicReference<>();
         try (TestRepositoryServer server = TestRepositoryServer.start(uploadedBody)) {
             HttpTransporterFactory factory = new HttpTransporterFactory(checksumExtractors());
@@ -258,13 +199,11 @@ public class Maven_resolver_transport_httpTest {
                             assertThat(transporter.classify(exception)).isEqualTo(Transporter.ERROR_NOT_FOUND);
                         });
 
-                assertThatExceptionOfType(HttpRFC9457Exception.class)
+                assertThatExceptionOfType(HttpResponseException.class)
                         .isThrownBy(() -> transporter.get(new GetTask(URI.create("problem.json"))))
                         .satisfies(exception -> {
                             assertThat(exception.getStatusCode()).isEqualTo(422);
-                            assertThat(exception.getPayload().getTitle()).isEqualTo("Invalid artifact");
-                            assertThat(exception.getPayload().getDetail())
-                                    .isEqualTo("The requested artifact is malformed");
+                            assertThat(exception.getReasonPhrase()).contains("422");
                             assertThat(transporter.classify(exception)).isEqualTo(Transporter.ERROR_OTHER);
                         });
             } finally {
@@ -278,7 +217,9 @@ public class Maven_resolver_transport_httpTest {
         session.setConfigProperty(ConfigurationProperties.CONNECT_TIMEOUT, 2_000);
         session.setConfigProperty(ConfigurationProperties.REQUEST_TIMEOUT, 2_000);
         session.setConfigProperty(ConfigurationProperties.HTTP_RETRY_HANDLER_COUNT, 0);
-        session.setConfigProperty(ConfigurationProperties.HTTP_EXPECT_CONTINUE, "false");
+        Map<String, String> headers = new LinkedHashMap<>();
+        headers.put(HttpHeaders.EXPECT, null);
+        session.setConfigProperty(ConfigurationProperties.HTTP_HEADERS, headers);
         return session;
     }
 
@@ -291,21 +232,6 @@ public class Maven_resolver_transport_httpTest {
 
     private static BasicHttpResponse response(int statusCode, String reasonPhrase) {
         return new BasicHttpResponse(HttpVersion.HTTP_1_1, statusCode, reasonPhrase);
-    }
-
-    private static CloseableBasicHttpResponse closeableResponse(int statusCode, String reasonPhrase) {
-        return new CloseableBasicHttpResponse(HttpVersion.HTTP_1_1, statusCode, reasonPhrase);
-    }
-
-    private static final class CloseableBasicHttpResponse extends BasicHttpResponse implements CloseableHttpResponse {
-        private CloseableBasicHttpResponse(ProtocolVersion version, int statusCode, String reasonPhrase) {
-            super(version, statusCode, reasonPhrase);
-        }
-
-        @Override
-        public void close() {
-            EntityUtils.consumeQuietly(getEntity());
-        }
     }
 
     private static final class HeaderCaptureServer implements AutoCloseable {
