@@ -53,6 +53,12 @@ private object DerivationTree {
   given Schema[DerivationTree] = Schema.derived[DerivationTree]
 }
 
+private final case class DerivationResult[A](key: String, primary: A, secondary: Either[String, A])
+
+private object DerivationResult {
+  given [A: Schema]: Schema[DerivationResult[A]] = Schema.derived[DerivationResult[A]]
+}
+
 private final case class TypeDescription[A](value: String)
 
 private class DescribingDeriver extends Deriver[TypeDescription] {
@@ -228,6 +234,25 @@ class Zio_schema_derivation_3Test {
   }
 
   @Test
+  def derivesGenericCaseClassSchemasWithTypeSpecificFieldsAndEitherBranches(): Unit = {
+    val intSchema: Schema[DerivationResult[Int]] = summon[Schema[DerivationResult[Int]]]
+    val stringSchema: Schema[DerivationResult[String]] = summon[Schema[DerivationResult[String]]]
+    val intResult: DerivationResult[Int] = DerivationResult("numeric", 42, Right(99))
+    val stringResult: DerivationResult[String] = DerivationResult("text", "primary", Left("missing"))
+
+    val intDynamic: DynamicValue = intSchema.toDynamic(intResult)
+    val stringDynamic: DynamicValue = stringSchema.toDynamic(stringResult)
+
+    assertThat(intSchema.fromDynamic(intDynamic)).isEqualTo(Right(intResult))
+    assertThat(stringSchema.fromDynamic(stringDynamic)).isEqualTo(Right(stringResult))
+
+    val intRecord: Schema.Record[DerivationResult[Int]] = forceRecord(intSchema)
+    assertThat(intRecord.fields.map(_.name).toList.asJava).containsExactly("key", "primary", "secondary")
+    assertThat(intSchema.fromDynamic(replacePrimary(intDynamic, DynamicValue("not an integer"))).isLeft).isTrue()
+    assertThat(stringSchema.fromDynamic(replacePrimary(stringDynamic, DynamicValue(123))).isLeft).isTrue()
+  }
+
+  @Test
   def deriveAndFactoryBuildCustomTypeClassInstancesFromNestedSchemas(): Unit = {
     given TypeDescription[DerivationAddress] = TypeDescription("custom-address")
     val deriver: Deriver[TypeDescription] = new DescribingDeriver().autoAcceptSummoned
@@ -262,6 +287,12 @@ class Zio_schema_derivation_3Test {
     assertThat(countingDeriver.sequenceCalls.get()).isEqualTo(1)
     assertThat(countingDeriver.primitiveCalls.get()).isEqualTo(1)
   }
+
+  private def replacePrimary(dynamic: DynamicValue, replacement: DynamicValue): DynamicValue =
+    dynamic match {
+      case DynamicValue.Record(id, values) => DynamicValue.Record(id, values.updated("primary", replacement))
+      case other                           => throw new AssertionError(s"Expected generic result to encode as a record, got $other")
+    }
 
   private def malformedEnvelopeDynamic: DynamicValue =
     DynamicValue.Record(
