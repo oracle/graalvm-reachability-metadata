@@ -133,6 +133,15 @@ class Zio_prelude_macros_3Test {
   }
 
   @Test
+  def terminalAssertionsAlwaysPassOrFailForAnyInputType(): Unit = {
+    assertPasses(Assertion.anything, "accepted")
+    assertPasses(Assertion.anything, 42)
+
+    assertFails(Assertion.never, "rejected", "rejected did not satisfy never")
+    assertFails(Assertion.never, 42, "42 did not satisfy never")
+  }
+
+  @Test
   def assertionErrorsCanBeCombinedRenderedAndConvertedToNonEmptyLists(): Unit = {
     val combined: AssertionError =
       AssertionError.failure("first") ++ AssertionError.failure("second") ++ AssertionError.failure("third")
