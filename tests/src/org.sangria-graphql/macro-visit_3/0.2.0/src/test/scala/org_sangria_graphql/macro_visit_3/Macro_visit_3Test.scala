@@ -153,6 +153,46 @@ class Macro_visit_3Test {
   }
 
   @Test
+  def deleteAndBreakDeletesCurrentNodeAndStopsTraversalOfRemainingSiblings(): Unit = {
+    val enteredLeaves: scala.collection.mutable.ArrayBuffer[Int] = scala.collection.mutable.ArrayBuffer.empty
+    val leftLeaves: scala.collection.mutable.ArrayBuffer[Int] = scala.collection.mutable.ArrayBuffer.empty
+    val root: TestTree = Many(
+      list = List(Leaf(1), Leaf(2), Leaf(3)),
+      vector = Vector.empty,
+      seq = Seq.empty,
+      maybe = None,
+      label = "delete-and-break"
+    )
+
+    val transformed: TestTree = visit[TestTree](
+      root,
+      Visit[Leaf](
+        leaf => {
+          enteredLeaves += leaf.value
+          if leaf.value == 2 then DeleteAndBreak else Continue
+        },
+        leaf => {
+          leftLeaves += leaf.value
+          Continue
+        }
+      )
+    )
+
+    assertEquals(
+      Many(
+        list = List(Leaf(1), Leaf(3)),
+        vector = Vector.empty,
+        seq = Seq.empty,
+        maybe = None,
+        label = "delete-and-break"
+      ),
+      transformed
+    )
+    assertEquals(List(1, 2), enteredLeaves.toList)
+    assertEquals(List(1, 2), leftLeaves.toList)
+  }
+
+  @Test
   def leaveTransformObservesChildrenUpdatedEarlierInTraversal(): Unit = {
     val root: TestTree = Pair(Leaf(2), Leaf(3), "sum")
 
