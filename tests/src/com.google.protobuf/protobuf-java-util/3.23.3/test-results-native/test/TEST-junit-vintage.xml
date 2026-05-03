@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JUnit Vintage" tests="166" skipped="0" failures="0" errors="18" time="5.051" hostname="kung-fu-workstation" timestamp="2026-05-03T15:21:47">
+<testsuite name="JUnit Vintage" tests="166" skipped="0" failures="0" errors="0" time="5.035" hostname="kung-fu-workstation" timestamp="2026-05-03T15:28:21">
 <properties>
 <property name="file.encoding" value="UTF-8"/>
 <property name="file.separator" value="/"/>
@@ -32,7 +32,11 @@
 <property name="line.separator" value="
 "/>
 <property name="native.encoding" value="UTF-8"/>
+<property name="org.graalvm.nativeimage.future-defaults.class-for-name-respects-class-loader" value="true"/>
 <property name="org.graalvm.nativeimage.future-defaults.complete-reflection-types" value="true"/>
+<property name="org.graalvm.nativeimage.future-defaults.run-time-initialize-file-system-providers" value="true"/>
+<property name="org.graalvm.nativeimage.future-defaults.run-time-initialize-resource-bundles" value="true"/>
+<property name="org.graalvm.nativeimage.future-defaults.run-time-initialize-security-providers" value="true"/>
 <property name="org.graalvm.nativeimage.imagecode" value="runtime"/>
 <property name="org.graalvm.nativeimage.kind" value="executable"/>
 <property name="os.arch" value="amd64"/>
@@ -77,86 +81,6 @@ display-name: testPrintingEnumsAsIntsChainedAfterIncludingDefaultValueFields
 ]]></system-out>
 </testcase>
 <testcase name="testTimestampMergeError" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Cannot reflectively invoke method 'public final synchronized java.lang.Throwable[] java.lang.Throwable.getSuppressed()'.
-
-The matching metadata element in the 'reflection' section of 'reachability-metadata.json' is:
-
-    {
-      &quot;type&quot;: &quot;java.lang.Throwable&quot;,
-      &quot;methods&quot;: [
-        {
-          &quot;name&quot;: &quot;getSuppressed&quot;,
-          &quot;parameterTypes&quot;: []
-        }
-      ]
-    }
-
-The 'reachability-metadata.json' file should be located in 'META-INF/native-image/&lt;group-id&gt;/&lt;artifact-id&gt;/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection" type="org.graalvm.nativeimage.MissingReflectionRegistrationError"><![CDATA[org.graalvm.nativeimage.MissingReflectionRegistrationError: Cannot reflectively invoke method 'public final synchronized java.lang.Throwable[] java.lang.Throwable.getSuppressed()'.
-
-The matching metadata element in the 'reflection' section of 'reachability-metadata.json' is:
-
-    {
-      "type": "java.lang.Throwable",
-      "methods": [
-        {
-          "name": "getSuppressed",
-          "parameterTypes": []
-        }
-      ]
-    }
-
-The 'reachability-metadata.json' file should be located in 'META-INF/native-image/<group-id>/<artifact-id>/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.MissingReflectionRegistrationUtils.reportInvokedExecutable(MissingReflectionRegistrationUtils.java:120)
-	at java.base@25.0.2/java.lang.reflect.Method.acquireMethodAccessor(Method.java:151)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:562)
-	at com.google.common.truth.Platform.getSuppressed(Platform.java:62)
-	at com.google.common.truth.StackTraceCleaner.clean(StackTraceCleaner.java:150)
-	at com.google.common.truth.StackTraceCleaner.cleanStackTrace(StackTraceCleaner.java:46)
-	at com.google.common.truth.Platform.cleanStackTrace(Platform.java:73)
-	at com.google.common.truth.Platform.inferDescription(Platform.java:93)
-	at com.google.common.truth.FailureMetadata.description(FailureMetadata.java:229)
-	at com.google.common.truth.FailureMetadata.failEqualityCheck(FailureMetadata.java:178)
-	at com.google.common.truth.Subject.failEqualityCheck(Subject.java:862)
-	at com.google.common.truth.Subject.standardIsEqualTo(Subject.java:175)
-	at com.google.common.truth.Subject.isEqualTo(Subject.java:169)
-	at com.google.protobuf.util.JsonFormatTest.testTimestampMergeError(JsonFormatTest.java:896)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testTimestampMergeError(com.google.protobuf.util.JsonFormatTest)]
 display-name: testTimestampMergeError
@@ -168,72 +92,13 @@ unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.TimestampsTes
 display-name: testMinMaxAreValid
 ]]></system-out>
 </testcase>
-<testcase name="testMerge" classname="com.google.protobuf.util.FieldMaskTreeTest" time="0.017">
+<testcase name="testMerge" classname="com.google.protobuf.util.FieldMaskTreeTest" time="0.009">
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.FieldMaskTreeTest]/[test:testMerge(com.google.protobuf.util.FieldMaskTreeTest)]
 display-name: testMerge
 ]]></system-out>
 </testcase>
 <testcase name="testNullFirstInDuplicateOneof" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.NullValue&quot; missing method &quot;valueOf&quot;." type="com.google.protobuf.InvalidProtocolBufferException"><![CDATA[com.google.protobuf.InvalidProtocolBufferException: Generated message class "com.google.protobuf.NullValue" missing method "valueOf".
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1343)
-	at com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:472)
-	at com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
-	at com.google.protobuf.util.JsonFormatTest.testNullFirstInDuplicateOneof(JsonFormatTest.java:538)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.IllegalStateException: Generated message class "com.google.protobuf.NullValue" missing method "valueOf".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularEnumFieldAccessor.<init>(GeneratedMessageV3.java:2897)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2129)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestOneof$Builder.internalGetFieldAccessorTable(JsonTestProto.java:6623)
-	at com.google.protobuf.GeneratedMessageV3$Builder.hasField(GeneratedMessageV3.java:731)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeField(JsonFormat.java:1652)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeMessage(JsonFormat.java:1500)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1458)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1340)
-	... 39 more
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.NullValue.valueOf(com.google.protobuf.Descriptors$EnumValueDescriptor)
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 48 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testNullFirstInDuplicateOneof(com.google.protobuf.util.JsonFormatTest)]
 display-name: testNullFirstInDuplicateOneof
@@ -336,64 +201,6 @@ display-name: testOmittingInsignificantWhiteSpace
 ]]></system-out>
 </testcase>
 <testcase name="test3pair_constructsObject" classname="com_google_protobuf.protobuf_java_util.StructsTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Struct&quot; missing method &quot;getDefaultInstance&quot;." type="com.google.protobuf.InvalidProtocolBufferException"><![CDATA[com.google.protobuf.InvalidProtocolBufferException: Generated message class "com.google.protobuf.Struct" missing method "getDefaultInstance".
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1343)
-	at com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:472)
-	at com_google_protobuf.protobuf_java_util.StructsTest.test3pair_constructsObject(StructsTest.java:36)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.IllegalStateException: Generated message class "com.google.protobuf.Struct" missing method "getDefaultInstance".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$MapFieldAccessor.<init>(GeneratedMessageV3.java:2757)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2105)
-	at com.google.protobuf.Struct$Builder.internalGetFieldAccessorTable(Struct.java:338)
-	at com.google.protobuf.GeneratedMessageV3$Builder.newBuilderForField(GeneratedMessageV3.java:706)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeMapField(JsonFormat.java:1690)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeStruct(JsonFormat.java:1591)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.access$2500(JsonFormat.java:1299)
-	at com.google.protobuf.util.JsonFormat$ParserImpl$6.merge(JsonFormat.java:1424)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1455)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1340)
-	... 36 more
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Struct.getDefaultInstance()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 47 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com_google_protobuf.protobuf_java_util.StructsTest]/[test:test3pair_constructsObject(com_google_protobuf.protobuf_java_util.StructsTest)]
 display-name: test3pair_constructsObject
@@ -472,60 +279,6 @@ display-name: testInvalidMaxSecondsOverflow
 ]]></system-out>
 </testcase>
 <testcase name="testStruct" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Struct&quot; missing method &quot;newBuilder&quot;." type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Generated message class "com.google.protobuf.Struct" missing method "newBuilder".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor.<init>(GeneratedMessageV3.java:3107)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2121)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestStruct.internalGetFieldAccessorTable(JsonTestProto.java:19624)
-	at com.google.protobuf.GeneratedMessageV3.getDescriptorForType(GeneratedMessageV3.java:139)
-	at com.google.protobuf.util.JsonFormat$PrinterImpl.print(JsonFormat.java:758)
-	at com.google.protobuf.util.JsonFormat$Printer.appendTo(JsonFormat.java:367)
-	at com.google.protobuf.util.JsonFormat$Printer.print(JsonFormat.java:377)
-	at com.google.protobuf.util.JsonFormatTest.toJsonString(JsonFormatTest.java:155)
-	at com.google.protobuf.util.JsonFormatTest.testStruct(JsonFormatTest.java:961)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Struct.newBuilder()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 46 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testStruct(com.google.protobuf.util.JsonFormatTest)]
 display-name: testStruct
@@ -555,61 +308,7 @@ unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.TimestampsTes
 display-name: testTimestampInvalidFormatValueTooLarge
 ]]></system-out>
 </testcase>
-<testcase name="testWrappers" classname="com.google.protobuf.util.JsonFormatTest" time="0.003">
-<error message="Generated message class &quot;com.google.protobuf.Int32Value&quot; missing method &quot;newBuilder&quot;." type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Generated message class "com.google.protobuf.Int32Value" missing method "newBuilder".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor.<init>(GeneratedMessageV3.java:3107)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2121)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestWrappers.internalGetFieldAccessorTable(JsonTestProto.java:15746)
-	at com.google.protobuf.GeneratedMessageV3.getDescriptorForType(GeneratedMessageV3.java:139)
-	at com.google.protobuf.util.JsonFormat$PrinterImpl.print(JsonFormat.java:758)
-	at com.google.protobuf.util.JsonFormat$Printer.appendTo(JsonFormat.java:367)
-	at com.google.protobuf.util.JsonFormat$Printer.print(JsonFormat.java:377)
-	at com.google.protobuf.util.JsonFormatTest.toJsonString(JsonFormatTest.java:155)
-	at com.google.protobuf.util.JsonFormatTest.testWrappers(JsonFormatTest.java:826)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Int32Value.newBuilder()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 46 more
-]]></error>
+<testcase name="testWrappers" classname="com.google.protobuf.util.JsonFormatTest" time="0.001">
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testWrappers(com.google.protobuf.util.JsonFormatTest)]
 display-name: testWrappers
@@ -658,65 +357,6 @@ display-name: testJsonException_forwardsJsonException
 ]]></system-out>
 </testcase>
 <testcase name="testNullLastInDuplicateOneof" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.NullValue&quot; missing method &quot;valueOf&quot;." type="com.google.protobuf.InvalidProtocolBufferException"><![CDATA[com.google.protobuf.InvalidProtocolBufferException: Generated message class "com.google.protobuf.NullValue" missing method "valueOf".
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1343)
-	at com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:472)
-	at com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
-	at com.google.protobuf.util.JsonFormatTest.testNullLastInDuplicateOneof(JsonFormatTest.java:546)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.IllegalStateException: Generated message class "com.google.protobuf.NullValue" missing method "valueOf".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularEnumFieldAccessor.<init>(GeneratedMessageV3.java:2897)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2129)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestOneof$Builder.internalGetFieldAccessorTable(JsonTestProto.java:6623)
-	at com.google.protobuf.GeneratedMessageV3$Builder.hasField(GeneratedMessageV3.java:731)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeField(JsonFormat.java:1652)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeMessage(JsonFormat.java:1500)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1458)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1340)
-	... 39 more
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.NullValue.valueOf(com.google.protobuf.Descriptors$EnumValueDescriptor)
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 48 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testNullLastInDuplicateOneof(com.google.protobuf.util.JsonFormatTest)]
 display-name: testNullLastInDuplicateOneof
@@ -903,69 +543,6 @@ display-name: testUnion_usingVarArgs
 ]]></system-out>
 </testcase>
 <testcase name="testEmptyWrapperTypesInAny" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Any&quot; missing method &quot;getTypeUrl&quot;." type="com.google.protobuf.InvalidProtocolBufferException"><![CDATA[com.google.protobuf.InvalidProtocolBufferException: Generated message class "com.google.protobuf.Any" missing method "getTypeUrl".
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1343)
-	at com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:472)
-	at com.google.protobuf.util.JsonFormatTest.testEmptyWrapperTypesInAny(JsonFormatTest.java:1842)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.IllegalStateException: Generated message class "com.google.protobuf.Any" missing method "getTypeUrl".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularFieldAccessor$ReflectionInvoker.<init>(GeneratedMessageV3.java:2347)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularFieldAccessor.<init>(GeneratedMessageV3.java:2418)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularStringFieldAccessor.<init>(GeneratedMessageV3.java:3071)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2137)
-	at com.google.protobuf.Any$Builder.internalGetFieldAccessorTable(Any.java:372)
-	at com.google.protobuf.GeneratedMessageV3$Builder.setField(GeneratedMessageV3.java:748)
-	at com.google.protobuf.Any$Builder.setField(Any.java:441)
-	at com.google.protobuf.Any$Builder.setField(Any.java:359)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeAny(JsonFormat.java:1537)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.access$2000(JsonFormat.java:1299)
-	at com.google.protobuf.util.JsonFormat$ParserImpl$1.merge(JsonFormat.java:1366)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1455)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1340)
-	... 38 more
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Any.getTypeUrl()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 52 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testEmptyWrapperTypesInAny(com.google.protobuf.util.JsonFormatTest)]
 display-name: testEmptyWrapperTypesInAny
@@ -1092,59 +669,6 @@ display-name: testConvertFromMicros
 ]]></system-out>
 </testcase>
 <testcase name="testIncludingDefaultValueFields" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.NullValue&quot; missing method &quot;valueOf&quot;." type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Generated message class "com.google.protobuf.NullValue" missing method "valueOf".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularEnumFieldAccessor.<init>(GeneratedMessageV3.java:2897)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2129)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestOneof.internalGetFieldAccessorTable(JsonTestProto.java:6274)
-	at com.google.protobuf.GeneratedMessageV3.getDescriptorForType(GeneratedMessageV3.java:139)
-	at com.google.protobuf.util.JsonFormat$PrinterImpl.print(JsonFormat.java:758)
-	at com.google.protobuf.util.JsonFormat$Printer.appendTo(JsonFormat.java:367)
-	at com.google.protobuf.util.JsonFormat$Printer.print(JsonFormat.java:377)
-	at com.google.protobuf.util.JsonFormatTest.testIncludingDefaultValueFields(JsonFormatTest.java:1719)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.NullValue.valueOf(com.google.protobuf.Descriptors$EnumValueDescriptor)
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 45 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testIncludingDefaultValueFields(com.google.protobuf.util.JsonFormatTest)]
 display-name: testIncludingDefaultValueFields
@@ -1187,86 +711,6 @@ display-name: testCompare
 ]]></system-out>
 </testcase>
 <testcase name="testDurationMergeError" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Cannot reflectively invoke method 'public final synchronized java.lang.Throwable[] java.lang.Throwable.getSuppressed()'.
-
-The matching metadata element in the 'reflection' section of 'reachability-metadata.json' is:
-
-    {
-      &quot;type&quot;: &quot;java.lang.Throwable&quot;,
-      &quot;methods&quot;: [
-        {
-          &quot;name&quot;: &quot;getSuppressed&quot;,
-          &quot;parameterTypes&quot;: []
-        }
-      ]
-    }
-
-The 'reachability-metadata.json' file should be located in 'META-INF/native-image/&lt;group-id&gt;/&lt;artifact-id&gt;/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection" type="org.graalvm.nativeimage.MissingReflectionRegistrationError"><![CDATA[org.graalvm.nativeimage.MissingReflectionRegistrationError: Cannot reflectively invoke method 'public final synchronized java.lang.Throwable[] java.lang.Throwable.getSuppressed()'.
-
-The matching metadata element in the 'reflection' section of 'reachability-metadata.json' is:
-
-    {
-      "type": "java.lang.Throwable",
-      "methods": [
-        {
-          "name": "getSuppressed",
-          "parameterTypes": []
-        }
-      ]
-    }
-
-The 'reachability-metadata.json' file should be located in 'META-INF/native-image/<group-id>/<artifact-id>/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection
-	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.MissingReflectionRegistrationUtils.reportInvokedExecutable(MissingReflectionRegistrationUtils.java:120)
-	at java.base@25.0.2/java.lang.reflect.Method.acquireMethodAccessor(Method.java:151)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:562)
-	at com.google.common.truth.Platform.getSuppressed(Platform.java:62)
-	at com.google.common.truth.StackTraceCleaner.clean(StackTraceCleaner.java:150)
-	at com.google.common.truth.StackTraceCleaner.cleanStackTrace(StackTraceCleaner.java:46)
-	at com.google.common.truth.Platform.cleanStackTrace(Platform.java:73)
-	at com.google.common.truth.Platform.inferDescription(Platform.java:93)
-	at com.google.common.truth.FailureMetadata.description(FailureMetadata.java:229)
-	at com.google.common.truth.FailureMetadata.failEqualityCheck(FailureMetadata.java:178)
-	at com.google.common.truth.Subject.failEqualityCheck(Subject.java:862)
-	at com.google.common.truth.Subject.standardIsEqualTo(Subject.java:175)
-	at com.google.common.truth.Subject.isEqualTo(Subject.java:169)
-	at com.google.protobuf.util.JsonFormatTest.testDurationMergeError(JsonFormatTest.java:923)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testDurationMergeError(com.google.protobuf.util.JsonFormatTest)]
 display-name: testDurationMergeError
@@ -1303,60 +747,6 @@ display-name: testPrintingEnumsAsInts
 ]]></system-out>
 </testcase>
 <testcase name="testAnyFields" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Any&quot; missing method &quot;newBuilder&quot;." type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Generated message class "com.google.protobuf.Any" missing method "newBuilder".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor.<init>(GeneratedMessageV3.java:3107)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2121)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestAny.internalGetFieldAccessorTable(JsonTestProto.java:20632)
-	at com.google.protobuf.GeneratedMessageV3.getDescriptorForType(GeneratedMessageV3.java:139)
-	at com.google.protobuf.util.JsonFormat$PrinterImpl.print(JsonFormat.java:758)
-	at com.google.protobuf.util.JsonFormat$Printer.appendTo(JsonFormat.java:367)
-	at com.google.protobuf.util.JsonFormat$Printer.print(JsonFormat.java:377)
-	at com.google.protobuf.util.JsonFormatTest.toJsonString(JsonFormatTest.java:155)
-	at com.google.protobuf.util.JsonFormatTest.testAnyFields(JsonFormatTest.java:1041)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Any.newBuilder()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 46 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testAnyFields(com.google.protobuf.util.JsonFormatTest)]
 display-name: testAnyFields
@@ -1375,64 +765,6 @@ display-name: testOfString_ConstructsValue
 ]]></system-out>
 </testcase>
 <testcase name="test2pair_constructsObject" classname="com_google_protobuf.protobuf_java_util.StructsTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Struct&quot; missing method &quot;getDefaultInstance&quot;." type="com.google.protobuf.InvalidProtocolBufferException"><![CDATA[com.google.protobuf.InvalidProtocolBufferException: Generated message class "com.google.protobuf.Struct" missing method "getDefaultInstance".
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1343)
-	at com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:472)
-	at com_google_protobuf.protobuf_java_util.StructsTest.test2pair_constructsObject(StructsTest.java:29)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.IllegalStateException: Generated message class "com.google.protobuf.Struct" missing method "getDefaultInstance".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$MapFieldAccessor.<init>(GeneratedMessageV3.java:2757)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2105)
-	at com.google.protobuf.Struct$Builder.internalGetFieldAccessorTable(Struct.java:338)
-	at com.google.protobuf.GeneratedMessageV3$Builder.newBuilderForField(GeneratedMessageV3.java:706)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeMapField(JsonFormat.java:1690)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeStruct(JsonFormat.java:1591)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.access$2500(JsonFormat.java:1299)
-	at com.google.protobuf.util.JsonFormat$ParserImpl$6.merge(JsonFormat.java:1424)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1455)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1340)
-	... 36 more
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Struct.getDefaultInstance()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 47 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com_google_protobuf.protobuf_java_util.StructsTest]/[test:test2pair_constructsObject(com_google_protobuf.protobuf_java_util.StructsTest)]
 display-name: test2pair_constructsObject
@@ -1445,60 +777,6 @@ display-name: testToString
 ]]></system-out>
 </testcase>
 <testcase name="testDuration" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Duration&quot; missing method &quot;newBuilder&quot;." type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Generated message class "com.google.protobuf.Duration" missing method "newBuilder".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor.<init>(GeneratedMessageV3.java:3107)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2121)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestDuration.internalGetFieldAccessorTable(JsonTestProto.java:18394)
-	at com.google.protobuf.GeneratedMessageV3.getDescriptorForType(GeneratedMessageV3.java:139)
-	at com.google.protobuf.util.JsonFormat$PrinterImpl.print(JsonFormat.java:758)
-	at com.google.protobuf.util.JsonFormat$Printer.appendTo(JsonFormat.java:367)
-	at com.google.protobuf.util.JsonFormat$Printer.print(JsonFormat.java:377)
-	at com.google.protobuf.util.JsonFormatTest.toJsonString(JsonFormatTest.java:155)
-	at com.google.protobuf.util.JsonFormatTest.testDuration(JsonFormatTest.java:906)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Duration.newBuilder()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 46 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testDuration(com.google.protobuf.util.JsonFormatTest)]
 display-name: testDuration
@@ -1559,125 +837,12 @@ display-name: testMapFields
 ]]></system-out>
 </testcase>
 <testcase name="testFieldMask" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.FieldMask&quot; missing method &quot;newBuilder&quot;." type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Generated message class "com.google.protobuf.FieldMask" missing method "newBuilder".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor.<init>(GeneratedMessageV3.java:3107)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2121)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestFieldMask.internalGetFieldAccessorTable(JsonTestProto.java:18994)
-	at com.google.protobuf.GeneratedMessageV3.getDescriptorForType(GeneratedMessageV3.java:139)
-	at com.google.protobuf.util.JsonFormat$PrinterImpl.print(JsonFormat.java:758)
-	at com.google.protobuf.util.JsonFormat$Printer.appendTo(JsonFormat.java:367)
-	at com.google.protobuf.util.JsonFormat$Printer.print(JsonFormat.java:377)
-	at com.google.protobuf.util.JsonFormatTest.toJsonString(JsonFormatTest.java:155)
-	at com.google.protobuf.util.JsonFormatTest.testFieldMask(JsonFormatTest.java:935)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.FieldMask.newBuilder()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 46 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testFieldMask(com.google.protobuf.util.JsonFormatTest)]
 display-name: testFieldMask
 ]]></system-out>
 </testcase>
 <testcase name="testNullInOneof" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.NullValue&quot; missing method &quot;valueOf&quot;." type="com.google.protobuf.InvalidProtocolBufferException"><![CDATA[com.google.protobuf.InvalidProtocolBufferException: Generated message class "com.google.protobuf.NullValue" missing method "valueOf".
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1343)
-	at com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:472)
-	at com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
-	at com.google.protobuf.util.JsonFormatTest.testNullInOneof(JsonFormatTest.java:526)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.IllegalStateException: Generated message class "com.google.protobuf.NullValue" missing method "valueOf".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularEnumFieldAccessor.<init>(GeneratedMessageV3.java:2897)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2129)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestOneof$Builder.internalGetFieldAccessorTable(JsonTestProto.java:6623)
-	at com.google.protobuf.GeneratedMessageV3$Builder.hasField(GeneratedMessageV3.java:731)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeField(JsonFormat.java:1652)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeMessage(JsonFormat.java:1500)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1458)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1340)
-	... 39 more
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.NullValue.valueOf(com.google.protobuf.Descriptors$EnumValueDescriptor)
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 48 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testNullInOneof(com.google.protobuf.util.JsonFormatTest)]
 display-name: testNullInOneof
@@ -1702,64 +867,6 @@ display-name: testFromString
 ]]></system-out>
 </testcase>
 <testcase name="test1pair_constructsObject" classname="com_google_protobuf.protobuf_java_util.StructsTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Struct&quot; missing method &quot;getDefaultInstance&quot;." type="com.google.protobuf.InvalidProtocolBufferException"><![CDATA[com.google.protobuf.InvalidProtocolBufferException: Generated message class "com.google.protobuf.Struct" missing method "getDefaultInstance".
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1343)
-	at com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:472)
-	at com_google_protobuf.protobuf_java_util.StructsTest.test1pair_constructsObject(StructsTest.java:22)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.IllegalStateException: Generated message class "com.google.protobuf.Struct" missing method "getDefaultInstance".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$MapFieldAccessor.<init>(GeneratedMessageV3.java:2757)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2105)
-	at com.google.protobuf.Struct$Builder.internalGetFieldAccessorTable(Struct.java:338)
-	at com.google.protobuf.GeneratedMessageV3$Builder.newBuilderForField(GeneratedMessageV3.java:706)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeMapField(JsonFormat.java:1690)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.mergeStruct(JsonFormat.java:1591)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.access$2500(JsonFormat.java:1299)
-	at com.google.protobuf.util.JsonFormat$ParserImpl$6.merge(JsonFormat.java:1424)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1455)
-	at com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1340)
-	... 36 more
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Struct.getDefaultInstance()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 47 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com_google_protobuf.protobuf_java_util.StructsTest]/[test:test1pair_constructsObject(com_google_protobuf.protobuf_java_util.StructsTest)]
 display-name: test1pair_constructsObject
@@ -1778,58 +885,6 @@ display-name: testParse_outOfRange
 ]]></system-out>
 </testcase>
 <testcase name="testAnyInMaps" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Int32Value&quot; missing method &quot;getValue&quot;." type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Generated message class "com.google.protobuf.Int32Value" missing method "getValue".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularFieldAccessor$ReflectionInvoker.<init>(GeneratedMessageV3.java:2347)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularFieldAccessor.<init>(GeneratedMessageV3.java:2418)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2145)
-	at com.google.protobuf.Int32Value.internalGetFieldAccessorTable(Int32Value.java:37)
-	at com.google.protobuf.GeneratedMessageV3.getDescriptorForType(GeneratedMessageV3.java:139)
-	at com.google.protobuf.Any.pack(Any.java:61)
-	at com.google.protobuf.util.JsonFormatTest.testAnyInMaps(JsonFormatTest.java:1225)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Int32Value.getValue()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 44 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testAnyInMaps(com.google.protobuf.util.JsonFormatTest)]
 display-name: testAnyInMaps
@@ -1896,60 +951,6 @@ display-name: testAllFields
 ]]></system-out>
 </testcase>
 <testcase name="testTimestamp" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Timestamp&quot; missing method &quot;newBuilder&quot;." type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Generated message class "com.google.protobuf.Timestamp" missing method "newBuilder".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor.<init>(GeneratedMessageV3.java:3107)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2121)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestTimestamp.internalGetFieldAccessorTable(JsonTestProto.java:17794)
-	at com.google.protobuf.GeneratedMessageV3.getDescriptorForType(GeneratedMessageV3.java:139)
-	at com.google.protobuf.util.JsonFormat$PrinterImpl.print(JsonFormat.java:758)
-	at com.google.protobuf.util.JsonFormat$Printer.appendTo(JsonFormat.java:367)
-	at com.google.protobuf.util.JsonFormat$Printer.print(JsonFormat.java:377)
-	at com.google.protobuf.util.JsonFormatTest.toJsonString(JsonFormatTest.java:155)
-	at com.google.protobuf.util.JsonFormatTest.testTimestamp(JsonFormatTest.java:878)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Timestamp.newBuilder()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 46 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testTimestamp(com.google.protobuf.util.JsonFormatTest)]
 display-name: testTimestamp
@@ -1961,72 +962,19 @@ unique-id: [engine:junit-vintage]/[runner:com_google_protobuf.protobuf_java_util
 display-name: testIntersection
 ]]></system-out>
 </testcase>
-<testcase name="testDurationStringFormat" classname="com.google.protobuf.util.DurationsTest" time="0.005">
+<testcase name="testDurationStringFormat" classname="com.google.protobuf.util.DurationsTest" time="0.002">
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.DurationsTest]/[test:testDurationStringFormat(com.google.protobuf.util.DurationsTest)]
 display-name: testDurationStringFormat
 ]]></system-out>
 </testcase>
 <testcase name="testAnyFieldsWithCustomAddedTypeRegistry" classname="com.google.protobuf.util.JsonFormatTest" time="0">
-<error message="Generated message class &quot;com.google.protobuf.Any&quot; missing method &quot;newBuilder&quot;." type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Generated message class "com.google.protobuf.Any" missing method "newBuilder".
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1998)
-	at com.google.protobuf.GeneratedMessageV3.access$1000(GeneratedMessageV3.java:79)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor.<init>(GeneratedMessageV3.java:3107)
-	at com.google.protobuf.GeneratedMessageV3$FieldAccessorTable.ensureFieldAccessorsInitialized(GeneratedMessageV3.java:2121)
-	at com_google_protobuf.protobuf_java_util.JsonTestProto$TestAny.internalGetFieldAccessorTable(JsonTestProto.java:20632)
-	at com.google.protobuf.GeneratedMessageV3.getDescriptorForType(GeneratedMessageV3.java:139)
-	at com.google.protobuf.util.JsonFormat$PrinterImpl.print(JsonFormat.java:758)
-	at com.google.protobuf.util.JsonFormat$Printer.appendTo(JsonFormat.java:367)
-	at com.google.protobuf.util.JsonFormat$Printer.print(JsonFormat.java:377)
-	at com.google.protobuf.util.JsonFormatTest.testAnyFieldsWithCustomAddedTypeRegistry(JsonFormatTest.java:1006)
-	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.junit.vintage.engine.execution.RunnerExecutor.execute(RunnerExecutor.java:42)
-	at org.junit.vintage.engine.VintageTestEngine.executeAllChildren(VintageTestEngine.java:80)
-	at org.junit.vintage.engine.VintageTestEngine.execute(VintageTestEngine.java:72)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:95)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:91)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:60)
-	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:132)
-	at java.base@25.0.2/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
-Caused by: java.lang.NoSuchMethodException: com.google.protobuf.Any.newBuilder()
-	at java.base@25.0.2/java.lang.Class.checkMethod(DynamicHub.java:1670)
-	at java.base@25.0.2/java.lang.Class.getMethod(DynamicHub.java:1650)
-	at com.google.protobuf.GeneratedMessageV3.getMethodOrDie(GeneratedMessageV3.java:1995)
-	... 45 more
-]]></error>
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.JsonFormatTest]/[test:testAnyFieldsWithCustomAddedTypeRegistry(com.google.protobuf.util.JsonFormatTest)]
 display-name: testAnyFieldsWithCustomAddedTypeRegistry
 ]]></system-out>
 </testcase>
-<testcase name="testTimestampConcurrentParsing" classname="com.google.protobuf.util.TimestampsTest" time="5.014">
+<testcase name="testTimestampConcurrentParsing" classname="com.google.protobuf.util.TimestampsTest" time="5.012">
 <system-out><![CDATA[
 unique-id: [engine:junit-vintage]/[runner:com.google.protobuf.util.TimestampsTest]/[test:testTimestampConcurrentParsing(com.google.protobuf.util.TimestampsTest)]
 display-name: testTimestampConcurrentParsing
