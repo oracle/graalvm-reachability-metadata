@@ -219,6 +219,15 @@ class Core_3Test {
   }
 
   @Test
+  def hostHeaderParsingSeparatesPortsAndBracketedIpv6Literals(): Unit = {
+    assertEquals(("example.com", Some(8443)), Host.parseHostAndPort("example.com:8443"))
+    assertEquals(("example.com", None), Host.parseHostAndPort("example.com"))
+    assertEquals(("2001:db8:cafe::17", Some(443)), Host.parseHostAndPort("[2001:db8:cafe::17]:443"))
+    assertEquals(("2001:db8:cafe::17", None), Host.parseHostAndPort("[2001:db8:cafe::17]"))
+    assertEquals(("example.com", None), Host.parseHostAndPort("example.com:not-a-port"))
+  }
+
+  @Test
   def forwardingOriginsEtagsAndAuthenticationChallengesParseAndRender(): Unit = {
     val forwarded: List[Forwarded] = right(Forwarded.parse(List(
       "for=192.0.2.60;proto=https;host=example.com",
