@@ -1,0 +1,1757 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019defcd-2583-7e13-8b61-4b0a467e8939
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.platform:org.eclipse.osgi:3.18.300
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.18.300" when "$version$" is replaced with "3.18.300".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+- Set "coordinates" to "org.eclipse.platform:org.eclipse.osgi:3.18.300".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.18.300".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s Maven coordinates first, then map the version to its upstream Eclipse/Equinox tag before editing the JSON.
+web search: 
+web search: Maven Central org.eclipse.platform org.eclipse.osgi 3.18.300 sources javadoc test-sources
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/
+codex
+Maven Central has the main JAR and a sources JAR for `3.18.300`, but no test-sources artifact in that directory. I’m checking the repo’s existing metadata style now so the URL choices match local conventions.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+{
+  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org|javadoc.io|eclipse-equinox|org.eclipse.osgi|org.eclipse.platform' build/discovered-artifact-metadata metadata repository -g '*.json' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+rg: repository: No such file or directory (os error 2)
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/$version$/kotlin-stdlib-common-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+web search: 
+web search: 
+web search: 
+web search: org.eclipse.osgi 3.18.300.v20220506-1159 GitHub equinox
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.platform</groupId>
+  <artifactId>org.eclipse.osgi</artifactId>
+  <version>3.18.300</version>
+  <name>OSGi System Bundle</name>
+  <description>%systemBundle</description>
+  <url>https://projects.eclipse.org/projects/eclipse.equinox</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 2.0</name>
+      <url>https://www.eclipse.org/legal/epl-2.0/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <organization>
+    <name>Eclipse Foundation</name>
+    <url>https://www.eclipse.org/</url>
+  </organization>
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/eclipse-equinox/equinox/issues</url>
+  </issueManagement>
+  <scm>
+    <connection>scm:git:https://github.com/eclipse-equinox/equinox.git</connection>
+    <url>https://github.com/eclipse-equinox/equinox</url>
+  </scm>
+  <developers>
+    <developer>
+      <url>https://projects.eclipse.org/projects/eclipse.equinox/who</url>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/eclipse/platform/org.eclipse.osgi/3.18.300</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/eclipse/platform/org.eclipse.osgi/3.18.300</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="org.eclipse.osgi-3.18.300-javadoc.jar" title="org.eclipse.osgi-3.18.300-javadoc.jar">org.eclipse.osgi-3.18.300-javadoc.jar</a>             2023-03-13 10:49       526      
+<a href="org.eclipse.osgi-3.18.300-javadoc.jar.asc" title="org.eclipse.osgi-3.18.300-javadoc.jar.asc">org.eclipse.osgi-3.18.300-javadoc.jar.asc</a>         2023-03-13 10:49       833      
+<a href="org.eclipse.osgi-3.18.300-javadoc.jar.asc.md5" title="org.eclipse.osgi-3.18.300-javadoc.jar.asc.md5">org.eclipse.osgi-3.18.300-javadoc.jar.asc.md5</a>     2023-03-13 10:49        32      
+<a href="org.eclipse.osgi-3.18.300-javadoc.jar.asc.sha1" title="org.eclipse.osgi-3.18.300-javadoc.jar.asc.sha1">org.eclipse.osgi-3.18.300-javadoc.jar.asc.sha...</a>  2023-03-13 10:49        40      
+<a href="org.eclipse.osgi-3.18.300-javadoc.jar.md5" title="org.eclipse.osgi-3.18.300-javadoc.jar.md5">org.eclipse.osgi-3.18.300-javadoc.jar.md5</a>         2023-03-13 10:49        32      
+<a href="org.eclipse.osgi-3.18.300-javadoc.jar.sha1" title="org.eclipse.osgi-3.18.300-javadoc.jar.sha1">org.eclipse.osgi-3.18.300-javadoc.jar.sha1</a>        2023-03-13 10:49        40      
+<a href="org.eclipse.osgi-3.18.300-sources.jar" title="org.eclipse.osgi-3.18.300-sources.jar">org.eclipse.osgi-3.18.300-sources.jar</a>             2023-03-13 10:49   1172879      
+<a href="org.eclipse.osgi-3.18.300-sources.jar.asc" title="org.eclipse.osgi-3.18.300-sources.jar.asc">org.eclipse.osgi-3.18.300-sources.jar.asc</a>         2023-03-13 10:49       833      
+<a href="org.eclipse.osgi-3.18.300-sources.jar.asc.md5" title="org.eclipse.osgi-3.18.300-sources.jar.asc.md5">org.eclipse.osgi-3.18.300-sources.jar.asc.md5</a>     2023-03-13 10:49        32      
+<a href="org.eclipse.osgi-3.18.300-sources.jar.asc.sha1" title="org.eclipse.osgi-3.18.300-sources.jar.asc.sha1">org.eclipse.osgi-3.18.300-sources.jar.asc.sha...</a>  2023-03-13 10:49        40      
+<a href="org.eclipse.osgi-3.18.300-sources.jar.md5" title="org.eclipse.osgi-3.18.300-sources.jar.md5">org.eclipse.osgi-3.18.300-sources.jar.md5</a>         2023-03-13 10:49        32      
+<a href="org.eclipse.osgi-3.18.300-sources.jar.sha1" title="org.eclipse.osgi-3.18.300-sources.jar.sha1">org.eclipse.osgi-3.18.300-sources.jar.sha1</a>        2023-03-13 10:49        40      
+<a href="org.eclipse.osgi-3.18.300.jar" title="org.eclipse.osgi-3.18.300.jar">org.eclipse.osgi-3.18.300.jar</a>                     2023-03-13 10:49   1539745      
+<a href="org.eclipse.osgi-3.18.300.jar.asc" title="org.eclipse.osgi-3.18.300.jar.asc">org.eclipse.osgi-3.18.300.jar.asc</a>                 2023-03-13 10:49       833      
+<a href="org.eclipse.osgi-3.18.300.jar.asc.md5" title="org.eclipse.osgi-3.18.300.jar.asc.md5">org.eclipse.osgi-3.18.300.jar.asc.md5</a>             2023-03-13 10:49        32      
+<a href="org.eclipse.osgi-3.18.300.jar.asc.sha1" title="org.eclipse.osgi-3.18.300.jar.asc.sha1">org.eclipse.osgi-3.18.300.jar.asc.sha1</a>            2023-03-13 10:49        40      
+<a href="org.eclipse.osgi-3.18.300.jar.md5" title="org.eclipse.osgi-3.18.300.jar.md5">org.eclipse.osgi-3.18.300.jar.md5</a>                 2023-03-13 10:49        32      
+<a href="org.eclipse.osgi-3.18.300.jar.sha1" title="org.eclipse.osgi-3.18.300.jar.sha1">org.eclipse.osgi-3.18.300.jar.sha1</a>                2023-03-13 10:49        40      
+<a href="org.eclipse.osgi-3.18.300.pom" title="org.eclipse.osgi-3.18.300.pom">org.eclipse.osgi-3.18.300.pom</a>                     2023-03-13 10:49      1302      
+<a href="org.eclipse.osgi-3.18.300.pom.asc" title="org.eclipse.osgi-3.18.300.pom.asc">org.eclipse.osgi-3.18.300.pom.asc</a>                 2023-03-13 10:49       833      
+<a href="org.eclipse.osgi-3.18.300.pom.asc.md5" title="org.eclipse.osgi-3.18.300.pom.asc.md5">org.eclipse.osgi-3.18.300.pom.asc.md5</a>             2023-03-13 10:49        32      
+<a href="org.eclipse.osgi-3.18.300.pom.asc.sha1" title="org.eclipse.osgi-3.18.300.pom.asc.sha1">org.eclipse.osgi-3.18.300.pom.asc.sha1</a>            2023-03-13 10:49        40      
+<a href="org.eclipse.osgi-3.18.300.pom.md5" title="org.eclipse.osgi-3.18.300.pom.md5">org.eclipse.osgi-3.18.300.pom.md5</a>                 2023-03-13 10:49        32      
+<a href="org.eclipse.osgi-3.18.300.pom.sha1" title="org.eclipse.osgi-3.18.300.pom.sha1">org.eclipse.osgi-3.18.300.pom.sha1</a>                2023-03-13 10:49        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-equinox/equinox/tags?per_page=100 | jq -r '.[].name' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 262ms:
+Y20260502-1000
+Y20260430-1000
+Y20260428-1000
+Y20260425-1000
+Y20260423-1000
+Y20260421-1000
+Y20260418-1000
+Y20260416-1000
+Y20260414-1000
+Y20260413-1200
+Y20260317-1000
+Y20260317-0940
+Y20260316-2320
+Y20260312-1000
+Y20260311-1000
+Y20260307-1000
+Y20260305-1000
+Y20260302-0210
+Y20260302-0020
+Y20260301-2230
+Y20260228-1000
+Y20260226-1000
+Y20260224-1000
+Y20260221-1000
+Y20260219-1000
+Y20260217-1000
+Y20260214-1000
+Y20260212-1000
+Y20260210-1000
+Y20260205-1000
+Y20260203-1000
+Y20260131-1000
+Y20260129-1000
+Y20260127-1000
+Y20260124-1000
+Y20260122-1000
+Y20260120-1000
+Y20260118-2300
+Y20260117-1000
+Y20260115-1000
+Y20260113-1000
+Y20260110-1000
+Y20260108-1000
+Y20260106-1000
+Y20260103-1000
+Y20260101-1000
+Y20251230-1000
+Y20251227-1000
+Y20251225-1000
+Y20251223-1000
+Y20251220-1000
+Y20251218-1000
+Y20251216-1000
+Y20251213-1000
+Y20251211-2250
+Y20251211-1000
+Y20251209-1000
+Y20251206-1000
+Y20251204-1000
+Y20251202-1000
+Y20251129-1800
+Y20251129-1000
+Y20251125-1000
+Y20251122-1000
+Y20251120-1000
+Y20251118-1000
+Y20251115-1000
+Y20251113-1000
+Y20251113-0240
+Y20251112-0800
+Y20251111-1000
+Y20251111-0410
+Y20251110-0730
+Y20251110-0420
+Y20250916-1440
+Y20250912-1000
+Y20250911-1000
+Y20250910-1000
+Y20250909-1000
+Y20250905-1000
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-equinox/equinox.git | rg '3\\.18\\.300|R4_23|R4_24|I2022|Y2022|v2022|20220506|4\\.24|4\\.23|3_18_300'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-equinox/equinox/R4_24/bundles/org.eclipse.osgi/META-INF/MANIFEST.MF | sed -n '1,60p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/search/code?q=%223.18.300%22+repo:eclipse-equinox/equinox' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ exited 22 in 131ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 177ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 445ms:
+8ee6592afacd39e4c7fde8431df5f4affcca38e3	refs/tags/I20220616-0820
+48152cb7d8bbd2a2cedb253e57d53ccf6d5e9e77	refs/tags/I20220616-0910
+48152cb7d8bbd2a2cedb253e57d53ccf6d5e9e77	refs/tags/I20220616-1800
+f11fe1f3a00bd07105e66a30a4c61c2b49047a79	refs/tags/I20220617-1800
+17b1546f8186064750ab5c991b2d29217b709b38	refs/tags/I20220618-0340
+e28f62f988b03e7e33e2e935bd360810db5af9a9	refs/tags/I20220618-1000
+e28f62f988b03e7e33e2e935bd360810db5af9a9	refs/tags/I20220618-1800
+a31b3d49011b602b86c8e7c3aff1c959d5dde19c	refs/tags/I20220619-1800
+a31b3d49011b602b86c8e7c3aff1c959d5dde19c	refs/tags/I20220620-0220
+715a6ddd8b2efde01342e446184b4a26c0419b74	refs/tags/I20220620-1050
+715a6ddd8b2efde01342e446184b4a26c0419b74	refs/tags/I20220621-0440
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/I20220621-1800
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/I20220622-0520
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/I20220622-0730
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/I20220622-1800
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/I20220623-0740
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/I20220623-1800
+a04853bf65a953c7b4a361f6e51db525b82e586d	refs/tags/I20220624-0400
+4a4cd159ad4d2fb806222b99edc2f262468a8839	refs/tags/I20220624-0510
+9fcd82166c1342193fd0ea178e6eef6fae8b6b17	refs/tags/I20220624-1800
+9fcd82166c1342193fd0ea178e6eef6fae8b6b17	refs/tags/I20220625-1800
+9fcd82166c1342193fd0ea178e6eef6fae8b6b17	refs/tags/I20220626-1800
+4e0d631a12a3d6e75b39823966b336686f7ac4be	refs/tags/I20220627-1800
+8799a9994d3f8aa61bf237406224e3fccf24db1a	refs/tags/I20220628-1040
+8799a9994d3f8aa61bf237406224e3fccf24db1a	refs/tags/I20220628-1800
+0066d3ed171bd65d0987c385b421f81a545e681b	refs/tags/I20220629-0320
+0066d3ed171bd65d0987c385b421f81a545e681b	refs/tags/I20220629-0540
+0066d3ed171bd65d0987c385b421f81a545e681b	refs/tags/I20220629-1800
+83317a891ebd82af4f5a30053d3851cc3cbfc2b3	refs/tags/I20220630-1800
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220701-1800
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220702-1230
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220702-1800
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220703-0600
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220703-1800
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220704-0500
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220704-0600
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220704-1640
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220704-1800
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220705-0600
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220705-1800
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220706-0600
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220706-1800
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220708-1620
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/I20220708-1800
+5995312d385545b30a7fa69a26d48c5926eeecd0	refs/tags/I20220709-0240
+5995312d385545b30a7fa69a26d48c5926eeecd0	refs/tags/I20220709-0500
+5995312d385545b30a7fa69a26d48c5926eeecd0	refs/tags/I20220709-0920
+5995312d385545b30a7fa69a26d48c5926eeecd0	refs/tags/I20220709-1800
+5417ee984302e5f7751be760f57b0e6c3a6c6c34	refs/tags/I20220710-1800
+5417ee984302e5f7751be760f57b0e6c3a6c6c34	refs/tags/I20220711-1800
+5417ee984302e5f7751be760f57b0e6c3a6c6c34	refs/tags/I20220712-0820
+5417ee984302e5f7751be760f57b0e6c3a6c6c34	refs/tags/I20220712-1800
+5417ee984302e5f7751be760f57b0e6c3a6c6c34	refs/tags/I20220713-0100
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/I20220713-1800
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/I20220714-1800
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/I20220715-0410
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/I20220715-1800
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/I20220716-1800
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/I20220717-1800
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/I20220718-0710
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/I20220718-1800
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/I20220719-0530
+fd5e281244248fd81eb23c5c2a2b79cde2e13ee0	refs/tags/I20220719-1800
+a1a9eaf5879c77a3aa029ac318a826cceadb59ff	refs/tags/I20220721-0110
+a1a9eaf5879c77a3aa029ac318a826cceadb59ff	refs/tags/I20220721-0420
+a1a9eaf5879c77a3aa029ac318a826cceadb59ff	refs/tags/I20220721-0550
+a1a9eaf5879c77a3aa029ac318a826cceadb59ff	refs/tags/I20220721-1800
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/I20220722-0020
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/I20220722-1800
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/I20220723-0730
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/I20220723-1800
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/I20220724-1800
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/I20220725-1800
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220726-1800
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220727-1800
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220728-1800
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220729-1800
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220730-0300
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220730-1800
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220731-0150
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220731-1600
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220731-1900
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/I20220801-0200
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220801-1800
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220802-1800
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220804-0700
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220804-1800
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220805-0600
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220805-1800
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220806-1800
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220807-0740
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220807-0910
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220807-1800
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220808-0820
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220808-1800
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220809-0040
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220809-1800
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220811-0050
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220811-0130
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/I20220811-0140
+ec71e8ceeabb6ffccf951ef472a21eaa4b62b1b3	refs/tags/I20220811-1810
+ec71e8ceeabb6ffccf951ef472a21eaa4b62b1b3	refs/tags/I20220812-0500
+987933cf53db3e7629985826ebc6b7ccda4896bf	refs/tags/I20220812-1340
+987933cf53db3e7629985826ebc6b7ccda4896bf	refs/tags/I20220812-1810
+60645e3b15a245fa144567f2236805e9a7cd08bf	refs/tags/I20220813-0600
+60645e3b15a245fa144567f2236805e9a7cd08bf	refs/tags/I20220813-1800
+60645e3b15a245fa144567f2236805e9a7cd08bf	refs/tags/I20220814-0600
+60645e3b15a245fa144567f2236805e9a7cd08bf	refs/tags/I20220814-1800
+60645e3b15a245fa144567f2236805e9a7cd08bf	refs/tags/I20220815-0600
+dc74c67b47cfa7e17c3b53079655ec4a93d5ff51	refs/tags/I20220815-1800
+dc74c67b47cfa7e17c3b53079655ec4a93d5ff51	refs/tags/I20220816-0600
+dc74c67b47cfa7e17c3b53079655ec4a93d5ff51	refs/tags/I20220816-1800
+dc74c67b47cfa7e17c3b53079655ec4a93d5ff51	refs/tags/I20220817-0600
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220817-1800
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220819-1800
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220820-0600
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220820-1800
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220821-1800
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220822-0600
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220822-1800
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220823-0600
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220823-1800
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220824-0600
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/I20220824-1800
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220826-1800
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220826-2150
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220827-0600
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220827-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220827-1800
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220828-0600
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220828-1800
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220829-0600
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220829-1800
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220830-0600
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220830-1800
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220831-0600
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220831-1040
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220831-1800
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/I20220902-1030
+c7bf0b94f36473f75ae0b35a9fc67cec00d0f436	refs/tags/I20220902-1100
+c7bf0b94f36473f75ae0b35a9fc67cec00d0f436	refs/tags/I20220902-1400
+c7bf0b94f36473f75ae0b35a9fc67cec00d0f436	refs/tags/I20220902-1810
+c7bf0b94f36473f75ae0b35a9fc67cec00d0f436	refs/tags/I20220902-2240
+170a871385a858366125dfd9d745dbbebe1d98b2	refs/tags/I20220903-1800
+1b82594b3710a09a8b462a5f22501f6e2255dc84	refs/tags/I20220904-1800
+1b82594b3710a09a8b462a5f22501f6e2255dc84	refs/tags/I20220905-1800
+1b82594b3710a09a8b462a5f22501f6e2255dc84	refs/tags/I20220906-0120
+aacecd846c6051d30eae520ea3134579701b2d4c	refs/tags/I20220906-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220907-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220908-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220909-0040
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220909-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220910-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220911-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220912-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220913-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220914-1620
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220914-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220915-0110
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220915-0600
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220915-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220915-2210
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220916-0140
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220916-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220916-2220
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220917-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220918-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220919-0240
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220919-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220920-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220920-2240
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220921-0710
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220921-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220922-0520
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220922-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220923-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220924-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220925-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220926-0600
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220926-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220927-0600
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220927-1800
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220928-0600
+a3a9628da771382ba2821b0b61228eb9c9946b6e	refs/tags/I20220928-1800
+de39e61efda1564f07a5b9b0933a9002b8348876	refs/tags/I20220930-1800
+dd43d4fc85cfa4ce65a5b171ac09e097c7723b56	refs/tags/I20221002-0330
+dd43d4fc85cfa4ce65a5b171ac09e097c7723b56	refs/tags/I20221002-1800
+dd43d4fc85cfa4ce65a5b171ac09e097c7723b56	refs/tags/I20221003-1800
+dd43d4fc85cfa4ce65a5b171ac09e097c7723b56	refs/tags/I20221004-0730
+dd43d4fc85cfa4ce65a5b171ac09e097c7723b56	refs/tags/I20221004-0800
+dd43d4fc85cfa4ce65a5b171ac09e097c7723b56	refs/tags/I20221004-1800
+33ad07188e546f4e5f2757ebd6f2c52648fbcea5	refs/tags/I20221005-1800
+e43deae05353349ceec7dac3990ee6710f0eb8d6	refs/tags/I20221006-1800
+cc3ce62c96ebd1db918bd8edaa07cffb6e6f6781	refs/tags/I20221007-0230
+e0d9d460c7373cd45612bb15220286975a89ee26	refs/tags/I20221007-1800
+e0d9d460c7373cd45612bb15220286975a89ee26	refs/tags/I20221008-1810
+e0d9d460c7373cd45612bb15220286975a89ee26	refs/tags/I20221009-1800
+e0d9d460c7373cd45612bb15220286975a89ee26	refs/tags/I20221010-1250
+e0d9d460c7373cd45612bb15220286975a89ee26	refs/tags/I20221010-1840
+e0d9d460c7373cd45612bb15220286975a89ee26	refs/tags/I20221011-0640
+e0d9d460c7373cd45612bb15220286975a89ee26	refs/tags/I20221011-1800
+d07c5147c379cd2c319d7c9da240fa4377413e69	refs/tags/I20221012-1800
+43f3477f1846869f7626354096cce67c2986d5c7	refs/tags/I20221013-0150
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221013-0410
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221013-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221014-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221015-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221016-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221017-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221018-0740
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221018-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221019-0810
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221019-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221020-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221021-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221022-0140
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221022-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221023-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221024-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221025-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221026-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221027-0910
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221027-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221028-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221029-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221030-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221031-1800
+2dbea48d8b145ed85e088981a57a6039dd4f500d	refs/tags/I20221101-1800
+ecd234abe2a080317061b7100d57ec6db3c2fbcb	refs/tags/I20221102-0750
+ecd234abe2a080317061b7100d57ec6db3c2fbcb	refs/tags/I20221102-0830
+ecd234abe2a080317061b7100d57ec6db3c2fbcb	refs/tags/I20221102-0910
+ecd234abe2a080317061b7100d57ec6db3c2fbcb	refs/tags/I20221102-1800
+f656cefe5b6a791311750be358b8a3343e4e22fd	refs/tags/I20221103-0530
+f656cefe5b6a791311750be358b8a3343e4e22fd	refs/tags/I20221103-1800
+f656cefe5b6a791311750be358b8a3343e4e22fd	refs/tags/I20221104-1200
+f656cefe5b6a791311750be358b8a3343e4e22fd	refs/tags/I20221104-1800
+f656cefe5b6a791311750be358b8a3343e4e22fd	refs/tags/I20221105-1800
+f656cefe5b6a791311750be358b8a3343e4e22fd	refs/tags/I20221106-2230
+f656cefe5b6a791311750be358b8a3343e4e22fd	refs/tags/I20221107-1920
+b2d398ac3cec0f5627b0aade427de318b00f7a5e	refs/tags/I20221108-0650
+7ef522b7dc29e8a15c6f378e356cfc0f8683b439	refs/tags/I20221108-1800
+d1c1ac4ceab2f1ee4634335e5c1da455d877d7da	refs/tags/I20221109-0600
+d1c1ac4ceab2f1ee4634335e5c1da455d877d7da	refs/tags/I20221109-1850
+d1c1ac4ceab2f1ee4634335e5c1da455d877d7da	refs/tags/I20221111-1800
+d1c1ac4ceab2f1ee4634335e5c1da455d877d7da	refs/tags/I20221112-1800
+d1c1ac4ceab2f1ee4634335e5c1da455d877d7da	refs/tags/I20221113-1800
+d1c1ac4ceab2f1ee4634335e5c1da455d877d7da	refs/tags/I20221114-1800
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221117-0540
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221117-1050
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221117-1330
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221118-1800
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221119-0600
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221119-1800
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221120-0600
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221120-1800
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221121-0600
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221121-1800
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221122-0600
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221122-1800
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221123-0600
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221123-1800
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221128-1800
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221129-1800
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221130-0430
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/I20221130-0600
+c6300dd9dc1f666ebc6c84867032bd4b38d96641	refs/tags/I20221130-1800
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221201-0500
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221201-1110
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221201-1210
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221201-1430
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221201-1800
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221202-1800
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221203-0210
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221203-0400
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221203-1800
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221204-1800
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221205-0050
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221205-0710
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221205-1800
+cfb6f5ae5df1582b0a5c5a3c0de4c22569691034	refs/tags/I20221206-1800
+ece8b9f67217876cf91c8d01fd221922714ef3c8	refs/tags/I20221207-1800
+ece8b9f67217876cf91c8d01fd221922714ef3c8	refs/tags/I20221208-1800
+ece8b9f67217876cf91c8d01fd221922714ef3c8	refs/tags/I20221209-0520
+f90ce60558482cb34f9cacf81e93d0a5e754e85f	refs/tags/I20221209-1800
+f90ce60558482cb34f9cacf81e93d0a5e754e85f	refs/tags/I20221210-1800
+f90ce60558482cb34f9cacf81e93d0a5e754e85f	refs/tags/I20221211-1800
+f90ce60558482cb34f9cacf81e93d0a5e754e85f	refs/tags/I20221212-1800
+f90ce60558482cb34f9cacf81e93d0a5e754e85f	refs/tags/I20221213-0110
+f90ce60558482cb34f9cacf81e93d0a5e754e85f	refs/tags/I20221213-0200
+df5636205c22595a402353026884634f52926366	refs/tags/I20221213-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221214-0610
+df5636205c22595a402353026884634f52926366	refs/tags/I20221214-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221215-0320
+df5636205c22595a402353026884634f52926366	refs/tags/I20221215-0720
+df5636205c22595a402353026884634f52926366	refs/tags/I20221215-0840
+df5636205c22595a402353026884634f52926366	refs/tags/I20221215-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221216-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221217-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221218-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221219-0020
+df5636205c22595a402353026884634f52926366	refs/tags/I20221219-0820
+df5636205c22595a402353026884634f52926366	refs/tags/I20221219-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221220-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221221-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221222-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221223-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221224-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221225-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221226-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221227-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221228-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221229-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221230-1800
+df5636205c22595a402353026884634f52926366	refs/tags/I20221231-1800
+776c5262fb0a4ece90d6abc464cbb053231ec796	refs/tags/Y20220617-0600
+e28f62f988b03e7e33e2e935bd360810db5af9a9	refs/tags/Y20220618-0620
+e28f62f988b03e7e33e2e935bd360810db5af9a9	refs/tags/Y20220619-0600
+a31b3d49011b602b86c8e7c3aff1c959d5dde19c	refs/tags/Y20220620-0630
+715a6ddd8b2efde01342e446184b4a26c0419b74	refs/tags/Y20220621-0600
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/Y20220622-0600
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/Y20220623-0600
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/Y20220623-0900
+445abf98c5fde712928f0d82da8a45c98973bbc2	refs/tags/Y20220623-1050
+36a94203977cf8eda15592a57b26761398b3c47b	refs/tags/Y20220624-0600
+9fcd82166c1342193fd0ea178e6eef6fae8b6b17	refs/tags/Y20220625-0600
+9fcd82166c1342193fd0ea178e6eef6fae8b6b17	refs/tags/Y20220626-0600
+9fcd82166c1342193fd0ea178e6eef6fae8b6b17	refs/tags/Y20220627-0600
+8799a9994d3f8aa61bf237406224e3fccf24db1a	refs/tags/Y20220628-0600
+0066d3ed171bd65d0987c385b421f81a545e681b	refs/tags/Y20220629-0600
+0066d3ed171bd65d0987c385b421f81a545e681b	refs/tags/Y20220630-0600
+83317a891ebd82af4f5a30053d3851cc3cbfc2b3	refs/tags/Y20220701-0600
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/Y20220702-0600
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/Y20220703-1000
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/Y20220704-1000
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/Y20220705-1000
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/Y20220706-1000
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/Y20220707-1000
+57266c68d2bf0d77494bc341f2222b5602de538d	refs/tags/Y20220708-1000
+5995312d385545b30a7fa69a26d48c5926eeecd0	refs/tags/Y20220709-1000
+5417ee984302e5f7751be760f57b0e6c3a6c6c34	refs/tags/Y20220710-1000
+5417ee984302e5f7751be760f57b0e6c3a6c6c34	refs/tags/Y20220711-1000
+5417ee984302e5f7751be760f57b0e6c3a6c6c34	refs/tags/Y20220712-1000
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/Y20220713-1000
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/Y20220714-1000
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/Y20220715-1000
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/Y20220716-1000
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/Y20220717-1000
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/Y20220718-1000
+d31bae58ab5e6e4222baa6cf13f06c9f2f2b7577	refs/tags/Y20220719-0600
+8c0d655d35abca163c2bdd03c55ff4fe05ca4696	refs/tags/Y20220719-1000
+a1a9eaf5879c77a3aa029ac318a826cceadb59ff	refs/tags/Y20220721-0230
+a1a9eaf5879c77a3aa029ac318a826cceadb59ff	refs/tags/Y20220721-0500
+a1a9eaf5879c77a3aa029ac318a826cceadb59ff	refs/tags/Y20220721-0750
+a1a9eaf5879c77a3aa029ac318a826cceadb59ff	refs/tags/Y20220721-1000
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/Y20220722-0020
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/Y20220722-1000
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/Y20220723-1000
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/Y20220724-1000
+e10cfe03e718fd3a7095fecf009eb5d4b3b112d9	refs/tags/Y20220725-1000
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/Y20220726-1000
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/Y20220727-1000
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/Y20220728-1000
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/Y20220729-1000
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/Y20220730-1000
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/Y20220731-1000
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/Y20220801-0240
+4b397a20b613947dc4da860ffebc6ae7a6446fe6	refs/tags/Y20220801-0300
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/Y20220801-1000
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/Y20220802-1000
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/Y20220807-1000
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/Y20220808-1000
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/Y20220809-0110
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/Y20220809-1000
+1a241ec0a8e176ed9312654dfd862e8802e397a2	refs/tags/Y20220811-0050
+5313c3949e898af1d18dedf91d6bc90a21b0e7b1	refs/tags/Y20220811-1000
+987933cf53db3e7629985826ebc6b7ccda4896bf	refs/tags/Y20220812-1000
+60645e3b15a245fa144567f2236805e9a7cd08bf	refs/tags/Y20220813-1000
+60645e3b15a245fa144567f2236805e9a7cd08bf	refs/tags/Y20220814-1000
+60645e3b15a245fa144567f2236805e9a7cd08bf	refs/tags/Y20220815-1000
+dc74c67b47cfa7e17c3b53079655ec4a93d5ff51	refs/tags/Y20220816-0140
+dc74c67b47cfa7e17c3b53079655ec4a93d5ff51	refs/tags/Y20220816-1110
+dc74c67b47cfa7e17c3b53079655ec4a93d5ff51	refs/tags/Y20220817-0210
+dc74c67b47cfa7e17c3b53079655ec4a93d5ff51	refs/tags/Y20220817-1000
+dc74c67b47cfa7e17c3b53079655ec4a93d5ff51	refs/tags/Y20220817-1140
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/Y20220818-1000
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/Y20220819-1000
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/Y20220821-1000
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/Y20220822-1000
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/Y20220823-1000
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/Y20220824-1000
+443cc536805145356c94afdcac65ee70cd90838e	refs/tags/Y20220825-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220826-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220827-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220828-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220829-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220830-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220831-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220901-0120
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220901-0150
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220901-0450
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220901-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220902-1020
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220903-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220904-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220905-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220906-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220907-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220908-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220909-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220910-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220911-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220912-0150
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220912-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220912-1030
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220913-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220914-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220915-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220915-2220
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220916-0520
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220916-1140
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220916-1340
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220916-1400
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220917-0240
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220917-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220918-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220919-1000
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220920-0230
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220920-0700
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220920-0720
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/Y20220920-1110
+
+codex
+The POM confirms the repository root as `eclipse-equinox/equinox`, and the main artifact is a normal JVM JAR with class files, so I won’t add `not-for-native-image`. I’m narrowing the upstream tag now because Eclipse publishes many timestamp tags and the Maven version is a bundle version, not a Git tag name.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-equinox/equinox.git 'refs/tags/R*' | tail -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "for t in R4_23 R4_24 R4_25 R4_26 R4_27 R4_28 R4_29; do printf '%s ' \""'$t"; curl -fsSL "https://raw.githubusercontent.com/eclipse-equinox/equinox/$t/bundles/org.eclipse.osgi/pom.xml" | rg '"'<version>|<artifactId>' | head -6 || true; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "for t in R4_23 R4_24 R4_25 R4_26 R4_27 R4_28 R4_29; do printf '%s ' \""'$t"; curl -fsSL "https://raw.githubusercontent.com/eclipse-equinox/equinox/$t/bundles/org.eclipse.osgi/META-INF/MANIFEST.MF" | rg '"'"'^Bundle-Version:'"' || true; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 517ms:
+bb4986fecaf81fc455dddd9bfeb137713cf25295	refs/tags/R4_25
+0ebf9ae64ec88482094447de2a1b6d9c3c4e7251	refs/tags/R4_25^{}
+56791457cfb5dab68af1d8f3cb54143e2df06461	refs/tags/R4_26
+4c24b774a5a3a4cbb35c673c6c50242701a2ddd6	refs/tags/R4_26^{}
+ffeb86d1c8035520dfdcf2289392bc439da1dae4	refs/tags/R4_27
+2bd49d911d06b00f71a5919e16d2e6815c656edc	refs/tags/R4_27^{}
+7b06c22402ecf502c78a3b4b0a127da05f1a7978	refs/tags/R4_28
+68477c3e8367323dd14f89eede9e46da69d958b8	refs/tags/R4_28^{}
+9dcee2f7a7a081e341c40c36101001347ddd027f	refs/tags/R4_29
+cfed903b766475c1710d7ae208853f0ba5f1d9cd	refs/tags/R4_29^{}
+e54ccda1efd09404195502f1ffa932cdef8fd19f	refs/tags/R4_30
+814024bf4d175788635cb11c031aa9b9c3379f12	refs/tags/R4_30^{}
+d5c7fcf0c4e25a9ebb023cbd3461d3f22596bc00	refs/tags/R4_31
+0f17d84b6ad9b25fa72a8ecc7897b79c899ce48b	refs/tags/R4_31^{}
+7678de8aab3f2daeb2f66740ae99e2864b1c4ca5	refs/tags/R4_32
+ca6458f635ab4120ca8231a29b9478ba3070cf29	refs/tags/R4_32^{}
+795ae3b5aa389182b05ca3427023f6acaf86d26c	refs/tags/R4_33
+4526f764f444a6217fb614835452cb8a3956f12d	refs/tags/R4_33^{}
+4db59ba194aba036a1c785dc468e3e537cd59955	refs/tags/R4_34
+2815608394cba2ec5529c7a5ec861e7c34113dd2	refs/tags/R4_34^{}
+d7b6febd19c9084f4e9464d61addbd4da641bcbf	refs/tags/R4_35
+95c7e08e8740f9b2384d89efd1a72020d1e65619	refs/tags/R4_35^{}
+a20b1f34b184cc4e20ee84f784e57a58361db76e	refs/tags/R4_36
+ca95c426a7176f95f085f2f08c29f5cc338d9dcb	refs/tags/R4_36^{}
+36530cbb1fa6a0455521a33c259183198c25c342	refs/tags/R4_37
+d2f412dcd26daa40100682d822b5b9c3c33269c9	refs/tags/R4_37^{}
+e6837e23930c7fb2104962774b5a0c464804ebfd	refs/tags/R4_38
+74e38821ef7ea257da027a00117c8484603702fb	refs/tags/R4_38^{}
+fa3750edb0c420d6faaba5bb00dfcf02dd2d5f98	refs/tags/R4_39
+686cf2143b728332562cf24ca0b032ebb9d430f4	refs/tags/R4_39^{}
+
+ succeeded in 1547ms:
+curl: (22) The requested URL returned error: 404
+R4_24 curl: (22) The requested URL returned error: 404
+R4_25 Bundle-Version: 3.18.100.qualifier
+R4_26 Bundle-Version: 3.18.200.qualifier
+R4_27 Bundle-Version: 3.18.300.qualifier
+R4_28 Bundle-Version: 3.18.400.qualifier
+R4_29 Bundle-Version: 3.18.500.qualifier
+
+ succeeded in 1592ms:
+curl: (22) The requested URL returned error: 404
+R4_24 curl: (22) The requested URL returned error: 404
+R4_25     <artifactId>parent</artifactId>
+    <version>4.25.0-SNAPSHOT</version>
+  <artifactId>org.eclipse.osgi</artifactId>
+  <version>3.18.100-SNAPSHOT</version>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+R4_26     <artifactId>parent</artifactId>
+    <version>4.26.0-SNAPSHOT</version>
+  <artifactId>org.eclipse.osgi</artifactId>
+  <version>3.18.200-SNAPSHOT</version>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+R4_27     <artifactId>parent</artifactId>
+    <version>4.27.0-SNAPSHOT</version>
+  <artifactId>org.eclipse.osgi</artifactId>
+  <version>3.18.300-SNAPSHOT</version>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+R4_28     <artifactId>parent</artifactId>
+    <version>4.28.0-SNAPSHOT</version>
+  <artifactId>org.eclipse.osgi</artifactId>
+  <version>3.18.400-SNAPSHOT</version>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+R4_29     <artifactId>parent</artifactId>
+    <version>4.29.0-SNAPSHOT</version>
+  <artifactId>org.eclipse.osgi</artifactId>
+  <version>3.18.500-SNAPSHOT</version>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-equinox/equinox/contents/bundles?ref=R4_27 | jq -r '.[].name' | rg 'org.eclipse.osgi'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-equinox/equinox/git/trees/R4_27?recursive=1 | jq -r '.tree[].path' | rg 'org\\.eclipse\\.osgi.*test|org\\.eclipse\\.osgi/.*/test|org\\.eclipse\\.osgi/tests' | head -100" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-equinox/equinox/contents?ref=R4_27 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 190ms:
+.gitattributes
+.github
+.gitignore
+.mvn
+CONTRIBUTING.md
+Jenkinsfile
+LICENSE
+NOTICE
+README.md
+bundles
+features
+launcher-binary-parent
+pom.xml
+releng
+
+ succeeded in 219ms:
+org.eclipse.osgi.compatibility.state
+org.eclipse.osgi.services
+org.eclipse.osgi.tck
+org.eclipse.osgi.tests
+org.eclipse.osgi.util
+org.eclipse.osgi
+
+ succeeded in 603ms:
+bundles/org.eclipse.osgi.tests
+bundles/org.eclipse.osgi.tests/.classpath
+bundles/org.eclipse.osgi.tests/.gitignore
+bundles/org.eclipse.osgi.tests/.project
+bundles/org.eclipse.osgi.tests/.settings
+bundles/org.eclipse.osgi.tests/.settings/org.eclipse.core.resources.prefs
+bundles/org.eclipse.osgi.tests/.settings/org.eclipse.core.runtime.prefs
+bundles/org.eclipse.osgi.tests/.settings/org.eclipse.jdt.core.prefs
+bundles/org.eclipse.osgi.tests/.settings/org.eclipse.jdt.ui.prefs
+bundles/org.eclipse.osgi.tests/.settings/org.eclipse.ltk.core.refactoring.prefs
+bundles/org.eclipse.osgi.tests/.settings/org.eclipse.pde.prefs
+bundles/org.eclipse.osgi.tests/All OSGi Tests.launch
+bundles/org.eclipse.osgi.tests/META-INF
+bundles/org.eclipse.osgi.tests/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/META-INF/services
+bundles/org.eclipse.osgi.tests/META-INF/services/javax.print.PrintServiceLookup
+bundles/org.eclipse.osgi.tests/about.html
+bundles/org.eclipse.osgi.tests/build.properties
+bundles/org.eclipse.osgi.tests/bundles_src
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error1
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error1/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error1/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error1/activator
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error1/activator/error1
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error1/activator/error1/Activator.java
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error2
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error2/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error2/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error2/activator
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error2/activator/error2
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error2/activator/error2/Activator.java
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error3
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error3/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error3/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error3/activator
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error3/activator/error3
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error3/activator/error3/Activator.java
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error4
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error4/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.error4/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse/osgi
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse/osgi/tests
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse/osgi/tests/hooks
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse/osgi/tests/hooks/framework
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse/osgi/tests/hooks/framework/activator
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse/osgi/tests/hooks/framework/activator/a
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse/osgi/tests/hooks/framework/activator/a/TestHookConfigurator1.java
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse/osgi/tests/hooks/framework/activator/a/TestHookConfigurator2.java
+bundles/org.eclipse.osgi.tests/bundles_src/activator.hooks.a/org/eclipse/osgi/tests/hooks/framework/activator/a/TestHookConfigurator3.java
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/buddy
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/buddy/dependent
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/buddy/dependent/a
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/buddy/dependent/a/test1
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/buddy/dependent/a/test1/ATest.java
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/resources
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/resources/test.txt
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test1/resources/test1.txt
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/buddy
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/buddy/dependent
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/buddy/dependent/a
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/buddy/dependent/a/test2
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/buddy/dependent/a/test2/ATest.java
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/resources
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/resources/test.txt
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a.test2/resources/test2.txt
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a/resources
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.dependent.a/resources/test.txt
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.invalid.a
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.invalid.a/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.invalid.a/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/buddy
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/buddy/registered
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/buddy/registered/a
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/buddy/registered/a/test1
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/buddy/registered/a/test1/ATest.java
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/resources
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/resources/test.txt
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test1/resources/test1.txt
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test2
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test2/META-INF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test2/META-INF/MANIFEST.MF
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test2/buddy
+bundles/org.eclipse.osgi.tests/bundles_src/buddy.registered.a.test2/buddy/registered
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300.jar -o "$tmp"; jar tf "$tmp" | rg '"'\\.class"'$'"' | head -20; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-javadoc.jar -o "$tmp"; jar tf "$tmp" | sed -n '"'1,80p'; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 256ms:
+META-INF/
+META-INF/MANIFEST.MF
+README.txt
+
+ succeeded in 531ms:
+org/eclipse/osgi/storage/url/reference/ReferenceInputStream.class
+org/eclipse/osgi/storage/url/reference/ReferenceURLConnection.class
+org/eclipse/osgi/storage/url/reference/Handler.class
+org/eclipse/osgi/storage/url/bundleresource/Handler.class
+org/eclipse/osgi/storage/url/bundleentry/Handler.class
+org/eclipse/osgi/storage/url/BundleURLConnection.class
+org/eclipse/osgi/storage/url/BundleURLConverter.class
+org/eclipse/osgi/storage/url/BundleResourceHandler.class
+org/eclipse/osgi/storage/bundlefile/DirZipBundleEntry.class
+org/eclipse/osgi/storage/bundlefile/FileBundleEntry.class
+org/eclipse/osgi/storage/bundlefile/ZipBundleEntry.class
+org/eclipse/osgi/storage/bundlefile/NestedDirBundleFile.class
+org/eclipse/osgi/storage/bundlefile/NestedDirBundleFile$1.class
+org/eclipse/osgi/storage/bundlefile/BundleEntry.class
+org/eclipse/osgi/storage/bundlefile/CloseableBundleFile.class
+org/eclipse/osgi/storage/bundlefile/CloseableBundleFile$BundleEntryInputStream.class
+org/eclipse/osgi/storage/bundlefile/BundleFileWrapper.class
+org/eclipse/osgi/storage/bundlefile/BundleFileWrapperChain.class
+org/eclipse/osgi/storage/bundlefile/DirBundleFile.class
+org/eclipse/osgi/storage/bundlefile/BundleFile.class
+
+ succeeded in 556ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:45:57 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"697ab379ac6bd909c92724e2b53d4716"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=2JAxqdNZnHtNZus31aghyJrDlDFLjwvEMYF62rCrXB7JVpI5wYtRCVb9LmyzwzH7lqfCIpl2Dq2vh6EMoPBPcaNH4FOl9sFLw0AwyOLtzCj7IqHPntrD93DlKqe7nh%2BtBfIjIAKgqLftJsP2J%2FPq1UVhF%2BIhaN9XY2fu2EShfEyy4UNxmmk1S6GXZGz6AyMLw0kyEChPYOAzlg4f5mIySCVwt%2BOeI0o%2BZgqS1gtqwwPhpBZ8H%2BRqWOwd6bAlIvZ39Ci7KsYntV8sRwCikjpIBQ%3D%3D--xffRwWSdksqRY2U1--yVGixb%2Fo0WSINUnJL9Ux1A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.718162369.1777844756; expires=Mon, 03 May 2027 21:45:56 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 21:45:56 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5107:13D90:96CCD8:73C0FD:69F7C214
+
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url\" : \"https://github.com/.*/tree/|test-code-url\" : \"https://github.com/.*/tree/' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/$version$/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+metadata/org.jline/jline-terminal-jni/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+metadata/org.jline/jline-reader/index.json:8:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.jline/jline-reader/index.json:22:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.jline/jline-native/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/native/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/org.rocksdb/rocksdbjni/index.json:7:    "test-code-url" : "https://github.com/facebook/rocksdb/tree/v$version$/java/src/test",
+metadata/org.rocksdb/rocksdbjni/index.json:31:    "test-code-url" : "https://github.com/facebook/rocksdb/tree/v$version$/java/src/test",
+metadata/org.rocksdb/rocksdbjni/index.json:45:    "test-code-url" : "https://github.com/facebook/rocksdb/tree/v$version$/java/src/test",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:7:    "test-code-url" : "https://github.com/scala-js/scala-js/tree/v$version$/test-suite",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/com.softwaremill.sttp.model/core_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-model/tree/v$version$/core/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/joda-time/joda-time/index.json:7:    "test-code-url" : "https://github.com/JodaOrg/joda-time/tree/v$version$/src/test/java",
+metadata/com.typesafe.netty/netty-reactive-streams/index.json:7:    "test-code-url" : "https://github.com/playframework/netty-reactive-streams/tree/netty-reactive-streams-parent-$version$/netty-reactive-streams/src/test/java",
+metadata/org.brotli/dec/index.json:7:    "test-code-url" : "https://github.com/google/brotli/tree/4363f2d74b8af198f78b08e10cd0b3ead48af590/java/org/brotli/dec",
+metadata/org.apache.velocity/velocity-engine-core/index.json:7:    "test-code-url" : "https://github.com/apache/velocity-engine/tree/$version$/velocity-engine-core/src/test",
+metadata/io.reactivex.rxjava3/rxjava/index.json:7:    "test-code-url" : "https://github.com/ReactiveX/RxJava/tree/v$version$/src/test",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.26.0/api/logs/src/test/java/io/opentelemetry/api/logs",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:21:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.23.0/api/logs/src/test/java/io/opentelemetry/api/logs",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:38:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/api/logs/src/test/java/io/opentelemetry/api/logs",
+metadata/io.opentelemetry/opentelemetry-sdk-common/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/sdk/common/src/test",
+metadata/io.opentelemetry/opentelemetry-sdk/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/sdk/all/src/test",
+metadata/org.hamcrest/hamcrest-library/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-$version$/hamcrest-unit-test/src/main/java",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/sdk/metrics/src/test/java",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:24:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/sdk/metrics/src/test/java",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:41:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/sdk/metrics/src/test",
+metadata/org.hamcrest/hamcrest-core/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-$version$/hamcrest-unit-test/src/main/java",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/sdk/trace/src/test",
+
+exec
+/usr/bin/bash -lc "rg -n 'documentation-url\" : \"https://["'^$]+"|documentation-url": "https://[''^$]+"'"' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+metadata/javax.el/el-api/index.json:8:    "documentation-url" : "https://docs.oracle.com/javaee/5/api/javax/el/package-summary.html",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:8:    "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:8:    "documentation-url" : "https://zookeeper.apache.org/doc/r3.8.1/index.html",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/org.osgi/osgi.core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0-javadoc.jar",
+metadata/commons-logging/commons-logging-api/index.json:8:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/dom4j/dom4j/index.json:8:    "documentation-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/xdocs",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-javadoc.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:8:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-2.0.0-M5/src/site/xdoc/index.xml",
+metadata/org.jboss.logging/commons-logging-jboss-logging/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/logging/commons-logging-jboss-logging/2.0.0.Final/commons-logging-jboss-logging-2.0.0.Final-javadoc.jar",
+metadata/org.w3c.css/sac/index.json:8:    "documentation-url" : "https://www.w3.org/Style/CSS/SAC/doc/",
+metadata/com.google.errorprone/error_prone_annotations/index.json:52:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.4.0/error_prone_annotations-2.4.0-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/xml-apis/xml-apis/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+metadata/org.xerial/sqlite-jdbc/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3-javadoc.jar",
+metadata/com.typesafe/config/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/config/1.4.2/config-1.4.2-javadoc.jar",
+metadata/avalon-framework/avalon-framework/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/src/xdocs/framework/",
+metadata/org.hibernate/hibernate-jpamodelgen/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hibernate/hibernate-jpamodelgen/5.6.14.Final/hibernate-jpamodelgen-5.6.14.Final-javadoc.jar",
+metadata/org.jboss.weld/weld-api/index.json:48:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-javadoc.jar",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:223:        "documentation-url": "https://github.com/example/project/tree/main/README.md",
+metadata/org.mongodb/mongo-java-driver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mongodb/mongo-java-driver/3.9.0/mongo-java-driver-3.9.0-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/logkit/logkit/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/LogKit_1_0_1/avalon-logkit/src/xdocs/",
+metadata/io.github.dmlloyd/jdk-classfile-backport/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/dmlloyd/jdk-classfile-backport/25.1/jdk-classfile-backport-25.1-javadoc.jar",
+metadata/org.eclipse.jdt/ecj/index.json:55:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.28.0/ecj-3.28.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/com.github.java-json-tools/jackson-coreutils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/jackson-coreutils/2.0/jackson-coreutils-2.0-javadoc.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:24:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-javadoc.jar",
+metadata/javax.annotation/jsr250-api/index.json:9:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+metadata/xalan/xalan/index.json:8:    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+metadata/io.netty/netty-transport-udt/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-javadoc.jar",
+metadata/io.netty/netty-handler-proxy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final-javadoc.jar",
+metadata/io.netty/netty-transport-native-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-epoll/4.1.42.Final/netty-transport-native-epoll-4.1.42.Final-javadoc.jar",
+metadata/io.netty/netty-resolver-dns-classes-macos/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver-dns-classes-macos/4.1.74.Final/netty-resolver-dns-classes-macos-4.1.74.Final-javadoc.jar",
+metadata/org.aspectj/aspectjweaver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-javadoc.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:8:    "documentation-url" : "https://github.com/google/closure-library/blob/f04e4c0e/README.md",
+metadata/org.clojure/google-closure-library-third-party/index.json:22:    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|metadata-version|source-code-url|documentation-url' build.gradle gradle metadata -g '*.groovy' -g '*.java' -g '*.json' | head -100" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+metadata/org.datanucleus/javax.jdo/index.json:4:    "metadata-version" : "3.2.0-m13",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:4:    "metadata-version" : "2.27.7",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:4:    "metadata-version" : "2.23.2",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:4:    "metadata-version" : "1.77",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:4:    "metadata-version" : "1.77",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:7:    "metadata-version": "1.70",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:8:    "metadata-version": "2.0.0.Final",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:4:    "metadata-version" : "6.4.1",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:12:    "metadata-version": "1.2.17",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:4:    "metadata-version" : "8.0.01",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:4:    "metadata-version" : "1.14.0",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:4:    "metadata-version" : "2.59.2",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:4:    "metadata-version" : "2.70.0",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:4:    "metadata-version" : "0.14.0",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:21:    "metadata-version" : "0.12.0",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:4:    "metadata-version" : "1.8.3",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-core-asl/$version$/jackson-core-asl-$version$-sources.jar",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-core-asl/$version$",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:7:    "metadata-version": "0.1.5",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:7:    "metadata-version": "0.1.5",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:5:    "metadata-version": "0.1.5",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/$version$/logback-json-core-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/$version$/logback-json-core-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:4:    "metadata-version" : "1.3",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.codahale.metrics/metrics-core/index.json:4:    "metadata-version" : "3.0.1",
+metadata/com.codahale.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/codahale/metrics/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/com.codahale.metrics/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/codahale/metrics/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/com.univocity/univocity-parsers/index.json:4:    "metadata-version" : "2.9.1",
+metadata/com.univocity/univocity-parsers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-sources.jar",
+metadata/com.univocity/univocity-parsers/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:4:    "metadata-version" : "4.6.1",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:19:    "metadata-version" : "4.5",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:35:    "metadata-version" : "4.4.2",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:4:    "metadata-version" : "9.4.40.v20210413",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:4:    "metadata-version" : "9.4.40.v20210413",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:4:    "metadata-version" : "9.4.40.v20210413",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:7:    "metadata-version": "2.1.2",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:4:    "metadata-version" : "v20150505",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:4:    "metadata-version" : "3.0.0",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:3:    "metadata-version" : "1.21",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:18:    "metadata-version" : "1.23.0",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:4:    "metadata-version" : "3.14.1",
+
+web search: 
+web search: Eclipse 2023-03 org.eclipse.osgi javadoc org.eclipse.osgi package-summary
+web search: 
+web search: site:help.eclipse.org/2023-03 org.eclipse.osgi package-summary org.eclipse.osgi
+exec
+/usr/bin/bash -lc "curl -I -fsSL 'https://help.eclipse.org/2023-03/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/osgi/launch/package-summary.html' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://help.eclipse.org/2023-03/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/osgi/launch/package-summary.html' | rg -n '<title>|Equinox|framework launch' | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "curl -I -fsSL 'https://help.eclipse.org/2023-03/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/osgi/package-summary.html' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 770ms:
+5:<title>org.eclipse.osgi.launch (Eclipse Platform API Specification)</title>
+88:<div class="block">Provides the Equinox framework launch API.
+91:This package specifies the Equinox framework launch API.
+93:Clients that want to launch an embedded instance of Equinox 
+105:<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Equinox.html" title="class in org.eclipse.osgi.launch">Equinox</a></div>
+107:<div class="block">The System Bundle implementation for the Equinox Framework.</div>
+109:<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="EquinoxFactory.html" title="class in org.eclipse.osgi.launch">EquinoxFactory</a></div>
+111:<div class="block">The framework factory implementation for the Equinox framework.</div>
+
+ succeeded in 819ms:
+HTTP/2 301 
+server: nginx
+date: Sun, 03 May 2026 21:46:14 GMT
+content-type: text/html
+content-length: 162
+location: https://help.eclipse.org/latest/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/osgi/launch/package-summary.html
+expires: Mon, 04 May 2026 21:46:14 GMT
+cache-control: max-age=86400
+content-security-policy: frame-ancestors 'self'
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+cache-control: private, max-age=8m, no-transform
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+
+HTTP/2 200 
+server: nginx
+date: Sun, 03 May 2026 21:46:14 GMT
+content-type: text/html
+
+ succeeded in 739ms:
+HTTP/2 301 
+server: nginx
+date: Sun, 03 May 2026 21:46:14 GMT
+content-type: text/html
+content-length: 162
+location: https://help.eclipse.org/latest/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/osgi/package-summary.html
+expires: Mon, 04 May 2026 21:46:14 GMT
+cache-control: max-age=86400
+content-security-policy: frame-ancestors 'self'
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+cache-control: private, max-age=8m, no-transform
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+
+HTTP/2 200 
+server: nginx
+date: Sun, 03 May 2026 21:46:14 GMT
+content-type: text/html
+
+web search: 
+web search: Eclipse 4.27 API Specification org.eclipse.osgi.launch Equinox
+web search: 
+web search: https://archive.eclipse.org/eclipse/downloads/drops4/R-4.27-202303020300/
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-javadoc.jar -o "$tmp/javadoc.jar"; (cd "$tmp" && jar xf javadoc.jar README.txt && sed -n '"'1,120p' README.txt); rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 303ms:
+Corresponding javadoc can be found in artifact org.eclipse.platform:org.eclipse.platform.doc.isv
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.platform.doc.isv/4.27.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/eclipse/platform/org.eclipse.platform.doc.isv/4.27.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/eclipse/platform/org.eclipse.platform.doc.isv/4.27.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar" title="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar">org.eclipse.platform.doc.isv-4.27.0-javadoc.j...</a>  2023-03-13 10:50       526      
+<a href="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.asc" title="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.asc">org.eclipse.platform.doc.isv-4.27.0-javadoc.j...</a>  2023-03-13 10:50       833      
+<a href="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.asc.md5" title="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.asc.md5">org.eclipse.platform.doc.isv-4.27.0-javadoc.j...</a>  2023-03-13 10:50        32      
+<a href="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.asc.sha1" title="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.asc.sha1">org.eclipse.platform.doc.isv-4.27.0-javadoc.j...</a>  2023-03-13 10:50        40      
+<a href="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.md5" title="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.md5">org.eclipse.platform.doc.isv-4.27.0-javadoc.j...</a>  2023-03-13 10:50        32      
+<a href="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.sha1" title="org.eclipse.platform.doc.isv-4.27.0-javadoc.jar.sha1">org.eclipse.platform.doc.isv-4.27.0-javadoc.j...</a>  2023-03-13 10:50        40      
+<a href="org.eclipse.platform.doc.isv-4.27.0.jar" title="org.eclipse.platform.doc.isv-4.27.0.jar">org.eclipse.platform.doc.isv-4.27.0.jar</a>           2023-03-13 10:50  36993856      
+<a href="org.eclipse.platform.doc.isv-4.27.0.jar.asc" title="org.eclipse.platform.doc.isv-4.27.0.jar.asc">org.eclipse.platform.doc.isv-4.27.0.jar.asc</a>       2023-03-13 10:50       833      
+<a href="org.eclipse.platform.doc.isv-4.27.0.jar.asc.md5" title="org.eclipse.platform.doc.isv-4.27.0.jar.asc.md5">org.eclipse.platform.doc.isv-4.27.0.jar.asc.m...</a>  2023-03-13 10:50        32      
+<a href="org.eclipse.platform.doc.isv-4.27.0.jar.asc.sha1" title="org.eclipse.platform.doc.isv-4.27.0.jar.asc.sha1">org.eclipse.platform.doc.isv-4.27.0.jar.asc.s...</a>  2023-03-13 10:50        40      
+<a href="org.eclipse.platform.doc.isv-4.27.0.jar.md5" title="org.eclipse.platform.doc.isv-4.27.0.jar.md5">org.eclipse.platform.doc.isv-4.27.0.jar.md5</a>       2023-03-13 10:50        32      
+<a href="org.eclipse.platform.doc.isv-4.27.0.jar.sha1" title="org.eclipse.platform.doc.isv-4.27.0.jar.sha1">org.eclipse.platform.doc.isv-4.27.0.jar.sha1</a>      2023-03-13 10:50        40      
+<a href="org.eclipse.platform.doc.isv-4.27.0.pom" title="org.eclipse.platform.doc.isv-4.27.0.pom">org.eclipse.platform.doc.isv-4.27.0.pom</a>           2023-03-13 10:50      1644      
+<a href="org.eclipse.platform.doc.isv-4.27.0.pom.asc" title="org.eclipse.platform.doc.isv-4.27.0.pom.asc">org.eclipse.platform.doc.isv-4.27.0.pom.asc</a>       2023-03-13 10:50       833      
+<a href="org.eclipse.platform.doc.isv-4.27.0.pom.asc.md5" title="org.eclipse.platform.doc.isv-4.27.0.pom.asc.md5">org.eclipse.platform.doc.isv-4.27.0.pom.asc.m...</a>  2023-03-13 10:50        32      
+<a href="org.eclipse.platform.doc.isv-4.27.0.pom.asc.sha1" title="org.eclipse.platform.doc.isv-4.27.0.pom.asc.sha1">org.eclipse.platform.doc.isv-4.27.0.pom.asc.s...</a>  2023-03-13 10:50        40      
+<a href="org.eclipse.platform.doc.isv-4.27.0.pom.md5" title="org.eclipse.platform.doc.isv-4.27.0.pom.md5">org.eclipse.platform.doc.isv-4.27.0.pom.md5</a>       2023-03-13 10:50        32      
+<a href="org.eclipse.platform.doc.isv-4.27.0.pom.sha1" title="org.eclipse.platform.doc.isv-4.27.0.pom.sha1">org.eclipse.platform.doc.isv-4.27.0.pom.sha1</a>      2023-03-13 10:50        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.platform.doc.isv/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/eclipse/platform/org.eclipse.platform.doc.isv</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/eclipse/platform/org.eclipse.platform.doc.isv</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="4.10.0/" title="4.10.0/">4.10.0/</a>                                           2018-12-19 09:44         -      
+<a href="4.11.0/" title="4.11.0/">4.11.0/</a>                                           2019-03-16 17:31         -      
+<a href="4.12.0/" title="4.12.0/">4.12.0/</a>                                           2019-06-17 05:48         -      
+<a href="4.13.0/" title="4.13.0/">4.13.0/</a>                                           2019-09-17 18:13         -      
+<a href="4.14.0/" title="4.14.0/">4.14.0/</a>                                           2019-12-17 11:40         -      
+<a href="4.15.0/" title="4.15.0/">4.15.0/</a>                                           2020-03-27 05:27         -      
+<a href="4.16.0/" title="4.16.0/">4.16.0/</a>                                           2020-06-15 10:43         -      
+<a href="4.17.0/" title="4.17.0/">4.17.0/</a>                                           2020-09-14 07:06         -      
+<a href="4.18.0/" title="4.18.0/">4.18.0/</a>                                           2020-12-15 12:59         -      
+<a href="4.19.0/" title="4.19.0/">4.19.0/</a>                                           2021-03-12 09:55         -      
+<a href="4.20.0/" title="4.20.0/">4.20.0/</a>                                           2021-06-14 17:03         -      
+<a href="4.21.0/" title="4.21.0/">4.21.0/</a>                                           2021-09-15 03:43         -      
+<a href="4.22.0/" title="4.22.0/">4.22.0/</a>                                           2021-12-08 07:52         -      
+<a href="4.23.0/" title="4.23.0/">4.23.0/</a>                                           2022-03-15 15:03         -      
+<a href="4.24.0/" title="4.24.0/">4.24.0/</a>                                           2022-06-14 05:58         -      
+<a href="4.25.0/" title="4.25.0/">4.25.0/</a>                                           2022-09-11 20:34         -      
+<a href="4.26.0/" title="4.26.0/">4.26.0/</a>                                           2022-12-06 17:16         -      
+<a href="4.27.0/" title="4.27.0/">4.27.0/</a>                                           2023-03-13 10:50         -      
+<a href="4.28.0/" title="4.28.0/">4.28.0/</a>                                           2023-06-09 14:56         -      
+<a href="4.29.0/" title="4.29.0/">4.29.0/</a>                                           2023-09-08 07:25         -      
+<a href="4.30.0/" title="4.30.0/">4.30.0/</a>                                           2023-12-03 03:15         -      
+<a href="4.31.0/" title="4.31.0/">4.31.0/</a>                                           2024-03-08 19:51         -      
+<a href="4.32.0/" title="4.32.0/">4.32.0/</a>                                           2024-06-07 16:28         -      
+<a href="4.33.0/" title="4.33.0/">4.33.0/</a>                                           2024-09-06 13:45         -      
+<a href="4.34.0/" title="4.34.0/">4.34.0/</a>                                           2024-12-01 15:50         -      
+<a href="4.35.0/" title="4.35.0/">4.35.0/</a>                                           2025-03-08 08:30         -      
+<a href="4.36.0/" title="4.36.0/">4.36.0/</a>                                           2025-06-07 14:21         -      
+<a href="4.37.0/" title="4.37.0/">4.37.0/</a>                                           2025-09-05 20:31         -      
+<a href="4.38.0/" title="4.38.0/">4.38.0/</a>                                           2025-12-05 06:35         -      
+<a href="4.39.0/" title="4.39.0/">4.39.0/</a>                                           2026-03-06 05:15         -      
+<a href="4.6.2/" title="4.6.2/">4.6.2/</a>                                            2017-03-30 13:53         -      
+<a href="4.7.0/" title="4.7.0/">4.7.0/</a>                                            2017-10-17 16:49         -      
+<a href="4.7.1/" title="4.7.1/">4.7.1/</a>                                            2017-11-16 18:01         -      
+<a href="4.7.2/" title="4.7.2/">4.7.2/</a>                                            2017-12-20 21:04         -      
+<a href="4.7.3/" title="4.7.3/">4.7.3/</a>                                            2018-03-29 15:56         -      
+<a href="4.7.75/" title="4.7.75/">4.7.75/</a>                                           2018-04-12 19:23         -      
+<a href="4.8.0/" title="4.8.0/">4.8.0/</a>                                            2018-06-16 13:07         -      
+<a href="4.9.0/" title="4.9.0/">4.9.0/</a>                                            2018-09-25 05:26         -      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2026-03-09 14:20      1535      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2026-03-09 14:20        32      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2026-03-09 14:20        40      
+<a href="maven-metadata.xml.sha256" title="maven-metadata.xml.sha256">maven-metadata.xml.sha256</a>                         2026-03-09 14:20        64      
+<a href="maven-metadata.xml.sha512" title="maven-metadata.xml.sha512">maven-metadata.xml.sha512</a>                         2026-03-09 14:20       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.platform.doc.isv/3.18.300/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 253ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.platform.doc.isv/4.27.0/org.eclipse.platform.doc.isv-4.27.0.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.platform</groupId>
+  <artifactId>org.eclipse.platform.doc.isv</artifactId>
+  <version>4.27.0</version>
+  <name>Eclipse Platform Plug-in Developer Guide</name>
+  <description>Eclipse Platform Plug-in Developer Guide</description>
+  <url>https://projects.eclipse.org/projects/eclipse.platform</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 2.0</name>
+      <url>https://www.eclipse.org/legal/epl-2.0/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <organization>
+    <name>Eclipse Foundation</name>
+    <url>https://www.eclipse.org/</url>
+  </organization>
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/eclipse-platform/eclipse.platform.common/issues</url>
+  </issueManagement>
+  <scm>
+    <connection>scm:git:https://github.com/eclipse-platform/eclipse.platform.common.git</connection>
+    <url>https://github.com/eclipse-platform/eclipse.platform.common</url>
+  </scm>
+  <developers>
+    <developer>
+      <url>https://projects.eclipse.org/projects/eclipse.platform/who</url>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.help</artifactId>
+      <version>3.9.100</version>
+      <optional>false</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.platform.doc.isv/4.27.0/org.eclipse.platform.doc.isv-4.27.0.jar -o "$tmp"; jar tf "$tmp" | rg '"'reference/api/org/eclipse/osgi/(launch/)?package-summary.html|reference/api/org/osgi/framework/package-summary.html' | head -20; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-equinox/equinox/R4_27/bundles/org.eclipse.osgi.tests/META-INF/MANIFEST.MF | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 176ms:
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core OSGi Tests
+Bundle-SymbolicName: org.eclipse.osgi.tests;singleton:=true
+Bundle-Version: 3.16.1000.qualifier
+Bundle-Vendor: Eclipse.org
+Require-Bundle: 
+ org.eclipse.core.runtime,
+ org.eclipse.core.tests.harness;bundle-version="3.13.0",
+ org.eclipse.test.performance,
+ org.junit
+Bundle-ActivationPolicy: lazy
+Import-Package: org.osgi.service.event,
+ org.osgi.util.function,
+ org.osgi.util.measurement,
+ org.osgi.util.position,
+ org.osgi.util.promise,
+ org.osgi.util.xml
+Export-Package: org.eclipse.osgi.tests.bundles,
+ org.eclipse.osgi.tests.appadmin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+DynamicImport-Package: ext.framework.b
+Eclipse-BundleShape: dir
+Automatic-Module-Name: org.eclipse.osgi.tests
+
+ succeeded in 1546ms:
+reference/api/org/eclipse/osgi/launch/package-summary.html
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.eclipse.platform%22+AND+osgi.tests&rows=20&wt=json' | jq -r '.response.docs[] | [.id,.latestVersion] | @tsv'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.eclipse.platform%22+AND+a:%22org.eclipse.osgi.tests%22&rows=20&wt=json' | jq -r '.response.docs[] | [.id,.latestVersion,.versionCount] | @tsv'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi.tests/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 238ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 354ms:
+ succeeded in 364ms:
+codex
+I found the corresponding release tag as `R4_27`: that tag’s `org.eclipse.osgi` bundle has `3.18.300.qualifier`, and its tests live under `bundles/org.eclipse.osgi.tests`. I’m going to write Maven source/docs URLs where Maven has artifacts and use the GitHub release tag for the test suite.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..eaa47c3cbffcb24b4c335279cfaf63afef4d2b2d
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Core Framework and provides the system bundle runtime for managing OSGi bundles. The org.eclipse.osgi artifact supplies framework classes and services used to install, resolve, start, stop, and load bundles in OSGi-based Java applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..eaa47c3cbffcb24b4c335279cfaf63afef4d2b2d
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Core Framework and provides the system bundle runtime for managing OSGi bundles. The org.eclipse.osgi artifact supplies framework classes and services used to install, resolve, start, stop, and load bundles in OSGi-based Java applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+{
+  "coordinates": "org.eclipse.platform:org.eclipse.osgi:3.18.300",
+  "repository-url": "https://github.com/eclipse-equinox/equinox",
+  "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
+  "test-code-url": "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
+  "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
+  "description": "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Core Framework and provides the system bundle runtime for managing OSGi bundles. The org.eclipse.osgi artifact supplies framework classes and services used to install, resolve, start, stop, and load bundles in OSGi-based Java applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-sources.jar' \\
+  'https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-javadoc.jar' \\
+  'https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests' \\
+  'https://github.com/eclipse-equinox/equinox'; do
+  status="'$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$status" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..eaa47c3cbffcb24b4c335279cfaf63afef4d2b2d
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Core Framework and provides the system bundle runtime for managing OSGi bundles. The org.eclipse.osgi artifact supplies framework classes and services used to install, resolve, start, stop, and load bundles in OSGi-based Java applications."
+ }
+
+ succeeded in 1839ms:
+200 https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-sources.jar
+200 https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/org.eclipse.osgi-3.18.300-javadoc.jar
+200 https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests
+200 https://github.com/eclipse-equinox/equinox
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json && git diff --no-index /dev/null build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..eaa47c3cbffcb24b4c335279cfaf63afef4d2b2d
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Core Framework and provides the system bundle runtime for managing OSGi bundles. The org.eclipse.osgi artifact supplies framework classes and services used to install, resolve, start, stop, and load bundles in OSGi-based Java applications."
+ }
+
+ succeeded in 158ms:
+diff --git 1/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json 2/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+new file mode 100644
+index 0000000000..eaa47c3cbf
+--- /dev/null
++++ 2/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -0,0 +1,8 @@
++{
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Core Framework and provides the system bundle runtime for managing OSGi bundles. The org.eclipse.osgi artifact supplies framework classes and services used to install, resolve, start, stop, and load bundles in OSGi-based Java applications."
++}
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/
+web search: 
+web search: 
+web search: 
+web search: https://github.com/eclipse-equinox/equinox
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.28.0/ecj-3.28.0-javadoc.jar -o "$tmp/j.jar"; jar tf "$tmp/j.jar" | head -10; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..eaa47c3cbffcb24b4c335279cfaf63afef4d2b2d
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Core Framework and provides the system bundle runtime for managing OSGi bundles. The org.eclipse.osgi artifact supplies framework classes and services used to install, resolve, start, stop, and load bundles in OSGi-based Java applications."
+ }
+
+ succeeded in 143ms:
+META-INF/
+META-INF/MANIFEST.MF
+README.txt
+
+web search: 
+web search: repo1.maven.org org.eclipse.platform org.eclipse.osgi 3.18.300 sources jar javadoc jar
+web search: 
+web search: https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests
+codex
+Updated [org.eclipse.platform-org.eclipse.osgi-3.18.300.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json) with the repository, Maven source/javadoc URLs, R4_27 test-suite URL, and two-sentence description. Maven Central lists the `3.18.300` sources and javadoc artifacts, and GitHub has the `org.eclipse.osgi.tests` tree under `R4_27`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/?utm_source=openai))
+
+I left `language` and `not-for-native-image` absent because this is a normal JVM artifact. I validated the JSON with `jq` and checked the URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+index 975645e05adde825a5974f4ca0c6b4098485ba1d..eaa47c3cbffcb24b4c335279cfaf63afef4d2b2d
+--- a/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
++++ b/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300"
++  "coordinates" : "org.eclipse.platform:org.eclipse.osgi:3.18.300",
++  "repository-url" : "https://github.com/eclipse-equinox/equinox",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-equinox/equinox/tree/R4_27/bundles/org.eclipse.osgi.tests",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/$version$/org.eclipse.osgi-$version$-javadoc.jar",
++  "description" : "Eclipse Equinox OSGi is the Eclipse implementation of the OSGi Core Framework and provides the system bundle runtime for managing OSGi bundles. The org.eclipse.osgi artifact supplies framework classes and services used to install, resolve, start, stop, and load bundles in OSGi-based Java applications."
+ }
+
+tokens used
+117,925
+Updated [org.eclipse.platform-org.eclipse.osgi-3.18.300.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f/build/discovered-artifact-metadata/org.eclipse.platform-org.eclipse.osgi-3.18.300.json) with the repository, Maven source/javadoc URLs, R4_27 test-suite URL, and two-sentence description. Maven Central lists the `3.18.300` sources and javadoc artifacts, and GitHub has the `org.eclipse.osgi.tests` tree under `R4_27`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.18.300/?utm_source=openai))
+
+I left `language` and `not-for-native-image` absent because this is a normal JVM artifact. I validated the JSON with `jq` and checked the URLs return HTTP 200.
+Ran agent for org.eclipse.platform:org.eclipse.osgi:3.18.300 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f/build/agent-artifact-discovery-logs/org.eclipse.platform-org.eclipse.osgi-3.18.300.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3834-68b2930f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 3s
+9 actionable tasks: 4 executed, 5 from cache
