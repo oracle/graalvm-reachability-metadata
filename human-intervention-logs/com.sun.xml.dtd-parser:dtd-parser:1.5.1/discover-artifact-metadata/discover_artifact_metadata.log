@@ -1,0 +1,860 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dee74-bbb9-7b43-84e9-d1c750b4fe08
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.xml.dtd-parser:dtd-parser:1.5.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.5.1" when "$version$" is replaced with "1.5.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+- Set "coordinates" to "com.sun.xml.dtd-parser:dtd-parser:1.5.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.5.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources first, then update the JSON in place with version-tokenized URLs where the tag/source layout supports it.
+web search: 
+web search: com.sun.xml.dtd-parser dtd-parser 1.5.1 Maven repository source repository
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-dtd-parser
+codex
+The upstream project is `eclipse-ee4j/jaxb-dtd-parser`, and its README describes the artifact as a SAX-like API for parsing XML DTDs. I’m checking Maven Central next because the request prefers Maven-hosted sources/tests when those artifacts exist.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+-rw-rw-r-- 1 vjovanov vjovanov 64 May  3 17:28 build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+
+exec
+/usr/bin/bash -lc "rg -n 'jaxb-dtd-parser|dtd-parser|source-code-url|test-code-url|documentation-url' metadata build/discovered-artifact-metadata 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json:2:  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+metadata/dev.zio/zio-config_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-config/tree/v$version$/core/shared/src/test",
+metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+metadata/dev.zio/zio-stacktracer_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+metadata/dev.zio/zio-http_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-http/tree/v$version$/zio-http/jvm/src/test",
+metadata/dev.zio/zio-http_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+metadata/dev.zio/zio-internal-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:7:    "test-code-url" : "N/A",
+metadata/dev.zio/zio-schema-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+
+    Copyright (c) 1998, 2023 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.8</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.sun.xml.dtd-parser</groupId>
+    <artifactId>dtd-parser</artifactId>
+    <version>1.5.1</version>
+    <packaging>jar</packaging>
+    <name>DTD Parser</name>
+    <description>SAX-like API for parsing XML DTDs.</description>
+    <url>https://github.com/eclipse-ee4j/jaxb-dtd-parser</url>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-dtd-parser.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-dtd-parser.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jaxb-dtd-parser</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Eclipse Distribution License - v 1.0</name>
+            <url>https://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>bravehorsie</id>
+            <name>Roman Grigoriadi</name>
+            <email>Roman.Grigoriadi@oracle.com</email>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jaxb-dtd-parser/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Eclipse Implementation of JAXB mailing list</name>
+            <post>jaxb-impl-dev@eclipse.org</post>
+            <subscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</subscribe>
+            <unsubscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</unsubscribe>
+            <archive>https://dev.eclipse.org/mhonarc/lists/jaxb-impl-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <properties>
+        <copyright.exclude>${project.basedir}/../etc/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.exclude>${project.basedir}/../etc/spotbugs-exclude.xml</spotbugs.exclude>
+        <spotbugs.skip>false</spotbugs.skip>
+        <spotbugs.threshold>Low</spotbugs.threshold>
+        <spotbugs.version>4.7.3.6</spotbugs.version>
+        <legal.doc.source>${project.basedir}/..</legal.doc.source>
+
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.testRelease>${maven.compiler.release}</maven.compiler.testRelease>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.9</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.6.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.11</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <excludeFilterFile>${spotbugs.exclude}</excludeFilterFile>
+                    <failThreshold>High</failThreshold>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.copyright</groupId>
+                <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                <configuration>
+                    <excludeFile>${copyright.exclude}</excludeFile>
+                    <!-- skip files not under SCM-->
+                    <scmOnly>${copyright.scmonly}</scmOnly>
+                    <!-- for use with repair -->
+                    <update>${copyright.update}</update>
+                    <!-- check that year is correct -->
+                    <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                    <quiet>false</quiet>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <configuration>
+                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                    <revisionOnScmFailure>false</revisionOnScmFailure>
+                    <shortRevisionLength>7</shortRevisionLength>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-legal-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${legal.doc.source}</directory>
+                                    <includes>
+                                        <include>NOTICE.md</include>
+                                        <include>LICENSE.md</include>
+                                    </includes>
+                                    <targetPath>META-INF</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                        <arg>-Xdoclint:all,-missing</arg>
+                        <arg>-Werror</arg>
+                    </compilerArgs>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <addDefaultEntries>false</addDefaultEntries>
+                                </manifest>
+                            </archive>
+                            <instructions>
+                                <_noextraheaders>true</_noextraheaders>
+                                <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                    <notimestamp>true</notimestamp>
+                    <quiet>true</quiet>
+                    <doclint>all,-missing</doclint>
+                    <failOnWarnings>true</failOnWarnings>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>default-report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 238ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/xml/dtd-parser/dtd-parser/1.5.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/xml/dtd-parser/dtd-parser/1.5.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="dtd-parser-1.5.1-javadoc.jar" title="dtd-parser-1.5.1-javadoc.jar">dtd-parser-1.5.1-javadoc.jar</a>                      2023-10-20 04:41    479637      
+<a href="dtd-parser-1.5.1-javadoc.jar.asc" title="dtd-parser-1.5.1-javadoc.jar.asc">dtd-parser-1.5.1-javadoc.jar.asc</a>                  2023-10-20 04:41       833      
+<a href="dtd-parser-1.5.1-javadoc.jar.md5" title="dtd-parser-1.5.1-javadoc.jar.md5">dtd-parser-1.5.1-javadoc.jar.md5</a>                  2023-10-20 04:41        32      
+<a href="dtd-parser-1.5.1-javadoc.jar.sha1" title="dtd-parser-1.5.1-javadoc.jar.sha1">dtd-parser-1.5.1-javadoc.jar.sha1</a>                 2023-10-20 04:41        40      
+<a href="dtd-parser-1.5.1-sources.jar" title="dtd-parser-1.5.1-sources.jar">dtd-parser-1.5.1-sources.jar</a>                      2023-10-20 04:41     71707      
+<a href="dtd-parser-1.5.1-sources.jar.asc" title="dtd-parser-1.5.1-sources.jar.asc">dtd-parser-1.5.1-sources.jar.asc</a>                  2023-10-20 04:41       833      
+<a href="dtd-parser-1.5.1-sources.jar.md5" title="dtd-parser-1.5.1-sources.jar.md5">dtd-parser-1.5.1-sources.jar.md5</a>                  2023-10-20 04:41        32      
+<a href="dtd-parser-1.5.1-sources.jar.sha1" title="dtd-parser-1.5.1-sources.jar.sha1">dtd-parser-1.5.1-sources.jar.sha1</a>                 2023-10-20 04:41        40      
+<a href="dtd-parser-1.5.1.jar" title="dtd-parser-1.5.1.jar">dtd-parser-1.5.1.jar</a>                              2023-10-20 04:41     64102      
+<a href="dtd-parser-1.5.1.jar.asc" title="dtd-parser-1.5.1.jar.asc">dtd-parser-1.5.1.jar.asc</a>                          2023-10-20 04:41       833      
+<a href="dtd-parser-1.5.1.jar.md5" title="dtd-parser-1.5.1.jar.md5">dtd-parser-1.5.1.jar.md5</a>                          2023-10-20 04:41        32      
+<a href="dtd-parser-1.5.1.jar.sha1" title="dtd-parser-1.5.1.jar.sha1">dtd-parser-1.5.1.jar.sha1</a>                         2023-10-20 04:41        40      
+<a href="dtd-parser-1.5.1.pom" title="dtd-parser-1.5.1.pom">dtd-parser-1.5.1.pom</a>                              2023-10-20 04:41     13762      
+<a href="dtd-parser-1.5.1.pom.asc" title="dtd-parser-1.5.1.pom.asc">dtd-parser-1.5.1.pom.asc</a>                          2023-10-20 04:41       833      
+<a href="dtd-parser-1.5.1.pom.md5" title="dtd-parser-1.5.1.pom.md5">dtd-parser-1.5.1.pom.md5</a>                          2023-10-20 04:41        32      
+<a href="dtd-parser-1.5.1.pom.sha1" title="dtd-parser-1.5.1.pom.sha1">dtd-parser-1.5.1.pom.sha1</a>                         2023-10-20 04:41        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: site:repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1 dtd-parser-1.5.1-sources.jar
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-dtd-parser
+web search: 
+web search: repo.maven.apache.org maven2 com sun xml dtd-parser dtd-parser 1.5.1 javadoc sources jar
+web search: 
+web search: https://mvnrepository.com/artifact/com.sun.xml.dtd-parser/dtd-parser/1.5.1
+codex
+Maven Central has the main jar, sources jar, and javadoc jar for `1.5.1`, but no `-tests.jar` in the version directory. I’m verifying the upstream tag’s test directory now so the test URL can still point at the correct release source.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-sources.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 15:29:12 GMT
+content-type: application/java-archive
+content-length: 71707
+cf-ray: 9f604cc42cf48628-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1386501
+etag: "c1b05987f94f7dee1ecb37009875801d"
+last-modified: Fri, 20 Oct 2023 04:41:03 GMT
+x-checksum-md5: c1b05987f94f7dee1ecb37009875801d
+x-checksum-sha1: dd8e0f3cc8195098fe44e353e5ec476ff9dcc02a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-tests.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 15:29:12 GMT
+content-type: application/java-archive
+content-length: 479637
+cf-ray: 9f604cc50ab62397-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 544003
+etag: "cfdd1200ddfffe81c023e86dd97640ac"
+last-modified: Fri, 20 Oct 2023 04:41:03 GMT
+x-checksum-md5: cfdd1200ddfffe81c023e86dd97640ac
+x-checksum-sha1: a31da348e367eb915ff812d403bac613a0593d81
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/git/ref/tags/1.5.1' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents/dtd-parser/src/test?ref=1.5.1' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents/dtd-parser/src/main/java?ref=1.5.1 | head -80' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 188ms:
+[
+  {
+    "name": "java",
+    "path": "dtd-parser/src/test/java",
+    "sha": "de2f4b811115628651ee9cc25ebed33e9443bc59",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents/dtd-parser/src/test/java?ref=1.5.1",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/test/java",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/git/trees/de2f4b811115628651ee9cc25ebed33e9443bc59",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents/dtd-parser/src/test/java?ref=1.5.1",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/git/trees/de2f4b811115628651ee9cc25ebed33e9443bc59",
+      "html": "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/test/java"
+    }
+  }
+]
+
+ succeeded in 245ms:
+{
+  "ref": "refs/tags/1.5.1",
+  "node_id": "MDM6UmVmMTQ2NTc0MjI1OnJlZnMvdGFncy8xLjUuMQ==",
+  "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/git/refs/tags/1.5.1",
+  "object": {
+    "sha": "31e11059350c9b30811791b1910a36d458a333b8",
+    "type": "tag",
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/git/tags/31e11059350c9b30811791b1910a36d458a333b8"
+  }
+}
+
+ succeeded in 275ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 15:29:12 GMT
+content-type: text/html
+cf-ray: 9f604cc4d980be86-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 200ms:
+[
+  {
+    "name": "com",
+    "path": "dtd-parser/src/main/java/com",
+    "sha": "4361d8537f26948ab20544d94da85742c6585357",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents/dtd-parser/src/main/java/com?ref=1.5.1",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/main/java/com",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/git/trees/4361d8537f26948ab20544d94da85742c6585357",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents/dtd-parser/src/main/java/com?ref=1.5.1",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/git/trees/4361d8537f26948ab20544d94da85742c6585357",
+      "html": "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/1.5.1/dtd-parser/src/main/java/com"
+    }
+  },
+  {
+    "name": "module-info.java",
+    "path": "dtd-parser/src/main/java/module-info.java",
+    "sha": "b01f4fa1de0a82f73431a5cd1d4a8d4b2467900d",
+    "size": 515,
+    "url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents/dtd-parser/src/main/java/module-info.java?ref=1.5.1",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-dtd-parser/blob/1.5.1/dtd-parser/src/main/java/module-info.java",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/git/blobs/b01f4fa1de0a82f73431a5cd1d4a8d4b2467900d",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/jaxb-dtd-parser/1.5.1/dtd-parser/src/main/java/module-info.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/contents/dtd-parser/src/main/java/module-info.java?ref=1.5.1",
+      "git": "https://api.github.com/repos/eclipse-ee4j/jaxb-dtd-parser/git/blobs/b01f4fa1de0a82f73431a5cd1d4a8d4b2467900d",
+      "html": "https://github.com/eclipse-ee4j/jaxb-dtd-parser/blob/1.5.1/dtd-parser/src/main/java/module-info.java"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-dtd-parser/blob/1.5.1/README.md
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1.pom
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 0ms:
+{
+  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
+}
+
+codex
+This artifact is a regular JVM jar with Java sources and `module-info.java`, so I’m leaving the language-specific and `not-for-native-image` fields absent. Next I’m writing the metadata file using Maven Central for sources/javadoc and the `1.5.1` GitHub tag for tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/dtd-parser-1.5.1.jar -o /tmp/dtd-parser-1.5.1.jar && jar tf /tmp/dtd-parser-1.5.1.jar | rg '\\.class"'$|module-info'"' | head -20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 270ms:
+com/sun/xml/dtdparser/DTDEventListener.class
+com/sun/xml/dtdparser/DTDHandlerBase.class
+com/sun/xml/dtdparser/DTDParser$1.class
+com/sun/xml/dtdparser/DTDParser$Catalog.class
+com/sun/xml/dtdparser/DTDParser$NameCache.class
+com/sun/xml/dtdparser/DTDParser$NameCacheEntry.class
+com/sun/xml/dtdparser/DTDParser.class
+com/sun/xml/dtdparser/EndOfInputException.class
+com/sun/xml/dtdparser/EntityDecl.class
+com/sun/xml/dtdparser/ExternalEntity.class
+com/sun/xml/dtdparser/InputEntity.class
+com/sun/xml/dtdparser/InternalEntity.class
+com/sun/xml/dtdparser/MessageCatalog.class
+com/sun/xml/dtdparser/Resolver.class
+com/sun/xml/dtdparser/SimpleHashtable$Entry.class
+com/sun/xml/dtdparser/SimpleHashtable.class
+com/sun/xml/dtdparser/XmlChars.class
+com/sun/xml/dtdparser/XmlNames.class
+com/sun/xml/dtdparser/XmlReader$AsciiReader.class
+com/sun/xml/dtdparser/XmlReader$BaseReader.class
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..5609837dc14594daab4308d64fb98db57d22c09f
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like API for parsing XML Document Type Definitions. It lets JVM applications inspect DTD declarations, entities, and related XML grammar events without depending on a full XML document parser."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..5609837dc14594daab4308d64fb98db57d22c09f
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like API for parsing XML Document Type Definitions. It lets JVM applications inspect DTD declarations, entities, and related XML grammar events without depending on a full XML document parser."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
+  "repository-url": "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-sources.jar",
+  "test-code-url": "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-javadoc.jar",
+  "description": "DTD Parser provides a SAX-like API for parsing XML Document Type Definitions. It lets JVM applications inspect DTD declarations, entities, and related XML grammar events without depending on a full XML document parser."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..5609837dc14594daab4308d64fb98db57d22c09f
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like API for parsing XML Document Type Definitions. It lets JVM applications inspect DTD declarations, entities, and related XML grammar events without depending on a full XML document parser."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+ succeeded in 0ms:
+{
+  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
+  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-sources.jar",
+  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test/java",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-javadoc.jar",
+  "description" : "DTD Parser provides a SAX-like API for parsing XML Document Type Definitions. It lets JVM applications inspect DTD declarations, entities, and related XML grammar events without depending on a full XML document parser."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..5609837dc14594daab4308d64fb98db57d22c09f
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like API for parsing XML Document Type Definitions. It lets JVM applications inspect DTD declarations, entities, and related XML grammar events without depending on a full XML document parser."
+ }
+
+ succeeded in 155ms:
+web search: 
+web search: Maven Central com.sun.xml.dtd-parser dtd-parser 1.5.1
+web search: 
+web search: https://mvnrepository.com/artifact/com.sun.xml.dtd-parser/dtd-parser/1.5.1
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-dtd-parser/blob/1.5.1/dtd-parser/pom.xml
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-dtd-parser/blob/1.5.1/dtd-parser/pom.xml
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/1.5.1/
+codex
+Updated [com.sun.xml.dtd-parser-dtd-parser-1.5.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json).
+
+I used the upstream GitHub repo, Maven Central sources/javadoc jars, and the `1.5.1` tagged GitHub test tree. Maven Central lists the artifact homepage and description, the Central directory includes the `sources.jar` and `javadoc.jar`, and the GitHub tag contains `dtd-parser/src/test/java`. ([mvnrepository.com](https://mvnrepository.com/artifact/com.sun.xml.dtd-parser/dtd-parser/1.5.1))
+
+I left `language` absent and did not set `not-for-native-image`; it is a normal JVM jar artifact, and the POM declares `packaging` as `jar`. ([github.com](https://github.com/eclipse-ee4j/jaxb-dtd-parser/blob/1.5.1/dtd-parser/pom.xml))
+
+Validation run: `jq . build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json`.
+diff --git a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+index 1180b1a677da9b158b6214772bc0a60a7a65576c..5609837dc14594daab4308d64fb98db57d22c09f
+--- a/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
++++ b/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1"
++  "coordinates" : "com.sun.xml.dtd-parser:dtd-parser:1.5.1",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-javadoc.jar",
++  "description" : "DTD Parser provides a SAX-like API for parsing XML Document Type Definitions. It lets JVM applications inspect DTD declarations, entities, and related XML grammar events without depending on a full XML document parser."
+ }
+
+tokens used
+84,354
+Updated [com.sun.xml.dtd-parser-dtd-parser-1.5.1.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf/build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json).
+
+I used the upstream GitHub repo, Maven Central sources/javadoc jars, and the `1.5.1` tagged GitHub test tree. Maven Central lists the artifact homepage and description, the Central directory includes the `sources.jar` and `javadoc.jar`, and the GitHub tag contains `dtd-parser/src/test/java`. ([mvnrepository.com](https://mvnrepository.com/artifact/com.sun.xml.dtd-parser/dtd-parser/1.5.1))
+
+I left `language` absent and did not set `not-for-native-image`; it is a normal JVM jar artifact, and the POM declares `packaging` as `jar`. ([github.com](https://github.com/eclipse-ee4j/jaxb-dtd-parser/blob/1.5.1/dtd-parser/pom.xml))
+
+Validation run: `jq . build/discovered-artifact-metadata/com.sun.xml.dtd-parser-dtd-parser-1.5.1.json`.
+Ran agent for com.sun.xml.dtd-parser:dtd-parser:1.5.1 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf/build/agent-artifact-discovery-logs/com.sun.xml.dtd-parser-dtd-parser-1.5.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3276-f287dccf/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 22s
+9 actionable tasks: 4 executed, 5 from cache
