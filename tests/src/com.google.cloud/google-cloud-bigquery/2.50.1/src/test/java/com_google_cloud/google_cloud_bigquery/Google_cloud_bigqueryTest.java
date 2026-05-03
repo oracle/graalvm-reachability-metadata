@@ -34,6 +34,7 @@ import com.google.cloud.bigquery.InsertAllRequest;
 import com.google.cloud.bigquery.JobId;
 import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.LoadJobConfiguration;
+import com.google.cloud.bigquery.MaterializedViewDefinition;
 import com.google.cloud.bigquery.ModelId;
 import com.google.cloud.bigquery.PolicyTags;
 import com.google.cloud.bigquery.PrimaryKey;
@@ -57,6 +58,7 @@ import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableInfo;
 import com.google.cloud.bigquery.TimePartitioning;
 import com.google.cloud.bigquery.UserDefinedFunction;
+import com.google.cloud.bigquery.ViewDefinition;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -256,6 +258,62 @@ public class Google_cloud_bigqueryTest {
         assertThat(rangeValue.getRangeValue().getEnd().getStringValue()).isEqualTo("2024-02-01");
         assertThat(nullValue.isNull()).isTrue();
         assertThat(nullValue.getStringValueOrDefault("fallback")).isEqualTo("fallback");
+    }
+
+    @Test
+    void viewDefinitionsModelLogicalViewsMaterializedViewsRefreshAndTableMetadata() {
+        Schema logicalViewSchema = Schema.of(
+                Field.of("customer_id", StandardSQLTypeName.STRING),
+                Field.of("event_count", StandardSQLTypeName.INT64));
+        UserDefinedFunction formatter = UserDefinedFunction.inline(
+                "function formatCustomer(value) { return value.toUpperCase(); }");
+        ViewDefinition logicalView = ViewDefinition
+                .newBuilder("SELECT formatCustomer(customer_id) AS customer_id, COUNT(*) AS event_count FROM events")
+                .setSchema(logicalViewSchema)
+                .setUseLegacySql(false)
+                .setUserDefinedFunctions(formatter)
+                .build();
+        TableInfo logicalViewInfo = TableInfo.newBuilder(TableId.of(PROJECT, DATASET, "customer_event_summary"),
+                        logicalView)
+                .setFriendlyName("Customer event summary")
+                .setDescription("Logical view over customer events")
+                .build();
+
+        TimePartitioning partitioning = TimePartitioning.newBuilder(TimePartitioning.Type.DAY)
+                .setField("event_date")
+                .build();
+        Clustering clustering = Clustering.newBuilder().setFields(List.of("customer_id")).build();
+        MaterializedViewDefinition materializedView = MaterializedViewDefinition
+                .newBuilder("SELECT customer_id, event_date, COUNT(*) AS event_count FROM events GROUP BY 1, 2")
+                .setSchema(Schema.of(
+                        Field.of("customer_id", StandardSQLTypeName.STRING),
+                        Field.of("event_date", StandardSQLTypeName.DATE),
+                        Field.of("event_count", StandardSQLTypeName.INT64)))
+                .setEnableRefresh(true)
+                .setRefreshIntervalMs(3_600_000L)
+                .setTimePartitioning(partitioning)
+                .setClustering(clustering)
+                .build();
+        TableInfo materializedViewInfo = TableInfo.of(
+                TableId.of(PROJECT, DATASET, "daily_customer_event_summary"), materializedView);
+
+        assertThat(logicalView.getType()).isEqualTo(TableDefinition.Type.VIEW);
+        assertThat(logicalView.getQuery()).contains("formatCustomer(customer_id)");
+        assertThat(logicalView.useLegacySql()).isFalse();
+        assertThat(logicalView.getSchema()).isEqualTo(logicalViewSchema);
+        assertThat(logicalView.getUserDefinedFunctions()).containsExactly(formatter);
+        assertThat(((ViewDefinition) logicalViewInfo.getDefinition()).getUserDefinedFunctions())
+                .containsExactly(formatter);
+        assertThat(logicalViewInfo.getFriendlyName()).isEqualTo("Customer event summary");
+        assertThat(logicalView.toBuilder().setUseLegacySql(true).build().useLegacySql()).isTrue();
+        assertThat(materializedView.getType()).isEqualTo(TableDefinition.Type.MATERIALIZED_VIEW);
+        assertThat(materializedView.getQuery()).contains("GROUP BY 1, 2");
+        assertThat(materializedView.getEnableRefresh()).isTrue();
+        assertThat(materializedView.getRefreshIntervalMs()).isEqualTo(3_600_000L);
+        assertThat(materializedView.getTimePartitioning()).isEqualTo(partitioning);
+        assertThat(materializedView.getClustering().getFields()).containsExactly("customer_id");
+        assertThat((MaterializedViewDefinition) materializedViewInfo.getDefinition()).isEqualTo(materializedView);
+        assertThat(materializedView.toBuilder().setEnableRefresh(false).build().getEnableRefresh()).isFalse();
     }
 
     @Test
