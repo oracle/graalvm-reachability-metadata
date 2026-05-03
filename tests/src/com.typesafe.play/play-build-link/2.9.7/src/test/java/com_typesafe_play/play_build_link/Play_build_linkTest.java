@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -62,6 +63,19 @@ public class Play_build_linkTest {
                         "play.api.templates.PlayMagic._",
                         "play.api.mvc._",
                         "play.api.data._");
+    }
+
+    @Test
+    void templateImportsCanBeSpecializedForTemplateFormats() {
+        List<String> javaHtmlImports = importsForFormat(TemplateImports.defaultJavaTemplateImports, "html");
+        List<String> scalaXmlImports = importsForFormat(TemplateImports.defaultScalaTemplateImports, "xml");
+
+        assertThat(javaHtmlImports)
+                .contains("views.html._")
+                .doesNotContain("views.%format%._");
+        assertThat(scalaXmlImports)
+                .contains("views.xml._")
+                .doesNotContain("views.%format%._");
     }
 
     @Test
@@ -181,6 +195,14 @@ public class Play_build_linkTest {
         assertThat(server.reloadCount()).isEqualTo(2);
         assertThat(server.stopCount()).isEqualTo(1);
         assertThat(server.isStopped()).isTrue();
+    }
+
+    private static List<String> importsForFormat(List<String> templateImports, String format) {
+        List<String> resolvedImports = new ArrayList<>(templateImports.size());
+        for (String templateImport : templateImports) {
+            resolvedImports.add(templateImport.replace("%format%", format));
+        }
+        return resolvedImports;
     }
 
     private static final class DocumentationRequest {
