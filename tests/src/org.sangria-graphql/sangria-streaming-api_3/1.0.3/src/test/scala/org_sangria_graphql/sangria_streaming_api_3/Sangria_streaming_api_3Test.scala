@@ -18,7 +18,10 @@ import sangria.streaming.SubscriptionStreamLike
 import sangria.streaming.ValidOutStreamType
 import sangria.streaming.future
 
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -106,6 +109,32 @@ class Sangria_streaming_api_3Test {
 
     assertEquals("second-finished", await(merged))
     firstPromise.success("first-finished")
+  }
+
+  @Test
+  def futureSubscriptionStreamUsesProvidedExecutionContextForTransformations(): Unit = {
+    val workerThreadName: String = "sangria-streaming-test-worker"
+    val observedThreadName: AtomicReference[String] = new AtomicReference[String]()
+    val executor: ExecutorService = Executors.newSingleThreadExecutor((r: Runnable) => {
+      val thread: Thread = new Thread(r, workerThreadName)
+      thread.setDaemon(true)
+      thread
+    })
+    val executionContext: ExecutionContext = ExecutionContext.fromExecutorService(executor)
+
+    try {
+      val stream: SubscriptionStream[Future] = future.futureSubscriptionStream(using executionContext)
+      val transformed: Future[String] = stream.map(stream.single("payload")) { value =>
+        observedThreadName.set(Thread.currentThread().getName)
+        value.toUpperCase
+      }
+
+      assertEquals("PAYLOAD", await(transformed))
+      assertEquals(workerThreadName, observedThreadName.get())
+    } finally {
+      executor.shutdownNow()
+      ()
+    }
   }
 
   @Test
