@@ -15,6 +15,10 @@ import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.ContextKey;
+import io.opentelemetry.context.propagation.ContextPropagators;
+import io.opentelemetry.context.propagation.TextMapGetter;
+import io.opentelemetry.context.propagation.TextMapPropagator;
+import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.AttributesExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.OperationListener;
@@ -35,7 +39,9 @@ import io.opentelemetry.instrumentation.api.semconv.network.ServerAttributesExtr
 import io.opentelemetry.instrumentation.api.semconv.network.ServerAttributesGetter;
 import io.opentelemetry.instrumentation.api.semconv.url.UrlAttributesExtractor;
 import io.opentelemetry.instrumentation.api.util.VirtualField;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,6 +74,8 @@ public class Opentelemetry_instrumentation_apiTest {
     private static final AttributeKey<String> NETWORK_PEER_ADDRESS = AttributeKey.stringKey("network.peer.address");
     private static final AttributeKey<Long> NETWORK_PEER_PORT = AttributeKey.longKey("network.peer.port");
     private static final ContextKey<String> CUSTOM_CONTEXT_KEY = ContextKey.named("customized-context");
+    private static final ContextKey<String> PROPAGATED_CONTEXT_KEY = ContextKey.named("propagated-context");
+    private static final String PROPAGATION_HEADER = "x-propagated-context";
 
     @Test
     void clientHttpExtractorCapturesMethodUrlHeadersResponseAndResendCount() {
@@ -356,6 +364,47 @@ public class Opentelemetry_instrumentation_apiTest {
     }
 
     @Test
+    void propagatingInstrumentersInjectAndExtractCarrierValues() {
+        OpenTelemetry openTelemetry = OpenTelemetry.propagating(
+                ContextPropagators.create(new TestTextMapPropagator()));
+        ClientRequest clientRequest = new ClientRequest(
+                "POST",
+                "https://downstream.example.test/jobs",
+                "downstream.example.test",
+                443,
+                new HashMap<>(),
+                "/jobs");
+        Instrumenter<ClientRequest, ClientResponse> clientInstrumenter = Instrumenter
+                .<ClientRequest, ClientResponse>builder(openTelemetry, "propagating-client", ignored -> "client send")
+                .buildClientInstrumenter(new HeaderTextMapSetter());
+
+        Context clientParent = Context.root().with(PROPAGATED_CONTEXT_KEY, "client-parent");
+        Context clientContext = clientInstrumenter.start(clientParent, clientRequest);
+        clientInstrumenter.end(clientContext, clientRequest, new ClientResponse(202, Collections.emptyMap()), null);
+
+        assertThat(clientRequest.headers().get(PROPAGATION_HEADER)).containsExactly("client-parent");
+
+        ServerRequest serverRequest = new ServerRequest(
+                "GET",
+                "https",
+                "/callbacks/ready",
+                null,
+                "/callbacks/{state}",
+                "203.0.113.25",
+                49152,
+                Map.of(PROPAGATION_HEADER, List.of("server-parent")));
+        Instrumenter<ServerRequest, ServerResponse> serverInstrumenter = Instrumenter
+                .<ServerRequest, ServerResponse>builder(
+                        openTelemetry, "propagating-server", ignored -> "server receive")
+                .buildServerInstrumenter(new HeaderTextMapGetter());
+
+        Context serverContext = serverInstrumenter.start(Context.root(), serverRequest);
+        serverInstrumenter.end(serverContext, serverRequest, new ServerResponse(204, Collections.emptyMap()), null);
+
+        assertThat(serverContext.get(PROPAGATED_CONTEXT_KEY)).isEqualTo("server-parent");
+    }
+
+    @Test
     void virtualFieldStoresAttachmentsByObjectIdentityAndFieldType() {
         VirtualField<CarryObject, Attachment> attachmentField = VirtualField.find(CarryObject.class, Attachment.class);
         VirtualField<CarryObject, String> stringField = VirtualField.find(CarryObject.class, String.class);
@@ -416,6 +465,47 @@ public class Opentelemetry_instrumentation_apiTest {
 
         private StatusCode statusCode() {
             return statusCode;
+        }
+    }
+
+    private static final class TestTextMapPropagator implements TextMapPropagator {
+        @Override
+        public Collection<String> fields() {
+            return List.of(PROPAGATION_HEADER);
+        }
+
+        @Override
+        public <C> void inject(Context context, C carrier, TextMapSetter<C> setter) {
+            String value = context.get(PROPAGATED_CONTEXT_KEY);
+            if (value != null) {
+                setter.set(carrier, PROPAGATION_HEADER, value);
+            }
+        }
+
+        @Override
+        public <C> Context extract(Context context, C carrier, TextMapGetter<C> getter) {
+            String value = getter.get(carrier, PROPAGATION_HEADER);
+            return value == null ? context : context.with(PROPAGATED_CONTEXT_KEY, value);
+        }
+    }
+
+    private static final class HeaderTextMapSetter implements TextMapSetter<ClientRequest> {
+        @Override
+        public void set(ClientRequest carrier, String key, String value) {
+            carrier.headers().put(key, List.of(value));
+        }
+    }
+
+    private static final class HeaderTextMapGetter implements TextMapGetter<ServerRequest> {
+        @Override
+        public Iterable<String> keys(ServerRequest carrier) {
+            return carrier.headers().keySet();
+        }
+
+        @Override
+        public String get(ServerRequest carrier, String key) {
+            List<String> values = carrier.headers().getOrDefault(key, Collections.emptyList());
+            return values.isEmpty() ? null : values.get(0);
         }
     }
 
