@@ -131,6 +131,31 @@ public class Http2_hpackTest {
     }
 
     @Test
+    void encodesIndividualFieldsAndKeepsNeverIndexedHeadersOutOfDynamicTable() throws Exception {
+        HpackEncoder encoder = new HpackEncoder();
+        HpackDecoder decoder = new HpackDecoder(4096, () -> 24680L);
+        HttpField contentType = new HttpField(HttpHeader.CONTENT_TYPE, "text/plain");
+        HttpField setCookie = new HttpField(HttpHeader.SET_COOKIE, "session=secret");
+        ByteBuffer block = ByteBuffer.allocate(512);
+
+        encoder.encode(block, new HttpField(HttpHeader.C_STATUS, "200"));
+        encoder.encode(block, contentType);
+        encoder.encode(block, setCookie);
+        block.flip();
+        MetaData decoded = decoder.decode(block);
+
+        assertThat(decoded).isInstanceOf(MetaData.Response.class);
+        MetaData.Response response = (MetaData.Response)decoded;
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getFields().get(HttpHeader.CONTENT_TYPE)).isEqualTo("text/plain");
+        assertThat(response.getFields().get(HttpHeader.SET_COOKIE)).isEqualTo("session=secret");
+        assertThat(encoder.getHpackContext().get(contentType)).isNotNull();
+        assertThat(decoder.getHpackContext().get(contentType)).isNotNull();
+        assertThat(encoder.getHpackContext().get(setCookie)).isNull();
+        assertThat(decoder.getHpackContext().get(setCookie)).isNull();
+    }
+
+    @Test
     void exposesStaticAndDynamicHpackContextEntries() {
         HpackEncoder encoder = new HpackEncoder();
         HpackContext context = encoder.getHpackContext();
