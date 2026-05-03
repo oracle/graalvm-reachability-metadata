@@ -1,0 +1,761 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded0b-79f3-7ae2-9143-5df6e3cfa84a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.threeten:threetenbp:1.7.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.7.0" when "$version$" is replaced with "1.7.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+- Set "coordinates" to "org.threeten:threetenbp:1.7.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.7.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact layout and existing metadata conventions first, then update the JSON in place with URLs that resolve for version `1.7.0`.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.threeten|threetenbp' || true" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|repository-url|not-for-native-image|language' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:    "repository-url" : "https://github.com/google/closure-compiler",
+metadata/com.google.javascript/closure-compiler-externs/index.json:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/com.google.javascript/closure-compiler-externs/index.json:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:    "repository-url" : "https://github.com/zio/zio-schema",
+metadata/dev.zio/zio-schema-macros_3/index.json:    "test-code-url" : "N/A",
+metadata/dev.zio/zio-schema-macros_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:    "language" : {
+metadata/org.apiguardian/apiguardian-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+metadata/org.apiguardian/apiguardian-api/index.json:    "test-code-url" : "N/A",
+metadata/org.apiguardian/apiguardian-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/javax.activation-api/index.json:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+metadata/javax.activation/activation/index.json:    "repository-url" : "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.apache.arrow/arrow-format/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.apache.arrow/arrow-format/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.arrow/arrow-format/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:    "repository-url" : "https://github.com/redis/lettuce",
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.threeten:threetenbp:1.7.0"
+}
+
+web search: 
+web search: Maven Central org.threeten threetenbp 1.7.0 sources tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/threeten/threetenbp/1.7.0/
+web search: 
+web search: 
+codex
+Maven Central exposes sources and Javadoc for `1.7.0`, but no test classifier in that directory, so I’m checking the POM/SCM data and repository tags for the test-suite URL.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 3ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- ==================================================================== -->
+  <!-- Build requires Java SE 8 or later -->
+  <!-- Releases require Java SE 11 or later -->
+  <!-- ==================================================================== -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.threeten</groupId>
+  <artifactId>threetenbp</artifactId>
+  <packaging>jar</packaging>
+  <name>ThreeTen backport</name>
+  <version>1.7.0</version>
+  <description>Backport of JSR-310 from JDK 8 to JDK 7 and JDK 6. NOT an implementation of the JSR.</description>
+  <url>https://www.threeten.org/threetenbp</url>
+
+  <!-- ==================================================================== -->
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/ThreeTen/threetenbp/issues</url>
+  </issueManagement>
+  <inceptionYear>2007</inceptionYear>
+
+  <!-- ==================================================================== -->
+  <developers>
+    <developer>
+      <id>jodastephen</id>
+      <name>Stephen Colebourne</name>
+      <roles>
+        <role>Project Lead</role>
+      </roles>
+      <timezone>0</timezone>
+      <url>https://github.com/jodastephen</url>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Martin Baker</name>
+      <url>https://github.com/kemokid</url>
+    </contributor>
+    <contributor>
+      <name>Graham Borland</name>
+      <url>https://github.com/GrahamBorland</url>
+    </contributor>
+    <contributor>
+      <name>Keith Harris</name>
+      <url>https://github.com/keithharris</url>
+    </contributor>
+    <contributor>
+      <name>Ludovic Hochet</name>
+      <url>https://github.com/lhochet</url>
+    </contributor>
+    <contributor>
+      <name>Tomislav Hofman</name>
+      <url>https://github.com/tomislavhofman</url>
+    </contributor>
+    <contributor>
+      <name>Matias Irland</name>
+      <url>https://github.com/matir91</url>
+    </contributor>
+    <contributor>
+      <name>David van Leusen</name>
+      <url>https://github.com/Kiskae</url>
+    </contributor>
+    <contributor>
+      <name>Eric Li</name>
+      <url>https://github.com/ericksli</url>
+    </contributor>
+    <contributor>
+      <name>Pap Lorinc</name>
+      <url>https://github.com/paplorinc</url>
+    </contributor>
+    <contributor>
+      <name>Philippe Marschall</name>
+      <url>https://github.com/marschall</url>
+    </contributor>
+    <contributor>
+      <name>Michael Nascimento Santos</name>
+      <url>https://github.com/sjmisterm</url>
+    </contributor>
+    <contributor>
+      <name>Björn Raupach</name>
+      <url>https://github.com/raupachz</url>
+    </contributor>
+    <contributor>
+      <name>Roger Riggs</name>
+      <url>https://github.com/RogerRiggs</url>
+    </contributor>
+    <contributor>
+      <name>Siebe Schaap</name>
+      <url>https://github.com/sschaap</url>
+    </contributor>
+    <contributor>
+      <name>Sherman Shen</name>
+    </contributor>
+    <contributor>
+      <name>Stanislav Spiridonov</name>
+      <url>https://github.com/foal</url>
+    </contributor>
+    <contributor>
+      <name>Philipp Thuerwaechter</name>
+      <url>https://github.com/pithu</url>
+    </contributor>
+    <contributor>
+      <name>Andrey Turbanov</name>
+      <url>https://github.com/turbanoff</url>
+    </contributor>
+    <contributor>
+      <name> Jake Wharton</name>
+      <url>https://github.com/JakeWharton</url>
+    </contributor>
+  </contributors>
+
+  <!-- ==================================================================== -->
+  <licenses>
+    <license>
+      <name>BSD-3-Clause</name>
+      <url>https://raw.githubusercontent.com/ThreeTen/threetenbp/main/LICENSE.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:https://github.com/ThreeTen/threetenbp.git</connection>
+    <developerConnection>scm:git:https://github.com/ThreeTen/threetenbp.git</developerConnection>
+    <url>https://github.com/ThreeTen/threetenbp</url>
+    <tag>v1.7.0</tag>
+  </scm>
+  <organization>
+    <name>ThreeTen.org</name>
+    <url>https://www.threeten.org</url>
+  </organization>
+
+  <!-- ==================================================================== -->
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${project.basedir}</directory>
+        <includes>
+          <include>LICENSE.txt</include>
+        </includes>
+      </resource>
+    </resources>
+    <!-- define build -->
+    <plugins>
+      <!-- Enforce Maven 3.5.0 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.5.0</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Setup testing -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/Test*.java</include>
+          </includes>
+          <argLine>-Xmx2G</argLine>
+          <parallel>classes</parallel>
+          <threadCount>1</threadCount>
+          <!-- remove slow SuiteHTMLReporter -->
+          <properties>
+            <property>
+              <name>usedefaultlisteners</name>
+              <value>false</value>
+            </property>
+            <property>
+              <name>listener</name>
+              <value>org.testng.reporters.ExitCodeListener</value>
+            </property>
+            <property>
+              <name>reporter</name>
+              <value>org.testng.reporters.JUnitReportReporter</value>
+            </property>
+          </properties>
+        </configuration>
+      </plugin>
+      <!-- Setup OSGi bundle data -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven-bundle-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <configuration>
+              <instructions>
+                <Import-Package>!sun.util.calendar,*</Import-Package>
+                <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"</Require-Capability>
+              </instructions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Setup Jar file manifest entries -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/ThreeTen/threetenbp.git | rg '1\\.7\\.0|v1\\.7\\.0|release'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0-tests.jar || true; curl -fsSI https://repo1.maven.org/maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 347ms:
+3b9d809e119f44015067911d1ef592004a0bc954	refs/tags/v1.7.0
+70790af119238db2c091606425477e140ff77242	refs/tags/v1.7.0^{}
+
+ succeeded in 508ms:
+curHTTP/2 404 
+date: Sun, 03 May 2026 08:54:23 GMT
+content-type: text/html
+cf-ray: 9f5e0a69ade3c126-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+l: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 08:54:23 GMT
+content-type: text/html
+cf-ray: 9f5e0a6b59fe7dd2-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0-javadoc.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 08:54:32 GMT
+content-type: application/java-archive
+content-length: 1362964
+cf-ray: 9f5e0aa2a9e46d88-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 84727
+etag: "ea74b2c09ce533b65f9cebe30d1bfba7"
+last-modified: Tue, 17 Sep 2024 06:37:51 GMT
+x-checksum-md5: ea74b2c09ce533b65f9cebe30d1bfba7
+x-checksum-sha1: a990bbe5bfd4b412b2167b3979c758515abae074
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0-sources.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 08:54:32 GMT
+content-type: application/java-archive
+content-length: 515829
+cf-ray: 9f5e0aa2aa73bc44-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1459035
+etag: "a078ce574baa51fbf0d0c01e7093d254"
+last-modified: Tue, 17 Sep 2024 06:37:47 GMT
+x-checksum-md5: a078ce574baa51fbf0d0c01e7093d254
+x-checksum-sha1: 025429e53a8a10ec3b8893a35b9b71cd51d5fc22
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/threeten/threetenbp/1.7.0/ | rg 'threetenbp-1\\.7\\.0-.+\\.(jar|zip|tar\\.gz)'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+<a href="threetenbp-1.7.0-javadoc.jar" title="threetenbp-1.7.0-javadoc.jar">threetenbp-1.7.0-javadoc.jar</a>                      2024-09-17 06:37   1362964      
+<a href="threetenbp-1.7.0-javadoc.jar.asc" title="threetenbp-1.7.0-javadoc.jar.asc">threetenbp-1.7.0-javadoc.jar.asc</a>                  2024-09-17 06:37       849      
+<a href="threetenbp-1.7.0-javadoc.jar.md5" title="threetenbp-1.7.0-javadoc.jar.md5">threetenbp-1.7.0-javadoc.jar.md5</a>                  2024-09-17 06:37        32      
+<a href="threetenbp-1.7.0-javadoc.jar.sha1" title="threetenbp-1.7.0-javadoc.jar.sha1">threetenbp-1.7.0-javadoc.jar.sha1</a>                 2024-09-17 06:37        40      
+<a href="threetenbp-1.7.0-no-tzdb-javadoc.jar" title="threetenbp-1.7.0-no-tzdb-javadoc.jar">threetenbp-1.7.0-no-tzdb-javadoc.jar</a>              2024-09-17 06:37   1362964      
+<a href="threetenbp-1.7.0-no-tzdb-javadoc.jar.asc" title="threetenbp-1.7.0-no-tzdb-javadoc.jar.asc">threetenbp-1.7.0-no-tzdb-javadoc.jar.asc</a>          2024-09-17 06:37       849      
+<a href="threetenbp-1.7.0-no-tzdb-javadoc.jar.md5" title="threetenbp-1.7.0-no-tzdb-javadoc.jar.md5">threetenbp-1.7.0-no-tzdb-javadoc.jar.md5</a>          2024-09-17 06:37        32      
+<a href="threetenbp-1.7.0-no-tzdb-javadoc.jar.sha1" title="threetenbp-1.7.0-no-tzdb-javadoc.jar.sha1">threetenbp-1.7.0-no-tzdb-javadoc.jar.sha1</a>         2024-09-17 06:37        40      
+<a href="threetenbp-1.7.0-no-tzdb-sources.jar" title="threetenbp-1.7.0-no-tzdb-sources.jar">threetenbp-1.7.0-no-tzdb-sources.jar</a>              2024-09-17 06:37    505819      
+<a href="threetenbp-1.7.0-no-tzdb-sources.jar.asc" title="threetenbp-1.7.0-no-tzdb-sources.jar.asc">threetenbp-1.7.0-no-tzdb-sources.jar.asc</a>          2024-09-17 06:37       849      
+<a href="threetenbp-1.7.0-no-tzdb-sources.jar.md5" title="threetenbp-1.7.0-no-tzdb-sources.jar.md5">threetenbp-1.7.0-no-tzdb-sources.jar.md5</a>          2024-09-17 06:37        32      
+<a href="threetenbp-1.7.0-no-tzdb-sources.jar.sha1" title="threetenbp-1.7.0-no-tzdb-sources.jar.sha1">threetenbp-1.7.0-no-tzdb-sources.jar.sha1</a>         2024-09-17 06:37        40      
+<a href="threetenbp-1.7.0-no-tzdb.jar" title="threetenbp-1.7.0-no-tzdb.jar">threetenbp-1.7.0-no-tzdb.jar</a>                      2024-09-17 06:37    452490      
+<a href="threetenbp-1.7.0-no-tzdb.jar.asc" title="threetenbp-1.7.0-no-tzdb.jar.asc">threetenbp-1.7.0-no-tzdb.jar.asc</a>                  2024-09-17 06:37       849      
+<a href="threetenbp-1.7.0-no-tzdb.jar.md5" title="threetenbp-1.7.0-no-tzdb.jar.md5">threetenbp-1.7.0-no-tzdb.jar.md5</a>                  2024-09-17 06:37        32      
+<a href="threetenbp-1.7.0-no-tzdb.jar.sha1" title="threetenbp-1.7.0-no-tzdb.jar.sha1">threetenbp-1.7.0-no-tzdb.jar.sha1</a>                 2024-09-17 06:37        40      
+<a href="threetenbp-1.7.0-sources.jar" title="threetenbp-1.7.0-sources.jar">threetenbp-1.7.0-sources.jar</a>                      2024-09-17 06:37    515829      
+<a href="threetenbp-1.7.0-sources.jar.asc" title="threetenbp-1.7.0-sources.jar.asc">threetenbp-1.7.0-sources.jar.asc</a>                  2024-09-17 06:37       849      
+<a href="threetenbp-1.7.0-sources.jar.md5" title="threetenbp-1.7.0-sources.jar.md5">threetenbp-1.7.0-sources.jar.md5</a>                  2024-09-17 06:37        32      
+<a href="threetenbp-1.7.0-sources.jar.sha1" title="threetenbp-1.7.0-sources.jar.sha1">threetenbp-1.7.0-sources.jar.sha1</a>                 2024-09-17 06:37        40      
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/ThreeTen/threetenbp/tree/v1.7.0/src/test' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 484ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 08:54:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"83d75a73e21d9a814cc3d2765269b114"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=jNaaV0DVGM1eW6zNXMW3akslNuMJLS2QduRRyqpm9%2F3s%2BzweYxJQ1fWJkjNTFB3zJjPTaqbzK6Wx2nleXwB%2F5URwHbfK0H1xtgvwKWWZ3o%2FJRx5XBBDdVjxL%2FFBUXXP5MIRLbcCqXqwJ4Nmd%2BOuofoWX%2B7ry6O9Z9zD%2FjE5qLU54ovtSNJnYrs1sag7KjpjYSFv7OhLSl3OqS7fxZBlF6qXMNxmEDb0Ze2aeaDIXJi8YBWk22d%2B58g%2FiF7sSa7LDXGZMsN%2BOfgllGgn3GKStwA%3D%3D--HTdk5Q8RrHwFFTL7--gWBCKwzYzPRAmWU4sQBkWw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.440344866.1777798472; expires=Mon, 03 May 2027 08:54:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 08:54:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5101:99CE2:25B3429:1C49DA9:69F70D48
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0-javadoc.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 08:54:38 GMT
+content-type: application/java-archive
+content-length: 1362964
+cf-ray: 9f5e0acb7a72bab9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 110410
+etag: "ea74b2c09ce533b65f9cebe30d1bfba7"
+last-modified: Tue, 17 Sep 2024 06:37:51 GMT
+x-checksum-md5: ea74b2c09ce533b65f9cebe30d1bfba7
+x-checksum-sha1: a990bbe5bfd4b412b2167b3979c758515abae074
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0-sources.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 08:54:38 GMT
+content-type: application/java-archive
+content-length: 515829
+cf-ray: 9f5e0acb8847bb16-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1497308
+etag: "a078ce574baa51fbf0d0c01e7093d254"
+last-modified: Tue, 17 Sep 2024 06:37:47 GMT
+x-checksum-md5: a078ce574baa51fbf0d0c01e7093d254
+x-checksum-sha1: 025429e53a8a10ec3b8893a35b9b71cd51d5fc22
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/threeten/threetenbp/1.7.0/threetenbp-1.7.0.jar -o /tmp/threetenbp-1.7.0.jar && jar tf /tmp/threetenbp-1.7.0.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/ThreeTen/threetenbp/contents/src/test?ref=v1.7.0 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 180ms:
+[
+  {
+    "name": "java",
+    "path": "src/test/java",
+    "sha": "d79a378a61afda66f8ab6fcb59238e08609db107",
+    "size": 0,
+    "url": "https://api.github.com/repos/ThreeTen/threetenbp/contents/src/test/java?ref=v1.7.0",
+    "html_url": "https://github.com/ThreeTen/threetenbp/tree/v1.7.0/src/test/java",
+    "git_url": "https://api.github.com/repos/ThreeTen/threetenbp/git/trees/d79a378a61afda66f8ab6fcb59238e08609db107",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/ThreeTen/threetenbp/contents/src/test/java?ref=v1.7.0",
+      "git": "https://api.github.com/repos/ThreeTen/threetenbp/git/trees/d79a378a61afda66f8ab6fcb59238e08609db107",
+      "html": "https://github.com/ThreeTen/threetenbp/tree/v1.7.0/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "src/test/resources",
+    "sha": "6908db5b336cfc6125040bc6aaa49cabe44f89bf",
+    "size": 0,
+    "url": "https://api.github.com/repos/ThreeTen/threetenbp/contents/src/test/resources?ref=v1.7.0",
+    "html_url": "https://github.com/ThreeTen/threetenbp/tree/v1.7.0/src/test/resources",
+    "git_url": "https://api.github.com/repos/ThreeTen/threetenbp/git/trees/6908db5b336cfc6125040bc6aaa49cabe44f89bf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/ThreeTen/threetenbp/contents/src/test/resources?ref=v1.7.0",
+      "git": "https://api.github.com/repos/ThreeTen/threetenbp/git/trees/6908db5b336cfc6125040bc6aaa49cabe44f89bf",
+      "html": "https://github.com/ThreeTen/threetenbp/tree/v1.7.0/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 210ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/proguard/
+META-INF/services/
+org/
+org/threeten/
+org/threeten/bp/
+org/threeten/bp/chrono/
+org/threeten/bp/format/
+org/threeten/bp/jdk8/
+org/threeten/bp/temporal/
+org/threeten/bp/zone/
+META-INF/maven/
+META-INF/maven/org.threeten/
+META-INF/maven/org.threeten/threetenbp/
+META-INF/LICENSE.txt
+META-INF/proguard/org.threeten.bp.pro
+META-INF/services/org.threeten.bp.zone.ZoneRulesProvider
+org/threeten/bp/chrono/AbstractChronology.class
+org/threeten/bp/chrono/ChronoDateImpl$1.class
+org/threeten/bp/chrono/ChronoDateImpl.class
+org/threeten/bp/chrono/ChronoLocalDate$1.class
+org/threeten/bp/chrono/ChronoLocalDate.class
+org/threeten/bp/chrono/ChronoLocalDateTime$1.class
+org/threeten/bp/chrono/ChronoLocalDateTime.class
+org/threeten/bp/chrono/ChronoLocalDateTimeImpl$1.class
+org/threeten/bp/chrono/ChronoLocalDateTimeImpl.class
+org/threeten/bp/chrono/Chronology$1.class
+org/threeten/bp/chrono/Chronology$2.class
+org/threeten/bp/chrono/Chronology.class
+org/threeten/bp/chrono/ChronoPeriod.class
+org/threeten/bp/chrono/ChronoPeriodImpl.class
+org/threeten/bp/chrono/ChronoZonedDateTime$1.class
+org/threeten/bp/chrono/ChronoZonedDateTime$2.class
+org/threeten/bp/chrono/ChronoZonedDateTime.class
+org/threeten/bp/chrono/ChronoZonedDateTimeImpl$1.class
+org/threeten/bp/chrono/ChronoZonedDateTimeImpl.class
+org/threeten/bp/chrono/Era.class
+org/threeten/bp/chrono/HijrahChronology.class
+org/threeten/bp/chrono/HijrahDate$1.class
+
+codex
+I found the POM SCM root and tag `v1.7.0`, verified Maven Central sources/Javadoc are present, and confirmed the artifact JAR contains JVM `.class` files. I’m updating only the discovered metadata JSON now.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+diff --git a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+index 2217a5c52798607297f6043cd94a0386ade20487..e43e3e33f7b9fa615f20433c39f6ae37860a393c
+--- a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
++++ b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.threeten:threetenbp:1.7.0"
++  "coordinates" : "org.threeten:threetenbp:1.7.0",
++  "repository-url" : "https://github.com/ThreeTen/threetenbp",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
++  "description" : "ThreeTen Backport provides a Java 6 and Java 7 backport of the JSR-310 date and time API introduced in Java 8. It supplies immutable date, time, time-zone, duration, and period types under org.threeten.bp for projects that cannot use java.time directly."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+index 2217a5c52798607297f6043cd94a0386ade20487..e43e3e33f7b9fa615f20433c39f6ae37860a393c
+--- a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
++++ b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.threeten:threetenbp:1.7.0"
++  "coordinates" : "org.threeten:threetenbp:1.7.0",
++  "repository-url" : "https://github.com/ThreeTen/threetenbp",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
++  "description" : "ThreeTen Backport provides a Java 6 and Java 7 backport of the JSR-310 date and time API introduced in Java 8. It supplies immutable date, time, time-zone, duration, and period types under org.threeten.bp for projects that cannot use java.time directly."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+{
+  "coordinates": "org.threeten:threetenbp:1.7.0",
+  "repository-url": "https://github.com/ThreeTen/threetenbp",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+  "test-code-url": "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+  "description": "ThreeTen Backport provides a Java 6 and Java 7 backport of the JSR-310 date and time API introduced in Java 8. It supplies immutable date, time, time-zone, duration, and period types under org.threeten.bp for projects that cannot use java.time directly."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+index 2217a5c52798607297f6043cd94a0386ade20487..e43e3e33f7b9fa615f20433c39f6ae37860a393c
+--- a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
++++ b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.threeten:threetenbp:1.7.0"
++  "coordinates" : "org.threeten:threetenbp:1.7.0",
++  "repository-url" : "https://github.com/ThreeTen/threetenbp",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
++  "description" : "ThreeTen Backport provides a Java 6 and Java 7 backport of the JSR-310 date and time API introduced in Java 8. It supplies immutable date, time, time-zone, duration, and period types under org.threeten.bp for projects that cannot use java.time directly."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.threeten:threetenbp:1.7.0",
+  "repository-url" : "https://github.com/ThreeTen/threetenbp",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+  "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+  "description" : "ThreeTen Backport provides a Java 6 and Java 7 backport of the JSR-310 date and time API introduced in Java 8. It supplies immutable date, time, time-zone, duration, and period types under org.threeten.bp for projects that cannot use java.time directly."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a
+diff --git a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+index 2217a5c52798607297f6043cd94a0386ade20487..e43e3e33f7b9fa615f20433c39f6ae37860a393c
+--- a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
++++ b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.threeten:threetenbp:1.7.0"
++  "coordinates" : "org.threeten:threetenbp:1.7.0",
++  "repository-url" : "https://github.com/ThreeTen/threetenbp",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
++  "description" : "ThreeTen Backport provides a Java 6 and Java 7 backport of the JSR-310 date and time API introduced in Java 8. It supplies immutable date, time, time-zone, duration, and period types under org.threeten.bp for projects that cannot use java.time directly."
+ }
+
+ succeeded in 413ms:
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org threeten threetenbp 1.7.0 pom
+codex
+Updated [org.threeten-threetenbp-1.7.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json).
+
+I left `language` absent, since this is a plain JVM Java artifact, and did not set `not-for-native-image` because the artifact JAR contains JVM `.class` files. I validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+index 2217a5c52798607297f6043cd94a0386ade20487..e43e3e33f7b9fa615f20433c39f6ae37860a393c
+--- a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
++++ b/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.threeten:threetenbp:1.7.0"
++  "coordinates" : "org.threeten:threetenbp:1.7.0",
++  "repository-url" : "https://github.com/ThreeTen/threetenbp",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
++  "description" : "ThreeTen Backport provides a Java 6 and Java 7 backport of the JSR-310 date and time API introduced in Java 8. It supplies immutable date, time, time-zone, duration, and period types under org.threeten.bp for projects that cannot use java.time directly."
+ }
+
+tokens used
+47,287
+Updated [org.threeten-threetenbp-1.7.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a/build/discovered-artifact-metadata/org.threeten-threetenbp-1.7.0.json).
+
+I left `language` absent, since this is a plain JVM Java artifact, and did not set `not-for-native-image` because the artifact JAR contains JVM `.class` files. I validated the JSON with `jq`.
+Ran agent for org.threeten:threetenbp:1.7.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a/build/agent-artifact-discovery-logs/org.threeten-threetenbp-1.7.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4648-5b01e70a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 7s
+9 actionable tasks: 4 executed, 5 from cache
