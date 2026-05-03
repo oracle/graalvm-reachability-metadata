@@ -29,6 +29,7 @@ import org.jboss.util.Base64;
 import org.jboss.util.Counter;
 import org.jboss.util.HashCode;
 import org.jboss.util.JBossStringBuilder;
+import org.jboss.util.LRUCachePolicy;
 import org.jboss.util.NestedException;
 import org.jboss.util.Primitives;
 import org.jboss.util.Semaphore;
@@ -276,6 +277,45 @@ public class Jboss_common_coreTest {
         assertThat(Files.findRelativePath(tempDir.toString(), target.toString())).endsWith("target file.txt/");
         assertThat(Files.delete(target.toFile())).isTrue();
         assertThat(target).doesNotExist();
+    }
+
+    @Test
+    void lruCachePolicyPromotesAccessedEntriesAndEvictsLeastRecentlyUsedOnes() {
+        LRUCachePolicy cache = new LRUCachePolicy(2, 3);
+        cache.create();
+        try {
+            cache.insert("alpha", "A");
+            cache.insert("bravo", "B");
+            cache.insert("charlie", "C");
+
+            assertThat(cache.size()).isEqualTo(3);
+            assertThat(cache.get("alpha")).isEqualTo("A");
+
+            cache.insert("delta", "D");
+
+            assertThat(cache.size()).isEqualTo(3);
+            assertThat(cache.peek("bravo")).isNull();
+            assertThat(cache.peek("alpha")).isEqualTo("A");
+            assertThat(cache.peek("charlie")).isEqualTo("C");
+            assertThat(cache.peek("delta")).isEqualTo("D");
+
+            cache.peek("charlie");
+            cache.insert("echo", "E");
+
+            assertThat(cache.peek("charlie")).isNull();
+            assertThat(cache.peek("alpha")).isEqualTo("A");
+            assertThat(cache.peek("delta")).isEqualTo("D");
+            assertThat(cache.peek("echo")).isEqualTo("E");
+
+            cache.remove("alpha");
+            assertThat(cache.size()).isEqualTo(2);
+            assertThat(cache.peek("alpha")).isNull();
+
+            cache.flush();
+            assertThat(cache.size()).isZero();
+        } finally {
+            cache.destroy();
+        }
     }
 
     @Test
