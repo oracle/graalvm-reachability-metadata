@@ -16,26 +16,34 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 <table>
   <tr>
     <td width="50%" valign="top">
-      <h3>Check a Library</h3>
-      <p>Search by Maven coordinates and get the right next step for missing or outdated metadata.</p>
-      <p><a href="https://vjovanov.github.io/graalvm-reachability-metadata/"><strong>Open the support checker &rarr;</strong></a></p>
+      <h3>🔎 Check Support First</h3>
+      <p><strong>Use this before opening a ticket.</strong> It checks whether a Maven coordinate is already covered by tested reachability metadata.</p>
+      <pre><code>curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "&lt;groupId&gt;:&lt;artifactId&gt;:&lt;version&gt;"</code></pre>
+      <p>
+        <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><strong>Missing library? Open a new metadata ticket &rarr;</strong></a><br>
+        <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><strong>Missing version or behavior? Open an update ticket &rarr;</strong></a>
+      </p>
     </td>
     <td width="50%" valign="top">
-      <h3>Request New Metadata</h3>
-      <p>Ask automation to add support for a library that is not in this repository yet.</p>
+      <h3>📚 Request New Metadata</h3>
+      <p><strong>Use this when the library is not listed.</strong> Include the full Maven coordinates and the automation will create the support workflow.</p>
+      <p><code>groupId:artifactId:version</code></p>
       <p><a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><strong>Open a library request ticket &rarr;</strong></a></p>
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <h3>Update Existing Metadata</h3>
-      <p>Report a failing version, missing dynamic access, or stale metadata for an already supported library.</p>
+      <h3>🛠️ Update Existing Metadata</h3>
+      <p><strong>Use this when support exists but fails.</strong> Report a failing version, missing dynamic access, stale metadata, or a Native Image runtime issue.</p>
       <p><a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><strong>Open an update ticket &rarr;</strong></a></p>
     </td>
     <td width="50%" valign="top">
-      <h3>Contribute a Fix</h3>
-      <p>File the tracking ticket first, then follow the contribution guide before sending the pull request.</p>
-      <p><a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><strong>Open the tracking ticket &rarr;</strong></a></p>
+      <h3>✅ Contribute a Fix</h3>
+      <p><strong>Use this when you want to send the patch yourself.</strong> Open the tracking ticket first, mark that you want to fix it, then follow the guide.</p>
+      <p>
+        <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><strong>Open the tracking ticket &rarr;</strong></a><br>
+        <a href="docs/CONTRIBUTING.md"><strong>Read the contribution guide &rarr;</strong></a>
+      </p>
     </td>
   </tr>
 </table>
