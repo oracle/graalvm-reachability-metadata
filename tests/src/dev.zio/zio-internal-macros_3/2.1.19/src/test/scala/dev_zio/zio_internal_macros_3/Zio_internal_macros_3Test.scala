@@ -6,6 +6,9 @@
  */
 package dev_zio.zio_internal_macros_3
 
+import java.io.ByteArrayOutputStream
+import java.nio.charset.StandardCharsets
+
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import zio.internal.TerminalRendering
@@ -221,6 +224,24 @@ class Zio_internal_macros_3Test {
       LayerWiringError.Circular("Database.live", "Repository.live")
     )
     assertThat(circular.toString).contains("Circular")
+  }
+
+  @Test
+  def terminalRenderingMainPrintsSampleDiagnostics(): Unit = {
+    val output: ByteArrayOutputStream = new ByteArrayOutputStream()
+
+    Console.withOut(output) {
+      TerminalRendering.main(Array.empty)
+    }
+
+    val rendered: String = output.toString(StandardCharsets.UTF_8)
+    assertThat(rendered).contains("Clock")
+    assertThat(rendered).contains("Database")
+    assertThat(rendered).contains("ZLAYER ERROR")
+    assertThat(rendered).contains("ZLAYER WARNING")
+    assertThat(rendered).contains("Ambiguous layers! I cannot decide which to use")
+    assertThat(rendered).contains("createLayerByName")
+    assertThat(rendered).contains("ZLayer.provide(temp)")
   }
 
   @Test
