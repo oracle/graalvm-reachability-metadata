@@ -158,6 +158,20 @@ public class Endpoints_spiTest {
     }
 
     @Test
+    void putAttributeReplacesExistingValueForEquivalentKey() {
+        EndpointAttributeKey<String> initialSigningRegionKey = new EndpointAttributeKey<>("signingRegion", String.class);
+        EndpointAttributeKey<String> replacementSigningRegionKey = new EndpointAttributeKey<>("signingRegion", String.class);
+
+        Endpoint endpoint = Endpoint.builder()
+                .putAttribute(initialSigningRegionKey, "us-east-1")
+                .putAttribute(replacementSigningRegionKey, "us-west-2")
+                .build();
+
+        assertThat(endpoint.attribute(initialSigningRegionKey)).isEqualTo("us-west-2");
+        assertThat(endpoint.attribute(replacementSigningRegionKey)).isEqualTo("us-west-2");
+    }
+
+    @Test
     void attributesWithSameNameAndDifferentValueTypesDoNotCollide() {
         EndpointAttributeKey<String> stringTimeoutKey = new EndpointAttributeKey<>("timeout", String.class);
         EndpointAttributeKey<Integer> integerTimeoutKey = new EndpointAttributeKey<>("timeout", Integer.class);
