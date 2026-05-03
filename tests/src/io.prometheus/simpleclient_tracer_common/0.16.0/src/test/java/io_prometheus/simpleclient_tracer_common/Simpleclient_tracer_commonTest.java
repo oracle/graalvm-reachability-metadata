@@ -37,6 +37,13 @@ public class Simpleclient_tracer_commonTest {
     }
 
     @Test
+    void unsampledSpanContextIsNotSelectedForExemplarLabels() {
+        SpanContextSupplier supplier = new FixedSpanContextSupplier(TRACE_ID, SPAN_ID, false);
+
+        assertThat(exemplarLabelsFor(supplier)).isEmpty();
+    }
+
+    @Test
     void supplierCanRepresentAbsenceOfCurrentSpan() {
         SpanContextSupplier supplier = new FixedSpanContextSupplier(null, null, false);
 
