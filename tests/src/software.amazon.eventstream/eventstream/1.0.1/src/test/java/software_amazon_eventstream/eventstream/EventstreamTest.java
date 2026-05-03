@@ -171,6 +171,28 @@ public class EventstreamTest {
     }
 
     @Test
+    void decoderAcceptsMessagesLargerThanItsInitialBuffer() {
+        byte[] payload = new byte[2 * 1024 * 1024 + 128];
+        Arrays.fill(payload, (byte) 'a');
+        payload[0] = 1;
+        payload[payload.length - 1] = 2;
+        Message message = new Message(Map.of("name", HeaderValue.fromString("large")), payload);
+        byte[] encoded = readRemaining(message.toByteBuffer());
+        MessageDecoder decoder = new MessageDecoder();
+
+        decoder.feed(encoded, 0, 64);
+        assertThat(decoder.getDecodedMessages()).isEmpty();
+        decoder.feed(encoded, 64, encoded.length - 64);
+
+        List<Message> decodedMessages = decoder.getDecodedMessages();
+        assertThat(decodedMessages).hasSize(1);
+        Message decoded = decodedMessages.get(0);
+        assertThat(decoded.getHeaders()).containsExactlyEntriesOf(message.getHeaders());
+        assertThat(decoded.getPayload()).containsExactly(payload);
+        assertThat(decoder.getDecodedMessages()).isEmpty();
+    }
+
+    @Test
     void decoderCanDispatchToConsumer() {
         Message first = new Message(Map.of("sequence", HeaderValue.fromInteger(1)), new byte[] {1});
         Message second = new Message(Map.of("sequence", HeaderValue.fromInteger(2)), new byte[] {2});
