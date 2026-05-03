@@ -25,6 +25,21 @@ VERSIONS_JSON="${VERSIONS_JSON%"${VERSIONS_JSON##*[!\']}"}"
 readarray -t VERSIONS < <(echo "$VERSIONS_JSON" | jq -r '.[]')
 export DELIMITER="========================================================================================"
 
+echo "$DELIMITER"
+echo " run-consecutive-tests input"
+echo "$DELIMITER"
+echo "Coordinates: $TEST_COORDINATES"
+echo "Raw versions JSON: $VERSIONS_JSON"
+echo "Parsed version count: ${#VERSIONS[@]}"
+if [ "${#VERSIONS[@]}" -gt 0 ]; then
+  printf 'Parsed versions:'
+  printf ' %s' "${VERSIONS[@]}"
+  printf '\n'
+else
+  echo "Parsed versions: <none>"
+fi
+echo "Timeout per Gradle invocation: $TIMEOUT"
+
 run_multiple_attempts() {
   local stage="$1"
   local max_attempts="$2"
@@ -48,8 +63,17 @@ run_multiple_attempts() {
       echo "Re-running stage '$stage' (attempt $((attempt + 1))/$max_attempts)"
     fi
 
+    local started_at
+    local finished_at
+    started_at=$(date +%s)
+    echo "Starting stage '$stage' for $VERSION at $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+    echo "Command: $cmd_str"
+
     timeout --signal=QUIT --kill-after=20s "$TIMEOUT" bash -c "$cmd_str"
     result=$?
+
+    finished_at=$(date +%s)
+    echo "Finished stage '$stage' for $VERSION at $(date -u '+%Y-%m-%dT%H:%M:%SZ') with exit code $result after $((finished_at - started_at))s"
 
     if [ "$result" -eq 0 ]; then
       return 0

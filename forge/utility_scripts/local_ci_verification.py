@@ -262,7 +262,10 @@ def _run_verification_once(
     except _GradleOutputFailure as exc:
         return exc.record
 
-    test_entries = _matrix_entries(changed_metadata_matrix) + _matrix_entries(changed_tested_versions_matrix)
+    test_entries = _merge_test_matrix_entries(
+        _matrix_entries(changed_metadata_matrix),
+        _matrix_entries(changed_tested_versions_matrix),
+    )
     failed = _run_test_matrix_entries(repo_path, test_entries, result)
     if failed is not None:
         return failed
@@ -601,6 +604,47 @@ def _matrix_entries(matrix: dict) -> list[dict]:
     if isinstance(include, list):
         return [entry for entry in include if isinstance(entry, dict)]
     return []
+
+
+def _merge_test_matrix_entries(changed_metadata_entries: list[dict], changed_tested_version_entries: list[dict]) -> list[dict]:
+    """Prefer added tested-version entries over full metadata batches for the same CI environment."""
+    added_version_keys = {_matrix_environment_key(entry) for entry in changed_tested_version_entries}
+    merged: list[dict] = []
+    for entry in changed_metadata_entries:
+        if _matrix_environment_key(entry) in added_version_keys:
+            continue
+        merged.append(entry)
+    merged.extend(changed_tested_version_entries)
+    return _deduplicate_test_matrix_entries(merged)
+
+
+def _matrix_environment_key(entry: dict) -> tuple[str, str, str, str]:
+    return (
+        str(entry.get("coordinates") or ""),
+        str(entry.get("version") or ""),
+        str(entry.get("os") or ""),
+        str(entry.get("nativeImageMode") or ""),
+    )
+
+
+def _deduplicate_test_matrix_entries(entries: list[dict]) -> list[dict]:
+    seen: set[tuple[str, tuple[str, ...], str, str, str]] = set()
+    deduplicated: list[dict] = []
+    for entry in entries:
+        versions = entry.get("versions")
+        version_tuple = tuple(str(version) for version in versions) if isinstance(versions, list) else ()
+        key = (
+            str(entry.get("coordinates") or ""),
+            version_tuple,
+            str(entry.get("version") or ""),
+            str(entry.get("os") or ""),
+            str(entry.get("nativeImageMode") or ""),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        deduplicated.append(entry)
+    return deduplicated
 
 
 def _matrix_env(entry: dict) -> dict[str, str]:

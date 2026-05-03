@@ -476,6 +476,42 @@ List<Map<String, Object>> expandChangedTestedVersionsMatrix(List<Map<String, Obj
     include
 }
 
+List<Map<String, Object>> flattenChangedTestedVersionEntries(List<Map<String, Object>> entries) {
+    List<Map<String, Object>> flattened = []
+    entries.each { Map<String, Object> entry ->
+        if (entry.containsKey("entries")) {
+            flattened.addAll(entry["entries"] as List<Map<String, Object>>)
+        } else {
+            flattened.add(entry)
+        }
+    }
+    flattened
+}
+
+List<Map<String, Object>> changedMetadataTestEntries(
+        String base,
+        String head,
+        int versionsPerJob,
+        List<String> changedCoordinates
+) {
+    List<Map<String, Object>> addedVersionEntries = flattenChangedTestedVersionEntries(tck.diffIndexTestedVersions(base, head))
+    Set<String> addedVersionCoordinates = addedVersionEntries
+            .collect { it["coordinates"].toString() }
+            .toSet()
+    List<Map<String, Object>> entries = []
+    entries.addAll(addedVersionEntries.collect { Map<String, Object> entry ->
+        [
+                "coordinates": entry["coordinates"],
+                "versions"   : entry["versions"],
+                "batch"      : "added"
+        ]
+    })
+    entries.addAll(changedCoordinates
+            .findAll { coordinate -> !addedVersionCoordinates.contains(coordinate) }
+            .collectMany { coordinate -> tck.testedVersionBatches(coordinate, versionsPerJob) })
+    entries
+}
+
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with all matching coordinates")
@@ -571,16 +607,20 @@ Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChang
         }
 
         int versionsPerJob = versionsPerJobFor("generateChangedMetadataTestMatrix")
-        boolean noneFound = diffCoordinates.isEmpty()
+        String base = project.property("baseCommit")
+        String head = project.findProperty("newCommit") ?: "HEAD"
+        List<Map<String, Object>> testEntries = changedMetadataTestEntries(base, head, versionsPerJob, diffCoordinates)
+        boolean noneFound = testEntries.isEmpty()
         List<Map<String, Object>> include = noneFound
                 ? []
-                : expandMatrixEntries(
-                        diffCoordinates.collectMany { coordinate -> tck.testedVersionBatches(coordinate, versionsPerJob) },
-                        "generateChangedMetadataTestMatrix"
-                )
+                : expandMatrixEntries(testEntries, "generateChangedMetadataTestMatrix")
         def matrix = [include: include]
         if (noneFound) {
-            println "No changed coordinates were found!"
+            println "No changed metadata test entries were found!"
+        }
+        println "Changed metadata test entries:"
+        testEntries.each { entry ->
+            println " - ${entry["coordinates"]}: ${(entry["versions"] as List<?>).join(", ")}"
         }
 
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
