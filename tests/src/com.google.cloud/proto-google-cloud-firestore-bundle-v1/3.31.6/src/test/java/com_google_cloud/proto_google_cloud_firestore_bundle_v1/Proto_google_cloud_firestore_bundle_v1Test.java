@@ -186,6 +186,30 @@ public class Proto_google_cloud_firestore_bundle_v1Test {
     }
 
     @Test
+    void bundledQueryPreservesUnrecognizedLimitTypeValues() throws Exception {
+        StructuredQuery structuredQuery = StructuredQuery.newBuilder()
+                .addFrom(StructuredQuery.CollectionSelector.newBuilder().setCollectionId("cities"))
+                .build();
+        BundledQuery bundledQuery = BundledQuery.newBuilder()
+                .setParent(PARENT)
+                .setStructuredQuery(structuredQuery)
+                .setLimitTypeValue(99)
+                .build();
+
+        BundledQuery parsed = BundledQuery.parseFrom(bundledQuery.toByteArray());
+        BundledQuery normalized = parsed.toBuilder()
+                .setLimitType(BundledQuery.LimitType.FIRST)
+                .build();
+
+        assertThat(parsed.getLimitTypeValue()).isEqualTo(99);
+        assertThat(parsed.getLimitType()).isEqualTo(BundledQuery.LimitType.UNRECOGNIZED);
+        assertThat(parsed.getQueryTypeCase()).isEqualTo(BundledQuery.QueryTypeCase.STRUCTURED_QUERY);
+        assertThat(parsed.getStructuredQuery().getFrom(0).getCollectionId()).isEqualTo("cities");
+        assertThat(normalized.getLimitTypeValue()).isEqualTo(BundledQuery.LimitType.FIRST.getNumber());
+        assertThat(normalized.getLimitType()).isEqualTo(BundledQuery.LimitType.FIRST);
+    }
+
+    @Test
     void bundledDocumentMetadataKeepsRepeatedQueryMembership() throws Exception {
         BundledDocumentMetadata documentMetadata = BundledDocumentMetadata.newBuilder()
                 .setName(DOCUMENT_NAME)
