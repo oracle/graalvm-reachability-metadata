@@ -11,7 +11,10 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.jboss:jboss-common-core:$libraryVersion"
+    testImplementation("org.jboss:jboss-common-core:$libraryVersion") {
+        transitive = false
+    }
+    testImplementation 'org.jboss.logging:jboss-logging:3.5.0.Final'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
