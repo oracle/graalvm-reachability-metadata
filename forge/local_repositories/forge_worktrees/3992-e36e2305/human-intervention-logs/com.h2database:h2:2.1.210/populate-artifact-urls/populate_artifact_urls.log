@@ -1,0 +1,275 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019defb7-745c-7760-b307-20c59e66df88
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.h2database:h2:2.1.210
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.1.210" when "$version$" is replaced with "2.1.210".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305/metadata/com.h2database/h2/index.json
+- Entry selector: "metadata-version" = "2.1.210"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "2.1.210".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "2.1.210".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "2.1.210".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "2.1.210" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-sources.jar
+- repository-url: https://github.com/h2database/h2database
+- test-code-url: https://github.com/h2database/h2database/tree/version-$version$/h2/src/test
+- documentation-url: https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-javadoc.jar
+- description: H2 is a Java SQL relational database that can run embedded in an application or as a server-based database. It provides JDBC support and offers both disk-based and in-memory storage options.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.1.210
+- Entry metadata-version: 2.1.210
+- Entry test-version: 2.1.210
+codex
+I’ll inspect the existing entry and verify the rendered versioned URLs before deciding whether the JSON actually needs an edit.
+exec
+/usr/bin/zsh -lc "rg -n '\"metadata-version\": \"2\\.1\\.210\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/com.h2database/h2/index.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+ succeeded in 0ms:
+5:    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/h2database/h2database",
+7:    "test-code-url" : "https://github.com/h2database/h2database/tree/version-$version$/h2/src/test",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-javadoc.jar",
+9:    "description" : "H2 is a Java SQL relational database that can run embedded in an application or as a server-based database. It provides JDBC support and offers both disk-based and in-memory storage options.",
+
+exec
+/usr/bin/zsh -lc 'git status --short' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+ succeeded in 210ms:
+?? tests/src/com.h2database/h2/2.1.210/.baseline-stats.json
+
+codex
+The target entry already has non-blank URL and description fields, and `language` is absent. I’m checking whether those URL templates render correctly for `2.1.210`, because the request treats stale versioned URLs as needing maintenance.
+web search: 
+web search: H2 Database Engine Maven com.h2database h2 2.1.210 sources javadoc
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://github.com/h2database/h2database/tree/version-2.1.210/h2/src/test' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-sources.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+exec
+/usr/bin/zsh -lc 'curl -fsSI https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-javadoc.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+exec
+/usr/bin/zsh -lc 'curl -fsS https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+ succeeded in 103ms:
+e="h2-2.1.210.jar.asc.sha1">h2-2.1.210.jar.asc.sha1</a>                           2022-01-17 16:18        40      
+<a href="h2-2.1.210.jar.asc.sha256" title="h2-2.1.210.jar.asc.sha256">h2-2.1.210.jar.asc.sha256</a>                         2022-01-17 16:18        64      
+<a href="h2-2.1.210.jar.asc.sha512" title="h2-2.1.210.jar.asc.sha512">h2-2.1.210.jar.asc.sha512</a>                         2022-01-17 16:18       128      
+<a href="h2-2.1.210.jar.md5" title="h2-2.1.210.jar.md5">h2-2.1.210.jar.md5</a>                                2022-01-17 16:18        32      
+<a href="h2-2.1.210.jar.sha1" title="h2-2.1.210.jar.sha1">h2-2.1.210.jar.sha1</a>                               2022-01-17 16:18        40      
+<a href="h2-2.1.210.jar.sha256" title="h2-2.1.210.jar.sha256">h2-2.1.210.jar.sha256</a>                             2022-01-17 16:18        64      
+<a href="h2-2.1.210.jar.sha512" title="h2-2.1.210.jar.sha512">h2-2.1.210.jar.sha512</a>                             2022-01-17 16:18       128      
+<a href="h2-2.1.210.pom" title="h2-2.1.210.pom">h2-2.1.210.pom</a>                                    2022-01-17 16:18      1132      
+<a href="h2-2.1.210.pom.asc" title="h2-2.1.210.pom.asc">h2-2.1.210.pom.asc</a>                                2022-01-17 16:18       914      
+<a href="h2-2.1.210.pom.asc.md5" title="h2-2.1.210.pom.asc.md5">h2-2.1.210.pom.asc.md5</a>                            2022-01-17 16:18        32      
+<a href="h2-2.1.210.pom.asc.sha1" title="h2-2.1.210.pom.asc.sha1">h2-2.1.210.pom.asc.sha1</a>                           2022-01-17 16:18        40      
+<a href="h2-2.1.210.pom.asc.sha256" title="h2-2.1.210.pom.asc.sha256">h2-2.1.210.pom.asc.sha256</a>                         2022-01-17 16:18        64      
+<a href="h2-2.1.210.pom.asc.sha512" title="h2-2.1.210.pom.asc.sha512">h2-2.1.210.pom.asc.sha512</a>                         2022-01-17 16:18       128      
+<a href="h2-2.1.210.pom.md5" title="h2-2.1.210.pom.md5">h2-2.1.210.pom.md5</a>                                2022-01-17 16:18        32      
+<a href="h2-2.1.210.pom.sha1" title="h2-2.1.210.pom.sha1">h2-2.1.210.pom.sha1</a>                               2022-01-17 16:18        40      
+<a href="h2-2.1.210.pom.sha256" title="h2-2.1.210.pom.sha256">h2-2.1.210.pom.sha256</a>                             2022-01-17 16:18        64      
+<a href="h2-2.1.210.pom.sha512" title="h2-2.1.210.pom.sha512">h2-2.1.210.pom.sha512</a>                             2022-01-17 16:18       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 123ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:21:31 GMT
+content-type: application/java-archive
+content-length: 3616854
+cf-ray: 9f6250dd5e2c076b-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 99490
+etag: "b26845f6ceea408bc5a28021aadf4c7e"
+last-modified: Mon, 17 Jan 2022 16:18:52 GMT
+x-checksum-md5: b26845f6ceea408bc5a28021aadf4c7e
+x-checksum-sha1: c10daf02be9c0f440560c6202633baef8c3ea87c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 152ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:21:31 GMT
+content-type: application/java-archive
+content-length: 1702913
+cf-ray: 9f6250dd7e57c687-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1230129
+etag: "df6e6853a95d48809c0fcc9f5af2bf60"
+last-modified: Mon, 17 Jan 2022 16:18:52 GMT
+x-checksum-md5: df6e6853a95d48809c0fcc9f5af2bf60
+x-checksum-sha1: f6f343b10bcadb43a41ef289307ed33dff413438
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 655ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 21:21:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"bc9283bb8e10188754dc757ace63d44d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=%2BcbqzMY%2FkChDwcl6ieO%2FCMNAHaW8WCWTKHsHpDABiM%2F%2F1QoW8jzqsyGEaicDuyMIWTbSSdN5KfNtvEQSApDUmHNEOKIkbWtnjywyP1NQSkPKhhb3Ng8ZYzxE9UgrNLay4dLD1mqeoqoNYTbi0Ebiem7I7B%2F%2Bl18x1ycoTOMboVGsjo0bDSRWqAPENt5cIobW6lgXYAW%2BBWqNiHnPcpmaPedJ8tO%2BeyDacyTsDglJGsqHhcTpvIPunxHNJMtS2OnyspH2tGP3UxsXkO%2FoejXRtA%3D%3D--4c%2FbU%2B3A%2BDaeOJFl--VQjAhWaP4oP%2FVwHcprDi%2BA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.410772587.1777843291; expires=Mon, 03 May 2027 21:21:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 21:21:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 19A4:95F34:64D2B0:4D1F7B:69F7BC5B
+
+
+web search: 
+web search: 
+web search: 
+web search: H2 Database Engine Maven com.h2database h2 2.1.210 sources javadoc
+codex
+The Maven directory contains source and Javadoc jars for `2.1.210`, and I don’t see a Maven test artifact in that version directory. The GitHub test path for tag `version-2.1.210` also returns successfully, so the existing test URL template is the right fallback.
+exec
+/usr/bin/zsh -lc "jq '.[] | select(.\"metadata-version\" == \"2.1.210\")' metadata/com.h2database/h2/index.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "2.1.210",
+  "source-code-url": "https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-sources.jar",
+  "repository-url": "https://github.com/h2database/h2database",
+  "test-code-url": "https://github.com/h2database/h2database/tree/version-$version$/h2/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-javadoc.jar",
+  "description": "H2 is a Java SQL relational database that can run embedded in an application or as a server-based database. It provides JDBC support and offers both disk-based and in-memory storage options.",
+  "tested-versions": [
+    "2.1.210",
+    "2.1.212",
+    "2.1.214",
+    "2.2.220",
+    "2.2.222",
+    "2.2.224",
+    "2.3.230",
+    "2.3.232",
+    "2.4.240"
+  ],
+  "allowed-packages": [
+    "org.h2"
+  ]
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- metadata/com.h2database/h2/index.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'git ls-remote --tags https://github.com/h2database/h2database.git refs/tags/version-2.1.210' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305
+ succeeded in 489ms:
+ca926f8b646aa3dd3da5f7a81bbee055b19a8d6a	refs/tags/version-2.1.210
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/
+codex
+Verified the entry in [index.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305/metadata/com.h2database/h2/index.json:1). No edit was needed: all requested URL and description fields are already non-blank, render correctly for `2.1.210`, and H2 is not Kotlin/Groovy/Scala-specific, so `language` should remain absent. Maven Central has the versioned `sources.jar` and `javadoc.jar`, and the GitHub `version-2.1.210` test path renders successfully. ([repo1.maven.org](https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/))
+
+Selected values:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-sources.jar",
+  "repository-url": "https://github.com/h2database/h2database",
+  "test-code-url": "https://github.com/h2database/h2database/tree/version-$version$/h2/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-javadoc.jar",
+  "description": "H2 is a Java SQL relational database that can run embedded in an application or as a server-based database. It provides JDBC support and offers both disk-based and in-memory storage options."
+}
+```
+
+Validation performed: `jq` parsed the target entry, `curl -I` returned `200` for rendered source, Javadoc, and test URLs, and `git diff -- metadata/com.h2database/h2/index.json` is empty. I did not touch the unrelated untracked `.baseline-stats.json` file.
+2026-05-03T21:21:58.301255Z ERROR codex_core::session: failed to record rollout items: thread 019defb7-745c-7760-b307-20c59e66df88 not found
+tokens used
+30,136
+Verified the entry in [index.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305/metadata/com.h2database/h2/index.json:1). No edit was needed: all requested URL and description fields are already non-blank, render correctly for `2.1.210`, and H2 is not Kotlin/Groovy/Scala-specific, so `language` should remain absent. Maven Central has the versioned `sources.jar` and `javadoc.jar`, and the GitHub `version-2.1.210` test path renders successfully. ([repo1.maven.org](https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/))
+
+Selected values:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-sources.jar",
+  "repository-url": "https://github.com/h2database/h2database",
+  "test-code-url": "https://github.com/h2database/h2database/tree/version-$version$/h2/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/h2database/h2/$version$/h2-$version$-javadoc.jar",
+  "description": "H2 is a Java SQL relational database that can run embedded in an application or as a server-based database. It provides JDBC support and offers both disk-based and in-memory storage options."
+}
+```
+
+Validation performed: `jq` parsed the target entry, `curl -I` returned `200` for rendered source, Javadoc, and test URLs, and `git diff -- metadata/com.h2database/h2/index.json` is empty. I did not touch the unrelated untracked `.baseline-stats.json` file.
+Ran agent for com.h2database:h2:2.1.210 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305/build/agent-url-discovery-logs/com.h2database-h2-2.1.210.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-e36e2305/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 56s
+9 actionable tasks: 4 executed, 5 from cache
