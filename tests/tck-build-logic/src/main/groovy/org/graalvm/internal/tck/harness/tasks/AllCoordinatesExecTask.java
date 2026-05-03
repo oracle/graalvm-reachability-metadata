@@ -178,6 +178,7 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         if (nativeImageMode != null) {
             env.put("GVM_TCK_NATIVE_IMAGE_MODE", nativeImageMode);
         }
+        env.put("GRADLE_OPTS", appendGradleOpt(System.getenv("GRADLE_OPTS"), "-Dorg.gradle.daemon=false"));
         env.put("GVM_TCK_MD", metadataDir.toAbsolutePath().toString());
         env.put("GVM_TCK_TCKDIR", tckExtension.getTckRoot().get().getAsFile().toPath().toAbsolutePath().toString());
 
@@ -191,6 +192,16 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
 
     protected boolean streamSubprocessOutput(String coordinates) {
         return true;
+    }
+
+    private static String appendGradleOpt(String existingValue, String option) {
+        if (existingValue == null || existingValue.isBlank()) {
+            return option;
+        }
+        if (existingValue.contains(option)) {
+            return existingValue;
+        }
+        return existingValue + " " + option;
     }
 
     private static String md5(String s) {
