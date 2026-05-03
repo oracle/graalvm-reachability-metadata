@@ -1,0 +1,970 @@
+Starting a Gradle Daemon, 8 busy and 6 incompatible and 177 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019decec-768f-7120-a7c6-7e27a70ba677
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.arrow:arrow-memory-core:7.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "7.0.0" when "$version$" is replaced with "7.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+- Set "coordinates" to "org.apache.arrow:arrow-memory-core:7.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "7.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata format first, then verify the Apache Arrow artifact URLs against Maven/Apache sources before editing the JSON.
+exec
+/usr/bin/bash -lc "if [ -f build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json ]; then sed -n '1,200p' build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json; fi" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|repository-url' build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.apache.arrow arrow-memory-core 7.0.0 sources jar tests jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.arrow/arrow-memory-core
+codex
+The target file only has `coordinates` today. I found the artifact’s Maven Central entry and the Arrow 7.0.0 docs/release pages; next I’m checking whether Maven published both sources and tests for this exact version so those can be used preferentially.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
+  language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>arrow-memory</artifactId>
+    <groupId>org.apache.arrow</groupId>
+    <version>7.0.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>arrow-memory-core</artifactId>
+
+  <name>Arrow Memory - Core</name>
+  <description>Core off-heap memory management libraries for Arrow ValueVectors.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 116ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 08:20:29 GMT
+content-type: application/java-archive
+content-length: 32416
+cf-ray: 9f5dd8c48f98dc8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 105191
+etag: "f133e895c6285139f0055e40e76390b8"
+last-modified: Sat, 29 Jan 2022 09:12:28 GMT
+x-checksum-md5: f133e895c6285139f0055e40e76390b8
+x-checksum-sha1: 84e52c616acb3975a8cb2a901f65b06627857a79
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 294ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/arrow/arrow-memory-core/7.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/arrow/arrow-memory-core/7.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="arrow-memory-core-7.0.0-javadoc.jar" title="arrow-memory-core-7.0.0-javadoc.jar">arrow-memory-core-7.0.0-javadoc.jar</a>               2022-01-29 09:12    312326      
+<a href="arrow-memory-core-7.0.0-javadoc.jar.asc" title="arrow-memory-core-7.0.0-javadoc.jar.asc">arrow-memory-core-7.0.0-javadoc.jar.asc</a>           2022-01-29 09:12       566      
+<a href="arrow-memory-core-7.0.0-javadoc.jar.md5" title="arrow-memory-core-7.0.0-javadoc.jar.md5">arrow-memory-core-7.0.0-javadoc.jar.md5</a>           2022-01-29 09:12        32      
+<a href="arrow-memory-core-7.0.0-javadoc.jar.sha1" title="arrow-memory-core-7.0.0-javadoc.jar.sha1">arrow-memory-core-7.0.0-javadoc.jar.sha1</a>          2022-01-29 09:12        40      
+<a href="arrow-memory-core-7.0.0-sources.jar" title="arrow-memory-core-7.0.0-sources.jar">arrow-memory-core-7.0.0-sources.jar</a>               2022-01-29 09:12    100948      
+<a href="arrow-memory-core-7.0.0-sources.jar.asc" title="arrow-memory-core-7.0.0-sources.jar.asc">arrow-memory-core-7.0.0-sources.jar.asc</a>           2022-01-29 09:12       566      
+<a href="arrow-memory-core-7.0.0-sources.jar.md5" title="arrow-memory-core-7.0.0-sources.jar.md5">arrow-memory-core-7.0.0-sources.jar.md5</a>           2022-01-29 09:12        32      
+<a href="arrow-memory-core-7.0.0-sources.jar.sha1" title="arrow-memory-core-7.0.0-sources.jar.sha1">arrow-memory-core-7.0.0-sources.jar.sha1</a>          2022-01-29 09:12        40      
+<a href="arrow-memory-core-7.0.0-tests.jar" title="arrow-memory-core-7.0.0-tests.jar">arrow-memory-core-7.0.0-tests.jar</a>                 2022-01-29 09:12     32416      
+<a href="arrow-memory-core-7.0.0-tests.jar.asc" title="arrow-memory-core-7.0.0-tests.jar.asc">arrow-memory-core-7.0.0-tests.jar.asc</a>             2022-01-29 09:12       566      
+<a href="arrow-memory-core-7.0.0-tests.jar.md5" title="arrow-memory-core-7.0.0-tests.jar.md5">arrow-memory-core-7.0.0-tests.jar.md5</a>             2022-01-29 09:12        32      
+<a href="arrow-memory-core-7.0.0-tests.jar.sha1" title="arrow-memory-core-7.0.0-tests.jar.sha1">arrow-memory-core-7.0.0-tests.jar.sha1</a>            2022-01-29 09:12        40      
+<a href="arrow-memory-core-7.0.0.jar" title="arrow-memory-core-7.0.0.jar">arrow-memory-core-7.0.0.jar</a>                       2022-01-29 09:12    108076      
+<a href="arrow-memory-core-7.0.0.jar.asc" title="arrow-memory-core-7.0.0.jar.asc">arrow-memory-core-7.0.0.jar.asc</a>                   2022-01-29 09:12       566      
+<a href="arrow-memory-core-7.0.0.jar.md5" title="arrow-memory-core-7.0.0.jar.md5">arrow-memory-core-7.0.0.jar.md5</a>                   2022-01-29 09:12        32      
+<a href="arrow-memory-core-7.0.0.jar.sha1" title="arrow-memory-core-7.0.0.jar.sha1">arrow-memory-core-7.0.0.jar.sha1</a>                  2022-01-29 09:12        40      
+<a href="arrow-memory-core-7.0.0.pom" title="arrow-memory-core-7.0.0.pom">arrow-memory-core-7.0.0.pom</a>                       2022-01-29 09:12      1760      
+<a href="arrow-memory-core-7.0.0.pom.asc" title="arrow-memory-core-7.0.0.pom.asc">arrow-memory-core-7.0.0.pom.asc</a>                   2022-01-29 09:12       566      
+<a href="arrow-memory-core-7.0.0.pom.md5" title="arrow-memory-core-7.0.0.pom.md5">arrow-memory-core-7.0.0.pom.md5</a>                   2022-01-29 09:12        32      
+<a href="arrow-memory-core-7.0.0.pom.sha1" title="arrow-memory-core-7.0.0.pom.sha1">arrow-memory-core-7.0.0.pom.sha1</a>                  2022-01-29 09:12        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory/7.0.0/arrow-memory-7.0.0.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
+  language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.arrow</groupId>
+    <artifactId>arrow-java-root</artifactId>
+    <version>7.0.0</version>
+  </parent>
+  <artifactId>arrow-memory</artifactId>
+  <name>Arrow Memory</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>memory-core</module>
+    <module>memory-unsafe</module>
+    <module>memory-netty</module>
+  </modules>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-java-root/7.0.0/arrow-java-root-7.0.0.pom | sed -n '1,320p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
+  language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>18</version>
+  </parent>
+
+  <groupId>org.apache.arrow</groupId>
+  <artifactId>arrow-java-root</artifactId>
+  <version>7.0.0</version>
+  <packaging>pom</packaging>
+
+  <name>Apache Arrow Java Root POM</name>
+  <description>Apache Arrow is open source, in-memory columnar data structures and low-overhead messaging</description>
+  <url>https://arrow.apache.org/</url>
+
+  <properties>
+    <target.gen.source.path>${project.build.directory}/generated-sources</target.gen.source.path>
+    <dep.junit.platform.version>1.4.0</dep.junit.platform.version>
+    <dep.junit.jupiter.version>5.4.0</dep.junit.jupiter.version>
+    <dep.slf4j.version>1.7.25</dep.slf4j.version>
+    <dep.guava.version>30.1.1-jre</dep.guava.version>
+    <dep.netty.version>4.1.68.Final</dep.netty.version>
+    <dep.jackson.version>2.11.4</dep.jackson.version>
+    <dep.hadoop.version>2.7.1</dep.hadoop.version>
+    <dep.fbs.version>1.12.0</dep.fbs.version>
+    <dep.avro.version>1.10.0</dep.avro.version>
+    <arrow.vector.classifier />
+    <forkCount>2</forkCount>
+    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+    <errorprone.javac.version>9+181-r4173-1</errorprone.javac.version>
+  </properties>
+
+  <scm>
+    <connection>scm:git:https://github.com/apache/arrow.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/arrow.git</developerConnection>
+    <url>https://github.com/apache/arrow</url>
+    <tag>apache-arrow-2.0.0</tag>
+  </scm>
+
+  <mailingLists>
+    <mailingList>
+      <name>Developer List</name>
+      <subscribe>dev-subscribe@arrow.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@arrow.apache.org</unsubscribe>
+      <post>dev@arrow.apache.org</post>
+      <archive>https://mail-archives.apache.org/mod_mbox/arrow-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Commits List</name>
+      <subscribe>commits-subscribe@arrow.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@arrow.apache.org</unsubscribe>
+      <post>commits@arrow.apache.org</post>
+      <archive>https://mail-archives.apache.org/mod_mbox/arrow-commits/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Issues List</name>
+      <subscribe>issues-subscribe@arrow.apache.org</subscribe>
+      <unsubscribe>issues-unsubscribe@arrow.apache.org</unsubscribe>
+      <archive>https://mail-archives.apache.org/mod_mbox/arrow-issues/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <repositories>
+
+  </repositories>
+
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://issues.apache.org/jira/browse/arrow</url>
+  </issueManagement>
+
+  <build>
+    <extensions>
+      <!-- provides os.detected.classifier (i.e. linux-x86_64, osx-x86_64) property -->
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.5.0.Final</version>
+      </extension>
+    </extensions>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rat-checks</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludeSubProjects>false</excludeSubProjects>
+          <excludes>
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+            <exclude>**/*.log</exclude>
+            <exclude>**/*.css</exclude>
+            <exclude>**/*.js</exclude>
+            <exclude>**/*.md</exclude>
+            <exclude>**/*.eps</exclude>
+            <exclude>**/*.json</exclude>
+            <exclude>**/*.seq</exclude>
+            <exclude>**/*.parquet</exclude>
+            <exclude>**/*.sql</exclude>
+            <exclude>**/git.properties</exclude>
+            <exclude>**/*.csv</exclude>
+            <exclude>**/*.csvh</exclude>
+            <exclude>**/*.csvh-test</exclude>
+            <exclude>**/*.tsv</exclude>
+            <exclude>**/*.txt</exclude>
+            <exclude>**/*.ssv</exclude>
+            <exclude>**/arrow-*.conf</exclude>
+            <exclude>**/.buildpath</exclude>
+            <exclude>**/*.proto</exclude>
+            <exclude>**/*.fmpp</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>**/*.tdd</exclude>
+            <exclude>**/*.project</exclude>
+            <exclude>**/TAGS</exclude>
+            <exclude>**/*.checkstyle</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.factorypath</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>.*/**</exclude>
+            <exclude>**/*.patch</exclude>
+            <exclude>**/*.pb.cc</exclude>
+            <exclude>**/*.pb.h</exclude>
+            <exclude>**/*.linux</exclude>
+            <exclude>**/client/build/**</exclude>
+            <exclude>**/*.tbl</exclude>
+            <exclude>**/*.iml</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/logging.properties</exclude>
+            <exclude>**/logback-test.xml</exclude>
+            <exclude>**/logback.out.xml</exclude>
+            <exclude>**/logback.xml</exclude>
+          </excludes>
+          <archive>
+            <index>true</index>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+            <manifestEntries>
+              <Extension-Name>org.apache.arrow</Extension-Name>
+              <Built-By>${username}</Built-By>
+              <url>https://arrow.apache.org/</url>
+            </manifestEntries>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <skipIfEmpty>true</skipIfEmpty>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <maxmem>2048m</maxmem>
+          <useIncrementalCompilation>false</useIncrementalCompilation>
+          <fork>true</fork>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>validate_java_and_maven_version</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.3.0,4)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>avoid_bad_dependencies</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <exclude>commons-logging</exclude>
+                    <exclude>javax.servlet:servlet-api</exclude>
+                    <exclude>org.mortbay.jetty:servlet-api</exclude>
+                    <exclude>org.mortbay.jetty:servlet-api-2.5</exclude>
+                    <exclude>log4j:log4j</exclude>
+                  </excludes>
+                </bannedDependencies>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <version>2.2.2</version>
+        <executions>
+          <execution>
+            <id>for-jars</id>
+            <inherited>true</inherited>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+            <configuration>
+              <generateGitPropertiesFilename>target/classes/git.properties</generateGitPropertiesFilename>
+            </configuration>
+          </execution>
+          <execution>
+            <id>for-source-tarball</id>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <generateGitPropertiesFilename>./git.properties</generateGitPropertiesFilename>
+            </configuration>
+          </execution>
+        </executions>
+
+        <configuration>
+          <dateFormat>dd.MM.yyyy '@' HH:mm:ss z</dateFormat>
+          <verbose>false</verbose>
+          <skipPoms>false</skipPoms>
+          <generateGitPropertiesFile>true</generateGitPropertiesFile>
+          <failOnNoGitDirectory>false</failOnNoGitDirectory>
+          <gitDescribe>
+            <skip>false</skip>
+            <always>false</always>
+            <abbrev>7</abbrev>
+            <dirty>-dirty</dirty>
+            <forceLongFormat>true</forceLongFormat>
+          </gitDescribe>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.1.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>8.19</version>
+          </dependency>
+          <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${dep.guava.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>jcl-over-slf4j</artifactId>
+              <version>1.7.5</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/7.0.0/arrow-format-7.0.0.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor
+  license agreements. See the NOTICE file distributed with this work for additional
+  information regarding copyright ownership. The ASF licenses this file to
+  You under the Apache License, Version 2.0 (the "License"); you may not use
+  this file except in compliance with the License. You may obtain a copy of
+  the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+  by applicable law or agreed to in writing, software distributed under the
+  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+  OF ANY KIND, either express or implied. See the License for the specific
+  language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+
+<parent>
+  <artifactId>arrow-java-root</artifactId>
+  <groupId>org.apache.arrow</groupId>
+  <version>7.0.0</version>
+</parent>
+
+<artifactId>arrow-format</artifactId>
+<packaging>jar</packaging>
+<name>Arrow Format</name>
+<description>Generated Java files from the IPC Flatbuffer definitions.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.flatbuffers</groupId>
+      <artifactId>flatbuffers-java</artifactId>
+    </dependency>
+  </dependencies>
+
+ <build>
+
+  <plugins>
+    <plugin> <!-- no checkstyle on the generated code -->
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-checkstyle-plugin</artifactId>
+      <configuration>
+        <skip>true</skip>
+      </configuration>
+    </plugin>
+  </plugins>
+
+</build>
+</project>
+
+exec
+/usr/bin/bash -lc "rg 'repo.maven.apache.org.*/.*-sources.jar|repo1.maven.org.*/.*-sources.jar' -g '*.json' . | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+exec
+/usr/bin/bash -lc "rg 'documentation-url' -g '*.json' . | head -60" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+./metadata/org.mortbay.jetty/servlet-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/javax.validation/validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+./metadata/javax.validation/validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+./metadata/javax.validation/validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+./metadata/javax.el/javax.el-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+./metadata/org.lz4/lz4-java/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+./metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+./metadata/com.google.errorprone/error_prone_annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-sources.jar",
+./metadata/com.google.errorprone/error_prone_annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.4.0/error_prone_annotations-2.4.0-sources.jar",
+./metadata/com.google.errorprone/error_prone_annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-sources.jar",
+./metadata/com.google.errorprone/error_prone_annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-sources.jar",
+./metadata/javax.el/el-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+./metadata/com.android.databinding/baseLibrary/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+./metadata/com.android.databinding/baseLibrary/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+./metadata/org.fusesource.jansi/jansi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+./metadata/org.fusesource.jansi/jansi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+./metadata/org.fusesource.jansi/jansi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+./metadata/org.apache.ant/ant-antlr/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/ant/ant-antlr/$version$/ant-antlr-$version$-sources.jar",
+./metadata/org.hibernate.models/hibernate-models/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-sources.jar",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/$version$/duct-tape-$version$-sources.jar",
+./metadata/com.github.mwiede/jsch/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+./metadata/ch.qos.cal10n/cal10n-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+./metadata/org.glassfish.hk2.external/javax.inject/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/$version$/javax.inject-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+./metadata/org.glassfish.hk2.external/jakarta.inject/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/hk2/external/jakarta.inject/$version$/jakarta.inject-$version$-sources.jar",
+./metadata/org.json/json/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/json/json/$version$/json-$version$-sources.jar",
+
+ succeeded in 0ms:
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+./metadata/javax.activation/activation/index.json:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.apache.arrow/arrow-format/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+./metadata/org.javamoney.moneta/moneta-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+./metadata/dev.failsafe/failsafe/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/dev/failsafe/failsafe/$version$/failsafe-$version$-javadoc.jar",
+./metadata/nekohtml/xercesMinimal/index.json:    "documentation-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/branches/nekohtml-$version$/doc/index.html",
+./metadata/org.aspectj/aspectjweaver/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-javadoc.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "documentation-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "documentation-url" : "N/A",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-javadoc.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-javadoc.jar",
+./metadata/org.junit.platform/junit-platform-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-javadoc.jar",
+./metadata/org.junit.platform/junit-platform-commons/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-javadoc.jar",
+./metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/tunnelvisionlabs/antlr4-annotations/$version$/antlr4-annotations-$version$-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/$version$/google-auth-library-credentials-$version$-javadoc.jar",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "documentation-url" : "https://github.com/google/closure-library/blob/f04e4c0e/README.md",
+./metadata/org.clojure/google-closure-library-third-party/index.json:    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+./metadata/org.postgresql/postgresql/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+./metadata/javax.servlet/servlet-api/index.json:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
+./metadata/javax.servlet/servlet-api/index.json:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/servlet-$version$-fr-spec-oth-JSpec/servlet-2_4-fr-spec.pdf",
+./metadata/javax.servlet/servlet-api/index.json:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7840-servlet-$version$-spec-oth-JSpec/servlet-2_3-fcs-spec.pdf",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-javadoc.jar",
+./metadata/com.android.tools/annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/$version$/annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/$version$/aether-util-$version$-javadoc.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/$version$/aether-api-$version$-javadoc.jar",
+./metadata/org.eclipse.aether/aether-spi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/$version$/aether-spi-$version$-javadoc.jar",
+./metadata/org.eclipse.aether/aether-impl/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/$version$/spotbugs-annotations-$version$-javadoc.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/$version$/stax2-api-$version$-javadoc.jar",
+./metadata/backport-util-concurrent/backport-util-concurrent/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/backport-util-concurrent/backport-util-concurrent/$version$/backport-util-concurrent-$version$-javadoc.jar",
+./metadata/org.dom4j/dom4j/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/dom4j/dom4j/$version$/dom4j-$version$-javadoc.jar",
+./metadata/org.latencyutils/LatencyUtils/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/$version$/LatencyUtils-$version$-javadoc.jar",
+./metadata/commons-fileupload/commons-fileupload/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-fileupload/commons-fileupload/$version$/commons-fileupload-$version$-javadoc.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/$version$/hawtbuf-$version$-javadoc.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/$version$/jakarta.validation-api-$version$-javadoc.jar",
+./metadata/com.github.ghik/silencer-lib_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ghik/silencer-lib_2.13/$version$/silencer-lib_2.13-$version$-javadoc.jar",
+./metadata/org.eclipse.microprofile.openapi/microprofile-openapi-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/microprofile/openapi/microprofile-openapi-api/$version$/microprofile-openapi-api-$version$-javadoc.jar",
+./metadata/org.xmlunit/xmlunit-placeholders/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xmlunit/xmlunit-placeholders/$version$/xmlunit-placeholders-$version$-javadoc.jar",
+./metadata/org.xmlunit/xmlunit-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/$version$/xmlunit-core-$version$-javadoc.jar",
+./metadata/aopalliance/aopalliance/index.json:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/$version$/aopalliance.zip/download",
+
+exec
+/usr/bin/bash -lc "rg 'test-code-url' -g '*.json' . | head -60" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "test-code-url" : "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:    "test-code-url": "N/A",
+./metadata/javax.activation/activation/index.json:    "test-code-url" : "N/A",
+./metadata/org.mortbay.jetty/servlet-api/index.json:    "test-code-url" : "N/A",
+./metadata/javax.validation/validation-api/index.json:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+./metadata/javax.validation/validation-api/index.json:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+./metadata/javax.validation/validation-api/index.json:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/activemq-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-$version$/activemq-client/src/test",
+./metadata/org.apache.activemq/activemq-broker/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "test-code-url" : "https://github.com/apache/activemq-artemis/tree/$version$/artemis-log-annotation-processor/src/test",
+./metadata/org.apache.activemq/activemq-openwire-legacy/index.json:    "test-code-url" : "N/A",
+./metadata/com.github.stephenc.jcip/jcip-annotations/index.json:    "test-code-url" : "N/A",
+./metadata/com.diffplug.durian/durian-swt.os/index.json:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/$version$/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+./metadata/org.jline/jline-terminal-jna/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+./metadata/org.jline/jline-console/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+./metadata/org.jline/jline-console/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+./metadata/org.jline/jline-reader/index.json:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+./metadata/org.jline/jline/index.json:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-$version$",
+./metadata/org.jvnet.staxex/stax-ex/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+./metadata/org.jvnet.staxex/stax-ex/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+./metadata/org.jvnet.staxex/stax-ex/index.json:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+./metadata/org.ehcache/ehcache/index.json:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+./metadata/io.opencensus/opencensus-api/index.json:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+./metadata/org.playframework/play-exceptions/index.json:    "test-code-url" : "N/A",
+./metadata/org.playframework/play-build-link/index.json:    "test-code-url" : "N/A",
+./metadata/org.datanucleus/javax.jdo/index.json:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+./metadata/com.github.mwiede/jsch/index.json:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "test-code-url": "N/A",
+./metadata/log4j/log4j/index.json:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+./metadata/org.apache.directory.api/api-i18n/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+./metadata/org.apache.directory.api/api-i18n/index.json:    "test-code-url" : "N/A",
+./metadata/org.apache.directory.api/api-util/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+./metadata/org.openjfx/javafx-base/index.json:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+./metadata/org.apache.arrow/arrow-format/index.json:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.arrow/arrow-format/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "15.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/arrow",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+    "description" : "Apache Arrow Format provides generated Java classes for Apache Arrow IPC FlatBuffer metadata definitions. It lets Java applications work with the schema, record batch, dictionary batch, and message structures used by Arrow's columnar interchange format.",
+    "tested-versions" : [
+      "15.0.0",
+      "15.0.1",
+      "15.0.2",
+      "16.0.0",
+      "16.1.0",
+      "17.0.0",
+      "18.0.0",
+      "18.1.0",
+      "18.2.0",
+      "18.3.0",
+      "19.0.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.arrow.flatbuf"
+    ]
+  },
+  {
+    "metadata-version" : "7.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/arrow",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+    "description" : "Apache Arrow Format provides generated Java classes for the Apache Arrow IPC FlatBuffer metadata definitions. It lets Java applications work with the schema, record batch, dictionary batch, and message structures used by Arrow's columnar interchange format.",
+    "tested-versions" : [
+      "7.0.0",
+      "8.0.0",
+      "9.0.0",
+      "10.0.0",
+      "10.0.1",
+      "11.0.0",
+      "12.0.0",
+      "12.0.1",
+      "13.0.0",
+      "14.0.0",
+      "14.0.1",
+      "14.0.2"
+    ],
+    "allowed-packages" : [
+      "org.apache.arrow.flatbuf"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'find metadata/org.apache.arrow -maxdepth 3 -type f -name index.json -print' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+metadata/org.apache.arrow/arrow-format/index.json
+
+exec
+/usr/bin/bash -lc "rg 'org.apache.arrow' metadata -g 'index.json' -n" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:24:      "org.apache.arrow.flatbuf"
+metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:49:      "org.apache.arrow.flatbuf"
+
+codex
+The Maven directory confirms source, tests, and Javadoc jars exist for `7.0.0`, so I’m using those templated Maven URLs. This is a normal JVM jar with class files, so I’m leaving the language and `not-for-native-image` fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+index 4191d7025cb4b06e37ed3f694f67e5ba867611c5..bce62cf8a3f3023e6f51cb5e5970191a1e891896
+--- a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
++++ b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
++  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
++  "repository-url" : "https://github.com/apache/arrow",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-javadoc.jar",
++  "description" : "Apache Arrow Memory Core provides the core off-heap memory management APIs used by Arrow Java vectors. It defines allocators, buffers, reference counting, and related utilities for managing native memory efficiently from JVM applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+index 4191d7025cb4b06e37ed3f694f67e5ba867611c5..bce62cf8a3f3023e6f51cb5e5970191a1e891896
+--- a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
++++ b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
++  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
++  "repository-url" : "https://github.com/apache/arrow",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-javadoc.jar",
++  "description" : "Apache Arrow Memory Core provides the core off-heap memory management APIs used by Arrow Java vectors. It defines allocators, buffers, reference counting, and related utilities for managing native memory efficiently from JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.arrow:arrow-memory-core:7.0.0",
+  "repository-url": "https://github.com/apache/arrow",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-javadoc.jar",
+  "description": "Apache Arrow Memory Core provides the core off-heap memory management APIs used by Arrow Java vectors. It defines allocators, buffers, reference counting, and related utilities for managing native memory efficiently from JVM applications."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0.jar -o /tmp/arrow-memory-core-7.0.0.jar && jar tf /tmp/arrow-memory-core-7.0.0.jar | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 0ms:
+org/apache/arrow/memory/AllocationOutcomeDetails$Entry.class
+org/apache/arrow/memory/BufferLedger$1.class
+org/apache/arrow/memory/BufferAllocator.class
+org/apache/arrow/memory/DefaultAllocationManagerOption$AllocationManagerType.class
+org/apache/arrow/memory/AllocationListener.class
+org/apache/arrow/memory/util/ArrowBufPointer.class
+org/apache/arrow/memory/util/MemoryUtil$1.class
+org/apache/arrow/memory/util/LargeMemoryUtil.class
+org/apache/arrow/memory/util/hash/ArrowBufHasher.class
+org/apache/arrow/memory/util/MemoryUtil.class
+org/apache/arrow/memory/util/ByteFunctionHelpers.class
+org/apache/arrow/memory/util/StackTrace.class
+org/apache/arrow/memory/util/CommonUtil.class
+org/apache/arrow/memory/OwnershipTransferNOOP.class
+org/apache/arrow/memory/LowCostIdentityHashMap.class
+org/apache/arrow/memory/ChildAllocator.class
+org/apache/arrow/memory/AllocationManager$Factory.class
+org/apache/arrow/memory/rounding/DefaultRoundingPolicy.class
+org/apache/arrow/memory/rounding/RoundingPolicy.class
+org/apache/arrow/memory/rounding/SegmentRoundingPolicy.class
+
+exec
+/usr/bin/bash -lc "for url in 'https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-sources.jar' 'https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-tests.jar' 'https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/7.0.0/arrow-memory-core-7.0.0-javadoc.jar'; do curl -I -fsSL \""'$url" | sed -n '"'1p;/content-length/p'; done" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0
+ succeeded in 124ms:
+HTTP/2 200 
+content-length: 312326
+
+diff --git a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+index 4191d7025cb4b06e37ed3f694f67e5ba867611c5..bce62cf8a3f3023e6f51cb5e5970191a1e891896
+--- a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
++++ b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
++  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
++  "repository-url" : "https://github.com/apache/arrow",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-javadoc.jar",
++  "description" : "Apache Arrow Memory Core provides the core off-heap memory management APIs used by Arrow Java vectors. It defines allocators, buffers, reference counting, and related utilities for managing native memory efficiently from JVM applications."
+ }
+
+codex
+Updated [org.apache.arrow-arrow-memory-core-7.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json) with repository, Maven sources/tests/Javadoc URLs, and a two-sentence description.
+
+Validation done: `jq` accepted the JSON, all three templated Maven URLs resolve for `7.0.0`, and the artifact jar contains JVM `.class` files, so `language` and `not-for-native-image` were left absent.
+diff --git a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+index 4191d7025cb4b06e37ed3f694f67e5ba867611c5..bce62cf8a3f3023e6f51cb5e5970191a1e891896
+--- a/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
++++ b/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0"
++  "coordinates" : "org.apache.arrow:arrow-memory-core:7.0.0",
++  "repository-url" : "https://github.com/apache/arrow",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-javadoc.jar",
++  "description" : "Apache Arrow Memory Core provides the core off-heap memory management APIs used by Arrow Java vectors. It defines allocators, buffers, reference counting, and related utilities for managing native memory efficiently from JVM applications."
+ }
+
+tokens used
+47,980
+Updated [org.apache.arrow-arrow-memory-core-7.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0/build/discovered-artifact-metadata/org.apache.arrow-arrow-memory-core-7.0.0.json) with repository, Maven sources/tests/Javadoc URLs, and a two-sentence description.
+
+Validation done: `jq` accepted the JSON, all three templated Maven URLs resolve for `7.0.0`, and the artifact jar contains JVM `.class` files, so `language` and `not-for-native-image` were left absent.
+Ran agent for org.apache.arrow:arrow-memory-core:7.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0/build/agent-artifact-discovery-logs/org.apache.arrow-arrow-memory-core-7.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3102-b04a99e0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 3s
+9 actionable tasks: 4 executed, 5 from cache
