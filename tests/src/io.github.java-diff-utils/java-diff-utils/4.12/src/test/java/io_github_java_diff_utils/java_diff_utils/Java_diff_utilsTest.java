@@ -89,6 +89,19 @@ public class Java_diff_utilsTest {
     }
 
     @Test
+    void appliesPatchFuzzilyWhenSourceChunkIsShifted() throws Exception {
+        List<String> original = List.of("header", "old setting", "footer");
+        List<String> revised = List.of("header", "new setting", "footer");
+        List<String> shiftedTarget = List.of("banner", "header", "old setting", "footer", "trailer");
+        Patch<String> patch = DiffUtils.diff(original, revised);
+
+        List<String> patched = patch.applyFuzzy(shiftedTarget, 0);
+
+        assertThat(patched).containsExactly("banner", "header", "new setting", "footer", "trailer");
+        assertThat(shiftedTarget).containsExactly("banner", "header", "old setting", "footer", "trailer");
+    }
+
+    @Test
     void supportsCustomEqualityAndProgressListener() {
         List<String> original = List.of("Alpha", "Beta", "Gamma");
         List<String> revised = List.of("alpha", "BETA", "gamma");
