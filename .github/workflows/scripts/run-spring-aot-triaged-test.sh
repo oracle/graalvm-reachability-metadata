@@ -29,6 +29,12 @@ META_DIR="$(cd "$SPRING_DIR/.." && pwd)/metadata"
 META_URL="file://${META_DIR}"
 GP="${SPRING_DIR}/gradle.properties"
 
+# The docker-compose plugin sometimes selects the bridge gateway IP for forwarded
+# ports. On local Docker setups that address may be unreachable even though the
+# published localhost port works, so prefer localhost unless the caller already
+# provided an override.
+export SERVICES_HOST="${SERVICES_HOST:-127.0.0.1}"
+
 if [ ! -f "$GP" ]; then
   echo "gradle.properties not found at $GP"
   exit 1
