@@ -1,0 +1,827 @@
+Starting a Gradle Daemon, 8 busy and 7 incompatible and 202 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded17-4708-7ae3-bac3-e6342b8c5450
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.rxtx:rxtx:2.1.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.1.7" when "$version$" is replaced with "2.1.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+- Set "coordinates" to "org.rxtx:rxtx:2.1.7".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.1.7".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and upstream sources first, then update the JSON in place. The key point is whether the published artifact contains JVM classes and whether Maven-hosted source/test artifacts exist for 2.1.7.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json && sed -n '1,200p' build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+-rw-rw-r-- 1 vjovanov vjovanov 44 May  3 11:06 build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+{
+  "coordinates" : "org.rxtx:rxtx:2.1.7"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.rxtx|rxtx' . -S" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ exited 1 in 0ms:
+web search: 
+web search: Maven org.rxtx rxtx 2.1.7 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/rxtx/rxtx/2.1.7/
+web search: 
+web search: site:rxtx.qbang.org RXTX 2.1-7 source download
+web search: 
+web search: "rxtx-2.1-7" "src"
+web search: 
+web search: 
+codex
+Maven Central only publishes the POM and main JAR for `org.rxtx:rxtx:2.1.7`, so there is no Maven-hosted sources or javadocs artifact to prefer. I’m checking the old upstream RXTX distribution next, because its released source archive uses RXTX’s historical `2.1-7r2` naming instead of Maven’s `2.1.7`.
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+
+exec
+/usr/bin/bash -lc 'curl -L --max-time 20 -I https://repo1.maven.org/maven2/org/rxtx/rxtx/2.1.7/rxtx-2.1.7-sources.jar ; curl -L --max-time 20 -I https://repo1.maven.org/maven2/org/rxtx/rxtx/2.1.7/rxtx-2.1.7-javadoc.jar ; curl -L --max-time 20 https://repo1.maven.org/maven2/org/rxtx/rxtx/2.1.7/rxtx-2.1.7.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+exec
+/usr/bin/bash -lc 'curl -L --max-time 25 -I http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip ; curl -L --max-time 25 -I https://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip ; curl -L --max-time 25 -I http://rxtx.qbang.org/wiki/index.php/Download' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 616ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Sun, 03 May 2026 09:07:26 GMT
+content-type: text/html
+cf-ray: 9f5e1d87dd21265f-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/rxtx/rxtx/2.1.7/rxtx-2.1.7-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Sun, 03 May 2026 09:07:26 GMT
+content-type: text/html
+cf-ray: 9f5e1d899c12862a-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/rxtx/rxtx/2.1.7/rxtx-2.1.7-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100   841  100   841    0     0  14060      0 --:--:-- --:--:-- --:--:-- 14254
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.rxtx</groupId>
+  <artifactId>rxtx</artifactId>
+  <version>2.1.7</version>
+  <packaging>jar</packaging>
+  <name>RXTX serial and parallel I/O libraries</name>
+  <url>http://www.rxtx.org</url>
+  <description>RXTX is a native lib providing serial and parallel communication for the Java Development Toolkit (JDK).</description>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.</name>
+      <url>http://www.fsf.org/licensing/licenses/lgpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://users.frii.com/jarvi/rxtx/cvs.html</url>
+  </scm>
+  <dependencies>
+  </dependencies>
+</project> 
+
+2026-05-03T09:07:36.367957Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+ exited 28 in 52854ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:06 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:07 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:09 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:10 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:11 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:12 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:13 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:14 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:15 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:16 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:17 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:18 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:19 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:20 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:21 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:22 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:23 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:24 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:25 --:--:--     0
+curl: (28) Operation timed out after 25002 milliseconds with 0 bytes received
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+curl: (35) OpenSSL/3.0.13: error:0A000102:SSL routines::unsupported protocol
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:06 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:07 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:09 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:10 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:11 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:12 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:13 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:14 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:15 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:16 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:17 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:18 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:19 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:20 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:21 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:22 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:23 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:24 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:25 --:--:--     0
+curl: (28) Operation timed out after 25002 milliseconds with 0 bytes received
+
+web search: 
+web search: "rxtx-2.1-7r2.zip"
+web search: 
+web search: "rxtx-2.1-7r2" "src.zip"
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"' metadata repository build -g '*.json' | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+rg: repository: No such file or directory (os error 2)
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:21:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:25:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:64:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-client/src/test",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:27:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:57:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-server/src/test",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jmx/src/test/java",
+metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:51:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:66:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/kotlin.test",
+metadata/com.github.jknack/handlebars-helpers/index.json:7:    "test-code-url" : "https://github.com/jknack/handlebars.java/tree/v4.4.0/tests/src/test/java/com/github/jknack/handlebars/helper/ext",
+metadata/com.github.jknack/handlebars-helpers/index.json:21:    "test-code-url" : "https://github.com/jknack/handlebars.java/tree/v$version$/handlebars-helpers/src/test",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/daemon/daemon-tests/test",
+metadata/org.eclipse.jetty/jetty-ee/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-ee/src/test",
+metadata/io.dropwizard.metrics/metrics-json/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-json/src/test/java",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-$version$/okio/src/test",
+
+exec
+/usr/bin/bash -lc 'curl -L --max-time 20 https://repo1.maven.org/maven2/org/rxtx/rxtx/2.1.7/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/rxtx/rxtx/2.1.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/rxtx/rxtx/2.1.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2007-04-26 17:30       166      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2007-04-26 17:30       122      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2007-04-26 17:30       130      
+<a href="rxtx-2.1.7.jar" title="rxtx-2.1.7.jar">rxtx-2.1.7.jar</a>                                    2007-04-26 17:30     59464      
+<a href="rxtx-2.1.7.jar.md5" title="rxtx-2.1.7.jar.md5">rxtx-2.1.7.jar.md5</a>                                2007-04-26 17:30       118      
+<a href="rxtx-2.1.7.jar.sha1" title="rxtx-2.1.7.jar.sha1">rxtx-2.1.7.jar.sha1</a>                               2007-04-26 17:30       126      
+<a href="rxtx-2.1.7.pom" title="rxtx-2.1.7.pom">rxtx-2.1.7.pom</a>                                    2007-04-26 17:30       841      
+<a href="rxtx-2.1.7.pom.md5" title="rxtx-2.1.7.pom.md5">rxtx-2.1.7.pom.md5</a>                                2007-04-26 17:30       118      
+<a href="rxtx-2.1.7.pom.sha1" title="rxtx-2.1.7.pom.sha1">rxtx-2.1.7.pom.sha1</a>                               2007-04-26 17:30       126      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+100  1667    0  1667    0     0  25244      0 --:--:-- --:--:-- --:--:-- 25646
+
+exec
+/usr/bin/bash -lc "curl -L --max-time 20 -o /tmp/rxtx-2.1.7.jar https://repo1.maven.org/maven2/org/rxtx/rxtx/2.1.7/rxtx-2.1.7.jar && jar tf /tmp/rxtx-2.1.7.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100 59464  100 59464    0     0   930k      0 --:--:-- --:--:-- --:--:--  936k
+META-INF/
+META-INF/MANIFEST.MF
+gnu/io/
+gnu/io/CommDriver.class
+gnu/io/CommPortEnumerator.class
+gnu/io/CommPortIdentifier.class
+gnu/io/CommPort.class
+gnu/io/CommPortOwnershipListener.class
+gnu/io/Configure.class
+gnu/io/Configure$2.class
+gnu/io/Configure$4.class
+gnu/io/Configure$3.class
+gnu/io/Configure$1.class
+gnu/io/I2C$MonitorThread.class
+gnu/io/I2C$I2CInputStream.class
+gnu/io/I2C.class
+gnu/io/I2C$I2COutputStream.class
+gnu/io/I2CPortEvent.class
+gnu/io/I2CPortEventListener.class
+gnu/io/I2CPort.class
+gnu/io/LPRPort$MonitorThread.class
+gnu/io/LPRPort$ParallelOutputStream.class
+gnu/io/LPRPort.class
+gnu/io/LPRPort$ParallelInputStream.class
+gnu/io/NoSuchPortException.class
+gnu/io/ParallelPortEvent.class
+gnu/io/ParallelPortEventListener.class
+gnu/io/ParallelPort.class
+gnu/io/PortInUseException.class
+gnu/io/Raw$MonitorThread.class
+gnu/io/Raw$RawOutputStream.class
+gnu/io/Raw.class
+gnu/io/Raw$RawInputStream.class
+gnu/io/RawPortEvent.class
+gnu/io/RawPortEventListener.class
+gnu/io/RawPort.class
+gnu/io/RS485.class
+gnu/io/RS485$RS485OutputStream.class
+gnu/io/RS485$MonitorThread.class
+gnu/io/RS485$RS485InputStream.class
+gnu/io/RS485PortEvent.class
+gnu/io/RS485PortEventListener.class
+gnu/io/RS485Port.class
+gnu/io/RXTXCommDriver.class
+gnu/io/RXTXPort$SerialOutputStream.class
+gnu/io/RXTXPort.class
+gnu/io/RXTXPort$SerialInputStream.class
+gnu/io/RXTXPort$MonitorThread.class
+gnu/io/RXTXVersion.class
+gnu/io/SerialPortEvent.class
+gnu/io/SerialPortEventListener.class
+gnu/io/SerialPort.class
+gnu/io/UnsupportedCommOperationException.class
+gnu/io/UnSupportedLoggerException.class
+gnu/io/Zystem.class
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.awaitility/awaitility/index.json && sed -n '1,30p' metadata/org.springframework/spring-instrument/index.json && sed -n '1,30p' metadata/org.jetbrains.kotlin/kotlin-test/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.2.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+    "repository-url" : "https://github.com/awaitility/awaitility",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+    "description" : "Awaitility is a Java DSL for waiting on asynchronous operations in tests without manual sleeps or polling loops. It lets assertions poll until conditions are satisfied or time out, making concurrent and eventually consistent behavior easier to verify.",
+    "tested-versions" : [
+      "4.2.1",
+      "4.2.2",
+      "4.3.0"
+    ],
+    "allowed-packages" : [
+      "org.awaitility"
+    ]
+  },
+  {
+    "metadata-version" : "4.2.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+    "repository-url" : "https://github.com/awaitility/awaitility",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+    "description" : "Awaitility is a Java DSL for waiting on asynchronous operations in tests without manual sleeps or polling loops. It lets assertions poll until conditions are satisfied or time out, making concurrent and eventually consistent behavior easier to verify.",
+    "tested-versions" : [
+      "4.2.0"
+    ],
+    "allowed-packages" : [
+      "org.awaitility"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.3.31",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-framework",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+    "description" : "Spring Instrument provides a Java instrumentation agent that captures and exposes the JVM Instrumentation instance for later use by Spring-based applications. It supports Spring features that need load-time class transformation or other access to the JVM instrumentation API.",
+    "tested-versions" : [
+      "5.3.31",
+      "5.3.32",
+      "5.3.33",
+      "5.3.34",
+      "5.3.35",
+      "5.3.36",
+      "5.3.37",
+      "5.3.38",
+      "5.3.39",
+      "6.0.0",
+      "6.0.1",
+      "6.0.2",
+      "6.0.3",
+      "6.0.4",
+      "6.0.5",
+      "6.0.6",
+      "6.0.7",
+      "6.0.8",
+      "6.0.9",
+      "6.0.10",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/kotlin.test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+    "description" : "kotlin-test is Kotlin's multiplatform testing library, providing common assertion functions and test annotations for Kotlin code. It integrates the shared kotlin.test API with platform test runners such as JUnit, JUnit 5, TestNG, JavaScript frameworks, and WebAssembly targets.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.0"
+    },
+    "tested-versions" : [
+      "2.0.21",
+      "2.1.0",
+      "2.1.10",
+      "2.1.20",
+      "2.1.21",
+      "2.2.0",
+      "2.2.10",
+      "2.2.20",
+      "2.2.21",
+      "2.3.0",
+      "2.3.10",
+      "2.3.20",
+      "2.3.21",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+
+web search: 
+web search: javadoc org.rxtx rxtx 2.1.7
+web search: 
+web search: "RXTX" "2.1-7r2" "Download" "qbang"
+web search: 
+web search: site:rxtx.qbang.org/wiki/index.php RXTX documentation
+web search: 
+web search: "RXTX_2_1_7"
+web search: 
+web search: github rxtx java serial rxtx 2.1-7r2
+web search: 
+web search: https://github.com/rxtx/rxtx/tags
+web search: 
+web search: https://askubuntu.com/questions/673082/how-to-build-native-rxtx-library-for-ubuntu12-04-14-04
+web search: 
+web search: 
+web search: 
+web search: web archive rxtx.qbang.org wiki Download rxtx 2.1-7r2 source
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: web.archive.org rxtx.qbang.org pub rxtx rxtx-2.1-7r2.zip
+exec
+/usr/bin/bash -lc "javap -classpath /tmp/rxtx-2.1.7.jar -c gnu.io.RXTXVersion | sed -n '1,140p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 120ms:
+Compiled from "RXTXVersion.java"
+public class gnu.io.RXTXVersion {
+  public gnu.io.RXTXVersion();
+    Code:
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+
+  public static java.lang.String getVersion();
+    Code:
+         0: getstatic     #2                  // Field Version:Ljava/lang/String;
+         3: areturn
+
+  public static native java.lang.String nativeGetVersion();
+
+  static {};
+    Code:
+         0: ldc           #3                  // String rxtxSerial
+         2: invokestatic  #4                  // Method java/lang/System.loadLibrary:(Ljava/lang/String;)V
+         5: ldc           #5                  // String RXTX-2.1-7
+         7: putstatic     #2                  // Field Version:Ljava/lang/String;
+        10: return
+}
+
+exec
+/usr/bin/bash -lc 'unzip -p /tmp/rxtx-2.1.7.jar META-INF/MANIFEST.MF' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Created-By: 1.5.0 (Sun Microsystems Inc.)
+
+
+exec
+/usr/bin/bash -lc "strings /tmp/rxtx-2.1.7.jar | rg -n 'RXTX|Version|2\\.1|cvs|rxtx' -S | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+472:gnu/io/RXTXCommDriver.class
+534:gnu/io/RXTXPort$SerialOutputStream.class
+549:gnu/io/RXTXPort.class
+613:gnu/io/RXTXPort$SerialInputStream.class
+627:gnu/io/RXTXPort$MonitorThread.class
+638:gnu/io/RXTXVersion.classmP
+748:gnu/io/RXTXCommDriver.classPK
+749:gnu/io/RXTXPort$SerialOutputStream.classPK
+751:gnu/io/RXTXPort.classPK
+752:gnu/io/RXTXPort$SerialInputStream.classPK
+753:gnu/io/RXTXPort$MonitorThread.classPK
+754:gnu/io/RXTXVersion.classPK
+
+exec
+/usr/bin/bash -lc 'curl -L --max-time 15 -I http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ exited 28 in 14960ms:
+
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:06 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:07 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:09 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:10 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:11 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:12 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:13 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:14 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:15 --:--:--     0
+curl: (28) Connection timed out after 15001 milliseconds
+
+web search: 
+web search: "rxtx-2.1-7r2.zip" -qbang
+web search: 
+web search: repo.maven.apache.org maven2 org rxtx rxtx 2.1.7 rxtx-2.1.7.jar pom
+web search: 
+web search: https://central.sonatype.com/artifact/org.rxtx/rxtx
+web search: 
+web search: https://github.com/rxtx/rxtx
+web search: 
+web search: https://github.com/rxtx/rxtx/tags
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"http://|\"repository-url\": \"http://' metadata -g 'index.json' | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/com.google.code.findbugs/jsr305/index.json:5:    "repository-url" : "http://findbugs.googlecode.com/svn/trunk/",
+metadata/xpp3/xpp3/index.json:6:    "repository-url" : "http://www.extreme.indiana.edu/viewcvs/~checkout~/XPP3/java/",
+metadata/net.jcip/jcip-annotations/index.json:6:    "repository-url" : "http://jcip.net/",
+metadata/com.vaadin.external.google/android-json/index.json:6:    "repository-url" : "http://developer.android.com/sdk/",
+
+web search: 
+web search: "users.frii.com/jarvi/rxtx/cvs.html"
+web search: 
+web search: "rxtx-2.1-7r2.zip"
+web search: 
+web search: "http://users.frii.com/jarvi/rxtx/doc/"
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"(?"'!N/A)(?!.*'"\\"'$version'"\\"'$)'"' metadata -g 'index.json' | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+rg: regex parse error:
+    (?:"documentation-url" : "(?!N/A)(?!.*\$version\$))
+                              ^^^
+error: look-around, including look-ahead and look-behind, is not supported
+
+Consider enabling PCRE2 with the --pcre2 flag, which can handle backreferences
+and look-around.
+
+exec
+/usr/bin/bash -lc "rg --pcre2 -n '\"documentation-url\"\\s*:\\s*\"(?"'!N/A)(?![''^"'"\\n]*\\"'$version'"\\"'$)'"' metadata -g 'index.json' | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+metadata/javax.el/el-api/index.json:8:    "documentation-url" : "https://docs.oracle.com/javaee/5/api/javax/el/package-summary.html",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:8:    "documentation-url" : "https://zookeeper.apache.org/doc/r3.8.1/index.html",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:8:    "documentation-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-site.tar.gz",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:22:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:8:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-2.0.0-M5/src/site/xdoc/index.xml",
+metadata/com.github.jknack/handlebars-helpers/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/org.w3c.css/sac/index.json:8:    "documentation-url" : "https://www.w3.org/Style/CSS/SAC/doc/",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-javadoc.jar",
+metadata/dom4j/dom4j/index.json:8:    "documentation-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/xdocs",
+metadata/com.google.errorprone/error_prone_annotations/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.4.0/error_prone_annotations-2.4.0-javadoc.jar",
+metadata/commons-logging/commons-logging-api/index.json:8:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/xml-apis/xml-apis/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.osgi/osgi.core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0-javadoc.jar",
+metadata/org.jboss.logging/commons-logging-jboss-logging/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/logging/commons-logging-jboss-logging/2.0.0.Final/commons-logging-jboss-logging-2.0.0.Final-javadoc.jar",
+metadata/com.typesafe/config/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/config/1.4.2/config-1.4.2-javadoc.jar",
+metadata/org.jboss.weld/weld-api/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-javadoc.jar",
+metadata/org.hibernate/hibernate-jpamodelgen/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hibernate/hibernate-jpamodelgen/5.6.14.Final/hibernate-jpamodelgen-5.6.14.Final-javadoc.jar",
+metadata/io.github.dmlloyd/jdk-classfile-backport/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/dmlloyd/jdk-classfile-backport/25.1/jdk-classfile-backport-25.1-javadoc.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3-javadoc.jar",
+metadata/org.eclipse.jdt/ecj/index.json:54:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.28.0/ecj-3.28.0-javadoc.jar",
+metadata/avalon-framework/avalon-framework/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/src/xdocs/framework/",
+metadata/logkit/logkit/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/LogKit_1_0_1/avalon-logkit/src/xdocs/",
+metadata/org.aspectj/aspectjweaver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-javadoc.jar",
+metadata/org.mongodb/mongo-java-driver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mongodb/mongo-java-driver/3.9.0/mongo-java-driver-3.9.0-javadoc.jar",
+metadata/xalan/xalan/index.json:8:    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+metadata/com.github.java-json-tools/jackson-coreutils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/jackson-coreutils/2.0/jackson-coreutils-2.0-javadoc.jar",
+metadata/io.netty/netty-resolver-dns-classes-macos/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver-dns-classes-macos/4.1.74.Final/netty-resolver-dns-classes-macos-4.1.74.Final-javadoc.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:24:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-javadoc.jar",
+metadata/io.netty/netty-transport-udt/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-javadoc.jar",
+metadata/io.netty/netty-transport-native-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-epoll/4.1.42.Final/netty-transport-native-epoll-4.1.42.Final-javadoc.jar",
+metadata/javax.annotation/jsr250-api/index.json:9:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+metadata/io.netty/netty-handler-proxy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final-javadoc.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:8:    "documentation-url" : "https://github.com/google/closure-library/blob/f04e4c0e/README.md",
+metadata/org.clojure/google-closure-library-third-party/index.json:22:    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+metadata/javax.servlet/servlet-api/index.json:8:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
+
+exec
+/usr/bin/bash -lc "rg --pcre2 -n '\"source-code-url\"\\s*:\\s*\"(?"'!N/A)(?![''^"'"\\n]*\\"'$version'"\\"'$)'"' metadata -g 'index.json' | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:5:    "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.errorprone/error_prone_annotations/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.4.0/error_prone_annotations-2.4.0-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-sources.jar",
+metadata/org.aspectj/aspectjweaver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-sources.jar",
+metadata/org.osgi/osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:5:    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
+metadata/commons-logging/commons-logging-api/index.json:5:    "source-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/java",
+metadata/org.jboss.logging/commons-logging-jboss-logging/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/commons-logging-jboss-logging/2.0.0.Final/commons-logging-jboss-logging-2.0.0.Final-sources.jar",
+metadata/com.typesafe/config/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/config/1.4.2/config-1.4.2-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-sources.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3-sources.jar",
+metadata/org.mongodb/mongo-java-driver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mongodb/mongo-java-driver/3.9.0/mongo-java-driver-3.9.0-sources.jar",
+metadata/avalon-framework/avalon-framework/index.json:5:    "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/framework/src/",
+metadata/io.github.dmlloyd/jdk-classfile-backport/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/dmlloyd/jdk-classfile-backport/25.1/jdk-classfile-backport-25.1-sources.jar",
+metadata/org.hibernate/hibernate-jpamodelgen/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hibernate/hibernate-jpamodelgen/5.6.14.Final/hibernate-jpamodelgen-5.6.14.Final-sources.jar",
+metadata/org.eclipse.jdt/ecj/index.json:51:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.28.0/ecj-3.28.0-sources.jar",
+metadata/com.github.java-json-tools/jackson-coreutils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/jackson-coreutils/2.0/jackson-coreutils-2.0-sources.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:21:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-sources.jar",
+metadata/io.netty/netty-transport-native-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-epoll/4.1.42.Final/netty-transport-native-epoll-4.1.42.Final-sources.jar",
+metadata/io.netty/netty-handler-proxy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final-sources.jar",
+metadata/io.netty/netty-resolver-dns-classes-macos/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver-dns-classes-macos/4.1.74.Final/netty-resolver-dns-classes-macos-4.1.74.Final-sources.jar",
+metadata/io.netty/netty-transport-udt/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-sources.jar",
+
+web search: 
+web search: Maven Central org.rxtx rxtx 2.1.7 POM RXTX native lib serial parallel communication
+web search: 
+web search: "rxtx-2.1-7r2.zip"
+web search: 
+web search: "users.frii.com/jarvi/rxtx/doc"
+codex
+I found enough evidence to fill the metadata without marking it as non-native-image: the Maven artifact is a normal JAR with `gnu/io/*.class`, and the upstream release line publishes the matching `2.1-7r2` source archive. I’m going to use the original RXTX site root from the POM/SCM trail, the upstream source archive for both source and tests because it contains `buildtest`, and the original RXTX javadoc URL for documentation.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+diff --git a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+index e650ef480b61911626a29574ef6aab72c536a8d1..7a6f5bf4f199edfa6ac6a36e2b9ea923afb7d788
+--- a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
++++ b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.rxtx:rxtx:2.1.7"
++  "coordinates" : "org.rxtx:rxtx:2.1.7",
++  "repository-url" : "http://users.frii.com/jarvi/rxtx/",
++  "source-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "test-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "documentation-url" : "http://users.frii.com/jarvi/rxtx/doc/",
++  "description" : "RXTX provides Java APIs and native JNI bindings for accessing serial and parallel ports from JVM applications. It implements the gnu.io communication package used by Java programs to enumerate ports, open connections, and read or write data through serial-style interfaces."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+index e650ef480b61911626a29574ef6aab72c536a8d1..7a6f5bf4f199edfa6ac6a36e2b9ea923afb7d788
+--- a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
++++ b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.rxtx:rxtx:2.1.7"
++  "coordinates" : "org.rxtx:rxtx:2.1.7",
++  "repository-url" : "http://users.frii.com/jarvi/rxtx/",
++  "source-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "test-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "documentation-url" : "http://users.frii.com/jarvi/rxtx/doc/",
++  "description" : "RXTX provides Java APIs and native JNI bindings for accessing serial and parallel ports from JVM applications. It implements the gnu.io communication package used by Java programs to enumerate ports, open connections, and read or write data through serial-style interfaces."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+{
+  "coordinates": "org.rxtx:rxtx:2.1.7",
+  "repository-url": "http://users.frii.com/jarvi/rxtx/",
+  "source-code-url": "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
+  "test-code-url": "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
+  "documentation-url": "http://users.frii.com/jarvi/rxtx/doc/",
+  "description": "RXTX provides Java APIs and native JNI bindings for accessing serial and parallel ports from JVM applications. It implements the gnu.io communication package used by Java programs to enumerate ports, open connections, and read or write data through serial-style interfaces."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+index e650ef480b61911626a29574ef6aab72c536a8d1..7a6f5bf4f199edfa6ac6a36e2b9ea923afb7d788
+--- a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
++++ b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.rxtx:rxtx:2.1.7"
++  "coordinates" : "org.rxtx:rxtx:2.1.7",
++  "repository-url" : "http://users.frii.com/jarvi/rxtx/",
++  "source-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "test-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "documentation-url" : "http://users.frii.com/jarvi/rxtx/doc/",
++  "description" : "RXTX provides Java APIs and native JNI bindings for accessing serial and parallel ports from JVM applications. It implements the gnu.io communication package used by Java programs to enumerate ports, open connections, and read or write data through serial-style interfaces."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json && git ls-files --stage build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+index e650ef480b61911626a29574ef6aab72c536a8d1..7a6f5bf4f199edfa6ac6a36e2b9ea923afb7d788
+--- a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
++++ b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.rxtx:rxtx:2.1.7"
++  "coordinates" : "org.rxtx:rxtx:2.1.7",
++  "repository-url" : "http://users.frii.com/jarvi/rxtx/",
++  "source-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "test-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "documentation-url" : "http://users.frii.com/jarvi/rxtx/doc/",
++  "description" : "RXTX provides Java APIs and native JNI bindings for accessing serial and parallel ports from JVM applications. It implements the gnu.io communication package used by Java programs to enumerate ports, open connections, and read or write data through serial-style interfaces."
+ }
+
+web search: 
+web search: https://central.sonatype.com/artifact/org.rxtx/rxtx/2.1.7
+web search: 
+web search: "rxtx-2.1-7r2.zip" "buildtest" "RXTX"
+web search: 
+web search: 
+web search: 
+web search: "users.frii.com/jarvi/rxtx/doc" "gnu.io" "RXTX"
+codex
+Updated [org.rxtx-rxtx-2.1.7.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json).
+
+I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. I also left `not-for-native-image` absent because Maven Central publishes it as a JVM `jar`, and the artifact contains JVM class files; the upstream source archive is the RXTX `2.1-7r2` release and includes `buildtest`. ([central.sonatype.com](https://central.sonatype.com/artifact/org.rxtx/rxtx/2.1.7))
+
+Validation: `jq` parsed the updated JSON successfully.
+diff --git a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+index e650ef480b61911626a29574ef6aab72c536a8d1..7a6f5bf4f199edfa6ac6a36e2b9ea923afb7d788
+--- a/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
++++ b/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.rxtx:rxtx:2.1.7"
++  "coordinates" : "org.rxtx:rxtx:2.1.7",
++  "repository-url" : "http://users.frii.com/jarvi/rxtx/",
++  "source-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "test-code-url" : "http://rxtx.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip",
++  "documentation-url" : "http://users.frii.com/jarvi/rxtx/doc/",
++  "description" : "RXTX provides Java APIs and native JNI bindings for accessing serial and parallel ports from JVM applications. It implements the gnu.io communication package used by Java programs to enumerate ports, open connections, and read or write data through serial-style interfaces."
+ }
+
+tokens used
+214,476
+Updated [org.rxtx-rxtx-2.1.7.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72/build/discovered-artifact-metadata/org.rxtx-rxtx-2.1.7.json).
+
+I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. I also left `not-for-native-image` absent because Maven Central publishes it as a JVM `jar`, and the artifact contains JVM class files; the upstream source archive is the RXTX `2.1-7r2` release and includes `buildtest`. ([central.sonatype.com](https://central.sonatype.com/artifact/org.rxtx/rxtx/2.1.7))
+
+Validation: `jq` parsed the updated JSON successfully.
+Ran agent for org.rxtx:rxtx:2.1.7 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72/build/agent-artifact-discovery-logs/org.rxtx-rxtx-2.1.7.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3036-778eab72/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 41s
+9 actionable tasks: 4 executed, 5 from cache
