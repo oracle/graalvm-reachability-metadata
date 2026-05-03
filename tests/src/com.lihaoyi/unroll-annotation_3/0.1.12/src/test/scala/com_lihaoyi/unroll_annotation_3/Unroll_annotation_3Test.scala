@@ -66,6 +66,18 @@ class Unroll_annotation_3Test {
     assertEquals("names=ADA|GRACE", names.describe(_.map(_.toUpperCase).mkString("|"), label = "names"))
     assertEquals("numbers=1 + 2 + 3", numbers.describe(_.mkString(" + ")))
   }
+
+  @Test
+  def abstractMethodParameterAnnotationPreservesTraitDefaultsAndDispatch(): Unit = {
+    val prefixed: AnnotatedRouteFormatter = PrefixedRouteFormatter("api")
+    val versioned: AnnotatedRouteFormatter = PrefixedRouteFormatter("v2")
+
+    assertEquals("api:https:/orders:200:json", prefixed.route("/orders"))
+    assertEquals("api:https:/orders:404:json", prefixed.route("/orders", status = 404))
+    assertEquals("api:http:/orders:202:json", prefixed.route("/orders", 202, secure = false))
+    assertEquals("api:http:/orders:202:txt", prefixed.route("/orders", 202, secure = false, suffix = "txt"))
+    assertEquals("v2:https:/orders:200:json", versioned.route("/orders"))
+  }
 }
 
 final class AnnotatedFormatter(private val defaultLabel: String) {
@@ -97,4 +109,16 @@ final case class AnnotatedOrder(product: String = "notebook", quantity: Int = 1,
 final case class AnnotatedBox[A](value: A, label: String = "value") {
   @unroll
   def describe(render: A => String, label: String = this.label): String = s"$label=${render(value)}"
+}
+
+trait AnnotatedRouteFormatter {
+  def route(path: String, status: Int = 200, @unroll secure: Boolean = true, suffix: String = "json"): String
+}
+
+final case class PrefixedRouteFormatter(prefix: String) extends AnnotatedRouteFormatter {
+  override def route(path: String, status: Int, secure: Boolean, suffix: String): String = {
+    val scheme: String = if secure then "https" else "http"
+
+    s"$prefix:$scheme:$path:$status:$suffix"
+  }
 }
