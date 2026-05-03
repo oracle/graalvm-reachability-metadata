@@ -1,0 +1,1357 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded28-9f71-7691-ac06-7d4be37de760
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.esotericsoftware:kryo-shaded:3.0.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0.3" when "$version$" is replaced with "3.0.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+- Set "coordinates" to "com.esotericsoftware:kryo-shaded:3.0.3".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0.3".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven metadata and the upstream repository/tag layout, then patch the discovered metadata JSON directly.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+{
+  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.esotericsoftware-kryo-shaded-3\\.0\\.3\\.json|com\\.esotericsoftware.*kryo'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:116:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:50:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:51:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:52:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:64:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:65:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:66:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:67:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:91:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:112:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:7:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+
+web search: 
+web search: Maven Central com.esotericsoftware kryo-shaded 3.0.3 pom scm
+codex
+The local metadata file currently only has coordinates. I’m checking Maven Central first because this repo prefers Maven source/test/doc artifacts when they exist, then I’ll fall back to the tagged upstream repository for anything Maven does not publish.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>kryo-parent</artifactId>
+    <groupId>com.esotericsoftware</groupId>
+    <version>3.0.3</version>
+    <relativePath>pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>kryo-shaded</artifactId>
+  <packaging>bundle</packaging>
+  <name>Kryo Shaded</name>
+  <description>Fast, efficient Java serialization. This contains the shaded reflectasm jar to prevent conflicts with other versions of asm.</description>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <minimizeJar>true</minimizeJar>
+          <shadedArtifactAttached>false</shadedArtifactAttached>
+          <artifactSet>
+            <includes>
+              <include>com.esotericsoftware:reflectasm:shaded</include>
+            </includes>
+          </artifactSet>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.4.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>COM.jrockit*;resolution:=optional,
+						COM.newmonics*;resolution:=optional,
+						jrockit*;resolution:=optional,
+						sun.reflect;resolution:=optional,
+						sun.misc;resolution:=optional,
+						sun.nio.ch;resolution:=optional,
+						*</Import-Package>
+            <Export-Package>com.esotericsoftware.kryo*,com.esotericsoftware.reflectasm*</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>com.esotericsoftware</groupId>
+      <artifactId>minlog</artifactId>
+      <version>1.3.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <version>2.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/esotericsoftware/kryo-shaded/3.0.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/esotericsoftware/kryo-shaded/3.0.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kryo-shaded-3.0.3-javadoc.jar" title="kryo-shaded-3.0.3-javadoc.jar">kryo-shaded-3.0.3-javadoc.jar</a>                     2015-07-26 21:47    814842      
+<a href="kryo-shaded-3.0.3-javadoc.jar.asc" title="kryo-shaded-3.0.3-javadoc.jar.asc">kryo-shaded-3.0.3-javadoc.jar.asc</a>                 2015-07-26 21:47       181      
+<a href="kryo-shaded-3.0.3-javadoc.jar.md5" title="kryo-shaded-3.0.3-javadoc.jar.md5">kryo-shaded-3.0.3-javadoc.jar.md5</a>                 2015-07-26 21:47        32      
+<a href="kryo-shaded-3.0.3-javadoc.jar.sha1" title="kryo-shaded-3.0.3-javadoc.jar.sha1">kryo-shaded-3.0.3-javadoc.jar.sha1</a>                2015-07-26 21:47        40      
+<a href="kryo-shaded-3.0.3-sources.jar" title="kryo-shaded-3.0.3-sources.jar">kryo-shaded-3.0.3-sources.jar</a>                     2015-07-26 21:47    191107      
+<a href="kryo-shaded-3.0.3-sources.jar.asc" title="kryo-shaded-3.0.3-sources.jar.asc">kryo-shaded-3.0.3-sources.jar.asc</a>                 2015-07-26 21:47       181      
+<a href="kryo-shaded-3.0.3-sources.jar.md5" title="kryo-shaded-3.0.3-sources.jar.md5">kryo-shaded-3.0.3-sources.jar.md5</a>                 2015-07-26 21:47        32      
+<a href="kryo-shaded-3.0.3-sources.jar.sha1" title="kryo-shaded-3.0.3-sources.jar.sha1">kryo-shaded-3.0.3-sources.jar.sha1</a>                2015-07-26 21:47        40      
+<a href="kryo-shaded-3.0.3.jar" title="kryo-shaded-3.0.3.jar">kryo-shaded-3.0.3.jar</a>                             2015-07-26 21:47    358390      
+<a href="kryo-shaded-3.0.3.jar.asc" title="kryo-shaded-3.0.3.jar.asc">kryo-shaded-3.0.3.jar.asc</a>                         2015-07-26 21:47       181      
+<a href="kryo-shaded-3.0.3.jar.md5" title="kryo-shaded-3.0.3.jar.md5">kryo-shaded-3.0.3.jar.md5</a>                         2015-07-26 21:47        32      
+<a href="kryo-shaded-3.0.3.jar.sha1" title="kryo-shaded-3.0.3.jar.sha1">kryo-shaded-3.0.3.jar.sha1</a>                        2015-07-26 21:47        40      
+<a href="kryo-shaded-3.0.3.pom" title="kryo-shaded-3.0.3.pom">kryo-shaded-3.0.3.pom</a>                             2015-07-26 21:47      3128      
+<a href="kryo-shaded-3.0.3.pom.asc" title="kryo-shaded-3.0.3.pom.asc">kryo-shaded-3.0.3.pom.asc</a>                         2015-07-26 21:47       181      
+<a href="kryo-shaded-3.0.3.pom.md5" title="kryo-shaded-3.0.3.pom.md5">kryo-shaded-3.0.3.pom.md5</a>                         2015-07-26 21:47        32      
+<a href="kryo-shaded-3.0.3.pom.sha1" title="kryo-shaded-3.0.3.pom.sha1">kryo-shaded-3.0.3.pom.sha1</a>                        2015-07-26 21:47        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/EsotericSoftware/kryo/git/matching-refs/tags | sed -n '1,240p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 249ms:
+[
+  {
+    "ref": "refs/tags/2.02",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzLzIuMDI=",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/2.02",
+    "object": {
+      "sha": "d6292e7f7041a835653dfb591643b33ba2124b09",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/d6292e7f7041a835653dfb591643b33ba2124b09"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-1.02",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMS4wMg==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-1.02",
+    "object": {
+      "sha": "84996ffec7e191d6c6147f00bb3323f5a42250ec",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/84996ffec7e191d6c6147f00bb3323f5a42250ec"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-1.03",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMS4wMw==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-1.03",
+    "object": {
+      "sha": "1d60cb8a341383f97f3b7e9f3f0a9444ef8b01b9",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/1d60cb8a341383f97f3b7e9f3f0a9444ef8b01b9"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-1.04",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMS4wNA==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-1.04",
+    "object": {
+      "sha": "fe3a54fc8771953d0b6aad2d3e821adbeaddf4bc",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/fe3a54fc8771953d0b6aad2d3e821adbeaddf4bc"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-1.05",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMS4wNQ==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-1.05",
+    "object": {
+      "sha": "9b18c409a31585f4903c09fc261fa3d357968361",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/9b18c409a31585f4903c09fc261fa3d357968361"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.02",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4wMg==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.02",
+    "object": {
+      "sha": "a19b5b234a614d173546bd1d9130914b5f73db0e",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/a19b5b234a614d173546bd1d9130914b5f73db0e"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.04",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4wNA==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.04",
+    "object": {
+      "sha": "4cd57f99f57710a72e84a8c1905e321d41afc08e",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/4cd57f99f57710a72e84a8c1905e321d41afc08e"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.05",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4wNQ==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.05",
+    "object": {
+      "sha": "08c9ed2f5478251f0222a3e4d45c5ef73aef2570",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/08c9ed2f5478251f0222a3e4d45c5ef73aef2570"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.07",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4wNw==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.07",
+    "object": {
+      "sha": "52fa78588f1903552546e620d162bdb5aa1366a8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/52fa78588f1903552546e620d162bdb5aa1366a8"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.08",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4wOA==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.08",
+    "object": {
+      "sha": "d95c6e5c8ed39a4a85fbf22651fc9b088c2da602",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/d95c6e5c8ed39a4a85fbf22651fc9b088c2da602"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.09",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4wOQ==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.09",
+    "object": {
+      "sha": "5759dbe19ac51d7893609c9a70b44c0e667c2d30",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/5759dbe19ac51d7893609c9a70b44c0e667c2d30"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.11",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4xMQ==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.11",
+    "object": {
+      "sha": "46a1ccd638e2424375a7728762b30ef65fa5009f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/46a1ccd638e2424375a7728762b30ef65fa5009f"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.14",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4xNA==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.14",
+    "object": {
+      "sha": "80610d922a892610b0dac9d5a746d20c1783167a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/80610d922a892610b0dac9d5a746d20c1783167a"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.15",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4xNQ==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.15",
+    "object": {
+      "sha": "e1220fba9fde76ed21a3939bcc8d6a1419f19c64",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/e1220fba9fde76ed21a3939bcc8d6a1419f19c64"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.16",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4xNg==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.16",
+    "object": {
+      "sha": "bd9c0e3be80d08e8fb0082c5fe6146cdd1349373",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/bd9c0e3be80d08e8fb0082c5fe6146cdd1349373"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.18",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4xOA==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.18",
+    "object": {
+      "sha": "005a55d2051b93e5e7fd94457b97099495065e65",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/005a55d2051b93e5e7fd94457b97099495065e65"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.20",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4yMA==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.20",
+    "object": {
+      "sha": "23f5e8111a8f2ecd15532a63356f03baa50ec063",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/23f5e8111a8f2ecd15532a63356f03baa50ec063"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.21",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4yMQ==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.21",
+    "object": {
+      "sha": "5329db888f885cdf2ffd1e253bb842a63b4631ba",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/5329db888f885cdf2ffd1e253bb842a63b4631ba"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.21.1",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4yMS4x",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.21.1",
+    "object": {
+      "sha": "27418a0b2cc6f5e25a828176a6e8d25779774549",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/27418a0b2cc6f5e25a828176a6e8d25779774549"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.22",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4yMg==",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.22",
+    "object": {
+      "sha": "5d5c1f20abf73006503e5e0f268079b4f0d41493",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/5d5c1f20abf73006503e5e0f268079b4f0d41493"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.23.0",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4yMy4w",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.23.0",
+    "object": {
+      "sha": "6b5cd6649e909be067dc3822a4b0ab9c745911eb",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/6b5cd6649e909be067dc3822a4b0ab9c745911eb"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-2.24.0",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tMi4yNC4w",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-2.24.0",
+    "object": {
+      "sha": "118e940966452e8fd2b649e0975a9ddc37f4b910",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/118e940966452e8fd2b649e0975a9ddc37f4b910"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-parent-3.0.0",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tcGFyZW50LTMuMC4w",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-parent-3.0.0",
+    "object": {
+      "sha": "fcd4913d21e668ed400383ccd502d67f93188af3",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/fcd4913d21e668ed400383ccd502d67f93188af3"
+    }
+  },
+  {
+    "ref": "refs/tags/kryo-parent-3.0.1",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tcGFyZW50LTMuMC4x",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-parent-3.0.1",
+    "object": {
+      "sha": "5d4edc0652f49052a4d48b1db80ebebb68a6d829",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/5d4edc0652f49052a4d48b1db80ebebb68a6d829"
+    }
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-parent/3.0.3/kryo-parent-3.0.3.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	<groupId>com.esotericsoftware</groupId>
+	<artifactId>kryo-parent</artifactId>
+	<version>3.0.3</version>
+	<packaging>pom</packaging>
+	<name>Kryo Parent</name>
+	<description>Fast, efficient Java serialization. This is the parent pom that assembles the main kryo and shaded kryo artifacts.</description>
+	<url>https://github.com/EsotericSoftware/kryo</url>
+
+	<licenses>
+		<license>
+			<name>New BSD License</name>
+			<url>http://www.opensource.org/licenses/bsd-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/EsotericSoftware/kryo</url>
+		<connection>scm:git:git@github.com:EsotericSoftware/kryo.git</connection>
+		<developerConnection>scm:git:git@github.com:EsotericSoftware/kryo.git</developerConnection>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>nathan.sweet</id>
+			<name>Nathan Sweet</name>
+			<email>nathan.sweet@gmail.com</email>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<versions.reflectasm>1.10.1</versions.reflectasm>
+	</properties>
+	
+	<modules>
+		<module>pom-main.xml</module>
+		<module>pom-shaded.xml</module>
+	</modules>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.esotericsoftware</groupId>
+				<artifactId>reflectasm</artifactId>
+				<version>${versions.reflectasm}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.esotericsoftware</groupId>
+				<artifactId>reflectasm</artifactId>
+				<classifier>shaded</classifier>
+				<version>${versions.reflectasm}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>minlog</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<!-- Set nonstandard source and test source dirs -->
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<inherited>true</inherited>
+					<configuration>
+						<source>1.5</source>
+						<target>1.5</target>
+						<encoding>utf-8</encoding>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<!-- Disable resources (project has none) -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>default-resources</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>default-testResources</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<excludes>
+						<exclude>**/.svn/*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.3</version>
+				<configuration>
+					<!-- required for java8, so that javadoc errors don't fail the build -->
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>requireSnapshot</id>
+			<!-- This profile is activated by the "-P requireSnapshot" switch to
+				be able to deploy SNAPSHOTs only (which is not allowed for releases) -->
+			<build>
+				<plugins>
+					<!-- Jenkins should only build -SNAPSHOTs -->
+					<plugin>
+						<artifactId>maven-enforcer-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>enforce</goal>
+								</goals>
+								<configuration>
+									<rules>
+										<evaluateBeanshell>
+											<condition>"${project.version}".endsWith("-SNAPSHOT")</condition>
+											<message>Jenkins should only build -SNAPSHOT versions</message>
+										</evaluateBeanshell>
+									</rules>
+									<fail>true</fail>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>sonatype-releases</id>
+			<name>sonatype releases repo</name>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+		</repository>
+	</repositories>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/kryo-shaded-3.0.3.jar https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3.jar && jar tf /tmp/kryo-shaded-3.0.3.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/EsotericSoftware/kryo/git/matching-refs/tags/kryo-parent-3.0.3' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/EsotericSoftware/kryo/git/matching-refs/tags/kryo-shaded-3.0.3' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 209ms:
+[
+
+]
+
+ succeeded in 243ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/com.esotericsoftware/
+META-INF/maven/com.esotericsoftware/kryo-shaded/
+META-INF/maven/com.esotericsoftware/kryo-shaded/pom.properties
+META-INF/maven/com.esotericsoftware/kryo-shaded/pom.xml
+com/
+com/esotericsoftware/
+com/esotericsoftware/kryo/
+com/esotericsoftware/kryo/ClassResolver.class
+com/esotericsoftware/kryo/DefaultSerializer.class
+com/esotericsoftware/kryo/Generics.class
+com/esotericsoftware/kryo/Kryo$Closure.class
+com/esotericsoftware/kryo/Kryo$DefaultInstantiatorStrategy$1.class
+com/esotericsoftware/kryo/Kryo$DefaultInstantiatorStrategy$2.class
+com/esotericsoftware/kryo/Kryo$DefaultInstantiatorStrategy.class
+com/esotericsoftware/kryo/Kryo$DefaultSerializerEntry.class
+com/esotericsoftware/kryo/Kryo.class
+com/esotericsoftware/kryo/KryoCopyable.class
+com/esotericsoftware/kryo/KryoException.class
+com/esotericsoftware/kryo/KryoSerializable.class
+com/esotericsoftware/kryo/NotNull.class
+com/esotericsoftware/kryo/ReferenceResolver.class
+com/esotericsoftware/kryo/Registration.class
+com/esotericsoftware/kryo/Serializer.class
+com/esotericsoftware/kryo/StreamFactory.class
+com/esotericsoftware/kryo/factories/
+com/esotericsoftware/kryo/factories/PseudoSerializerFactory.class
+com/esotericsoftware/kryo/factories/ReflectionSerializerFactory.class
+com/esotericsoftware/kryo/factories/SerializerFactory.class
+com/esotericsoftware/kryo/io/
+com/esotericsoftware/kryo/io/ByteBufferInput.class
+com/esotericsoftware/kryo/io/ByteBufferInputStream.class
+com/esotericsoftware/kryo/io/ByteBufferOutput.class
+com/esotericsoftware/kryo/io/ByteBufferOutputStream.class
+com/esotericsoftware/kryo/io/FastInput.class
+com/esotericsoftware/kryo/io/FastOutput.class
+com/esotericsoftware/kryo/io/Input.class
+com/esotericsoftware/kryo/io/InputChunked.class
+com/esotericsoftware/kryo/io/KryoDataInput.class
+com/esotericsoftware/kryo/io/KryoDataOutput.class
+com/esotericsoftware/kryo/io/KryoObjectInput.class
+com/esotericsoftware/kryo/io/KryoObjectOutput.class
+com/esotericsoftware/kryo/io/Output.class
+com/esotericsoftware/kryo/io/OutputChunked.class
+com/esotericsoftware/kryo/io/UnsafeInput.class
+com/esotericsoftware/kryo/io/UnsafeMemoryInput.class
+com/esotericsoftware/kryo/io/UnsafeMemoryOutput.class
+com/esotericsoftware/kryo/io/UnsafeOutput.class
+com/esotericsoftware/kryo/pool/
+com/esotericsoftware/kryo/pool/KryoCallback.class
+com/esotericsoftware/kryo/pool/KryoFactory.class
+com/esotericsoftware/kryo/pool/KryoPool$Builder.class
+com/esotericsoftware/kryo/pool/KryoPool.class
+com/esotericsoftware/kryo/pool/KryoPoolQueueImpl.class
+com/esotericsoftware/kryo/pool/SoftReferenceQueue.class
+com/esotericsoftware/kryo/serializers/
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmBooleanField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmByteField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmCachedField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmCharField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmDoubleField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmFloatField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmIntField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmLongField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmObjectField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmShortField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields$AsmStringField.class
+com/esotericsoftware/kryo/serializers/AsmCacheFields.class
+com/esotericsoftware/kryo/serializers/AsmCachedFieldFactory.class
+com/esotericsoftware/kryo/serializers/BeanSerializer$1.class
+com/esotericsoftware/kryo/serializers/BeanSerializer$CachedProperty.class
+com/esotericsoftware/kryo/serializers/BeanSerializer.class
+com/esotericsoftware/kryo/serializers/BlowfishSerializer$1.class
+com/esotericsoftware/kryo/serializers/BlowfishSerializer.class
+com/esotericsoftware/kryo/serializers/ClosureSerializer.class
+com/esotericsoftware/kryo/serializers/CollectionSerializer$BindCollection.class
+com/esotericsoftware/kryo/serializers/CollectionSerializer.class
+com/esotericsoftware/kryo/serializers/CompatibleFieldSerializer.class
+
+ succeeded in 262ms:
+[
+  {
+    "ref": "refs/tags/kryo-parent-3.0.3",
+    "node_id": "MDM6UmVmMTQxNzMxNzY6cmVmcy90YWdzL2tyeW8tcGFyZW50LTMuMC4z",
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/refs/tags/kryo-parent-3.0.3",
+    "object": {
+      "sha": "607f3157eb51c0b69b2d39f66735d5abbeb8366c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/EsotericSoftware/kryo/git/tags/607f3157eb51c0b69b2d39f66735d5abbeb8366c"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/EsotericSoftware/kryo/contents/test?ref=kryo-parent-3.0.3 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/EsotericSoftware/kryo/contents?ref=kryo-parent-3.0.3 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/EsotericSoftware/kryo/contents/README.md?ref=kryo-parent-3.0.3 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 193ms:
+[
+  {
+    "name": "com",
+    "path": "test/com",
+    "sha": "68c76db6a02a72e1dc3f98410d9b0ea11c5d4050",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/test/com?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test/com",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/68c76db6a02a72e1dc3f98410d9b0ea11c5d4050",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/test/com?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/68c76db6a02a72e1dc3f98410d9b0ea11c5d4050",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test/com"
+    }
+  }
+]
+
+ succeeded in 220ms:
+[
+  {
+    "name": ".classpath",
+    "path": ".classpath",
+    "sha": "b3c03e7c6eecb9489f47b89fad62a8b5f1bb2de6",
+    "size": 599,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.classpath?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.classpath",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/b3c03e7c6eecb9489f47b89fad62a8b5f1bb2de6",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/.classpath",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.classpath?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/b3c03e7c6eecb9489f47b89fad62a8b5f1bb2de6",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.classpath"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "421eed574553db0d2dd531447d0195409bd42423",
+    "size": 64,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.gitignore?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.gitignore",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/421eed574553db0d2dd531447d0195409bd42423",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.gitignore?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/421eed574553db0d2dd531447d0195409bd42423",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.gitignore"
+    }
+  },
+  {
+    "name": ".project",
+    "path": ".project",
+    "sha": "f9ad9f27a9086e99cd135ac8e47f29bed1a7e0d8",
+    "size": 380,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.project?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.project",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/f9ad9f27a9086e99cd135ac8e47f29bed1a7e0d8",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.project?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/f9ad9f27a9086e99cd135ac8e47f29bed1a7e0d8",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/.project"
+    }
+  },
+  {
+    "name": ".settings",
+    "path": ".settings",
+    "sha": "c71ed10e0923a31ded034850581a115bc9894125",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.settings?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/.settings",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/c71ed10e0923a31ded034850581a115bc9894125",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/.settings?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/c71ed10e0923a31ded034850581a115bc9894125",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/.settings"
+    }
+  },
+  {
+    "name": "CHANGES.md",
+    "path": "CHANGES.md",
+    "sha": "e0ec1a476e2546e4658d71c3e908d57dbc93db21",
+    "size": 17744,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/CHANGES.md?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/CHANGES.md",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/e0ec1a476e2546e4658d71c3e908d57dbc93db21",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/CHANGES.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/CHANGES.md?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/e0ec1a476e2546e4658d71c3e908d57dbc93db21",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/CHANGES.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "54121493756530cb7d5e3fd722ca9e7b40a596fc",
+    "size": 405,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/CONTRIBUTING.md?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/54121493756530cb7d5e3fd722ca9e7b40a596fc",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/CONTRIBUTING.md?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/54121493756530cb7d5e3fd722ca9e7b40a596fc",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "24ce7274309f84b6ec0539da2a3003ccc4665bf6",
+    "size": 38674,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/README.md?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/README.md",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/24ce7274309f84b6ec0539da2a3003ccc4665bf6",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/README.md?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/24ce7274309f84b6ec0539da2a3003ccc4665bf6",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/README.md"
+    }
+  },
+  {
+    "name": "a.ser",
+    "path": "a.ser",
+    "sha": "864adf4ca19a98a21c0c061a1b5cf4f682eff23b",
+    "size": 11,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/a.ser?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/a.ser",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/864adf4ca19a98a21c0c061a1b5cf4f682eff23b",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/a.ser",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/a.ser?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/864adf4ca19a98a21c0c061a1b5cf4f682eff23b",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/a.ser"
+    }
+  },
+  {
+    "name": "build",
+    "path": "build",
+    "sha": "a74962b9827130089934cc0d66cf93ee9fd304bf",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/build?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/build",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/a74962b9827130089934cc0d66cf93ee9fd304bf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/build?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/a74962b9827130089934cc0d66cf93ee9fd304bf",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/build"
+    }
+  },
+  {
+    "name": "compat_reports",
+    "path": "compat_reports",
+    "sha": "3c9330670e120da161015c3ae74ae63b69bf7431",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/compat_reports?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/compat_reports",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/3c9330670e120da161015c3ae74ae63b69bf7431",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/compat_reports?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/3c9330670e120da161015c3ae74ae63b69bf7431",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/compat_reports"
+    }
+  },
+  {
+    "name": "etc",
+    "path": "etc",
+    "sha": "336454babd0dc284f62ab41b6927eece615b3f67",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/etc?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/etc",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/336454babd0dc284f62ab41b6927eece615b3f67",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/etc?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/336454babd0dc284f62ab41b6927eece615b3f67",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/etc"
+    }
+  },
+  {
+    "name": "kryo.dat",
+    "path": "kryo.dat",
+    "sha": "d924744ad887382b3a8734e9d98b9060373bd241",
+    "size": 35,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/kryo.dat?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/kryo.dat",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/d924744ad887382b3a8734e9d98b9060373bd241",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/kryo.dat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/kryo.dat?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/d924744ad887382b3a8734e9d98b9060373bd241",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/kryo.dat"
+    }
+  },
+  {
+    "name": "lib",
+    "path": "lib",
+    "sha": "ad1f60614d640426bd49c1bab9563f98f497a288",
+    "size": 0,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/lib?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/lib",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/ad1f60614d640426bd49c1bab9563f98f497a288",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/lib?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/trees/ad1f60614d640426bd49c1bab9563f98f497a288",
+      "html": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/lib"
+    }
+  },
+  {
+    "name": "license.txt",
+    "path": "license.txt",
+    "sha": "5a57ac7a1f7a5c5e81b7c39a744a123b7be18d4e",
+    "size": 1497,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/license.txt?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/license.txt",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/5a57ac7a1f7a5c5e81b7c39a744a123b7be18d4e",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/license.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/license.txt?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/5a57ac7a1f7a5c5e81b7c39a744a123b7be18d4e",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/license.txt"
+    }
+  },
+  {
+    "name": "pom-main.xml",
+    "path": "pom-main.xml",
+    "sha": "74d340563231c7853aa0ddd4f0c5dbb7fa2a9472",
+    "size": 3975,
+    "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/pom-main.xml?ref=kryo-parent-3.0.3",
+    "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/pom-main.xml",
+    "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/74d340563231c7853aa0ddd4f0c5dbb7fa2a9472",
+    "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/pom-main.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/pom-main.xml?ref=kryo-parent-3.0.3",
+      "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/74d340563231c7853aa0ddd4f0c5dbb7fa2a9472",
+      "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/pom-main.xml"
+    }
+
+ succeeded in 248ms:
+{
+  "name": "README.md",
+  "path": "README.md",
+  "sha": "24ce7274309f84b6ec0539da2a3003ccc4665bf6",
+  "size": 38674,
+  "url": "https://api.github.com/repos/EsotericSoftware/kryo/contents/README.md?ref=kryo-parent-3.0.3",
+  "html_url": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/README.md",
+  "git_url": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/24ce7274309f84b6ec0539da2a3003ccc4665bf6",
+  "download_url": "https://raw.githubusercontent.com/EsotericSoftware/kryo/kryo-parent-3.0.3/README.md",
+  "type": "file",
+  "content": "IVtLcnlvTmV0XShodHRwczovL3Jhdy5naXRodWIuY29tL3dpa2kvRXNvdGVy\naWNTb2Z0d2FyZS9rcnlvL2ltYWdlcy9sb2dvLmpwZykKClshW0J1aWxkIFN0\nYXR1c10oaHR0cHM6Ly9qZW5raW5zLmlub2lvLmRlL2J1aWxkU3RhdHVzL2lj\nb24/am9iPWtyeW8pXShodHRwczovL2plbmtpbnMuaW5vaW8uZGUvam9iL2ty\neW8vKQoKS3J5byBpcyBhIGZhc3QgYW5kIGVmZmljaWVudCBvYmplY3QgZ3Jh\ncGggc2VyaWFsaXphdGlvbiBmcmFtZXdvcmsgZm9yIEphdmEuIFRoZSBnb2Fs\ncyBvZiB0aGUgcHJvamVjdCBhcmUgc3BlZWQsIGVmZmljaWVuY3ksIGFuZCBh\nbiBlYXN5IHRvIHVzZSBBUEkuIFRoZSBwcm9qZWN0IGlzIHVzZWZ1bCBhbnkg\ndGltZSBvYmplY3RzIG5lZWQgdG8gYmUgcGVyc2lzdGVkLCB3aGV0aGVyIHRv\nIGEgZmlsZSwgZGF0YWJhc2UsIG9yIG92ZXIgdGhlIG5ldHdvcmsuCgpLcnlv\nIGNhbiBhbHNvIHBlcmZvcm0gYXV0b21hdGljIGRlZXAgYW5kIHNoYWxsb3cg\nY29weWluZy9jbG9uaW5nLiBUaGlzIGlzIGRpcmVjdCBjb3B5aW5nIGZyb20g\nb2JqZWN0IHRvIG9iamVjdCwgbm90IG9iamVjdC0+Ynl0ZXMtPm9iamVjdC4K\nClRoaXMgZG9jdW1lbnRhdGlvbiBpcyBmb3IgdjIrIG9mIEtyeW8uIFNlZSBb\nVjFEb2N1bWVudGF0aW9uXShodHRwczovL2dpdGh1Yi5jb20vRXNvdGVyaWNT\nb2Z0d2FyZS9rcnlvL3dpa2kvRG9jdW1lbnRhdGlvbi1mb3ItS3J5by12ZXJz\naW9uLTEueCkgZm9yIHYxLnguCgpJZiB5b3UgYXJlIHBsYW5uaW5nIHRvIHVz\nZSBLcnlvIGZvciBuZXR3b3JrIGNvbW11bmljYXRpb24sIHRoZSBbS3J5b05l\ndF0oaHR0cHM6Ly9naXRodWIuY29tL0Vzb3RlcmljU29mdHdhcmUva3J5b25l\ndCkgcHJvamVjdCBtYXkgcHJvdmUgdXNlZnVsLgoKIyMgQ29udGVudHMKCi0g\nW05ldyBpbiByZWxlYXNlIDMuMC4wXSgjbmV3LWluLXJlbGVhc2UtMzAwKQot\nIFtJbnN0YWxsYXRpb25dKCNpbnN0YWxsYXRpb24pCiAtIFtJbnRlZ3JhdGlv\nbiB3aXRoIE1hdmVuXSgjaW50ZWdyYXRpb24td2l0aC1tYXZlbikKIC0gW1Vz\naW5nIEtyeW8gd2l0aG91dCBNYXZlbl0oI3VzaW5nLWtyeW8td2l0aG91dC1t\nYXZlbikKLSBbUXVpY2tzdGFydF0oI3F1aWNrc3RhcnQpCi0gW0lPXSgjaW8p\nCi0gW1Vuc2FmZS1iYXNlZCBJT10oI3Vuc2FmZS1iYXNlZC1pbykKLSBbU2Vy\naWFsaXplcnNdKCNzZXJpYWxpemVycykKLSBbUmVnaXN0cmF0aW9uXSgjcmVn\naXN0cmF0aW9uKQotIFtEZWZhdWx0IHNlcmlhbGl6ZXJzXSgjZGVmYXVsdC1z\nZXJpYWxpemVycykKLSBbRmllbGRTZXJpYWxpemVyXSgjZmllbGRzZXJpYWxp\nemVyKQotIFtLcnlvU2VyaWFsaXphYmxlXSgja3J5b3NlcmlhbGl6YWJsZSkK\nLSBbQ2xhc3MgZmllbGRzIGFubm90YXRpb25zXSgjY2xhc3MtZmllbGRzLWFu\nbm90YXRpb25zKQotIFtKYXZhIFNlcmlhbGl6YXRpb25dKCN1c2luZy1zdGFu\nZGFyZC1qYXZhLXNlcmlhbGl6YXRpb24pCi0gW1JlYWRpbmcgYW5kIHdyaXRp\nbmddKCNyZWFkaW5nLWFuZC13cml0aW5nKQotIFtSZWZlcmVuY2VzXSgjcmVm\nZXJlbmNlcykKLSBbT2JqZWN0IGNyZWF0aW9uXSgjb2JqZWN0LWNyZWF0aW9u\nKQotIFtDb3B5aW5nL2Nsb25pbmddKCNjb3B5aW5nY2xvbmluZykKLSBbQ29u\ndGV4dF0oI2NvbnRleHQpCi0gW0NvbXByZXNzaW9uIGFuZCBlbmNyeXB0aW9u\nXSgjY29tcHJlc3Npb24tYW5kLWVuY3J5cHRpb24pCi0gW0NodW5rZWQgZW5j\nb2RpbmddKCNjaHVua2VkLWVuY29kaW5nKQotIFtDb21wYXRpYmlsaXR5XSgj\nY29tcGF0aWJpbGl0eSkKLSBbSW50ZXJvcGVyYWJpbGl0eV0oI2ludGVyb3Bl\ncmFiaWxpdHkpCi0gW1N0YWNrIHNpemVdKCNzdGFjay1zaXplKQotIFtUaHJl\nYWRpbmddKCN0aHJlYWRpbmcpCi0gW1Bvb2xpbmcgS3J5byBpbnN0YW5jZXNd\nKCNwb29saW5nLWtyeW8taW5zdGFuY2VzKQotIFtMb2dnaW5nXSgjbG9nZ2lu\nZykKLSBbU2NhbGFdKCNzY2FsYSkKLSBbT2JqZWN0aXZlLUNdKCNvYmplY3Rp\ndmUtYykKLSBbQmVuY2htYXJrc10oI2JlbmNobWFya3MpCi0gW1Byb2plY3Rz\nIHVzaW5nIEtyeW9dKCNwcm9qZWN0cy11c2luZy1rcnlvKQotIFtDb250YWN0\nIC8gTWFpbGluZyBsaXN0XSgjY29udGFjdC0tbWFpbGluZy1saXN0KQoKIyMg\nTmV3IGluIHJlbGVhc2UgMy4wLjAKClRoZSAzLjAuMCByZWxlYXNlIGZpeGVz\nIG1hbnkgcmVwb3J0ZWQgaXNzdWVzIGFuZCBpbXByb3ZlcyBzdGFiaWxpdHkg\nYW5kIHBlcmZvcm1hbmNlLiBUaGUgbWF2ZW4gZ3JvdXBJZCBpcyBjaGFuZ2Vk\nIGZyb20gYGNvbS5lc290ZXJpY3NvZnR3YXJlLmtyeW9gIHRvIGBjb20uZXNv\ndGVyaWNzb2Z0d2FyZWAuIFRoZSBVbnNhZmUtYmFzZWQgSU8gc2VyaWFsaXph\ndGlvbiBmb3JtYXQgd2FzIGNoYW5nZWQgYW5kIGlzIGluY29tcGF0aWJsZSB3\naXRoIHByZXZpb3VzIHZlcnNpb25zICh0aGVyZWZvcmUgdGhlIG5ldyBtYWpv\nciB2ZXJzaW9uKSwgdGhlIHN0YW5kYXJkIHNlcmlhbGl6YXRpb24gZm9ybWF0\nIGlzIHN0aWxsIGNvbXBhdGlibGUuCgpTZWUgW0NoYW5nZUxvZ10oaHR0cHM6\nLy9naXRodWIuY29tL0Vzb3RlcmljU29mdHdhcmUva3J5by9ibG9iL21hc3Rl\nci9DSEFOR0VTLm1kKSBmb3IgbW9yZSBkZXRhaWxzIGFib3V0IHRoaXMgcmVs\nZWFzZS4KCiMjIEluc3RhbGxhdGlvbgoKS3J5byBKQVJzIGFyZSBhdmFpbGFi\nbGUgb24gdGhlIFtyZWxlYXNlcyBwYWdlXShodHRwczovL2dpdGh1Yi5jb20v\nRXNvdGVyaWNTb2Z0d2FyZS9rcnlvL3JlbGVhc2VzKSBhbmQgYXQgW01hdmVu\nIENlbnRyYWxdKGh0dHA6Ly9zZWFyY2gubWF2ZW4ub3JnLyNicm93c2V8MTk3\nNTI3NDE3NikuIExhdGVzdCBzbmFwc2hvdHMgb2YgS3J5byBpbmNsdWRpbmcg\nc25hcHNob3QgYnVpbGRzIG9mIG1hc3RlciBhcmUgaW4gdGhlIFtTb25hdHlw\nZSBSZXBvc2l0b3J5XShodHRwczovL29zcy5zb25hdHlwZS5vcmcvY29udGVu\ndC9yZXBvc2l0b3JpZXMvc25hcHNob3RzL2NvbS9lc290ZXJpY3NvZnR3YXJl\nL2tyeW8va3J5bykuCgojIyMgSW50ZWdyYXRpb24gd2l0aCBNYXZlbgoKVG8g\ndXNlIHRoZSBvZmZpY2lhbCByZWxlYXNlIG9mIEtyeW8sIHBsZWFzZSB1c2Ug\ndGhlIGZvbGxvd2luZyBzbmlwcGV0IGluIHlvdXIgcG9tLnhtbAoKYGBgeG1s\nCiAgICA8ZGVwZW5kZW5jeT4KICAgICAgICA8Z3JvdXBJZD5jb20uZXNvdGVy\naWNzb2Z0d2FyZTwvZ3JvdXBJZD4KICAgICAgICA8YXJ0aWZhY3RJZD5rcnlv\nPC9hcnRpZmFjdElkPgogICAgICAgIDx2ZXJzaW9uPjMuMC4yPC92ZXJzaW9u\nPgogICAgPC9kZXBlbmRlbmN5PgpgYGAKCklmIHlvdSBleHBlcmllbmNlIGlz\nc3VlcyBiZWNhdXNlIHlvdSBhbHJlYWR5IGhhdmUgYSBkaWZmZXJlbnQgdmVy\nc2lvbiBvZiBhc20gaW4geW91ciBjbGFzc3BhdGgsIHlvdSBjYW4gdXNlIHRo\nZSBrcnlvLXNoYWRlZCBqYXIgd2hpY2ggaGFzIGl0cyB2ZXJzaW9uIG9mIGFz\nbSBpbmNsdWRlZCwgcmVsb2NhdGVkIGluIGEgZGlmZmVyZW50IHBhY2thZ2U6\nCgpgYGB4bWwKICAgIDxkZXBlbmRlbmN5PgogICAgICAgIDxncm91cElkPmNv\nbS5lc290ZXJpY3NvZnR3YXJlPC9ncm91cElkPgogICAgICAgIDxhcnRpZmFj\ndElkPmtyeW8tc2hhZGVkPC9hcnRpZmFjdElkPgogICAgICAgIDx2ZXJzaW9u\nPjMuMC4yPC92ZXJzaW9uPgogICAgPC9kZXBlbmRlbmN5PgpgYGAKCklmIHlv\ndSB3YW50IHRvIHRlc3QgdGhlIGxhdGVzdCBzbmFwc2hvdCBvZiBLcnlvLCBw\nbGVhc2UgdXNlIHRoZSBmb2xsb3dpbmcgc25pcHBldCBpbiB5b3VyIHBvbS54\nbWwKCmBgYHhtbAogICAgPHJlcG9zaXRvcnk+CiAgICAgICA8aWQ+c29uYXR5\ncGUtc25hcHNob3RzPC9pZD4KICAgICAgIDxuYW1lPnNvbmF0eXBlIHNuYXBz\naG90cyByZXBvPC9uYW1lPgogICAgICAgPHVybD5odHRwczovL29zcy5zb25h\ndHlwZS5vcmcvY29udGVudC9yZXBvc2l0b3JpZXMvc25hcHNob3RzPC91cmw+\nCiAgICA8L3JlcG9zaXRvcnk+CiAgICAKICAgIDxkZXBlbmRlbmN5PgogICAg\nICAgPGdyb3VwSWQ+Y29tLmVzb3Rlcmljc29mdHdhcmU8L2dyb3VwSWQ+CiAg\nICAgICA8YXJ0aWZhY3RJZD5rcnlvPC9hcnRpZmFjdElkPgogICAgICAgIDx2\nZXJzaW9uPjMuMC4zLVNOQVBTSE9UPC92ZXJzaW9uPgogICAgPC9kZXBlbmRl\nbmN5PgpgYGAKCiMjIyBVc2luZyBLcnlvIHdpdGhvdXQgTWF2ZW4KCklmIHlv\ndSB1c2UgS3J5byB3aXRob3V0IE1hdmVuLCBiZSBhd2FyZSB0aGF0IEtyeW8g\namFyIGZpbGUgaGFzIGEgY291cGxlIG9mIGV4dGVybmFsIGRlcGVuZGVuY2ll\ncywgd2hvc2UgSkFScyB5b3UgbmVlZCB0byBhZGQgdG8geW91ciBjbGFzc3Bh\ndGggYXMgd2VsbC4gVGhlc2UgZGVwZW5kZW5jaWVzIGFyZSBbTWluTG9nIGxv\nZ2dpbmcgbGlicmFyeV0oaHR0cHM6Ly9naXRodWIuY29tL0Vzb3RlcmljU29m\ndHdhcmUvbWlubG9nLykgYW5kIFtPYmplbmVzaXMgbGlicmFyeV0oaHR0cHM6\nLy9jb2RlLmdvb2dsZS5jb20vcC9vYmplbmVzaXMvKS4KCgojIyBRdWlja3N0\nYXJ0CgpKdW1waW5nIGFoZWFkIHRvIHNob3cgaG93IHRoZSBsaWJyYXJ5IGlz\nIHVzZWQ6CgpgYGBqYXZhCiAgICBLcnlvIGtyeW8gPSBuZXcgS3J5bygpOwog\nICAgLy8gLi4uCiAgICBPdXRwdXQgb3V0cHV0ID0gbmV3IE91dHB1dChuZXcg\nRmlsZU91dHB1dFN0cmVhbSgiZmlsZS5iaW4iKSk7CiAgICBTb21lQ2xhc3Mg\nc29tZU9iamVjdCA9IC4uLgogICAga3J5by53cml0ZU9iamVjdChvdXRwdXQs\nIHNvbWVPYmplY3QpOwogICAgb3V0cHV0LmNsb3NlKCk7CiAgICAvLyAuLi4K\nICAgIElucHV0IGlucHV0ID0gbmV3IElucHV0KG5ldyBGaWxlSW5wdXRTdHJl\nYW0oImZpbGUuYmluIikpOwogICAgU29tZUNsYXNzIHNvbWVPYmplY3QgPSBr\ncnlvLnJlYWRPYmplY3QoaW5wdXQsIFNvbWVDbGFzcy5jbGFzcyk7CiAgICBp\nbnB1dC5jbG9zZSgpOwpgYGAKClRoZSBLcnlvIGNsYXNzIG9yY2hlc3RyYXRl\ncyBzZXJpYWxpemF0aW9uLiBUaGUgT3V0cHV0IGFuZCBJbnB1dCBjbGFzc2Vz\nIGhhbmRsZSBidWZmZXJpbmcgYnl0ZXMgYW5kIG9wdGlvbmFsbHkgZmx1c2hp\nbmcgdG8gYSBzdHJlYW0uCgpUaGUgcmVzdCBvZiB0aGlzIGRvY3VtZW50IGRl\ndGFpbHMgaG93IHRoaXMgd29ya3MgYW5kIGFkdmFuY2VkIHVzYWdlIG9mIHRo\nZSBsaWJyYXJ5LgoKIyMgSU8KClRoZSBPdXRwdXQgY2xhc3MgaXMgYW4gT3V0\ncHV0U3RyZWFtIHRoYXQgd3JpdGVzIGRhdGEgdG8gYSBieXRlIGFycmF5IGJ1\nZmZlci4gVGhpcyBidWZmZXIgY2FuIGJlIG9idGFpbmVkIGFuZCB1c2VkIGRp\ncmVjdGx5LCBpZiBhIGJ5dGUgYXJyYXkgaXMgZGVzaXJlZC4gSWYgdGhlIE91\ndHB1dCBpcyBnaXZlbiBhbiBPdXRwdXRTdHJlYW0sIGl0IHdpbGwgZmx1c2gg\ndGhlIGJ5dGVzIHRvIHRoZSBzdHJlYW0gd2hlbiB0aGUgYnVmZmVyIGJlY29t\nZXMgZnVsbC4gT3V0cHV0IGhhcyBtYW55IG1ldGhvZHMgZm9yIGVmZmljaWVu\ndGx5IHdyaXRpbmcgcHJpbWl0aXZlcyBhbmQgc3RyaW5ncyB0byBieXRlcy4g\nSXQgcHJvdmlkZXMgZnVuY3Rpb25hbGl0eSBzaW1pbGFyIHRvIERhdGFPdXRw\ndXRTdHJlYW0sIEJ1ZmZlcmVkT3V0cHV0U3RyZWFtLCBGaWx0ZXJPdXRwdXRT\ndHJlYW0sIGFuZCBCeXRlQXJyYXlPdXRwdXRTdHJlYW0uCgpCZWNhdXNlIE91\ndHB1dCBidWZmZXJzIHdoZW4gd3JpdGluZyB0byBhbiBPdXRwdXRTdHJlYW0s\nIGJlIHN1cmUgdG8gY2FsbCBgZmx1c2goKWAgb3IgYGNsb3NlKClgIGFmdGVy\nIHdyaXRpbmcgaXMgY29tcGxldGUgc28gdGhlIGJ1ZmZlcmVkIGJ5dGVzIGFy\nZSB3cml0dGVuIHRvIHRoZSB1bmRlcmx5aW5nIHN0cmVhbS4KClRoZSBJbnB1\ndCBjbGFzcyBpcyBhbiBJbnB1dFN0cmVhbSB0aGF0IHJlYWRzIGRhdGEgZnJv\nbSBhIGJ5dGUgYXJyYXkgYnVmZmVyLiBUaGlzIGJ1ZmZlciBjYW4gYmUgc2V0\nIGRpcmVjdGx5LCBpZiByZWFkaW5nIGZyb20gYSBieXRlIGFycmF5IGlzIGRl\nc2lyZWQuIElmIHRoZSBJbnB1dCBpcyBnaXZlbiBhbiBJbnB1dFN0cmVhbSwg\naXQgd2lsbCBmaWxsIHRoZSBidWZmZXIgZnJvbSB0aGUgc3RyZWFtIHdoZW4g\ndGhlIGJ1ZmZlciBpcyBleGhhdXN0ZWQuIElucHV0IGhhcyBtYW55IG1ldGhv\nZHMgZm9yIGVmZmljaWVudGx5IHJlYWRpbmcgcHJpbWl0aXZlcyBhbmQgc3Ry\naW5ncyBmcm9tIGJ5dGVzLiBJdCBwcm92aWRlcyBmdW5jdGlvbmFsaXR5IHNp\nbWlsYXIgdG8gRGF0YUlucHV0U3RyZWFtLCBCdWZmZXJlZElucHV0U3RyZWFt\nLCBGaWx0ZXJJbnB1dFN0cmVhbSwgYW5kIEJ5dGVBcnJheUlucHV0U3RyZWFt\nLgoKVG8gcmVhZCBmcm9tIGEgc291cmNlIG9yIHdyaXRlIHRvIGEgdGFyZ2V0\nIG90aGVyIHRoYW4gYSBieXRlIGFycmF5LCBzaW1wbHkgcHJvdmlkZSB0aGUg\nYXBwcm9wcmlhdGUgSW5wdXRTdHJlYW0gb3IgT3V0cHV0U3RyZWFtLgoKIyMg\nVW5zYWZlLWJhc2VkIElPCgpLcnlvIHByb3ZpZGVzIGFkZGl0aW9uYWwgSU8g\nY2xhc3Nlcywgd2hpY2ggYXJlIGJhc2VkIG9uIHRoZSBmdW5jdGlvbmFsaXRp\nZXMgZXhwb3NlZCBieSB0aGUgc3VuLm1pc2MuVW5zYWZlIGNsYXNzLiBUaGVz\nZSBjbGFzc2VzIGFyZSBVbnNhZmVJbnB1dCwgVW5zYWZlT3V0cHV0LiBUaGV5\nIGFyZSBkZXJpdmVkIGZyb20gS3J5bydzIElucHV0IGFuZCBPdXRwdXQgY2xh\nc3NlcyBhbmQgdGhlcmVmb3JlIGNhbiBiZSB1c2VkIGFzIGEgZHJvcC1pbiBy\nZXBsYWNlbWVudCBvbiB0aG9zZSBwbGF0Zm9ybXMsIHdoaWNoIHByb3Blcmx5\nIHN1cHBvcnQgc3VuLm1pc2MuVW5zYWZlLgoKRm9yIHRoZSBjYXNlIHlvdSBu\nZWVkIHRvIHNlcmlhbGl6ZSB0byBvciBkZXNlcmlhbGl6ZSBmcm9tIGRpcmVj\ndC1tZW1vcnkgQnl0ZUJ1ZmZlcnMgb3IgZXZlbiBvZmYtaGVhcCBtZW1vcnks\nIHRoZXJlIGFyZSB0d28gZGVkaWNhdGVkIGNsYXNzZXMgVW5zYWZlTWVtb3J5\nSW5wdXQgYW5kIFVuc2FmZU1lbW9yeU91dHB1dCB3aG9zZSBpbnN0YW5jZXMg\nY2FuIGJlIHVzZWQgZm9yIHRoaXMgcHVycG9zZSBpbnN0ZWFkIG9mIHRoZSB1\nc3VhbCBJbnB1dCBhbmQgT3V0cHV0IGNsYXNzZXMuCgpVc2luZyBVbnNhZmUt\nYmFzZWQgSU8gbWF5IHJlc3VsdCBpbiBhIHF1aXRlIHNpZ25pZmljYW50IHBl\ncmZvcm1hbmNlIGJvb3N0IChzb21ldGltZXMgdXAtdG8gYW4gb3JkZXIgb2Yg\nbWFnbml0dWRlKSwgZGVwZW5kaW5nIG9uIHlvdXIgYXBwbGljYXRpb24uIElu\nIHBhcnRpY3VsYXIsIGl0IGhlbHBzIGEgbG90IHdoZW4gc2VyaWFsaXppbmcg\nbGFyZ2UgcHJpbWl0aXZlIGFycmF5cyBhcyBwYXJ0IG9mIHlvdXIgb2JqZWN0\nIGdyYXBocy4KCiMjIyAqKiBESVNDTEFJTUVSIEFCT1VUIFVTSU5HIFVOU0FG\nRS1CQVNFRCBJTyAqKgoKKlVuc2FmZS1iYXNlZCBJTyBpcyBub3QgMTAwJSBj\nb21wYXRpYmxlIHdpdGggS3J5bydzIElucHV0IGFuZCBPdXRwdXQgc3RyZWFt\ncyB3aGVuIGl0IGNvbWVzIHRvIHRoZSBiaW5hcnkgZm9ybWF0IG9mIHNlcmlh\nbGl6ZWQgZGF0YS4qIAoKVGhpcyBtZWFucyB0aGF0IGRhdGEgd3JpdHRlbiBi\neSBVbnNhZmUtYmFzZWQgb3V0cHV0IHN0cmVhbXMgY2FuIGJlIHJlYWQgb25s\neSBieSBVbnNhZmUtYmFzZWQgaW5wdXQgc3RyZWFtcywgYnV0IG5vdCBieSB1\nc3VhbCBJbnB1dCBzdHJlYW1zLiBUaGUgc2FtZSBhcHBsaWVzIG9uIHRoZSBv\ncHBvc2l0ZSBkaXJlY3Rpb246IGRhdGEgd3JpdHRlbiBieSB1c3VhbCBPdXRw\ndXQgc3RyZWFtcyBjYW5ub3QgYmUgY29ycmVjdGx5IHJlYWQgYnkgVW5zYWZl\nLWJhc2VkIGlucHV0IHN0cmVhbXMuCgpJdCBzaG91bGQgYmUgc2FmZSB0byB1\nc2UgVW5zYWZlIElPIHN0cmVhbXMgYXMgbG9uZyBhcyBib3RoIHNlcmlhbGl6\nYXRpb24gYW5kIGRlc2VyaWFsaXphdGlvbiBhcmUgdXNpbmcgdGhlbSBhbmQg\nYXJlIGV4ZWN1dGVkIG9uIHRoZSBzYW1lIHByb2Nlc3NvciBhcmNoaXRlY3R1\ncmUgKG1vcmUgcHJlY2lzZWx5LCBpZiB0aGUgZW5kaWFubmVzcyBhbmQgaW50\nZXJuYWwgcmVwcmVzZW50YXRpb24gb2YgbmF0aXZlIGludGVnZXIgYW5kIGZs\nb2F0aW5nIHBvaW50IHR5cGVzIGlzIHRoZSBzYW1lKS4KClVuc2FmZSBJTyB3\nYXMgZXh0ZW5zaXZlbHkgdGVzdGVkIG9uIFg4NiBoYXJkd2FyZS4gT3RoZXIg\ncHJvY2Vzc29yIGFyY2hpdGVjdHVyZXMgYXJlIG5vdCB0ZXN0ZWQgdG8gdGhl\nIHNhbWUgZXh0ZW50LiBGb3IgZXhhbXBsZSwgdGhlcmUgd2VyZSBzb21lIGJ1\nZyByZXBvcnRzIGZyb20gdXNlcnMgdHJ5aW5nIHRvIHVzZSBpdCBvbiBTUEFS\nQy1iYXNlZCBwbGF0Zm9ybXMuIAoKIyMgU2VyaWFsaXplcnMKCktyeW8gaXMg\nYSBzZXJpYWxpemF0aW9uIGZyYW1ld29yay4gSXQgZG9lc24ndCBlbmZvcmNl\nIGEgc2NoZW1hIG9yIGNhcmUgd2hhdCBkYXRhIGlzIHdyaXR0ZW4gb3IgcmVh\nZC4gVGhpcyBpcyBsZWZ0IHRvIHRoZSBzZXJpYWxpemVycyB0aGVtc2VsdmVz\nLiBTZXJpYWxpemVycyBhcmUgcHJvdmlkZWQgYnkgZGVmYXVsdCB0byByZWFk\nIGFuZCB3cml0ZSBkYXRhIGluIHZhcmlvdXMgd2F5cy4gSWYgdGhlc2UgZG9u\nJ3QgbWVldCBwYXJ0aWN1bGFyIG5lZWRzLCB0aGV5IGNhbiBiZSByZXBsYWNl\nZCBpbiBwYXJ0IG9yIGluIHdob2xlLiBUaGUgcHJvdmlkZWQgc2VyaWFsaXpl\ncnMgY2FuIHJlYWQgYW5kIHdyaXRlIG1vc3Qgb2JqZWN0cyBidXQsIGlmIG5l\nY2Vzc2FyeSwgd3JpdGluZyBhIG5ldyBzZXJpYWxpemVyIGlzIGVhc3kuIFRo\nZSBTZXJpYWxpemVyIGFic3RyYWN0IGNsYXNzIGRlZmluZXMgbWV0aG9kcyB0\nbyBnbyBmcm9tIG9iamVjdHMgdG8gYnl0ZXMgYW5kIGJ5dGVzIHRvIG9iamVj\ndHMuCgpgYGBqYXZhCiAgICBwdWJsaWMgY2xhc3MgQ29sb3JTZXJpYWxpemVy\nIGV4dGVuZHMgU2VyaWFsaXplcjxDb2xvcj4gewogICAgCXB1YmxpYyB2b2lk\nIHdyaXRlIChLcnlvIGtyeW8sIE91dHB1dCBvdXRwdXQsIENvbG9yIG9iamVj\ndCkgewogICAgCQlvdXRwdXQud3JpdGVJbnQob2JqZWN0LmdldFJHQigpKTsK\nICAgIAl9CiAgICAKICAgIAlwdWJsaWMgQ29sb3IgcmVhZCAoS3J5byBrcnlv\nLCBJbnB1dCBpbnB1dCwgQ2xhc3M8VD4gdHlwZSkgewogICAgCQlyZXR1cm4g\nbmV3IENvbG9yKGlucHV0LnJlYWRJbnQoKSwgdHJ1ZSk7CiAgICAJfQogICAg\nfQpgYGAKClNlcmlhbGl6ZXIgaGFzIHR3byBtZXRob2RzIHRoYXQgY2FuIGJl\nIGltcGxlbWVudGVkLiBgd3JpdGUoKWAgd3JpdGVzIHRoZSBvYmplY3QgYXMg\nYnl0ZXMuIGByZWFkKClgIGNyZWF0ZXMgYSBuZXcgaW5zdGFuY2Ugb2YgdGhl\nIG9iamVjdCBhbmQgcmVhZHMgZnJvbSB0aGUgaW5wdXQgdG8gcG9wdWxhdGUg\naXQuCgpUaGUgS3J5byBpbnN0YW5jZSBjYW4gYmUgdXNlZCB0byB3cml0ZSBh\nbmQgcmVhZCBuZXN0ZWQgb2JqZWN0cy4gSWYgS3J5byBpcyB1c2VkIHRvIHJl\nYWQgYSBuZXN0ZWQgb2JqZWN0IGluIGByZWFkKClgIHRoZW4gYGtyeW8ucmVm\nZXJlbmNlKClgIG11c3QgZmlyc3QgYmUgY2FsbGVkIHdpdGggdGhlIHBhcmVu\ndCBvYmplY3QgaWYgaXQgaXMgcG9zc2libGUgZm9yIHRoZSBuZXN0ZWQgb2Jq\nZWN0IHRvIHJlZmVyZW5jZSB0aGUgcGFyZW50IG9iamVjdC4gSXQgaXMgdW5u\nZWNlc3NhcnkgdG8gY2FsbCBga3J5by5yZWZlcmVuY2UoKWAgaWYgdGhlIG5l\nc3RlZCBvYmplY3RzIGNhbid0IHBvc3NpYmx5IHJlZmVyZW5jZSB0aGUgcGFy\nZW50IG9iamVjdCwgS3J5byBpcyBub3QgYmVpbmcgdXNlZCBmb3IgbmVzdGVk\nIG9iamVjdHMsIG9yIHJlZmVyZW5jZXMgYXJlIG5vdCBiZWluZyB1c2VkLiBJ\nZiBuZXN0ZWQgb2JqZWN0cyBjYW4gdXNlIHRoZSBzYW1lIHNlcmlhbGl6ZXIs\nIHRoZSBzZXJpYWxpemVyIG11c3QgYmUgcmVlbnRyYW50LgoKQ29kZSBzaG91\nbGQgbm90IG1ha2UgdXNlIG9mIHNlcmlhbGl6ZXJzIGRpcmVjdGx5LCBpbnN0\nZWFkIHRoZSBLcnlvIHJlYWQgYW5kIHdyaXRlIG1ldGhvZHMgc2hvdWxkIGJl\nIHVzZWQuIFRoaXMgYWxsb3dzIEtyeW8gdG8gb3JjaGVzdHJhdGUgc2VyaWFs\naXphdGlvbiBhbmQgaGFuZGxlIGZlYXR1cmVzIHN1Y2ggYXMgcmVmZXJlbmNl\ncyBhbmQgbnVsbCBvYmplY3RzLgoKQnkgZGVmYXVsdCwgc2VyaWFsaXplcnMg\nZG8gbm90IG5lZWQgdG8gaGFuZGxlIHRoZSBvYmplY3QgYmVpbmcgbnVsbC4g\nVGhlIEtyeW8gZnJhbWV3b3JrIHdpbGwgd3JpdGUgYSBieXRlIGFzIG5lZWRl\nZCBkZW5vdGluZyBudWxsIG9yIG5vdCBudWxsLiBJZiBhIHNlcmlhbGl6ZXIg\nd2FudHMgdG8gYmUgbW9yZSBlZmZpY2llbnQgYW5kIGhhbmRsZSBudWxscyBp\ndHNlbGYsIGl0IGNhbiBjYWxsIGBTZXJpYWxpemVyI3NldEFjY2VwdHNOdWxs\nKHRydWUpYC4gVGhpcyBjYW4gYWxzbyBiZSB1c2VkIHRvIGF2b2lkIHdyaXRp\nbmcgdGhlIG51bGwgZGVub3RpbmcgYnl0ZSB3aGVuIGl0IGlzIGtub3duIHRo\nYXQgYWxsIGluc3RhbmNlcyBvZiBhIHR5cGUgd2lsbCBuZXZlciBiZSBudWxs\nLgoKIyMgUmVnaXN0cmF0aW9uCgpXaGVuIEtyeW8gd3JpdGVzIG91dCBhbiBp\nbnN0YW5jZSBvZiBhbiBvYmplY3QsIGZpcnN0IGl0IG1heSBuZWVkIHRvIHdy\naXRlIG91dCBzb21ldGhpbmcgdGhhdCBpZGVudGlmaWVzIHRoZSBvYmplY3Qn\ncyBjbGFzcy4gQnkgZGVmYXVsdCwgdGhlIGZ1bGx5IHF1YWxpZmllZCBjbGFz\ncyBuYW1lIGlzIHdyaXR0ZW4sIHRoZW4gdGhlIGJ5dGVzIGZvciB0aGUgb2Jq\nZWN0LiBTdWJzZXF1ZW50IGFwcGVhcmFuY2VzIG9mIHRoYXQgb2JqZWN0IHR5\ncGUgd2l0aGluIHRoZSBzYW1lIG9iamVjdCBncmFwaCBhcmUgd3JpdHRlbiB1\nc2luZyBhIHZhcmlhYmxlIGxlbmd0aCBpbnQuIFdyaXRpbmcgdGhlIGNsYXNz\nIG5hbWUgaXMgc29tZXdoYXQgaW5lZmZpY2llbnQsIHNvIGNsYXNzZXMgY2Fu\nIGJlIHJlZ2lzdGVyZWQgYmVmb3JlaGFuZDoKCmBgYGphdmEKICAgIEtyeW8g\na3J5byA9IG5ldyBLcnlvKCk7CiAgICBrcnlvLnJlZ2lzdGVyKFNvbWVDbGFz\ncy5jbGFzcyk7CiAgICAvLyAuLi4KICAgIE91dHB1dCBvdXRwdXQgPSAuLi4K\nICAgIFNvbWVDbGFzcyBzb21lT2JqZWN0ID0gLi4uCiAgICBrcnlvLndyaXRl\nT2JqZWN0KG91dHB1dCwgc29tZU9iamVjdCk7CmBgYAoKSGVyZSBTb21lQ2xh\nc3MgaXMgcmVnaXN0ZXJlZCB3aXRoIEtyeW8sIHdoaWNoIGFzc29jaWF0ZXMg\ndGhlIGNsYXNzIHdpdGggYW4gaW50IElELiBXaGVuIEtyeW8gd3JpdGVzIG91\ndCBhbiBpbnN0YW5jZSBvZiBTb21lQ2xhc3MsIGl0IHdpbGwgd3JpdGUgb3V0\nIHRoaXMgaW50IElELiBUaGlzIGlzIG1vcmUgZWZmaWNpZW50IHRoYW4gd3Jp\ndGluZyBvdXQgdGhlIGNsYXNzIG5hbWUsIGJ1dCByZXF1aXJlcyB0aGUgY2xh\nc3NlcyB0aGF0IHdpbGwgYmUgc2VyaWFsaXplZCB0byBiZSBrbm93biB1cCBm\ncm9udC4gRHVyaW5nIGRlc2VyaWFsaXphdGlvbiwgdGhlIHJlZ2lzdGVyZWQg\nY2xhc3NlcyBtdXN0IGhhdmUgdGhlIGV4YWN0IHNhbWUgSURzIHRoZXkgaGFk\nIGR1cmluZyBzZXJpYWxpemF0aW9uLiBUaGUgcmVnaXN0ZXIgbWV0aG9kIHNo\nb3duIGFib3ZlIGFzc2lnbnMgdGhlIG5leHQgYXZhaWxhYmxlLCBsb3dlc3Qg\naW50ZWdlciBJRCwgd2hpY2ggbWVhbnMgdGhlIG9yZGVyIGNsYXNzZXMgYXJl\nIHJlZ2lzdGVyZWQgaXMgaW1wb3J0YW50LiBUaGUgSUQgY2FuIGFsc28gYmUg\nc3BlY2lmaWVkIGV4cGxpY2l0bHkgdG8gbWFrZSBvcmRlciB1bmltcG9ydGFu\ndDoKCmBgYGphdmEKICAgIEtyeW8ga3J5byA9IG5ldyBLcnlvKCk7CiAgICBr\ncnlvLnJlZ2lzdGVyKFNvbWVDbGFzcy5jbGFzcywgMCk7CiAgICBrcnlvLnJl\nZ2lzdGVyKEFub3RoZXJDbGFzcy5jbGFzcywgMSk7CiAgICBrcnlvLnJlZ2lz\ndGVyKFlldEFub3RoZXJDbGFzcy5jbGFzcywgMik7CmBgYAoKVGhlIElEcyBh\ncmUgd3JpdHRlbiBtb3N0IGVmZmljaWVudGx5IHdoZW4gdGhleSBhcmUgc21h\nbGwsIHBvc2l0aXZlIGludGVnZXJzLiBOZWdhdGl2ZSBJRHMgYXJlIG5vdCBz\nZXJpYWxpemVkIGVmZmljaWVudGx5LiAtMSBhbmQgLTIgYXJlIHJlc2VydmVk\nLgoKVXNlIG9mIHJlZ2lzdGVyZWQgYW5kIHVucmVnaXN0ZXJlZCBjbGFzc2Vz\nIGNhbiBiZSBtaXhlZC4gQWxsIHByaW1pdGl2ZXMsIHByaW1pdGl2ZSB3cmFw\ncGVycywgYW5kIFN0cmluZyBhcmUgcmVnaXN0ZXJlZCBieSBkZWZhdWx0LgoK\nS3J5byNzZXRSZWdpc3RyYXRpb25SZXF1aXJlZCBjYW4gYmUgc2V0IHRvIHRy\ndWUgdG8gdGhyb3cgYW4gZXhjZXB0aW9uIHdoZW4gYW55IHVucmVnaXN0ZXJl\nZCBjbGFzcyBpcyBlbmNvdW50ZXJlZC4gVGhpcyBwcmV2ZW50cyBhbiBhcHBs\naWNhdGlvbiBmcm9tIGFjY2lkZW50YWxseSB1c2luZyBjbGFzcyBuYW1lIHN0\ncmluZ3MuCgpJZiB1c2luZyB1bnJlZ2lzdGVyZWQgY2xhc3Nlcywgc2hvcnQg\ncGFja2FnZSBuYW1lcyBjb3VsZCBiZSBjb25zaWRlcmVkLgoKIyMgRGVmYXVs\ndCBzZXJpYWxpemVycwoKQWZ0ZXIgd3JpdGluZyB0aGUgY2xhc3MgaWRlbnRp\nZmllciwgS3J5byB1c2VzIGEgc2VyaWFsaXplciB0byB3cml0ZSB0aGUgb2Jq\nZWN0J3MgYnl0ZXMuIFdoZW4gYSBjbGFzcyBpcyByZWdpc3RlcmVkLCBhIHNl\ncmlhbGl6ZXIgaW5zdGFuY2UgY2FuIGJlIHNwZWNpZmllZDoKCmBgYGphdmEK\nICAgIEtyeW8ga3J5byA9IG5ldyBLcnlvKCk7CiAgICBrcnlvLnJlZ2lzdGVy\nKFNvbWVDbGFzcy5jbGFzcywgbmV3IFNvbWVTZXJpYWxpemVyKCkpOwogICAg\na3J5by5yZWdpc3RlcihBbm90aGVyQ2xhc3MuY2xhc3MsIG5ldyBBbm90aGVy\nU2VyaWFsaXplcigpKTsKYGBgCgpJZiBhIGNsYXNzIGlzIG5vdCByZWdpc3Rl\ncmVkIG9yIG5vIHNlcmlhbGl6ZXIgaXMgc3BlY2lmaWVkLCBhIHNlcmlhbGl6\nZXIgaXMgY2hvc2VuIGF1dG9tYXRpY2FsbHkgZnJvbSBhIGxpc3Qgb2YgImRl\nZmF1bHQgc2VyaWFsaXplcnMiIHRoYXQgbWFwcyBhIGNsYXNzIHRvIGEgc2Vy\naWFsaXplci4gVGhlIGZvbGxvd2luZyBjbGFzc2VzIGhhdmUgYSBkZWZhdWx0\nIHNlcmlhbGl6ZXIgc2V0IGJ5IGRlZmF1bHQ6CgoKPHRhYmxlPgogIDx0cj48\ndGQ+Ym9vbGVhbjwvdGQ+PHRkPkJvb2xlYW48L3RkPjx0ZD5ieXRlPC90ZD48\ndGQ+Qnl0ZTwvdGQ+PHRkPmNoYXI8L3RkPjwvdHI+CiAgPHRyPjx0ZD5DaGFy\nYWN0ZXI8L3RkPjx0ZD5zaG9ydDwvdGQ+PHRkPlNob3J0PC90ZD48dGQ+aW50\nPC90ZD48dGQ+SW50ZWdlcjwvdGQ+PC90cj4KICA8dHI+PHRkPmxvbmc8L3Rk\nPjx0ZD5Mb25nPC90ZD48dGQ+ZmxvYXQ8L3RkPjx0ZD5GbG9hdDwvdGQ+PHRk\nPmRvdWJsZTwvdGQ+PC90cj4KICA8dHI+PHRkPkRvdWJsZTwvdGQ+PHRkPmJ5\ndGVbXTwvdGQ+PHRkPlN0cmluZzwvdGQ+PHRkPkJpZ0ludGVnZXI8L3RkPjx0\nZD5CaWdEZWNpbWFsPC90ZD48L3RyPgogIDx0cj48dGQ+Q29sbGVjdGlvbjwv\ndGQ+PHRkPkRhdGU8L3RkPjx0ZD5Db2xsZWN0aW9ucy5lbXB0eUxpc3Q8L3Rk\nPjx0ZD5Db2xsZWN0aW9ucy5zaW5nbGV0b248L3RkPjx0ZD5NYXA8L3RkPjwv\ndHI+CiAgPHRyPjx0ZD5TdHJpbmdCdWlsZGVyPC90ZD48dGQ+VHJlZU1hcDwv\ndGQ+PHRkPkNvbGxlY3Rpb25zLmVtcHR5TWFwPC90ZD48dGQ+Q29sbGVjdGlv\nbnMuZW1wdHlTZXQ8L3RkPjx0ZD5LcnlvU2VyaWFsaXphYmxlPC90ZD48L3Ry\nPgogIDx0cj48dGQ+U3RyaW5nQnVmZmVyPC90ZD48dGQ+Q2xhc3M8L3RkPjx0\nZD5Db2xsZWN0aW9ucy5zaW5nbGV0b25MaXN0PC90ZD48dGQ+Q29sbGVjdGlv\nbnMuc2luZ2xldG9uTWFwPC90ZD48dGQ+Q3VycmVuY3k8L3RkPjwvdHI+CiAg\nPHRyPjx0ZD5DYWxlbmRhcjwvdGQ+PHRkPlRpbWVab25lPC90ZD48dGQ+RW51\nbTwvdGQ+PHRkPkVudW1TZXQ8L3RkPjwvdHI+CjwvdGFibGU+CgoKQWRkaXRp\nb25hbCBkZWZhdWx0IHNlcmlhbGl6ZXJzIGNhbiBiZSBhZGRlZDoKCmBgYGph\ndmEKICAgIEtyeW8ga3J5byA9IG5ldyBLcnlvKCk7CiAgICBrcnlvLmFkZERl\nZmF1bHRTZXJpYWxpemVyKFNvbWVDbGFzcy5jbGFzcywgU29tZVNlcmlhbGl6\nZXIuY2xhc3MpOwogICAgLy8gLi4uCiAgICBPdXRwdXQgb3V0cHV0ID0gLi4u\nCiAgICBTb21lQ2xhc3Mgc29tZU9iamVjdCA9IC4uLgogICAga3J5by53cml0\nZU9iamVjdChvdXRwdXQsIHNvbWVPYmplY3QpOwpgYGAKCkEgY2xhc3MgY2Fu\nIGFsc28gdXNlIHRoZSBEZWZhdWx0U2VyaWFsaXplciBhbm5vdGF0aW9uOgoK\nYGBgamF2YQogICAgQERlZmF1bHRTZXJpYWxpemVyKFNvbWVDbGFzc1Nlcmlh\nbGl6ZXIuY2xhc3MpCiAgICBwdWJsaWMgY2xhc3MgU29tZUNsYXNzIHsKICAg\nICAgIC8vIC4uLgogICAgfQpgYGAKCklmIG5vIGRlZmF1bHQgc2VyaWFsaXpl\ncnMgbWF0Y2ggYSBjbGFzcywgdGhlbiBieSBkZWZhdWx0IFtGaWVsZFNlcmlh\nbGl6ZXJdKCNGaWVsZFNlcmlhbGl6ZXIpIGlzIHVzZWQuIFRoaXMgY2FuIGFs\nc28gYmUgY2hhbmdlZDoKCiAgICBLcnlvIGtyeW8gPSBuZXcgS3J5bygpOwog\nICAga3J5by5zZXREZWZhdWx0U2VyaWFsaXplcihBbm90aGVyR2VuZXJpY1Nl\ncmlhbGl6ZXIuY2xhc3MpOwoKU29tZSBzZXJpYWxpemVycyBhbGxvdyBleHRy\nYSBpbmZvcm1hdGlvbiB0byBiZSBwcm92aWRlZCBzbyB0aGF0IHRoZSBudW1i\nZXIgb2YgYnl0ZXMgb3V0cHV0IGNhbiBiZSByZWR1Y2VkOgoKYGBgamF2YQog\nICAgS3J5byBrcnlvID0gbmV3IEtyeW8oKTsKICAgIEZpZWxkU2VyaWFsaXpl\nciBzb21lQ2xhc3NTZXJpYWxpemVyID0gbmV3IEZpZWxkU2VyaWFsaXplcihr\ncnlvLCBTb21lQ2xhc3MuY2xhc3MpOwogICAgQ29sbGVjdGlvblNlcmlhbGl6\nZXIgbGlzdFNlcmlhbGl6ZXIgPSBuZXcgQ29sbGVjdGlvblNlcmlhbGl6ZXIo\nKTsKICAgIGxpc3RTZXJpYWxpemVyLnNldEVsZW1lbnRDbGFzcyhTdHJpbmcu\nY2xhc3MpOwogICAgbGlzdFNlcmlhbGl6ZXIuc2V0RWxlbWVudHNDYW5CZU51\nbGwoZmFsc2UpOwogICAgc29tZUNsYXNzU2VyaWFsaXplci5nZXRGaWVsZCgi\nbGlzdCIpLnNldENsYXNzKExpbmtlZExpc3QuY2xhc3MsIGxpc3RTZXJpYWxp\nemVyKTsKICAgIGtyeW8ucmVnaXN0ZXIoU29tZUNsYXNzLmNsYXNzLCBzb21l\nQ2xhc3NTZXJpYWxpemVyKTsKICAgIC8vIC4uLgogICAgU29tZUNsYXNzIHNv\nbWVPYmplY3QgPSAuLi4KICAgIHNvbWVPYmplY3QubGlzdCA9IG5ldyBMaW5r\nZWRMaXN0KCk7CiAgICBzb21lT2JqZWN0Lmxpc3QuYWRkKCJ0aGlzaGl0aXMi\nKTsKICAgIHNvbWVPYmplY3QubGlzdC5hZGQoImJhbmFuYXMiKTsKICAgIGty\neW8ud3JpdGVPYmplY3Qob3V0cHV0LCBzb21lT2JqZWN0KTsKYGBgCgpJbiB0\naGlzIGV4YW1wbGUsIEZpZWxkU2VyaWFsaXplciB3aWxsIGJlIHVzZWQgZm9y\nIFNvbWVDbGFzcy4gRmllbGRTZXJpYWxpemVyIGlzIGNvbmZpZ3VyZWQgc28g\ndGhlICJsaXN0IiBmaWVsZCB3aWxsIGFsd2F5cyBiZSBhIExpbmtlZExpc3Qg\nYW5kIHdpbGwgdXNlIHRoZSBzcGVjaWZpZWQgQ29sbGVjdGlvblNlcmlhbGl6\nZXIuIFRoZSBDb2xsZWN0aW9uU2VyaWFsaXplciBpcyBjb25maWd1cmVkIHNv\nIGVhY2ggZWxlbWVudCB3aWxsIGJlIGEgU3RyaW5nIGFuZCBub25lIG9mIHRo\nZSBlbGVtZW50cyB3aWxsIGJlIG51bGwuIFRoaXMgYWxsb3dzIHRoZSBzZXJp\nYWxpemVyIHRvIGJlIG1vcmUgZWZmaWNpZW50LiBJbiB0aGlzIGNhc2UsIDIg\ndG8gMyBieXRlcyBhcmUgc2F2ZWQgcGVyIGVsZW1lbnQgaW4gdGhlIGxpc3Qu\nCgojIyBGaWVsZFNlcmlhbGl6ZXIKCkJ5IGRlZmF1bHQsIG1vc3QgY2xhc3Nl\ncyB3aWxsIGVuZCB1cCB1c2luZyBGaWVsZFNlcmlhbGl6ZXIuIEl0IGVzc2Vu\ndGlhbGx5IGRvZXMgd2hhdCBoYW5kIHdyaXR0ZW4gc2VyaWFsaXphdGlvbiB3\nb3VsZCwgYnV0IGRvZXMgaXQgYXV0b21hdGljYWxseS4gRmllbGRTZXJpYWxp\nemVyIGRvZXMgZGlyZWN0IGFzc2lnbm1lbnQgdG8gdGhlIG9iamVjdCdzIGZp\nZWxkcy4gSWYgdGhlIGZpZWxkcyBhcmUgcHVibGljLCBwcm90ZWN0ZWQsIG9y\nIGRlZmF1bHQgYWNjZXNzIChwYWNrYWdlIHByaXZhdGUpIGFuZCBub3QgbWFy\na2VkIGFzIGZpbmFsLCBieXRlY29kZSBnZW5lcmF0aW9uIGlzIHVzZWQgZm9y\nIG1heGltdW0gc3BlZWQgKHNlZSBbUmVmbGVjdEFTTV0oaHR0cHM6Ly9naXRo\ndWIuY29tL0Vzb3RlcmljU29mdHdhcmUvcmVmbGVjdGFzbSkpLiBGb3IgcHJp\ndmF0ZSBmaWVsZHMsIHNldEFjY2Vzc2libGUgYW5kIGNhY2hlZCByZWZsZWN0\naW9uIGlzIHVzZWQsIHdoaWNoIGlzIHN0aWxsIHF1aXRlIGZhc3QuCgpPdGhl\nciBnZW5lcmFsIHB1cnBvc2Ugc2VyaWFsaXplcyBhcmUgcHJvdmlkZWQsIHN1\nY2ggYXMgQmVhblNlcmlhbGl6ZXIsIFRhZ2dlZEZpZWxkU2VyaWFsaXplciwg\nQ29tcGF0aWJsZUZpZWxkU2VyaWFsaXplciwgYW5kIFZlcnNpb25GaWVsZFNl\ncmlhbGl6ZXIuIEFkZGl0aW9uYWwgc2VyaWFsaXplcnMgYXJlIGF2YWlsYWJs\nZSBpbiBhIHNlcGFyYXRlIHByb2plY3Qgb24gZ2l0aHViLCBba3J5by1zZXJp\nYWxpemVyc10oaHR0cHM6Ly9naXRodWIuY29tL21hZ3JvL2tyeW8tc2VyaWFs\naXplcnMpLgoKIyMgS3J5b1NlcmlhbGl6YWJsZQoKV2hpbGUgRmllbGRTZXJp\nYWxpemVyIGlzIGlkZWFsIGZvciBtb3N0IGNsYXNzZXMsIHNvbWV0aW1lcyBp\ndCBpcyBjb252ZW5pZW50IGZvciBhIGNsYXNzIHRvIGRvIGl0cyBvd24gc2Vy\naWFsaXphdGlvbi4gVGhpcyBjYW4gYmUgZG9uZSBieSBpbXBsZW1lbnRpbmcg\nS3J5b1NlcmlhbGl6YWJsZSBpbnRlcmZhY2UgKHNpbWlsYXIgdG8gdGhlIGph\ndmEuaW8uRXh0ZXJuYWxpemFibGUgaW50ZXJmYWNlIGluIHRoZSBKREspLgoK\nYGBgamF2YQoKICAgIHB1YmxpYyBjbGFzcyBTb21lQ2xhc3MgaW1wbGVtZW50\ncyBLcnlvU2VyaWFsaXphYmxlIHsKICAgICAgIC8vIC4uLgogICAgCiAgICAg\nICBwdWJsaWMgdm9pZCB3cml0ZSAoS3J5byBrcnlvLCBPdXRwdXQgb3V0cHV0\nKSB7CiAgICAgICAgICAvLyAuLi4KICAgICAgIH0KICAgIAogICAgICAgcHVi\nbGljIHZvaWQgcmVhZCAoS3J5byBrcnlvLCBJbnB1dCBpbnB1dCkgewogICAg\nICAgICAgLy8gLi4uCiAgICAgICB9CiAgICB9CmBgYAoKCiMjIFVzaW5nIHN0\nYW5kYXJkIEphdmEgU2VyaWFsaXphdGlvbgoKV2hpbGUgdmVyeSByYXJlLCBz\nb21lIGNsYXNzZXMgY2Fubm90IGJlIHNlcmlhbGl6ZWQgYnkgS3J5by4gSW4g\nc3VjaCBzaXR1YXRpb25zIGl0IGlzIHBvc3NpYmxlIHRvIHVzZSBhIGZhbGxi\nYWNrIHNvbHV0aW9uIHByb3ZpZGVkIGJ5IEtyeW8ncyBKYXZhU2VyaWFsaXpl\nciBhbmQgdXNlIHRoZSBzdGFuZGFyZCBKYXZhIFNlcmlhbGl6YXRpb24gaW5z\ndGVhZC4gVGhpcyBhcHByb2FjaCB3b3VsZCBiZSBhcyBzbG93IGFzIHVzdWFs\nIEphdmEgc2VyaWFsaXphdGlvbiwgYnV0IHdvdWxkIG1ha2UgeW91ciBjbGFz\ncyBzZXJpYWxpemUgYXMgbG9uZyBhcyBKYXZhIHNlcmlhbGl6YXRpb24gaXMg\nYWJsZSB0byBzZXJpYWxpemUgaXQuIE9mIGNvdXJzZSwgeW91ciBjbGFzc3Mg\nc2hvdWxkIGltcGxlbWVudCB0aGUgYFNlcmlhbGl6YWJsZWAgb3IgYEV4dGVy\nbmFsaXphYmxlYCBpbnRlcmZhY2UgYXMgaXQgaXMgcmVxdWlyZWQgYnkgdXN1\nYWwgSmF2YSBzZXJpYWxpemF0aW9uLgoKSWYgeW91ciBjbGFzcyBpbXBlbWVu\ndHMgSmF2YSdzIGBTZXJpYWxpemFibGVgIGludGVyZmFjZSwgdGhlbiB5b3Ug\nbWF5IHdhbnQgdG8gdXNlIEtyeW8ncyBkZWRpY2F0ZWQgYEphdmFTZXJpYWxp\nemVyYCBzZXJpYWxpemVyIGZvciBpdDoKCmBgYGphdmEKICAgIGtyeW8ucmVn\naXN0ZXIoU29tZUNsYXNzLmNsYXNzLCBuZXcgSmF2YVNlcmlhbGl6ZXIoKSk7\nCmBgYAoKCklmIHlvdXIgY2xhc3MgaW1wZW1lbnRzIEphdmEncyBgRXh0ZXJu\nYWxpemFibGVgIGludGVyZmFjZSwgdGhlbiB5b3UgbWF5IHdhbnQgdG8gdXNl\nIEtyeW8ncyBkZWRpY2F0ZWQgYEV4dGVybmFsaXphYmxlU2VyaWFsaXplcmAg\nc2VyaWFsaXplciBmb3IgaXQ6CgpgYGBqYXZhCiAgICBrcnlvLnJlZ2lzdGVy\nKFNvbWVDbGFzcy5jbGFzcywgbmV3IEV4dGVybmFsaXphYmxlU2VyaWFsaXpl\ncigpKTsKYGBgCgoKIyMgQ2xhc3MgZmllbGRzIGFubm90YXRpb25zCgpUeXBp\nY2FsbHksIHdoZW4gRmllbGRTZXJpYWxpemVyIGlzIHVzZWQgaXQgaXMgYWJs\nZSB0byBhdXRvbWF0aWNhbGx5IGd1ZXNzIHdoaWNoIHNlcmlhbGl6ZXIgc2hv\ndWxkIGJlIHVzZWQgZm9yIGVhY2ggZmllbGQgb2YgYSBjbGFzcy4gQnV0IGlu\nIGNlcnRhaW4gc2l0dWF0aW9ucyB5b3UgbWF5IHdhbnQgdG8gY2hhbmdlIGEg\nZGVmYXVsdCBiZWhhdmlvciBhbmQgY3VzdG9taXplIHRoZSB3YXkgaG93IHRo\naXMgZmllbGQgaXMgc2VyaWFsaXplZC4KCktyeW8gcHJvdmlkZXMgYSBzZXQg\nb2YgYW5ub3RhdGlvbnMgdGhhdCBjYW4gYmUgdXNlZCBleGFjdGx5IGZvciB0\naGlzIHB1cnBvc2UuIGBAQmluZGAgY2FuIGJlIHVzZWQgZm9yIGFueSBmaWVs\nZCwgYEBDb2xsZWN0aW9uQmluZGAgZm9yIGZpZWxkcyB3aG9zZSB0eXBlIGlz\nIGEgY29sbGVjdGlvbiBhbmQgYEBNYXBCaW5kYCBmb3IgZmllbGRzIHdob3Nl\nIHR5cGUgaXMgYSBtYXA6CgpgYGBqYXZhCgogICAgcHVibGljIGNsYXNzIFNv\nbWVDbGFzcyB7CiAgICAgICAvLyBVc2UgYSBTdHJpbmdTZXJpYWxpemVyIGZv\nciB0aGlzIGZpZWxkCiAgICAgICBAQmluZChTdHJpbmdTZXJpYWxpemVyLmNs\nYXNzKSAKICAgICAgIE9iamVjdCBzdHJpbmdGaWVsZDsKICAgICAgIAogICAg\nICAgLy8gVXNlIGEgTWFwU2VyaWFsaXplciBmb3IgdGhpcyBmaWVsZC4gS2V5\ncyBzaG91bGQgYmUgc2VyaWFsaXplZAogICAgICAgLy8gdXNpbmcgYSBTdHJp\nbmdTZXJpYWxpemVyLCB3aGVyZWFzIHZhbHVlcyBzaG91bGQgYmUgc2VyaWFs\naXplZAogICAgICAgLy8gdXNpbmcgSW50QXJyYXlTZXJpYWxpemVyCiAgICAg\nICBAQmluZE1hcCgKICAgICAJCQl2YWx1ZVNlcmlhbGl6ZXIgPSBJbnRBcnJh\neVNlcmlhbGl6ZXIuY2xhc3MsIAogICAgIAkJCWtleVNlcmlhbGl6ZXIgPSBT\ndHJpbmdTZXJpYWxpemVyLmNsYXNzLCAKICAgICAJCQl2YWx1ZUNsYXNzID0g\naW50W10uY2xhc3MsIAogICAgIAkJCWtleUNsYXNzID0gU3RyaW5nLmNsYXNz\nLCAKICAgICAJCQlrZXlzQ2FuQmVOdWxsID0gZmFsc2UpIAogICAgICAgTWFw\nIG1hcDsKICAgICAgIAogICAgICAgLy8gVXNlIGEgQ29sbGVjdGlvblNlcmlh\nbGl6ZXIgZm9yIHRoaXMgZmllbGQuIEVsZW1lbnRzIHNob3VsZCBiZSBzZXJp\nYWxpemVkCiAgICAgICAvLyB1c2luZyBMb25nQXJyYXlTZXJpYWxpemVyCiAg\nICAgICBAQmluZENvbGxlY3Rpb24oCiAgICAgCQkJZWxlbWVudFNlcmlhbGl6\nZXIgPSBMb25nQXJyYXlTZXJpYWxpemVyLmNsYXNzLAogICAgIAkJCWVsZW1l\nbnRDbGFzcyA9IGxvbmdbXS5jbGFzcywgCiAgICAgCQkJZWxlbWVudHNDYW5C\nZU51bGwgPSBmYWxzZSkgCiAgICAgICBDb2xsZWN0aW9uIGNvbGxlY3Rpb247\nCiAgICAgICAKICAgICAgIC8vIC4uLgogICAgfQpgYGAKCgojIyBSZWFkaW5n\nIGFuZCB3cml0aW5nCgpLcnlvIGhhcyB0aHJlZSBzZXRzIG9mIG1ldGhvZHMg\nZm9yIHJlYWRpbmcgYW5kIHdyaXRpbmcgb2JqZWN0cy4KCklmIHRoZSBjb25j\ncmV0ZSBjbGFzcyBvZiB0aGUgb2JqZWN0IGlzIG5vdCBrbm93biBhbmQgdGhl\nIG9iamVjdCBjb3VsZCBiZSBudWxsOgoKYGBgamF2YQogICAga3J5by53cml0\nZUNsYXNzQW5kT2JqZWN0KG91dHB1dCwgb2JqZWN0KTsKICAgIC8vIC4uLgog\nICAgT2JqZWN0IG9iamVjdCA9IGtyeW8ucmVhZENsYXNzQW5kT2JqZWN0KGlu\ncHV0KTsKICAgIGlmIChvYmplY3QgaW5zdGFuY2VvZiBTb21lQ2xhc3MpIHsK\nICAgICAgIC8vIC4uLgogICAgfQpgYGAKCklmIHRoZSBjbGFzcyBpcyBrbm93\nbiBhbmQgdGhlIG9iamVjdCBjb3VsZCBiZSBudWxsOgoKYGBgamF2YQogICAg\na3J5by53cml0ZU9iamVjdE9yTnVsbChvdXRwdXQsIHNvbWVPYmplY3QpOwog\nICAgLy8gLi4uCiAgICBTb21lQ2xhc3Mgc29tZU9iamVjdCA9IGtyeW8ucmVh\nZE9iamVjdE9yTnVsbChpbnB1dCwgU29tZUNsYXNzLmNsYXNzKTsKYGBgCgpJ\nZiB0aGUgY2xhc3MgaXMga25vd24gYW5kIHRoZSBvYmplY3QgY2Fubm90IGJl\nIG51bGw6CgpgYGBqYXZhCiAgICBrcnlvLndyaXRlT2JqZWN0KG91dHB1dCwg\nc29tZU9iamVjdCk7CiAgICAvLyAuLi4KICAgIFNvbWVDbGFzcyBzb21lT2Jq\nZWN0ID0ga3J5by5yZWFkT2JqZWN0KGlucHV0LCBTb21lQ2xhc3MuY2xhc3Mp\nOwpgYGAKCiMjIFJlZmVyZW5jZXMKCkJ5IGRlZmF1bHQsIGVhY2ggYXBwZWFy\nYW5jZSBvZiBhbiBvYmplY3QgaW4gdGhlIGdyYXBoIGFmdGVyIHRoZSBmaXJz\ndCBpcyBzdG9yZWQgYXMgYW4gaW50ZWdlciBvcmRpbmFsLiBUaGlzIGFsbG93\ncyBtdWx0aXBsZSByZWZlcmVuY2VzIHRvIHRoZSBzYW1lIG9iamVjdCBhbmQg\nY3ljbGljIGdyYXBocyB0byBiZSBzZXJpYWxpemVkLiBUaGlzIGhhcyBhIHNt\nYWxsIGFtb3VudCBvZiBvdmVyaGVhZCBhbmQgY2FuIGJlIGRpc2FibGVkIHRv\nIHNhdmUgc3BhY2UgaWYgaXQgaXMgbm90IG5lZWRlZDoKCmBgYGphdmEKICAg\nIEtyeW8ga3J5byA9IG5ldyBLcnlvKCk7CiAgICBrcnlvLnNldFJlZmVyZW5j\nZXMoZmFsc2UpOwogICAgLy8gLi4uCmBgYAoKV2hlbiB3cml0aW5nIHNlcmlh\nbGl6ZXJzIHRoYXQgdXNlIEtyeW8gZm9yIG5lc3RlZCBvYmplY3RzLCBga3J5\nby5yZWZlcmVuY2UoKWAgbXVzdCBiZSBjYWxsZWQgaW4gYHJlYWQoKWAuIFNl\nZSBbU2VyaWFsaXplcnNdKCNzZXJpYWxpemVycykgZm9yIG1vcmUgaW5mb3Jt\nYXRpb24uCgojIyBPYmplY3QgY3JlYXRpb24KClNlcmlhbGl6ZXJzIGZvciBh\nIHNwZWNpZmljIHR5cGUgdXNlIEphdmEgY29kZSB0byBjcmVhdGUgYSBuZXcg\naW5zdGFuY2Ugb2YgdGhhdCB0eXBlLiBTZXJpYWxpemVycyBzdWNoIGFzIEZp\nZWxkU2VyaWFsaXplciBhcmUgZ2VuZXJpYyBhbmQgbXVzdCBoYW5kbGUgY3Jl\nYXRpbmcgYSBuZXcgaW5zdGFuY2Ugb2YgYW55IGNsYXNzLiBCeSBkZWZhdWx0\nLCBpZiBhIGNsYXNzIGhhcyBhIHplcm8gYXJndW1lbnQgY29uc3RydWN0b3Ig\ndGhlbiBpdCBpcyBpbnZva2VkIHZpYSBbUmVmbGVjdEFTTV0oaHR0cDovL2Nv\nZGUuZ29vZ2xlLmNvbS9wL3JlZmxlY3Rhc20vKSBvciByZWZsZWN0aW9uLCBv\ndGhlcndpc2UgYW4gZXhjZXB0aW9uIGlzIHRocm93bi4gSWYgdGhlIHplcm8g\nYXJndW1lbnQgY29uc3RydWN0b3IgaXMgcHJpdmF0ZSwgYW4gYXR0ZW1wdCBp\ncyBtYWRlIHRvIGFjY2VzcyBpdCB2aWEgcmVmbGVjdGlvbiB1c2luZyBzZXRB\nY2Nlc3NpYmxlLiBJZiB0aGlzIGlzIGFjY2VwdGFibGUsIGEgcHJpdmF0ZSB6\nZXJvIGFyZ3VtZW50IGNvbnN0cnVjdG9yIGlzIGEgZ29vZCB3YXkgdG8gYWxs\nb3cgS3J5byB0byBjcmVhdGUgaW5zdGFuY2VzIG9mIGEgY2xhc3Mgd2l0aG91\ndCBhZmZlY3RpbmcgdGhlIHB1YmxpYyBBUEkuCgpXaGVuIFJlZmxlY3RBU00g\nb3IgcmVmbGVjdGlvbiBjYW5ub3QgYmUgdXNlZCwgS3J5byBjYW4gYmUgY29u\nZmlndXJlZCB0byB1c2UgYW4gSW5zdGFudGlhdG9yU3RyYXRlZ3kgdG8gaGFu\nZGxlIGNyZWF0aW5nIGluc3RhbmNlcyBvZiBhIGNsYXNzLiBbT2JqZW5lc2lz\nXShodHRwczovL2NvZGUuZ29vZ2xlLmNvbS9wL29iamVuZXNpcy8pIHByb3Zp\nZGVzIFN0ZEluc3RhbnRpYXRvclN0cmF0ZWd5IHdoaWNoIHVzZXMgSlZNIHNw\nZWNpZmljIEFQSXMgdG8gY3JlYXRlIGFuIGluc3RhbmNlIG9mIGEgY2xhc3Mg\nd2l0aG91dCBjYWxsaW5nIGFueSBjb25zdHJ1Y3RvciBhdCBhbGwuIFdoaWxl\nIHRoaXMgd29ya3Mgb24gbWFueSBKVk1zLCBhIHplcm8gYXJndW1lbnQgaXMg\nZ2VuZXJhbGx5IG1vcmUgcG9ydGFibGUuCgpgYGBqYXZhCiAgICBrcnlvLnNl\ndEluc3RhbnRpYXRvclN0cmF0ZWd5KG5ldyBTdGRJbnN0YW50aWF0b3JTdHJh\ndGVneSgpKTsKYGBgCgpOb3RlIHRoYXQgY2xhc3NlcyBtdXN0IGJlIGRlc2ln\nbmVkIHRvIGJlIGNyZWF0ZWQgaW4gdGhpcyB3YXkuIElmIGEgY2xhc3MgZXhw\nZWN0cyBpdHMgY29uc3RydWN0b3IgdG8gYmUgY2FsbGVkLCBpdCBtYXkgYmUg\naW4gYW4gdW5pbml0aWFsaXplZCBzdGF0ZSB3aGVuIGNyZWF0ZWQgdGhyb3Vn\naCB0aGlzIG1lY2hhbmlzbS4KCkluIG1hbnkgc2l0dWF0aW9ucywgeW91IG1h\neSB3YW50IHRvIGhhdmUgYSBzdHJhdGVneSwgd2hlcmUgS3J5byBmaXJzdCB0\ncmllcyB0byBmaW5kIGFuZCB1c2UgYSBuby1hcmcgY29uc3RydWN0b3IgYW5k\nIGlmIGl0IGZhaWxzIHRvIGRvIHNvLCBpdCBzaG91bGQgdHJ5IHRvIHVzZSBg\nU3RkSW5zdGFudGlhdG9yU3RyYXRlZ3lgIGFzIGEgZmFsbGJhY2ssIGJlY2F1\nc2UgdGhpcyBvbmUgZG9lcyBub3QgaW52b2tlIGFueSBjb25zdHJ1Y3RvciBh\ndCBhbGwuIFRoaXMgaXMgYWN0dWFsbHkgdGhlIGRlZmF1bHQgY29uZmlndXJh\ndGlvbiBhbmQgY291bGQgYmUgZXhwcmVzc2VkIGxpa2UgdGhpczoKCmBgYGph\ndmEKa3J5by5zZXRJbnN0YW50aWF0b3JTdHJhdGVneShuZXcgRGVmYXVsdElu\nc3RhbnRpYXRvclN0cmF0ZWd5KG5ldyBTdGRJbnN0YW50aWF0b3JTdHJhdGVn\neSgpKSk7CmBgYAoKT2JqZW5lc2lzIGNhbiBhbHNvIGNyZWF0ZSBuZXcgb2Jq\nZWN0cyB1c2luZyBKYXZhJ3MgYnVpbHQtaW4gc2VyaWFsaXphdGlvbiBtZWNo\nYW5pc20uIFVzaW5nIHRoaXMsIHRoZSBjbGFzcyBtdXN0IGltcGxlbWVudCBq\nYXZhLmlvLlNlcmlhbGl6YWJsZSBhbmQgdGhlIGZpcnN0IHplcm8gYXJndW1l\nbnQgY29uc3RydWN0b3IgaW4gYSBzdXBlciBjbGFzcyBpcyBpbnZva2VkLgoK\nYGBgamF2YQogICAga3J5by5zZXRJbnN0YW50aWF0b3JTdHJhdGVneShuZXcg\nU2VyaWFsaXppbmdJbnN0YW50aWF0b3JTdHJhdGVneSgpKTsKYGBgCgpZb3Ug\nbWF5IGFsc28gd3JpdGUgeW91ciBvd24gSW5zdGFudGlhdG9yU3RyYXRlZ3ku\nCgpUbyBjdXN0b21pemUgb25seSBob3cgYSBzcGVjaWZpYyB0eXBlIGlzIGNy\nZWF0ZWQsIGFuIE9iamVjdEluc3RhbnRpYXRvciBjYW4gYmUgc2V0LiBUaGlz\nIHdpbGwgb3ZlcnJpZGUgUmVmbGVjdEFTTSwgcmVmbGVjdGlvbiwgYW5kIHRo\nZSBJbnN0YW50aWF0b3JTdHJhdGVneS4KCmBgYGphdmEKICAgIFJlZ2lzdHJh\ndGlvbiByZWdpc3RyYXRpb24gPSBrcnlvLnJlZ2lzdGVyKFNvbWVDbGFzcy5j\nbGFzcyk7CiAgICByZWdpc3RyYXRpb24uc2V0T2JqZWN0SW5zdGFudGlhdG9y\nKC4uLik7CmBgYAoKQWx0ZXJuYXRpdmVseSwgc29tZSBzZXJpYWxpemVycyBw\ncm92aWRlIG1ldGhvZHMgdGhhdCBjYW4gYmUgb3ZlcnJpZGRlbiB0byBjdXN0\nb21pemUgb2JqZWN0IGNyZWF0aW9uLgoKYGBgamF2YQogICAga3J5by5yZWdp\nc3RlcihTb21lQ2xhc3MuY2xhc3MsIG5ldyBGaWVsZFNlcmlhbGl6ZXIoa3J5\nbywgU29tZUNsYXNzLmNsYXNzKSB7CiAgICAgICBwdWJsaWMgT2JqZWN0IGNy\nZWF0ZSAoS3J5byBrcnlvLCBJbnB1dCBpbnB1dCwgQ2xhc3MgdHlwZSkgewog\nICAgICAgICAgcmV0dXJuIG5ldyBTb21lQ2xhc3MoInNvbWUgY29uc3RydWN0\nb3IgYXJndW1lbnRzIiwgMTIzNCk7CiAgICAgICB9CiAgICB9KTsKYGBgCgoj\nIyBDb3B5aW5nL2Nsb25pbmcKCkEgc2VyaWFsaXphdGlvbiBsaWJyYXJ5IG5l\nZWRzIHNwZWNpYWwga25vd2xlZGdlIG9uIGhvdyB0byBjcmVhdGUgbmV3IGlu\nc3RhbmNlcywgZ2V0IGFuZCBzZXQgdmFsdWVzLCBuYXZpZ2F0ZSBvYmplY3Qg\nZ3JhcGhzLCBldGMuIFRoaXMgaXMgbmVhcmx5IGV2ZXJ5dGhpbmcgbmVlZGVk\nIHRvIHN1cHBvcnQgY29weWluZyBvYmplY3RzLCBzbyBpdCBtYWtlcyBzZW5z\nZSBmb3IgS3J5byB0byBzdXBwb3J0IGF1dG9tYXRpY2FsbHkgbWFraW5nIGRl\nZXAgYW5kIHNoYWxsb3cgY29waWVzIG9mIG9iamVjdHMuIE5vdGUgS3J5bydz\nIGNvcHlpbmcgZG9lcyBub3Qgc2VyaWFsaXplIHRvIGJ5dGVzIGFuZCBiYWNr\nLCBpdCB1c2VzIGRpcmVjdCBhc3NpZ25tZW50LgoKYGBgamF2YQogICAgS3J5\nbyBrcnlvID0gbmV3IEtyeW8oKTsKICAgIFNvbWVDbGFzcyBzb21lT2JqZWN0\nID0gLi4uCiAgICBTb21lQ2xhc3MgY29weTEgPSBrcnlvLmNvcHkoc29tZU9i\namVjdCk7CiAgICBTb21lQ2xhc3MgY29weTIgPSBrcnlvLmNvcHlTaGFsbG93\nKHNvbWVPYmplY3QpOwpgYGAKClRoZSBTZXJpYWxpemVyIGNsYXNzIGhhcyBh\nIGBjb3B5YCBtZXRob2QgdGhhdCBkb2VzIHRoZSB3b3JrLiBUaGVzZSBtZXRo\nb2RzIGNhbiBiZSBpZ25vcmVkIHdoZW4gaW1wbGVtZW50aW5nIGFwcGxpY2F0\naW9uIHNwZWNpZmljIHNlcmlhbGl6ZXJzIGlmIHRoZSBjb3B5aW5nIGZ1bmN0\naW9uYWxpdHkgd2lsbCBub3QgYmUgdXNlZC4gQWxsIHNlcmlhbGl6ZXJzIHBy\nb3ZpZGVkIHdpdGggS3J5byBzdXBwb3J0IGNvcHlpbmcuIE11bHRpcGxlIHJl\nZmVyZW5jZXMgdG8gdGhlIHNhbWUgb2JqZWN0IGFuZCBjaXJjdWxhciByZWZl\ncmVuY2VzIGFyZSBoYW5kbGVkIGJ5IHRoZSBmcmFtZXdvcmsgYXV0b21hdGlj\nYWxseS4KClNpbWlsYXIgdG8gdGhlIGByZWFkKClgIFNlcmlhbGl6ZXIgbWV0\naG9kLCBga3J5by5yZWZlcmVuY2UoKWAgbXVzdCBiZSBjYWxsZWQgYmVmb3Jl\nIEtyeW8gY2FuIGJlIHVzZWQgdG8gY29weSBjaGlsZCBvYmplY3RzLiBTZWUg\nW1NlcmlhbGl6ZXJzXSgjU2VyaWFsaXplcnMpIGZvciBtb3JlIGluZm9ybWF0\naW9uLgoKU2ltaWxhciB0byBLcnlvU2VyaWFsaXphYmxlLCBjbGFzc2VzIGNh\nbiBpbXBsZW1lbnQgS3J5b0NvcHlhYmxlIHRvIGRvIHRoZWlyIG93biBjb3B5\naW5nOgoKYGBgamF2YQogICAgcHVibGljIGNsYXNzIFNvbWVDbGFzcyBpbXBs\nZW1lbnRzIEtyeW9Db3B5YWJsZTxTb21lQ2xhc3M+IHsKICAgICAgIC8vIC4u\nLgogICAgCiAgICAgICBwdWJsaWMgU29tZUNsYXNzIGNvcHkgKEtyeW8ga3J5\nbykgewogICAgICAgICAgLy8gQ3JlYXRlIG5ldyBpbnN0YW5jZSBhbmQgY29w\neSB2YWx1ZXMgZnJvbSB0aGlzIGluc3RhbmNlLgogICAgICAgfQogICAgfQpg\nYGAKCiMjIENvbnRleHQKCktyeW8gaGFzIHR3byBjb250ZXh0IG1ldGhvZHMu\nIGBnZXRDb250ZXh0KClgIHJldHVybnMgYSBtYXAgZm9yIHN0b3JpbmcgdXNl\nciBkYXRhLiBCZWNhdXNlIHRoZSBLcnlvIGluc3RhbmNlIGlzIGF2YWlsYWJs\nZSB0byBhbGwgc2VyaWFsaXplcnMsIHRoaXMgZGF0YSBpcyByZWFkaWx5IGF2\nYWlsYWJsZS4gYGdldEdyYXBoQ29udGV4dCgpYCBpcyBzaW1pbGFyLCBidXQg\naXMgY2xlYXJlZCBhZnRlciBlYWNoIG9iamVjdCBncmFwaCBpcyBzZXJpYWxp\nemVkIG9yIGRlc2VyaWFsaXplZC4gVGhpcyBtYWtlcyBpdCBlYXN5IHRvIG1h\nbmFnZSBwZXIgb2JqZWN0IGdyYXBoIHN0YXRlLgoKIyMgQ29tcHJlc3Npb24g\nYW5kIGVuY3J5cHRpb24KCktyeW8gc3VwcG9ydHMgc3RyZWFtcywgc28gaXQg\naXMgdHJpdmlhbCB0byB1c2UgY29tcHJlc3Npb24gb3IgZW5jcnlwdGlvbiBv\nbiBhbGwgb2YgdGhlIHNlcmlhbGl6ZWQgYnl0ZXM6CgpgYGBqYXZhCiAgICBP\ndXRwdXRTdHJlYW0gb3V0cHV0U3RyZWFtID0gbmV3IERlZmxhdGVyT3V0cHV0\nU3RyZWFtKG5ldyBGaWxlT3V0cHV0U3RyZWFtKCJmaWxlLmJpbiIpKTsKICAg\nIE91dHB1dCBvdXRwdXQgPSBuZXcgT3V0cHV0KG91dHB1dFN0cmVhbSk7CiAg\nICBLcnlvIGtyeW8gPSBuZXcgS3J5bygpOwogICAga3J5by53cml0ZU9iamVj\ndChvdXRwdXQsIG9iamVjdCk7CiAgICBvdXRwdXQuY2xvc2UoKTsKYGBgCgpJ\nZiBuZWVkZWQsIGEgc2VyaWFsaXplciBjYW4gYmUgdXNlZCB0byBjb21wcmVz\ncyBvciBlbmNyeXB0IHRoZSBieXRlcyBmb3Igb25seSBhIHN1YnNldCBvZiB0\naGUgYnl0ZXMgZm9yIGFuIG9iamVjdCBncmFwaC4gRm9yIGV4YW1wbGUsIHNl\nZSBEZWZsYXRlU2VyaWFsaXplciBvciBCbG93ZmlzaFNlcmlhbGl6ZXIuIFRo\nZXNlIHNlcmlhbGl6ZXJzIHdyYXAgYW5vdGhlciBzZXJpYWxpemVyIGFuZCBl\nbmNvZGUgYW5kIGRlY29kZSB0aGUgYnl0ZXMuCgojIyBDaHVua2VkIGVuY29k\naW5nCgpTb21ldGltZXMgaXQgaXMgdXNlZnVsIHRvIHdyaXRlIHRoZSBsZW5n\ndGggb2Ygc29tZSBkYXRhLCB0aGVuIHRoZSBkYXRhLiBJZiB0aGUgbGVuZ3Ro\nIG9mIHRoZSBkYXRhIGlzIG5vdCBrbm93biBhaGVhZCBvZiB0aW1lLCBhbGwg\ndGhlIGRhdGEgd291bGQgbmVlZCB0byBiZSBidWZmZXJlZCB0byBkZXRlcm1p\nbmUgaXRzIGxlbmd0aCwgdGhlbiB0aGUgbGVuZ3RoIGNhbiBiZSB3cml0dGVu\nLCB0aGVuIHRoZSBkYXRhLiBUaGlzIGJ1ZmZlcmluZyBwcmV2ZW50cyBzdHJl\nYW1pbmcgYW5kIHBvdGVudGlhbGx5IHJlcXVpcmVzIGEgdmVyeSBsYXJnZSBi\ndWZmZXIsIHdoaWNoIGlzIG5vdCBpZGVhbC4KCkNodW5rZWQgZW5jb2Rpbmcg\nc29sdmVzIHRoaXMgYnkgdXNpbmcgYSBzbWFsbCBidWZmZXIuIFdoZW4gdGhl\nIGJ1ZmZlciBpcyBmdWxsLCBpdHMgbGVuZ3RoIGlzIHdyaXR0ZW4sIHRoZW4g\ndGhlIGRhdGEuIFRoaXMgaXMgb25lIGNodW5rIG9mIGRhdGEuIFRoZSBidWZm\nZXIgaXMgY2xlYXJlZCBhbmQgdGhpcyBjb250aW51ZXMgdW50aWwgdGhlcmUg\naXMgbm8gbW9yZSBkYXRhIHRvIHdyaXRlLiBBIGNodW5rIHdpdGggYSBsZW5n\ndGggb2YgemVybyBkZW5vdGVzIHRoZSBlbmQgb2YgdGhlIGNodW5rcy4KCkty\neW8gcHJvdmlkZXMgY2xhc3NlcyBmb3IgZWFzeSBjaHVua2VkIGVuY29kaW5n\nLiBPdXRwdXRDaHVua2VkIGlzIHVzZWQgdG8gd3JpdGUgY2h1bmtlZCBkYXRh\nLiBJdCBleHRlbmRzIE91dHB1dCwgc28gaGFzIGFsbCB0aGUgY29udmVuaWVu\ndCBtZXRob2RzIHRvIHdyaXRlIGRhdGEuIFdoZW4gdGhlIE91dHB1dENodW5r\nZWQgYnVmZmVyIGlzIGZ1bGwsIGl0IGZsdXNoZXMgdGhlIGNodW5rIHRvIHRo\nZSB3cmFwcGVkIE91dHB1dFN0cmVhbS4gVGhlIGBlbmRDaHVua3MoKWAgbWV0\naG9kIGlzIHVzZWQgdG8gbWFyayB0aGUgZW5kIG9mIGEgc2V0IG9mIGNodW5r\ncy4KCmBgYGphdmEKICAgIE91dHB1dFN0cmVhbSBvdXRwdXRTdHJlYW0gPSBu\nZXcgRmlsZU91dHB1dFN0cmVhbSgiZmlsZS5iaW4iKTsKICAgIE91dHB1dENo\ndW5rZWQgb3V0cHV0ID0gbmV3IE91dHB1dENodW5rZWQob3V0cHV0U3RyZWFt\nLCAxMDI0KTsKICAgIC8vIFdyaXRlIGRhdGEgdG8gb3V0cHV0Li4uCiAgICBv\ndXRwdXQuZW5kQ2h1bmtzKCk7CiAgICAvLyBXcml0ZSBtb3JlIGRhdGEgdG8g\nb3V0cHV0Li4uCiAgICBvdXRwdXQuZW5kQ2h1bmtzKCk7CiAgICAvLyBXcml0\nZSBldmVuIG1vcmUgZGF0YSB0byBvdXRwdXQuLi4KICAgIG91dHB1dC5jbG9z\nZSgpOwpgYGAKClRvIHJlYWQgdGhlIGNodW5rZWQgZGF0YSwgSW5wdXRDaHVu\na2VkIGlzIHVzZWQuIEl0IGV4dGVuZHMgSW5wdXQsIHNvIGhhcyBhbGwgdGhl\nIGNvbnZlbmllbnQgbWV0aG9kcyB0byByZWFkIGRhdGEuIFdoZW4gcmVhZGlu\nZywgSW5wdXRDaHVua2VkIHdpbGwgYXBwZWFyIHRvIGhpdCB0aGUgZW5kIG9m\nIHRoZSBkYXRhIHdoZW4gaXQgcmVhY2hlcyB0aGUgZW5kIG9mIGEgc2V0IG9m\nIGNodW5rcy4gVGhlIGBuZXh0Q2h1bmtzKClgIG1ldGhvZCBhZHZhbmNlcyB0\nbyB0aGUgbmV4dCBzZXQgb2YgY2h1bmtzLCBldmVuIGlmIG5vdCBhbGwgdGhl\nIGRhdGEgaGFzIGJlZW4gcmVhZCBmcm9tIHRoZSBjdXJyZW50IHNldCBvZiBj\naHVua3MuCgpgYGBqYXZhCiAgICBJbnB1dFN0cmVhbSBvdXRwdXRTdHJlYW0g\nPSBuZXcgRmlsZUlucHV0U3RyZWFtKCJmaWxlLmJpbiIpOwogICAgSW5wdXRD\naHVua2VkIGlucHV0ID0gbmV3IElucHV0Q2h1bmtlZChpbnB1dFN0cmVhbSwg\nMTAyNCk7CiAgICAvLyBSZWFkIGRhdGEgZnJvbSBmaXJzdCBzZXQgb2YgY2h1\nbmtzLi4uCiAgICBpbnB1dC5uZXh0Q2h1bmtzKCk7CiAgICAvLyBSZWFkIGRh\ndGEgZnJvbSBzZWNvbmQgc2V0IG9mIGNodW5rcy4uLgogICAgaW5wdXQubmV4\ndENodW5rcygpOwogICAgLy8gUmVhZCBkYXRhIGZyb20gdGhpcmQgc2V0IG9m\nIGNodW5rcy4uLgogICAgaW5wdXQuY2xvc2UoKTsKYGBgCgojIyBDb21wYXRp\nYmlsaXR5CgpGb3Igc29tZSBuZWVkcywgZXNwZWNpYWxseSBsb25nIHRlcm0g\nc3RvcmFnZSBvZiBzZXJpYWxpemVkIGJ5dGVzLCBpdCBjYW4gYmUgaW1wb3J0\nYW50IGhvdyBzZXJpYWxpemF0aW9uIGhhbmRsZXMgY2hhbmdlcyB0byBjbGFz\nc2VzLiBUaGlzIGlzIGtub3duIGFzIGZvcndhcmQgKHJlYWRpbmcgYnl0ZXMg\nc2VyaWFsaXplZCBieSBuZXdlciBjbGFzc2VzKSBhbmQgYmFja3dhcmQgKHJl\nYWRpbmcgYnl0ZXMgc2VyaWFsaXplZCBieSBvbGRlciBjbGFzc2VzKSBjb21w\nYXRpYmlsaXR5LgoKRmllbGRTZXJpYWxpemVyIGlzIHRoZSBtb3N0IGNvbW1v\nbmx5IHVzZWQgc2VyaWFsaXplci4gSXQgaXMgZ2VuZXJpYyBhbmQgY2FuIHNl\ncmlhbGl6ZSBtb3N0IGNsYXNzZXMgd2l0aG91dCBhbnkgY29uZmlndXJhdGlv\nbi4gSXQgaXMgZWZmaWNpZW50IGFuZCB3cml0ZXMgb25seSB0aGUgZmllbGQg\nZGF0YSwgd2l0aG91dCBhbnkgZXh0cmEgaW5mb3JtYXRpb24uIEl0IGRvZXMg\nbm90IHN1cHBvcnQgYWRkaW5nLCByZW1vdmluZywgb3IgY2hhbmdpbmcgdGhl\nIHR5cGUgb2YgZmllbGRzIHdpdGhvdXQgaW52YWxpZGF0aW5nIHByZXZpb3Vz\nbHkgc2VyaWFsaXplZCBieXRlcy4gVGhpcyBjYW4gYmUgYWNjZXB0YWJsZSBp\nbiBtYW55IHNpdHVhdGlvbnMsIHN1Y2ggYXMgd2hlbiBzZW5kaW5nIGRhdGEg\nb3ZlciBhIG5ldHdvcmssIGJ1dCBtYXkgbm90IGJlIGEgZ29vZCBjaG9pY2Ug\nZm9yIGxvbmcgdGVybSBkYXRhIHN0b3JhZ2UgYmVjYXVzZSB0aGUgSmF2YSBj\nbGFzc2VzIGNhbm5vdCBldm9sdmUuIEJlY2F1c2UgRmllbGRTZXJpYWxpemVy\nIGF0dGVtcHRzIHRvIHJlYWQgYW5kIHdyaXRlIG5vbi1wdWJsaWMgZmllbGRz\nIGJ5IGRlZmF1bHQsIGl0IGlzIGltcG9ydGFudCB0byBldmFsdWF0ZSBlYWNo\nIGNsYXNzIHRoYXQgd2lsbCBiZSBzZXJpYWxpemVkLgoKV2hlbiBubyBzZXJp\nYWxpemVyIGlzIHNwZWNpZmllZCwgRmllbGRTZXJpYWxpemVyIGlzIHVzZWQg\nYnkgZGVmYXVsdC4gSWYgbmVjZXNzYXJ5LCBhbiBhbHRlcm5hdGUgZ2VuZXJp\nYyBzZXJpYWxpemVyIGNhbiBiZSB1c2VkOgoKYGBgamF2YQprcnlvLnNldERl\nZmF1bHRTZXJpYWxpemVyKFRhZ2dlZEZpZWxkU2VyaWFsaXplci5jbGFzcyk7\nCmBgYAoKQmVhblNlcmlhbGl6ZXIgaXMgdmVyeSBzaW1pbGFyIHRvIEZpZWxk\nU2VyaWFsaXplciwgZXhjZXB0IGl0IHVzZXMgYmVhbiBnZXR0ZXIgYW5kIHNl\ndHRlciBtZXRob2RzIHJhdGhlciB0aGFuIGRpcmVjdCBmaWVsZCBhY2Nlc3Mu\nIFRoaXMgc2xpZ2h0bHkgc2xvd2VyLCBidXQgbWF5IGJlIHNhZmVyIGJlY2F1\nc2UgaXQgdXNlcyB0aGUgcHVibGljIEFQSSB0byBjb25maWd1cmUgdGhlIG9i\namVjdC4KClZlcnNpb25GaWVsZFNlcmlhbGl6ZXIgZXh0ZW5kcyBGaWVsZFNl\ncmlhbGl6ZXIgYW5kIGFsbG93cyBmaWVsZHMgdG8gaGF2ZSBhIGBAU2luY2Uo\naW50KWAgYW5ub3RhdGlvbiB0byBpbmRpY2F0ZSB0aGUgdmVyc2lvbiB0aGV5\nIHdlcmUgYWRkZWQuIEZvciBhIHBhcnRpY3VsYXIgZmllbGQsIHRoZSB2YWx1\nZSBpbiBgQFNpbmNlYCBzaG91bGQgbmV2ZXIgY2hhbmdlIG9uY2UgY3JlYXRl\nZC4gVGhpcyBpcyBsZXNzIGZsZXhpYmxlIHRoYW4gRmllbGRTZXJpYWxpemVy\nLCB3aGljaCBjYW4gaGFuZGxlIG1vc3QgY2xhc3NlcyB3aXRob3V0IG5lZWRp\nbmcgYW5ub3RhdGlvbnMsIGJ1dCBpdCBwcm92aWRlcyBiYWNrd2FyZCBjb21w\nYXRpYmlsaXR5LiBUaGlzIG1lYW5zIHRoYXQgbmV3IGZpZWxkcyBjYW4gYmUg\nYWRkZWQsIGJ1dCByZW1vdmluZywgcmVuYW1pbmcgb3IgY2hhbmdpbmcgdGhl\nIHR5cGUgb2YgYW55IGZpZWxkIHdpbGwgaW52YWxpZGF0ZSBwcmV2aW91cyBz\nZXJpYWxpemVkIGJ5dGVzLiBWZXJzaW9uRmllbGRTZXJpYWxpemVyIGhhcyB2\nZXJ5IGxpdHRsZSBvdmVyaGVhZCAoYSBzaW5nbGUgYWRkaXRpb25hbCB2YXJp\nbnQpIGNvbXBhcmVkIHRvIEZpZWxkU2VyaWFsaXplci4KClRhZ2dlZEZpZWxk\nU2VyaWFsaXplciBleHRlbmRzIEZpZWxkU2VyaWFsaXplciB0byBvbmx5IHNl\ncmlhbGl6ZSBmaWVsZHMgdGhhdCBoYXZlIGEgYEBUYWcoaW50KWAgYW5ub3Rh\ndGlvbiwgcHJvdmlkaW5nIGJhY2t3YXJkIGNvbXBhdGliaWxpdHkgc28gbmV3\nIGZpZWxkcyBjYW4gYmUgYWRkZWQuIFRhZ2dlZEZpZWxkU2VyaWFsaXplciBo\nYXMgdHdvIGFkdmFudGFnZXMgb3ZlciBWZXJzaW9uRmllbGRTZXJpYWxpemVy\nOiAxKSBmaWVsZHMgY2FuIGJlIHJlbmFtZWQgYW5kIDIpIGZpZWxkcyBtYXJr\nZWQgd2l0aCB0aGUgYEBEZXByZWNhdGVkYCBhbm5vdGF0aW9uIHdpbGwgYmUg\naWdub3JlZCB3aGVuIHJlYWRpbmcgb2xkIGJ5dGVzIGFuZCB3b24ndCBiZSB3\ncml0dGVuIHRvIG5ldyBieXRlcy4gRGVwcmVjYXRpb24gZWZmZWN0aXZlbHkg\ncmVtb3ZlcyB0aGUgZmllbGQgZnJvbSBzZXJpYWxpemF0aW9uLCB0aG91Z2gg\ndGhlIGZpZWxkIGFuZCBgQFRhZ2AgYW5ub3RhdGlvbiBtdXN0IHJlbWFpbiBp\nbiB0aGUgY2xhc3MuIERlcHJlY2F0ZWQgZmllbGRzIGNhbiBvcHRpb25hbGx5\nIGJlIG1hZGUgcHJpdmF0ZSBhbmQvb3IgcmVuYW1lZCBzbyB0aGV5IGRvbid0\nIGNsdXR0ZXIgdGhlIGNsYXNzIChlZywgYGlnbm9yZWRgLCBgaWdub3JlZDJg\nKS4gRm9yIHRoZXNlIHJlYXNvbnMsIFRhZ2dlZEZpZWxkU2VyaWFsaXplciBn\nZW5lcmFsbHkgcHJvdmlkZXMgbW9yZSBmbGV4aWJpbGl0eSBmb3IgY2xhc3Nl\ncyB0byBldm9sdmUuIFRoZSBkb3duc2lkZSBpcyB0aGF0IGl0IGhhcyBhIHNt\nYWxsIGFtb3VudCBvZiBhZGRpdGlvbmFsIG92ZXJoZWFkIGNvbXBhcmVkIHRv\nIFZlcnNpb25GaWVsZFNlcmlhbGl6ZXIgKGFuIGFkZGl0aW9uYWwgdmFyaW50\nIHBlciBmaWVsZCkuCgpDb21wYXRpYmxlRmllbGRTZXJpYWxpemVyIGV4dGVu\nZHMgRmllbGRTZXJpYWxpemVyIHRvIHByb3ZpZGUgYm90aCBmb3J3YXJkIGFu\nZCBiYWNrd2FyZCBjb21wYXRpYmlsaXR5LCBtZWFuaW5nIGZpZWxkcyBjYW4g\nYmUgYWRkZWQgb3IgcmVtb3ZlZCB3aXRob3V0IGludmFsaWRhdGluZyBwcmV2\naW91c2x5IHNlcmlhbGl6ZWQgYnl0ZXMuIENoYW5naW5nIHRoZSB0eXBlIG9m\nIGEgZmllbGQgaXMgbm90IHN1cHBvcnRlZC4gTGlrZSBGaWVsZFNlcmlhbGl6\nZXIsIGl0IGNhbiBzZXJpYWxpemUgbW9zdCBjbGFzc2VzIHdpdGhvdXQgbmVl\nZGluZyBhbm5vdGF0aW9ucy4gVGhlIGZvcndhcmQgYW5kIGJhY2t3YXJkIGNv\nbXBhdGliaWxpdHkgY29tZXMgYXQgYSBjb3N0OiB0aGUgZmlyc3QgdGltZSB0\naGUgY2xhc3MgaXMgZW5jb3VudGVyZWQgaW4gdGhlIHNlcmlhbGl6ZWQgYnl0\nZXMsIGEgc2ltcGxlIHNjaGVtYSBpcyB3cml0dGVuIGNvbnRhaW5pbmcgdGhl\nIGZpZWxkIG5hbWUgc3RyaW5ncy4gQWxzbywgZHVyaW5nIHNlcmlhbGl6YXRp\nb24gYW5kIGRlc2VyaWFsaXphdGlvbiBidWZmZXJzIGFyZSBhbGxvY2F0ZWQg\ndG8gcGVyZm9ybSBjaHVua2VkIGVuY29kaW5nLiBUaGlzIGlzIHdoYXQgZW5h\nYmxlcyBDb21wYXRpYmxlRmllbGRTZXJpYWxpemVyIHRvIHNraXAgYnl0ZXMg\nZm9yIGZpZWxkcyBpdCBkb2VzIG5vdCBrbm93IGFib3V0LiBXaGVuIEtyeW8g\naXMgY29uZmlndXJlZCB0byB1c2UgcmVmZXJlbmNlcywgdGhlcmUgY2FuIGJl\nIGEgW3Byb2JsZW1dKGh0dHBzOi8vZ2l0aHViLmNvbS9Fc290ZXJpY1NvZnR3\nYXJlL2tyeW8vaXNzdWVzLzI4NiNpc3N1ZWNvbW1lbnQtNzQ4NzA1NDUpIHdp\ndGggQ29tcGF0aWJsZUZpZWxkU2VyaWFsaXplciBpZiBhIGZpZWxkIGlzIHJl\nbW92ZWQuCgpBZGRpdGlvbmFsIHNlcmlhbGl6ZXJzIGNhbiBlYXNpbHkgYmUg\nZGV2ZWxvcGVkIGZvciBmb3J3YXJkIGFuZCBiYWNrd2FyZCBjb21wYXRpYmls\naXR5LCBzdWNoIGFzIGEgc2VyaWFsaXplciB0aGF0IHVzZXMgYW4gZXh0ZXJu\nYWwsIGhhbmQgd3JpdHRlbiBzY2hlbWEuCgojIyBJbnRlcm9wZXJhYmlsaXR5\nCgpUaGUgS3J5byBzZXJpYWxpemVycyBwcm92aWRlZCBieSBkZWZhdWx0IGFz\nc3VtZSB0aGF0IEphdmEgd2lsbCBiZSB1c2VkIGZvciBkZXNlcmlhbGl6YXRp\nb24sIHNvIHRoZXkgZG8gbm90IGV4cGxpY2l0bHkgZGVmaW5lIHRoZSBmb3Jt\nYXQgdGhhdCBpcyB3cml0dGVuLiBTZXJpYWxpemVycyBjb3VsZCBiZSB3cml0\ndGVuIHVzaW5nIGEgc3RhbmRhcmRpemVkIGZvcm1hdCB0aGF0IGlzIG1vcmUg\nZWFzaWx5IHJlYWQgYnkgYW5vdGhlciBsYW5ndWFnZSwgYnV0IHRoaXMgaXMg\nbm90IHByb3ZpZGVkIGJ5IGRlZmF1bHQuCgojIyBTdGFjayBzaXplCgpUaGUg\nc2VyaWFsaXplcnMgS3J5byBwcm92aWRlcyB1c2UgdGhlIGNhbGwgc3RhY2sg\nd2hlbiBzZXJpYWxpemluZyBuZXN0ZWQgb2JqZWN0cy4gS3J5byBkb2VzIG1p\nbmltaXplIHN0YWNrIGNhbGxzLCBidXQgZm9yIGV4dHJlbWVseSBkZWVwIG9i\namVjdCBncmFwaHMsIGEgc3RhY2sgb3ZlcmZsb3cgY2FuIG9jY3VyLiBUaGlz\nIGlzIGEgY29tbW9uIGlzc3VlIGZvciBtb3N0IHNlcmlhbGl6YXRpb24gbGli\ncmFyaWVzLCBpbmNsdWRpbmcgdGhlIGJ1aWx0LWluIEphdmEgc2VyaWFsaXph\ndGlvbi4gVGhlIHN0YWNrIHNpemUgY2FuIGJlIGluY3JlYXNlZCB1c2luZyBg\nLVhzc2AsIGJ1dCBub3RlIHRoYXQgdGhpcyBpcyBmb3IgYWxsIHRocmVhZHMu\nIExhcmdlIHN0YWNrIHNpemVzIGluIGEgSlZNIHdpdGggbWFueSB0aHJlYWRz\nIG1heSB1c2UgYSBsYXJnZSBhbW91bnQgb2YgbWVtb3J5LgoKIyMgVGhyZWFk\naW5nCgoqKktyeW8gaXMgbm90IHRocmVhZCBzYWZlLiBFYWNoIHRocmVhZCBz\naG91bGQgaGF2ZSBpdHMgb3duIEtyeW8sIElucHV0LCBhbmQgT3V0cHV0IGlu\nc3RhbmNlcy4gQWxzbywgdGhlIGJ5dGVbXSBJbnB1dCB1c2VzIG1heSBiZSBt\nb2RpZmllZCBhbmQgdGhlbiByZXR1cm5lZCB0byBpdHMgb3JpZ2luYWwgc3Rh\ndGUgZHVyaW5nIGRlc2VyaWFsaXphdGlvbiwgc28gdGhlIHNhbWUgYnl0ZVtd\nICJzaG91bGQgbm90IGJlIHVzZWQgY29uY3VycmVudGx5IGluIHNlcGFyYXRl\nIHRocmVhZHMqKi4KCiMjIFBvb2xpbmcgS3J5byBpbnN0YW5jZXMKCkJlY2F1\nc2UgdGhlIGNyZWF0aW9uL2luaXRpYWxpemF0aW9uIG9mIGBLcnlvYCBpbnN0\nYW5jZXMgaXMgcmF0aGVyIGV4cGVuc2l2ZSwgaW4gYSBtdWx0aXRocmVhZGVk\nIHNjZW5hcmlvIHlvdSBzaG91bGQgcG9vbCBgS3J5b2AgaW5zdGFuY2VzLgpB\nIHZlcnkgc2ltcGxlIHNvbHV0aW9uIGlzIHRvIGJpbmQgYEtyeW9gIGluc3Rh\nbmNlcyB0byBUaHJlYWRzIHVzaW5nIGBUaHJlYWRMb2NhbGAsIGxpa2UgdGhp\nczoKCmBgYGphdmEKLy8gU2V0dXAgVGhyZWFkTG9jYWwgb2YgS3J5byBpbnN0\nYW5jZXMKcHJpdmF0ZSBUaHJlYWRMb2NhbDxLcnlvPiBrcnlvcyA9IG5ldyBU\naHJlYWRMb2NhbDxLcnlvPigpIHsKCXByb3RlY3RlZCBLcnlvIGluaXRpYWxW\nYWx1ZSgpIHsKCQlLcnlvIGtyeW8gPSBuZXcgS3J5bygpOwoJCS8vIGNvbmZp\nZ3VyZSBrcnlvIGluc3RhbmNlLCBjdXN0b21pemUgc2V0dGluZ3MKCQlyZXR1\ncm4ga3J5bzsKCX07Cn07CgovLyBTb21ld2hlcmUgZWxzZSwgdXNlIEtyeW8K\nS3J5byBrID0ga3J5b3MuZ2V0KCk7Ci4uLgpgYGAKCkFsdGVybmF0aXZlbHkg\neW91IG1heSB3YW50IHRvIHVzZSB0aGUgYEtyeW9Qb29sYCBwcm92aWRlZCBi\neSBrcnlvLiBUaGUgYEtyeW9Qb29sYCBhbGxvd3MgdG8ga2VlcCByZWZlcmVu\nY2VzIHRvIGBLcnlvYCBpbnN0YW5jZXMKdXNpbmcgYFNvZnRSZWZlcmVuY2Vg\ncywgc28gdGhhdCBgS3J5b2AgaW5zdGFuY2VzIGNhbiBiZSBHQydlZCB3aGVu\nIHRoZSBKVk0gc3RhcnRzIHRvIHJ1biBvdXQgb2YgbWVtb3J5CihvZiBjb3Vy\nc2UgeW91IGNvdWxkIHVzZSBgVGhyZWFkTG9jYWxgIHdpdGggYFNvZnRSZWZl\ncmVuY2VgcyBhcyB3ZWxsKS4KCkhlcmUncyBhbiBleGFtcGxlIHRoYXQgc2hv\nd3MgaG93IHRvIHVzZSB0aGUgYEtyeW9Qb29sYDoKCmBgYGphdmEKaW1wb3J0\nIGNvbS5lc290ZXJpY3NvZnR3YXJlLmtyeW8uS3J5bzsKaW1wb3J0IGNvbS5l\nc290ZXJpY3NvZnR3YXJlLmtyeW8ucG9vbC4qOwoKS3J5b0ZhY3RvcnkgZmFj\ndG9yeSA9IG5ldyBLcnlvRmFjdG9yeSgpIHsKICBwdWJsaWMgS3J5byBjcmVh\ndGUgKCkgewogICAgS3J5byBrcnlvID0gbmV3IEtyeW8oKTsKICAgIC8vIGNv\nbmZpZ3VyZSBrcnlvIGluc3RhbmNlLCBjdXN0b21pemUgc2V0dGluZ3MKICAg\nIHJldHVybiBrcnlvOwogIH0KfTsKLy8gQnVpbGQgcG9vbCB3aXRoIFNvZnRS\nZWZlcmVuY2VzIGVuYWJsZWQgKG9wdGlvbmFsKQpLcnlvUG9vbCBwb29sID0g\nbmV3IEtyeW9Qb29sLkJ1aWxkZXIoZmFjdG9yeSkuc29mdFJlZmVyZW5jZXMo\nKS5idWlsZCgpOwpLcnlvIGtyeW8gPSBwb29sLmJvcnJvdygpOwovLyBkbyBz\nLnRoLiB3aXRoIGtyeW8gaGVyZSwgYW5kIGFmdGVyd2FyZHMgcmVsZWFzZSBp\ndApwb29sLnJlbGVhc2Uoa3J5byk7CgovLyBvciB1c2UgYSBjYWxsYmFjayB0\nbyB3b3JrIHdpdGgga3J5byAtIG5vIG5lZWQgdG8gYm9ycm93L3JlbGVhc2Us\nCi8vIHRoYXQncyBkb25lIGJ5IGBydW5gLgpTdHJpbmcgdmFsdWUgPSBwb29s\nLnJ1bihuZXcgS3J5b0NhbGxiYWNrKCkgewogIHB1YmxpYyBTdHJpbmcgZXhl\nY3V0ZShLcnlvIGtyeW8pIHsKICAgIHJldHVybiBrcnlvLnJlYWRPYmplY3Qo\naW5wdXQsIFN0cmluZy5jbGFzcyk7CiAgfQp9KTsKYGBgCgojIyBMb2dnaW5n\nCgpLcnlvIG1ha2VzIHVzZSBvZiB0aGUgbG93IG92ZXJoZWFkLCBsaWdodHdl\naWdodCBbTWluTG9nIGxvZ2dpbmcgbGlicmFyeV0oaHR0cDovL2NvZGUuZ29v\nZ2xlLmNvbS9wL21pbmxvZy8pLiBUaGUgbG9nZ2luZyBsZXZlbCBjYW4gYmUg\nc2V0IGJ5IG9uZSBvZiB0aGUgZm9sbG93aW5nIG1ldGhvZHM6CgpgYGBqYXZh\nCiAgICBMb2cuRVJST1IoKTsKICAgIExvZy5XQVJOKCk7CiAgICBMb2cuSU5G\nTygpOwogICAgTG9nLkRFQlVHKCk7CiAgICBMb2cuVFJBQ0UoKTsKYGBgCgpL\ncnlvIGRvZXMgbm8gbG9nZ2luZyBhdCBgSU5GT2AgKHRoZSBkZWZhdWx0KSBh\nbmQgYWJvdmUgbGV2ZWxzLiBgREVCVUdgIGlzIGNvbnZlbmllbnQgdG8gdXNl\nIGR1cmluZyBkZXZlbG9wbWVudC4gYFRSQUNFYCBpcyBnb29kIHRvIHVzZSB3\naGVuIGRlYnVnZ2luZyBhIHNwZWNpZmljIHByb2JsZW0sIGJ1dCBnZW5lcmFs\nbHkgb3V0cHV0cyB0b28gbXVjaCBpbmZvcm1hdGlvbiB0byBsZWF2ZSBvbi4K\nCk1pbkxvZyBzdXBwb3J0cyBhIGZpeGVkIGxvZ2dpbmcgbGV2ZWwsIHdoaWNo\nIGNhdXNlcyBqYXZhYyB0byByZW1vdmUgbG9nZ2luZyBzdGF0ZW1lbnRzIGJl\nbG93IHRoYXQgbGV2ZWwgYXQgY29tcGlsZSB0aW1lLiBJbiB0aGUgS3J5byBk\naXN0cmlidXRpb24gWklQLCB0aGUgImRlYnVnIiBKQVJzIGhhdmUgbG9nZ2lu\nZyBlbmFibGVkLiBUaGUgInByb2R1Y3Rpb24iIEpBUnMgdXNlIGEgZml4ZWQg\nbG9nZ2luZyBsZXZlbCBvZiBgTk9ORWAsIHdoaWNoIG1lYW5zIGFsbCBsb2dn\naW5nIGNvZGUgaGFzIGJlZW4gcmVtb3ZlZC4KCiMjIFNjYWxhCgpTZWUgdGhl\nIGZvbGxvd2luZyBwcm9qZWN0cyB3aGljaCBwcm92aWRlIHNlcmlhbGl6ZXJz\nIGZvciBTY2FsYSBjbGFzc2VzOgoKLSBbVHdpdHRlcidzIENoaWxsXShodHRw\nczovL2dpdGh1Yi5jb20vdHdpdHRlci9jaGlsbCkgKEtyeW8gc2VyaWFsaXpl\ncnMgZm9yIFNjYWxhKQotIFtha2thLWtyeW8tc2VyaWFsaXphdGlvbl0oaHR0\ncHM6Ly9naXRodWIuY29tL3JvbWl4L2Fra2Eta3J5by1zZXJpYWxpemF0aW9u\nKSAoS3J5byBzZXJpYWxpemVycyBmb3IgU2NhbGEgYW5kIEFra2EpCi0gW1R3\naXR0ZXIncyBTY2FsZGluZ10oaHR0cHM6Ly9naXRodWIuY29tL3R3aXR0ZXIv\nc2NhbGRpbmcpIChTY2FsYSBBUEkgZm9yIENhc2NhZGluZykKLSBbS3J5byBT\nZXJpYWxpemVyc10oaHR0cHM6Ly9naXRodWIuY29tL21hZ3JvL2tyeW8tc2Vy\naWFsaXplcnMpIChBZGRpdGlvbmFsIHNlcmlhbGl6ZXJzIGZvciBKYXZhKQoK\nIyMgQ2xvanVyZQoKLSBbQ2FyYm9uaXRlXShodHRwczovL2dpdGh1Yi5jb20v\nc3JpdGNoaWUvY2FyYm9uaXRlKSAoS3J5byBzZXJpYWxpemVycyBmb3IgQ2xv\nanVyZSkKCiMjIE9iamVjdGl2ZS1DCgpTZWUgdGhlIGZvbGxvd2luZyBwcm9q\nZWN0IHdoaWNoIGlzIGFuIE9iamVjdGl2ZS1DIHBvcnQgb2YgS3J5bzoKLSBb\na3J5b2NvY29hXShodHRwczovL2dpdGh1Yi5jb20vRmV1ZXJ3ZXJrL2tyeW9j\nb2NvYSkKCiMjIEJlbmNobWFya3MKCktyeW8gY2FuIGJlIGNvbXBhcmVkIHRv\nIG1hbnkgb3RoZXIgc2VyaWFsaXphdGlvbiBsaWJyYXJpZXMgaW4gdGhlIFtK\nVk0gU2VyaWFsaXplcnNdKGh0dHBzOi8vZ2l0aHViLmNvbS9laXNoYXkvanZt\nLXNlcmlhbGl6ZXJzL3dpa2kpIHByb2plY3QuIEl0IGlzIGRpZmZpY3VsdCB0\nbyB0aG9yb3VnaGx5IGNvbXBhcmUgc2VyaWFsaXphdGlvbiBsaWJyYXJpZXMg\ndXNpbmcgYSBiZW5jaG1hcmsuIFRoZXkgb2Z0ZW4gaGF2ZSBkaWZmZXJlbnQg\nZ29hbHMgYW5kIG1heSBleGNlbCBhdCBzb2x2aW5nIGNvbXBsZXRlbHkgZGlm\nZmVyZW50IHByb2JsZW1zLiBUbyB1bmRlcnN0YW5kIHRoZXNlIGJlbmNobWFy\na3MsIHRoZSBjb2RlIGJlaW5nIHJ1biBhbmQgZGF0YSBiZWluZyBzZXJpYWxp\nemVkIHNob3VsZCBiZSBhbmFseXplZCBhbmQgY29udHJhc3RlZCB3aXRoIHlv\ndXIgc3BlY2lmaWMgbmVlZHMuIFNvbWUgc2VyaWFsaXplcnMgYXJlIGhpZ2hs\neSBvcHRpbWl6ZWQgYW5kIHVzZSBwYWdlcyBvZiBjb2RlLCBvdGhlcnMgdXNl\nIG9ubHkgYSBmZXcgbGluZXMuIFRoaXMgaXMgZ29vZCB0byBzaG93IHdoYXQg\naXMgcG9zc2libGUsIGJ1dCBtYXkgbm90IGJlIHByYWN0aWNhbCBmb3IgbWFu\neSBzaXR1YXRpb25zLgoKImtyeW8iIGlzIHR5cGljYWwgS3J5byB1c2FnZSwg\nY2xhc3NlcyBhcmUgcmVnaXN0ZXJlZCBhbmQgc2VyaWFsaXphdGlvbiBpcyBk\nb25lIGF1dG9tYXRpY2FsbHkuICJrcnlvLW9wdCIgc2hvd3MgaG93IHNlcmlh\nbGl6ZXJzIGNhbiBiZSBjb25maWd1cmVkIHRvIHJlZHVjZSB0aGUgc2l6ZSBm\nb3IgdGhlIHNwZWNpZmljIGRhdGEgYmVpbmcgc2VyaWFsaXplZCwgYnV0IHNl\ncmlhbGl6YXRpb24gaXMgc3RpbGwgZG9uZSBhdXRvbWF0aWNhbGx5LiAia3J5\nby1tYW51YWwiIHNob3dzIGhvdyBoYW5kIHdyaXR0ZW4gc2VyaWFsaXphdGlv\nbiBjb2RlIGNhbiBiZSB1c2VkIHRvIG9wdGltaXplIGZvciBib3RoIHNpemUg\nYW5kIHNwZWVkIHdoaWxlIHN0aWxsIGxldmVyYWdpbmcgS3J5byBmb3IgbW9z\ndCBvZiB0aGUgd29yay4KCiMjIFByb2plY3RzIHVzaW5nIEtyeW8KClRoZXJl\nIGFyZSBhIG51bWJlciBvZiBwcm9qZWN0cyB1c2luZyBLcnlvLiBBIGZldyBh\ncmUgbGlzdGVkIGJlbG93LiBQbGVhc2UgcG9zdCBhIG1lc3NhZ2UgdG8gdGhl\nIFttYWlsaW5nIGxpc3RdKGh0dHBzOi8vZ3JvdXBzLmdvb2dsZS5jb20vZm9y\ndW0vIyFmb3J1bS9rcnlvLXVzZXJzKSBpZiB5b3UnZCBsaWtlIHlvdXIgcHJv\namVjdCBpbmNsdWRlZCBoZXJlLgoKLSBbS3J5b05ldF0oaHR0cDovL2NvZGUu\nZ29vZ2xlLmNvbS9wL2tyeW9uZXQvKSAoTklPIG5ldHdvcmtpbmcpCi0gW1R3\naXR0ZXIncyBTY2FsZGluZ10oaHR0cHM6Ly9naXRodWIuY29tL3R3aXR0ZXIv\nc2NhbGRpbmcpIChTY2FsYSBBUEkgZm9yIENhc2NhZGluZykKLSBbVHdpdHRl\ncidzIENoaWxsXShodHRwczovL2dpdGh1Yi5jb20vdHdpdHRlci9jaGlsbCkg\nKEtyeW8gc2VyaWFsaXplcnMgZm9yIFNjYWxhKQotIFtBcGFjaGUgSGl2ZV0o\naHR0cDovL2hpdmUuYXBhY2hlLm9yZy8pIChxdWVyeSBwbGFuIHNlcmlhbGl6\nYXRpb24pCi0gW0RhdGFOdWNsZXVzXShodHRwczovL2dpdGh1Yi5jb20vZGF0\nYW51Y2xldXMvdHlwZS1jb252ZXJ0ZXIta3J5bykgKEpETy9KUEEgcGVyc2lz\ndGVuY2UgZnJhbWV3b3JrKQotIFtDbG91ZFBlbGljYW5dKGh0dHA6Ly93d3cu\nY2xvdWRwZWxpY2FuLmNvbS8pCi0gW1lhaG9vJ3MgUzRdKGh0dHA6Ly93d3cu\nczQuaW8vKSAoZGlzdHJpYnV0ZWQgc3RyZWFtIGNvbXB1dGluZykKLSBbU3Rv\ncm1dKGh0dHBzOi8vZ2l0aHViLmNvbS9uYXRoYW5tYXJ6L3N0b3JtL3dpa2kv\nU2VyaWFsaXphdGlvbikgKGRpc3RyaWJ1dGVkIHJlYWx0aW1lIGNvbXB1dGF0\naW9uIHN5c3RlbSwgaW4gdHVybiB1c2VkIGJ5IFttYW55IG90aGVyc10oaHR0\ncHM6Ly9naXRodWIuY29tL25hdGhhbm1hcnovc3Rvcm0vd2lraS9Qb3dlcmVk\nLUJ5KSkKLSBbQ2FzY2Fsb2ddKGh0dHBzOi8vZ2l0aHViLmNvbS9uYXRoYW5t\nYXJ6L2Nhc2NhbG9nKSAoQ2xvanVyZS9KYXZhIGRhdGEgcHJvY2Vzc2luZyBh\nbmQgcXVlcnlpbmcgW2RldGFpbHNdKGh0dHBzOi8vZ3JvdXBzLmdvb2dsZS5j\nb20vZC9tc2cvY2FzY2Fsb2ctdXNlci9xZ3dPMnZia1JhMC9VZUNsbkxMNU9z\nZ0opKQotIFttZW1jYWNoZWQtc2Vzc2lvbi1tYW5hZ2VyXShodHRwczovL2Nv\nZGUuZ29vZ2xlLmNvbS9wL21lbWNhY2hlZC1zZXNzaW9uLW1hbmFnZXIvKSAo\nVG9tY2F0IGhpZ2gtYXZhaWxhYmlsaXR5IHNlc3Npb25zKQotIFtNb2JpbGl0\neS1SUENdKGh0dHA6Ly9jb2RlLmdvb2dsZS5jb20vcC9tb2JpbGl0eS1ycGMv\nKSAoUlBDIGVuYWJsaW5nIGRpc3RyaWJ1dGVkIGFwcGxpY2F0aW9ucykKLSBb\nYWtrYS1rcnlvLXNlcmlhbGl6YXRpb25dKGh0dHBzOi8vZ2l0aHViLmNvbS9y\nb21peC9ha2thLWtyeW8tc2VyaWFsaXphdGlvbikgKEtyeW8gc2VyaWFsaXpl\ncnMgZm9yIEFra2EpCi0gW0dyb3Vwb25dKGh0dHBzOi8vY29kZS5nb29nbGUu\nY29tL3Ava3J5by9pc3N1ZXMvZGV0YWlsP2lkPTY3KQotIFtKaXZlXShodHRw\nOi8vd3d3LmppdmVzb2Z0d2FyZS5jb20vaml2ZXNwYWNlL2Jsb2dzL2ppdmVz\ncGFjZS8yMDEwLzA3LzI5L3RoZS1qaXZlLXNicy1jYWNoZS1yZWRlc2lnbi1w\nYXJ0LTMpCi0gW0Rlc3Ryb3lBbGxIdW1hbnNdKGh0dHBzOi8vY29kZS5nb29n\nbGUuY29tL3AvZGVzdHJveWFsbGh1bWFucy8pIChjb250cm9scyBhIFtyb2Jv\ndF0oaHR0cDovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVplWjNSMzhkM0Nn\nKSEpCi0gW2tyeW8tc2VyaWFsaXplcnNdKGh0dHBzOi8vZ2l0aHViLmNvbS9t\nYWdyby9rcnlvLXNlcmlhbGl6ZXJzKSAoYWRkaXRpb25hbCBzZXJpYWxpemVy\ncykKCiMjIENvbnRhY3QgLyBNYWlsaW5nIGxpc3QKCllvdSBjYW4gdXNlIHRo\nZSBba3J5byBtYWlsaW5nIGxpc3RdKGh0dHBzOi8vZ3JvdXBzLmdvb2dsZS5j\nb20vZm9ydW0vIyFmb3J1bS9rcnlvLXVzZXJzKSBmb3IgcXVlc3Rpb25zL2Rp\nc2N1c3Npb25zL3N1cHBvcnQuCg==\n",
+  "encoding": "base64",
+  "_links": {
+    "self": "https://api.github.com/repos/EsotericSoftware/kryo/contents/README.md?ref=kryo-parent-3.0.3",
+    "git": "https://api.github.com/repos/EsotericSoftware/kryo/git/blobs/24ce7274309f84b6ec0539da2a3003ccc4665bf6",
+    "html": "https://github.com/EsotericSoftware/kryo/blob/kryo-parent-3.0.3/README.md"
+  }
+}
+
+ succeeded in 332ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 09:26:20 GMT
+content-type: text/html
+cf-ray: 9f5e39360d34b571-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central com.esotericsoftware kryo-shaded 3.0.3 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/com.esotericsoftware/kryo-shaded/3.0.3
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar
+codex
+Maven Central publishes the `sources` and `javadoc` artifacts for `kryo-shaded:3.0.3`, but no `tests` classifier. The upstream tag for this release is `kryo-parent-3.0.3`, and the repository has its test tree there, so I’m going to use Maven for sources/docs and the tag-specific GitHub test directory for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..954d35746b36a98a1d861db90eaf46be9169e123
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-javadoc.jar",
++  "description" : "Kryo is a fast Java object graph serialization framework for writing and reading object data efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to avoid conflicts with other ASM versions."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..954d35746b36a98a1d861db90eaf46be9169e123
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-javadoc.jar",
++  "description" : "Kryo is a fast Java object graph serialization framework for writing and reading object data efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to avoid conflicts with other ASM versions."
+ }
+
+codex
+The JSON is patched. I’m doing a quick validity check and verifying that the version-substituted URLs resolve before I wrap up.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+{
+  "coordinates": "com.esotericsoftware:kryo-shaded:3.0.3",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-sources.jar",
+  "repository-url": "https://github.com/EsotericSoftware/kryo",
+  "test-code-url": "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-$version$/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-javadoc.jar",
+  "description": "Kryo is a fast Java object graph serialization framework for writing and reading object data efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to avoid conflicts with other ASM versions."
+}
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/kryo-shaded-3.0.3.jar | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+com/esotericsoftware/kryo/ClassResolver.class
+com/esotericsoftware/kryo/DefaultSerializer.class
+com/esotericsoftware/kryo/Generics.class
+com/esotericsoftware/kryo/Kryo$Closure.class
+com/esotericsoftware/kryo/Kryo$DefaultInstantiatorStrategy$1.class
+com/esotericsoftware/kryo/Kryo$DefaultInstantiatorStrategy$2.class
+com/esotericsoftware/kryo/Kryo$DefaultInstantiatorStrategy.class
+com/esotericsoftware/kryo/Kryo$DefaultSerializerEntry.class
+com/esotericsoftware/kryo/Kryo.class
+com/esotericsoftware/kryo/KryoCopyable.class
+com/esotericsoftware/kryo/KryoException.class
+com/esotericsoftware/kryo/KryoSerializable.class
+com/esotericsoftware/kryo/NotNull.class
+com/esotericsoftware/kryo/ReferenceResolver.class
+com/esotericsoftware/kryo/Registration.class
+com/esotericsoftware/kryo/Serializer.class
+com/esotericsoftware/kryo/StreamFactory.class
+com/esotericsoftware/kryo/factories/PseudoSerializerFactory.class
+com/esotericsoftware/kryo/factories/ReflectionSerializerFactory.class
+com/esotericsoftware/kryo/factories/SerializerFactory.class
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-sources.jar \\
+  https://github.com/EsotericSoftware/kryo \\
+  https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test \\
+  https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar; do \\
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..954d35746b36a98a1d861db90eaf46be9169e123
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-javadoc.jar",
++  "description" : "Kryo is a fast Java object graph serialization framework for writing and reading object data efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to avoid conflicts with other ASM versions."
+ }
+
+ succeeded in 1777ms:
+200 https://github.com/EsotericSoftware/kryo
+200 https://github.com/EsotericSoftware/kryo/tree/kryo-parent-3.0.3/test
+200 https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/3.0.3/kryo-shaded-3.0.3-javadoc.jar
+
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..954d35746b36a98a1d861db90eaf46be9169e123
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-javadoc.jar",
++  "description" : "Kryo is a fast Java object graph serialization framework for writing and reading object data efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to avoid conflicts with other ASM versions."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..954d35746b36a98a1d861db90eaf46be9169e123
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-javadoc.jar",
++  "description" : "Kryo is a fast Java object graph serialization framework for writing and reading object data efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to avoid conflicts with other ASM versions."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+ succeeded in 0ms:
+{
+  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-sources.jar",
+  "repository-url" : "https://github.com/EsotericSoftware/kryo",
+  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-$version$/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-javadoc.jar",
+  "description" : "Kryo is a fast Java object graph serialization framework for writing and reading object data efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to avoid conflicts with other ASM versions."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..954d35746b36a98a1d861db90eaf46be9169e123
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-javadoc.jar",
++  "description" : "Kryo is a fast Java object graph serialization framework for writing and reading object data efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to avoid conflicts with other ASM versions."
+ }
+
+ succeeded in 123ms:
+web search: 
+web search: central sonatype com.esotericsoftware kryo-shaded 3.0.3
+web search: 
+web search: https://central.sonatype.com/artifact/com.esotericsoftware/kryo-shaded/3.0.3
+codex
+Updated [com.esotericsoftware-kryo-shaded-3.0.3.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json:1).
+
+Used Maven Central for the source and javadoc artifacts, and the `kryo-parent-$version$` GitHub tag for the test suite because Maven Central has no tests JAR for this artifact. Kryo is a Java JVM serialization library, so I left `language` absent and did not set `not-for-native-image`. ([central.sonatype.com](https://central.sonatype.com/artifact/com.esotericsoftware/kryo-shaded/3.0.3))
+
+Verification: `jq` parsed the JSON successfully, and all version-substituted URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+index 6058562d0a74d0cb0a3175f02a0dd0d522f15ee9..954d35746b36a98a1d861db90eaf46be9169e123
+--- a/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
++++ b/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3"
++  "coordinates" : "com.esotericsoftware:kryo-shaded:3.0.3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-sources.jar",
++  "repository-url" : "https://github.com/EsotericSoftware/kryo",
++  "test-code-url" : "https://github.com/EsotericSoftware/kryo/tree/kryo-parent-$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/kryo-shaded/$version$/kryo-shaded-$version$-javadoc.jar",
++  "description" : "Kryo is a fast Java object graph serialization framework for writing and reading object data efficiently. The kryo-shaded artifact packages Kryo with a shaded ReflectASM dependency to avoid conflicts with other ASM versions."
+ }
+
+tokens used
+87,328
+Updated [com.esotericsoftware-kryo-shaded-3.0.3.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33/build/discovered-artifact-metadata/com.esotericsoftware-kryo-shaded-3.0.3.json:1).
+
+Used Maven Central for the source and javadoc artifacts, and the `kryo-parent-$version$` GitHub tag for the test suite because Maven Central has no tests JAR for this artifact. Kryo is a Java JVM serialization library, so I left `language` absent and did not set `not-for-native-image`. ([central.sonatype.com](https://central.sonatype.com/artifact/com.esotericsoftware/kryo-shaded/3.0.3))
+
+Verification: `jq` parsed the JSON successfully, and all version-substituted URLs returned HTTP 200.
+Ran agent for com.esotericsoftware:kryo-shaded:3.0.3 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33/build/agent-artifact-discovery-logs/com.esotericsoftware-kryo-shaded-3.0.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3033-a89dfc33/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 24s
+9 actionable tasks: 4 executed, 5 from cache
