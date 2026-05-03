@@ -6,15 +6,30 @@
  */
 package io_netty_incubator.netty_incubator_transport_classes_io_uring;
 
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFactory;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.InternetProtocolFamily;
 import io.netty.incubator.channel.uring.IOUring;
 import io.netty.incubator.channel.uring.IOUringChannelOption;
@@ -34,6 +49,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class Netty_incubator_transport_classes_io_uringTest {
+    private static final long FUTURE_TIMEOUT_SECONDS = 5;
+
     @Test
     void ioUringAvailabilityContractIsSelfConsistent() {
         boolean available = IOUring.isAvailable();
@@ -267,6 +284,92 @@ public class Netty_incubator_transport_classes_io_uringTest {
         }
     }
 
+    @Test
+    void socketChannelsExchangeDataThroughBootstrapWhenAvailable() throws InterruptedException {
+        if (!IOUring.isAvailable()) {
+            assertThat(IOUring.unavailabilityCause()).isNotNull();
+            return;
+        }
+
+        EventLoopGroup bossGroup = new IOUringEventLoopGroup(1);
+        EventLoopGroup workerGroup = new IOUringEventLoopGroup(1);
+        EventLoopGroup clientGroup = new IOUringEventLoopGroup(1);
+        Channel serverChannel = null;
+        Channel clientChannel = null;
+        CountDownLatch responseReceived = new CountDownLatch(1);
+        AtomicReference<String> clientResponse = new AtomicReference<>();
+        AtomicReference<Throwable> serverError = new AtomicReference<>();
+        AtomicReference<Throwable> clientError = new AtomicReference<>();
+
+        try {
+            ServerBootstrap serverBootstrap = new ServerBootstrap()
+                    .group(bossGroup, workerGroup)
+                    .channelFactory((ChannelFactory<IOUringServerSocketChannel>) IOUringServerSocketChannel::new)
+                    .childHandler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                            channel.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                                @Override
+                                public void channelRead(ChannelHandlerContext context, Object message) {
+                                    context.writeAndFlush(message);
+                                }
+
+                                @Override
+                                public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+                                    serverError.set(cause);
+                                    context.close();
+                                }
+                            });
+                        }
+                    });
+            ChannelFuture bindFuture = serverBootstrap.bind(new InetSocketAddress("127.0.0.1", 0));
+            assertFutureCompletesSuccessfully(bindFuture);
+            serverChannel = bindFuture.channel();
+
+            Bootstrap clientBootstrap = new Bootstrap()
+                    .group(clientGroup)
+                    .channelFactory((ChannelFactory<IOUringSocketChannel>) IOUringSocketChannel::new)
+                    .handler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel channel) {
+                            channel.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
+                                @Override
+                                protected void channelRead0(ChannelHandlerContext context, ByteBuf message) {
+                                    clientResponse.set(message.toString(StandardCharsets.UTF_8));
+                                    responseReceived.countDown();
+                                }
+
+                                @Override
+                                public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+                                    clientError.set(cause);
+                                    responseReceived.countDown();
+                                    context.close();
+                                }
+                            });
+                        }
+                    });
+            ChannelFuture connectFuture = clientBootstrap.connect(serverChannel.localAddress());
+            assertFutureCompletesSuccessfully(connectFuture);
+            clientChannel = connectFuture.channel();
+
+            String payloadText = "io_uring bootstrap round trip";
+            ChannelFuture writeFuture = clientChannel.writeAndFlush(
+                    Unpooled.copiedBuffer(payloadText, StandardCharsets.UTF_8));
+            assertFutureCompletesSuccessfully(writeFuture);
+
+            assertThat(responseReceived.await(FUTURE_TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(serverError.get()).isNull();
+            assertThat(clientError.get()).isNull();
+            assertThat(clientResponse.get()).isEqualTo(payloadText);
+        } finally {
+            closeChannel(clientChannel);
+            closeChannel(serverChannel);
+            shutdownGroup(clientGroup);
+            shutdownGroup(workerGroup);
+            shutdownGroup(bossGroup);
+        }
+    }
+
     private static void assertChannelConstructorMatchesAvailability(Supplier<? extends Channel> constructor) {
         if (IOUring.isAvailable()) {
             Channel channel = constructor.get();
@@ -298,6 +401,23 @@ public class Netty_incubator_transport_classes_io_uringTest {
         }
 
         assertThatThrownBy(constructor::get).isInstanceOf(UnsatisfiedLinkError.class);
+    }
+
+    private static void assertFutureCompletesSuccessfully(ChannelFuture future) throws InterruptedException {
+        assertThat(future.await(FUTURE_TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+        assertThat(future.cause()).isNull();
+        assertThat(future.isSuccess()).isTrue();
+    }
+
+    private static void closeChannel(Channel channel) {
+        if (channel != null) {
+            channel.close().awaitUninterruptibly(FUTURE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        }
+    }
+
+    private static void shutdownGroup(EventLoopGroup group) {
+        group.shutdownGracefully(0, 1, TimeUnit.SECONDS)
+                .awaitUninterruptibly(FUTURE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     private static String rootCauseMessage(Throwable throwable) {
