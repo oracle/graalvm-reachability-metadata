@@ -114,6 +114,39 @@ public class Proto_google_iam_v1Test {
     }
 
     @Test
+    void auditLogConfigPreservesForwardCompatibleLogTypeValues() {
+        int futureLogType = 8675309;
+        AuditLogConfig futureAuditLogConfig = AuditLogConfig.newBuilder()
+                .setLogTypeValue(futureLogType)
+                .addExemptedMembers("serviceAccount:future-auditor@example.iam.gserviceaccount.com")
+                .build();
+        AuditConfig auditConfig = AuditConfig.newBuilder()
+                .setService("storage.googleapis.com")
+                .addAuditLogConfigs(futureAuditLogConfig)
+                .build();
+
+        assertThat(futureAuditLogConfig.getLogTypeValue()).isEqualTo(futureLogType);
+        assertThat(futureAuditLogConfig.getLogType()).isEqualTo(AuditLogConfig.LogType.UNRECOGNIZED);
+        assertThat(auditConfig.getAuditLogConfigs(0).getLogTypeValue()).isEqualTo(futureLogType);
+        assertThat(auditConfig.getAuditLogConfigs(0).getExemptedMembersList())
+                .containsExactly("serviceAccount:future-auditor@example.iam.gserviceaccount.com");
+
+        AuditLogConfig recognizedAuditLogConfig = futureAuditLogConfig.toBuilder()
+                .setLogType(AuditLogConfig.LogType.DATA_WRITE)
+                .build();
+        assertThat(recognizedAuditLogConfig.getLogType()).isEqualTo(AuditLogConfig.LogType.DATA_WRITE);
+        assertThat(recognizedAuditLogConfig.getLogTypeValue())
+                .isEqualTo(AuditLogConfig.LogType.DATA_WRITE_VALUE);
+
+        AuditLogConfig clearedAuditLogConfig = recognizedAuditLogConfig.toBuilder()
+                .clearLogType()
+                .build();
+        assertThat(clearedAuditLogConfig.getLogType()).isEqualTo(AuditLogConfig.LogType.LOG_TYPE_UNSPECIFIED);
+        assertThat(clearedAuditLogConfig.getLogTypeValue())
+                .isEqualTo(AuditLogConfig.LogType.LOG_TYPE_UNSPECIFIED_VALUE);
+    }
+
+    @Test
     void iamPolicyRequestAndResponseMessagesPreserveNestedOptionsMasksAndRepeatedFields() throws Exception {
         Policy policy = Policy.newBuilder()
                 .setVersion(1)
