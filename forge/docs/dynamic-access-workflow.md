@@ -204,19 +204,31 @@ output_dir = tests/src/<group>/<artifact>/<version>/build/natively-collected/<cl
 ```
 
 where `<class-key>` is a sanitized form of the class name the per-class
-iteration just resolved or advanced. The gate iteratively runs the trace
-loop, executes
-`./gradlew nativeTest -PmetadataConfigDirs=<output_dir>`, and falls
-through codex / Pi recovery until `nativeTest` passes or its
-`max-native-test-verification-iterations` budget (default 100) is
-exhausted.
+iteration just resolved or advanced. The gate always starts with the
+normal JVM-agent metadata path:
+
+```text
+./gradlew generateMetadata -Pcoordinates=<g:a:v> --agentAllowedPackages=fromJar
+./gradlew test -Pcoordinates=<g:a:v>
+```
+
+If the coordinate passes, the gate returns `PASSED` without native tracing.
+If the test fails before `nativeTest`, the gate routes directly to Codex
+because tracing cannot repair compilation or JVM-mode test failures. Native
+tracing is used only as a fallback when `nativeTest` still fails after
+JVM-agent metadata was generated. The fallback runs bounded
+`runNativeTraceImage` cycles, feeds accepted trace dirs back through
+`metadataConfigDirs`, and routes stalled, exhausted, timed-out, or otherwise
+failed tracing to Codex. Pi is not part of this gate.
 
 Effects within this workflow:
 
-1. The contents of the gate's `output_dir` are added to the agent's
-   read-only context for subsequent class iterations.
+1. The contents of the gate's `output_dir`, if any trace-backed metadata
+   was merged there, are added to the agent's read-only context for
+   subsequent class iterations. The directory may remain empty when
+   JVM-agent metadata alone made the native tests pass.
 2. The dynamic-access coverage report is regenerated **after** the gate so
-   that any call sites covered by traced or codex/Pi-supplied metadata are
+   that any call sites covered by JVM-agent, traced, or Codex-supplied metadata are
    reflected in the next class's prompt delta.
 3. **A `FAILED` gate result aborts the workflow with `RUN_STATUS_FAILURE`.**
    Native Image must always work; partial dynamic-access coverage with a
@@ -297,8 +309,8 @@ useful.
 | `ai_workflows/workflow_strategies/dynamic_access_iterative_strategy.py` | The control loop described in section 6. |
 | `utility_scripts/source_context.py` | `populate_artifact_urls`, `normalize_source_context_types`, `prepare_source_contexts`, `resolve_test_source_layout`. |
 | `utility_scripts/dynamic_access_report.py` | `load_dynamic_access_coverage_report`, `compute_class_delta`, `format_call_sites`. |
-| `utility_scripts/native_metadata_exploration.py` | `run_native_metadata_exploration` — the trace loop invoked by the verification gate and as a precondition to codex fixup at finalization. See [native-metadata-exploration.md](native-metadata-exploration.md). |
-| `utility_scripts/native_test_verification.py` | `verify_native_test_passes` — the per-class gate invoked after every class with coverage gain. See [native-test-verification.md](native-test-verification.md). |
+| `utility_scripts/native_metadata_exploration.py` | `run_native_metadata_exploration` — the standalone trace loop used as a precondition to codex fixup at finalization, and the Gradle task contract reused by the verification gate's fallback. See [native-metadata-exploration.md](native-metadata-exploration.md). |
+| `utility_scripts/native_test_verification.py` | `verify_native_test_passes` — the per-class gate invoked after every class with coverage gain; it runs JVM-agent metadata first, native tracing only as fallback, and Codex last. See [native-test-verification.md](native-test-verification.md). |
 | `prompt_templates/dynamic_access/dynamic-access-iteration.md` | Per-class prompt template. |
 | Reachability-repo Gradle tasks | `scaffold`, `populateArtifactURLs`, `generateDynamicAccessCoverageReport`, `test`, `nativeTest`, `generateMetadata`, `generateLibraryStats`. |
 

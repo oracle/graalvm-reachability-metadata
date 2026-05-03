@@ -23,6 +23,7 @@ public abstract class RunNativeTraceImageInvocationTask extends AllCoordinatesEx
         ));
         appendProperty(command, "metadataConfigDirs");
         appendProperty(command, "traceMetadataPath");
+        appendProperty(command, "traceMetadataConditionPackages");
         appendProperty(command, "traceBinaryExitFile");
         return command;
     }
