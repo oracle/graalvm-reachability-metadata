@@ -9,6 +9,7 @@ package com_softwaremill_sttp_model.core_3
 import org.junit.jupiter.api.Assertions.{assertEquals, assertFalse, assertTrue}
 import org.junit.jupiter.api.Test
 import sttp.model.*
+import sttp.model.Uri.UriContext
 import sttp.model.headers.*
 import sttp.model.sse.ServerSentEvent
 
@@ -52,6 +53,20 @@ class Core_3Test {
     val relative: Uri = Uri.pathRelative(Seq("child"), Seq(Uri.QuerySegment.KeyValue("x", "1")), Some("frag"))
     assertEquals("child?x=1#frag", relative.toString)
     assertEquals("https://user:secret@example.com:8443/api/v1/child?x=1#frag", parsed.resolve(relative).toString)
+  }
+
+  @Test
+  def uriInterpolatorEncodesInterpolatedValuesByComponent(): Unit = {
+    val pathSegment: String = "team a"
+    val queryValue: String = "a+b & c"
+    val fragment: String = "section 1"
+
+    val interpolated: Uri = uri"https://api.example.com/files/$pathSegment?filter=$queryValue#$fragment"
+
+    assertEquals("https://api.example.com/files/team%20a?filter=a%2Bb+%26+c#section%201", interpolated.toString)
+    assertEquals(List("files", "team a"), interpolated.path)
+    assertEquals(Some("a+b & c"), interpolated.params.get("filter"))
+    assertEquals(Some("section 1"), interpolated.fragment)
   }
 
   @Test
