@@ -1,0 +1,1363 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded83-5d21-79f1-8e85-bcdb53b10a72
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:osgi_R4_core:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0" when "$version$" is replaced with "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af/metadata/org.osgi/osgi_R4_core/index.json
+- Entry selector: "metadata-version" = "1.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "1.0".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "1.0".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "1.0".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "1.0" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/$version$/osgi_R4_core-$version$.jar
+- repository-url: https://github.com/osgi/osgi
+- test-code-url: https://github.com/osgi/osgi/tree/r4-core-ri-tck-final
+- documentation-url: https://docs.osgi.org/download/r4v40/r4.core.pdf
+- description: This artifact provides the OSGi Release 4 core API classes for compiling bundles and interacting with an OSGi framework. It defines framework lifecycle, service registry, permissions, package administration, start level, and URL handler contracts used by OSGi-based Java applications.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0
+- Entry metadata-version: 1.0
+- Entry test-version: 1.0
+codex
+I’ll verify the existing versioned URLs first, then update only fields that are actually missing or stale under the rules you gave. After that I’ll validate the JSON shape and report exactly what changed.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.osgi/osgi_R4_core/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/$version$/osgi_R4_core-$version$.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final",
+    "documentation-url" : "https://docs.osgi.org/download/r4v40/r4.core.pdf",
+    "description" : "This artifact provides the OSGi Release 4 core API classes for compiling bundles and interacting with an OSGi framework. It defines framework lifecycle, service registry, permissions, package administration, start level, and URL handler contracts used by OSGi-based Java applications.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+?? metadata/org.osgi/osgi_R4_core/
+?? tests/src/org.osgi/osgi_R4_core/
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org/osgi/osgi_R4_core 1.0 osgi_R4_core-1.0 sources jar
+codex
+The entry already has non-blank values, but the source URL currently targets the binary JAR, so I’m checking whether Central has a source artifact for this exact coordinate before deciding whether that value should be corrected under the maintenance rules.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/osgi/osgi_R4_core/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/osgi/osgi_R4_core/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-01-17 05:32       117      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-01-17 05:32        81      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-01-17 05:32       136      
+<a href="osgi_R4_core-1.0.jar" title="osgi_R4_core-1.0.jar">osgi_R4_core-1.0.jar</a>                              2006-01-17 05:32    444838      
+<a href="osgi_R4_core-1.0.jar.md5" title="osgi_R4_core-1.0.jar.md5">osgi_R4_core-1.0.jar.md5</a>                          2006-01-17 05:32        32      
+<a href="osgi_R4_core-1.0.jar.sha1" title="osgi_R4_core-1.0.jar.sha1">osgi_R4_core-1.0.jar.sha1</a>                         2006-01-17 05:32        40      
+<a href="osgi_R4_core-1.0.pom" title="osgi_R4_core-1.0.pom">osgi_R4_core-1.0.pom</a>                              2006-01-17 05:32       285      
+<a href="osgi_R4_core-1.0.pom.md5" title="osgi_R4_core-1.0.pom.md5">osgi_R4_core-1.0.pom.md5</a>                          2006-01-17 05:32        32      
+<a href="osgi_R4_core-1.0.pom.sha1" title="osgi_R4_core-1.0.pom.sha1">osgi_R4_core-1.0.pom.sha1</a>                         2006-01-17 05:32        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 11:05:21 GMT
+content-type: text/html
+cf-ray: 9f5eca4809c201f4-ZRH
+cf-cache-status: HIT
+age: 157
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>osgi_R4_core</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+  <name>OSGi R4 core</name>
+  <url>http://www.osgi.org</url>
+  <description>OSGi R4 core</description>
+</project> 
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-test-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ exited 22 in 263ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 11:05:22 GMT
+content-type: text/html
+cf-ray: 9f5eca480c496d88-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: docs.osgi.org download r4v40 r4.core.pdf OSGi Release 4 core
+exec
+/usr/bin/bash -lc "rg -n \"osgi_R4_core|source-code-url\" metadata/org.osgi/osgi_R4_core/index.json metadata/org.osgi -g 'index.json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+metadata/org.osgi/osgi_R4_core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/$version$/osgi_R4_core-$version$.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/$version$/org.osgi.annotation.versioning-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/$version$/org.osgi.namespace.extender-$version$-sources.jar",
+metadata/org.osgi/osgi_R4_core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/$version$/osgi_R4_core-$version$.jar",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.bundle/$version$/org.osgi.annotation.bundle-$version$-sources.jar",
+metadata/org.osgi/osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0-sources.jar",
+metadata/org.osgi/osgi.core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-sources.jar",
+metadata/org.osgi/osgi.core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-sources.jar",
+metadata/org.osgi/org.osgi.resource/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.resource/$version$/org.osgi.resource-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-sources.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/$version$/org.osgi.compendium-$version$-sources.jar",
+metadata/org.osgi/org.osgi.service.serviceloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/$version$/org.osgi.service.serviceloader-$version$-sources.jar",
+metadata/org.osgi/osgi.annotation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-sources.jar",
+metadata/org.osgi/osgi.annotation/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-sources.jar",
+metadata/org.osgi/org.osgi.dto/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.dto/$version$/org.osgi.dto-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://docs.osgi.org/download/r4v40/r4.core.pdf' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:05:30 GMT
+content-type: application/pdf
+content-length: 2134059
+server: cloudflare
+last-modified: Thu, 02 Feb 2023 23:10:44 GMT
+access-control-allow-origin: *
+etag: "63dc42f4-20902b"
+expires: Sun, 03 May 2026 11:13:33 GMT
+cache-control: max-age=14400
+x-proxy-cache: MISS
+x-github-request-id: DF4A:153C:2AA208A:2B2A0A2:69F72B85
+accept-ranges: bytes
+age: 117
+via: 1.1 varnish
+x-served-by: cache-muc13928-MUC
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777806213.110290,VS0,VE149
+vary: Accept-Encoding
+x-fastly-request-id: 244b2d5e3d8b8f724a261c713590b89bd0863088
+cf-cache-status: HIT
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=svmRvo5dSju%2FVnZXbtKcQjPf%2BFzCyMyrL5%2Fzwrjpri1%2BPAPTjqUQSa30ZZMTvu19Hu3tooZBbnCJK7iY8nH30mOkdW7bFZclrbmIaPUv8MD7qqmxrAHqEW1XEJucfutnzKoPeppWh8rUlgew"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-ray: 9f5eca7f4fcb24c0-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:05:30 GMT
+content-type: application/java-archive
+content-length: 444838
+cf-ray: 9f5eca7f4dd503af-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 780382
+etag: "5310fece788717255cc1abc2e072aceb"
+last-modified: Tue, 17 Jan 2006 05:32:42 GMT
+x-checksum-md5: 5310fece788717255cc1abc2e072aceb
+x-checksum-sha1: e9ba9c33b050480c605e06465cb901e0c4115f86
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/osgi/osgi/tree/r4-core-ri-tck-final' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 671ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:05:31 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"af4e70dd351c73360637575e1aa54377"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=tGmOskjVrAZy7v2tiBaua3hXhRLgI14KeVHiP252jiUyKqEQMvrcxncyaRJ0ADSWwPI7SufmrmdqNivFihYKMMdyI1ABbbDHjGyOoR3KsrUNHOMLQJjJoGtDH1Wv7umOEjL6qMqYrU2O%2BMMiJX942xLefZsRiWcoBY%2B8xC4YzK3bIawRPdljOgbYcGW2w2UDxBDaObY6WYr8l7h7NgXBxcfS8Xb2AjHHB2nG2EmxZEywypefFFv2an3T76dDKEAp56m0WSyGNIrqB35RPBxUmA%3D%3D--v7%2FmljaeIh4Krezv--5nVcxHQRCzKEfstifr8miQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.973740405.1777806330; expires=Mon, 03 May 2027 11:05:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 11:05:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510E:17BC2E:3971038:2ABE20F:69F72BFA
+
+
+web search: 
+web search: site:github.com/osgi/osgi r4-core-ri-tck-final osgi_R4_core
+web search: 
+web search: https://github.com/osgi/osgi
+web search: 
+web search: org.osgi osgi_R4_core 1.0 Maven Central
+web search: 
+web search: https://github.com/osgi/osgi/tree/r4-core-ri-tck-final
+codex
+Central has only the `1.0` binary JAR and POM for this artifact, no `-sources.jar` or test-source artifact. The GitHub tag `r4-core-ri-tck-final` renders and contains both the `org.osgi.framework` source module and the framework TCK test-case directories, so I’m using that as the source/test basis where Maven source artifacts are unavailable.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"https://repo\\.maven\\.apache\\.org/maven2/.+\\.jar\"|\"source-code-url\": \"https://repo\\.maven\\.apache\\.org/maven2/.+\\.jar\"' metadata -g index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.apache.ant/ant-antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/ant/ant-antlr/$version$/ant-antlr-$version$-sources.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-sources.jar",
+metadata/org.jsoup/jsoup/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jsoup/jsoup/$version$/jsoup-$version$-sources.jar",
+metadata/org.jsoup/jsoup/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jsoup/jsoup/$version$/jsoup-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-sources.jar",
+metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/$version$/opengauss-jdbc-$version$-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-sources.jar",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-json/$version$/selenium-json-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+metadata/org.ow2.asm/asm-tree/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/$version$/asm-tree-$version$-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+metadata/org.ow2.asm/asm-analysis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/$version$/asm-analysis-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/$version$/smallrye-common-os-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/$version$/smallrye-common-os-$version$-sources.jar",
+metadata/org.ow2.asm/asm/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/$version$/asm-$version$-sources.jar",
+metadata/org.ow2.asm/asm/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/$version$/asm-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-process/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-process/$version$/smallrye-common-process-$version$-sources.jar",
+metadata/org.ow2.asm/asm-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/$version$/asm-util-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-constraint/$version$/smallrye-common-constraint-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-ref/$version$/smallrye-common-ref-$version$-sources.jar",
+metadata/org.apache.tomcat/tomcat-juli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat-juli/$version$/tomcat-juli-$version$-sources.jar",
+metadata/org.apache.tomcat/tomcat-juli/index.json:37:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat-juli/$version$/tomcat-juli-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-function/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/$version$/smallrye-common-function-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-function/index.json:39:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-function/$version$/smallrye-common-function-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-resource/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-resource/$version$/smallrye-common-resource-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-net/$version$/smallrye-common-net-$version$-sources.jar",
+metadata/org.aspectj/aspectjweaver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-sources.jar",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat-annotations-api/$version$/tomcat-annotations-api-$version$-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-sources.jar",
+metadata/org.antlr/ST4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/antlr/ST4/$version$/ST4-$version$-sources.jar",
+metadata/com.intellij/annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/intellij/annotations/$version$/annotations-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/$version$/jboss-interceptor-spi-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+metadata/org.apache.camel/spi-annotations/index.json:65:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/$version$/jboss-interceptor-api-$version$-sources.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/$version$/org.osgi.annotation.versioning-$version$-sources.jar",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/$version$/javax.inject-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-runtime_2.13/$version$/scalac-scoverage-runtime_2.13-$version$-sources.jar",
+metadata/org.osgi/osgi_R4_core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/$version$/osgi_R4_core-$version$.jar",
+metadata/com.android.databinding/baseLibrary/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+metadata/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/$version$/jboss-transaction-api_1.2_spec-$version$-sources.jar",
+metadata/commons-fileupload/commons-fileupload/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-fileupload/commons-fileupload/$version$/commons-fileupload-$version$-sources.jar",
+metadata/javax.money/money-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/money/money-api/$version$/money-api-$version$-sources.jar",
+metadata/org.osgi/org.osgi.annotation.bundle/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.bundle/$version$/org.osgi.annotation.bundle-$version$-sources.jar",
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/$version$/magnolia_3-$version$-sources.jar",
+metadata/commons-daemon/commons-daemon/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-daemon/commons-daemon/$version$/commons-daemon-$version$-sources.jar",
+metadata/org.w3c.css/sac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/w3c/css/sac/$version$/sac-$version$-sources.jar",
+metadata/org.osgi/osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0-sources.jar",
+metadata/org.osgi/osgi.core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-sources.jar",
+metadata/org.osgi/osgi.core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/$version$/osgi.core-$version$-sources.jar",
+metadata/commons-codec/commons-codec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/$version$/commons-codec-$version$-sources.jar",
+metadata/org.tpolecat/sourcepos_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-sources.jar",
+metadata/com.thoughtworks.proxytoys/proxytoys/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/$version$/proxytoys-$version$-sources.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.osgi/org.osgi.namespace.service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/$version$/org.osgi.namespace.service-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-sources.jar",
+metadata/com.github.ghik/silencer-lib_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ghik/silencer-lib_2.13/$version$/silencer-lib_2.13-$version$-sources.jar",
+metadata/eu.timepit/refined_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/eu/timepit/refined_3/$version$/refined_3-$version$-sources.jar",
+metadata/com.mchange/mchange-commons-java/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/$version$/mchange-commons-java-$version$-sources.jar",
+metadata/io.netty/netty-codec-stomp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-stomp/$version$/netty-codec-stomp-$version$-sources.jar",
+metadata/org.osgi/org.osgi.dto/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.dto/$version$/org.osgi.dto-$version$-sources.jar",
+metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/$version$/reactor-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-sources.jar",
+metadata/org.eclipse.microprofile.openapi/microprofile-openapi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/microprofile/openapi/microprofile-openapi-api/$version$/microprofile-openapi-api-$version$-sources.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-sources.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:21:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-sources.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-sources.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/$version$/sqlite-jdbc-$version$-sources.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/$version$/sqlite-jdbc-$version$-sources.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-sources.jar",
+metadata/org.glassfish.jaxb/xsom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/xsom/$version$/xsom-$version$-sources.jar",
+metadata/io.netty/netty-codec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec/$version$/netty-codec-$version$-sources.jar",
+metadata/org.xmlunit/xmlunit-placeholders/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xmlunit/xmlunit-placeholders/$version$/xmlunit-placeholders-$version$-sources.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/$version$/org.osgi.compendium-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/net.sf.py4j/py4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/py4j/py4j/$version$/py4j-$version$-sources.jar",
+metadata/io.netty/netty-transport-native-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-epoll/4.1.42.Final/netty-transport-native-epoll-4.1.42.Final-sources.jar",
+metadata/org.glassfish.jaxb/txw2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/$version$/txw2-$version$-sources.jar",
+metadata/net.i2p.crypto/eddsa/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/net/i2p/crypto/eddsa/$version$/eddsa-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-graphite/$version$/metrics-graphite-$version$-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:75:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:89:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:103:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:117:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-sources.jar",
+metadata/org.osgi/osgi.annotation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-sources.jar",
+metadata/org.osgi/osgi.annotation/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.annotation/$version$/osgi.annotation-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:45:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/io.netty/netty-tcnative-classes/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-tcnative-classes/$version$/netty-tcnative-classes-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/net.razorvine/pyrolite/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/razorvine/pyrolite/$version$/pyrolite-$version$-sources.jar",
+metadata/net.razorvine/pyrolite/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/razorvine/pyrolite/$version$/pyrolite-$version$-sources.jar",
+metadata/javax.annotation/jsr250-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/$version$/jsr250-api-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpmime/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+metadata/com.zaxxer/SparseBitSet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/SparseBitSet/$version$/SparseBitSet-$version$-sources.jar",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-processor/$version$/jboss-logging-processor-$version$-sources.jar",
+metadata/org.mongodb/mongo-java-driver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mongodb/mongo-java-driver/3.9.0/mongo-java-driver-3.9.0-sources.jar",
+metadata/org.mongodb/mongo-java-driver/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mongodb/mongo-java-driver/$version$/mongo-java-driver-$version$-sources.jar",
+metadata/org.jboss.logging/jboss-logging-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-annotations/$version$/jboss-logging-annotations-$version$-sources.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/$version$/surefire-logger-api-$version$-sources.jar",
+metadata/org.apache.santuario/xmlsec/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/$version$/xmlsec-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:82:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:108:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:49:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:64:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/io.undertow/undertow-parser-generator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/undertow/undertow-parser-generator/$version$/undertow-parser-generator-$version$-sources.jar",
+metadata/net.sf.proguard/proguard-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-base/$version$/proguard-base-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:56:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+metadata/io.netty/netty-codec-haproxy/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-sources.jar",
+metadata/io.netty/netty-codec-haproxy/index.json:21:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-haproxy/$version$/netty-codec-haproxy-$version$-sources.jar",
+metadata/io.netty/netty-codec-dns/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-dns/$version$/netty-codec-dns-$version$-sources.jar",
+metadata/io.netty/netty-codec-dns/index.json:21:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-dns/$version$/netty-codec-dns-$version$-sources.jar",
+metadata/io.netty/netty-handler-proxy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final-sources.jar",
+metadata/io.netty/netty-codec-xml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-xml/$version$/netty-codec-xml-$version$-sources.jar",
+metadata/io.netty/netty-codec-memcache/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+metadata/io.netty/netty-codec-memcache/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+metadata/io.netty/netty-resolver-dns-classes-macos/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver-dns-classes-macos/4.1.74.Final/netty-resolver-dns-classes-macos-4.1.74.Final-sources.jar",
+metadata/redis.clients/jedis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/$version$/jedis-$version$-sources.jar",
+metadata/redis.clients/jedis/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/$version$/jedis-$version$-sources.jar",
+metadata/redis.clients/jedis/index.json:51:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/$version$/jedis-$version$-sources.jar",
+metadata/redis.clients/jedis/index.json:74:    "source-code-url" : "https://repo.maven.apache.org/maven2/redis/clients/jedis/$version$/jedis-$version$-sources.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-sources.jar",
+metadata/org.jboss.resteasy/resteasy-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/$version$/resteasy-client-$version$-sources.jar",
+metadata/io.netty/netty-transport-classes-kqueue/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-kqueue/$version$/netty-transport-classes-kqueue-$version$-sources.jar",
+metadata/io.netty/netty-transport-native-unix-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-unix-common/$version$/netty-transport-native-unix-common-$version$-sources.jar",
+metadata/io.netty/netty-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+metadata/io.netty/netty-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+metadata/io.netty/netty-common/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.1_spec/$version$/jboss-interceptors-api_1.1_spec-$version$-sources.jar",
+metadata/io.netty/netty-transport-sctp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-sctp/$version$/netty-transport-sctp-$version$-sources.jar",
+metadata/com.google.auto.service/auto-service-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/$version$/auto-service-annotations-$version$-sources.jar",
+metadata/io.netty/netty-transport/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/$version$/netty-transport-$version$-sources.jar",
+metadata/io.netty/netty-transport/index.json:41:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/$version$/netty-transport-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:112:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/io.netty/netty-resolver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/$version$/netty-resolver-$version$-sources.jar",
+metadata/io.netty/netty-resolver/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/$version$/netty-resolver-$version$-sources.jar",
+metadata/io.netty/netty-transport-native-kqueue/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-kqueue/$version$/netty-transport-native-kqueue-$version$-sources.jar",
+metadata/com.atomikos/transactions-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/$version$/transactions-api-$version$-sources.jar",
+metadata/org.scala-sbt/compiler-interface/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-sources.jar",
+metadata/org.scala-sbt/compiler-interface/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-sources.jar",
+metadata/org.scala-sbt/compiler-interface/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-sbt/compiler-interface/$version$/compiler-interface-$version$-sources.jar",
+metadata/com.ibm.async/asyncutil/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/$version$/asyncutil-$version$-sources.jar",
+metadata/org.opentest4j/opentest4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opentest4j/opentest4j/$version$/opentest4j-$version$-sources.jar",
+metadata/org.slf4j/log4j-over-slf4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/log4j-over-slf4j/$version$/log4j-over-slf4j-$version$-sources.jar",
+metadata/org.objenesis/objenesis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/$version$/objenesis-$version$-sources.jar",
+metadata/org.atteo.classindex/classindex/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/atteo/classindex/classindex/$version$/classindex-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-di/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-sources.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/$version$/handlebars-helpers-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-sources.jar",
+metadata/org.hibernate/hibernate-jpamodelgen/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hibernate/hibernate-jpamodelgen/5.6.14.Final/hibernate-jpamodelgen-5.6.14.Final-sources.jar",
+metadata/org.apache.maven/maven-monitor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-apache/$version$/maven-resolver-transport-apache-$version$-sources.jar",
+metadata/com.codahale.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/codahale/metrics/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:8:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-file/$version$/maven-resolver-transport-file-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/$version$/jboss-logmanager-$version$-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/$version$/jboss-logmanager-$version$-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:37:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/$version$/jboss-logmanager-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/com.sun.xml.bind.external/rngom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/xml/bind/external/rngom/$version$/rngom-$version$-sources.jar",
+metadata/com.github.java-json-tools/btf/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/btf/$version$/btf-$version$-sources.jar",
+metadata/org.abego.treelayout/org.abego.treelayout.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/abego/treelayout/org.abego.treelayout.core/$version$/org.abego.treelayout.core-$version$-sources.jar",
+metadata/com.github.java-json-tools/msg-simple/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/msg-simple/$version$/msg-simple-$version$-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-sources.jar",
+metadata/com.github.java-json-tools/jackson-coreutils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/jackson-coreutils/2.0/jackson-coreutils-2.0-sources.jar",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/net.sf.kxml/kxml2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/$version$/kxml2-$version$-sources.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/validator/hibernate-validator/$version$/hibernate-validator-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+metadata/org.apache.openejb/javaee-api/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/openejb/javaee-api/$version$/javaee-api-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.sonatype.aether/aether-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+metadata/org.sonatype.aether/aether-util/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+metadata/org.hamcrest/hamcrest/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/$version$/hamcrest-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.lucene/lucene-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+metadata/org.apache.lucene/lucene-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+metadata/org.apache.lucene/lucene-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/$version$/jakarta.activation-$version$-sources.jar",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/alpn/alpn-api/$version$/alpn-api-$version$-sources.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-sources.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/$version$/commons-dbcp2-$version$-sources.jar",
+metadata/org.apache.kafka/kafka-clients/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/$version$/kafka-clients-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/$version$/kotlinx-datetime-jvm-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/$version$/kotlinx-io-bytestring-jvm-$version$-sources.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-sources.jar",
+metadata/com.vaadin.external.google/android-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/$version$/android-json-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/$version$/atomicfu-jvm-$version$-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-sources.jar",
+metadata/org.roaringbitmap/shims/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/roaringbitmap/shims/$version$/shims-$version$-sources.jar",
+metadata/org.apache.commons/commons-math/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math/$version$/commons-math-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/$version$/commons-pool2-$version$-sources.jar",
+metadata/org.glassfish/javax.servlet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.servlet/$version$/javax.servlet-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/$version$/kotlinx-io-core-jvm-$version$-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-sources.jar",
+metadata/org.glassfish/javax.annotation/index.json:11:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/$version$/javax.annotation-$version$-sources.jar",
+metadata/org.glassfish/javax.annotation/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.annotation/$version$/javax.annotation-$version$-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-sources.jar",
+metadata/io.micrometer/micrometer-commons/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-commons/$version$/micrometer-commons-$version$-sources.jar",
+metadata/io.micrometer/micrometer-commons/index.json:28:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-commons/$version$/micrometer-commons-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/$version$/quarkus-bootstrap-json-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+metadata/io.quarkus/quarkus-classloader-commons/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-classloader-commons/$version$/quarkus-classloader-commons-$version$-sources.jar",
+metadata/io.quarkus/quarkus-value-registry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-value-registry/$version$/quarkus-value-registry-$version$-sources.jar",
+metadata/org.scala-lang/scala3-interfaces/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala3-interfaces/$version$/scala3-interfaces-$version$-sources.jar",
+metadata/javax.transaction/transaction-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/transaction-api/$version$/transaction-api-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-sources.jar",
+metadata/xalan/xalan/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/$version$/xalan-$version$-sources.jar",
+metadata/javax.transaction/jta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/jta/$version$/jta-$version$-sources.jar",
+metadata/io.quarkus/quarkus-fs-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-fs-util/$version$/quarkus-fs-util-$version$-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-el/$version$/tomcat-embed-el-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:128:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/javax.enterprise/cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-sources.jar",
+metadata/io.quarkus/quarkus-class-change-agent/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-class-change-agent/$version$/quarkus-class-change-agent-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/xml-apis/xml-apis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xml-apis/xml-apis/$version$/xml-apis-$version$-sources.jar",
+metadata/com.univocity/univocity-parsers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/com.google.jsinterop/jsinterop-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/jsinterop/jsinterop-annotations/$version$/jsinterop-annotations-$version$-sources.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/$version$/stax2-api-$version$-sources.jar",
+metadata/org.apache.james/apache-mime4j-dom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/$version$/apache-mime4j-dom-$version$-sources.jar",
+metadata/backport-util-concurrent/backport-util-concurrent/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/backport-util-concurrent/backport-util-concurrent/$version$/backport-util-concurrent-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/$version$/opentelemetry-api-events-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api-events/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-events/$version$/opentelemetry-api-events-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/$version$/opentelemetry-sdk-extension-autoconfigure-spi-$version$-sources.jar",
+metadata/org.unbescape/unbescape/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/unbescape/unbescape/$version$/unbescape-$version$-sources.jar",
+metadata/org.brotli/dec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/brotli/dec/$version$/dec-$version$-sources.jar",
+metadata/org.quartz-scheduler/quartz/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/$version$/quartz-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/$version$/opentelemetry-exporter-logging-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag-sisu/$version$/smallrye-beanbag-sisu-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api-incubator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-incubator/$version$/opentelemetry-api-incubator-$version$-sources.jar",
+metadata/org.apache.velocity/velocity-engine-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/$version$/velocity-engine-core-$version$-sources.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag/$version$/smallrye-beanbag-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/$version$/opentelemetry-sdk-logs-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/$version$/opentelemetry-sdk-logs-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:44:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/$version$/opentelemetry-sdk-logs-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-logs/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-logs/$version$/opentelemetry-sdk-logs-$version$-sources.jar",
+metadata/io.netty.incubator/netty-incubator-codec-classes-quic/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/incubator/netty-incubator-codec-classes-quic/$version$/netty-incubator-codec-classes-quic-$version$-sources.jar",
+metadata/io.netty.incubator/netty-incubator-codec-classes-quic/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/incubator/netty-incubator-codec-classes-quic/$version$/netty-incubator-codec-classes-quic-$version$-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/commons-net/commons-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-net/commons-net/$version$/commons-net-$version$-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:43:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-ee/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/$version$/plexus-component-annotations-$version$-sources.jar",
+metadata/com.esotericsoftware/minlog/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/$version$/minlog-$version$-sources.jar",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/$version$/scalajs-javalib-intf-$version$-sources.jar",
+metadata/xpp3/xpp3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xpp3/xpp3/$version$/xpp3-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api/$version$/opentelemetry-api-$version$-sources.jar",
+metadata/antlr/antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/org.iq80.leveldb/leveldb-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/$version$/leveldb-api-$version$-sources.jar",
+metadata/org.apache-extras.beanshell/bsh/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-context/$version$/opentelemetry-context-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/$version$/opentelemetry-sdk-extension-autoconfigure-$version$-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:50:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+metadata/org.jspecify/jspecify/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jspecify/jspecify/$version$/jspecify-$version$-sources.jar",
+metadata/org.asynchttpclient/async-http-client-netty-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/asynchttpclient/async-http-client-netty-utils/$version$/async-http-client-netty-utils-$version$-sources.jar",
+metadata/javax.inject/javax.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/inject/javax.inject/$version$/javax.inject-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-jcache/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-jcache/$version$/hibernate-jcache-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-envers/index.json:17:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-envers/$version$/hibernate-envers-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:19:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:65:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:99:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:132:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:157:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:180:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:204:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:227:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+metadata/io.github.dmlloyd/jdk-classfile-backport/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/dmlloyd/jdk-classfile-backport/25.1/jdk-classfile-backport-25.1-sources.jar",
+metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/tunnelvisionlabs/antlr4-annotations/$version$/antlr4-annotations-$version$-sources.jar",
+metadata/io.javaslang/javaslang-match/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/javaslang/javaslang-match/$version$/javaslang-match-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.framework' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/osgi/osgi/git/ref/tags/r4-core-ri-tck-final' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 192ms:
+{
+  "ref": "refs/tags/r4-core-ri-tck-final",
+  "node_id": "MDM6UmVmMjU1NzAxNjA0OnJlZnMvdGFncy9yNC1jb3JlLXJpLXRjay1maW5hbA==",
+  "url": "https://api.github.com/repos/osgi/osgi/git/refs/tags/r4-core-ri-tck-final",
+  "object": {
+    "sha": "846518ba0da82390ea1816dcd552ee4619fb72a8",
+    "type": "tag",
+    "url": "https://api.github.com/repos/osgi/osgi/git/tags/846518ba0da82390ea1816dcd552ee4619fb72a8"
+  }
+}
+
+ succeeded in 493ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:05:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"621c8fa58a25711708c0635d8492a69e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=7Ay5LRlYnE0wj7Pqec6EN8hArR34Jt3UC9ySed6zGNurlapy9YcjLyXMbQqCGQzR4CXDFyc3KoM1aQ24iXy386k0T%2BTbywzA1VEjrahuVXfvRynDMbfaKQ3T2Y%2FAvQNXg6On4Wwnh8vZJgvVCyBL%2F5GCRnl5JC19x3POsSLc1oQFQ5kSqhIqrZDnLxRogLEAxYlJSuZbMUjDSxF4RzeTs%2BFtv76zgeCP9MqzdyfHsbj%2BESobF0%2FsHklWahcXgc0lj%2B4kjKaR1dLnTdhcaVwsPQ%3D%3D--f2xmaUphns1Y3Q2T--%2F89Kz2IMH0iDLgCr%2FygnfA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.638611705.1777806354; expires=Mon, 03 May 2027 11:05:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 11:05:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:79934:3ADBA3A:2BC954B:69F72C12
+
+
+ succeeded in 848ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:05:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fa907b9bb14c9dd573db4c9103ff0e9f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=hsfiwEYG9HSMXDP0%2BWE%2BFq5W8eH8ZiFill5UjRGg6npC9WtnJ8I5IcFER1UHk2qTvhle%2F6AG%2BOQjcpbZkc28DU4DipY86QjYCLuY%2BjZdhmpT893eFhBbb3i%2B0rRB13wVZoO55HHxAmbpsHVmQQ%2B4D8Z2QbZ3TSOetniXPWjxqtHrDfkpyKw8Q6q0Wvc9lu7PRi2T6Z2BSEAHPz72UP6IBlakpmHbnGgYWps%2FqARfrfWbZbNegdmjB6QsOrwLnOyJJUfktTydpGLa4CMillN27Q%3D%3D--xN%2Fj0Weps4PpTZdX--yV12ld6ZKcgV1Xf69SMCtg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1788977598.1777806354; expires=Mon, 03 May 2027 11:05:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 11:05:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5121:269E4E:39811FE:2AD33C9:69F72C12
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/contents?ref=r4-core-ri-tck-final | sed -n '1,240p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework?ref=r4-core-ri-tck-final | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle?ref=r4-core-ri-tck-final | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 157ms:
+[
+  {
+    "name": ".classpath",
+    "path": "org.osgi.framework/.classpath",
+    "sha": "cdc72311e5c4f72333788c74f8cca6a5c1d9c11d",
+    "size": 259,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/.classpath?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/.classpath",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/cdc72311e5c4f72333788c74f8cca6a5c1d9c11d",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.framework/.classpath",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/.classpath?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/cdc72311e5c4f72333788c74f8cca6a5c1d9c11d",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/.classpath"
+    }
+  },
+  {
+    "name": ".cvsignore",
+    "path": "org.osgi.framework/.cvsignore",
+    "sha": "15c750150f2228e2660f7b78d53d3489f15e0442",
+    "size": 10,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/.cvsignore?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/.cvsignore",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/15c750150f2228e2660f7b78d53d3489f15e0442",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.framework/.cvsignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/.cvsignore?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/15c750150f2228e2660f7b78d53d3489f15e0442",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/.cvsignore"
+    }
+  },
+  {
+    "name": ".project",
+    "path": "org.osgi.framework/.project",
+    "sha": "1c08506a908b89e8b0254438a5af2a798a32c9c8",
+    "size": 377,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/.project?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/.project",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/1c08506a908b89e8b0254438a5af2a798a32c9c8",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.framework/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/.project?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/1c08506a908b89e8b0254438a5af2a798a32c9c8",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/.project"
+    }
+  },
+  {
+    "name": ".settings",
+    "path": "org.osgi.framework/.settings",
+    "sha": "eaa0cca896f1f3a3627fb0cdbe26e589b3ab51de",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/.settings?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.framework/.settings",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/eaa0cca896f1f3a3627fb0cdbe26e589b3ab51de",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/.settings?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/eaa0cca896f1f3a3627fb0cdbe26e589b3ab51de",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.framework/.settings"
+    }
+  },
+  {
+    "name": "build.properties",
+    "path": "org.osgi.framework/build.properties",
+    "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/build.properties?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/build.properties",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.framework/build.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/build.properties?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/build.properties"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "org.osgi.framework/build.xml",
+    "sha": "d169eb3fdc9ac1895b99e60e2b1fc357484cef91",
+    "size": 129,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/build.xml?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/build.xml",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/d169eb3fdc9ac1895b99e60e2b1fc357484cef91",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.framework/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/build.xml?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/d169eb3fdc9ac1895b99e60e2b1fc357484cef91",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.framework/build.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "org.osgi.framework/src",
+    "sha": "67f8e5de9d3c872449fc8fb72eb17c5cc706f64b",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/src?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.framework/src",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/67f8e5de9d3c872449fc8fb72eb17c5cc706f64b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework/src?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/67f8e5de9d3c872449fc8fb72eb17c5cc706f64b",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.framework/src"
+    }
+  }
+]
+
+ succeeded in 189ms:
+[
+  {
+    "name": ".classpath",
+    "path": "org.osgi.test.cases.framework.lifecycle/.classpath",
+    "sha": "ac1bf8a6cb78866f088b22e29920367313815df9",
+    "size": 633,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/.classpath?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.classpath",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/ac1bf8a6cb78866f088b22e29920367313815df9",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.classpath",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/.classpath?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/ac1bf8a6cb78866f088b22e29920367313815df9",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.classpath"
+    }
+  },
+  {
+    "name": ".cvsignore",
+    "path": "org.osgi.test.cases.framework.lifecycle/.cvsignore",
+    "sha": "c43b701f15a16123853ef78c09cff38a8211c64e",
+    "size": 7,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/.cvsignore?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.cvsignore",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/c43b701f15a16123853ef78c09cff38a8211c64e",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.cvsignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/.cvsignore?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/c43b701f15a16123853ef78c09cff38a8211c64e",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.cvsignore"
+    }
+  },
+  {
+    "name": ".project",
+    "path": "org.osgi.test.cases.framework.lifecycle/.project",
+    "sha": "c7756927a7e338596209f5cae56189b5c0b7844f",
+    "size": 398,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/.project?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.project",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/c7756927a7e338596209f5cae56189b5c0b7844f",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/.project?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/c7756927a7e338596209f5cae56189b5c0b7844f",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.project"
+    }
+  },
+  {
+    "name": ".settings",
+    "path": "org.osgi.test.cases.framework.lifecycle/.settings",
+    "sha": "62bb0ce95261c50c50ce495ff088e0888b2eba34",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/.settings?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.settings",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/62bb0ce95261c50c50ce495ff088e0888b2eba34",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/.settings?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/62bb0ce95261c50c50ce495ff088e0888b2eba34",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/.settings"
+    }
+  },
+  {
+    "name": "Manifest.mf",
+    "path": "org.osgi.test.cases.framework.lifecycle/Manifest.mf",
+    "sha": "55139f8510361ece31d4247de49082de3e8776f2",
+    "size": 1219,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/Manifest.mf?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/Manifest.mf",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/55139f8510361ece31d4247de49082de3e8776f2",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/Manifest.mf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/Manifest.mf?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/55139f8510361ece31d4247de49082de3e8776f2",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/Manifest.mf"
+    }
+  },
+  {
+    "name": "build.properties",
+    "path": "org.osgi.test.cases.framework.lifecycle/build.properties",
+    "sha": "4af977734c55b377a67993f88dabc37dbb6be912",
+    "size": 1858,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/build.properties?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/build.properties",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/4af977734c55b377a67993f88dabc37dbb6be912",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/build.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/build.properties?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/4af977734c55b377a67993f88dabc37dbb6be912",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/build.properties"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "org.osgi.test.cases.framework.lifecycle/build.xml",
+    "sha": "d169eb3fdc9ac1895b99e60e2b1fc357484cef91",
+    "size": 129,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/build.xml?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/build.xml",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/d169eb3fdc9ac1895b99e60e2b1fc357484cef91",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/build.xml?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/d169eb3fdc9ac1895b99e60e2b1fc357484cef91",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/build.xml"
+    }
+  },
+  {
+    "name": "log.ref",
+    "path": "org.osgi.test.cases.framework.lifecycle/log.ref",
+    "sha": "2d8bd6b52c885bfa713f2c2afea0ce46d9990895",
+    "size": 2864,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/log.ref?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/log.ref",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/2d8bd6b52c885bfa713f2c2afea0ce46d9990895",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/log.ref",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/log.ref?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/2d8bd6b52c885bfa713f2c2afea0ce46d9990895",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/log.ref"
+    }
+  },
+  {
+    "name": "src",
+    "path": "org.osgi.test.cases.framework.lifecycle/src",
+    "sha": "4da13f5cadcd28ec649aad3250edbef3534f8126",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/src?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/src",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/4da13f5cadcd28ec649aad3250edbef3534f8126",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/src?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/4da13f5cadcd28ec649aad3250edbef3534f8126",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/src"
+    }
+  },
+  {
+    "name": "tb1.mf",
+    "path": "org.osgi.test.cases.framework.lifecycle/tb1.mf",
+    "sha": "5ab213efec75c0ab5e89b24b2560a9ab0b0bfad2",
+    "size": 369,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/tb1.mf?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb1.mf",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/5ab213efec75c0ab5e89b24b2560a9ab0b0bfad2",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb1.mf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/tb1.mf?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/5ab213efec75c0ab5e89b24b2560a9ab0b0bfad2",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb1.mf"
+    }
+  },
+  {
+    "name": "tb10.mf",
+    "path": "org.osgi.test.cases.framework.lifecycle/tb10.mf",
+    "sha": "dd765afed4f0e0e7f012f087c5042b73b4197f41",
+    "size": 575,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/tb10.mf?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb10.mf",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/dd765afed4f0e0e7f012f087c5042b73b4197f41",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb10.mf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/tb10.mf?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/dd765afed4f0e0e7f012f087c5042b73b4197f41",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb10.mf"
+    }
+  },
+  {
+    "name": "tb10.perm",
+    "path": "org.osgi.test.cases.framework.lifecycle/tb10.perm",
+    "sha": "41259470ee7ed0678d5e1098de8c02df85b8c021",
+    "size": 840,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/tb10.perm?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb10.perm",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/41259470ee7ed0678d5e1098de8c02df85b8c021",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb10.perm",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/tb10.perm?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/41259470ee7ed0678d5e1098de8c02df85b8c021",
+      "html": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb10.perm"
+    }
+  },
+  {
+    "name": "tb2a.mf",
+    "path": "org.osgi.test.cases.framework.lifecycle/tb2a.mf",
+    "sha": "d542ed45b0a5488a6cefcb17406667902b0be7df",
+    "size": 360,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.lifecycle/tb2a.mf?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r4-core-ri-tck-final/org.osgi.test.cases.framework.lifecycle/tb2a.mf",
+
+ succeeded in 231ms:
+[
+  {
+    "name": "archive",
+    "path": "archive",
+    "sha": "54f13e61f1840aa3baf594b3613f4612e03ec32d",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/archive?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/archive",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/54f13e61f1840aa3baf594b3613f4612e03ec32d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/archive?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/54f13e61f1840aa3baf594b3613f4612e03ec32d",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/archive"
+    }
+  },
+  {
+    "name": "cnf",
+    "path": "cnf",
+    "sha": "80009593a514278979155d7f40cf2d178c0b8189",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/cnf?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/cnf",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/80009593a514278979155d7f40cf2d178c0b8189",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/cnf?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/80009593a514278979155d7f40cf2d178c0b8189",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/cnf"
+    }
+  },
+  {
+    "name": "ee.foundation",
+    "path": "ee.foundation",
+    "sha": "7f390a7a82536a7837aadd4437d5c67762c4bccd",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/ee.foundation?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/ee.foundation",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/7f390a7a82536a7837aadd4437d5c67762c4bccd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/ee.foundation?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/7f390a7a82536a7837aadd4437d5c67762c4bccd",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/ee.foundation"
+    }
+  },
+  {
+    "name": "ee.minimum",
+    "path": "ee.minimum",
+    "sha": "1f266282c19b74c7a29aa21e05a8cf34ac612aa2",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/ee.minimum?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/ee.minimum",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/1f266282c19b74c7a29aa21e05a8cf34ac612aa2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/ee.minimum?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/1f266282c19b74c7a29aa21e05a8cf34ac612aa2",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/ee.minimum"
+    }
+  },
+  {
+    "name": "licensed",
+    "path": "licensed",
+    "sha": "7e23dcb268447abeb641d1f75196962c6506f0b0",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/licensed?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/licensed",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/7e23dcb268447abeb641d1f75196962c6506f0b0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/licensed?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/7e23dcb268447abeb641d1f75196962c6506f0b0",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/licensed"
+    }
+  },
+  {
+    "name": "org.osgi.application",
+    "path": "org.osgi.application",
+    "sha": "cd03d02d8752c2ced1de642d473c45c0de4be18f",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.application?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.application",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/cd03d02d8752c2ced1de642d473c45c0de4be18f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.application?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/cd03d02d8752c2ced1de642d473c45c0de4be18f",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.application"
+    }
+  },
+  {
+    "name": "org.osgi.framework",
+    "path": "org.osgi.framework",
+    "sha": "e08a935cc9a7f7997199d153cad66fedb65b2e05",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.framework",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/e08a935cc9a7f7997199d153cad66fedb65b2e05",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.framework?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/e08a935cc9a7f7997199d153cad66fedb65b2e05",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.framework"
+    }
+  },
+  {
+    "name": "org.osgi.impl.bundle.autoconf",
+    "path": "org.osgi.impl.bundle.autoconf",
+    "sha": "2347cbd6bf618bc3b00a11d48612a2d83c37143b",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.bundle.autoconf?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.bundle.autoconf",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/2347cbd6bf618bc3b00a11d48612a2d83c37143b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.bundle.autoconf?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/2347cbd6bf618bc3b00a11d48612a2d83c37143b",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.bundle.autoconf"
+    }
+  },
+  {
+    "name": "org.osgi.impl.bundle.jaxp",
+    "path": "org.osgi.impl.bundle.jaxp",
+    "sha": "881963b85e5e50612e8697f8cf72dbb217ae684b",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.bundle.jaxp?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.bundle.jaxp",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/881963b85e5e50612e8697f8cf72dbb217ae684b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.bundle.jaxp?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/881963b85e5e50612e8697f8cf72dbb217ae684b",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.bundle.jaxp"
+    }
+  },
+  {
+    "name": "org.osgi.impl.bundle.midletcontainer",
+    "path": "org.osgi.impl.bundle.midletcontainer",
+    "sha": "45f776c14aa680344a9d252b49797cc0dff1f74e",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.bundle.midletcontainer?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.bundle.midletcontainer",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/45f776c14aa680344a9d252b49797cc0dff1f74e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.bundle.midletcontainer?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/45f776c14aa680344a9d252b49797cc0dff1f74e",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.bundle.midletcontainer"
+    }
+  },
+  {
+    "name": "org.osgi.impl.bundle.rsh",
+    "path": "org.osgi.impl.bundle.rsh",
+    "sha": "3bc17bcd60ff02e999f467eb3dd82b1a31869a53",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.bundle.rsh?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.bundle.rsh",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/3bc17bcd60ff02e999f467eb3dd82b1a31869a53",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.bundle.rsh?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/3bc17bcd60ff02e999f467eb3dd82b1a31869a53",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.bundle.rsh"
+    }
+  },
+  {
+    "name": "org.osgi.impl.framework.eclipse",
+    "path": "org.osgi.impl.framework.eclipse",
+    "sha": "8b115fe8682dd32937d8d23bf065dc9641072a0a",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.framework.eclipse?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.framework.eclipse",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/8b115fe8682dd32937d8d23bf065dc9641072a0a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.framework.eclipse?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/8b115fe8682dd32937d8d23bf065dc9641072a0a",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.framework.eclipse"
+    }
+  },
+  {
+    "name": "org.osgi.impl.service.application",
+    "path": "org.osgi.impl.service.application",
+    "sha": "f58b6e3160da5e158ac84127aeb0d804c2fae33b",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.service.application?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.service.application",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/f58b6e3160da5e158ac84127aeb0d804c2fae33b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.service.application?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/f58b6e3160da5e158ac84127aeb0d804c2fae33b",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.service.application"
+    }
+  },
+  {
+    "name": "org.osgi.impl.service.cm",
+    "path": "org.osgi.impl.service.cm",
+    "sha": "9eec2b74f3b92a90feeb6f430ce19810f530298d",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.service.cm?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.service.cm",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/9eec2b74f3b92a90feeb6f430ce19810f530298d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.service.cm?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/9eec2b74f3b92a90feeb6f430ce19810f530298d",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.service.cm"
+    }
+  },
+  {
+    "name": "org.osgi.impl.service.component",
+    "path": "org.osgi.impl.service.component",
+    "sha": "05215d04ea36512e3defa974b18e0be4339c4f5b",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.service.component?ref=r4-core-ri-tck-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.service.component",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/05215d04ea36512e3defa974b18e0be4339c4f5b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.impl.service.component?ref=r4-core-ri-tck-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/05215d04ea36512e3defa974b18e0be4339c4f5b",
+      "html": "https://github.com/osgi/osgi/tree/r4-core-ri-tck-final/org.osgi.impl.service.component"
+    }
+
+codex
+The selected metadata does not need a language field: this is a Java OSGi API artifact, not a Kotlin, Groovy, or Scala-specific library under the allowed language schema. I’m doing a final JSON validation now; because every non-language target field is already non-blank and the rendered URLs are reachable, I’m not going to rewrite those values.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.osgi/osgi_R4_core/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.osgi/osgi_R4_core/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af
+ succeeded in 0ms:
+?? metadata/org.osgi/osgi_R4_core/index.json
+
+web search: 
+web search: OSGi r4.core.pdf docs.osgi.org download r4v40 r4.core.pdf
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/osgi/osgi_R4_core/1.0/osgi_R4_core-1.0.jar
+codex
+No file edit was needed for [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af/metadata/org.osgi/osgi_R4_core/index.json:1). The target URL fields and two-sentence description were already non-blank, the rendered Maven artifact URL resolves for `org.osgi:osgi_R4_core:jar:1.0`, the OSGi repository is the canonical `osgi/osgi` repo, and the R4 core PDF is versioned documentation. ([mvnrepository.com](https://mvnrepository.com/artifact/org.osgi/osgi_R4_core/1.0?utm_source=openai))
+
+I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. JSON validation passed with `jq empty`.
+tokens used
+96,937
+No file edit was needed for [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af/metadata/org.osgi/osgi_R4_core/index.json:1). The target URL fields and two-sentence description were already non-blank, the rendered Maven artifact URL resolves for `org.osgi:osgi_R4_core:jar:1.0`, the OSGi repository is the canonical `osgi/osgi` repo, and the R4 core PDF is versioned documentation. ([mvnrepository.com](https://mvnrepository.com/artifact/org.osgi/osgi_R4_core/1.0?utm_source=openai))
+
+I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. JSON validation passed with `jq empty`.
+Ran agent for org.osgi:osgi_R4_core:1.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af/build/agent-url-discovery-logs/org.osgi-osgi_R4_core-1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2840-64dfa4af/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 35s
+9 actionable tasks: 1 executed, 8 up-to-date
