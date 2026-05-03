@@ -23,6 +23,7 @@ import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.CodeSizeEvaluator;
 import org.objectweb.asm.commons.GeneratorAdapter;
+import org.objectweb.asm.commons.InstructionAdapter;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
 import org.objectweb.asm.commons.Method;
 import org.objectweb.asm.commons.ModuleHashesAttribute;
@@ -65,14 +66,19 @@ import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.ARRAYLENGTH;
 import static org.objectweb.asm.Opcodes.ASM9;
 import static org.objectweb.asm.Opcodes.ASTORE;
 import static org.objectweb.asm.Opcodes.ATHROW;
 import static org.objectweb.asm.Opcodes.GETFIELD;
 import static org.objectweb.asm.Opcodes.IADD;
+import static org.objectweb.asm.Opcodes.IALOAD;
+import static org.objectweb.asm.Opcodes.IASTORE;
 import static org.objectweb.asm.Opcodes.ILOAD;
+import static org.objectweb.asm.Opcodes.IMUL;
 import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.JSR;
+import static org.objectweb.asm.Opcodes.NEWARRAY;
 import static org.objectweb.asm.Opcodes.NOP;
 import static org.objectweb.asm.Opcodes.POP;
 import static org.objectweb.asm.Opcodes.RET;
@@ -131,6 +137,56 @@ public class Asm_commonsTest {
         assertThat(opcodes(addMethod)).containsSubsequence(ILOAD, ILOAD, IADD, IRETURN);
         assertThat(opcodes(selectMethod)).contains(TABLESWITCH, ARETURN);
         assertThat(ldcConstants(selectMethod)).contains("case-1", "case-2", "case-4", "default");
+    }
+
+    @Test
+    void instructionAdapterEmitsTypedArrayAndArithmeticInstructions() {
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        classWriter.visit(V11, ACC_PUBLIC | ACC_SUPER, "example/InstructionSample", null, "java/lang/Object", null);
+        writeDefaultConstructor(classWriter);
+
+        Type intArrayType = Type.getType("[I");
+        MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC | ACC_STATIC, "values", "(I)[I", null, null);
+        methodVisitor.visitCode();
+        InstructionAdapter instructions = new InstructionAdapter(methodVisitor);
+        instructions.iconst(3);
+        instructions.newarray(Type.INT_TYPE);
+        instructions.store(1, intArrayType);
+
+        instructions.load(1, intArrayType);
+        instructions.iconst(0);
+        instructions.load(0, Type.INT_TYPE);
+        instructions.astore(Type.INT_TYPE);
+
+        instructions.load(1, intArrayType);
+        instructions.iconst(1);
+        instructions.load(0, Type.INT_TYPE);
+        instructions.iconst(2);
+        instructions.mul(Type.INT_TYPE);
+        instructions.astore(Type.INT_TYPE);
+
+        instructions.load(1, intArrayType);
+        instructions.iconst(2);
+        instructions.load(1, intArrayType);
+        instructions.iconst(0);
+        instructions.aload(Type.INT_TYPE);
+        instructions.load(1, intArrayType);
+        instructions.arraylength();
+        instructions.add(Type.INT_TYPE);
+        instructions.astore(Type.INT_TYPE);
+
+        instructions.load(1, intArrayType);
+        instructions.areturn(intArrayType);
+        instructions.visitMaxs(0, 0);
+        instructions.visitEnd();
+        classWriter.visitEnd();
+
+        MethodNode values = method(readClass(classWriter.toByteArray()), "values", "(I)[I");
+
+        assertThat(opcodes(values)).contains(NEWARRAY, IASTORE, IMUL, ARRAYLENGTH, ARETURN);
+        assertThat(opcodes(values)).containsSubsequence(ALOAD, IALOAD);
+        assertThat(values.maxStack).isGreaterThanOrEqualTo(4);
+        assertThat(values.maxLocals).isEqualTo(2);
     }
 
     @Test
