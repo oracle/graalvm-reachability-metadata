@@ -1,0 +1,676 @@
+Starting a Gradle Daemon, 6 busy and 11 incompatible and 200 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded61-93e9-7920-86fa-fe326c1a803b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.joda:joda-convert:2.2.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.2.4" when "$version$" is replaced with "2.2.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+- Set "coordinates" to "org.joda:joda-convert:2.2.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.2.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream repository, then patch the JSON directly with version-tokenized URLs.
+web search: 
+web search: Maven Central org.joda joda-convert 2.2.4 sources javadoc test jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: github.com JodaOrg joda-convert tag v2.2.4
+web search: 
+web search: https://github.com/JodaOrg/joda-convert/tree/v2.2.4
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+-rw-rw-r-- 1 vjovanov vjovanov 52 May  3 12:28 build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+ succeeded in 0ms:
+{
+  "coordinates" : "org.joda:joda-convert:2.2.4"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/joda-convert-2.2.4.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- ==================================================================== -->
+  <!-- Build requires Java SE 11 or later -->
+  <!-- ==================================================================== -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.joda</groupId>
+  <artifactId>joda-convert</artifactId>
+  <packaging>jar</packaging>
+  <name>Joda-Convert</name>
+  <version>2.2.4</version>
+  <description>Library to convert Objects to and from String, compatible with Java 1.6</description>
+  <url>https://www.joda.org/joda-convert/</url>
+
+  <!-- ==================================================================== -->
+  <inceptionYear>2010</inceptionYear>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <organization>
+    <name>Joda.org</name>
+    <url>https://www.joda.org</url>
+  </organization>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/JodaOrg/joda-convert/issues</url>
+  </issueManagement>
+  <scm>
+    <connection>scm:git:https://github.com/JodaOrg/joda-convert.git</connection>
+    <developerConnection>scm:git:https://github.com/JodaOrg/joda-convert.git</developerConnection>
+    <url>https://github.com/JodaOrg/joda-convert</url>
+    <tag>v2.2.4</tag>
+  </scm>
+
+  <!-- ==================================================================== -->
+  <developers>
+    <developer>
+      <id>jodastephen</id>
+      <name>Stephen Colebourne</name>
+      <roles>
+        <role>Project Lead</role>
+      </roles>
+      <timezone>0</timezone>
+      <url>https://github.com/jodastephen</url>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Chris Kent</name>
+      <url>https://github.com/cjkent</url>
+    </contributor>
+    <contributor>
+      <name>Raman Gupta</name>
+      <url>https://github.com/rocketraman</url>
+    </contributor>
+  </contributors>
+
+  <!-- ==================================================================== -->
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <directory>${project.basedir}</directory>
+        <includes>
+          <include>LICENSE.txt</include>
+          <include>NOTICE.txt</include>
+        </includes>
+      </resource>
+    </resources>
+    <!-- define build -->
+    <plugins>
+      <!-- Enforce Maven 3.6.0 and Java 11+ -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.6.0</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[11,)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Compile twice -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <!-- compile first with module-info for Java 9 -->
+          <execution>
+            <id>default-compile</id>
+            <configuration>
+              <release>9</release>
+            </configuration>
+          </execution>
+          <!-- then compile without module-info for Java 8 -->
+          <execution>
+            <id>base-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>module-info.java</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+        <!-- setup defaults for compile and testCompile -->
+        <configuration>
+          <release>8</release>
+        </configuration>
+      </plugin>
+      <!-- Hack to extract dependencies for Surefire plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Surefire plugin is broken, https://issues.apache.org/jira/browse/SUREFIRE-1501 -->
+      <!-- Setup surefire to test with Guava not present -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <!-- execute all suitable tests with guava not present -->
+          <execution>
+            <id>no-guava</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <classpathDependencyExcludes>
+                <classpathDependencyExclude>com.google.guava:guava</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+              <includes>
+                <include>**/TestBooleanArrayStringConverterFactory.java</include>
+                <include>**/TestBooleanObjectArrayStringConverterFactory.java</include>
+                <include>**/TestByteObjectArrayStringConverterFactory.java</include>
+                <include>**/TestCharObjectArrayStringConverterFactory.java</include>
+                <include>**/TestJavaTime.java</include>
+                <include>**/TestJDKStringConverters.java</include>
+                <include>**/TestNumericArrayStringConverterFactory.java</include>
+                <include>**/TestNumericObjectArrayStringConverterFactory.java</include>
+                <include>**/TestRenameHandler.java</include>
+                <include>**/TestStringConvert.java</include>
+                <include>**/TestStringConverterFactory.java</include>
+                <include>**/TestThreeTenBackport.java</include>
+              </includes>
+            </configuration>
+          </execution>
+          <!-- execute all suitable tests with threeten-backport not present -->
+          <execution>
+            <id>no-threetenbp</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <classpathDependencyExcludes>
+                <classpathDependencyExclude>org.threeten.bp:threetenbp</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+              <includes>
+                <include>**/TestBooleanArrayStringConverterFactory.java</include>
+                <include>**/TestBooleanObjectArrayStringConverterFactory.java</include>
+                <include>**/TestByteObjectArrayStringConverterFactory.java</include>
+                <include>**/TestCharObjectArrayStringConverterFactory.java</include>
+                <include>**/TestGuavaTypeTokenStringConverter.java</include>
+                <include>**/TestJavaTime.java</include>
+                <include>**/TestJDKStringConverters.java</include>
+                <include>**/TestNumericArrayStringConverterFactory.java</include>
+                <include>**/TestNumericObjectArrayStringConverterFactory.java</include>
+                <include>**/TestRenameHandler.java</include>
+                <include>**/TestStringConvert.java</include>
+                <include>**/TestStringConverterFactory.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Setup OSGi bundle data -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven-bundle-plugin.version}</version>
+        <executions>
+          <execution>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/joda/joda-convert/2.2.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/joda/joda-convert/2.2.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="joda-convert-2.2.4-classic.jar" title="joda-convert-2.2.4-classic.jar">joda-convert-2.2.4-classic.jar</a>                    2024-10-05 15:37    147276      
+<a href="joda-convert-2.2.4-classic.jar.asc" title="joda-convert-2.2.4-classic.jar.asc">joda-convert-2.2.4-classic.jar.asc</a>                2024-10-05 15:37       849      
+<a href="joda-convert-2.2.4-classic.jar.md5" title="joda-convert-2.2.4-classic.jar.md5">joda-convert-2.2.4-classic.jar.md5</a>                2024-10-05 15:37        32      
+<a href="joda-convert-2.2.4-classic.jar.sha1" title="joda-convert-2.2.4-classic.jar.sha1">joda-convert-2.2.4-classic.jar.sha1</a>               2024-10-05 15:37        40      
+<a href="joda-convert-2.2.4-javadoc.jar" title="joda-convert-2.2.4-javadoc.jar">joda-convert-2.2.4-javadoc.jar</a>                    2024-10-05 15:37    491317      
+<a href="joda-convert-2.2.4-javadoc.jar.asc" title="joda-convert-2.2.4-javadoc.jar.asc">joda-convert-2.2.4-javadoc.jar.asc</a>                2024-10-05 15:37       849      
+<a href="joda-convert-2.2.4-javadoc.jar.md5" title="joda-convert-2.2.4-javadoc.jar.md5">joda-convert-2.2.4-javadoc.jar.md5</a>                2024-10-05 15:37        32      
+<a href="joda-convert-2.2.4-javadoc.jar.sha1" title="joda-convert-2.2.4-javadoc.jar.sha1">joda-convert-2.2.4-javadoc.jar.sha1</a>               2024-10-05 15:37        40      
+<a href="joda-convert-2.2.4-sources.jar" title="joda-convert-2.2.4-sources.jar">joda-convert-2.2.4-sources.jar</a>                    2024-10-05 15:37     68203      
+<a href="joda-convert-2.2.4-sources.jar.asc" title="joda-convert-2.2.4-sources.jar.asc">joda-convert-2.2.4-sources.jar.asc</a>                2024-10-05 15:37       849      
+<a href="joda-convert-2.2.4-sources.jar.md5" title="joda-convert-2.2.4-sources.jar.md5">joda-convert-2.2.4-sources.jar.md5</a>                2024-10-05 15:37        32      
+<a href="joda-convert-2.2.4-sources.jar.sha1" title="joda-convert-2.2.4-sources.jar.sha1">joda-convert-2.2.4-sources.jar.sha1</a>               2024-10-05 15:37        40      
+<a href="joda-convert-2.2.4.jar" title="joda-convert-2.2.4.jar">joda-convert-2.2.4.jar</a>                            2024-10-05 15:37    149586      
+<a href="joda-convert-2.2.4.jar.asc" title="joda-convert-2.2.4.jar.asc">joda-convert-2.2.4.jar.asc</a>                        2024-10-05 15:37       849      
+<a href="joda-convert-2.2.4.jar.md5" title="joda-convert-2.2.4.jar.md5">joda-convert-2.2.4.jar.md5</a>                        2024-10-05 15:37        32      
+<a href="joda-convert-2.2.4.jar.sha1" title="joda-convert-2.2.4.jar.sha1">joda-convert-2.2.4.jar.sha1</a>                       2024-10-05 15:37        40      
+<a href="joda-convert-2.2.4.pom" title="joda-convert-2.2.4.pom">joda-convert-2.2.4.pom</a>                            2024-10-05 15:37     31574      
+<a href="joda-convert-2.2.4.pom.asc" title="joda-convert-2.2.4.pom.asc">joda-convert-2.2.4.pom.asc</a>                        2024-10-05 15:37       849      
+<a href="joda-convert-2.2.4.pom.md5" title="joda-convert-2.2.4.pom.md5">joda-convert-2.2.4.pom.md5</a>                        2024-10-05 15:37        32      
+<a href="joda-convert-2.2.4.pom.sha1" title="joda-convert-2.2.4.pom.sha1">joda-convert-2.2.4.pom.sha1</a>                       2024-10-05 15:37        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Maven Central has the main JAR, sources JAR, and javadoc JAR for `2.2.4`; I’m checking the repo tag next because Central does not appear to publish test sources for this artifact.
+exec
+/usr/bin/bash -lc "rg 'source-code-url.*repo1.maven.org|test-code-url.*github.com|documentation-url.*javadoc.jar' -n metadata build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:50:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:100:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:102:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:103:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:7:    "test-code-url" : "https://github.com/jknack/handlebars.java/tree/v4.4.0/tests/src/test/java/com/github/jknack/handlebars/helper/ext",
+metadata/com.github.jknack/handlebars-helpers/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:21:    "test-code-url" : "https://github.com/jknack/handlebars.java/tree/v$version$/handlebars-helpers/src/test",
+metadata/com.github.jknack/handlebars-helpers/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/$version$/handlebars-helpers-$version$-javadoc.jar",
+metadata/javax.el/el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/$version$/duct-tape-$version$-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/$version$/src/test/java",
+metadata/com.android.databinding/baseLibrary/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.google.guava/guava-bootstrap/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/guava/guava-bootstrap/$version$/guava-bootstrap-$version$-sources.jar",
+metadata/com.google.guava/guava-bootstrap/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/guava/guava-bootstrap/$version$/guava-bootstrap-$version$-javadoc.jar",
+metadata/org.tpolecat/sourcepos_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/SourcePos/tree/v$version$/sourcepos/src/test",
+metadata/org.tpolecat/sourcepos_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/tpolecat/sourcepos_3/$version$/sourcepos_3-$version$-javadoc.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-sources.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-models/tree/$version$/hibernate-models/src/test",
+metadata/org.hibernate.models/hibernate-models/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jmx/src/test/java",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-sources.jar",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-$version$/okio/src/test",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/JodaOrg/joda-convert.git 'refs/tags/*2.2.4*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/JodaOrg/joda-convert/contents/src/test/java?ref=v2.2.4 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/joda-convert-2.2.4.jar -o /tmp/joda-convert-2.2.4.jar && jar tf /tmp/joda-convert-2.2.4.jar | sed -n '1,60p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/joda/
+org/joda/convert/
+org/joda/convert/factory/
+META-INF/maven/
+META-INF/maven/org.joda/
+META-INF/maven/org.joda/joda-convert/
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/joda/convert/AnnotationStringConverterFactory.class
+org/joda/convert/ConstructorFromStringConverter.class
+org/joda/convert/EnumStringConverterFactory$EnumStringConverter.class
+org/joda/convert/EnumStringConverterFactory.class
+org/joda/convert/factory/BooleanArrayStringConverterFactory$1.class
+org/joda/convert/factory/BooleanArrayStringConverterFactory$BooleanArrayStringConverter$1.class
+org/joda/convert/factory/BooleanArrayStringConverterFactory$BooleanArrayStringConverter.class
+org/joda/convert/factory/BooleanArrayStringConverterFactory.class
+org/joda/convert/factory/BooleanObjectArrayStringConverterFactory$1.class
+org/joda/convert/factory/BooleanObjectArrayStringConverterFactory$BooleanArrayStringConverter$1.class
+org/joda/convert/factory/BooleanObjectArrayStringConverterFactory$BooleanArrayStringConverter.class
+org/joda/convert/factory/BooleanObjectArrayStringConverterFactory.class
+org/joda/convert/factory/ByteObjectArrayStringConverterFactory$1.class
+org/joda/convert/factory/ByteObjectArrayStringConverterFactory$ByteArrayStringConverter$1.class
+org/joda/convert/factory/ByteObjectArrayStringConverterFactory$ByteArrayStringConverter.class
+org/joda/convert/factory/ByteObjectArrayStringConverterFactory.class
+org/joda/convert/factory/CharObjectArrayStringConverterFactory$1.class
+org/joda/convert/factory/CharObjectArrayStringConverterFactory$CharecterArrayStringConverter$1.class
+org/joda/convert/factory/CharObjectArrayStringConverterFactory$CharecterArrayStringConverter.class
+org/joda/convert/factory/CharObjectArrayStringConverterFactory.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$1.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$DoubleArrayStringConverter$1.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$DoubleArrayStringConverter.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$FloatArrayStringConverter$1.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$FloatArrayStringConverter.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$IntArrayStringConverter$1.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$IntArrayStringConverter.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$LongArrayStringConverter$1.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$LongArrayStringConverter.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$ShortArrayStringConverter$1.class
+org/joda/convert/factory/NumericArrayStringConverterFactory$ShortArrayStringConverter.class
+org/joda/convert/factory/NumericArrayStringConverterFactory.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$1.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$DoubleArrayStringConverter$1.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$DoubleArrayStringConverter.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$FloatArrayStringConverter$1.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$FloatArrayStringConverter.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$IntArrayStringConverter$1.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$IntArrayStringConverter.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$LongArrayStringConverter$1.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$LongArrayStringConverter.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$ShortArrayStringConverter$1.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory$ShortArrayStringConverter.class
+org/joda/convert/factory/NumericObjectArrayStringConverterFactory.class
+org/joda/convert/FromString.class
+org/joda/convert/FromStringConverter.class
+org/joda/convert/FromStringFactory.class
+org/joda/convert/JDKStringConverter$1.class
+org/joda/convert/JDKStringConverter$10.class
+
+ succeeded in 161ms:
+[
+  {
+    "name": "org",
+    "path": "src/test/java/org",
+    "sha": "6fa1b60168327a4f44a384a544e1a7888e393f31",
+    "size": 0,
+    "url": "https://api.github.com/repos/JodaOrg/joda-convert/contents/src/test/java/org?ref=v2.2.4",
+    "html_url": "https://github.com/JodaOrg/joda-convert/tree/v2.2.4/src/test/java/org",
+    "git_url": "https://api.github.com/repos/JodaOrg/joda-convert/git/trees/6fa1b60168327a4f44a384a544e1a7888e393f31",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JodaOrg/joda-convert/contents/src/test/java/org?ref=v2.2.4",
+      "git": "https://api.github.com/repos/JodaOrg/joda-convert/git/trees/6fa1b60168327a4f44a384a544e1a7888e393f31",
+      "html": "https://github.com/JodaOrg/joda-convert/tree/v2.2.4/src/test/java/org"
+    }
+  }
+]
+
+ succeeded in 318ms:
+27ac16414fcbfa3f5b891bb2900092a37630c5b5	refs/tags/v2.2.4
+513c189e107634243067088771c67f3de264b545	refs/tags/v2.2.4^{}
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org maven2 org joda joda-convert 2.2.4 pom scm url tag
+codex
+The upstream tag is `v2.2.4`, and the artifact is a normal JVM JAR with `.class` files, so I’m leaving `language` and `not-for-native-image` out. I’m going to use Central for sources/docs and the tagged GitHub test tree for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+diff --git a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+index 26eef4ddc94e52d2e169aebaf30d53bc9614d10c..da65f58711497d1a7740bc44e0d84206475e0f0b
+--- a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.joda:joda-convert:2.2.4"
++  "coordinates" : "org.joda:joda-convert:2.2.4",
++  "repository-url" : "https://github.com/JodaOrg/joda-convert",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JodaOrg/joda-convert/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-javadoc.jar",
++  "description" : "Joda-Convert provides annotations and runtime utilities for converting Java objects to and from String representations. It includes built-in converters for common JDK types and supports custom converters through methods, constructors, annotations, and converter factories."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+index 26eef4ddc94e52d2e169aebaf30d53bc9614d10c..da65f58711497d1a7740bc44e0d84206475e0f0b
+--- a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.joda:joda-convert:2.2.4"
++  "coordinates" : "org.joda:joda-convert:2.2.4",
++  "repository-url" : "https://github.com/JodaOrg/joda-convert",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JodaOrg/joda-convert/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-javadoc.jar",
++  "description" : "Joda-Convert provides annotations and runtime utilities for converting Java objects to and from String representations. It includes built-in converters for common JDK types and supports custom converters through methods, constructors, annotations, and converter factories."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+ succeeded in 0ms:
+{
+  "coordinates": "org.joda:joda-convert:2.2.4",
+  "repository-url": "https://github.com/JodaOrg/joda-convert",
+  "source-code-url": "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-sources.jar",
+  "test-code-url": "https://github.com/JodaOrg/joda-convert/tree/v$version$/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-javadoc.jar",
+  "description": "Joda-Convert provides annotations and runtime utilities for converting Java objects to and from String representations. It includes built-in converters for common JDK types and supports custom converters through methods, constructors, annotations, and converter factories."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/joda-convert-2.2.4-sources.jar \\
+  https://github.com/JodaOrg/joda-convert/tree/v2.2.4/src/test \\
+  https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/joda-convert-2.2.4-javadoc.jar; do \\
+  printf '%s -> ' \""'$url"; curl -fsSIL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; '"\\
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+diff --git a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+index 26eef4ddc94e52d2e169aebaf30d53bc9614d10c..da65f58711497d1a7740bc44e0d84206475e0f0b
+--- a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.joda:joda-convert:2.2.4"
++  "coordinates" : "org.joda:joda-convert:2.2.4",
++  "repository-url" : "https://github.com/JodaOrg/joda-convert",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JodaOrg/joda-convert/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-javadoc.jar",
++  "description" : "Joda-Convert provides annotations and runtime utilities for converting Java objects to and from String representations. It includes built-in converters for common JDK types and supports custom converters through methods, constructors, annotations, and converter factories."
+ }
+
+ succeeded in 625ms:
+200
+https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/joda-convert-2.2.4-javadoc.jar -> 200
+
+codex
+The JSON parses cleanly, and all three version-expanded URLs returned HTTP 200. I’m doing one last status check so the final note can point at exactly what changed.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+ succeeded in 0ms:
+{
+  "coordinates" : "org.joda:joda-convert:2.2.4",
+  "repository-url" : "https://github.com/JodaOrg/joda-convert",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-sources.jar",
+  "test-code-url" : "https://github.com/JodaOrg/joda-convert/tree/v$version$/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-javadoc.jar",
+  "description" : "Joda-Convert provides annotations and runtime utilities for converting Java objects to and from String representations. It includes built-in converters for common JDK types and supports custom converters through methods, constructors, annotations, and converter factories."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc
+diff --git a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+index 26eef4ddc94e52d2e169aebaf30d53bc9614d10c..da65f58711497d1a7740bc44e0d84206475e0f0b
+--- a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.joda:joda-convert:2.2.4"
++  "coordinates" : "org.joda:joda-convert:2.2.4",
++  "repository-url" : "https://github.com/JodaOrg/joda-convert",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JodaOrg/joda-convert/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-javadoc.jar",
++  "description" : "Joda-Convert provides annotations and runtime utilities for converting Java objects to and from String representations. It includes built-in converters for common JDK types and supports custom converters through methods, constructors, annotations, and converter factories."
+ }
+
+ succeeded in 109ms:
+web search: 
+web search: https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/
+web search: 
+web search: 
+web search: 
+web search: org.joda joda-convert 2.2.4 SCM GitHub v2.2.4
+web search: 
+web search: https://www.joda.org/joda-convert/
+codex
+Updated [org.joda-joda-convert-2.2.4.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json).
+
+I used Maven Central for the sources and javadoc JARs, and the tagged GitHub `src/test` tree because Central does not list a test-sources artifact for `2.2.4`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/)) The artifact is a normal Java/JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent; Joda’s own site describes it as Java object-to-string conversion. ([joda.org](https://www.joda.org/joda-convert/))
+
+Validation: `jq .` passed, and the three `$version$`-expanded URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+index 26eef4ddc94e52d2e169aebaf30d53bc9614d10c..da65f58711497d1a7740bc44e0d84206475e0f0b
+--- a/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
++++ b/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.joda:joda-convert:2.2.4"
++  "coordinates" : "org.joda:joda-convert:2.2.4",
++  "repository-url" : "https://github.com/JodaOrg/joda-convert",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JodaOrg/joda-convert/tree/v$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/joda/joda-convert/$version$/joda-convert-$version$-javadoc.jar",
++  "description" : "Joda-Convert provides annotations and runtime utilities for converting Java objects to and from String representations. It includes built-in converters for common JDK types and supports custom converters through methods, constructors, annotations, and converter factories."
+ }
+
+tokens used
+71,584
+Updated [org.joda-joda-convert-2.2.4.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc/build/discovered-artifact-metadata/org.joda-joda-convert-2.2.4.json).
+
+I used Maven Central for the sources and javadoc JARs, and the tagged GitHub `src/test` tree because Central does not list a test-sources artifact for `2.2.4`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/joda/joda-convert/2.2.4/)) The artifact is a normal Java/JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent; Joda’s own site describes it as Java object-to-string conversion. ([joda.org](https://www.joda.org/joda-convert/))
+
+Validation: `jq .` passed, and the three `$version$`-expanded URLs returned HTTP 200.
+Ran agent for org.joda:joda-convert:2.2.4 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc/build/agent-artifact-discovery-logs/org.joda-joda-convert-2.2.4.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5014-b4bca0cc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 22s
+9 actionable tasks: 4 executed, 5 from cache
