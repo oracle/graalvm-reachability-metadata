@@ -16,10 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.roaringbitmap.BatchIterator;
 import org.roaringbitmap.BitSetUtil;
 import org.roaringbitmap.FastAggregation;
+import org.roaringbitmap.FastRankRoaringBitmap;
 import org.roaringbitmap.IntConsumer;
 import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.ParallelAggregation;
 import org.roaringbitmap.PeekableIntIterator;
+import org.roaringbitmap.PeekableIntRankIterator;
 import org.roaringbitmap.RangeBitmap;
 import org.roaringbitmap.RoaringBitmap;
 import org.roaringbitmap.RoaringBitmapWriter;
@@ -119,6 +121,34 @@ public class Org_roaringbitmapTest {
         Assertions.assertThat(FastAggregation.orCardinality(first, second, third)).isEqualTo(10);
         Assertions.assertThat(ParallelAggregation.or(first, second, third).toArray()).containsExactly(1, 2, 3, 4, 5, 1_000, 65_536, 65_537, 70_000, 70_001);
         Assertions.assertThat(ParallelAggregation.xor(first, second, third).toArray()).containsExactly(1, 2, 3, 4, 5, 1_000, 65_536, 65_537, 70_000, 70_001);
+    }
+
+    @Test
+    void fastRankBitmapMaintainsRankIndexesAcrossMutations() {
+        FastRankRoaringBitmap bitmap = new FastRankRoaringBitmap();
+        bitmap.add(1, 4);
+        bitmap.add(65_536);
+        bitmap.add(65_540);
+        bitmap.add(70_000, 70_003);
+
+        Assertions.assertThat(bitmap.checkedAdd(4)).isTrue();
+        Assertions.assertThat(bitmap.checkedRemove(2)).isTrue();
+        bitmap.flip(65_537, 65_540);
+        bitmap.remove(70_001);
+
+        Assertions.assertThat(bitmap.toArray())
+                .containsExactly(1, 3, 4, 65_536, 65_537, 65_538, 65_539, 65_540, 70_000, 70_002);
+        Assertions.assertThat(bitmap.rankLong(65_538)).isEqualTo(6L);
+        Assertions.assertThat(bitmap.select(5)).isEqualTo(65_538);
+
+        PeekableIntRankIterator iterator = bitmap.getIntRankIterator();
+        Assertions.assertThat(iterator.peekNext()).isEqualTo(1);
+        Assertions.assertThat(iterator.peekNextRank()).isEqualTo(1);
+        iterator.advanceIfNeeded(65_537);
+        Assertions.assertThat(iterator.peekNext()).isEqualTo(65_537);
+        Assertions.assertThat(iterator.peekNextRank()).isEqualTo(5);
+        Assertions.assertThat(iterator.next()).isEqualTo(65_537);
+        Assertions.assertThat(iterator.peekNextRank()).isEqualTo(6);
     }
 
     @Test
