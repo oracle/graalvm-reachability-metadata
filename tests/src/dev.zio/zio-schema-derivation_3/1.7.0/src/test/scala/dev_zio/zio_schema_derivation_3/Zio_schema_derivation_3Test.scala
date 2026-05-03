@@ -59,6 +59,36 @@ private object DerivationResult {
   given [A: Schema]: Schema[DerivationResult[A]] = Schema.derived[DerivationResult[A]]
 }
 
+private final case class DerivationLargeRecord(
+  f1: Int,
+  f2: Int,
+  f3: Int,
+  f4: Int,
+  f5: Int,
+  f6: Int,
+  f7: Int,
+  f8: Int,
+  f9: Int,
+  f10: Int,
+  f11: Int,
+  f12: Int,
+  f13: Int,
+  f14: Int,
+  f15: Int,
+  f16: Int,
+  f17: Int,
+  f18: Int,
+  f19: Int,
+  f20: Int,
+  f21: Int,
+  f22: Int,
+  f23: Int
+)
+
+private object DerivationLargeRecord {
+  given Schema[DerivationLargeRecord] = Schema.derived[DerivationLargeRecord]
+}
+
 private final case class TypeDescription[A](value: String)
 
 private class DescribingDeriver extends Deriver[TypeDescription] {
@@ -253,6 +283,71 @@ class Zio_schema_derivation_3Test {
   }
 
   @Test
+  def derivesLargeCaseClassSchemasBeyondTupleArityLimit(): Unit = {
+    val schema: Schema[DerivationLargeRecord] = summon[Schema[DerivationLargeRecord]]
+    val value: DerivationLargeRecord = DerivationLargeRecord(
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    )
+
+    val dynamic: DynamicValue = schema.toDynamic(value)
+
+    assertThat(schema.fromDynamic(dynamic)).isEqualTo(Right(value))
+    assertThat(schema.fromDynamic(replaceField(dynamic, "f23", DynamicValue("not an integer"))).isLeft).isTrue()
+
+    dynamic match {
+      case DynamicValue.Record(_, values) =>
+        assertThat(values.keys.toList.asJava).containsExactly(
+          "f1",
+          "f2",
+          "f3",
+          "f4",
+          "f5",
+          "f6",
+          "f7",
+          "f8",
+          "f9",
+          "f10",
+          "f11",
+          "f12",
+          "f13",
+          "f14",
+          "f15",
+          "f16",
+          "f17",
+          "f18",
+          "f19",
+          "f20",
+          "f21",
+          "f22",
+          "f23"
+        )
+      case other => throw new AssertionError(s"Expected large case class to encode as a record, got $other")
+    }
+  }
+
+  @Test
   def deriveAndFactoryBuildCustomTypeClassInstancesFromNestedSchemas(): Unit = {
     given TypeDescription[DerivationAddress] = TypeDescription("custom-address")
     val deriver: Deriver[TypeDescription] = new DescribingDeriver().autoAcceptSummoned
@@ -292,6 +387,12 @@ class Zio_schema_derivation_3Test {
     dynamic match {
       case DynamicValue.Record(id, values) => DynamicValue.Record(id, values.updated("primary", replacement))
       case other                           => throw new AssertionError(s"Expected generic result to encode as a record, got $other")
+    }
+
+  private def replaceField(dynamic: DynamicValue, fieldName: String, replacement: DynamicValue): DynamicValue =
+    dynamic match {
+      case DynamicValue.Record(id, values) => DynamicValue.Record(id, values.updated(fieldName, replacement))
+      case other                           => throw new AssertionError(s"Expected a record dynamic value, got $other")
     }
 
   private def malformedEnvelopeDynamic: DynamicValue =
