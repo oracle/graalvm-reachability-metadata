@@ -84,6 +84,24 @@ public class JuniversalchardetTest {
     }
 
     @Test
+    void universalDetectorDetectsIso2022JpEscapeSequences() {
+        List<String> reportedCharsets = new ArrayList<>();
+        UniversalDetector detector = new UniversalDetector(reportedCharsets::add);
+        byte[] iso2022Jp = new byte[] {
+                0x49, 0x53, 0x4F, 0x2D, 0x32, 0x30, 0x32, 0x32, 0x2D, 0x4A, 0x50, 0x20, 0x73,
+                0x61, 0x6D, 0x70, 0x6C, 0x65, 0x20, 0x1B, 0x24, 0x42, 0x46, 0x7C, 0x4B, 0x5C,
+                0x38, 0x6C, 0x1B, 0x28, 0x42, 0x20, 0x74, 0x65, 0x78, 0x74
+        };
+
+        detector.handleData(iso2022Jp);
+
+        assertThat(detector.isDone()).isTrue();
+        assertThat(detector.getDetectedCharset()).isEqualTo(Constants.CHARSET_ISO_2022_JP);
+        detector.dataEnd();
+        assertThat(reportedCharsets).containsExactly(Constants.CHARSET_ISO_2022_JP);
+    }
+
+    @Test
     void detectCharsetReadsInputStreamPathAndFile() throws IOException {
         byte[] utf8WithBom = concat(UTF_8_BOM, UTF_8_TEXT.getBytes(StandardCharsets.UTF_8));
         Path inputFile = temporaryDirectory.resolve("utf8-with-bom.txt");
