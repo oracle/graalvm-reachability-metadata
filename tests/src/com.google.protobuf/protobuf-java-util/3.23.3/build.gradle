@@ -41,6 +41,13 @@ afterEvaluate {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // Keep this build below the run-consecutive-tests host pressure envelope.
+            buildArgs.add("-J-Xmx6g")
+            buildArgs.add("--parallelism=8")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
