@@ -6,11 +6,14 @@
  */
 package software_amazon_awssdk.checksums_spi;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 import org.junit.jupiter.api.Test;
 
@@ -61,6 +64,17 @@ public class Checksums_spiTest {
                 .containsExactly("CRC64NVME", "SHA256", "CRC32C");
     }
 
+    @Test
+    void implementationCanPairTheSpiIdentifierWithChecksumComputation() {
+        StatefulChecksumAlgorithm algorithm = new StatefulChecksumAlgorithm("CRC32", new CRC32());
+
+        algorithm.update("hello ".getBytes(StandardCharsets.UTF_8));
+        algorithm.update("world".getBytes(StandardCharsets.UTF_8));
+
+        assertThat(algorithm.algorithmId()).isEqualTo("CRC32");
+        assertThat(algorithm.getValue()).isEqualTo(0x0D4A1185L);
+    }
+
     private static List<String> algorithmIds(List<ChecksumAlgorithm> algorithms) {
         return algorithms.stream()
                 .map(ChecksumAlgorithm::algorithmId)
@@ -77,6 +91,29 @@ public class Checksums_spiTest {
         @Override
         public String algorithmId() {
             return algorithmId;
+        }
+    }
+
+    private static final class StatefulChecksumAlgorithm implements ChecksumAlgorithm {
+        private final String algorithmId;
+        private final Checksum checksum;
+
+        private StatefulChecksumAlgorithm(String algorithmId, Checksum checksum) {
+            this.algorithmId = algorithmId;
+            this.checksum = checksum;
+        }
+
+        @Override
+        public String algorithmId() {
+            return algorithmId;
+        }
+
+        private void update(byte[] bytes) {
+            checksum.update(bytes, 0, bytes.length);
+        }
+
+        private long getValue() {
+            return checksum.getValue();
         }
     }
 
