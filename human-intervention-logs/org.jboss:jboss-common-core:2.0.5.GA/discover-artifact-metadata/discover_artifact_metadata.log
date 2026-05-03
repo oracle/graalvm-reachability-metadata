@@ -1,0 +1,881 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deee0-2ff4-7bb2-87b0-5443411e006d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss:jboss-common-core:2.0.5.GA
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.5.GA" when "$version$" is replaced with "2.0.5.GA".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+- Set "coordinates" to "org.jboss:jboss-common-core:2.0.5.GA".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.5.GA".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact on Maven first, then cross-check the upstream repository/tag so the metadata URLs point at something that actually renders for `2.0.5.GA`.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org.jboss-jboss-common-core-2.0.5.GA.json|jboss-common-core'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+
+exec
+/usr/bin/bash -lc 'rg -n "jboss-common-core|org.jboss" metadata build/discovered-artifact-metadata 2>/dev/null | head -80' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json:2:  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:5:      "org.jboss",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:5:        "typeReached" : "org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:11:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:23:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:35:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:47:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:59:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:71:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:83:        "typeReached" : "org.jboss.resteasy.concurrent.ContextualExecutors"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:89:        "typeReached" : "org.jboss.resteasy.core.ContextParameterInjector$1"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:95:        "typeReached" : "org.jboss.resteasy.core.providerfactory.Utils"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:101:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:107:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:113:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:119:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:125:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:139:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:145:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:157:        "typeReached" : "org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:169:        "typeReached" : "org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:175:        "typeReached" : "org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:181:        "typeReached" : "org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:183:      "type" : "org.jboss.logmanager.LogManager"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:187:        "typeReached" : "org.jboss.resteasy.client.jaxrs.i18n.LogMessages"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:189:      "type" : "org.jboss.resteasy.client.jaxrs.i18n.LogMessages_$logger",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:194:            "org.jboss.logging.Logger"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:201:        "typeReached" : "org.jboss.resteasy.client.jaxrs.i18n.LogMessages"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:203:      "type" : "org.jboss.resteasy.client.jaxrs.i18n.LogMessages_$logger_en"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:207:        "typeReached" : "org.jboss.resteasy.client.jaxrs.i18n.LogMessages"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:209:      "type" : "org.jboss.resteasy.client.jaxrs.i18n.LogMessages_$logger_en_US"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:213:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:215:      "type" : "org.jboss.resteasy.client.jaxrs.internal.CompletionStageRxInvokerProvider"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:219:        "typeReached" : "org.jboss.resteasy.client.jaxrs.ProxyBuilder"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:221:      "type" : "org.jboss.resteasy.client.jaxrs.internal.proxy.ProxyBuilderImpl",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:234:        "typeReached" : "org.jboss.resteasy.client.jaxrs.internal.ClientInvocation"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:236:      "type" : "org.jboss.resteasy.core.providerfactory.ResteasyProviderFactoryImpl"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:240:        "typeReached" : "org.jboss.resteasy.core.providerfactory.CommonProviders"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:242:      "type" : "org.jboss.resteasy.plugins.interceptors.CacheControlFeature",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:252:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:254:      "type" : "org.jboss.resteasy.plugins.interceptors.CacheControlFeature"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:258:        "typeReached" : "org.jboss.resteasy.core.providerfactory.CommonProviders"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:260:      "type" : "org.jboss.resteasy.plugins.interceptors.ClientContentEncodingAnnotationFeature",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:270:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:272:      "type" : "org.jboss.resteasy.plugins.interceptors.ClientContentEncodingAnnotationFeature"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:276:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:278:      "type" : "org.jboss.resteasy.plugins.interceptors.MessageSanitizerContainerResponseFilter"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:282:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:284:      "type" : "org.jboss.resteasy.plugins.interceptors.ServerContentEncodingAnnotationFeature"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:288:        "typeReached" : "org.jboss.resteasy.core.providerfactory.Utils"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:290:      "type" : "org.jboss.resteasy.plugins.providers.AbstractEntityProvider"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:294:        "typeReached" : "org.jboss.resteasy.core.providerfactory.CommonProviders"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:296:      "type" : "org.jboss.resteasy.plugins.providers.AsyncStreamingOutputProvider"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:300:        "typeReached" : "org.jboss.resteasy.core.providerfactory.Utils"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:302:      "type" : "org.jboss.resteasy.plugins.providers.AsyncStreamingOutputProvider",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:312:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:314:      "type" : "org.jboss.resteasy.plugins.providers.AsyncStreamingOutputProvider"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:318:        "typeReached" : "org.jboss.resteasy.core.providerfactory.Utils"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:320:      "type" : "org.jboss.resteasy.plugins.providers.ByteArrayProvider",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:330:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:332:      "type" : "org.jboss.resteasy.plugins.providers.ByteArrayProvider"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:336:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:338:      "type" : "org.jboss.resteasy.plugins.providers.CompletionStageProvider"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:342:        "typeReached" : "org.jboss.resteasy.core.providerfactory.Utils"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:344:      "type" : "org.jboss.resteasy.plugins.providers.DataSourceProvider",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:354:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:356:      "type" : "org.jboss.resteasy.plugins.providers.DataSourceProvider"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:360:        "typeReached" : "org.jboss.resteasy.core.providerfactory.CommonProviders"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:362:      "type" : "org.jboss.resteasy.plugins.providers.DefaultBooleanWriter"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:366:        "typeReached" : "org.jboss.resteasy.core.providerfactory.Utils"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:368:      "type" : "org.jboss.resteasy.plugins.providers.DefaultBooleanWriter",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:378:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:380:      "type" : "org.jboss.resteasy.plugins.providers.DefaultBooleanWriter"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:384:        "typeReached" : "org.jboss.resteasy.core.providerfactory.CommonProviders"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:386:      "type" : "org.jboss.resteasy.plugins.providers.DefaultNumberWriter"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:390:        "typeReached" : "org.jboss.resteasy.core.providerfactory.Utils"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:392:      "type" : "org.jboss.resteasy.plugins.providers.DefaultNumberWriter",
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:402:        "typeReached" : "org.jboss.resteasy.plugins.providers.RegisterBuiltin"
+
+web search: 
+web search: org.jboss jboss-common-core 2.0.5.GA Maven sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss/jboss-common-core
+web search: 
+web search: repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA.pom
+web search: 
+web search: https://repo1.maven.org/maven2/org/jboss/jboss-common-core/
+web search: 
+web search: https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/
+web search: 
+web search: 
+codex
+Maven Central has the `2.0.5.GA` JAR, POM, and sources JAR, but no javadoc or tests JAR in that version directory. I’m checking the POM and upstream tags next to avoid guessing on repository and test/doc links.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA.jar -o /tmp/jboss-common-core-2.0.5.GA.jar && jar tf /tmp/jboss-common-core-2.0.5.GA.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jboss/jboss-common-core.git | rg '2\\.0\\.5|2_0_5|common-core' | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 263ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.jboss</groupId>
+		<artifactId>jboss-parent</artifactId>
+		<version>3</version>
+	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jboss-common-core</artifactId>
+  <version>2.0.5.GA</version>
+  <packaging>jar</packaging>
+  <name>JBoss Common Classes</name>
+  <url>http://www.jboss.org</url>
+  <description>JBoss Common Core Utility classes</description>
+  <scm>
+    <connection>scm:svn:https://svn.jboss.org/repos/common/common-core/tags/2.0.5.GA</connection>
+  </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <!-- The tagBase property is needed during the release process so that the maven release plugin
+            will create the release tag in the appropriate location. -->
+          <tagBase>https://svn.jboss.org/repos/common/common-core/tags</tagBase>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>apache-xerces</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>2.7.1</version>
+    </dependency> 
+    <dependency>
+      <groupId>apache-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>2.0.2</version>
+    </dependency>      
+    <dependency>
+      <groupId>oswego-concurrent</groupId>
+      <artifactId>concurrent</artifactId>
+      <version>1.3.4</version>
+    </dependency>
+    <dependency>
+      <groupId>apache-slide</groupId>
+      <artifactId>webdavlib</artifactId>
+      <version>2.0</version>
+    </dependency>   
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-common-logging-spi</artifactId>
+      <version>2.0.4.GA</version>
+    </dependency>
+    <dependency>
+      <groupId>jboss</groupId>
+      <artifactId>jboss-test</artifactId>
+      <version>1.0.3.GA</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>jboss</groupId>
+          <artifactId>jboss-common-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>  
+</project>
+
+ succeeded in 377ms:
+6289e34c678e736c08e01dfa836a2192eb562bc2	refs/tags/jboss-common-core-2.5.0.Beta1
+d5f637944c605e35c8a4d70429bc217ca311250c	refs/tags/jboss-common-core-2.5.0.Beta1^{}
+1d3f4f9e1b58bf4a56ba39159ddfe7d3e0f9021e	refs/tags/jboss-common-core-2.5.0.Final
+aaee0f690f52b8a115ea83412e0aeb5f0c7483ce	refs/tags/jboss-common-core-2.5.0.Final^{}
+
+ succeeded in 611ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/net/
+org/jboss/net/protocol/
+org/jboss/net/protocol/file/
+org/jboss/net/protocol/http/
+org/jboss/net/protocol/njar/
+org/jboss/net/protocol/resource/
+org/jboss/net/sockets/
+org/jboss/net/ssl/
+org/jboss/util/
+org/jboss/util/collection/
+org/jboss/util/deadlock/
+org/jboss/util/file/
+org/jboss/util/graph/
+org/jboss/util/id/
+org/jboss/util/loading/
+org/jboss/util/naming/
+org/jboss/util/platform/
+org/jboss/util/property/
+org/jboss/util/property/jmx/
+org/jboss/util/propertyeditor/
+org/jboss/util/state/
+org/jboss/util/state/xml/
+org/jboss/util/stream/
+org/jboss/util/threadpool/
+org/jboss/util/timeout/
+org/jboss/util/xml/
+org/jboss/util/xml/catalog/
+org/jboss/util/xml/catalog/helpers/
+org/jboss/util/xml/catalog/readers/
+org/jboss/net/protocol/DelegatingURLConnection.class
+org/jboss/net/protocol/file/FileURLConnection.class
+org/jboss/net/protocol/file/FileURLLister$1.class
+org/jboss/net/protocol/file/FileURLLister.class
+org/jboss/net/protocol/file/Handler.class
+org/jboss/net/protocol/http/DavURLLister.class
+org/jboss/net/protocol/njar/Handler.class
+org/jboss/net/protocol/resource/Handler.class
+org/jboss/net/protocol/resource/ResourceURLConnection.class
+org/jboss/net/protocol/URLLister$URLFilter.class
+org/jboss/net/protocol/URLLister.class
+org/jboss/net/protocol/URLListerBase$1.class
+org/jboss/net/protocol/URLListerBase$URLFilterImpl.class
+org/jboss/net/protocol/URLListerBase.class
+org/jboss/net/protocol/URLListerFactory.class
+org/jboss/net/protocol/URLStreamHandlerFactory.class
+org/jboss/net/sockets/DefaultClientSocketFactory.class
+org/jboss/net/sockets/DefaultSocketFactory.class
+org/jboss/net/sockets/InterruptableInputStream.class
+org/jboss/net/sockets/MethodHash.class
+org/jboss/net/sockets/QueuedClientSocketFactory.class
+org/jboss/net/sockets/RMIMultiSocket.class
+org/jboss/net/sockets/RMIMultiSocketClient.class
+org/jboss/net/sockets/RMIMultiSocketHandler.class
+org/jboss/net/sockets/RMIMultiSocketServer.class
+org/jboss/net/sockets/TimeoutClientSocketFactory.class
+org/jboss/net/sockets/TimeoutServerSocket.class
+org/jboss/net/sockets/TimeoutServerSocketFactory.class
+org/jboss/net/sockets/TimeoutSocket.class
+org/jboss/net/ssl/SSLSocketFactoryBuilder.class
+org/jboss/util/AbstractNestedThrowable.class
+org/jboss/util/Base64$InputStream.class
+org/jboss/util/Base64$OutputStream.class
+org/jboss/util/Base64.class
+org/jboss/util/CachePolicy.class
+org/jboss/util/Classes$1.class
+org/jboss/util/Classes.class
+org/jboss/util/collection/AbstractQueue.class
+org/jboss/util/collection/ArrayIterator.class
+org/jboss/util/collection/CachedCollection$MyIterator.class
+org/jboss/util/collection/CachedCollection.class
+org/jboss/util/collection/CachedList.class
+org/jboss/util/collection/CollectionException.class
+org/jboss/util/collection/CollectionsFactory.class
+org/jboss/util/collection/CollectionsUtil.class
+org/jboss/util/collection/CompoundIterator.class
+org/jboss/util/collection/CompoundKey.class
+
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 https://svn.jboss.org/repos/common/common-core/tags/2.0.5.GA' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ exited 6 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: svn.jboss.org
+
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  472k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Sun, 03 May 2026 17:26:31 GMT
+content-type: application/java-archive
+content-length: 484116
+cf-ray: 9f60f89ed8be8628-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 165397
+etag: "39ac23d0446825525ca7667a46a4029a"
+last-modified: Tue, 31 Jul 2007 18:07:28 GMT
+x-checksum-md5: 39ac23d0446825525ca7667a46a4029a
+x-checksum-sha1: 5fa3359daaa73a0a2712dde1bba53c3739fa6a19
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA-tests.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 231ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Sun, 03 May 2026 17:26:31 GMT
+content-type: text/html
+cf-ray: 9f60f89eef0823bc-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 298ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--HTTP/2 404 
+date: Sun, 03 May 2026 17:26:31 GMT
+content-type: text/html
+cf-ray: 9f60f89ee935a625-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+:--     0
+
+web search: 
+web search: "JBoss Common Core Utility classes"
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/jboss-common-core/2.0.5.GA</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/jboss-common-core/2.0.5.GA</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jboss-common-core-2.0.5.GA-sources.jar" title="jboss-common-core-2.0.5.GA-sources.jar">jboss-common-core-2.0.5.GA-sources.jar</a>            2007-07-31 18:07    484116      
+<a href="jboss-common-core-2.0.5.GA-sources.jar.md5" title="jboss-common-core-2.0.5.GA-sources.jar.md5">jboss-common-core-2.0.5.GA-sources.jar.md5</a>        2007-07-31 18:07        32      
+<a href="jboss-common-core-2.0.5.GA-sources.jar.sha1" title="jboss-common-core-2.0.5.GA-sources.jar.sha1">jboss-common-core-2.0.5.GA-sources.jar.sha1</a>       2007-07-31 18:07        40      
+<a href="jboss-common-core-2.0.5.GA.jar" title="jboss-common-core-2.0.5.GA.jar">jboss-common-core-2.0.5.GA.jar</a>                    2007-07-31 18:07    420013      
+<a href="jboss-common-core-2.0.5.GA.jar.md5" title="jboss-common-core-2.0.5.GA.jar.md5">jboss-common-core-2.0.5.GA.jar.md5</a>                2007-07-31 18:07        32      
+<a href="jboss-common-core-2.0.5.GA.jar.sha1" title="jboss-common-core-2.0.5.GA.jar.sha1">jboss-common-core-2.0.5.GA.jar.sha1</a>               2007-07-31 18:07        40      
+<a href="jboss-common-core-2.0.5.GA.pom" title="jboss-common-core-2.0.5.GA.pom">jboss-common-core-2.0.5.GA.pom</a>                    2007-07-31 18:07      2458      
+<a href="jboss-common-core-2.0.5.GA.pom.md5" title="jboss-common-core-2.0.5.GA.pom.md5">jboss-common-core-2.0.5.GA.pom.md5</a>                2007-07-31 18:07        32      
+<a href="jboss-common-core-2.0.5.GA.pom.sha1" title="jboss-common-core-2.0.5.GA.pom.sha1">jboss-common-core-2.0.5.GA.pom.sha1</a>               2007-07-31 18:07        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA-sources.jar -o /tmp/jboss-common-core-2.0.5.GA-sources.jar && jar tf /tmp/jboss-common-core-2.0.5.GA-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/maven-metadata.xml || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/jboss/jboss-common-core.git | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 247ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 249ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/net/
+org/jboss/net/protocol/
+org/jboss/net/protocol/file/
+org/jboss/net/protocol/http/
+org/jboss/net/protocol/njar/
+org/jboss/net/protocol/resource/
+org/jboss/net/sockets/
+org/jboss/net/ssl/
+org/jboss/util/
+org/jboss/util/collection/
+org/jboss/util/deadlock/
+org/jboss/util/file/
+org/jboss/util/graph/
+org/jboss/util/id/
+org/jboss/util/jmx/
+org/jboss/util/loading/
+org/jboss/util/naming/
+org/jboss/util/platform/
+org/jboss/util/property/
+org/jboss/util/property/jmx/
+org/jboss/util/propertyeditor/
+org/jboss/util/state/
+org/jboss/util/state/xml/
+org/jboss/util/stream/
+org/jboss/util/threadpool/
+org/jboss/util/timeout/
+org/jboss/util/xml/
+org/jboss/util/xml/catalog/
+org/jboss/util/xml/catalog/helpers/
+org/jboss/util/xml/catalog/readers/
+org/jboss/net/protocol/DelegatingURLConnection.java
+org/jboss/net/protocol/file/FileURLConnection.java
+org/jboss/net/protocol/file/FileURLLister.java
+org/jboss/net/protocol/file/Handler.java
+org/jboss/net/protocol/file/package.html
+org/jboss/net/protocol/http/DavURLLister.java
+org/jboss/net/protocol/njar/Handler.java
+org/jboss/net/protocol/njar/package.html
+org/jboss/net/protocol/package.html
+org/jboss/net/protocol/resource/Handler.java
+org/jboss/net/protocol/resource/package.html
+org/jboss/net/protocol/resource/ResourceURLConnection.java
+org/jboss/net/protocol/URLLister.java
+org/jboss/net/protocol/URLListerBase.java
+org/jboss/net/protocol/URLListerFactory.java
+org/jboss/net/protocol/URLStreamHandlerFactory.java
+org/jboss/net/sockets/DefaultClientSocketFactory.java
+org/jboss/net/sockets/DefaultSocketFactory.java
+org/jboss/net/sockets/InterruptableInputStream.java
+org/jboss/net/sockets/MethodHash.java
+org/jboss/net/sockets/QueuedClientSocketFactory.java
+org/jboss/net/sockets/RMIMultiSocket.java
+org/jboss/net/sockets/RMIMultiSocketClient.java
+org/jboss/net/sockets/RMIMultiSocketHandler.java
+org/jboss/net/sockets/RMIMultiSocketServer.java
+org/jboss/net/sockets/TimeoutClientSocketFactory.java
+org/jboss/net/sockets/TimeoutServerSocket.java
+org/jboss/net/sockets/TimeoutServerSocketFactory.java
+org/jboss/net/sockets/TimeoutSocket.java
+org/jboss/net/ssl/SSLSocketFactoryBuilder.java
+org/jboss/util/AbstractNestedThrowable.java
+org/jboss/util/Base64.java
+org/jboss/util/CachePolicy.java
+org/jboss/util/Classes.java
+org/jboss/util/collection/AbstractQueue.java
+org/jboss/util/collection/ArrayIterator.java
+org/jboss/util/collection/CachedCollection.java
+org/jboss/util/collection/CachedList.java
+org/jboss/util/collection/CollectionException.java
+org/jboss/util/collection/CollectionsFactory.java
+org/jboss/util/collection/CollectionsUtil.java
+org/jboss/util/collection/CompoundIterator.java
+org/jboss/util/collection/CompoundKey.java
+org/jboss/util/collection/EmptyCollectionException.java
+org/jboss/util/collection/FullCollectionException.java
+org/jboss/util/collection/Iterators.java
+org/jboss/util/collection/LazyList.java
+org/jboss/util/collection/LazyMap.java
+org/jboss/util/collection/LazySet.java
+org/jboss/util/collection/ListQueue.java
+org/jboss/util/collection/ListSet.java
+org/jboss/util/collection/package.html
+org/jboss/util/collection/Queue.java
+org/jboss/util/collection/ReverseListIterator.java
+org/jboss/util/collection/SerializableEnumeration.java
+org/jboss/util/collection/SoftSet.java
+org/jboss/util/collection/SoftValueHashMap.java
+org/jboss/util/collection/WeakClassCache.java
+org/jboss/util/collection/WeakIdentityHashMap.java
+org/jboss/util/collection/WeakSet.java
+org/jboss/util/collection/WeakValueHashMap.java
+org/jboss/util/Counter.java
+org/jboss/util/deadlock/ApplicationDeadlockException.java
+org/jboss/util/deadlock/DeadlockDetector.java
+org/jboss/util/deadlock/Resource.java
+org/jboss/util/EmptyStringException.java
+org/jboss/util/Executable.java
+org/jboss/util/FieldInstance.java
+org/jboss/util/file/ArchiveBrowser.java
+org/jboss/util/file/ArchiveBrowserFactory.java
+org/jboss/util/file/ClassFileFilter.java
+org/jboss/util/file/DirectoryArchiveBrowser.java
+org/jboss/util/file/FilenamePrefixFilter.java
+org/jboss/util/file/FilenameSuffixFilter.java
+org/jboss/util/file/FilePrefixFilter.java
+org/jboss/util/file/FileProtocolArchiveBrowserFactory.java
+org/jboss/util/file/Files.java
+org/jboss/util/file/FileSuffixFilter.java
+org/jboss/util/file/JarArchiveBrowser.java
+org/jboss/util/file/JarProtocolArchiveBrowserFactory.java
+org/jboss/util/file/JarStreamBrowser.java
+org/jboss/util/file/JarUtils.java
+org/jboss/util/file/package.html
+org/jboss/util/graph/DFSVisitor.java
+org/jboss/util/graph/Edge.java
+org/jboss/util/graph/Graph.java
+
+ succeeded in 354ms:
+c191bb18db83fa106c6913cf34ed47989b65dc97	refs/heads/master
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"https://github.com/jboss|\"repository-url\" : \"http://www.jboss.org|svn.jboss.org/repos/common' build/discovered-artifact-metadata metadata | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:6:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:23:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:38:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:6:    "repository-url" : "https://github.com/jboss-logging/jboss-logging-tools",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:28:    "repository-url" : "https://github.com/jboss-logging/jboss-logging-tools",
+metadata/org.jboss.logging/jboss-logging/index.json:16:    "repository-url" : "https://github.com/jboss-logging/jboss-logging",
+metadata/org.jboss.logging/jboss-logging-annotations/index.json:6:    "repository-url" : "https://github.com/jboss-logging/jboss-logging-tools",
+metadata/org.jboss.logging/commons-logging-jboss-logging/index.json:6:    "repository-url" : "https://github.com/jboss-logging/commons-logging-jboss-logging",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:6:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:6:    "repository-url" : "https://github.com/jboss-logging/slf4j-jboss-logmanager",
+metadata/org.jboss.narayana.jta/jta/index.json:6:    "repository-url" : "https://github.com/jbosstm/narayana",
+metadata/org.jboss.narayana.jta/jta/index.json:21:    "repository-url" : "https://github.com/jbosstm/narayana",
+metadata/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/index.json:6:    "repository-url" : "https://github.com/jboss/jboss-transaction-api_spec",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:6:    "repository-url" : "https://github.com/jboss/jboss-interceptors-api_spec",
+
+exec
+/usr/bin/bash -lc "git ls-remote https://github.com/jboss/jboss-common-core.git | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/jboss/jboss-common-core/master/pom.xml | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 211ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>16</version>
+    </parent>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-common-core</artifactId>
+    <packaging>jar</packaging>
+    <version>2.5.1.Final-SNAPSHOT</version>
+    <name>JBoss Common Classes</name>
+    <url>http://www.jboss.org/jboss-common</url>
+    <description>JBoss Common Core Utility classes</description>
+    <properties>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License Version 2.0</name>
+            <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/jboss/jboss-common-core</url>
+        <connection>scm:git:https://github.com/jboss/jboss-common-core.git</connection>
+        <developerConnection>scm:git:https://github.com/jboss/jboss-common-core.git</developerConnection>
+      <tag>HEAD</tag>
+  </scm>
+    <!-- -->
+    <repositories>
+        <repository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+    <!-- -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.surefire.plugin}</version>
+                <configuration>
+                    <printSummary>true</printSummary>
+                    <disableXmlReport>false</disableXmlReport>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <includes>
+                        <include>**/*TestCase.java</include>
+                    </includes>
+                    <reuseForks>false</reuseForks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-spi</artifactId>
+            <version>2.1.2.GA</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>
+
+ succeeded in 341ms:
+c191bb18db83fa106c6913cf34ed47989b65dc97	HEAD
+c191bb18db83fa106c6913cf34ed47989b65dc97	refs/heads/master
+56eef61d2b8c8b5b4c409f2cc278d22af77d632b	refs/pull/1/head
+3f64085ea8abf6aaf234507a5a79eba407ba03bf	refs/pull/1/merge
+bcdc43423da4e32b77c08c3e368772a267c0d240	refs/pull/2/head
+9590b6b5987fcac3b09b674c245f5948f54abf28	refs/pull/2/merge
+790e430024c9251c8a99a9c6deffef05117ac84d	refs/pull/3/head
+b4a4925b73ec11e537c2aa19b2d568ebff8d46c8	refs/pull/3/merge
+6289e34c678e736c08e01dfa836a2192eb562bc2	refs/tags/jboss-common-core-2.5.0.Beta1
+d5f637944c605e35c8a4d70429bc217ca311250c	refs/tags/jboss-common-core-2.5.0.Beta1^{}
+1d3f4f9e1b58bf4a56ba39159ddfe7d3e0f9021e	refs/tags/jboss-common-core-2.5.0.Final
+aaee0f690f52b8a115ea83412e0aeb5f0c7483ce	refs/tags/jboss-common-core-2.5.0.Final^{}
+
+codex
+The upstream POM for this exact release points to an old SVN tag, but that host no longer resolves. Since the exact Maven release has a sources JAR and the main JAR contains JVM `.class` files, I’m going to use Maven Central for source code, leave missing test/documentation URLs as `N/A`, and avoid any `not-for-native-image` marker.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+diff --git a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+index 252b662df889127b978a3fac103ec1ad0720f754..5a6ff4127427d477a1bed399f7dfe52864984d24
+--- a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
++++ b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA"
++  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA",
++  "repository-url" : "https://github.com/jboss/jboss-common-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jboss-common-core/$version$/jboss-common-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "JBoss Common Core provides shared utility classes used by legacy JBoss components, including collection, file, graph, networking, property, threading, timeout, and XML helper APIs. It packages those general-purpose Java support classes as a JVM JAR for reuse by applications and server-side libraries."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+index 252b662df889127b978a3fac103ec1ad0720f754..5a6ff4127427d477a1bed399f7dfe52864984d24
+--- a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
++++ b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA"
++  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA",
++  "repository-url" : "https://github.com/jboss/jboss-common-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jboss-common-core/$version$/jboss-common-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "JBoss Common Core provides shared utility classes used by legacy JBoss components, including collection, file, graph, networking, property, threading, timeout, and XML helper APIs. It packages those general-purpose Java support classes as a JVM JAR for reuse by applications and server-side libraries."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+{
+  "coordinates": "org.jboss:jboss-common-core:2.0.5.GA",
+  "repository-url": "https://github.com/jboss/jboss-common-core",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jboss/jboss-common-core/$version$/jboss-common-core-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "JBoss Common Core provides shared utility classes used by legacy JBoss components, including collection, file, graph, networking, property, threading, timeout, and XML helper APIs. It packages those general-purpose Java support classes as a JVM JAR for reuse by applications and server-side libraries."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -L --max-time 20 https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/jboss-common-core-2.0.5.GA-sources.jar | sed -n '1,16p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  472k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Sun, 03 May 2026 17:27:08 GMT
+content-type: application/java-archive
+content-length: 484116
+cf-ray: 9f60f98829b6be84-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 165434
+etag: "39ac23d0446825525ca7667a46a4029a"
+last-modified: Tue, 31 Jul 2007 18:07:28 GMT
+x-checksum-md5: 39ac23d0446825525ca7667a46a4029a
+x-checksum-sha1: 5fa3359daaa73a0a2712dde1bba53c3739fa6a19
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+index 252b662df889127b978a3fac103ec1ad0720f754..5a6ff4127427d477a1bed399f7dfe52864984d24
+--- a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
++++ b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA"
++  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA",
++  "repository-url" : "https://github.com/jboss/jboss-common-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jboss-common-core/$version$/jboss-common-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "JBoss Common Core provides shared utility classes used by legacy JBoss components, including collection, file, graph, networking, property, threading, timeout, and XML helper APIs. It packages those general-purpose Java support classes as a JVM JAR for reuse by applications and server-side libraries."
+ }
+
+exec
+/usr/bin/bash -lc 'git check-ignore -v build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+.gitignore:33:**/build	build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+index 252b662df889127b978a3fac103ec1ad0720f754..5a6ff4127427d477a1bed399f7dfe52864984d24
+--- a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
++++ b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA"
++  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA",
++  "repository-url" : "https://github.com/jboss/jboss-common-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jboss-common-core/$version$/jboss-common-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "JBoss Common Core provides shared utility classes used by legacy JBoss components, including collection, file, graph, networking, property, threading, timeout, and XML helper APIs. It packages those general-purpose Java support classes as a JVM JAR for reuse by applications and server-side libraries."
+ }
+
+web search: 
+web search: https://github.com/jboss/jboss-common-core
+web search: 
+web search: https://repo1.maven.org/maven2/org/jboss/jboss-common-core/2.0.5.GA/ jboss-common-core-2.0.5.GA-sources.jar
+web search: 
+web search: https://jarcasting.com/artifacts/org.jboss/jboss-common-core/2.0.5.GA/
+web search: 
+web search: "https://svn.jboss.org/repos/common/common-core/tags/2.0.5.GA"
+web search: 
+web search: https://repository.jboss.org/jboss/jboss-common-core/
+codex
+Updated [org.jboss-jboss-common-core-2.0.5.GA.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json).
+
+I set the Maven Central sources JAR URL, GitHub repository root, `N/A` for missing test/documentation URLs, and a two-sentence description. I did not add `language` or `not-for-native-image`; this is a regular JVM JAR, and Maven listings show the exact `2.0.5.GA` artifact includes a JAR and sources JAR. ([jarcasting.com](https://jarcasting.com/artifacts/org.jboss/jboss-common-core/2.0.5.GA/))
+diff --git a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+index 252b662df889127b978a3fac103ec1ad0720f754..5a6ff4127427d477a1bed399f7dfe52864984d24
+--- a/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
++++ b/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA"
++  "coordinates" : "org.jboss:jboss-common-core:2.0.5.GA",
++  "repository-url" : "https://github.com/jboss/jboss-common-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jboss-common-core/$version$/jboss-common-core-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "JBoss Common Core provides shared utility classes used by legacy JBoss components, including collection, file, graph, networking, property, threading, timeout, and XML helper APIs. It packages those general-purpose Java support classes as a JVM JAR for reuse by applications and server-side libraries."
+ }
+
+tokens used
+72,012
+Updated [org.jboss-jboss-common-core-2.0.5.GA.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9/build/discovered-artifact-metadata/org.jboss-jboss-common-core-2.0.5.GA.json).
+
+I set the Maven Central sources JAR URL, GitHub repository root, `N/A` for missing test/documentation URLs, and a two-sentence description. I did not add `language` or `not-for-native-image`; this is a regular JVM JAR, and Maven listings show the exact `2.0.5.GA` artifact includes a JAR and sources JAR. ([jarcasting.com](https://jarcasting.com/artifacts/org.jboss/jboss-common-core/2.0.5.GA/))
+Ran agent for org.jboss:jboss-common-core:2.0.5.GA (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9/build/agent-artifact-discovery-logs/org.jboss-jboss-common-core-2.0.5.GA.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2860-65dceee9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 40s
+9 actionable tasks: 4 executed, 5 from cache
