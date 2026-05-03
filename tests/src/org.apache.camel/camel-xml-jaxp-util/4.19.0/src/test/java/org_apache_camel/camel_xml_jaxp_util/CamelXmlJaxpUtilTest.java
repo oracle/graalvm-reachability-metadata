@@ -48,6 +48,23 @@ public class CamelXmlJaxpUtilTest {
     }
 
     @Test
+    void prettyPrintIncludesXmlDeclarationWhenRequested() throws Exception {
+        String xml = """
+                <?xml version="1.0" encoding="UTF-8"?><catalog><book>Apache Camel</book></catalog>
+                """.trim();
+
+        String prettyXml = XmlPrettyPrinter.pettyPrint(xml, 2, true);
+
+        assertThat(prettyXml).isEqualTo("""
+                <?xml version="1.0" encoding="UTF-8"?>
+                <catalog>
+                  <book>
+                    Apache Camel
+                  </book>
+                </catalog>""");
+    }
+
+    @Test
     void colorPrintAppliesCallbackToElementsAttributesAndText() throws Exception {
         String xml = """
                 <root><child name="first">text</child></root>
