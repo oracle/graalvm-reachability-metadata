@@ -137,6 +137,28 @@ public class EventstreamTest {
     }
 
     @Test
+    void decodeReadsFromCurrentByteBufferPositionAndLeavesTrailingBytesUnread() {
+        Message message = new Message(Map.of("event", HeaderValue.fromString("positioned")), new byte[] {3, 1, 4});
+        byte[] encoded = toByteArray(message.toByteBuffer());
+        byte[] framed = new byte[2 + encoded.length + 2];
+        framed[0] = 99;
+        framed[1] = 100;
+        System.arraycopy(encoded, 0, framed, 2, encoded.length);
+        framed[framed.length - 2] = 101;
+        framed[framed.length - 1] = 102;
+        ByteBuffer buffer = ByteBuffer.wrap(framed);
+        buffer.position(2);
+
+        Message decoded = Message.decode(buffer);
+
+        assertThat(decoded).isEqualTo(message);
+        assertThat(buffer.position()).isEqualTo(2 + encoded.length);
+        assertThat(buffer.remaining()).isEqualTo(2);
+        assertThat(buffer.get()).isEqualTo((byte) 101);
+        assertThat(buffer.get()).isEqualTo((byte) 102);
+    }
+
+    @Test
     void messageDefensivelyCopiesPayloadInputAndOutput() {
         byte[] payload = new byte[] {1, 2, 3};
         Message message = new Message(Map.of(), payload);
