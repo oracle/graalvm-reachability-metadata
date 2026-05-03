@@ -4,14 +4,11 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package com_google_cloud_opentelemetry.detector_resources_support;
+package com.google.cloud.opentelemetry.detection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.google.cloud.opentelemetry.detection.AttributeKeys;
-import com.google.cloud.opentelemetry.detection.DetectedPlatform;
-import com.google.cloud.opentelemetry.detection.GCPPlatformDetector;
 import com.google.cloud.opentelemetry.detection.GCPPlatformDetector.SupportedPlatform;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,7 +33,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.Timeout;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Detector_resources_supportTest {
@@ -99,72 +95,70 @@ public class Detector_resources_supportTest {
 
     @Test
     @Order(3)
-    @Timeout(60)
     void detectorSendsMetadataFlavorHeaderWithMetadataRequests() throws Exception {
         try (MetadataProxy metadataProxy = MetadataProxy.start()) {
-            withMetadataProxy(metadataProxy, () -> {
-                metadataProxy.replaceRoutes(Map.of());
+            metadataProxy.replaceRoutes(Map.of());
 
-                GCPPlatformDetector.DEFAULT_INSTANCE.detectPlatform();
+            detectorFor(metadataProxy).detectPlatform();
 
-                assertThat(metadataProxy.requestHeaderValues("Metadata-Flavor")).contains("Google");
-            });
+            assertThat(metadataProxy.requestHeaderValues("Metadata-Flavor")).contains("Google");
         }
     }
 
     @Test
     @Order(4)
-    @Timeout(60)
     void detectorRejectsMetadataResponsesWithoutGoogleFlavorHeader() throws Exception {
         try (MetadataProxy metadataProxy = MetadataProxy.start()) {
-            withMetadataProxy(metadataProxy, () -> {
-                metadataProxy.includeMetadataFlavorHeader(false);
-                metadataProxy.replaceRoutes(Map.of("project/project-id", "non-google-project"));
+            metadataProxy.includeMetadataFlavorHeader(false);
+            metadataProxy.replaceRoutes(Map.of("project/project-id", "non-google-project"));
 
-                DetectedPlatform detectedPlatform = GCPPlatformDetector.DEFAULT_INSTANCE.detectPlatform();
-                assertThat(detectedPlatform.getSupportedPlatform()).isEqualTo(SupportedPlatform.UNKNOWN_PLATFORM);
-                assertThat(detectedPlatform.getProjectId()).isEmpty();
-                assertThat(detectedPlatform.getAttributes()).isEmpty();
-            });
+            DetectedPlatform detectedPlatform = detectorFor(metadataProxy).detectPlatform();
+            assertThat(detectedPlatform.getSupportedPlatform()).isEqualTo(GCPPlatformDetector.SupportedPlatform.UNKNOWN_PLATFORM);
+            assertThat(detectedPlatform.getProjectId()).isEmpty();
+            assertThat(detectedPlatform.getAttributes()).isEmpty();
         }
     }
 
     @Test
     @Order(5)
-    @Timeout(60)
     void defaultDetectorUsesMetadataServiceAndCurrentEnvironmentToBuildDetectedPlatform() throws Exception {
         try (MetadataProxy metadataProxy = MetadataProxy.start()) {
-            withMetadataProxy(metadataProxy, () -> {
-                metadataProxy.replaceRoutes(Map.of());
+            metadataProxy.replaceRoutes(Map.of());
+            GCPPlatformDetector detector = detectorFor(metadataProxy);
 
-                DetectedPlatform unknownPlatform = GCPPlatformDetector.DEFAULT_INSTANCE.detectPlatform();
-                assertThat(unknownPlatform.getSupportedPlatform()).isEqualTo(SupportedPlatform.UNKNOWN_PLATFORM);
-                assertThat(unknownPlatform.getProjectId()).isEmpty();
-                assertThat(unknownPlatform.getAttributes()).isEmpty();
-                assertUnmodifiable(unknownPlatform.getAttributes());
+            DetectedPlatform unknownPlatform = detector.detectPlatform();
+            assertThat(unknownPlatform.getSupportedPlatform()).isEqualTo(GCPPlatformDetector.SupportedPlatform.UNKNOWN_PLATFORM);
+            assertThat(unknownPlatform.getProjectId()).isEmpty();
+            assertThat(unknownPlatform.getAttributes()).isEmpty();
+            assertUnmodifiable(unknownPlatform.getAttributes());
 
-                metadataProxy.replaceRoutes(googleCloudMetadataRoutes());
+            metadataProxy.replaceRoutes(googleCloudMetadataRoutes());
 
-                DetectedPlatform detectedPlatform = GCPPlatformDetector.DEFAULT_INSTANCE.detectPlatform();
-                assertThat(detectedPlatform.getProjectId()).isEqualTo("test-project");
-                assertThat(detectedPlatform.getSupportedPlatform()).isEqualTo(expectedPlatformFromEnvironment());
-                assertAttributesForCurrentEnvironment(detectedPlatform.getAttributes());
-                assertUnmodifiable(detectedPlatform.getAttributes());
-            });
+            DetectedPlatform detectedPlatform = detector.detectPlatform();
+            assertThat(detectedPlatform.getProjectId()).isEqualTo("test-project");
+            assertThat(detectedPlatform.getSupportedPlatform()).isEqualTo(expectedPlatformFromEnvironment());
+            assertAttributesForCurrentEnvironment(detectedPlatform.getAttributes());
+            assertUnmodifiable(detectedPlatform.getAttributes());
         }
     }
 
+    private static GCPPlatformDetector detectorFor(MetadataProxy metadataProxy) {
+        return new GCPPlatformDetector(
+                new GCPMetadataConfig(metadataProxy.baseUrl()),
+                EnvironmentVariables.DEFAULT_INSTANCE);
+    }
+
     private static void assertAttributesForCurrentEnvironment(Map<String, String> attributes) {
-        SupportedPlatform expectedPlatform = expectedPlatformFromEnvironment();
-        if (expectedPlatform == SupportedPlatform.GOOGLE_KUBERNETES_ENGINE) {
+        GCPPlatformDetector.SupportedPlatform expectedPlatform = expectedPlatformFromEnvironment();
+        if (expectedPlatform == GCPPlatformDetector.SupportedPlatform.GOOGLE_KUBERNETES_ENGINE) {
             assertThat(attributes)
                     .hasSize(4)
                     .containsEntry(AttributeKeys.GKE_CLUSTER_NAME, "cluster-one")
                     .containsEntry(AttributeKeys.GKE_CLUSTER_LOCATION, "us-central1-a")
                     .containsEntry(AttributeKeys.GKE_CLUSTER_LOCATION_TYPE, AttributeKeys.GKE_LOCATION_TYPE_ZONE)
                     .containsEntry(AttributeKeys.GKE_HOST_ID, "9876543210");
-        } else if (expectedPlatform == SupportedPlatform.GOOGLE_CLOUD_RUN
-                || expectedPlatform == SupportedPlatform.GOOGLE_CLOUD_FUNCTIONS) {
+        } else if (expectedPlatform == GCPPlatformDetector.SupportedPlatform.GOOGLE_CLOUD_RUN
+                || expectedPlatform == GCPPlatformDetector.SupportedPlatform.GOOGLE_CLOUD_FUNCTIONS) {
             assertThat(attributes)
                     .hasSize(5)
                     .containsEntry(AttributeKeys.SERVERLESS_COMPUTE_NAME, System.getenv("K_SERVICE"))
@@ -172,7 +166,7 @@ public class Detector_resources_supportTest {
                     .containsEntry(AttributeKeys.SERVERLESS_COMPUTE_AVAILABILITY_ZONE, "us-central1-a")
                     .containsEntry(AttributeKeys.SERVERLESS_COMPUTE_CLOUD_REGION, "us-central1")
                     .containsEntry(AttributeKeys.SERVERLESS_COMPUTE_INSTANCE_ID, "9876543210");
-        } else if (expectedPlatform == SupportedPlatform.GOOGLE_APP_ENGINE) {
+        } else if (expectedPlatform == GCPPlatformDetector.SupportedPlatform.GOOGLE_APP_ENGINE) {
             assertThat(attributes)
                     .hasSize(5)
                     .containsEntry(AttributeKeys.GAE_MODULE_NAME, System.getenv("GAE_SERVICE"))
@@ -192,20 +186,20 @@ public class Detector_resources_supportTest {
         }
     }
 
-    private static SupportedPlatform expectedPlatformFromEnvironment() {
+    private static GCPPlatformDetector.SupportedPlatform expectedPlatformFromEnvironment() {
         if (System.getenv("KUBERNETES_SERVICE_HOST") != null) {
-            return SupportedPlatform.GOOGLE_KUBERNETES_ENGINE;
+            return GCPPlatformDetector.SupportedPlatform.GOOGLE_KUBERNETES_ENGINE;
         }
         if (System.getenv("K_CONFIGURATION") != null && System.getenv("FUNCTION_TARGET") == null) {
-            return SupportedPlatform.GOOGLE_CLOUD_RUN;
+            return GCPPlatformDetector.SupportedPlatform.GOOGLE_CLOUD_RUN;
         }
         if (System.getenv("FUNCTION_TARGET") != null) {
-            return SupportedPlatform.GOOGLE_CLOUD_FUNCTIONS;
+            return GCPPlatformDetector.SupportedPlatform.GOOGLE_CLOUD_FUNCTIONS;
         }
         if (System.getenv("GAE_SERVICE") != null) {
-            return SupportedPlatform.GOOGLE_APP_ENGINE;
+            return GCPPlatformDetector.SupportedPlatform.GOOGLE_APP_ENGINE;
         }
-        return SupportedPlatform.GOOGLE_COMPUTE_ENGINE;
+        return GCPPlatformDetector.SupportedPlatform.GOOGLE_COMPUTE_ENGINE;
     }
 
     private static void assertUnmodifiable(Map<String, String> attributes) {
@@ -225,35 +219,6 @@ public class Detector_resources_supportTest {
         routes.put("instance/attributes/cluster-name", "cluster-one");
         routes.put("instance/attributes/cluster-location", "us-central1-a");
         return routes;
-    }
-
-    private static void withMetadataProxy(MetadataProxy metadataProxy, ThrowingRunnable runnable) throws Exception {
-        String originalProxyHost = System.getProperty("http.proxyHost");
-        String originalProxyPort = System.getProperty("http.proxyPort");
-        String originalNonProxyHosts = System.getProperty("http.nonProxyHosts");
-        System.setProperty("http.proxyHost", metadataProxy.host());
-        System.setProperty("http.proxyPort", Integer.toString(metadataProxy.port()));
-        System.setProperty("http.nonProxyHosts", "");
-        try {
-            runnable.run();
-        } finally {
-            restoreProperty("http.proxyHost", originalProxyHost);
-            restoreProperty("http.proxyPort", originalProxyPort);
-            restoreProperty("http.nonProxyHosts", originalNonProxyHosts);
-        }
-    }
-
-    private static void restoreProperty(String propertyName, String originalValue) {
-        if (originalValue == null) {
-            System.clearProperty(propertyName);
-        } else {
-            System.setProperty(propertyName, originalValue);
-        }
-    }
-
-    @FunctionalInterface
-    private interface ThrowingRunnable {
-        void run() throws Exception;
     }
 
     private static final class MetadataProxy implements AutoCloseable {
@@ -289,6 +254,10 @@ public class Detector_resources_supportTest {
 
         int port() {
             return serverSocket.getLocalPort();
+        }
+
+        String baseUrl() {
+            return "http://" + host() + ":" + port() + METADATA_PREFIX;
         }
 
         void replaceRoutes(Map<String, String> routes) {

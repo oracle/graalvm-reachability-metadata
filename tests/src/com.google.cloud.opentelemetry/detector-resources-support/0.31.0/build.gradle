@@ -24,4 +24,17 @@ graalvmNative {
             }
         }
     }
+    binaries {
+        test {
+            buildArgs.add("--enable-url-protocols=http")
+        }
+    }
+}
+
+tasks.named("test") {
+    systemProperty "junit.jupiter.execution.timeout.thread.mode.default", "same_thread"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djunit.jupiter.execution.timeout.thread.mode.default=same_thread")
 }
