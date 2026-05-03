@@ -162,6 +162,32 @@ public class Maven_resolver_transport_fileTest {
     }
 
     @Test
+    void symlinkRepositoryUrlCanMaterializeDownloadedFilesAsSymbolicLinks() throws Exception {
+        byte[] data = "symbolic artifact".getBytes(StandardCharsets.UTF_8);
+        Path repositoryBase = temporaryDirectory.resolve("repository");
+        Path artifact = repositoryBase.resolve(ARTIFACT_URI.getPath());
+        Path target = temporaryDirectory.resolve("symlink-target.txt");
+        Files.createDirectories(artifact.getParent());
+        Files.write(artifact, data);
+
+        Transporter transporter = newTransporter("symlink", "symlink+" + repositoryBase.toUri().toASCIIString());
+        try {
+            RecordingTransportListener listener = new RecordingTransportListener();
+            transporter.get(new GetTask(ARTIFACT_URI).setDataFile(target.toFile()).setListener(listener));
+
+            assertThat(target).exists();
+            assertThat(Files.isSymbolicLink(target)).isTrue();
+            assertThat(Files.readSymbolicLink(target)).isEqualTo(artifact);
+            assertThat(Files.readAllBytes(target)).containsExactly(data);
+            assertThat(listener.startedOffset).isZero();
+            assertThat(listener.startedLength).isEqualTo(data.length);
+            assertThat(listener.progressedBytes).isEqualTo(data.length);
+        } finally {
+            transporter.close();
+        }
+    }
+
+    @Test
     void bundleRepositoryReadsJarEntriesAndRejectsWrites() throws Exception {
         Path archive = temporaryDirectory.resolve("repository.jar");
         URI zipUri = URI.create("jar:" + archive.toUri().toASCIIString());
