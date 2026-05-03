@@ -35,7 +35,13 @@ import org.apache.kerby.x500.type.Name;
 import org.apache.kerby.x500.type.RDNSequence;
 import org.apache.kerby.x500.type.RelativeDistinguishedName;
 import org.apache.kerby.x509.type.AlgorithmIdentifier;
+import org.apache.kerby.x509.type.AttCertIssuer;
 import org.apache.kerby.x509.type.AttCertValidityPeriod;
+import org.apache.kerby.x509.type.Attribute;
+import org.apache.kerby.x509.type.AttributeCertificate;
+import org.apache.kerby.x509.type.AttributeCertificateInfo;
+import org.apache.kerby.x509.type.AttributeValues;
+import org.apache.kerby.x509.type.Attributes;
 import org.apache.kerby.x509.type.BasicConstraints;
 import org.apache.kerby.x509.type.Certificate;
 import org.apache.kerby.x509.type.CertificateList;
@@ -46,15 +52,19 @@ import org.apache.kerby.x509.type.Extension;
 import org.apache.kerby.x509.type.Extensions;
 import org.apache.kerby.x509.type.GeneralName;
 import org.apache.kerby.x509.type.GeneralNames;
+import org.apache.kerby.x509.type.Holder;
+import org.apache.kerby.x509.type.IssuerSerial;
 import org.apache.kerby.x509.type.KeyUsage;
 import org.apache.kerby.x509.type.ReasonFlags;
 import org.apache.kerby.x509.type.RevokedCertificate;
 import org.apache.kerby.x509.type.RevokedCertificates;
+import org.apache.kerby.x509.type.RoleSyntax;
 import org.apache.kerby.x509.type.SubjectKeyIdentifier;
 import org.apache.kerby.x509.type.SubjectPublicKeyInfo;
 import org.apache.kerby.x509.type.TBSCertList;
 import org.apache.kerby.x509.type.TBSCertificate;
 import org.apache.kerby.x509.type.Time;
+import org.apache.kerby.x509.type.V2Form;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -328,6 +338,71 @@ public class Kerby_pkixTest {
     }
 
     @Test
+    void assemblesAttributeCertificateWithRoleAttribute() {
+        IssuerSerial holderCertificate = issuerSerial("Kerby Holder Issuer", 101L);
+        Holder holder = new Holder();
+        holder.setBaseCertificateId(holderCertificate);
+        holder.setEntityName(generalNamesWithDirectoryName("Kerby Attribute Holder"));
+
+        V2Form issuerForm = new V2Form();
+        issuerForm.setIssuerName(generalNamesWithDirectoryName("Kerby Attribute Authority"));
+        issuerForm.setBaseCertificateId(issuerSerial("Kerby Authority Issuer", 202L));
+        AttCertIssuer issuer = new AttCertIssuer();
+        issuer.setV2Form(issuerForm);
+
+        GeneralName roleName = new GeneralName();
+        roleName.setUniformResourceIdentifier(new Asn1IA5String("urn:kerby:role:administrator"));
+        RoleSyntax roleSyntax = new RoleSyntax();
+        roleSyntax.setRoleAuthority(generalNamesWithDirectoryName("Kerby Role Authority"));
+        roleSyntax.setRoleName(roleName);
+
+        AttributeValues roleValues = new AttributeValues();
+        roleValues.addElement(new Asn1Any(roleSyntax));
+        Attribute roleAttribute = new Attribute();
+        roleAttribute.setAttrType(new Asn1ObjectIdentifier("2.5.24.72"));
+        roleAttribute.setAttrValues(roleValues);
+        Attributes attributes = new Attributes();
+        attributes.addElement(roleAttribute);
+
+        AttributeCertificateInfo certificateInfo = new AttributeCertificateInfo();
+        certificateInfo.setVersion(1);
+        certificateInfo.setHolder(holder);
+        certificateInfo.setIssuer(issuer);
+        certificateInfo.setSignature(algorithm(SHA256_WITH_RSA_OID));
+        certificateInfo.setSerialNumber(serialNumber(303L));
+        certificateInfo.setAttrCertValidityPeriod(validityPeriod(1_700_000_000_000L, 1_700_086_400_000L));
+        certificateInfo.setAttributes(attributes);
+        certificateInfo.setIssuerUniqueId(new byte[] {4, 3, 2, 1});
+        certificateInfo.setExtensions(new Extensions());
+
+        AttributeCertificate certificate = new AttributeCertificate();
+        certificate.setAciInfo(certificateInfo);
+        certificate.setSignatureAlgorithm(algorithm(SHA256_WITH_RSA_OID));
+        certificate.setSignatureValue(new Asn1BitString(new byte[] {8, 6, 7, 5, 3, 0, 9}, 0));
+
+        Attribute storedAttribute = certificate.getAcinfo().getAttributes().getElements().get(0);
+        RoleSyntax storedRole = (RoleSyntax) storedAttribute.getAttrValues().getElements().get(0).getValue();
+
+        assertThat(certificate.getAcinfo().getVersion()).isEqualTo(1);
+        assertThat(certificate.getAcinfo().getHolder().getBaseCertificateID().getSerial().getValue())
+                .isEqualTo(BigInteger.valueOf(101L));
+        assertThat(certificate.getAcinfo().getHolder().getEntityName().getElements().get(0)
+                .getDirectoryName().getName().getElements()).hasSize(1);
+        assertThat(certificate.getAcinfo().getIssuer().getV2Form().getBaseCertificateID().getSerial().getValue())
+                .isEqualTo(BigInteger.valueOf(202L));
+        assertThat(certificate.getAcinfo().getSerialNumber().getValue()).isEqualTo(BigInteger.valueOf(303L));
+        assertThat(certificate.getAcinfo().getAttrCertValidityPeriod().getNotBeforeTime().getValue())
+                .isEqualTo(new Date(1_700_000_000_000L));
+        assertThat(storedAttribute.getAttrType().getValue()).isEqualTo("2.5.24.72");
+        assertThat(storedRole.getRoleAuthority().getElements().get(0).getDirectoryName()).isNotNull();
+        assertThat(storedRole.getRoleName().getUniformResourceIdentifier().getValue())
+                .isEqualTo("urn:kerby:role:administrator");
+        assertThat(certificate.getAcinfo().getIssuerUniqueID()).containsExactly(4, 3, 2, 1);
+        assertThat(certificate.getSignatureAlgorithm().getAlgorithm()).isEqualTo(SHA256_WITH_RSA_OID);
+        assertThat(certificate.getSignatureValue().getValue()).isEqualTo(new byte[] {8, 6, 7, 5, 3, 0, 9});
+    }
+
+    @Test
     void supportsChoiceAccessorsForDirectoryAndSubjectKeyIdentifiers() {
         GeneralName directoryName = new GeneralName();
         directoryName.setDirectoryName(name("Directory Choice"));
@@ -357,6 +432,35 @@ public class Kerby_pkixTest {
         Time time = new Time();
         time.setGeneralTime(new Asn1GeneralizedTime(new Date(timeInMillis)));
         return time;
+    }
+
+    private static AttCertValidityPeriod validityPeriod(long notBeforeMillis, long notAfterMillis) {
+        AttCertValidityPeriod validityPeriod = new AttCertValidityPeriod();
+        validityPeriod.setNotBeforeTime(new Asn1GeneralizedTime(new Date(notBeforeMillis)));
+        validityPeriod.setNotAfterTime(new Asn1GeneralizedTime(new Date(notAfterMillis)));
+        return validityPeriod;
+    }
+
+    private static IssuerSerial issuerSerial(String issuerName, long serialValue) {
+        IssuerSerial issuerSerial = new IssuerSerial();
+        issuerSerial.setIssuer(generalNamesWithDirectoryName(issuerName));
+        issuerSerial.setSerial(serialNumber(serialValue));
+        issuerSerial.setIssuerUID(new Asn1BitString(new byte[] {1, 0, 1}, 0));
+        return issuerSerial;
+    }
+
+    private static CertificateSerialNumber serialNumber(long serialValue) {
+        CertificateSerialNumber serialNumber = new CertificateSerialNumber();
+        serialNumber.setValue(BigInteger.valueOf(serialValue));
+        return serialNumber;
+    }
+
+    private static GeneralNames generalNamesWithDirectoryName(String commonNameValue) {
+        GeneralName directoryName = new GeneralName();
+        directoryName.setDirectoryName(name(commonNameValue));
+        GeneralNames generalNames = new GeneralNames();
+        generalNames.addElement(directoryName);
+        return generalNames;
     }
 
     private static Certificate minimalCertificate() {
