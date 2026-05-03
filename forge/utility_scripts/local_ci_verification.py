@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shlex
 import subprocess
 import tempfile
 from dataclasses import asdict, dataclass, field
@@ -717,6 +718,7 @@ def _run_recorded_command(
     command_env = dict(os.environ)
     display_env = dict(env or {})
     command_env.update(display_env)
+    _remove_gradle_java_home_overrides(command_env)
     log_path = build_timestamped_task_log_path("local-ci", gate, Path(command[0]).name)
     sudo_reason = _sudo_usage_reason(repo_path, command)
     if sudo_reason:
@@ -761,6 +763,23 @@ def _run_recorded_command(
     if returncode != 0:
         return record
     return None
+
+
+def _remove_gradle_java_home_overrides(command_env: dict[str, str]) -> None:
+    """Let the selected `JAVA_HOME` drive Gradle instead of inherited local overrides."""
+    for env_name in ("GRADLE_OPTS", "JAVA_OPTS"):
+        value = command_env.get(env_name)
+        if not value:
+            continue
+        try:
+            tokens = shlex.split(value)
+        except ValueError:
+            continue
+        filtered_tokens = [token for token in tokens if not token.startswith("-Dorg.gradle.java.home=")]
+        if filtered_tokens:
+            command_env[env_name] = shlex.join(filtered_tokens)
+        else:
+            command_env.pop(env_name, None)
 
 
 def _run_recorded_command_without_new_docker_images(

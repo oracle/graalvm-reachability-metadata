@@ -207,6 +207,48 @@ class LocalCIVerificationTests(unittest.TestCase):
             self.assertEqual(result.commands[0].returncode, 1)
             self.assertIn("FAILED[javaTest]", result.commands[0].output_excerpt)
 
+    def test_run_recorded_command_removes_inherited_gradle_java_home_overrides(self) -> None:
+        captured_env: dict[str, str] = {}
+
+        def fake_run(
+                command: list[str],
+                cwd: str | None = None,
+                env: dict[str, str] | None = None,
+                stdout=None,
+                stderr=None,
+                text: bool | None = None,
+                check: bool | None = None,
+        ) -> subprocess.CompletedProcess[str]:
+            del cwd, stdout, stderr, text, check
+            captured_env.update(env or {})
+            return subprocess.CompletedProcess(command, 0, stdout="ok\n")
+
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
+            result = LocalCIVerificationResult(status="running", base_commit="base")
+            with patch.dict(
+                    os.environ,
+                    {
+                        "GRADLE_OPTS": "-Xmx2g -Dorg.gradle.java.home=/wrong/jdk -Dfile.encoding=UTF-8",
+                        "JAVA_OPTS": "-Dorg.gradle.java.home=/other/jdk",
+                    },
+                    clear=True,
+            ), patch(
+                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    return_value=os.path.join(log_path, "command.log"),
+            ), patch("utility_scripts.local_ci_verification.subprocess.run", side_effect=fake_run):
+                failed = _run_recorded_command(
+                    repo_path,
+                    "run-consecutive-tests",
+                    ["bash", "script.sh"],
+                    result,
+                    env={"JAVA_HOME": "/matrix/jdk"},
+                )
+
+        self.assertIsNone(failed)
+        self.assertEqual(captured_env["JAVA_HOME"], "/matrix/jdk")
+        self.assertEqual(captured_env["GRADLE_OPTS"], "-Xmx2g -Dfile.encoding=UTF-8")
+        self.assertNotIn("JAVA_OPTS", captured_env)
+
     def test_test_matrix_skips_docker_networking_for_non_docker_coordinate(self) -> None:
         result = LocalCIVerificationResult(status="running", base_commit="base")
         failed_record = CommandRecord(gate="run-consecutive-tests", command=["bash"], returncode=1)
