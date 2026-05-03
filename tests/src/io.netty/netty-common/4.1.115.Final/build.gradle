@@ -15,3 +15,21 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.awaitility:awaitility:4.2.0'
 }
+
+graalvmNative {
+    binaries {
+        all {
+            if (libraryVersion == '4.2.1.Final') {
+                buildArgs.add('--initialize-at-run-time=io.netty')
+            }
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
