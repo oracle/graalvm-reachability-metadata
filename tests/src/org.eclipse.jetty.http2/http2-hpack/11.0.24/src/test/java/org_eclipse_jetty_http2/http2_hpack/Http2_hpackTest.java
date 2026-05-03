@@ -8,9 +8,11 @@ package org_eclipse_jetty_http2.http2_hpack;
 
 import java.nio.ByteBuffer;
 
+import org.eclipse.jetty.http.HostPortHttpField;
 import org.eclipse.jetty.http.HttpField;
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.HttpScheme;
 import org.eclipse.jetty.http.HttpURI;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.http.MetaData;
@@ -63,6 +65,36 @@ public class Http2_hpackTest {
         assertThat(secondBlock.remaining()).isLessThan(firstSize);
         MetaData secondDecoded = decoder.decode(secondBlock);
         assertThat(secondDecoded.getFields().get("x-repeatable")).isEqualTo("same-dynamic-value");
+    }
+
+    @Test
+    void encodesAndDecodesExtendedConnectRequestWithProtocolPseudoHeader() throws Exception {
+        HpackEncoder encoder = new HpackEncoder();
+        HpackDecoder decoder = new HpackDecoder(4096, () -> 67890L);
+        HttpFields.Mutable fields = HttpFields.build();
+        fields.add("sec-websocket-protocol", "chat");
+        fields.add("x-connect-test", "extended-connect");
+        MetaData.ConnectRequest request = new MetaData.ConnectRequest(
+                HttpScheme.HTTPS,
+                new HostPortHttpField("example.com", 8443),
+                "/socket?room=blue",
+                fields,
+                "websocket");
+
+        MetaData decoded = decoder.decode(encode(encoder, request));
+
+        assertThat(decoded).isInstanceOf(MetaData.ConnectRequest.class);
+        MetaData.ConnectRequest decodedRequest = (MetaData.ConnectRequest)decoded;
+        assertThat(decodedRequest.getBeginNanoTime()).isEqualTo(67890L);
+        assertThat(decodedRequest.getMethod()).isEqualTo("CONNECT");
+        assertThat(decodedRequest.getProtocol()).isEqualTo("websocket");
+        assertThat(decodedRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_2);
+        assertThat(decodedRequest.getURI().getScheme()).isEqualTo("https");
+        assertThat(decodedRequest.getURI().getHost()).isEqualTo("example.com");
+        assertThat(decodedRequest.getURI().getPort()).isEqualTo(8443);
+        assertThat(decodedRequest.getURI().getPathQuery()).isEqualTo("/socket?room=blue");
+        assertThat(decodedRequest.getFields().get("sec-websocket-protocol")).isEqualTo("chat");
+        assertThat(decodedRequest.getFields().get("x-connect-test")).isEqualTo("extended-connect");
     }
 
     @Test
