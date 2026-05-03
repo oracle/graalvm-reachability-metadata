@@ -1,0 +1,975 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dec84-f0b1-7390-940c-b9a22f4e02fd
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: cglib:cglib:3.3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.3.0" when "$version$" is replaced with "3.3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+- Set "coordinates" to "cglib:cglib:3.3.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.3.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven and the upstream repository, then update the JSON in place using the repo’s existing metadata style.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/cglib-cglib-3.3.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+{
+  "coordinates" : "cglib:cglib:3.3.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\".*cglib|cglib:cglib|source-code-url' -n metadata tests build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+build/discovered-artifact-metadata/cglib-cglib-3.3.0.json:2:  "coordinates" : "cglib:cglib:3.3.0"
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:305:                null, // source-code-url
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - source-code-url: %s
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "source-code-url" to the selected source URL with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:370:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:373:                - Set missing "source-code-url" to the selected source URL with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:378:                - When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:174:                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:296:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+metadata/org.javamoney.moneta/moneta-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:211:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:252:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:319:                    .hasMessageContaining("Cannot promote source-code-url")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:380:        appendUrlField(fields, "source-code-url", sourceCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:204:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:253:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:61:                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:69:                .contains("- source-code-url: <missing>")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:124:                .contains("- source-code-url: https://example.com/source-a")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:153:                .contains("- source-code-url: https://example.com/source-a")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:212:                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:255:                    "source-code-url": "https://example.com/source-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:57:                .contains("Set \"source-code-url\", \"test-code-url\", and \"documentation-url\" to the discovered values with \"$version$\" replacing version \"3.1.0\".")
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-openwire-legacy/$version$/activemq-openwire-legacy-$version$-sources.jar",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+
+web search: 
+web search: cglib cglib 3.3.0 Maven sources jar tests jar repository url
+web search: 
+web search: https://repo1.maven.org/maven2/cglib/cglib/3.3.0/
+web search: 
+web search: https://github.com/cglib/cglib/tree/RELEASE_3_3_0
+web search: 
+web search: https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test
+codex
+The Maven Central listing confirms `cglib-3.3.0-sources.jar` and `cglib-3.3.0-javadoc.jar`, but no test sources for the `cglib` artifact itself. I’m checking the release tag layout now so the test URL can point at the versioned upstream test suite.
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\".*javadoc|\"test-code-url\".*src/test|\"test-code-url\".*test-sources|\"documentation-url\".*repo.maven' -n metadata | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+metadata/org.javamoney.moneta/moneta-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:21:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+metadata/org.javamoney.moneta/moneta-core/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/dev.failsafe/failsafe/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/failsafe/failsafe/$version$/failsafe-$version$-javadoc.jar",
+metadata/org.aspectj/aspectjweaver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-javadoc.jar",
+metadata/com.google.guava/guava-bootstrap/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/guava/guava-bootstrap/$version$/guava-bootstrap-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/541e6f7d181ff3405ae9495724430825aefff6a9/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:47:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:48:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:65:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:66:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-nop/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-nop/src/test/java",
+metadata/org.slf4j/slf4j-nop/index.json:21:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-nop/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/jcl-over-slf4j/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-javadoc.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:84:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$_FINAL/jcl-over-slf4j/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:110:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/jcl-over-slf4j/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:7:    "test-code-url": "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-jdk14/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:23:    "test-code-url": "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$_FINAL/slf4j-jdk14/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:38:    "test-code-url": "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-jdk14/src/test",
+metadata/org.slf4j/jul-to-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/jul-to-slf4j/src/test",
+metadata/org.slf4j/jul-to-slf4j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/$version$/jul-to-slf4j-$version$-javadoc.jar",
+metadata/org.slf4j/log4j-over-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/log4j-over-slf4j/src/test/java",
+metadata/org.slf4j/log4j-over-slf4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/log4j-over-slf4j/$version$/log4j-over-slf4j-$version$-javadoc.jar",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:7:    "test-code-url" : "https://github.com/lukas-krecan/JsonUnit/tree/json-unit-parent-$version$/json-unit-core/src/test",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/$version$/src/test/java",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:22:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-$version$/src/test",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/javax.portlet/portlet-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:8:    "test-code-url": "https://github.com/lz4/lz4-java/tree/$version$/src/test",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/cglib/cglib/3.3.0/cglib-3.3.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ====================================================================== -->
+    <!-- P A R E N T  P R O J E C T  D E S C R I P T I O N -->
+    <!-- ====================================================================== -->
+    <parent>
+        <groupId>cglib</groupId>
+        <artifactId>cglib-parent</artifactId>
+        <version>3.3.0</version>
+    </parent>
+
+    <!-- ====================================================================== -->
+    <!-- P R O J E C T  D E S C R I P T I O N -->
+    <!-- ====================================================================== -->
+    <artifactId>cglib</artifactId>
+    <packaging>jar</packaging>
+
+    <!-- ====================================================================== -->
+    <!-- B U I L D -->
+    <!-- ====================================================================== -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/..</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>LICENSE</include>
+                    <include>NOTICE</include>
+                    <include>README</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+    <!-- ====================================================================== -->
+    <!-- D E P E N D E N C I E S -->
+    <!-- ====================================================================== -->
+    <dependencies>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/cglib/cglib/3.3.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/cglib/cglib-integration-test/3.3.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 198ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: cglib/cglib-integration-test/3.3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>cglib/cglib-integration-test/3.3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="cglib-integration-test-3.3.0-sources.jar" title="cglib-integration-test-3.3.0-sources.jar">cglib-integration-test-3.3.0-sources.jar</a>          2019-08-12 14:30      4649      
+<a href="cglib-integration-test-3.3.0-sources.jar.asc" title="cglib-integration-test-3.3.0-sources.jar.asc">cglib-integration-test-3.3.0-sources.jar.asc</a>      2019-08-12 14:30       512      
+<a href="cglib-integration-test-3.3.0-sources.jar.md5" title="cglib-integration-test-3.3.0-sources.jar.md5">cglib-integration-test-3.3.0-sources.jar.md5</a>      2019-08-12 14:30        32      
+<a href="cglib-integration-test-3.3.0-sources.jar.sha1" title="cglib-integration-test-3.3.0-sources.jar.sha1">cglib-integration-test-3.3.0-sources.jar.sha1</a>     2019-08-12 14:30        40      
+<a href="cglib-integration-test-3.3.0.jar" title="cglib-integration-test-3.3.0.jar">cglib-integration-test-3.3.0.jar</a>                  2019-08-12 14:30      6149      
+<a href="cglib-integration-test-3.3.0.jar.asc" title="cglib-integration-test-3.3.0.jar.asc">cglib-integration-test-3.3.0.jar.asc</a>              2019-08-12 14:30       512      
+<a href="cglib-integration-test-3.3.0.jar.md5" title="cglib-integration-test-3.3.0.jar.md5">cglib-integration-test-3.3.0.jar.md5</a>              2019-08-12 14:30        32      
+<a href="cglib-integration-test-3.3.0.jar.sha1" title="cglib-integration-test-3.3.0.jar.sha1">cglib-integration-test-3.3.0.jar.sha1</a>             2019-08-12 14:30        40      
+<a href="cglib-integration-test-3.3.0.pom" title="cglib-integration-test-3.3.0.pom">cglib-integration-test-3.3.0.pom</a>                  2019-08-12 14:30      3328      
+<a href="cglib-integration-test-3.3.0.pom.asc" title="cglib-integration-test-3.3.0.pom.asc">cglib-integration-test-3.3.0.pom.asc</a>              2019-08-12 14:30       512      
+<a href="cglib-integration-test-3.3.0.pom.md5" title="cglib-integration-test-3.3.0.pom.md5">cglib-integration-test-3.3.0.pom.md5</a>              2019-08-12 14:30        32      
+<a href="cglib-integration-test-3.3.0.pom.sha1" title="cglib-integration-test-3.3.0.pom.sha1">cglib-integration-test-3.3.0.pom.sha1</a>             2019-08-12 14:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 284ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: cglib/cglib/3.3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>cglib/cglib/3.3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="cglib-3.3.0-javadoc.jar" title="cglib-3.3.0-javadoc.jar">cglib-3.3.0-javadoc.jar</a>                           2019-08-12 14:29    504688      
+<a href="cglib-3.3.0-javadoc.jar.asc" title="cglib-3.3.0-javadoc.jar.asc">cglib-3.3.0-javadoc.jar.asc</a>                       2019-08-12 14:29       512      
+<a href="cglib-3.3.0-javadoc.jar.md5" title="cglib-3.3.0-javadoc.jar.md5">cglib-3.3.0-javadoc.jar.md5</a>                       2019-08-12 14:29        32      
+<a href="cglib-3.3.0-javadoc.jar.sha1" title="cglib-3.3.0-javadoc.jar.sha1">cglib-3.3.0-javadoc.jar.sha1</a>                      2019-08-12 14:29        40      
+<a href="cglib-3.3.0-sources.jar" title="cglib-3.3.0-sources.jar">cglib-3.3.0-sources.jar</a>                           2019-08-12 14:29    193724      
+<a href="cglib-3.3.0-sources.jar.asc" title="cglib-3.3.0-sources.jar.asc">cglib-3.3.0-sources.jar.asc</a>                       2019-08-12 14:29       512      
+<a href="cglib-3.3.0-sources.jar.md5" title="cglib-3.3.0-sources.jar.md5">cglib-3.3.0-sources.jar.md5</a>                       2019-08-12 14:29        32      
+<a href="cglib-3.3.0-sources.jar.sha1" title="cglib-3.3.0-sources.jar.sha1">cglib-3.3.0-sources.jar.sha1</a>                      2019-08-12 14:29        40      
+<a href="cglib-3.3.0.jar" title="cglib-3.3.0.jar">cglib-3.3.0.jar</a>                                   2019-08-12 14:29    306864      
+<a href="cglib-3.3.0.jar.asc" title="cglib-3.3.0.jar.asc">cglib-3.3.0.jar.asc</a>                               2019-08-12 14:29       512      
+<a href="cglib-3.3.0.jar.md5" title="cglib-3.3.0.jar.md5">cglib-3.3.0.jar.md5</a>                               2019-08-12 14:29        32      
+<a href="cglib-3.3.0.jar.sha1" title="cglib-3.3.0.jar.sha1">cglib-3.3.0.jar.sha1</a>                              2019-08-12 14:29        40      
+<a href="cglib-3.3.0.pom" title="cglib-3.3.0.pom">cglib-3.3.0.pom</a>                                   2019-08-12 14:29      2858      
+<a href="cglib-3.3.0.pom.asc" title="cglib-3.3.0.pom.asc">cglib-3.3.0.pom.asc</a>                               2019-08-12 14:29       512      
+<a href="cglib-3.3.0.pom.md5" title="cglib-3.3.0.pom.md5">cglib-3.3.0.pom.md5</a>                               2019-08-12 14:29        32      
+<a href="cglib-3.3.0.pom.sha1" title="cglib-3.3.0.pom.sha1">cglib-3.3.0.pom.sha1</a>                              2019-08-12 14:29        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/cglib/cglib-parent/3.3.0/cglib-parent-3.3.0.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+      <groupId>org.sonatype.oss</groupId>
+      <artifactId>oss-parent</artifactId>
+      <version>7</version>
+    </parent>
+
+    <!-- ====================================================================== -->
+    <!-- P R O J E C T  D E S C R I P T I O N -->
+    <!-- ====================================================================== -->
+    <groupId>cglib</groupId>
+    <artifactId>cglib-parent</artifactId>
+    <version>3.3.0</version>
+    <packaging>pom</packaging>
+
+    <name>Code Generation Library</name>
+    <url>https://github.com/cglib/cglib</url>
+    <description>cglib is a powerful, high performance and quality Code Generation Library, It is used to extend JAVA classes and implements interfaces at runtime.</description>
+
+    <scm>
+        <connection>scm:git:git://github.com/cglib/cglib.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/cglib/cglib.git</developerConnection>
+        <url>https://github.com/cglib/cglib</url>
+    </scm>
+
+    <issueManagement>
+        <system>Github Issues</system>
+        <url>https://github.com/cglib/cglib/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Travis</system>
+        <url>https://travis-ci.org/cglib/cglib</url>
+    </ciManagement>
+
+    <licenses>
+        <license>
+            <name>ASF 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- ====================================================================== -->
+    <!-- P R O P E R T I E S -->
+    <!-- ====================================================================== -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <java.version.source>1.5</java.version.source>
+        <java.version.target>1.5</java.version.target>
+        <asm.version>7.1</asm.version>
+        <ant.version>1.10.3</ant.version>
+        <jmh.version>1.21</jmh.version>
+        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+        <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
+        <java.compiler.argument />
+
+        <java.test.compiler.argument>${java.compiler.argument}</java.test.compiler.argument>
+        <gpg.skip>true</gpg.skip>
+    </properties>
+
+    <!-- ====================================================================== -->
+    <!-- M O D U L E S -->
+    <!-- ====================================================================== -->
+    <modules>
+        <module>cglib</module>
+        <module>cglib-nodep</module>
+        <module>cglib-sample</module>
+        <module>cglib-integration-test</module>
+        <module>cglib-jmh</module>
+    </modules>
+
+    <!-- ====================================================================== -->
+    <!-- P R O F I L E S -->
+    <!-- ====================================================================== -->
+    <profiles>
+        <profile>
+            <id>java8</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <java.test.compiler.argument>-parameters</java.test.compiler.argument>
+            </properties>
+        </profile>
+        <profile>
+            <id>java9</id>
+            <activation>
+                <jdk>[1.9,)</jdk>
+            </activation>
+            <properties>
+                <java.version.source>1.6</java.version.source>
+                <java.version.target>1.6</java.version.target>
+                <java.test.compiler.argument>-parameters</java.test.compiler.argument>
+            </properties>
+        </profile>
+    </profiles>
+
+    <!-- ====================================================================== -->
+    <!-- B U I L D -->
+    <!-- ====================================================================== -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version.source}</source>
+                        <target>${java.version.target}</target>
+                        <compilerArgument>${java.compiler.argument}</compilerArgument>
+                        <testSource>${java.specification.version}</testSource>
+                        <testTarget>${java.specification.version}</testTarget>
+                        <testCompilerArgument>${java.test.compiler.argument}</testCompilerArgument>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.21.0</version>
+                    <configuration>
+                        <systemProperties>
+                            <property>
+                                <name>net.sf.cglib.test.stressHashCodes</name>
+                                <value>true</value>
+                            </property>
+                        </systemProperties>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.21.0</version>
+                    <configuration>
+                        <systemProperties>
+                            <property>
+                                <name>net.sf.cglib.test.stressHashCodes</name>
+                                <value>true</value>
+                            </property>
+                        </systemProperties>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                    <configuration>
+                      <quiet>true</quiet>
+                      <detectLinks>false</detectLinks>
+                      <detectOfflineLinks>false</detectOfflineLinks>
+                      <!--<skip>${skipJavadoc}</skip>-->
+                      <use>false</use>
+                      <doclint>none</doclint>
+                      <additionalDependencies>
+                        <additionalDependency>
+                          <groupId>org.ow2.asm</groupId>
+                          <artifactId>asm</artifactId>
+                          <version>${asm.version}</version>
+                        </additionalDependency>
+                        <additionalDependency>
+                          <groupId>org.apache.ant</groupId>
+                          <artifactId>ant</artifactId>
+                          <version>${ant.version}</version>
+                        </additionalDependency>
+                      </additionalDependencies>
+                    </configuration>
+                    <executions>
+                      <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                          <goal>jar</goal>
+                        </goals>
+                      </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>jarjar-maven-plugin</artifactId>
+                    <version>1.9</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <version>1.6</version>
+              <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+    </build>
+
+    <!-- ====================================================================== -->
+    <!-- D E P E N D E N C Y  M A N A G E M E N T -->
+    <!-- ====================================================================== -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cglib</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cglib-sample</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>${asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>${ant.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/cglib/cglib/git/refs/tags/RELEASE_3_3_0' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+exec
+/usr/bin/bash -lc 'curl -fsSL -o /tmp/cglib-3.3.0.jar https://repo.maven.apache.org/maven2/cglib/cglib/3.3.0/cglib-3.3.0.jar && jar tf /tmp/cglib-3.3.0.jar | head -40' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/cglib/cglib/RELEASE_3_3_0/cglib/src/test/java/net/sf/cglib/proxy/TestEnhancer.java | sed -n '1,25p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 105ms:
+ succeeded in 183ms:
+{
+  "ref": "refs/tags/RELEASE_3_3_0",
+  "node_id": "MDM6UmVmMTgyNDIxNDk6cmVmcy90YWdzL1JFTEVBU0VfM18zXzA=",
+  "url": "https://api.github.com/repos/cglib/cglib/git/refs/tags/RELEASE_3_3_0",
+  "object": {
+    "sha": "9a14a6cc0b2ef50e69839b754d32ba4d8675d3ab",
+    "type": "commit",
+    "url": "https://api.github.com/repos/cglib/cglib/git/commits/9a14a6cc0b2ef50e69839b754d32ba4d8675d3ab"
+  }
+}
+
+ succeeded in 366ms:
+/*
+ * Copyright 2002,2003,2004 The Apache Software Foundation
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.sf.cglib.proxy;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.ref.PhantomReference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.reflect.Field;
+
+exec
+/usr/bin/bash -lc "sed -n '150,190p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+
+    private String buildPrompt(Coordinates parsedCoordinates, Path discoveryFile) {
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+                The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "%s" when "$version$" is replaced with "%s".
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+
+                Update this file directly:
+                - File: %s
+                - Set "coordinates" to "%s".
+                - Set "repository-url" to the discovered repository root URL.
+                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+                - Set "description" to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+                - Keep the JSON valid and consistently formatted.
+                """.formatted(
+                parsedCoordinates.toString(),
+                parsedCoordinates.version(),
+                parsedCoordinates.version(),
+                discoveryFile.toString().replace('\\', '/'),
+                parsedCoordinates.toString(),
+                parsedCoordinates.version()
+        ).strip();
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+
+exec
+/usr/bin/bash -lc "rg 'RELEASE_\\"'$version'"\\"'$|RELEASE_[0-9]|tree/[''^$]*_[''^$]*'"\\"'$version|tree/.*3_[0-9]'"' -n metadata | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+metadata/commons-net/commons-net/index.json:7:    "test-code-url" : "https://github.com/apache/commons-net/tree/NET_3_1/src/test",
+metadata/org.slf4j/slf4j-simple/index.json:47:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:65:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-nop/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-nop/src/test/java",
+metadata/org.slf4j/slf4j-nop/index.json:21:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-nop/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/jcl-over-slf4j/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:84:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$_FINAL/jcl-over-slf4j/src/test/java",
+metadata/org.slf4j/jcl-over-slf4j/index.json:110:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/jcl-over-slf4j/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:7:    "test-code-url": "https://github.com/qos-ch/slf4j/tree/v_$version$/slf4j-jdk14/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:23:    "test-code-url": "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$_FINAL/slf4j-jdk14/src/test",
+metadata/org.slf4j/slf4j-jdk14/index.json:38:    "test-code-url": "https://github.com/qos-ch/slf4j/tree/SLF4J_$version$/slf4j-jdk14/src/test",
+metadata/org.slf4j/jul-to-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/jul-to-slf4j/src/test",
+metadata/org.slf4j/log4j-over-slf4j/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_$version$/log4j-over-slf4j/src/test/java",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_$version$/json",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:10:    "test-code-url": "https://github.com/qos-ch/logback-contrib/tree/v_$version$/json/classic/src/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/cglib-src.jar https://repo.maven.apache.org/maven2/cglib/cglib/3.3.0/cglib-3.3.0-sources.jar && jar tf /tmp/cglib-src.jar | head -50 && jar tf /tmp/cglib-src.jar | rg '"'^net/sf/cglib/.*/Test|src/test|junit'"' | head -20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+exec
+/usr/bin/bash -lc 'curl -fsSL -o /tmp/cglib-integration-src.jar https://repo.maven.apache.org/maven2/cglib/cglib-integration-test/3.3.0/cglib-integration-test-3.3.0-sources.jar && jar tf /tmp/cglib-integration-src.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/NOTICE
+META-INF/LICENSE
+
+ succeeded in 155ms:
+codex
+I’m going to fill the metadata with Maven Central URLs for sources and javadocs, and the fixed upstream release tag for tests because the cglib tag format is `RELEASE_3_3_0` rather than a literal `3.3.0` tag. Since the artifact JAR contains JVM `.class` files, I’ll leave `not-for-native-image` and `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+index 1e9c180c831da9f462b2ff77f8417bdcadb9524e..b3cc831e48e55d3c1e71d18dfab017d04f47a6a1
+--- a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib:3.3.0"
++  "coordinates" : "cglib:cglib:3.3.0",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-javadoc.jar",
++  "description" : "cglib is a Java bytecode generation library used to create dynamic proxies and subclasses at runtime. It supports framework features such as method interception, lazy loading, and fast reflection-style access by generating classes backed by ASM."
+ }
+
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+index 1e9c180c831da9f462b2ff77f8417bdcadb9524e..b3cc831e48e55d3c1e71d18dfab017d04f47a6a1
+--- a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib:3.3.0"
++  "coordinates" : "cglib:cglib:3.3.0",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-javadoc.jar",
++  "description" : "cglib is a Java bytecode generation library used to create dynamic proxies and subclasses at runtime. It supports framework features such as method interception, lazy loading, and fast reflection-style access by generating classes backed by ASM."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/cglib-cglib-3.3.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+{
+  "coordinates": "cglib:cglib:3.3.0",
+  "repository-url": "https://github.com/cglib/cglib",
+  "source-code-url": "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-sources.jar",
+  "test-code-url": "https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-javadoc.jar",
+  "description": "cglib is a Java bytecode generation library used to create dynamic proxies and subclasses at runtime. It supports framework features such as method interception, lazy loading, and fast reflection-style access by generating classes backed by ASM."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/cglib/cglib/3.3.0/cglib-3.3.0-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 06:28:00 GMT
+content-type: application/java-archive
+content-length: 193724
+cf-ray: 9f5d33fecadbff00-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2435194
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/cglib/cglib/3.3.0/cglib-3.3.0-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 06:28:00 GMT
+content-type: application/java-archive
+content-length: 504688
+cf-ray: 9f5d33fecc74bc5f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1322935
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test | sed -n '1,8p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+index 1e9c180c831da9f462b2ff77f8417bdcadb9524e..b3cc831e48e55d3c1e71d18dfab017d04f47a6a1
+--- a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib:3.3.0"
++  "coordinates" : "cglib:cglib:3.3.0",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-javadoc.jar",
++  "description" : "cglib is a Java bytecode generation library used to create dynamic proxies and subclasses at runtime. It supports framework features such as method interception, lazy loading, and fast reflection-style access by generating classes backed by ASM."
+ }
+
+ succeeded in 498ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 06:28:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b5cc408a564f6f15be02c666d45fc3ca"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+web search: 
+web search: https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test
+web search: 
+web search: repo.maven.apache.org maven2 cglib cglib 3.3.0 cglib-3.3.0-sources.jar cglib-3.3.0-javadoc.jar
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/cglib-cglib-3.3.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+index 1e9c180c831da9f462b2ff77f8417bdcadb9524e..b3cc831e48e55d3c1e71d18dfab017d04f47a6a1
+--- a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib:3.3.0"
++  "coordinates" : "cglib:cglib:3.3.0",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-javadoc.jar",
++  "description" : "cglib is a Java bytecode generation library used to create dynamic proxies and subclasses at runtime. It supports framework features such as method interception, lazy loading, and fast reflection-style access by generating classes backed by ASM."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/cglib-cglib-3.3.0.json && sed -n '1,120p' build/discovered-artifact-metadata/cglib-cglib-3.3.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+index 1e9c180c831da9f462b2ff77f8417bdcadb9524e..b3cc831e48e55d3c1e71d18dfab017d04f47a6a1
+--- a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib:3.3.0"
++  "coordinates" : "cglib:cglib:3.3.0",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-javadoc.jar",
++  "description" : "cglib is a Java bytecode generation library used to create dynamic proxies and subclasses at runtime. It supports framework features such as method interception, lazy loading, and fast reflection-style access by generating classes backed by ASM."
+ }
+
+ succeeded in 131ms:
+{
+  "coordinates" : "cglib:cglib:3.3.0",
+  "repository-url" : "https://github.com/cglib/cglib",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-sources.jar",
+  "test-code-url" : "https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-javadoc.jar",
+  "description" : "cglib is a Java bytecode generation library used to create dynamic proxies and subclasses at runtime. It supports framework features such as method interception, lazy loading, and fast reflection-style access by generating classes backed by ASM."
+}
+
+web search: 
+web search: Maven Central cglib cglib 3.3.0 sources javadoc jar
+web search: 
+web search: https://github.com/cglib/cglib/releases
+web search: 
+web search: https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test
+codex
+Updated [cglib-cglib-3.3.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json) with repository, Maven Central source/javadoc URLs, the `RELEASE_3_3_0` GitHub test-suite URL, and a two-sentence description. Maven Central provides the source and javadoc artifacts for `cglib:cglib:3.3.0`, and GitHub shows the matching release tag and test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/cglib/cglib/3.3.0/?utm_source=openai))
+
+I left `language` absent because this is a Java/JVM library, and left `not-for-native-image` absent because the artifact is a JVM JAR with class files. JSON validation passed with `jq`.
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+index 1e9c180c831da9f462b2ff77f8417bdcadb9524e..b3cc831e48e55d3c1e71d18dfab017d04f47a6a1
+--- a/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib:3.3.0"
++  "coordinates" : "cglib:cglib:3.3.0",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/cglib/cglib/tree/RELEASE_3_3_0/cglib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib/$version$/cglib-$version$-javadoc.jar",
++  "description" : "cglib is a Java bytecode generation library used to create dynamic proxies and subclasses at runtime. It supports framework features such as method interception, lazy loading, and fast reflection-style access by generating classes backed by ASM."
+ }
+
+tokens used
+93,722
+Updated [cglib-cglib-3.3.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6/build/discovered-artifact-metadata/cglib-cglib-3.3.0.json) with repository, Maven Central source/javadoc URLs, the `RELEASE_3_3_0` GitHub test-suite URL, and a two-sentence description. Maven Central provides the source and javadoc artifacts for `cglib:cglib:3.3.0`, and GitHub shows the matching release tag and test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/cglib/cglib/3.3.0/?utm_source=openai))
+
+I left `language` absent because this is a Java/JVM library, and left `not-for-native-image` absent because the artifact is a JVM JAR with class files. JSON validation passed with `jq`.
+Ran agent for cglib:cglib:3.3.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6/build/agent-artifact-discovery-logs/cglib-cglib-3.3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3855-865a78a6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 24s
+9 actionable tasks: 4 executed, 5 from cache
