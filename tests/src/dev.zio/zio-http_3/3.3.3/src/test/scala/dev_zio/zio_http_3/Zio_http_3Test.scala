@@ -32,6 +32,7 @@ import zio.http.Response
 import zio.http.Routes
 import zio.http.Status
 import zio.http.URL
+import zio.http.WebSocketFrame
 import zio.http.handler
 import zio.http.int
 import zio.stream.ZStream
@@ -153,6 +154,39 @@ class Zio_http_3Test {
     val handledErrorResponse: Response = unsafeRun(ZIO.scoped(routes.runZIO(Request.get("/boom"))))
     assertThat(handledErrorResponse.status).isEqualTo(Status.BadRequest)
     assertThat(unsafeRun(handledErrorResponse.body.asString)).contains("bad input")
+  }
+
+  @Test
+  def webSocketFramesModelTextBinaryAndControlMessages(): Unit = {
+    val textFrame: WebSocketFrame = WebSocketFrame.text("hello socket")
+    assertThat(textFrame.isFinal).isTrue()
+    textFrame match {
+      case frame: WebSocketFrame.Text =>
+        assertThat(frame.text).isEqualTo("hello socket")
+        assertThat(frame.copy("updated").text).isEqualTo("updated")
+      case other => throw new AssertionError(s"Expected text frame, got $other")
+    }
+
+    val bytes: Chunk[Byte] = Chunk.fromArray(Array[Byte](1, 2, 3))
+    val binaryFrame: WebSocketFrame = WebSocketFrame.binary(bytes)
+    assertThat(binaryFrame.isFinal).isTrue()
+    binaryFrame match {
+      case frame: WebSocketFrame.Binary => assertThat(frame.bytes).isEqualTo(bytes)
+      case other                        => throw new AssertionError(s"Expected binary frame, got $other")
+    }
+
+    val closeFrame: WebSocketFrame = WebSocketFrame.close(1000, Some("normal shutdown"))
+    assertThat(closeFrame.isFinal).isTrue()
+    closeFrame match {
+      case frame: WebSocketFrame.Close =>
+        assertThat(frame.status).isEqualTo(1000)
+        assertThat(frame.reason).isEqualTo(Some("normal shutdown"))
+      case other => throw new AssertionError(s"Expected close frame, got $other")
+    }
+
+    assertThat(WebSocketFrame.ping).isSameAs(WebSocketFrame.Ping)
+    assertThat(WebSocketFrame.pong).isSameAs(WebSocketFrame.Pong)
+    assertThat(WebSocketFrame.continuation(Chunk.fromArray(Array[Byte](4, 5))).isFinal).isTrue()
   }
 
   @Test
