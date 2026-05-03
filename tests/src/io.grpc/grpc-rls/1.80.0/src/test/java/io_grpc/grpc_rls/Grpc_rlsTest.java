@@ -7,6 +7,7 @@
 package io_grpc.grpc_rls;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.Duration;
@@ -16,6 +17,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.NameResolver.ConfigOrError;
 import io.grpc.Server;
 import io.grpc.Status;
+import io.grpc.StatusException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.lookup.v1.GrpcKeyBuilder;
@@ -213,6 +215,36 @@ public class Grpc_rlsTest {
     }
 
     @Test
+    void routeLookupServiceBlockingV2ClientPropagatesCheckedStatusFailures() throws Exception {
+        FailingRouteLookupService service = new FailingRouteLookupService();
+        String serverName = InProcessServerBuilder.generateName() + UUID.randomUUID();
+        Server server = InProcessServerBuilder.forName(serverName)
+                .directExecutor()
+                .addService(service)
+                .build()
+                .start();
+        ManagedChannel channel = InProcessChannelBuilder.forName(serverName)
+                .directExecutor()
+                .build();
+        try {
+            StatusException exception = assertThrows(StatusException.class, () -> RouteLookupServiceGrpc
+                    .newBlockingV2Stub(channel)
+                    .withDeadlineAfter(5, TimeUnit.SECONDS)
+                    .routeLookup(routeLookupRequest("delta", Reason.REASON_MISS)));
+
+            Status status = Status.fromThrowable(exception);
+            assertThat(status.getCode()).isEqualTo(Status.Code.INVALID_ARGUMENT);
+            assertThat(status.getDescription()).isEqualTo("tenant delta is not routable");
+            assertThat(service.lastRequest().getKeyMapMap()).containsEntry("tenant", "delta");
+        } finally {
+            channel.shutdownNow();
+            server.shutdownNow();
+            assertThat(channel.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(server.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void loadBalancerRegistryProvidesRlsPolicyAndParsesConfigs() {
         LoadBalancerProvider provider = LoadBalancerRegistry.getDefaultRegistry().getProvider("rls_experimental");
 
@@ -288,6 +320,23 @@ public class Grpc_rlsTest {
                     .setHeaderData("future-header-for-" + tenant)
                     .build());
             responseObserver.onCompleted();
+        }
+
+        RouteLookupRequest lastRequest() {
+            return lastRequest.get();
+        }
+    }
+
+    private static final class FailingRouteLookupService extends RouteLookupServiceImplBase {
+        private final AtomicReference<RouteLookupRequest> lastRequest = new AtomicReference<>();
+
+        @Override
+        public void routeLookup(RouteLookupRequest request, StreamObserver<RouteLookupResponse> responseObserver) {
+            lastRequest.set(request);
+            String tenant = request.getKeyMapOrDefault("tenant", "unknown");
+            responseObserver.onError(Status.INVALID_ARGUMENT
+                    .withDescription("tenant " + tenant + " is not routable")
+                    .asException());
         }
 
         RouteLookupRequest lastRequest() {
