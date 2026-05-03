@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 import java.io.StringWriter
+import scala.language.dynamics
 import scala.language.implicitConversions
 
 class Json4s_ast_3Test {
@@ -209,6 +210,32 @@ class Json4s_ast_3Test {
     assertEquals(JNothing, setDiff.changed)
     assertEquals(JSet(Set(JInt(4))), setDiff.added)
     assertEquals(JSet(Set(JInt(1))), setDiff.deleted)
+  }
+
+  @Test
+  def navigatesFieldsWithDynamicJsonValues(): Unit = {
+    import org.json4s.DynamicJValue.dyn
+
+    val document: JObject = JObject(
+      JField("order", JObject(
+        JField("id", JString("A-100")),
+        JField("items", JArray(List(
+          JObject(JField("sku", JString("BK-1")), JField("quantity", JInt(1))),
+          JObject(JField("sku", JString("BK-2")), JField("quantity", JInt(3)))
+        ))),
+        JField("status", JObject(JField("current", JString("fulfilled"))))
+      ))
+    )
+
+    val dynamicDocument: DynamicJValue = dyn(document)
+
+    assertEquals(JString("A-100"), dynamicDocument.order.id.raw)
+    assertEquals(JArray(List(JString("BK-1"), JString("BK-2"))), dynamicDocument.order.items.sku.raw)
+    assertEquals(JArray(List(JInt(1), JInt(3))), dynamicDocument.order.items.quantity.raw)
+    assertEquals(JString("fulfilled"), dynamicDocument.order.status.current.raw)
+    assertEquals(JNothing, dynamicDocument.order.status.previous.raw)
+    assertEquals(dynamicDocument.order.status.current, JString("fulfilled"))
+    assertEquals(dyn(JString("fulfilled")), dynamicDocument.order.status.current)
   }
 
   @Test
