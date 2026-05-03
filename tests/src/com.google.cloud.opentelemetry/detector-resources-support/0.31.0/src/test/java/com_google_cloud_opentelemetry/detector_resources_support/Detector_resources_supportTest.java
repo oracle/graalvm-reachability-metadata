@@ -25,7 +25,9 @@ import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -98,6 +100,21 @@ public class Detector_resources_supportTest {
     @Test
     @Order(3)
     @Timeout(60)
+    void detectorSendsMetadataFlavorHeaderWithMetadataRequests() throws Exception {
+        try (MetadataProxy metadataProxy = MetadataProxy.start()) {
+            withMetadataProxy(metadataProxy, () -> {
+                metadataProxy.replaceRoutes(Map.of());
+
+                GCPPlatformDetector.DEFAULT_INSTANCE.detectPlatform();
+
+                assertThat(metadataProxy.requestHeaderValues("Metadata-Flavor")).contains("Google");
+            });
+        }
+    }
+
+    @Test
+    @Order(4)
+    @Timeout(60)
     void detectorRejectsMetadataResponsesWithoutGoogleFlavorHeader() throws Exception {
         try (MetadataProxy metadataProxy = MetadataProxy.start()) {
             withMetadataProxy(metadataProxy, () -> {
@@ -113,7 +130,7 @@ public class Detector_resources_supportTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     @Timeout(60)
     void defaultDetectorUsesMetadataServiceAndCurrentEnvironmentToBuildDetectedPlatform() throws Exception {
         try (MetadataProxy metadataProxy = MetadataProxy.start()) {
@@ -245,12 +262,14 @@ public class Detector_resources_supportTest {
 
         private final ServerSocket serverSocket;
         private final ExecutorService executorService;
+        private final List<Map<String, String>> requestHeaders;
         private volatile Map<String, String> routes;
         private volatile boolean includeMetadataFlavorHeader;
 
         private MetadataProxy(ServerSocket serverSocket, ExecutorService executorService) {
             this.serverSocket = serverSocket;
             this.executorService = executorService;
+            this.requestHeaders = new ArrayList<>();
             this.routes = Map.of();
             this.includeMetadataFlavorHeader = true;
         }
@@ -280,6 +299,20 @@ public class Detector_resources_supportTest {
             this.includeMetadataFlavorHeader = includeMetadataFlavorHeader;
         }
 
+        List<String> requestHeaderValues(String headerName) {
+            synchronized (requestHeaders) {
+                List<String> values = new ArrayList<>();
+                for (Map<String, String> headers : requestHeaders) {
+                    for (Map.Entry<String, String> header : headers.entrySet()) {
+                        if (header.getKey().equalsIgnoreCase(headerName)) {
+                            values.add(header.getValue());
+                        }
+                    }
+                }
+                return List.copyOf(values);
+            }
+        }
+
         private void serve() {
             while (!serverSocket.isClosed()) {
                 try {
@@ -306,11 +339,19 @@ public class Detector_resources_supportTest {
                 if (requestLine == null || requestLine.isEmpty()) {
                     return;
                 }
+                Map<String, String> headers = new HashMap<>();
                 while (true) {
                     String header = reader.readLine();
                     if (header == null || header.isEmpty()) {
                         break;
                     }
+                    int separator = header.indexOf(':');
+                    if (separator > 0) {
+                        headers.put(header.substring(0, separator).trim(), header.substring(separator + 1).trim());
+                    }
+                }
+                synchronized (requestHeaders) {
+                    requestHeaders.add(Map.copyOf(headers));
                 }
                 writeResponse(socket.getOutputStream(), metadataKey(requestLine));
             }
