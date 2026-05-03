@@ -66,9 +66,11 @@ import com.datastax.oss.driver.shaded.guava.common.net.UrlEscapers;
 import com.datastax.oss.driver.shaded.guava.common.primitives.Doubles;
 import com.datastax.oss.driver.shaded.guava.common.primitives.Ints;
 import com.datastax.oss.driver.shaded.guava.common.primitives.UnsignedInteger;
+import com.datastax.oss.driver.shaded.guava.common.util.concurrent.AbstractIdleService;
 import com.datastax.oss.driver.shaded.guava.common.util.concurrent.Futures;
 import com.datastax.oss.driver.shaded.guava.common.util.concurrent.ListenableFuture;
 import com.datastax.oss.driver.shaded.guava.common.util.concurrent.MoreExecutors;
+import com.datastax.oss.driver.shaded.guava.common.util.concurrent.Service;
 import com.datastax.oss.driver.shaded.guava.common.util.concurrent.SettableFuture;
 import java.io.IOException;
 import java.io.StringReader;
@@ -76,6 +78,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -234,6 +238,39 @@ public class Java_driver_shaded_guavaTest {
     }
 
     @Test
+    void servicesManageLifecycleAndNotifyListeners() throws InterruptedException, TimeoutException {
+        RecordingIdleService service = new RecordingIdleService();
+        List<Service.State> observedStates = new CopyOnWriteArrayList<>();
+        CountDownLatch terminated = new CountDownLatch(1);
+
+        service.addListener(new Service.Listener() {
+            @Override
+            public void running() {
+                observedStates.add(Service.State.RUNNING);
+            }
+
+            @Override
+            public void terminated(Service.State from) {
+                observedStates.add(Service.State.TERMINATED);
+                terminated.countDown();
+            }
+        }, MoreExecutors.directExecutor());
+
+        service.startAsync().awaitRunning(1, TimeUnit.SECONDS);
+
+        assertThat(service.isRunning()).isTrue();
+        assertThat(service.state()).isEqualTo(Service.State.RUNNING);
+        assertThat(service.startCount).hasValue(1);
+
+        service.stopAsync().awaitTerminated(1, TimeUnit.SECONDS);
+
+        assertThat(terminated.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(service.state()).isEqualTo(Service.State.TERMINATED);
+        assertThat(service.stopCount).hasValue(1);
+        assertThat(observedStates).containsExactly(Service.State.RUNNING, Service.State.TERMINATED);
+    }
+
+    @Test
     void hashingBloomFiltersAndEncodingProcessInMemoryData() throws IOException {
         ByteSource bytes = ByteSource.wrap("driver shaded guava".getBytes(UTF_8));
         CharSource chars = bytes.asCharSource(UTF_8);
@@ -281,5 +318,20 @@ public class Java_driver_shaded_guavaTest {
         assertThatThrownBy(() -> Ints.checkedCast(Long.MAX_VALUE)).isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> MediaType.parse("not a media type"))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static final class RecordingIdleService extends AbstractIdleService {
+        private final AtomicInteger startCount = new AtomicInteger();
+        private final AtomicInteger stopCount = new AtomicInteger();
+
+        @Override
+        protected void startUp() {
+            startCount.incrementAndGet();
+        }
+
+        @Override
+        protected void shutDown() {
+            stopCount.incrementAndGet();
+        }
     }
 }
