@@ -10,10 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.api.ClientProto;
+import com.google.api.HttpRule;
 import com.google.cloud.bigquery.storage.v1.AnnotationsProto;
 import com.google.cloud.bigquery.storage.v1.AppendRowsRequest;
 import com.google.cloud.bigquery.storage.v1.AppendRowsResponse;
@@ -45,6 +48,7 @@ import com.google.cloud.bigquery.storage.v1.RowError;
 import com.google.cloud.bigquery.storage.v1.SplitReadStreamRequest;
 import com.google.cloud.bigquery.storage.v1.SplitReadStreamResponse;
 import com.google.cloud.bigquery.storage.v1.StorageError;
+import com.google.cloud.bigquery.storage.v1.StorageProto;
 import com.google.cloud.bigquery.storage.v1.StreamStats;
 import com.google.cloud.bigquery.storage.v1.TableFieldSchema;
 import com.google.cloud.bigquery.storage.v1.TableName;
@@ -55,6 +59,9 @@ import com.google.cloud.bigquery.storage.v1.WriteStreamName;
 import com.google.cloud.bigquery.storage.v1.WriteStreamView;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.MethodDescriptor;
+import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -205,6 +212,58 @@ public class Proto_google_cloud_bigquerystorage_v1Test {
         assertEquals(12.5D, parsed.getReadSession().getReadOptions().getSamplePercentage(), 0.0001D);
         assertEquals(snapshotTime, parsed.getReadSession().getTableModifiers().getSnapshotTime());
         assertEquals(64L, parsed.getReadSession().getEstimatedRowCount());
+    }
+
+    @Test
+    void storageProtoDescriptorExposesServicesStreamingAndHttpBindings() {
+        FileDescriptor descriptor = StorageProto.getDescriptor();
+        ServiceDescriptor readService = descriptor.findServiceByName("BigQueryRead");
+        ServiceDescriptor writeService = descriptor.findServiceByName("BigQueryWrite");
+        assertNotNull(readService);
+        assertNotNull(writeService);
+        assertEquals("bigquerystorage.googleapis.com", readService.getOptions().getExtension(ClientProto.defaultHost));
+        assertEquals("https://www.googleapis.com/auth/bigquery,https://www.googleapis.com/auth/cloud-platform",
+                readService.getOptions().getExtension(ClientProto.oauthScopes));
+        assertEquals("bigquerystorage.googleapis.com", writeService.getOptions().getExtension(ClientProto.defaultHost));
+        assertEquals("https://www.googleapis.com/auth/bigquery,https://www.googleapis.com/auth/bigquery.insertdata,"
+                + "https://www.googleapis.com/auth/cloud-platform",
+                writeService.getOptions().getExtension(ClientProto.oauthScopes));
+
+        MethodDescriptor createReadSession = readService.findMethodByName("CreateReadSession");
+        assertNotNull(createReadSession);
+        assertEquals(CreateReadSessionRequest.getDescriptor(), createReadSession.getInputType());
+        assertEquals(ReadSession.getDescriptor(), createReadSession.getOutputType());
+        assertFalse(createReadSession.isClientStreaming());
+        assertFalse(createReadSession.isServerStreaming());
+        assertTrue(createReadSession.getOptions().hasExtension(com.google.api.AnnotationsProto.http));
+        HttpRule createReadSessionHttp = createReadSession.getOptions()
+                .getExtension(com.google.api.AnnotationsProto.http);
+        assertEquals(HttpRule.PatternCase.POST, createReadSessionHttp.getPatternCase());
+        assertEquals("/v1/{read_session.table=projects/*/datasets/*/tables/*}", createReadSessionHttp.getPost());
+        assertEquals("*", createReadSessionHttp.getBody());
+
+        MethodDescriptor readRows = readService.findMethodByName("ReadRows");
+        assertNotNull(readRows);
+        assertEquals(ReadRowsRequest.getDescriptor(), readRows.getInputType());
+        assertEquals(ReadRowsResponse.getDescriptor(), readRows.getOutputType());
+        assertFalse(readRows.isClientStreaming());
+        assertTrue(readRows.isServerStreaming());
+        assertTrue(readRows.getOptions().hasExtension(com.google.api.AnnotationsProto.http));
+        HttpRule readRowsHttp = readRows.getOptions().getExtension(com.google.api.AnnotationsProto.http);
+        assertEquals(HttpRule.PatternCase.GET, readRowsHttp.getPatternCase());
+        assertEquals("/v1/{read_stream=projects/*/locations/*/sessions/*/streams/*}", readRowsHttp.getGet());
+
+        MethodDescriptor appendRows = writeService.findMethodByName("AppendRows");
+        assertNotNull(appendRows);
+        assertEquals(AppendRowsRequest.getDescriptor(), appendRows.getInputType());
+        assertEquals(AppendRowsResponse.getDescriptor(), appendRows.getOutputType());
+        assertTrue(appendRows.isClientStreaming());
+        assertTrue(appendRows.isServerStreaming());
+        assertTrue(appendRows.getOptions().hasExtension(com.google.api.AnnotationsProto.http));
+        HttpRule appendRowsHttp = appendRows.getOptions().getExtension(com.google.api.AnnotationsProto.http);
+        assertEquals(HttpRule.PatternCase.POST, appendRowsHttp.getPatternCase());
+        assertEquals("/v1/{write_stream=projects/*/datasets/*/tables/*/streams/*}", appendRowsHttp.getPost());
+        assertEquals("*", appendRowsHttp.getBody());
     }
 
     @Test
