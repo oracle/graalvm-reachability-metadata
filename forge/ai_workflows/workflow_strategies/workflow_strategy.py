@@ -249,6 +249,8 @@ class WorkflowStrategy(ABC):
         if future_defaults_status == SUCCESS_WITH_INTERVENTION_STATUS:
             final_status = SUCCESS_WITH_INTERVENTION_STATUS
 
+        # Full CI-matrix GraalVM coverage, including GRAALVM_HOME_25_0, runs in
+        # local CI verification after generation.
         return final_status
 
     def _run_gradle_command_with_output(self, command: list[str]) -> subprocess.CompletedProcess[str]:

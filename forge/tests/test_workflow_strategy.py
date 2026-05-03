@@ -16,7 +16,7 @@ class _TestWorkflowStrategy(WorkflowStrategy):
 
 
 class WorkflowStrategyTests(unittest.TestCase):
-    def test_post_generation_tests_use_current_graalvm_until_final_ci_verification(self) -> None:
+    def test_post_generation_tests_defer_ci_matrix_graalvm_versions_to_final_verification(self) -> None:
         strategy = _TestWorkflowStrategy(
             {"model": "test-model"},
             reachability_repo_path="/tmp/reachability",
