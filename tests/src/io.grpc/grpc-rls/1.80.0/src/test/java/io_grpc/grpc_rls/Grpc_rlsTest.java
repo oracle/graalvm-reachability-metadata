@@ -8,6 +8,7 @@ package io_grpc.grpc_rls;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.Duration;
 import io.grpc.LoadBalancerProvider;
 import io.grpc.LoadBalancerRegistry;
@@ -26,6 +27,7 @@ import io.grpc.lookup.v1.RouteLookupRequest;
 import io.grpc.lookup.v1.RouteLookupRequest.Reason;
 import io.grpc.lookup.v1.RouteLookupResponse;
 import io.grpc.lookup.v1.RouteLookupServiceGrpc;
+import io.grpc.lookup.v1.RouteLookupServiceGrpc.RouteLookupServiceImplBase;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
 import java.util.Map;
@@ -181,6 +183,36 @@ public class Grpc_rlsTest {
     }
 
     @Test
+    void routeLookupServiceImplBaseSupportsFutureClient() throws Exception {
+        BindableRouteLookupService service = new BindableRouteLookupService();
+        String serverName = InProcessServerBuilder.generateName() + UUID.randomUUID();
+        Server server = InProcessServerBuilder.forName(serverName)
+                .directExecutor()
+                .addService(service)
+                .build()
+                .start();
+        ManagedChannel channel = InProcessChannelBuilder.forName(serverName)
+                .directExecutor()
+                .build();
+        try {
+            ListenableFuture<RouteLookupResponse> future = RouteLookupServiceGrpc.newFutureStub(channel)
+                    .withDeadlineAfter(5, TimeUnit.SECONDS)
+                    .routeLookup(routeLookupRequest("gamma", Reason.REASON_MISS));
+
+            RouteLookupResponse response = future.get(5, TimeUnit.SECONDS);
+
+            assertThat(response.getTargetsList()).containsExactly("gamma.future.example.test");
+            assertThat(response.getHeaderData()).isEqualTo("future-header-for-gamma");
+            assertThat(service.lastRequest().getKeyMapMap()).containsEntry("tenant", "gamma");
+        } finally {
+            channel.shutdownNow();
+            server.shutdownNow();
+            assertThat(channel.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(server.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void loadBalancerRegistryProvidesRlsPolicyAndParsesConfigs() {
         LoadBalancerProvider provider = LoadBalancerRegistry.getDefaultRegistry().getProvider("rls_experimental");
 
@@ -242,6 +274,25 @@ public class Grpc_rlsTest {
                         "loadBalancingConfig", List.of(Map.of("pick_first", Map.of()))),
                 "childPolicyConfigTargetFieldName", "target",
                 "childPolicy", List.of(Map.of("pick_first", Map.of())));
+    }
+
+    private static final class BindableRouteLookupService extends RouteLookupServiceImplBase {
+        private final AtomicReference<RouteLookupRequest> lastRequest = new AtomicReference<>();
+
+        @Override
+        public void routeLookup(RouteLookupRequest request, StreamObserver<RouteLookupResponse> responseObserver) {
+            lastRequest.set(request);
+            String tenant = request.getKeyMapOrDefault("tenant", "unknown");
+            responseObserver.onNext(RouteLookupResponse.newBuilder()
+                    .addTargets(tenant + ".future.example.test")
+                    .setHeaderData("future-header-for-" + tenant)
+                    .build());
+            responseObserver.onCompleted();
+        }
+
+        RouteLookupRequest lastRequest() {
+            return lastRequest.get();
+        }
     }
 
     private static final class RecordingRouteLookupService implements RouteLookupServiceGrpc.AsyncService {
