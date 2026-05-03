@@ -77,6 +77,86 @@ class Play_functional_3Test {
   }
 
   @Test
+  def functionalBuilderCombinesMaximumSupportedArity(): Unit = {
+    import play.api.libs.functional.Applicative.applicativeOption
+    import play.api.libs.functional.Functor.functorOption
+
+    val total: Option[Int] = (Option(1)
+      .and(Option(2))
+      .and(Option(3))
+      .and(Option(4))
+      .and(Option(5))
+      .and(Option(6))
+      .and(Option(7))
+      .and(Option(8))
+      .and(Option(9))
+      .and(Option(10))
+      .and(Option(11))
+      .and(Option(12))
+      .and(Option(13))
+      .and(Option(14))
+      .and(Option(15))
+      .and(Option(16))
+      .and(Option(17))
+      .and(Option(18))
+      .and(Option(19))
+      .and(Option(20))
+      .and(Option(21))
+      .and(Option(22))) {
+      (
+          n1: Int,
+          n2: Int,
+          n3: Int,
+          n4: Int,
+          n5: Int,
+          n6: Int,
+          n7: Int,
+          n8: Int,
+          n9: Int,
+          n10: Int,
+          n11: Int,
+          n12: Int,
+          n13: Int,
+          n14: Int,
+          n15: Int,
+          n16: Int,
+          n17: Int,
+          n18: Int,
+          n19: Int,
+          n20: Int,
+          n21: Int,
+          n22: Int
+      ) =>
+        List(
+          n1,
+          n2,
+          n3,
+          n4,
+          n5,
+          n6,
+          n7,
+          n8,
+          n9,
+          n10,
+          n11,
+          n12,
+          n13,
+          n14,
+          n15,
+          n16,
+          n17,
+          n18,
+          n19,
+          n20,
+          n21,
+          n22
+        ).sum
+    }
+
+    assertEquals(Some(253), total)
+  }
+
+  @Test
   def monoidSyntaxAndReducerComposeDeterministically(): Unit = {
     import play.api.libs.functional.Monoid.endomorphismMonoid
 
