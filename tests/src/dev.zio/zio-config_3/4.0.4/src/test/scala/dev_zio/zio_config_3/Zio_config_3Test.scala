@@ -95,6 +95,27 @@ class Zio_config_3Test {
   }
 
   @Test
+  def collectsMultipleDescriptorsIntoOrderedList(): Unit = {
+    val values: Map[String, String] = Map(
+      "cluster.primary" -> "alpha",
+      "cluster.secondary" -> "beta",
+      "cluster.tertiary" -> "gamma"
+    )
+    val provider: ConfigProvider = ConfigProvider.fromMap(values)
+    val descriptor: Config[List[String]] = Config
+      .collectAll(
+        Config.string("primary"),
+        Config.string("secondary"),
+        Config.string("tertiary")
+      )
+      .nested("cluster")
+
+    val parsed: List[String] = unsafeRun(read(descriptor.from(provider)))
+
+    assertThat(parsed).isEqualTo(List("alpha", "beta", "gamma"))
+  }
+
+  @Test
   def reportsPrettyErrorsForInvalidConfiguration(): Unit = {
     val provider: ConfigProvider = ConfigProvider.fromMap(Map("http.port" -> "not-a-number"))
     val descriptor: Config[Int] = Config.int("port").nested("http")
