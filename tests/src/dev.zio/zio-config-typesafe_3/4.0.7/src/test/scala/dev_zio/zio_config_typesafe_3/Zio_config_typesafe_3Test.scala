@@ -128,6 +128,29 @@ class Zio_config_typesafe_3Test {
   }
 
   @Test
+  def decodesEmptyListsFromHocon(): Unit = {
+    val hocon: String = """
+      deployment {
+        release-channels = []
+        ports = []
+        replicas = 3
+      }
+      """
+    val provider: ConfigProvider = TypesafeConfigProvider.fromHoconString(hocon)
+    val descriptor: Config[(List[String], List[Int], Int)] = Config
+      .listOf("release-channels", Config.string)
+      .zipWith(Config.listOf("ports", Config.int))((channels: List[String], ports: List[Int]) => (channels, ports))
+      .zipWith(Config.int("replicas")) { case ((channels: List[String], ports: List[Int]), replicas: Int) =>
+        (channels, ports, replicas)
+      }
+      .nested("deployment")
+
+    val parsed: (List[String], List[Int], Int) = unsafeRun(read(descriptor.from(provider)))
+
+    assertThat(parsed).isEqualTo((List.empty[String], List.empty[Int], 3))
+  }
+
+  @Test
   def readsConfigurationFromFileAndFilePathProviders(): Unit = {
     val configFile: Path = Files.createTempFile("zio-config-typesafe", ".conf")
     try {
