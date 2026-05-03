@@ -10,6 +10,8 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+// The protoc 3.23.3 release did not publish platform executables to Maven Central.
+String protocVersion = "3.23.4"
 
 dependencies {
     // Put well-known type .proto files on protoc include path only (do not generate code for them)
@@ -28,7 +30,7 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:$libraryVersion"
+        artifact = "com.google.protobuf:protoc:$protocVersion"
     }
 }
 

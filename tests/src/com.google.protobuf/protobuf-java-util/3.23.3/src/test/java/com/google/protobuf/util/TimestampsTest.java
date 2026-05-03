@@ -53,6 +53,16 @@ public class TimestampsTest {
         assertThat(Timestamps.isValid(Timestamps.MIN_VALUE)).isTrue();
     }
 
+    @Test
+    public void testNowReturnsCurrentValidTimestamp() {
+        long beforeMillis = System.currentTimeMillis();
+        Timestamp timestamp = Timestamps.now();
+        long afterMillis = System.currentTimeMillis();
+
+        assertThat(Timestamps.isValid(timestamp)).isTrue();
+        assertThat(Timestamps.toMillis(timestamp)).isAtLeast(beforeMillis - MILLIS_PER_SECOND);
+        assertThat(Timestamps.toMillis(timestamp)).isAtMost(afterMillis + MILLIS_PER_SECOND);
+    }
 
     @Test
     public void testIsValid_false() {
