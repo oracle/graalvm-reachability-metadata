@@ -775,16 +775,20 @@
   },
   {
     "name": "library_update_optimistic_pi_gpt-5.5",
-    "description": "Library-update strategy: bulk dynamic-access coverage in a single broad pass. Faster than the iterative class-by-class strategy but ignores large-library chunking, so prefer the iterative strategy for very large libraries.",
+    "description": "Library-update composite strategy: bulk dynamic-access coverage in one broad pass first, then per-class iterative refinement of any stragglers. Mirrors the iterative library-update strategy but starts with a faster bulk pass.",
     "agent": "pi",
-    "workflow": "optimistic_dynamic_access",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "optimistic_dynamic_access",
     "model": "oca/gpt-5.5",
     "prompts": {
-      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration-update.md"
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration-update.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
     },
     "parameters": {
       "max-optimistic-iterations": 3,
       "max-test-iterations": 3,
+      "max-iterations": 3,
+      "max-class-test-iterations": 2,
       "source-context-types": [
         "main"
       ]
