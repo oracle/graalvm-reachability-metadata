@@ -237,6 +237,38 @@ public class Swagger_annotationsTest {
     }
 
     @Test
+    void visibilityAndParameterOptionAnnotationsRetainDocumentationControls()
+            throws NoSuchFieldException, NoSuchMethodException {
+        Api api = AdministrativeResource.class.getAnnotation(Api.class);
+        assertThat(api.value()).isEqualTo("/admin");
+        assertThat(api.hidden()).isTrue();
+
+        Method purgeCache = AdministrativeResource.class.getDeclaredMethod("purgeCache", List.class);
+        ApiOperation operation = purgeCache.getAnnotation(ApiOperation.class);
+        assertThat(operation.value()).isEqualTo("Purge cache");
+        assertThat(operation.hidden()).isTrue();
+
+        ApiImplicitParam implicitParam = purgeCache.getAnnotation(ApiImplicitParam.class);
+        assertThat(implicitParam.name()).isEqualTo("cacheName");
+        assertThat(implicitParam.allowMultiple()).isTrue();
+        assertThat(implicitParam.allowEmptyValue()).isTrue();
+        assertThat(implicitParam.readOnly()).isTrue();
+
+        ApiParam parameter = purgeCache.getParameters()[0].getAnnotation(ApiParam.class);
+        assertThat(parameter.name()).isEqualTo("cacheNames");
+        assertThat(parameter.allowMultiple()).isTrue();
+        assertThat(parameter.hidden()).isTrue();
+        assertThat(parameter.allowEmptyValue()).isTrue();
+        assertThat(parameter.readOnly()).isTrue();
+
+        Field auditNoteField = AdministrativeRequest.class.getDeclaredField("auditNote");
+        ApiModelProperty auditNote = auditNoteField.getAnnotation(ApiModelProperty.class);
+        assertThat(auditNote.value()).isEqualTo("Internal audit note");
+        assertThat(auditNote.hidden()).isTrue();
+        assertThat(auditNote.allowEmptyValue()).isTrue();
+    }
+
+    @Test
     void enumHelpersResolveWireValuesAndPreserveDeclarationOrder() {
         assertThat(ApiKeyAuthDefinition.ApiKeyLocation.HEADER.toValue()).isEqualTo("header");
         assertThat(ApiKeyAuthDefinition.ApiKeyLocation.QUERY.toValue()).isEqualTo("query");
@@ -411,6 +443,37 @@ public class Swagger_annotationsTest {
                         format = "int32") int limit) {
             return Collections.singletonList(new Pet("pet-1", type + '-' + limit));
         }
+    }
+
+    @Api(value = "/admin", hidden = true)
+    private static final class AdministrativeResource {
+        @ApiOperation(value = "Purge cache", hidden = true)
+        @ApiImplicitParam(
+                name = "cacheName",
+                value = "Cache names to purge",
+                allowMultiple = true,
+                dataTypeClass = String.class,
+                paramType = "query",
+                type = "string",
+                allowEmptyValue = true,
+                readOnly = true)
+        private void purgeCache(
+                @ApiParam(
+                        name = "cacheNames",
+                        value = "Cache names to purge",
+                        allowMultiple = true,
+                        hidden = true,
+                        allowEmptyValue = true,
+                        readOnly = true) List<String> cacheNames) {
+        }
+    }
+
+    private static final class AdministrativeRequest {
+        @ApiModelProperty(
+                value = "Internal audit note",
+                hidden = true,
+                allowEmptyValue = true)
+        private final String auditNote = "";
     }
 
     private static class BasePet {
