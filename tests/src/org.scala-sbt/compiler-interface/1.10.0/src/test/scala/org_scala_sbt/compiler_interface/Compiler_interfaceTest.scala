@@ -50,7 +50,8 @@ final class Compiler_interfaceTest {
     assertThat(DependencyContext.values()).containsExactly(
       DependencyContext.DependencyByMemberRef,
       DependencyContext.DependencyByInheritance,
-      DependencyContext.LocalDependencyByInheritance
+      DependencyContext.LocalDependencyByInheritance,
+      DependencyContext.DependencyByMacroExpansion
     )
     assertThat(UseScope.values()).containsExactly(UseScope.Default, UseScope.Implicit, UseScope.PatMatTarget)
     assertThat(CompileOrder.values()).containsExactly(
@@ -64,6 +65,8 @@ final class Compiler_interfaceTest {
     assertThat(ParameterModifier.valueOf("ByName")).isSameAs(ParameterModifier.ByName)
     assertThat(DependencyContext.valueOf("LocalDependencyByInheritance"))
       .isSameAs(DependencyContext.LocalDependencyByInheritance)
+    assertThat(DependencyContext.valueOf("DependencyByMacroExpansion"))
+      .isSameAs(DependencyContext.DependencyByMacroExpansion)
     assertThat(UseScope.valueOf("PatMatTarget")).isSameAs(UseScope.PatMatTarget)
     assertThat(CompileOrder.valueOf("ScalaThenJava")).isSameAs(CompileOrder.ScalaThenJava)
   }
@@ -437,10 +440,10 @@ final class Compiler_interfaceTest {
     val classpathOptions = ClasspathOptions.of(true, true, false, true, false)
 
     assertThat(singleOutput.getOutputDirectory()).isEqualTo(mainClasses)
-    assertThat(singleOutput.getSingleOutput()).contains(mainClasses)
+    assertThat(singleOutput.getSingleOutputAsPath()).contains(mainClasses.toPath)
     assertThat(singleOutput.getMultipleOutput()).isEmpty()
     assertThat(multipleOutput.getOutputGroups()).containsExactly(groups: _*)
-    assertThat(multipleOutput.getSingleOutput()).isEmpty()
+    assertThat(multipleOutput.getSingleOutputAsPath()).isEmpty()
     assertThat(multipleOutput.getMultipleOutput()).contains(groups)
     assertThat(groups(0).getSourceDirectoryAsPath()).isEqualTo(mainSources.toPath)
     assertThat(groups(0).getOutputDirectoryAsPath()).isEqualTo(mainClasses.toPath)
