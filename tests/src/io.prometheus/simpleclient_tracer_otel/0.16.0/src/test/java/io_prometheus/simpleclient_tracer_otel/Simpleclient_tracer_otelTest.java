@@ -49,6 +49,17 @@ public class Simpleclient_tracer_otelTest {
     }
 
     @Test
+    void openTelemetryIntegrationDisablePropertyIsCaseInsensitive() {
+        String previousValue = System.getProperty("io.prometheus.otelExemplars");
+        System.setProperty("io.prometheus.otelExemplars", "InAcTiVe");
+        try {
+            assertThat(OpenTelemetrySpanContextSupplier.isAvailable()).isFalse();
+        } finally {
+            restoreOtelExemplarsProperty(previousValue);
+        }
+    }
+
+    @Test
     void noCurrentSpanProducesNoTraceOrSpanIdentifierAndIsNotSampled() {
         OpenTelemetrySpanContextSupplier supplier = new OpenTelemetrySpanContextSupplier();
 
