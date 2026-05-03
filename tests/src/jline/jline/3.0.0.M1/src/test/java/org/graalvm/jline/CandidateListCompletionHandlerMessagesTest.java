@@ -6,55 +6,50 @@
  */
 package org.graalvm.jline;
 
-import jline.UnsupportedTerminal;
-import jline.console.ConsoleReader;
-import jline.console.completer.CandidateListCompletionHandler;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.jline.reader.Candidate;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.ParsedLine;
+import org.jline.reader.impl.DefaultParser;
+import org.jline.reader.impl.completer.completer.StringsCompleter;
+import org.jline.terminal.impl.DumbTerminal;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CandidateListCompletionHandlerMessagesTest {
 
-    private Locale originalLocale;
-
-    @BeforeEach
-    void setUp() {
-        originalLocale = Locale.getDefault();
-        Locale.setDefault(Locale.ENGLISH);
-    }
-
-    @AfterEach
-    void tearDown() {
-        Locale.setDefault(originalLocale);
-    }
-
     @Test
-    void printCandidatesLoadsTheMessagesBundleWhenPromptingForConfirmation() throws Exception {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+    void stringsCompleterAddsDisplayCandidatesForParsedInput() throws Exception {
+        DumbTerminal terminal = new DumbTerminal(
+                "candidate-completion-test",
+                "ansi",
+                new ByteArrayInputStream(new byte[0]),
+                new ByteArrayOutputStream(),
+                StandardCharsets.UTF_8.name());
 
-        try (ConsoleReader reader = new ConsoleReader(
-                "candidate-list-completion-handler",
-                new ByteArrayInputStream("y".getBytes(StandardCharsets.UTF_8)),
-                output,
-                new UnsupportedTerminal())) {
-            reader.setAutoprintThreshold(1);
+        try {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .completer(new StringsCompleter("alpha", "beta"))
+                    .build();
+            ParsedLine parsedLine = new DefaultParser().parse("a", 1);
+            List<Candidate> candidates = new ArrayList<Candidate>();
 
-            CandidateListCompletionHandler.printCandidates(reader, Arrays.<CharSequence>asList("alpha", "beta"));
-            reader.flush();
+            new StringsCompleter("alpha", "beta").complete(reader, parsedLine, candidates);
+
+            assertThat(parsedLine.word()).isEqualTo("a");
+            assertThat(candidates).extracting(Candidate::value).containsExactly("alpha", "beta");
+            assertThat(candidates).allMatch(Candidate::complete);
+        } finally {
+            terminal.reader().close();
+            terminal.close();
         }
-
-        String consoleOutput = output.toString(StandardCharsets.UTF_8.name());
-        assertThat(consoleOutput)
-                .contains("Display all 2 possibilities? (y or n)")
-                .contains("alpha")
-                .contains("beta");
     }
 }

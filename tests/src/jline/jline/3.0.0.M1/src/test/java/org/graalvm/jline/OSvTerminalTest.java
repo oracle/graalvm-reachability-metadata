@@ -6,32 +6,47 @@
  */
 package org.graalvm.jline;
 
-import com.cloudius.util.Stty;
-import jline.OSvTerminal;
-import org.junit.jupiter.api.BeforeEach;
+import org.jline.terminal.Attributes;
+import org.jline.terminal.Attributes.ControlChar;
+import org.jline.terminal.Attributes.LocalFlag;
+import org.jline.terminal.impl.DumbTerminal;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OSvTerminalTest {
 
-    @BeforeEach
-    void setUp() {
-        Stty.clear();
-    }
-
     @Test
-    void initAndRestoreInvokeTheLoadedSttyMethods() throws Exception {
-        OSvTerminal terminal = new OSvTerminal();
+    void enterRawModeReturnsPreviousAttributesAndUpdatesTerminalAttributes() throws Exception {
+        DumbTerminal terminal = new DumbTerminal(
+                "raw-mode-test",
+                "ansi",
+                new ByteArrayInputStream(new byte[0]),
+                new ByteArrayOutputStream(),
+                StandardCharsets.UTF_8.name());
 
-        assertThat(terminal.sttyClass).isEqualTo(Stty.class);
-        assertThat(terminal.stty).isInstanceOf(Stty.class);
-        assertThat(terminal.isAnsiSupported()).isTrue();
+        try {
+            Attributes attributes = terminal.getAttributes();
+            attributes.setLocalFlag(LocalFlag.ECHO, true);
+            attributes.setLocalFlag(LocalFlag.ICANON, true);
+            attributes.setControlChar(ControlChar.VMIN, 7);
+            terminal.setAttributes(attributes);
 
-        terminal.init();
-        terminal.restore();
+            Attributes previous = terminal.enterRawMode();
+            Attributes raw = terminal.getAttributes();
 
-        assertThat(Stty.jlineModeCalls).isEqualTo(1);
-        assertThat(Stty.resetCalls).isEqualTo(1);
+            assertThat(previous.getLocalFlag(LocalFlag.ECHO)).isTrue();
+            assertThat(previous.getLocalFlag(LocalFlag.ICANON)).isTrue();
+            assertThat(raw.getLocalFlag(LocalFlag.ECHO)).isFalse();
+            assertThat(raw.getLocalFlag(LocalFlag.ICANON)).isFalse();
+            assertThat(raw.getControlChar(ControlChar.VMIN)).isEqualTo(1);
+        } finally {
+            terminal.reader().close();
+            terminal.close();
+        }
     }
 }

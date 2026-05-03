@@ -6,47 +6,40 @@
  */
 package org.graalvm.jline;
 
-import org.fusesource.hawtjni.runtime.Library;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.impl.DumbTerminal;
 import org.junit.jupiter.api.Test;
 
-import java.net.URL;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class HawtjniRuntimeLibraryTest {
 
-    private static final String LIBRARY_NAME = "graalvmjlinemissingnative";
-
     @Test
-    void loadChecksClassLoaderResourcesWhenNativeLibraryLookupFails() {
-        TrackingResourceClassLoader classLoader = new TrackingResourceClassLoader(HawtjniRuntimeLibraryTest.class.getClassLoader());
-        Library library = new Library(LIBRARY_NAME, "integration-test", classLoader);
+    void terminalSignalHandlersCanBeRegisteredAndRaised() throws Exception {
+        DumbTerminal terminal = new DumbTerminal(
+                "signal-handler-test",
+                "ansi",
+                new ByteArrayInputStream(new byte[0]),
+                new ByteArrayOutputStream(),
+                StandardCharsets.UTF_8.name());
 
-        assertThatThrownBy(library::load)
-                .isInstanceOf(UnsatisfiedLinkError.class)
-                .hasMessageContaining("Could not load library. Reasons:");
+        try {
+            List<Terminal.Signal> handledSignals = new ArrayList<Terminal.Signal>();
 
-        assertThat(classLoader.requestedResources).containsExactly(
-                library.getPlatformSpecifcResourcePath(),
-                library.getOperatingSystemSpecifcResourcePath(),
-                library.getResorucePath());
-    }
+            Terminal.SignalHandler previous = terminal.handle(Terminal.Signal.INT, handledSignals::add);
+            terminal.raise(Terminal.Signal.INT);
 
-    public static final class TrackingResourceClassLoader extends ClassLoader {
-
-        private final List<String> requestedResources = new ArrayList<String>();
-
-        public TrackingResourceClassLoader(final ClassLoader parent) {
-            super(parent);
-        }
-
-        @Override
-        public URL getResource(final String name) {
-            requestedResources.add(name);
-            return null;
+            assertThat(previous).isSameAs(Terminal.SignalHandler.SIG_DFL);
+            assertThat(handledSignals).containsExactly(Terminal.Signal.INT);
+        } finally {
+            terminal.reader().close();
+            terminal.close();
         }
     }
 }

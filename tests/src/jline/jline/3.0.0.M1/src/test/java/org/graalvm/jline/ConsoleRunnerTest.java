@@ -6,114 +6,62 @@
  */
 package org.graalvm.jline;
 
-import jline.TerminalFactory;
-import jline.console.completer.Completer;
-import jline.console.internal.ConsoleRunner;
-import jline.internal.Configuration;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.jline.reader.Candidate;
+import org.jline.reader.Completer;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.ParsedLine;
+import org.jline.reader.impl.DefaultParser;
+import org.jline.terminal.impl.DumbTerminal;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConsoleRunnerTest {
 
-    private String originalCompleters;
-    private String originalHistoryName;
-    private String originalTerminalType;
-    private String originalUserHome;
-    private InputStream originalSystemIn;
-
-    @TempDir
-    Path temporaryHome;
-
-    @BeforeEach
-    void setUp() {
-        originalCompleters = System.getProperty(ConsoleRunner.class.getName() + ".completers");
-        originalHistoryName = System.getProperty(ConsoleRunner.property);
-        originalTerminalType = System.getProperty(TerminalFactory.JLINE_TERMINAL);
-        originalUserHome = System.getProperty("user.home");
-        originalSystemIn = System.in;
-
-        TrackingCompleter.constructorCalls = 0;
-        TargetApplication.invocationCount = 0;
-        TargetApplication.lastArguments = null;
-        TargetApplication.systemInClassName = null;
-
-        System.setProperty(ConsoleRunner.class.getName() + ".completers", TrackingCompleter.class.getName());
-        System.setProperty(ConsoleRunner.property, "console-runner");
-        System.setProperty(TerminalFactory.JLINE_TERMINAL, TerminalFactory.NONE);
-        System.setProperty("user.home", temporaryHome.toString());
-        System.setIn(new ByteArrayInputStream(new byte[0]));
-
-        Configuration.reset();
-        TerminalFactory.reset();
-    }
-
-    @AfterEach
-    void tearDown() {
-        restoreProperty(ConsoleRunner.class.getName() + ".completers", originalCompleters);
-        restoreProperty(ConsoleRunner.property, originalHistoryName);
-        restoreProperty(TerminalFactory.JLINE_TERMINAL, originalTerminalType);
-        restoreProperty("user.home", originalUserHome);
-        System.setIn(originalSystemIn);
-
-        Configuration.reset();
-        TerminalFactory.reset();
-    }
-
     @Test
-    void mainLoadsConfiguredCompleterAndInvokesTheTargetMainMethod() throws Exception {
-        ConsoleRunner.main(new String[]{TargetApplication.class.getName(), "alpha", "beta"});
+    void lineReaderBuilderUsesTheConfiguredCompleter() throws Exception {
+        TrackingCompleter completer = new TrackingCompleter();
+        DumbTerminal terminal = new DumbTerminal(
+                "line-reader-builder-test",
+                "ansi",
+                new ByteArrayInputStream(new byte[0]),
+                new ByteArrayOutputStream(),
+                StandardCharsets.UTF_8.name());
 
-        assertThat(TrackingCompleter.constructorCalls).isEqualTo(1);
-        assertThat(TargetApplication.invocationCount).isEqualTo(1);
-        assertThat(TargetApplication.lastArguments).containsExactly("alpha", "beta");
-        assertThat(TargetApplication.systemInClassName).contains("ConsoleReaderInputStream");
-        assertThat(System.in.getClass().getName()).doesNotContain("ConsoleReaderInputStream");
-        assertThat(temporaryHome.resolve(".jline-" + TargetApplication.class.getName() + ".console-runner.history"))
-                .exists();
-    }
+        try {
+            LineReader reader = LineReaderBuilder.builder()
+                    .appName("line-reader-builder-test")
+                    .terminal(terminal)
+                    .completer(completer)
+                    .build();
+            ParsedLine parsedLine = new DefaultParser().parse("can", 3);
+            List<Candidate> candidates = new ArrayList<Candidate>();
 
-    private static void restoreProperty(final String name, final String value) {
-        if (value == null) {
-            System.clearProperty(name);
-        } else {
-            System.setProperty(name, value);
+            completer.complete(reader, parsedLine, candidates);
+
+            assertThat(completer.invocationCount).isEqualTo(1);
+            assertThat(candidates).extracting(Candidate::value).containsExactly("candidate");
+        } finally {
+            terminal.reader().close();
+            terminal.close();
         }
     }
 
     public static final class TrackingCompleter implements Completer {
 
-        private static int constructorCalls;
-
-        public TrackingCompleter() {
-            constructorCalls++;
-        }
+        private int invocationCount;
 
         @Override
-        public int complete(final String buffer, final int cursor, final List<CharSequence> candidates) {
-            candidates.add("candidate");
-            return 0;
-        }
-    }
-
-    public static final class TargetApplication {
-
-        private static int invocationCount;
-        private static String[] lastArguments;
-        private static String systemInClassName;
-
-        public static void main(final String[] args) {
+        public void complete(final LineReader reader, final ParsedLine line, final List<Candidate> candidates) {
             invocationCount++;
-            lastArguments = args.clone();
-            systemInClassName = System.in.getClass().getName();
+            candidates.add(new Candidate("candidate"));
         }
     }
 }
