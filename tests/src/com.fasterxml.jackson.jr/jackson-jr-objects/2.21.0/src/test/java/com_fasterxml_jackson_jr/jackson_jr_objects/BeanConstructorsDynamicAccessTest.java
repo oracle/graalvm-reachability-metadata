@@ -18,11 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanConstructorsDynamicAccessTest {
     private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
+    private static final AtomicInteger RECORD_CTOR_CALLS = new AtomicInteger();
 
     @BeforeEach
     void resetConstructorCounters() {
         PublicDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
         PrivateDefaultCtorBean.CONSTRUCTOR_CALLS.set(0);
+        RECORD_CTOR_CALLS.set(0);
     }
 
     @Test
@@ -59,6 +61,28 @@ public class BeanConstructorsDynamicAccessTest {
     }
 
     @Test
+    void createsRecordsDirectlyThroughCanonicalConstructors() throws Exception {
+        Constructor<RecordCtorBean> constructor = RecordCtorBean.class.getDeclaredConstructor(String.class, int.class);
+        AccessibleBeanConstructors constructors = new AccessibleBeanConstructors(RecordCtorBean.class);
+        constructors.addRecordConstructor(constructor);
+
+        RecordCtorBean bean = (RecordCtorBean) constructors.createRecordBean("Ada", 37);
+
+        assertThat(bean.name()).isEqualTo("Ada");
+        assertThat(bean.age()).isEqualTo(37);
+        assertThat(RECORD_CTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void createsRecordsThroughCanonicalConstructorsWhenReadingObjects() throws Exception {
+        RecordCtorBean bean = JSON.std.beanFrom(RecordCtorBean.class, "{\"name\":\"Ada\",\"age\":37}");
+
+        assertThat(bean.name()).isEqualTo("Ada");
+        assertThat(bean.age()).isEqualTo(37);
+        assertThat(RECORD_CTOR_CALLS).hasValue(1);
+    }
+
+    @Test
     void createsBeansThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
         PrivateDefaultCtorBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(PrivateDefaultCtorBean.class,
                 "{\"name\":\"Ada\"}");
@@ -74,6 +98,10 @@ public class BeanConstructorsDynamicAccessTest {
 
         Object createBean() throws Exception {
             return create();
+        }
+
+        Object createRecordBean(Object... components) throws Exception {
+            return createRecord(components);
         }
     }
 
@@ -94,6 +122,12 @@ public class BeanConstructorsDynamicAccessTest {
 
         private PrivateDefaultCtorBean() {
             CONSTRUCTOR_CALLS.incrementAndGet();
+        }
+    }
+
+    public record RecordCtorBean(String name, int age) {
+        public RecordCtorBean {
+            RECORD_CTOR_CALLS.incrementAndGet();
         }
     }
 }

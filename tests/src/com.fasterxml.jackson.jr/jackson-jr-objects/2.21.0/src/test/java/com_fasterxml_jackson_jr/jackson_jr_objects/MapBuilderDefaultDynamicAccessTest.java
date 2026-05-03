@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MapBuilderDefaultDynamicAccessTest {
     @BeforeEach
@@ -66,6 +67,27 @@ public class MapBuilderDefaultDynamicAccessTest {
         assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(2);
     }
 
+    @Test
+    void directBuilderFactoryMethodsInstantiateConfiguredMapImplementation() throws Exception {
+        MapBuilder builder = configuredMapBuilder().newBuilder(JSON.Feature.READ_ONLY.mask());
+
+        Map<String, Object> empty = builder.emptyMap();
+        Map<String, Object> singleton = builder.singletonMap("answer", 42);
+
+        assertThat(empty).isInstanceOf(ConstructorTrackingMap.class).isEmpty();
+        assertThat(singleton).isInstanceOf(ConstructorTrackingMap.class).containsEntry("answer", 42);
+        assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(2);
+    }
+
+    @Test
+    void reportsConfiguredMapTypesThatCannotBeInstantiated() {
+        MapBuilder builder = MapBuilder.defaultImpl().newBuilder(PrivateConstructorMap.class);
+
+        assertThatThrownBy(builder::start)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Failed to create an instance of " + PrivateConstructorMap.class.getName());
+    }
+
     private static JSON jsonWithConfiguredMaps() {
         return JSON.builder()
                 .mapBuilder(configuredMapBuilder())
@@ -81,6 +103,11 @@ public class MapBuilderDefaultDynamicAccessTest {
 
         public ConstructorTrackingMap() {
             CONSTRUCTOR_CALLS.incrementAndGet();
+        }
+    }
+
+    public static final class PrivateConstructorMap extends LinkedHashMap<String, Object> {
+        private PrivateConstructorMap() {
         }
     }
 }

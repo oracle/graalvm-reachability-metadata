@@ -6,6 +6,7 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
+import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
 import com.fasterxml.jackson.jr.type.ResolvedType;
 import com.fasterxml.jackson.jr.type.TypeBindings;
 import com.fasterxml.jackson.jr.type.TypeResolver;
@@ -13,22 +14,22 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeResolverDynamicAccessTest {
     @Test
-    void resolvesSyntheticGenericArrayTypesFromRuntimeResolvedComponentTypes() {
+    void resolvesSyntheticGenericArrayTypesFromLibraryComponentTypes() {
         TypeResolver resolver = new TypeResolver();
-        Object runtimeComponentValue = runtimeComponentValue();
-        Class<?> componentClass = runtimeComponentValue.getClass();
-        ResolvedType componentType = resolver.resolve(TypeBindings.emptyBindings(), componentClass);
+        ResolvedType componentType = resolver.resolve(TypeBindings.emptyBindings(), POJODefinition.class);
         GenericArrayType genericArrayType = new SyntheticGenericArrayType(componentType);
 
         ResolvedType resolvedArrayType = resolver.resolve(TypeBindings.emptyBindings(), genericArrayType);
 
         assertThat(resolvedArrayType.isArray()).isTrue();
-        assertThat(resolvedArrayType.erasedType().getComponentType()).isEqualTo(componentClass);
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(POJODefinition[].class);
+        assertThat(resolvedArrayType.erasedType().getComponentType()).isEqualTo(POJODefinition.class);
         assertThat(resolvedArrayType.elementType()).isEqualTo(componentType);
     }
 
@@ -49,6 +50,22 @@ public class TypeResolverDynamicAccessTest {
         assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(String.class);
     }
 
+    @Test
+    void resolvesGenericArrayTypesNestedInParameterizedTypes() throws Exception {
+        TypeResolver resolver = new TypeResolver();
+        Type listWithGenericArrayElement = GenericArrayListContainer.class
+                .getDeclaredField("values")
+                .getGenericType();
+
+        ResolvedType resolvedListType = resolver.resolve(TypeBindings.emptyBindings(), listWithGenericArrayElement);
+        ResolvedType resolvedArrayType = resolvedListType.typeParametersFor(List.class).get(0);
+
+        assertThat(resolvedListType.erasedType()).isEqualTo(List.class);
+        assertThat(resolvedArrayType.isArray()).isTrue();
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(POJODefinition[].class);
+        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(POJODefinition.class);
+    }
+
     static class GenericArrayContainer<T> {
         private T[] values;
 
@@ -64,11 +81,16 @@ public class TypeResolverDynamicAccessTest {
     static final class StringArrayContainer extends GenericArrayContainer<String> {
     }
 
-    private static Object runtimeComponentValue() {
-        if (Thread.currentThread().getName().isEmpty()) {
-            return Integer.valueOf(7);
+    static final class GenericArrayListContainer<T extends POJODefinition> {
+        private List<T[]> values;
+
+        public List<T[]> getValues() {
+            return values;
         }
-        return Thread.currentThread().getName();
+
+        public void setValues(List<T[]> values) {
+            this.values = values;
+        }
     }
 
     static final class SyntheticGenericArrayType implements GenericArrayType {

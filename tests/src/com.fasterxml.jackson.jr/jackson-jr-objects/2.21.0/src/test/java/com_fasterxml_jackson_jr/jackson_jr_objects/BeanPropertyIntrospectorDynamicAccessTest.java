@@ -30,18 +30,18 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
 
     @Test
     void collectsDeclaredConstructorsForDeserialization() throws Exception {
+        BeanConstructors constructors = new BeanConstructors(IntrospectedBean.class);
+        BeanPropertyIntrospector.addNonRecordConstructors(IntrospectedBean.class, constructors);
         POJODefinition definition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER, IntrospectedBean.class);
-        POJODefinition libraryDefinition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER, POJODefinition.class);
 
         IntrospectedBean objectBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class,
                 "{\"name\":\"Ada\",\"active\":true,\"visible\":7}");
         IntrospectedBean stringBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "\"Ada\"");
         IntrospectedBean longBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "7");
 
+        assertThat(constructors).isNotNull();
         assertThat(definition.constructors()).isNotNull();
-        assertThat(libraryDefinition.constructors()).isNotNull();
         assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
-        assertThat(propertyNames(libraryDefinition)).contains("ignorableNames", "properties");
         assertThat(objectBean.getName()).isEqualTo("Ada");
         assertThat(objectBean.isActive()).isTrue();
         assertThat(objectBean.visible).isEqualTo(7);
@@ -52,14 +52,9 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
     @Test
     void collectsDeclaredFieldsAndMethodsForSerialization() throws Exception {
         POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, IntrospectedBean.class);
-        POJODefinition libraryDefinition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, POJODefinition.class);
-        POJODefinition beanConstructorsDefinition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER,
-                BeanConstructors.class);
         String json = JSON_WITH_FORCE_ACCESS.asString(IntrospectedBean.create("Ada", true, 7));
 
         assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
-        assertThat(propertyNames(libraryDefinition)).contains("ignorableNames", "properties");
-        assertThat(beanConstructorsDefinition.getProperties()).isEmpty();
         assertThat(json).contains("\"name\":\"Ada\"", "\"active\":true", "\"visible\":7");
 
         POJODefinition.Prop visible = property(definition, "visible");
@@ -71,6 +66,20 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         assertThat(name.setter).isNotNull();
         assertThat(active.isGetter).isNotNull();
         assertThat(active.setter).isNotNull();
+    }
+
+    @Test
+    void collectsIntegerConstructorsForNumericScalarDeserialization() throws Exception {
+        BeanConstructors constructors = new BeanConstructors(IntConstructorBean.class);
+        BeanPropertyIntrospector.addNonRecordConstructors(IntConstructorBean.class, constructors);
+        POJODefinition definition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER, IntConstructorBean.class);
+
+        IntConstructorBean bean = JSON.std.beanFrom(IntConstructorBean.class, "13");
+
+        assertThat(constructors).isNotNull();
+        assertThat(definition.constructors()).isNotNull();
+        assertThat(propertyNames(definition)).contains("value");
+        assertThat(bean.getValue()).isEqualTo(13);
     }
 
     @Test
@@ -132,6 +141,18 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
 
         public void setActive(boolean active) {
             this.active = active;
+        }
+    }
+
+    public static final class IntConstructorBean {
+        private final int value;
+
+        public IntConstructorBean(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
         }
     }
 

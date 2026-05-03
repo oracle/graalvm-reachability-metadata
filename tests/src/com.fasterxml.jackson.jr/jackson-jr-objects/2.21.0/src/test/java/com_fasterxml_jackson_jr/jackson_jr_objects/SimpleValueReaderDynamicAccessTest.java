@@ -9,10 +9,17 @@ package com_fasterxml_jackson_jr.jackson_jr_objects;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.JSONObjectException;
+import com.fasterxml.jackson.jr.ob.impl.SimpleValueReader;
 import org.junit.jupiter.api.Test;
 
+import static com.fasterxml.jackson.jr.ob.impl.ValueLocatorBase.SER_CLASS;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SimpleValueReaderDynamicAccessTest {
     @Test
@@ -45,6 +52,29 @@ public class SimpleValueReaderDynamicAccessTest {
 
         assertThat(classesByName.get("primary")).isEqualTo(LoadableType.class);
         assertThat(classes).singleElement().isEqualTo(LoadableType.class);
+    }
+
+    @Test
+    void readsClassNamesWithSimpleValueReader() throws Exception {
+        String className = loadableClassName();
+        SimpleValueReader reader = new SimpleValueReader(Class.class, SER_CLASS);
+        JsonFactory jsonFactory = new JsonFactory();
+
+        try (JsonParser parser = jsonFactory.createParser('"' + className + '"')) {
+            parser.nextToken();
+            Object resolved = reader.read(null, parser);
+
+            assertThat(resolved).isEqualTo(LoadableType.class);
+        }
+    }
+
+    @Test
+    void reportsUnresolvableClassNames() {
+        String className = "missing." + getClass().getSimpleName() + System.nanoTime();
+
+        assertThatThrownBy(() -> JSON.std.beanFrom(Class.class, '"' + className + '"'))
+                .isInstanceOf(JSONObjectException.class)
+                .hasMessage("Failed to bind `java.lang.Class` from value '" + className + "'");
     }
 
     private static String loadableClassName() {

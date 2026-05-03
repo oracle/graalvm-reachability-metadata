@@ -10,6 +10,9 @@ import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.CollectionBuilder;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CollectionBuilderDynamicAccessTest {
@@ -85,6 +88,42 @@ public class CollectionBuilderDynamicAccessTest {
         assertThat(values.getClass().getComponentType()).isSameAs(elementType);
     }
 
+    @Test
+    void readsPojoTypedArraysThroughJsonApiForEveryCardinality() throws Exception {
+        Class<ArrayElement> elementType = runtimeArrayElementType();
+
+        ArrayElement[] empty = JSON.std.arrayOfFrom(elementType, "[]");
+        ArrayElement[] singleton = JSON.std.arrayOfFrom(elementType, "[{\"name\":\"solo\"}]");
+        ArrayElement[] multiple = JSON.std.arrayOfFrom(elementType, "[{\"name\":\"left\"},{\"name\":\"right\"}]");
+
+        assertThat(empty).isEmpty();
+        assertThat(empty.getClass().getComponentType()).isSameAs(elementType);
+        assertThat(singleton).extracting(value -> value.name).containsExactly("solo");
+        assertThat(singleton.getClass().getComponentType()).isSameAs(elementType);
+        assertThat(multiple).extracting(value -> value.name).containsExactly("left", "right");
+        assertThat(multiple.getClass().getComponentType()).isSameAs(elementType);
+    }
+
+    @Test
+    void typedArrayReadsUseConfiguredCollectionBuilderForEveryCardinality() throws Exception {
+        RecordingCollectionBuilder builder = new RecordingCollectionBuilder();
+        JSON json = JSON.builder()
+                .collectionBuilder(builder)
+                .build();
+        Class<String> elementType = runtimeStringType();
+
+        String[] empty = json.arrayOfFrom(elementType, "[]");
+        String[] singleton = json.arrayOfFrom(elementType, "[\"solo\"]");
+        String[] multiple = json.arrayOfFrom(elementType, "[\"left\",\"right\"]");
+
+        assertThat(empty).isEmpty();
+        assertThat(singleton).containsExactly("solo");
+        assertThat(multiple).containsExactly("left", "right");
+        assertThat(builder.counts.emptyArrayCalls).isEqualTo(1);
+        assertThat(builder.counts.singletonArrayCalls).isEqualTo(1);
+        assertThat(builder.counts.buildArrayCalls).isEqualTo(1);
+    }
+
     @SuppressWarnings("unchecked")
     private static Class<ArrayElement> runtimeArrayElementType() throws Exception {
         return (Class<ArrayElement>) JSON.std.beanFrom(Class.class, '"' + ArrayElement.class.getName() + '"');
@@ -104,5 +143,72 @@ public class CollectionBuilderDynamicAccessTest {
         public ArrayElement(String name) {
             this.name = name;
         }
+    }
+
+    static final class RecordingCollectionBuilder extends CollectionBuilder {
+        private final InvocationCounts counts;
+        private Collection<Object> current;
+
+        RecordingCollectionBuilder() {
+            this(0, null, new InvocationCounts());
+        }
+
+        private RecordingCollectionBuilder(int features, Class<?> collectionType, InvocationCounts counts) {
+            super(features, collectionType);
+            this.counts = counts;
+        }
+
+        @Override
+        public CollectionBuilder newBuilder(int features) {
+            return new RecordingCollectionBuilder(features, _collectionType, counts);
+        }
+
+        @Override
+        public CollectionBuilder newBuilder(Class<?> collectionType) {
+            return new RecordingCollectionBuilder(_features, collectionType, counts);
+        }
+
+        @Override
+        public CollectionBuilder start() {
+            current = new ArrayList<>();
+            return this;
+        }
+
+        @Override
+        public CollectionBuilder add(Object value) {
+            current.add(value);
+            return this;
+        }
+
+        @Override
+        public Collection<Object> buildCollection() {
+            Collection<Object> result = current;
+            current = null;
+            return result;
+        }
+
+        @Override
+        public <T> T[] buildArray(Class<T> type) {
+            counts.buildArrayCalls++;
+            return super.buildArray(type);
+        }
+
+        @Override
+        public <T> T[] emptyArray(Class<T> type) {
+            counts.emptyArrayCalls++;
+            return super.emptyArray(type);
+        }
+
+        @Override
+        public <T> T[] singletonArray(Class<?> type, T value) {
+            counts.singletonArrayCalls++;
+            return super.singletonArray(type, value);
+        }
+    }
+
+    static final class InvocationCounts {
+        private int buildArrayCalls;
+        private int emptyArrayCalls;
+        private int singletonArrayCalls;
     }
 }
