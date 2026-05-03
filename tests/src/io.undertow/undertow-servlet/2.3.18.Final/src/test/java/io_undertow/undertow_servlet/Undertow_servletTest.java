@@ -141,7 +141,7 @@ public class Undertow_servletTest {
     @Test
     void asyncServletCompletesResponseOnContainerThread() throws Exception {
         AsyncEchoServlet.COMPLETIONS.set(0);
-        AsyncEchoServlet.COMPLETION_LATCH = new CountDownLatch(1);
+        AsyncEchoServlet.completionLatch = new CountDownLatch(1);
 
         DeploymentInfo deploymentInfo = baseDeployment("/async")
                 .addServlet(Servlets.servlet("asyncEcho", AsyncEchoServlet.class,
@@ -161,7 +161,7 @@ public class Undertow_servletTest {
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.headers().firstValue("X-Async")).contains("true");
             assertThat(response.body()).isEqualTo("async:hello async");
-            assertThat(AsyncEchoServlet.COMPLETION_LATCH.await(1, TimeUnit.SECONDS)).isTrue();
+            assertThat(AsyncEchoServlet.completionLatch.await(1, TimeUnit.SECONDS)).isTrue();
             assertThat(AsyncEchoServlet.COMPLETIONS.get()).isEqualTo(1);
         }
     }
@@ -452,7 +452,7 @@ public class Undertow_servletTest {
 
     public static class AsyncEchoServlet extends HttpServlet {
         private static final AtomicInteger COMPLETIONS = new AtomicInteger();
-        private static volatile CountDownLatch COMPLETION_LATCH = new CountDownLatch(1);
+        private static volatile CountDownLatch completionLatch = new CountDownLatch(1);
 
         @Override
         protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -478,7 +478,7 @@ public class Undertow_servletTest {
         @Override
         public void onComplete(AsyncEvent event) {
             AsyncEchoServlet.COMPLETIONS.incrementAndGet();
-            AsyncEchoServlet.COMPLETION_LATCH.countDown();
+            AsyncEchoServlet.completionLatch.countDown();
         }
 
         @Override
