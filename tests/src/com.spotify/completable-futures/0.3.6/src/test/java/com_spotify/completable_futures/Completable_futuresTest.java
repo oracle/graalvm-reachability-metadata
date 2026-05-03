@@ -304,6 +304,43 @@ public class Completable_futuresTest {
     }
 
     @Test
+    void concurrencyReducerSkipsCancelledQueuedJobsAndContinuesPump() throws Exception {
+        ConcurrencyReducer<String> reducer = ConcurrencyReducer.create(1, 3);
+        CopyOnWriteArrayList<String> started = new CopyOnWriteArrayList<>();
+        CompletableFuture<String> blocker = new CompletableFuture<>();
+        CompletableFuture<String> nextSource = new CompletableFuture<>();
+
+        CompletableFuture<String> active = reducer.add(() -> {
+            started.add("active");
+            return blocker;
+        });
+        CompletableFuture<String> cancelled = reducer.add(() -> {
+            started.add("cancelled");
+            return CompletableFuture.completedFuture("cancelled");
+        });
+        CompletableFuture<String> next = reducer.add(() -> {
+            started.add("next");
+            return nextSource;
+        });
+
+        assertEquals(Collections.singletonList("active"), started);
+        assertEquals(1, reducer.numActive());
+        assertEquals(2, reducer.numQueued());
+        assertTrue(cancelled.cancel(true));
+
+        blocker.complete("done");
+        assertEquals("done", await(active));
+        assertEquals(Arrays.asList("active", "next"), started);
+        assertTrue(cancelled.isCancelled());
+        assertEquals(1, reducer.numActive());
+        assertEquals(0, reducer.numQueued());
+
+        nextSource.complete("next");
+        assertEquals("next", await(next));
+        assertEquals(0, reducer.numActive());
+    }
+
+    @Test
     void concurrencyReducerReportsCapacityAndJobFailures() throws Exception {
         ConcurrencyReducer<String> reducer = ConcurrencyReducer.create(1, 1);
         CompletableFuture<String> blocker = new CompletableFuture<>();
