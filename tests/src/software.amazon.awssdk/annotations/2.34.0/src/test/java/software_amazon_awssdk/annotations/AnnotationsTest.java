@@ -8,6 +8,8 @@ package software_amazon_awssdk.annotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.annotations.Generated;
 import software.amazon.awssdk.annotations.Immutable;
@@ -73,6 +75,14 @@ public class AnnotationsTest {
         assertThat(model.transientMetadata()).isEqualTo("orders:checksum");
     }
 
+    @Test
+    void sdkAnnotationsCanBeComposedIntoReusableTypeStereotypes() {
+        StableEndpoint endpoint = new StableEndpoint("s3", "us-west-2");
+
+        assertThat(endpoint.host()).isEqualTo("s3.us-west-2.amazonaws.com");
+        assertThat(endpoint.cacheKey()).isEqualTo("s3#us-west-2");
+    }
+
     @SdkPublicApi
     @Immutable
     private static final class ServiceModel {
@@ -131,6 +141,32 @@ public class AnnotationsTest {
     @Generated("annotation-type-generator")
     @NotNull
     private @interface NotNullByDefault {
+    }
+
+    @SdkPublicApi
+    @Immutable
+    @ThreadSafe
+    @Target(ElementType.TYPE)
+    private @interface StableSdkType {
+    }
+
+    @StableSdkType
+    private static final class StableEndpoint {
+        private final String service;
+        private final String region;
+
+        private StableEndpoint(String service, String region) {
+            this.service = service;
+            this.region = region;
+        }
+
+        private String host() {
+            return service + '.' + region + ".amazonaws.com";
+        }
+
+        private String cacheKey() {
+            return service + '#' + region;
+        }
     }
 
     @Mutable
