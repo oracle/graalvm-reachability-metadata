@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.jboss.util.Base64;
 import org.jboss.util.Counter;
@@ -56,6 +58,7 @@ import org.jboss.util.propertyeditor.URIEditor;
 import org.jboss.util.propertyeditor.URLEditor;
 import org.jboss.util.state.IllegalTransitionException;
 import org.jboss.util.state.State;
+import org.jboss.util.state.StateMachine;
 import org.jboss.util.state.Transition;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -260,6 +263,32 @@ public class Jboss_common_coreTest {
                 throw new IllegalTransitionException("No transition for action: 'missing'");
             }
         });
+    }
+
+    @Test
+    void stateMachineAdvancesCurrentStateClonesProgressAndResetsToStart() throws Exception {
+        State draft = new State("draft");
+        State review = new State("review");
+        State published = new State("published");
+        draft.addTransition(new Transition("submit", review));
+        review.addTransition(new Transition("approve", published));
+        Set<State> states = new HashSet<>(Arrays.asList(draft, review, published));
+        StateMachine workflow = new StateMachine(states, draft, "publishing workflow");
+
+        assertThat(workflow.getDescription()).isEqualTo("publishing workflow");
+        assertThat(workflow.getStartState()).isSameAs(draft);
+        assertThat(workflow.getCurrentState()).isSameAs(draft);
+        assertThat(workflow.getStates()).containsExactlyInAnyOrder(draft, review, published);
+
+        assertThat(workflow.nextState("submit")).isSameAs(review);
+        StateMachine snapshot = (StateMachine) workflow.clone();
+        assertThat(snapshot).isNotSameAs(workflow);
+        assertThat(snapshot.getCurrentState()).isSameAs(review);
+
+        assertThat(workflow.nextState("approve")).isSameAs(published);
+        assertThat(snapshot.getCurrentState()).isSameAs(review);
+        assertThat(workflow.reset()).isSameAs(draft);
+        assertThat(workflow.toString()).contains("CurrentState:draft", "review", "published");
     }
 
     @Test
