@@ -6,9 +6,7 @@
  */
 package org_apache_maven_resolver.maven_resolver_connector_basic;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,11 +16,9 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -54,14 +50,13 @@ import org.eclipse.aether.spi.connector.transport.PutTask;
 import org.eclipse.aether.spi.connector.transport.TransportListener;
 import org.eclipse.aether.spi.connector.transport.Transporter;
 import org.eclipse.aether.spi.connector.transport.TransporterProvider;
-import org.eclipse.aether.spi.io.FileProcessor;
+import org.eclipse.aether.spi.io.ChecksumProcessor;
 import org.eclipse.aether.transfer.ArtifactNotFoundException;
 import org.eclipse.aether.transfer.NoRepositoryConnectorException;
 import org.eclipse.aether.transfer.NoRepositoryLayoutException;
 import org.eclipse.aether.transfer.NoTransporterException;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferListener;
-import org.eclipse.aether.transform.FileTransformer;
 import org.eclipse.aether.transfer.TransferResource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -171,39 +166,23 @@ public class Maven_resolver_connector_basicTest {
     }
 
     @Test
-    void uploadsTransformedArtifactDataWhenFileTransformerIsConfigured() throws Exception {
+    void uploadsArtifactDataFromPathUpload() throws Exception {
         InMemoryTransporter transporter = new InMemoryTransporter();
         Artifact artifact = artifact();
-        Path artifactSource = tempDirectory.resolve("transformable-artifact.jar");
-        Files.writeString(artifactSource, "original-artifact");
-        AtomicBoolean transformed = new AtomicBoolean();
-        FileTransformer transformer = new FileTransformer() {
-            @Override
-            public Artifact transformArtifact(Artifact artifact) {
-                return artifact;
-            }
-
-            @Override
-            public InputStream transformData(File file) throws IOException {
-                transformed.set(true);
-                String originalContent = Files.readString(file.toPath());
-                String transformedContent = "transformed:" + originalContent.toUpperCase(Locale.ROOT);
-                return new ByteArrayInputStream(transformedContent.getBytes(StandardCharsets.UTF_8));
-            }
-        };
+        Path artifactSource = tempDirectory.resolve("path-artifact.jar");
+        Files.writeString(artifactSource, "path-artifact-content");
 
         RepositoryConnector connector = newConnector(transporter, Collections.emptyMap());
         try {
-            ArtifactUpload artifactUpload = new ArtifactUpload(artifact, artifactSource.toFile(), transformer);
+            ArtifactUpload artifactUpload = new ArtifactUpload(artifact, artifactSource);
 
             connector.put(List.of(artifactUpload), null);
 
             assertThat(artifactUpload.getException()).isNull();
-            assertThat(transformed).isTrue();
             assertThat(transporter.putLocations()).containsExactly(SimpleRepositoryLayout.locationFor(artifact));
             assertThat(transporter.content(SimpleRepositoryLayout.locationFor(artifact)))
-                    .isEqualTo("transformed:ORIGINAL-ARTIFACT");
-            assertThat(Files.readString(artifactSource)).isEqualTo("original-artifact");
+                    .isEqualTo("path-artifact-content");
+            assertThat(Files.readString(artifactSource)).isEqualTo("path-artifact-content");
         } finally {
             connector.close();
         }
@@ -294,11 +273,36 @@ public class Maven_resolver_connector_basicTest {
 
         assertThat(factory.setPriority(3.5f)).isSameAs(factory);
         assertThat(factory.getPriority()).isEqualTo(3.5f);
-        assertThatNullPointerException().isThrownBy(() -> factory.setTransporterProvider(null));
-        assertThatNullPointerException().isThrownBy(() -> factory.setRepositoryLayoutProvider(null));
-        assertThatNullPointerException().isThrownBy(() -> factory.setChecksumPolicyProvider(null));
-        assertThatNullPointerException().isThrownBy(() -> factory.setFileProcessor(null));
-        assertThatNullPointerException().isThrownBy(() -> factory.setProvidedChecksumSources(null));
+        assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
+                null,
+                (session, remoteRepository) -> new SimpleRepositoryLayout(),
+                new NoChecksumPolicyProvider(),
+                new NioChecksumProcessor(),
+                Collections.emptyMap()));
+        assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
+                (session, remoteRepository) -> new InMemoryTransporter(),
+                null,
+                new NoChecksumPolicyProvider(),
+                new NioChecksumProcessor(),
+                Collections.emptyMap()));
+        assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
+                (session, remoteRepository) -> new InMemoryTransporter(),
+                (session, remoteRepository) -> new SimpleRepositoryLayout(),
+                null,
+                new NioChecksumProcessor(),
+                Collections.emptyMap()));
+        assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
+                (session, remoteRepository) -> new InMemoryTransporter(),
+                (session, remoteRepository) -> new SimpleRepositoryLayout(),
+                new NoChecksumPolicyProvider(),
+                null,
+                Collections.emptyMap()));
+        assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
+                (session, remoteRepository) -> new InMemoryTransporter(),
+                (session, remoteRepository) -> new SimpleRepositoryLayout(),
+                new NoChecksumPolicyProvider(),
+                new NioChecksumProcessor(),
+                null));
 
         RepositoryLayoutProvider failingLayoutProvider = (session, remoteRepository) -> {
             throw new NoRepositoryLayoutException(remoteRepository, "unsupported layout");
@@ -341,17 +345,18 @@ public class Maven_resolver_connector_basicTest {
             TransporterProvider transporterProvider,
             RepositoryLayoutProvider layoutProvider,
             Map<String, ProvidedChecksumsSource> checksumSources) {
-        return new BasicRepositoryConnectorFactory()
-                .setTransporterProvider(transporterProvider)
-                .setRepositoryLayoutProvider(layoutProvider)
-                .setChecksumPolicyProvider(new NoChecksumPolicyProvider())
-                .setFileProcessor(new NioFileProcessor())
-                .setProvidedChecksumSources(checksumSources);
+        return new BasicRepositoryConnectorFactory(
+                transporterProvider,
+                layoutProvider,
+                new NoChecksumPolicyProvider(),
+                new NioChecksumProcessor(),
+                checksumSources);
     }
 
     private static RepositorySystemSession session() {
         return new DefaultRepositorySystemSession()
-                .setConfigProperty("aether.connector.basic.threads", Integer.valueOf(1))
+                .setConfigProperty("aether.connector.basic.downstreamThreads", Integer.valueOf(1))
+                .setConfigProperty("aether.connector.basic.upstreamThreads", Integer.valueOf(1))
                 .setConfigProperty("aether.connector.basic.parallelPut", Boolean.FALSE);
     }
 
@@ -584,74 +589,19 @@ public class Maven_resolver_connector_basicTest {
         }
     }
 
-    private static final class NioFileProcessor implements FileProcessor {
+    private static final class NioChecksumProcessor implements ChecksumProcessor {
         @Override
-        public boolean mkdirs(File directory) {
-            try {
-                Files.createDirectories(directory.toPath());
-                return true;
-            } catch (IOException e) {
-                return false;
-            }
+        public String readChecksum(Path checksumFile) throws IOException {
+            return Files.readString(checksumFile).trim();
         }
 
         @Override
-        public void write(File target, String data) throws IOException {
-            createParentDirectories(target);
-            Files.writeString(target.toPath(), data);
-        }
-
-        @Override
-        public void write(File target, InputStream data) throws IOException {
-            createParentDirectories(target);
-            Files.copy(data, target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        @Override
-        public void move(File source, File target) throws IOException {
-            createParentDirectories(target);
-            Files.move(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        @Override
-        public void copy(File source, File target) throws IOException {
-            createParentDirectories(target);
-            Files.copy(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        @Override
-        public long copy(File source, File target, ProgressListener listener) throws IOException {
-            createParentDirectories(target);
-            long bytes = Files.size(source.toPath());
-            try (InputStream input = Files.newInputStream(source.toPath());
-                    OutputStream output = Files.newOutputStream(target.toPath())) {
-                byte[] buffer = new byte[8192];
-                int read;
-                while ((read = input.read(buffer)) >= 0) {
-                    output.write(buffer, 0, read);
-                    if (listener != null && read > 0) {
-                        listener.progressed(ByteBuffer.wrap(buffer, 0, read));
-                    }
-                }
-            }
-            return bytes;
-        }
-
-        @Override
-        public String readChecksum(File checksumFile) throws IOException {
-            return Files.readString(checksumFile.toPath()).trim();
-        }
-
-        @Override
-        public void writeChecksum(File checksumFile, String checksum) throws IOException {
-            write(checksumFile, checksum);
-        }
-
-        private static void createParentDirectories(File file) throws IOException {
-            Path parent = file.toPath().getParent();
+        public void writeChecksum(Path checksumFile, String checksum) throws IOException {
+            Path parent = checksumFile.getParent();
             if (parent != null) {
                 Files.createDirectories(parent);
             }
+            Files.writeString(checksumFile, checksum);
         }
     }
 
