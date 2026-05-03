@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Swagger_annotationsTest {
     @Test
     void swaggerDefinitionCarriesNestedDocumentationAndSecurityMetadata() {
-        SwaggerDefinition definition = AnnotatedPetApi.class.getAnnotation(SwaggerDefinition.class);
+        SwaggerDefinition definition = AnnotatedPetApi.class.getAnnotationsByType(SwaggerDefinition.class)[0];
 
         assertThat(definition.host()).isEqualTo("api.example.test");
         assertThat(definition.basePath()).isEqualTo("/v1");
@@ -102,7 +102,7 @@ public class Swagger_annotationsTest {
 
     @Test
     void resourceAndOperationAnnotationsRetainCollectionsExamplesExtensions() throws NoSuchMethodException {
-        Api api = PetResource.class.getAnnotation(Api.class);
+        Api api = PetResource.class.getAnnotationsByType(Api.class)[0];
         assertThat(api.value()).isEqualTo("/pets");
         assertThat(api.tags()).containsExactly("pets", "search");
         assertThat(api.produces()).isEqualTo("application/json");
@@ -113,7 +113,7 @@ public class Swagger_annotationsTest {
         assertThat(api.authorizations()[0].scopes()[0].scope()).isEqualTo("pets:read");
 
         Method findPets = PetResource.class.getDeclaredMethod("findPets", String.class, int.class);
-        ApiOperation operation = findPets.getAnnotation(ApiOperation.class);
+        ApiOperation operation = findPets.getAnnotationsByType(ApiOperation.class)[0];
         assertThat(operation.value()).isEqualTo("Find pets");
         assertThat(operation.notes()).isEqualTo("Returns a bounded collection of pets matching the requested type");
         assertThat(operation.tags()).containsExactly("pets");
@@ -134,7 +134,7 @@ public class Swagger_annotationsTest {
         assertThat(operation.responseHeaders()[0].responseContainer()).isEqualTo("List");
         assertThat(operation.extensions()[0].properties()[0].value()).isEqualTo("true");
 
-        ApiResponses responses = findPets.getAnnotation(ApiResponses.class);
+        ApiResponses responses = findPets.getAnnotationsByType(ApiResponses.class)[0];
         assertThat(responses.value()).hasSize(2);
         assertThat(responses.value()[0].code()).isEqualTo(200);
         assertThat(responses.value()[0].message()).isEqualTo("Pets were returned");
@@ -146,7 +146,7 @@ public class Swagger_annotationsTest {
         assertThat(responses.value()[1].code()).isEqualTo(404);
         assertThat(responses.value()[1].reference()).isEqualTo("#/responses/NotFound");
 
-        ApiImplicitParams implicitParams = findPets.getAnnotation(ApiImplicitParams.class);
+        ApiImplicitParams implicitParams = findPets.getAnnotationsByType(ApiImplicitParams.class)[0];
         assertThat(implicitParams.value()).hasSize(2);
         ApiImplicitParam filter = implicitParams.value()[0];
         assertThat(filter.name()).isEqualTo("type");
@@ -170,7 +170,7 @@ public class Swagger_annotationsTest {
 
     @Test
     void modelPropertyAndParameterAnnotationsRetainSchemaDetails() throws NoSuchFieldException, NoSuchMethodException {
-        ApiModel model = Pet.class.getAnnotation(ApiModel.class);
+        ApiModel model = Pet.class.getAnnotationsByType(ApiModel.class)[0];
         assertThat(model.value()).isEqualTo("Pet");
         assertThat(model.description()).isEqualTo("A pet visible through the API");
         assertThat(model.parent()).isEqualTo(BasePet.class);
@@ -179,7 +179,7 @@ public class Swagger_annotationsTest {
         assertThat(model.reference()).isEqualTo("#/definitions/Pet");
 
         Field nameField = Pet.class.getDeclaredField("name");
-        ApiModelProperty name = nameField.getAnnotation(ApiModelProperty.class);
+        ApiModelProperty name = nameField.getAnnotationsByType(ApiModelProperty.class)[0];
         assertThat(name.value()).isEqualTo("Display name");
         assertThat(name.name()).isEqualTo("name");
         assertThat(name.allowableValues()).isEqualTo("Fido,Garfield");
@@ -196,13 +196,13 @@ public class Swagger_annotationsTest {
         assertThat(name.extensions()[0].properties()[0].name()).isEqualTo("sortable");
 
         Method getIdentifier = Pet.class.getDeclaredMethod("getIdentifier");
-        ApiModelProperty identifier = getIdentifier.getAnnotation(ApiModelProperty.class);
+        ApiModelProperty identifier = getIdentifier.getAnnotationsByType(ApiModelProperty.class)[0];
         assertThat(identifier.name()).isEqualTo("id");
         assertThat(identifier.accessMode()).isEqualTo(ApiModelProperty.AccessMode.READ_ONLY);
         assertThat(identifier.hidden()).isFalse();
 
         Field sortField = PetResource.class.getDeclaredField("defaultSort");
-        ApiParam sort = sortField.getAnnotation(ApiParam.class);
+        ApiParam sort = sortField.getAnnotationsByType(ApiParam.class)[0];
         assertThat(sort.name()).isEqualTo("sort");
         assertThat(sort.value()).isEqualTo("Default sort order");
         assertThat(sort.defaultValue()).isEqualTo("name");
@@ -224,7 +224,7 @@ public class Swagger_annotationsTest {
     void methodParameterAnnotationsRetainRequestParameterMetadata() throws NoSuchMethodException {
         Method findPets = PetResource.class.getDeclaredMethod("findPets", String.class, int.class);
 
-        ApiParam limit = findPets.getParameters()[1].getAnnotation(ApiParam.class);
+        ApiParam limit = findPets.getParameters()[1].getAnnotationsByType(ApiParam.class)[0];
 
         assertThat(limit).isNotNull();
         assertThat(limit.name()).isEqualTo("limit");
@@ -239,22 +239,22 @@ public class Swagger_annotationsTest {
     @Test
     void visibilityAndParameterOptionAnnotationsRetainDocumentationControls()
             throws NoSuchFieldException, NoSuchMethodException {
-        Api api = AdministrativeResource.class.getAnnotation(Api.class);
+        Api api = AdministrativeResource.class.getAnnotationsByType(Api.class)[0];
         assertThat(api.value()).isEqualTo("/admin");
         assertThat(api.hidden()).isTrue();
 
         Method purgeCache = AdministrativeResource.class.getDeclaredMethod("purgeCache", List.class);
-        ApiOperation operation = purgeCache.getAnnotation(ApiOperation.class);
+        ApiOperation operation = purgeCache.getAnnotationsByType(ApiOperation.class)[0];
         assertThat(operation.value()).isEqualTo("Purge cache");
         assertThat(operation.hidden()).isTrue();
 
-        ApiImplicitParam implicitParam = purgeCache.getAnnotation(ApiImplicitParam.class);
+        ApiImplicitParam implicitParam = purgeCache.getAnnotationsByType(ApiImplicitParam.class)[0];
         assertThat(implicitParam.name()).isEqualTo("cacheName");
         assertThat(implicitParam.allowMultiple()).isTrue();
         assertThat(implicitParam.allowEmptyValue()).isTrue();
         assertThat(implicitParam.readOnly()).isTrue();
 
-        ApiParam parameter = purgeCache.getParameters()[0].getAnnotation(ApiParam.class);
+        ApiParam parameter = purgeCache.getParameters()[0].getAnnotationsByType(ApiParam.class)[0];
         assertThat(parameter.name()).isEqualTo("cacheNames");
         assertThat(parameter.allowMultiple()).isTrue();
         assertThat(parameter.hidden()).isTrue();
@@ -262,7 +262,7 @@ public class Swagger_annotationsTest {
         assertThat(parameter.readOnly()).isTrue();
 
         Field auditNoteField = AdministrativeRequest.class.getDeclaredField("auditNote");
-        ApiModelProperty auditNote = auditNoteField.getAnnotation(ApiModelProperty.class);
+        ApiModelProperty auditNote = auditNoteField.getAnnotationsByType(ApiModelProperty.class)[0];
         assertThat(auditNote.value()).isEqualTo("Internal audit note");
         assertThat(auditNote.hidden()).isTrue();
         assertThat(auditNote.allowEmptyValue()).isTrue();
