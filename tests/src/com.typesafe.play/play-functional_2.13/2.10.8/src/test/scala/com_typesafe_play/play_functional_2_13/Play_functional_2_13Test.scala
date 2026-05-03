@@ -97,6 +97,19 @@ class Play_functional_2_13Test {
   }
 
   @Test
+  def monoidSyntaxComposesEndomorphismsInAppendOrder(): Unit = {
+    val addPrefix: String => String = (value: String) => s"user:$value"
+    val emphasize: String => String = (value: String) => value.toUpperCase
+    val wrap: String => String = (value: String) => s"[$value]"
+
+    val combined: String => String = addPrefix |+| emphasize |+| wrap
+    val unchanged: String => String = Monoid.endomorphismMonoid[String].identity
+
+    assertThat(combined("ada")).isEqualTo("[USER:ADA]")
+    assertThat(unchanged("grace")).isEqualTo("grace")
+  }
+
+  @Test
   def alternativeSyntaxChoosesFallbackOrEmptyValueUsingCustomAlternative(): Unit = {
     implicit val optionAlternative: Alternative[Option] = new Alternative[Option] {
       override def app: Applicative[Option] = Applicative.applicativeOption
