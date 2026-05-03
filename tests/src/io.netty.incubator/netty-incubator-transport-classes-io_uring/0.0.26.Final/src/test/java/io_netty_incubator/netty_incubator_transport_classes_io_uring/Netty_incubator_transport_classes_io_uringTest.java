@@ -30,6 +30,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.InternetProtocolFamily;
 import io.netty.incubator.channel.uring.IOUring;
 import io.netty.incubator.channel.uring.IOUringChannelOption;
@@ -367,6 +368,81 @@ public class Netty_incubator_transport_classes_io_uringTest {
             shutdownGroup(clientGroup);
             shutdownGroup(workerGroup);
             shutdownGroup(bossGroup);
+        }
+    }
+
+    @Test
+    void datagramChannelsExchangePacketsThroughBootstrapWhenAvailable() throws InterruptedException {
+        if (!IOUring.isAvailable()) {
+            assertThat(IOUring.unavailabilityCause()).isNotNull();
+            return;
+        }
+
+        EventLoopGroup receiverGroup = new IOUringEventLoopGroup(1);
+        EventLoopGroup senderGroup = new IOUringEventLoopGroup(1);
+        Channel receiverChannel = null;
+        Channel senderChannel = null;
+        CountDownLatch packetReceived = new CountDownLatch(1);
+        AtomicReference<String> receivedPayload = new AtomicReference<>();
+        AtomicReference<InetSocketAddress> packetSender = new AtomicReference<>();
+        AtomicReference<Throwable> receiverError = new AtomicReference<>();
+        AtomicReference<Throwable> senderError = new AtomicReference<>();
+
+        try {
+            Bootstrap receiverBootstrap = new Bootstrap()
+                    .group(receiverGroup)
+                    .channelFactory((ChannelFactory<IOUringDatagramChannel>) IOUringDatagramChannel::new)
+                    .handler(new SimpleChannelInboundHandler<DatagramPacket>() {
+                        @Override
+                        protected void channelRead0(ChannelHandlerContext context, DatagramPacket packet) {
+                            receivedPayload.set(packet.content().toString(StandardCharsets.UTF_8));
+                            packetSender.set(packet.sender());
+                            packetReceived.countDown();
+                        }
+
+                        @Override
+                        public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+                            receiverError.set(cause);
+                            packetReceived.countDown();
+                            context.close();
+                        }
+                    });
+            ChannelFuture receiverBindFuture = receiverBootstrap.bind(new InetSocketAddress("127.0.0.1", 0));
+            assertFutureCompletesSuccessfully(receiverBindFuture);
+            receiverChannel = receiverBindFuture.channel();
+
+            Bootstrap senderBootstrap = new Bootstrap()
+                    .group(senderGroup)
+                    .channelFactory((ChannelFactory<IOUringDatagramChannel>) IOUringDatagramChannel::new)
+                    .handler(new ChannelInboundHandlerAdapter() {
+                        @Override
+                        public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+                            senderError.set(cause);
+                            context.close();
+                        }
+                    });
+            ChannelFuture senderBindFuture = senderBootstrap.bind(new InetSocketAddress("127.0.0.1", 0));
+            assertFutureCompletesSuccessfully(senderBindFuture);
+            senderChannel = senderBindFuture.channel();
+
+            String payloadText = "io_uring datagram payload";
+            ChannelFuture writeFuture = senderChannel.writeAndFlush(new DatagramPacket(
+                    Unpooled.copiedBuffer(payloadText, StandardCharsets.UTF_8),
+                    (InetSocketAddress) receiverChannel.localAddress()));
+            assertFutureCompletesSuccessfully(writeFuture);
+
+            assertThat(packetReceived.await(FUTURE_TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(receiverError.get()).isNull();
+            assertThat(senderError.get()).isNull();
+            assertThat(receivedPayload.get()).isEqualTo(payloadText);
+            assertThat(packetSender.get()).isNotNull();
+            assertThat(packetSender.get().getPort())
+                    .isEqualTo(((InetSocketAddress) senderChannel.localAddress()).getPort());
+        } finally {
+            closeChannel(senderChannel);
+            closeChannel(receiverChannel);
+            shutdownGroup(senderGroup);
+            shutdownGroup(receiverGroup);
         }
     }
 
