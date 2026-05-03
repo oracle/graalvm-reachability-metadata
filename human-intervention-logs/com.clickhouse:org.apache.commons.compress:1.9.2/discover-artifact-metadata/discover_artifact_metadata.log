@@ -1,0 +1,3022 @@
+Starting a Gradle Daemon, 10 busy and 5 incompatible and 202 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded01-933f-7061-9cb0-e410403fa3f1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.clickhouse:org.apache.commons.compress:1.9.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.9.2" when "$version$" is replaced with "1.9.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+- Set "coordinates" to "com.clickhouse:org.apache.commons.compress:1.9.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.9.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the published Maven metadata first, because this artifact name looks like a republished/forked Commons Compress artifact under the ClickHouse group. Then I’ll update only the requested JSON file.
+web search: 
+web search: Maven com.clickhouse org.apache.commons.compress 1.9.2 sources javadoc pom
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+{
+  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+-rw-rw-r-- 1 vjovanov vjovanov 73 May  3 10:43 build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.clickhouse</groupId>
+  <artifactId>org.apache.commons.compress</artifactId>
+  <version>1.9.2</version>
+  <name>org.apache.commons.compress</name>
+  <description>Repackaged Apache commons-compress as an alias</description>
+  <url>https://github.com/ClickHouse/clickhouse-java/tree/main/third-party-libraries/org.apache.commons.compress</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>zhicwu</id>
+      <name>Zhichun Wu</name>
+      <email>zhicwu@gmail.com</email>
+      <timezone>+8</timezone>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git@github.com:ClickHouse/clickhouse-java.git/org.apache.commons.compress</connection>
+    <developerConnection>scm:git@github.com:ClickHouse/clickhouse-java.git/org.apache.commons.compress</developerConnection>
+    <url>https://github.com/ClickHouse/clickhouse-java/org.apache.commons.compress</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/1.9.2/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/clickhouse/org.apache.commons.compress/1.9.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/clickhouse/org.apache.commons.compress/1.9.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="org.apache.commons.compress-1.9.2-javadoc.jar" title="org.apache.commons.compress-1.9.2-javadoc.jar">org.apache.commons.compress-1.9.2-javadoc.jar</a>     2023-08-03 13:45    352013      
+<a href="org.apache.commons.compress-1.9.2-javadoc.jar.asc" title="org.apache.commons.compress-1.9.2-javadoc.jar.asc">org.apache.commons.compress-1.9.2-javadoc.jar...</a>  2023-08-03 13:45       488      
+<a href="org.apache.commons.compress-1.9.2-javadoc.jar.md5" title="org.apache.commons.compress-1.9.2-javadoc.jar.md5">org.apache.commons.compress-1.9.2-javadoc.jar...</a>  2023-08-03 13:45        32      
+<a href="org.apache.commons.compress-1.9.2-javadoc.jar.sha1" title="org.apache.commons.compress-1.9.2-javadoc.jar.sha1">org.apache.commons.compress-1.9.2-javadoc.jar...</a>  2023-08-03 13:45        40      
+<a href="org.apache.commons.compress-1.9.2-sources.jar" title="org.apache.commons.compress-1.9.2-sources.jar">org.apache.commons.compress-1.9.2-sources.jar</a>     2023-08-03 13:45      5754      
+<a href="org.apache.commons.compress-1.9.2-sources.jar.asc" title="org.apache.commons.compress-1.9.2-sources.jar.asc">org.apache.commons.compress-1.9.2-sources.jar...</a>  2023-08-03 13:45       488      
+<a href="org.apache.commons.compress-1.9.2-sources.jar.md5" title="org.apache.commons.compress-1.9.2-sources.jar.md5">org.apache.commons.compress-1.9.2-sources.jar...</a>  2023-08-03 13:45        32      
+<a href="org.apache.commons.compress-1.9.2-sources.jar.sha1" title="org.apache.commons.compress-1.9.2-sources.jar.sha1">org.apache.commons.compress-1.9.2-sources.jar...</a>  2023-08-03 13:45        40      
+<a href="org.apache.commons.compress-1.9.2.jar" title="org.apache.commons.compress-1.9.2.jar">org.apache.commons.compress-1.9.2.jar</a>             2023-08-03 13:45   1079141      
+<a href="org.apache.commons.compress-1.9.2.jar.asc" title="org.apache.commons.compress-1.9.2.jar.asc">org.apache.commons.compress-1.9.2.jar.asc</a>         2023-08-03 13:45       488      
+<a href="org.apache.commons.compress-1.9.2.jar.md5" title="org.apache.commons.compress-1.9.2.jar.md5">org.apache.commons.compress-1.9.2.jar.md5</a>         2023-08-03 13:45        32      
+<a href="org.apache.commons.compress-1.9.2.jar.sha1" title="org.apache.commons.compress-1.9.2.jar.sha1">org.apache.commons.compress-1.9.2.jar.sha1</a>        2023-08-03 13:45        40      
+<a href="org.apache.commons.compress-1.9.2.pom" title="org.apache.commons.compress-1.9.2.pom">org.apache.commons.compress-1.9.2.pom</a>             2023-08-03 13:45      1391      
+<a href="org.apache.commons.compress-1.9.2.pom.asc" title="org.apache.commons.compress-1.9.2.pom.asc">org.apache.commons.compress-1.9.2.pom.asc</a>         2023-08-03 13:45       488      
+<a href="org.apache.commons.compress-1.9.2.pom.md5" title="org.apache.commons.compress-1.9.2.pom.md5">org.apache.commons.compress-1.9.2.pom.md5</a>         2023-08-03 13:45        32      
+<a href="org.apache.commons.compress-1.9.2.pom.sha1" title="org.apache.commons.compress-1.9.2.pom.sha1">org.apache.commons.compress-1.9.2.pom.sha1</a>        2023-08-03 13:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: Maven com.clickhouse org.apache.commons.compress 1.9.2 POM ClickHouse Java
+codex
+Maven Central confirms the artifact publishes binary, sources, and javadocs for `1.9.2`, but no test-source or test jar in that version directory. I’m checking the ClickHouse repository tags next so the test URL is not guessed from `main`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2-sources.jar -o /tmp/org.apache.commons.compress-1.9.2-sources.jar && jar tf /tmp/org.apache.commons.compress-1.9.2-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2.jar -o /tmp/org.apache.commons.compress-1.9.2.jar && jar tf /tmp/org.apache.commons.compress-1.9.2.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags?per_page=100'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 120ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/apache/
+org/apache/commons/
+org/apache/commons/compress/
+org/apache/commons/compress/compressors/
+org/apache/commons/compress/compressors/lz4/
+org/apache/commons/compress/compressors/bzip2/
+org/apache/commons/compress/compressors/snappy/
+org/apache/commons/compress/compressors/gzip/
+org/apache/commons/compress/compressors/deflate/
+META-INF/maven/
+META-INF/maven/com.clickhouse/
+META-INF/maven/com.clickhouse/org.apache.commons.compress/
+module-info.java
+org/apache/commons/compress/compressors/lz4/DummyClass.java
+org/apache/commons/compress/compressors/bzip2/DummyClass.java
+org/apache/commons/compress/compressors/DummyClass.java
+org/apache/commons/compress/compressors/snappy/DummyClass.java
+org/apache/commons/compress/compressors/gzip/DummyClass.java
+org/apache/commons/compress/compressors/deflate/DummyClass.java
+org/apache/commons/compress/DummyClass.java
+META-INF/maven/com.clickhouse/org.apache.commons.compress/pom.xml
+META-INF/maven/com.clickhouse/org.apache.commons.compress/pom.properties
+
+ succeeded in 274ms:
+[
+  {
+    "ref": "refs/tags/0.2.2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzLzAuMi4y",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/0.2.2",
+    "object": {
+      "sha": "25f22dd1186f201e448382f1200431f3f52093f3",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/25f22dd1186f201e448382f1200431f3f52093f3"
+    }
+  },
+  {
+    "ref": "refs/tags/pre-commit",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3ByZS1jb21taXQ=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/pre-commit",
+    "object": {
+      "sha": "94ade8559d8f036c03cbf4f1b76813dba2e8ca0b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/tags/94ade8559d8f036c03cbf4f1b76813dba2e8ca0b"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.13",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjEz",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.13",
+    "object": {
+      "sha": "a57169195747e6ce029c1d5ab9243a569cbdb090",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a57169195747e6ce029c1d5ab9243a569cbdb090"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.14",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjE0",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.14",
+    "object": {
+      "sha": "160d166092d39c365f527eb35935d14c632b6e77",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/160d166092d39c365f527eb35935d14c632b6e77"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.15",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjE1",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.15",
+    "object": {
+      "sha": "f562bc81b6609a9b3838489bff4db064deffeaff",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/f562bc81b6609a9b3838489bff4db064deffeaff"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.16",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjE2",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.16",
+    "object": {
+      "sha": "07afe06471e13fd2481f7e359bb2daa07d2e4edf",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/07afe06471e13fd2481f7e359bb2daa07d2e4edf"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.17",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjE3",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.17",
+    "object": {
+      "sha": "fbfa1d69ef019011836d679bbab7c3b2a08eb250",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/fbfa1d69ef019011836d679bbab7c3b2a08eb250"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.18",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjE4",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.18",
+    "object": {
+      "sha": "c9322beda229e37ca4010eb64e57d31a850eebd8",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/c9322beda229e37ca4010eb64e57d31a850eebd8"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.19",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjE5",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.19",
+    "object": {
+      "sha": "5a1b31c2b95b6243659fde09c473738f592891ac",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5a1b31c2b95b6243659fde09c473738f592891ac"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.20",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjIw",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.20",
+    "object": {
+      "sha": "1b8bcb77c3d88168a083377bde78d8144ef6658d",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1b8bcb77c3d88168a083377bde78d8144ef6658d"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.21",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjIx",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.21",
+    "object": {
+      "sha": "64b9f20e253cdf5dbaf0a1bc1fe0c6e871fb879c",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/64b9f20e253cdf5dbaf0a1bc1fe0c6e871fb879c"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.22",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjIy",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.22",
+    "object": {
+      "sha": "0b5a6130e3455fce6b36220a4eb35b8f42811abb",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/0b5a6130e3455fce6b36220a4eb35b8f42811abb"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.23",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjIz",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.23",
+    "object": {
+      "sha": "09fdd96f9b63980ab73e00195600bce4f37f4159",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/09fdd96f9b63980ab73e00195600bce4f37f4159"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.24",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjI0",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.24",
+    "object": {
+      "sha": "fe1eeb5f53909902ffe43a0a389548d36473acfe",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/fe1eeb5f53909902ffe43a0a389548d36473acfe"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.25",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjI1",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.25",
+    "object": {
+      "sha": "2e528b14b96fb064f3d6bbe8f79ea30e3b794fa7",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/2e528b14b96fb064f3d6bbe8f79ea30e3b794fa7"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.26",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjI2",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.26",
+    "object": {
+      "sha": "a54348c4ee22d58a44e789a77d69e39007cf7914",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a54348c4ee22d58a44e789a77d69e39007cf7914"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.27",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjI3",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.27",
+    "object": {
+      "sha": "7d7d1b91c611d9102238e5912215486997da171c",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/7d7d1b91c611d9102238e5912215486997da171c"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.28",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjI4",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.28",
+    "object": {
+      "sha": "5c7b998386df93685778afb111f38a0f1b492d9f",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5c7b998386df93685778afb111f38a0f1b492d9f"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.29",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjI5",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.29",
+    "object": {
+      "sha": "5f5cc1c92735d812df4447e861475083ff1fbd2f",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5f5cc1c92735d812df4447e861475083ff1fbd2f"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.30",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjMw",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.30",
+    "object": {
+      "sha": "2c2db09576fe48af88da32b53758488434c606be",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/2c2db09576fe48af88da32b53758488434c606be"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.31",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjMx",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.31",
+    "object": {
+      "sha": "5e1532f9a5faf946c26ededa61042d7687ec95be",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5e1532f9a5faf946c26ededa61042d7687ec95be"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.32",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjMy",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.32",
+    "object": {
+      "sha": "a415bf2fb75f2d4c05c8cd9a384525803e1453be",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a415bf2fb75f2d4c05c8cd9a384525803e1453be"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.33",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjMz",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.33",
+    "object": {
+      "sha": "779bc4dd0af8b80f0f339e8c7973c803a914de57",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/779bc4dd0af8b80f0f339e8c7973c803a914de57"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.34",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjM0",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.34",
+    "object": {
+      "sha": "b36523d932db5864194bb0608078fa2beac6ad69",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/b36523d932db5864194bb0608078fa2beac6ad69"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.36",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjM2",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.36",
+    "object": {
+      "sha": "cd4f9ce25360a645222a2ce8a2fba78256888e6c",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/cd4f9ce25360a645222a2ce8a2fba78256888e6c"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.37",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjM3",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.37",
+    "object": {
+      "sha": "41afdd5d1625cca7334d7e2c1e85920759e6a73a",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/41afdd5d1625cca7334d7e2c1e85920759e6a73a"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.38",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjM4",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.38",
+    "object": {
+      "sha": "3ceb77c29f4978891ad71f46b8fc403dec9385eb",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3ceb77c29f4978891ad71f46b8fc403dec9385eb"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.39",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjM5",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.39",
+    "object": {
+      "sha": "585b3fdde070073287ab246d04b0b985055b0e18",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/585b3fdde070073287ab246d04b0b985055b0e18"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.40",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQw",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.40",
+    "object": {
+      "sha": "043abd5c2b1c6829fbe401688b961151e60b469b",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/043abd5c2b1c6829fbe401688b961151e60b469b"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.41",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQx",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.41",
+    "object": {
+      "sha": "9b94fd48483153a034722d98f6bf803009f8f5c5",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/9b94fd48483153a034722d98f6bf803009f8f5c5"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.42",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQy",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.42",
+    "object": {
+      "sha": "af2a24a130dcf5ce8b3ba8f2a37632629e4c6f80",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/af2a24a130dcf5ce8b3ba8f2a37632629e4c6f80"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.43",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQz",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.43",
+    "object": {
+      "sha": "7de16676b5be92510978b321e4d6e0a34686e5a8",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/7de16676b5be92510978b321e4d6e0a34686e5a8"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.44",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQ0",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.44",
+    "object": {
+      "sha": "d9547f0b8f8869c264fc00e83f2063f5a62e705f",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/d9547f0b8f8869c264fc00e83f2063f5a62e705f"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.45",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQ1",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.45",
+    "object": {
+      "sha": "74a52b2d1cf1f8b4b4f06e0f8d24d1b9bd655268",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/74a52b2d1cf1f8b4b4f06e0f8d24d1b9bd655268"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.46",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQ2",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.46",
+    "object": {
+      "sha": "3483b885bffa568a76ce0384870eb6d332d6bfe4",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3483b885bffa568a76ce0384870eb6d332d6bfe4"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.47",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQ3",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.47",
+    "object": {
+      "sha": "c56c0d7c1cf2ff51b416d4a94dec0f7d41492c32",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/c56c0d7c1cf2ff51b416d4a94dec0f7d41492c32"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.48",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQ4",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.48",
+    "object": {
+      "sha": "188b1c1bec951a564349d03452ad0320aa22e09c",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/188b1c1bec951a564349d03452ad0320aa22e09c"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.49",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjQ5",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.49",
+    "object": {
+      "sha": "82480ecbad60689597ed0a156c8fdc2ff99533cc",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/82480ecbad60689597ed0a156c8fdc2ff99533cc"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.50",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjUw",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.50",
+    "object": {
+      "sha": "d04fc7c278aee3f26cf5a509f7c8384a9e44ddad",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/d04fc7c278aee3f26cf5a509f7c8384a9e44ddad"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.51",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjUx",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.51",
+    "object": {
+      "sha": "8d3201979744632ea2b6259c78f886ecfad4fa86",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/8d3201979744632ea2b6259c78f886ecfad4fa86"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.52",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjUy",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.52",
+    "object": {
+      "sha": "3135a689f4d1df76f1f612e3d65d0976207ff771",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3135a689f4d1df76f1f612e3d65d0976207ff771"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.53",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjUz",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.53",
+    "object": {
+      "sha": "c1f175ab9555e405a8276fa70e39a84f76656d62",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/c1f175ab9555e405a8276fa70e39a84f76656d62"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.54",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjU0",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.54",
+    "object": {
+      "sha": "f420781b4b4b51605f1d94f1b58db6f5392a8ec6",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/f420781b4b4b51605f1d94f1b58db6f5392a8ec6"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.1.55",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4xLjU1",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.1.55",
+    "object": {
+      "sha": "a480447d29dddd24594c9bf710a93f72f3baba08",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a480447d29dddd24594c9bf710a93f72f3baba08"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4y",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.2",
+    "object": {
+      "sha": "ad7cd047dc81e44f27938fbaca72f1ffb4d37924",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/ad7cd047dc81e44f27938fbaca72f1ffb4d37924"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.2.3",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4yLjM=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.2.3",
+    "object": {
+      "sha": "6a0c2bf848321904dda4450d6840a806e4297fb6",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/6a0c2bf848321904dda4450d6840a806e4297fb6"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.2.4",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3JlbGVhc2VfMC4yLjQ=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/release_0.2.4",
+    "object": {
+      "sha": "15916271617c7a23b080129a0fa254744fa2bb5b",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/15916271617c7a23b080129a0fa254744fa2bb5b"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.2.5",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjIuNQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.2.5",
+    "object": {
+      "sha": "66ccd8c2725902ef11143165a6b7c5c270adf738",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/66ccd8c2725902ef11143165a6b7c5c270adf738"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.2.6",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjIuNg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.2.6",
+    "object": {
+      "sha": "d6acab2bc583568433383c1328dc151969fa05b9",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/d6acab2bc583568433383c1328dc151969fa05b9"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.0",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.0",
+    "object": {
+      "sha": "549a62f180fbc21d30a6a0dbfed376013669d2f9",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/549a62f180fbc21d30a6a0dbfed376013669d2f9"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.1",
+    "object": {
+      "sha": "9b72c8afc3ead981bb62b998ff64280095ceb317",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/9b72c8afc3ead981bb62b998ff64280095ceb317"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.1-patch",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMS1wYXRjaA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.1-patch",
+    "object": {
+      "sha": "537d7ece1c7dc8214b074b71da2a2971c6618771",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/537d7ece1c7dc8214b074b71da2a2971c6618771"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2",
+    "object": {
+      "sha": "179527258d8456f10d9ea96512c0345500325eb5",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/179527258d8456f10d9ea96512c0345500325eb5"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDE=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch1",
+    "object": {
+      "sha": "75a6aa66c63dd389ccabd4b6ede125ef57986f8f",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/75a6aa66c63dd389ccabd4b6ede125ef57986f8f"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch10",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDEw",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch10",
+    "object": {
+      "sha": "aebad1636b09b98ba8ace1791050160e0e8a48cd",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/aebad1636b09b98ba8ace1791050160e0e8a48cd"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch11",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDEx",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch11",
+    "object": {
+      "sha": "27f8951cdc380bf1799f76efc21fc377fc6d5981",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/27f8951cdc380bf1799f76efc21fc377fc6d5981"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDI=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch2",
+    "object": {
+      "sha": "fbe7d71fdf9bae6df3cad4567c27d200a0f3e99f",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/fbe7d71fdf9bae6df3cad4567c27d200a0f3e99f"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch3",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDM=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch3",
+    "object": {
+      "sha": "1f83b42860a6d4fe3364a410eb90dda002d97a1b",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1f83b42860a6d4fe3364a410eb90dda002d97a1b"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch4",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDQ=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch4",
+    "object": {
+      "sha": "95b4807fcd9dda13f2be6611b655d95fd66c6efc",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/95b4807fcd9dda13f2be6611b655d95fd66c6efc"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch5",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDU=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch5",
+    "object": {
+      "sha": "3d921d444e7945859d674c736c2e3c3399ec6f02",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3d921d444e7945859d674c736c2e3c3399ec6f02"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch6",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDY=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch6",
+    "object": {
+      "sha": "1d6257c51a1d5db0a4732441fc3c1c7dba7b5316",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1d6257c51a1d5db0a4732441fc3c1c7dba7b5316"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch7",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDc=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch7",
+    "object": {
+      "sha": "058596195ce1dc24fed2cf20a669459c8eec43d0",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/058596195ce1dc24fed2cf20a669459c8eec43d0"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch8",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDg=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch8",
+    "object": {
+      "sha": "b76a2eefb97802eefe02f7cae83c591d285610d3",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/b76a2eefb97802eefe02f7cae83c591d285610d3"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-patch9",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi1wYXRjaDk=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-patch9",
+    "object": {
+      "sha": "afa6cdd8c46d540e6b92188e2f108d8d34b2c1fa",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/afa6cdd8c46d540e6b92188e2f108d8d34b2c1fa"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-test1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi10ZXN0MQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-test1",
+    "object": {
+      "sha": "8a4aee2081607c032bdef671778e2e10e07e8026",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/8a4aee2081607c032bdef671778e2e10e07e8026"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-test2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi10ZXN0Mg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-test2",
+    "object": {
+      "sha": "4acc1b3e6662625ce3ef8aa3337947a8337a177d",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/4acc1b3e6662625ce3ef8aa3337947a8337a177d"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.3.2-test3",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjMuMi10ZXN0Mw==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.3.2-test3",
+    "object": {
+      "sha": "48a6281ff348e5ca6ba80a3fdec6b9823ace905b",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/48a6281ff348e5ca6ba80a3fdec6b9823ace905b"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.4.0",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjQuMA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.0",
+    "object": {
+      "sha": "3a53cf125350562b438d48f515e265e00b8e962e",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3a53cf125350562b438d48f515e265e00b8e962e"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.4.1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjQuMQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.1",
+    "object": {
+      "sha": "4a6940b7de33c87e6ddc65de1c1aad258f3270fb",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/4a6940b7de33c87e6ddc65de1c1aad258f3270fb"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.4.2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjQuMg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.2",
+    "object": {
+      "sha": "1513b276a7171f031bf8bf7f6cce3cf36816e14e",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1513b276a7171f031bf8bf7f6cce3cf36816e14e"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.4.3",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjQuMw==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.3",
+    "object": {
+      "sha": "a1ef19615f97fd272a13b6bbba879733d81e0027",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a1ef19615f97fd272a13b6bbba879733d81e0027"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.4.4",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjQuNA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.4",
+    "object": {
+      "sha": "887b686fbf577121944760854c9044b1a7241e21",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/887b686fbf577121944760854c9044b1a7241e21"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.4.5",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjQuNQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.5",
+    "object": {
+      "sha": "e369681c67d32f02c1e337642de220b7317bba46",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/e369681c67d32f02c1e337642de220b7317bba46"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.4.6",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjQuNg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.4.6",
+    "object": {
+      "sha": "dd91e1776b94a30e32fecf9c82354685295169a6",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/dd91e1776b94a30e32fecf9c82354685295169a6"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.5.0",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjUuMA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.5.0",
+    "object": {
+      "sha": "d3844444273ca391aa4a42decd5e325ff560ccc7",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/d3844444273ca391aa4a42decd5e325ff560ccc7"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.5.1-SNAPSHOT",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjUuMS1TTkFQU0hPVA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.5.1-SNAPSHOT",
+    "object": {
+      "sha": "a930f6205bd810607c867ed4c19b1f95eac8e551",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a930f6205bd810607c867ed4c19b1f95eac8e551"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.0",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuMA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0",
+    "object": {
+      "sha": "cb8e198c7f1f0fcb8568f04690110dc23b40990a",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/cb8e198c7f1f0fcb8568f04690110dc23b40990a"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.0-patch1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuMC1wYXRjaDE=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch1",
+    "object": {
+      "sha": "c63a34d24742d840b0057dcaaeafc3ac0b5fa49e",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/c63a34d24742d840b0057dcaaeafc3ac0b5fa49e"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.0-patch2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuMC1wYXRjaDI=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch2",
+    "object": {
+      "sha": "be064396e02be2a6c482f122acd1eb02c8eca886",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/be064396e02be2a6c482f122acd1eb02c8eca886"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.0-patch3",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuMC1wYXRjaDM=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch3",
+    "object": {
+      "sha": "4c3e0ebb57391ce50c569de6cf09d84d880d27bd",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/4c3e0ebb57391ce50c569de6cf09d84d880d27bd"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.0-patch4",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuMC1wYXRjaDQ=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch4",
+    "object": {
+      "sha": "6a4ffc4ae0b76a6f65a57ee0db3246d45fbc78c1",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/6a4ffc4ae0b76a6f65a57ee0db3246d45fbc78c1"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.0-patch5",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuMC1wYXRjaDU=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.0-patch5",
+    "object": {
+      "sha": "067ae0b0006174c46b6e79d445c179aa2ea94b96",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/067ae0b0006174c46b6e79d445c179aa2ea94b96"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuMQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.1",
+    "object": {
+      "sha": "5be856ee40fd2c7ab75e50cfd906d30a0be9491f",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5be856ee40fd2c7ab75e50cfd906d30a0be9491f"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuMg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.2",
+    "object": {
+      "sha": "287919a54b1e0c60c6b93910929cc1c0ec3161df",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/287919a54b1e0c60c6b93910929cc1c0ec3161df"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.3",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuMw==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.3",
+    "object": {
+      "sha": "a6a8a22a2727f32b40f1297f54255ea4846b48df",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a6a8a22a2727f32b40f1297f54255ea4846b48df"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.4",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuNA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.4",
+    "object": {
+      "sha": "fc8d92e84305f978d9f8b08f28f81f4266261128",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/fc8d92e84305f978d9f8b08f28f81f4266261128"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.6.5",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjYuNQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.6.5",
+    "object": {
+      "sha": "cbdbab0e2811ab6c27e9ddd01265a9e668e806ab",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/cbdbab0e2811ab6c27e9ddd01265a9e668e806ab"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.7.0",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjcuMA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.7.0",
+    "object": {
+      "sha": "a499238766df89e2e26a6d3cbf8d546d336e0df5",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/a499238766df89e2e26a6d3cbf8d546d336e0df5"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.7.1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjcuMQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.7.1",
+    "object": {
+      "sha": "3667f7d4f0db2dc641726d97533be1d8c8f09575",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/3667f7d4f0db2dc641726d97533be1d8c8f09575"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.7.1-patch1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjcuMS1wYXRjaDE=",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.7.1-patch1",
+    "object": {
+      "sha": "b704b9523592e473522eb416c241fc55f0e5f443",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/b704b9523592e473522eb416c241fc55f0e5f443"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.7.2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjcuMg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.7.2",
+    "object": {
+      "sha": "33b1fad03298947c4685b9eb536bdf2b286a26a7",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/33b1fad03298947c4685b9eb536bdf2b286a26a7"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.8.0",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjguMA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.0",
+    "object": {
+      "sha": "5b5ac2ee1ca1dfbb6687c3c65cc100aacd82c86e",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5b5ac2ee1ca1dfbb6687c3c65cc100aacd82c86e"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.8.1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjguMQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.1",
+    "object": {
+      "sha": "25af97d2d0f3dddbed8251216673d3135ce5d945",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/25af97d2d0f3dddbed8251216673d3135ce5d945"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.8.2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjguMg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.2",
+    "object": {
+      "sha": "1414421a11bcf1d96c0ad6c38de863f732923242",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/1414421a11bcf1d96c0ad6c38de863f732923242"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.8.3",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjguMw==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.3",
+    "object": {
+      "sha": "5758ec51f944dc1daaac4a85084346ee5f8e93bb",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5758ec51f944dc1daaac4a85084346ee5f8e93bb"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.8.4",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjguNA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.4",
+    "object": {
+      "sha": "63be1b935cba4368d6e862fb54198829172a6dcb",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/63be1b935cba4368d6e862fb54198829172a6dcb"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.8.5",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjguNQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.5",
+    "object": {
+      "sha": "547e3521c7b038c220ba06e13dde7dfb9f56a148",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/547e3521c7b038c220ba06e13dde7dfb9f56a148"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.8.6",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjguNg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.8.6",
+    "object": {
+      "sha": "2d305b75e704146c2a515edf751a57c4350eaca0",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/2d305b75e704146c2a515edf751a57c4350eaca0"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.0",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjkuMA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.0",
+    "object": {
+      "sha": "27ccb8e525670cb58aa808d31bb1cd7fb98afc3d",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/27ccb8e525670cb58aa808d31bb1cd7fb98afc3d"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.1",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjkuMQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.1",
+    "object": {
+      "sha": "9f19d829a92144d8e1c286679150fc2cc053989d",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/9f19d829a92144d8e1c286679150fc2cc053989d"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.2",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjkuMg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.2",
+    "object": {
+      "sha": "84c080b724fc75039954eccc0e22b664859a7146",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/84c080b724fc75039954eccc0e22b664859a7146"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.3",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjkuMw==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.3",
+    "object": {
+      "sha": "cce8ddd7e9faaa32dd0ff6a9f16a05cb73fb8c71",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/cce8ddd7e9faaa32dd0ff6a9f16a05cb73fb8c71"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.4",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjkuNA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.4",
+    "object": {
+      "sha": "39bd998120e034f3fb190551cbffee3fb7eb30a3",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/39bd998120e034f3fb190551cbffee3fb7eb30a3"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.5",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjkuNQ==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.5",
+    "object": {
+      "sha": "ae3a110b402a7a33498d888e8999fae692f3568c",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/ae3a110b402a7a33498d888e8999fae692f3568c"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.6",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjkuNg==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.6",
+    "object": {
+      "sha": "5777f5aea32cb079520dc505308c1c84d134585b",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/5777f5aea32cb079520dc505308c1c84d134585b"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.7",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjkuNw==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.7",
+    "object": {
+      "sha": "b1cc01e189e17c47a354d67f90ded34f809b1257",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/b1cc01e189e17c47a354d67f90ded34f809b1257"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.8",
+    "node_id": "MDM6UmVmNjM0MjEzMjI6cmVmcy90YWdzL3YwLjkuOA==",
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/refs/tags/v0.9.8",
+    "object": {
+      "sha": "8a3e33a280cd6bcb0371c9281c01e94134db97d0",
+      "type": "commit",
+      "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/commits/8a3e33a280cd6bcb0371c9281c01e94134db97d0"
+    }
+  }
+]
+
+ succeeded in 303ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/maven/
+META-INF/maven/com.clickhouse/
+META-INF/maven/com.clickhouse/org.apache.commons.compress/
+META-INF/maven/com.clickhouse/org.apache.commons.compress/pom.xml
+META-INF/maven/com.clickhouse/org.apache.commons.compress/pom.properties
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/
+org/apache/
+org/apache/commons/
+org/apache/commons/compress/
+org/apache/commons/compress/MemoryLimitException.class
+org/apache/commons/compress/PasswordRequiredException.class
+org/apache/commons/compress/archivers/
+org/apache/commons/compress/archivers/ArchiveEntry.class
+org/apache/commons/compress/archivers/ArchiveException.class
+org/apache/commons/compress/archivers/ArchiveInputStream.class
+org/apache/commons/compress/archivers/ArchiveOutputStream.class
+org/apache/commons/compress/archivers/ArchiveStreamFactory.class
+org/apache/commons/compress/archivers/ArchiveStreamProvider.class
+org/apache/commons/compress/archivers/EntryStreamOffsets.class
+org/apache/commons/compress/archivers/Lister.class
+org/apache/commons/compress/archivers/StreamingNotSupportedException.class
+org/apache/commons/compress/archivers/ar/
+org/apache/commons/compress/archivers/ar/ArArchiveEntry.class
+org/apache/commons/compress/archivers/ar/ArArchiveInputStream.class
+org/apache/commons/compress/archivers/ar/ArArchiveOutputStream.class
+org/apache/commons/compress/archivers/ar/package-info.class
+org/apache/commons/compress/archivers/arj/
+org/apache/commons/compress/archivers/arj/ArjArchiveEntry$HostOs.class
+org/apache/commons/compress/archivers/arj/ArjArchiveEntry.class
+org/apache/commons/compress/archivers/arj/ArjArchiveInputStream.class
+org/apache/commons/compress/archivers/arj/LocalFileHeader$FileTypes.class
+org/apache/commons/compress/archivers/arj/LocalFileHeader$Flags.class
+org/apache/commons/compress/archivers/arj/LocalFileHeader$Methods.class
+org/apache/commons/compress/archivers/arj/LocalFileHeader.class
+org/apache/commons/compress/archivers/arj/MainHeader$Flags.class
+org/apache/commons/compress/archivers/arj/MainHeader$HostOS.class
+org/apache/commons/compress/archivers/arj/MainHeader.class
+org/apache/commons/compress/archivers/arj/package-info.class
+org/apache/commons/compress/archivers/cpio/
+org/apache/commons/compress/archivers/cpio/CpioArchiveEntry.class
+org/apache/commons/compress/archivers/cpio/CpioArchiveInputStream.class
+org/apache/commons/compress/archivers/cpio/CpioArchiveOutputStream.class
+org/apache/commons/compress/archivers/cpio/CpioConstants.class
+org/apache/commons/compress/archivers/cpio/CpioUtil.class
+org/apache/commons/compress/archivers/cpio/package-info.class
+org/apache/commons/compress/archivers/dump/
+org/apache/commons/compress/archivers/dump/Dirent.class
+org/apache/commons/compress/archivers/dump/DumpArchiveConstants$COMPRESSION_TYPE.class
+org/apache/commons/compress/archivers/dump/DumpArchiveConstants$SEGMENT_TYPE.class
+org/apache/commons/compress/archivers/dump/DumpArchiveConstants.class
+org/apache/commons/compress/archivers/dump/DumpArchiveEntry$PERMISSION.class
+org/apache/commons/compress/archivers/dump/DumpArchiveEntry$TYPE.class
+org/apache/commons/compress/archivers/dump/DumpArchiveEntry$TapeSegmentHeader.class
+org/apache/commons/compress/archivers/dump/DumpArchiveEntry.class
+org/apache/commons/compress/archivers/dump/DumpArchiveException.class
+org/apache/commons/compress/archivers/dump/DumpArchiveInputStream.class
+org/apache/commons/compress/archivers/dump/DumpArchiveSummary.class
+org/apache/commons/compress/archivers/dump/DumpArchiveUtil.class
+org/apache/commons/compress/archivers/dump/InvalidFormatException.class
+org/apache/commons/compress/archivers/dump/ShortFileException.class
+org/apache/commons/compress/archivers/dump/TapeInputStream$1.class
+org/apache/commons/compress/archivers/dump/TapeInputStream.class
+org/apache/commons/compress/archivers/dump/UnrecognizedFormatException.class
+org/apache/commons/compress/archivers/dump/UnsupportedCompressionAlgorithmException.class
+org/apache/commons/compress/archivers/dump/package-info.class
+org/apache/commons/compress/archivers/examples/
+org/apache/commons/compress/archivers/examples/Archiver$1.class
+org/apache/commons/compress/archivers/examples/Archiver$ArchiverFileVisitor.class
+org/apache/commons/compress/archivers/examples/Archiver.class
+org/apache/commons/compress/archivers/examples/CloseableConsumer.class
+org/apache/commons/compress/archivers/examples/CloseableConsumerAdapter.class
+org/apache/commons/compress/archivers/examples/Expander$ArchiveEntryBiConsumer.class
+org/apache/commons/compress/archivers/examples/Expander$ArchiveEntrySupplier.class
+org/apache/commons/compress/archivers/examples/Expander.class
+org/apache/commons/compress/archivers/examples/package-info.class
+org/apache/commons/compress/archivers/jar/
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/ClickHouse/clickhouse-java.git | rg 'commons|compress|1\\.9\\.2|v0\\.6\\.2|v0\\.4'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ClickHouse/clickhouse-java/v0.6.2/third-party-libraries/org.apache.commons.compress/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/ClickHouse/clickhouse-java/contents/third-party-libraries/org.apache.commons.compress?ref=v0.6.2' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ClickHouse/clickhouse-java/v0.6.2/README.md | rg -n 'compress|commons|third-party|artifact|version'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 162ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "third-party-libraries/org.apache.commons.compress/pom.xml",
+    "sha": "369e5444388526a7814506a80175e04fdaefbd80",
+    "size": 4308,
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/third-party-libraries/org.apache.commons.compress/pom.xml?ref=v0.6.2",
+    "html_url": "https://github.com/ClickHouse/clickhouse-java/blob/v0.6.2/third-party-libraries/org.apache.commons.compress/pom.xml",
+    "git_url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/blobs/369e5444388526a7814506a80175e04fdaefbd80",
+    "download_url": "https://raw.githubusercontent.com/ClickHouse/clickhouse-java/v0.6.2/third-party-libraries/org.apache.commons.compress/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/third-party-libraries/org.apache.commons.compress/pom.xml?ref=v0.6.2",
+      "git": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/blobs/369e5444388526a7814506a80175e04fdaefbd80",
+      "html": "https://github.com/ClickHouse/clickhouse-java/blob/v0.6.2/third-party-libraries/org.apache.commons.compress/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "third-party-libraries/org.apache.commons.compress/src",
+    "sha": "145a26914bf71a7b9342f184313c3045801f29b7",
+    "size": 0,
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/third-party-libraries/org.apache.commons.compress/src?ref=v0.6.2",
+    "html_url": "https://github.com/ClickHouse/clickhouse-java/tree/v0.6.2/third-party-libraries/org.apache.commons.compress/src",
+    "git_url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/145a26914bf71a7b9342f184313c3045801f29b7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/third-party-libraries/org.apache.commons.compress/src?ref=v0.6.2",
+      "git": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/145a26914bf71a7b9342f184313c3045801f29b7",
+      "html": "https://github.com/ClickHouse/clickhouse-java/tree/v0.6.2/third-party-libraries/org.apache.commons.compress/src"
+    }
+  }
+]
+
+ succeeded in 181ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.clickhouse</groupId>
+        <artifactId>third-party-libraries</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>org.apache.commons.compress</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>Repackaged Apache commons-compress as an alias</description>
+    <url>https://github.com/ClickHouse/clickhouse-java/tree/main/third-party-libraries/org.apache.commons.compress</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>org/apache/**/*.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>shade</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <createSourcesJar>false</createSourcesJar>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
+                            <module>
+                                <moduleInfoFile>src/main/java/module-info.java</moduleInfoFile>
+                            </module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+ succeeded in 171ms:
+16:|                   | [gRPC](https://clickhouse.com/docs/en/interfaces/grpc/)                             | :white_check_mark: | :warning: experimental, works with 22.3+, known to has issue with lz4 compression and may cause high memory usage on server. Planed to be removed from version 0.7.0                                                     |
+49:|                   | Implicit Type Conversion                                                            | :white_check_mark: | String/number to Date/Time/Timestamp and more                                                                                                                                                                            |
+
+ succeeded in 377ms:
+3a53cf125350562b438d48f515e265e00b8e962e	refs/tags/v0.4.0
+4a6940b7de33c87e6ddc65de1c1aad258f3270fb	refs/tags/v0.4.1
+1513b276a7171f031bf8bf7f6cce3cf36816e14e	refs/tags/v0.4.2
+a1ef19615f97fd272a13b6bbba879733d81e0027	refs/tags/v0.4.3
+887b686fbf577121944760854c9044b1a7241e21	refs/tags/v0.4.4
+e369681c67d32f02c1e337642de220b7317bba46	refs/tags/v0.4.5
+dd91e1776b94a30e32fecf9c82354685295169a6	refs/tags/v0.4.6
+287919a54b1e0c60c6b93910929cc1c0ec3161df	refs/tags/v0.6.2
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ClickHouse/clickhouse-java/v0.6.2/pom.xml | rg -n 'commons-compress|<revision>|<version>|org.apache.commons.compress' -C 3" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ClickHouse/clickhouse-java/v0.6.2/third-party-libraries/pom.xml | rg -n 'commons-compress|revision|<version>|third-party' -C 4" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "jar xf /tmp/org.apache.commons.compress-1.9.2.jar META-INF/maven/com.clickhouse/org.apache.commons.compress/pom.xml META-INF/maven/com.clickhouse/org.apache.commons.compress/pom.properties && sed -n '1,220p' META-INF/maven/com.clickhouse/org.apache.commons.compress/pom.xml && printf '\\n-- properties --\\n' && sed -n '1,80p' META-INF/maven/com.clickhouse/org.apache.commons.compress/pom.properties" in /tmp
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/maven-metadata.xml' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 172ms:
+6-
+7-    <groupId>com.clickhouse</groupId>
+8-    <artifactId>clickhouse-java</artifactId>
+9:    <version>${revision}</version>
+10-    <packaging>pom</packaging>
+11-
+12-    <name>clickhouse-java</name>
+--
+85-    </distributionManagement>
+86-
+87-    <properties>
+88:        <revision>0.6.2-SNAPSHOT</revision>
+89-        <project.current.year>2024</project.current.year>
+90-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+91-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+--
+167-            <dependency>
+168-                <groupId>${project.groupId}</groupId>
+169-                <artifactId>com.javacc</artifactId>
+170:                <version>${repackaged.version}</version>
+171-            </dependency>
+172-            <dependency>
+173-                <groupId>${project.groupId}</groupId>
+174-                <artifactId>io.grpc</artifactId>
+175:                <version>${repackaged.version}</version>
+176-            </dependency>
+177-            <dependency>
+178-                <groupId>${project.groupId}</groupId>
+179:                <artifactId>org.apache.commons.compress</artifactId>
+180:                <version>${repackaged.version}</version>
+181-            </dependency>
+182-            <dependency>
+183-                <groupId>${project.groupId}</groupId>
+184-                <artifactId>org.roaringbitmap</artifactId>
+185:                <version>${repackaged.version}</version>
+186-            </dependency>
+187-
+188-            <dependency>
+189-                <groupId>com.aayushatharva.brotli4j</groupId>
+190-                <artifactId>brotli4j</artifactId>
+191:                <version>${brotli4j.version}</version>
+192-            </dependency>
+193-            <dependency>
+194-                <groupId>com.aayushatharva.brotli4j</groupId>
+195-                <artifactId>native-linux-x86_64</artifactId>
+196:                <version>${brotli4j.version}</version>
+197-            </dependency>
+198-            <dependency>
+199-                <groupId>com.aayushatharva.brotli4j</groupId>
+200-                <artifactId>native-osx-aarch64</artifactId>
+201:                <version>${brotli4j.version}</version>
+202-            </dependency>
+203-            <dependency>
+204-                <groupId>com.aayushatharva.brotli4j</groupId>
+205-                <artifactId>native-osx-x86_64</artifactId>
+206:                <version>${brotli4j.version}</version>
+207-            </dependency>
+208-            <dependency>
+209-                <groupId>com.aayushatharva.brotli4j</groupId>
+210-                <artifactId>native-windows-x86_64</artifactId>
+211:                <version>${brotli4j.version}</version>
+212-            </dependency>
+213-            <dependency>
+214-                <groupId>com.google.code.gson</groupId>
+215-                <artifactId>gson</artifactId>
+216:                <version>${gson.version}</version>
+217-            </dependency>
+218-            <dependency>
+219-                <groupId>com.github.ben-manes.caffeine</groupId>
+220-                <artifactId>caffeine</artifactId>
+221:                <version>${caffeine.version}</version>
+222-            </dependency>
+223-            <dependency>
+224-                <groupId>com.github.luben</groupId>
+225-                <artifactId>zstd-jni</artifactId>
+226:                <version>${zstd-jni.version}</version>
+227-            </dependency>
+228-            <dependency>
+229-                <groupId>dnsjava</groupId>
+230-                <artifactId>dnsjava</artifactId>
+231:                <version>${dnsjava.version}</version>
+232-            </dependency>
+233-            <dependency>
+234-                <groupId>io.grpc</groupId>
+235-                <artifactId>grpc-api</artifactId>
+236:                <version>${grpc.version}</version>
+237-            </dependency>
+238-            <dependency>
+239-                <groupId>io.grpc</groupId>
+240-                <artifactId>grpc-core</artifactId>
+241:                <version>${grpc.version}</version>
+242-            </dependency>
+243-            <dependency>
+244-                <groupId>io.grpc</groupId>
+245-                <artifactId>grpc-context</artifactId>
+246:                <version>${grpc.version}</version>
+247-            </dependency>
+248-            <dependency>
+249-                <groupId>io.grpc</groupId>
+250-                <artifactId>grpc-netty-shaded</artifactId>
+251:                <version>${grpc.version}</version>
+252-            </dependency>
+253-            <!-- separate classifier did not work well with flatten plugin -->
+254-            <dependency>
+255-                <groupId>io.grpc</groupId>
+256-                <artifactId>grpc-okhttp</artifactId>
+257:                <version>${grpc.version}</version>
+258-            </dependency>
+259-            <dependency>
+260-                <groupId>io.grpc</groupId>
+261-                <!-- grpc-protobuf-lite is not compatible with v3 -->
+262-                <artifactId>grpc-protobuf</artifactId>
+263:                <version>${grpc.version}</version>
+264-            </dependency>
+265-            <dependency>
+266-                <groupId>io.grpc</groupId>
+267-                <artifactId>grpc-stub</artifactId>
+268:                <version>${grpc.version}</version>
+269-            </dependency>
+270-            <dependency>
+271-                <groupId>io.opencensus</groupId>
+272-                <artifactId>opencensus-api</artifactId>
+273:                <version>${opencensus.version}</version>
+274-            </dependency>
+275-            <dependency>
+276-                <groupId>io.opencensus</groupId>
+277-                <artifactId>opencensus-impl</artifactId>
+278:                <version>${opencensus.version}</version>
+279-            </dependency>
+280-            <dependency>
+281-                <groupId>io.opencensus</groupId>
+282-                <artifactId>opencensus-contrib-grpc-metrics</artifactId>
+283:                <version>${opencensus.version}</version>
+284-            </dependency>
+285-            <dependency>
+286-                <groupId>it.unimi.dsi</groupId>
+287-                <artifactId>fastutil</artifactId>
+288:                <version>${fastutil.version}</version>
+289-            </dependency>
+290-            <dependency>
+291-                <groupId>org.apache.arrow</groupId>
+292-                <artifactId>arrow-memory</artifactId>
+293-                <type>pom</type>
+294:                <version>${arrow.version}</version>
+295-            </dependency>
+296-            <dependency>
+297-                <groupId>org.apache.arrow</groupId>
+298-                <artifactId>arrow-vector</artifactId>
+299:                <version>${arrow.version}</version>
+300-            </dependency>
+301-            <dependency>
+302-                <groupId>org.apache.avro</groupId>
+303-                <artifactId>avro</artifactId>
+304:                <version>${avro.version}</version>
+305-            </dependency>
+306-            <dependency>
+307-                <groupId>org.apache.commons</groupId>
+308:                <artifactId>commons-compress</artifactId>
+309:                <version>${compress.version}</version>
+310-            </dependency>
+311-            <dependency>
+312-                <groupId>org.apache.tomcat</groupId>
+313-                <artifactId>annotations-api</artifactId>
+314:                <version>${annotations-api.version}</version>
+315-            </dependency>
+316-            <dependency>
+317-                <groupId>org.brotli</groupId>
+318-                <artifactId>dec</artifactId>
+319:                <version>${brotli.version}</version>
+320-            </dependency>
+321-            <dependency>
+322-                <groupId>org.jctools</groupId>
+323-                <artifactId>jctools-core</artifactId>
+324:                <version>${jctools.version}</version>
+325-            </dependency>
+326-            <dependency>
+327-                <groupId>org.lz4</groupId>
+328-                <artifactId>lz4-java</artifactId>
+329:                <version>${lz4.version}</version>
+330-            </dependency>
+331-            <dependency>
+332-                <groupId>org.lz4</groupId>
+333-                <artifactId>lz4-pure-java</artifactId>
+334:                <version>${lz4.version}</version>
+335-            </dependency>
+336-            <dependency>
+337-                <groupId>org.msgpack</groupId>
+338-                <artifactId>msgpack-core</artifactId>
+339:                <version>${msgpack.version}</version>
+340-            </dependency>
+341-            <dependency>
+342-                <groupId>org.ow2.asm</groupId>
+343-                <artifactId>asm</artifactId>
+344:                <version>${asm.version}</version>
+345-            </dependency>
+346-            <dependency>
+347-                <groupId>org.roaringbitmap</groupId>
+348-                <artifactId>RoaringBitmap</artifactId>
+349:                <version>${roaring-bitmap.version}</version>
+350-            </dependency>
+351-            <dependency>
+352-                <groupId>org.slf4j</groupId>
+353-                <artifactId>slf4j-api</artifactId>
+354:                <version>${slf4j.version}</version>
+355-            </dependency>
+356-            <dependency>
+357-                <groupId>org.slf4j</groupId>
+358-                <artifactId>slf4j-simple</artifactId>
+359:                <version>${slf4j.version}</version>
+360-            </dependency>
+361-            <dependency>
+362-                <groupId>org.tukaani</groupId>
+363-                <artifactId>xz</artifactId>
+364:                <version>${xz.version}</version>
+365-            </dependency>
+366-            <dependency>
+367-                <groupId>org.xerial.snappy</groupId>
+368-                <artifactId>snappy-java</artifactId>
+369:                <version>${snappy.version}</version>
+370-            </dependency>
+371-            <dependency>
+372-                <groupId>org.testcontainers</groupId>
+373-                <artifactId>testcontainers</artifactId>
+374:                <version>${testcontainers.version}</version>
+375-            </dependency>
+376-            <dependency>
+377-                <groupId>org.testcontainers</groupId>
+378-                <artifactId>toxiproxy</artifactId>
+379:                <version>${testcontainers.version}</version>
+380-                <scope>test</scope>
+381-            </dependency>
+382-            <dependency>
+383-                <groupId>org.testng</groupId>
+384-                <artifactId>testng</artifactId>
+385:                <version>${testng.version}</version>
+386-            </dependency>
+387-            <dependency>
+388-                <groupId>org.apache.httpcomponents.client5</groupId>
+389-                <artifactId>httpclient5</artifactId>
+390:                <version>${apache.httpclient.version}</version>
+391-            </dependency>
+392-            <dependency>
+393-                <groupId>org.apache.httpcomponents.core5</groupId>
+394-                <artifactId>httpcore5</artifactId>
+395:                <version>${apache.httpclient.version}</version>
+396-            </dependency>
+397-            <dependency>
+398-                <groupId>org.apache.httpcomponents.core5</groupId>
+399-                <artifactId>httpcore5-h2</artifactId>
+400:                <version>${apache.httpclient.version}</version>
+401-            </dependency>
+402-
+403-            <dependency>
+404-                <groupId>org.mariadb.jdbc</groupId>
+405-                <artifactId>mariadb-java-client</artifactId>
+406:                <version>${mariadb-driver.version}</version>
+407-                <exclusions>
+408-                    <exclusion>
+409-                        <groupId>*</groupId>
+--
+414-            <dependency>
+415-                <groupId>com.mysql</groupId>
+416-                <artifactId>mysql-connector-j</artifactId>
+417:                <version>${mysql-driver.version}</version>
+418-                <exclusions>
+419-                    <exclusion>
+420-                        <groupId>*</groupId>
+--
+425-            <dependency>
+426-                <groupId>org.postgresql</groupId>
+427-                <artifactId>postgresql</artifactId>
+428:                <version>${postgresql-driver.version}</version>
+429-                <exclusions>
+430-                    <exclusion>
+431-                        <groupId>*</groupId>
+--
+442-                <plugin>
+443-                    <groupId>kr.motd.maven</groupId>
+444-                    <artifactId>os-maven-plugin</artifactId>
+445:                    <version>${os-plugin.version}</version>
+446-                </plugin>
+447-                <plugin>
+448-                    <groupId>org.apache.maven.plugins</groupId>
+449-                    <artifactId>maven-antrun-plugin</artifactId>
+450:                    <version>${antrun-plugin.version}</version>
+451-                </plugin>
+452-                <plugin>
+453-                    <groupId>org.apache.maven.plugins</groupId>
+454-                    <artifactId>maven-assembly-plugin</artifactId>
+455:                    <version>${assembly-plugin.version}</version>
+456-                </plugin>
+457-                <plugin>
+458-                    <groupId>org.apache.maven.plugins</groupId>
+459-                    <artifactId>maven-clean-plugin</artifactId>
+460:                    <version>${clean-plugin.version}</version>
+461-                </plugin>
+462-                <plugin>
+463-                    <groupId>org.apache.maven.plugins</groupId>
+464-                    <artifactId>maven-compiler-plugin</artifactId>
+465:                    <version>${compiler-plugin.version}</version>
+466-                </plugin>
+467-                <plugin>
+468-                    <groupId>org.apache.maven.plugins</groupId>
+469-                    <artifactId>maven-deploy-plugin</artifactId>
+470:                    <version>${deploy-plugin.version}</version>
+471-                </plugin>
+472-                <plugin>
+473-                    <groupId>org.apache.maven.plugins</groupId>
+474-                    <artifactId>maven-enforcer-plugin</artifactId>
+475:                    <version>${enforcer-plugin.version}</version>
+476-                </plugin>
+477-                <plugin>
+478-                    <groupId>org.codehaus.mojo</groupId>
+479-                    <artifactId>exec-maven-plugin</artifactId>
+480:                    <version>${exec-plugin.version}</version>
+481-                </plugin>
+482-                <plugin>
+483-                    <groupId>org.apache.maven.plugins</groupId>
+484-                    <artifactId>maven-gpg-plugin</artifactId>
+485:                    <version>${gpg-plugin.version}</version>
+486-                </plugin>
+487-                <plugin>
+488-                    <groupId>org.apache.maven.plugins</groupId>
+489-                    <artifactId>maven-jar-plugin</artifactId>
+490:                    <version>${jar-plugin.version}</version>
+491-                </plugin>
+492-                <plugin>
+493-                    <groupId>org.apache.maven.plugins</groupId>
+494-                    <artifactId>maven-javadoc-plugin</artifactId>
+495:                    <version>${javadoc-plugin.version}</version>
+496-                </plugin>
+497-                <plugin>
+498-                    <groupId>org.apache.maven.plugins</groupId>
+499-                    <artifactId>maven-shade-plugin</artifactId>
+500:                    <version>${shade-plugin.version}</version>
+501-                </plugin>
+502-                <plugin>
+503-                    <groupId>org.apache.maven.plugins</groupId>
+504-                    <artifactId>maven-source-plugin</artifactId>
+505:                    <version>${source-plugin.version}</version>
+506-                </plugin>
+507-                <plugin>
+508-                    <groupId>org.apache.maven.plugins</groupId>
+509-                    <artifactId>maven-toolchains-plugin</artifactId>
+510:                    <version>${toolchains-plugin.version}</version>
+511-                </plugin>
+512-                <plugin>
+513-                    <groupId>org.apache.maven.plugins</groupId>
+514-                    <artifactId>maven-failsafe-plugin</artifactId>
+515:                    <version>${failsafe-plugin.version}</version>
+516-                    <configuration>
+517-                        <includes>**/*.java</includes>
+518-                        <groups>integration</groups>
+--
+536-                <plugin>
+537-                    <groupId>org.apache.maven.plugins</groupId>
+538-                    <artifactId>maven-surefire-plugin</artifactId>
+539:                    <version>${surefire-plugin.version}</version>
+540-                    <configuration>
+541-                        <excludedGroups>${excludedGroups}</excludedGroups>
+542-                        <groups>unit</groups>
+--
+548-                <plugin>
+549-                    <groupId>org.codehaus.mojo</groupId>
+550-                    <artifactId>build-helper-maven-plugin</artifactId>
+551:                    <version>${helper-plugin.version}</version>
+552-                </plugin>
+553-                <plugin>
+554-                    <groupId>org.codehaus.mojo</groupId>
+555-                    <artifactId>flatten-maven-plugin</artifactId>
+556:                    <version>${flatten-plugin.version}</version>
+557-                    <configuration>
+558-                        <updatePomFile>true</updatePomFile>
+559-                        <flattenDependencyMode>all</flattenDependencyMode>
+--
+580-                <plugin>
+581-                    <groupId>org.codehaus.mojo</groupId>
+582-                    <artifactId>versions-maven-plugin</artifactId>
+583:                    <version>${versions-plugin.version}</version>
+584-                </plugin>
+585-                <plugin>
+586-                    <groupId>org.graalvm.buildtools</groupId>
+587-                    <artifactId>native-maven-plugin</artifactId>
+588:                    <version>${native-plugin.version}</version>
+589-                </plugin>
+590-                <plugin>
+591-                    <groupId>org.sonatype.plugins</groupId>
+592-                    <artifactId>nexus-staging-maven-plugin</artifactId>
+593:                    <version>${staging-plugin.version}</version>
+594-                </plugin>
+595-                <plugin>
+596-                    <groupId>org.xolstice.maven.plugins</groupId>
+597-                    <artifactId>protobuf-maven-plugin</artifactId>
+598:                    <version>${protobuf-plugin.version}</version>
+599-                    <configuration>
+600-                        <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
+601-                        <pluginId>grpc-java</pluginId>
+--
+613-                <plugin>
+614-                    <groupId>io.github.git-commit-id</groupId>
+615-                    <artifactId>git-commit-id-maven-plugin</artifactId>
+616:                    <version>${git-plugin.version}</version>
+617-                    <executions>
+618-                        <execution>
+619-                            <id>get-the-git-infos</id>
+--
+658-                        <configuration>
+659-                            <release>9</release>
+660-                            <jdkToolchain>
+661:                                <version>9</version>
+662-                            </jdkToolchain>
+663-                            <compileSourceRoots>
+664-                                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+--
+675-                        <configuration>
+676-                            <release>11</release>
+677-                            <jdkToolchain>
+678:                                <version>11</version>
+679-                            </jdkToolchain>
+680-                            <compileSourceRoots>
+681-                                <compileSourceRoot>${project.basedir}/src/main/java11</compileSourceRoot>
+--
+692-                        <configuration>
+693-                            <release>17</release>
+694-                            <jdkToolchain>
+695:                                <version>17</version>
+696-                            </jdkToolchain>
+697-                            <compileSourceRoots>
+698-                                <compileSourceRoot>${project.basedir}/src/main/java17</compileSourceRoot>
+--
+714-                        <configuration>
+715-                            <rules>
+716-                                <requireMavenVersion>
+717:                                    <version>(,2.1.0),(2.1.0,2.2.0),(2.2.0,)
+718-                                    </version>
+719-                                    <message>Maven 2.1.0 and 2.2.0 produce incorrect GPG signatures and checksums respectively.</message>
+720-                                </requireMavenVersion>
+--
+742-                    <plugin>
+743-                        <groupId>org.jacoco</groupId>
+744-                        <artifactId>jacoco-maven-plugin</artifactId>
+745:                        <version>${jacoco-plugin.version}</version>
+746-                        <configuration>
+747-                            <!-- workaround for multi-release jar -->
+748-                            <excludes>
+--
+961-                        <configuration>
+962-                            <toolchains>
+963-                                <jdk>
+964:                                    <version>9</version>
+965-                                </jdk>
+966-                                <jdk>
+967:                                    <version>11</version>
+968-                                </jdk>
+969-                                <jdk>
+970:                                    <version>17</version>
+971-                                </jdk>
+972-                            </toolchains>
+973-                        </configuration>
+--
+1180-                        <configuration>
+1181-                            <toolchains>
+1182-                                <jdk>
+1183:                                    <version>9</version>
+1184-                                </jdk>
+1185-                                <jdk>
+1186:                                    <version>11</version>
+1187-                                </jdk>
+1188-                                <jdk>
+1189:                                    <version>17</version>
+1190-                                </jdk>
+1191-                            </toolchains>
+1192-                        </configuration>
+
+ succeeded in 172ms:
+4-    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+5-    <modelVersion>4.0.0</modelVersion>
+6-
+7-    <groupId>com.clickhouse</groupId>
+8:    <artifactId>third-party-libraries</artifactId>
+9:    <version>${revision}</version>
+10-    <packaging>pom</packaging>
+11-
+12-    <name>${project.artifactId}</name>
+13-    <description>Repackaged third party libraries for JPMS compatibility</description>
+14:    <url>https://github.com/ClickHouse/clickhouse-java/tree/main/third-party-libraries</url>
+15-    <inceptionYear>2022</inceptionYear>
+16-
+17-    <organization>
+18-        <name>ClickHouse, Inc.</name>
+--
+71-        </repository>
+72-    </distributionManagement>
+73-
+74-    <properties>
+75:        <revision>1.9.0</revision>
+76-        <project.current.year>2023</project.current.year>
+77-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+78-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+79-
+--
+101-        <dependencies>
+102-            <dependency>
+103-                <groupId>com.google.code.gson</groupId>
+104-                <artifactId>gson</artifactId>
+105:                <version>${gson.version}</version>
+106-            </dependency>
+107-            <dependency>
+108-                <groupId>org.apache.commons</groupId>
+109:                <artifactId>commons-compress</artifactId>
+110:                <version>${compress.version}</version>
+111-            </dependency>
+112-            <dependency>
+113-                <groupId>org.roaringbitmap</groupId>
+114-                <artifactId>RoaringBitmap</artifactId>
+115:                <version>${roaring-bitmap.version}</version>
+116-            </dependency>
+117-            <dependency>
+118-                <groupId>io.grpc</groupId>
+119-                <artifactId>grpc-api</artifactId>
+120:                <version>${grpc.version}</version>
+121-            </dependency>
+122-            <dependency>
+123-                <groupId>io.grpc</groupId>
+124-                <artifactId>grpc-core</artifactId>
+125:                <version>${grpc.version}</version>
+126-            </dependency>
+127-            <dependency>
+128-                <groupId>io.grpc</groupId>
+129-                <artifactId>grpc-context</artifactId>
+130:                <version>${grpc.version}</version>
+131-            </dependency>
+132-            <dependency>
+133-                <groupId>io.grpc</groupId>
+134-                <artifactId>grpc-netty-shaded</artifactId>
+135:                <version>${grpc.version}</version>
+136-            </dependency>
+137-            <dependency>
+138-                <groupId>io.grpc</groupId>
+139-                <artifactId>grpc-okhttp</artifactId>
+140:                <version>${grpc.version}</version>
+141-            </dependency>
+142-            <dependency>
+143-                <groupId>io.grpc</groupId>
+144-                <artifactId>grpc-protobuf</artifactId>
+145:                <version>${grpc.version}</version>
+146-            </dependency>
+147-            <dependency>
+148-                <groupId>io.grpc</groupId>
+149-                <artifactId>grpc-stub</artifactId>
+150:                <version>${grpc.version}</version>
+151-            </dependency>
+152-            <dependency>
+153-                <groupId>io.opencensus</groupId>
+154-                <artifactId>opencensus-api</artifactId>
+155:                <version>${opencensus.version}</version>
+156-            </dependency>
+157-            <dependency>
+158-                <groupId>io.opencensus</groupId>
+159-                <artifactId>opencensus-impl</artifactId>
+160:                <version>${opencensus.version}</version>
+161-            </dependency>
+162-            <dependency>
+163-                <groupId>io.opencensus</groupId>
+164-                <artifactId>opencensus-contrib-grpc-metrics</artifactId>
+165:                <version>${opencensus.version}</version>
+166-            </dependency>
+167-            <dependency>
+168-                <groupId>org.apache.tomcat</groupId>
+169-                <artifactId>annotations-api</artifactId>
+170:                <version>${annotations-api.version}</version>
+171-            </dependency>
+172-        </dependencies>
+173-    </dependencyManagement>
+174-
+--
+177-            <plugins>
+178-                <plugin>
+179-                    <groupId>org.apache.maven.plugins</groupId>
+180-                    <artifactId>maven-antrun-plugin</artifactId>
+181:                    <version>${antrun-plugin.version}</version>
+182-                </plugin>
+183-                <plugin>
+184-                    <groupId>org.apache.maven.plugins</groupId>
+185-                    <artifactId>maven-compiler-plugin</artifactId>
+186:                    <version>${compiler-plugin.version}</version>
+187-                    <configuration>
+188-                        <release>9</release>
+189-                        <showWarnings>true</showWarnings>
+190-                        <compilerArgs>
+--
+195-                </plugin>
+196-                <plugin>
+197-                    <groupId>org.apache.maven.plugins</groupId>
+198-                    <artifactId>maven-deploy-plugin</artifactId>
+199:                    <version>${deploy-plugin.version}</version>
+200-                </plugin>
+201-                <plugin>
+202-                    <groupId>org.apache.maven.plugins</groupId>
+203-                    <artifactId>maven-gpg-plugin</artifactId>
+204:                    <version>${gpg-plugin.version}</version>
+205-                </plugin>
+206-                <plugin>
+207-                    <groupId>org.apache.maven.plugins</groupId>
+208-                    <artifactId>maven-jar-plugin</artifactId>
+209:                    <version>${jar-plugin.version}</version>
+210-                </plugin>
+211-                <plugin>
+212-                    <groupId>org.apache.maven.plugins</groupId>
+213-                    <artifactId>maven-javadoc-plugin</artifactId>
+214:                    <version>${javadoc-plugin.version}</version>
+215-                </plugin>
+216-                <plugin>
+217-                    <groupId>org.apache.maven.plugins</groupId>
+218-                    <artifactId>maven-shade-plugin</artifactId>
+219:                    <version>${shade-plugin.version}</version>
+220-                </plugin>
+221-                <plugin>
+222-                    <groupId>org.apache.maven.plugins</groupId>
+223-                    <artifactId>maven-source-plugin</artifactId>
+224:                    <version>${source-plugin.version}</version>
+225-                </plugin>
+226-                <plugin>
+227-                    <groupId>org.sonatype.plugins</groupId>
+228-                    <artifactId>nexus-staging-maven-plugin</artifactId>
+229:                    <version>${staging-plugin.version}</version>
+230-                </plugin>
+231-                <plugin>
+232-                    <groupId>org.codehaus.mojo</groupId>
+233-                    <artifactId>flatten-maven-plugin</artifactId>
+234:                    <version>${flatten-plugin.version}</version>
+235-                    <configuration>
+236-                        <updatePomFile>true</updatePomFile>
+237-                        <flattenMode>ossrh</flattenMode>
+238-                    </configuration>
+--
+255-                </plugin>
+256-                <plugin>
+257-                    <groupId>org.moditect</groupId>
+258-                    <artifactId>moditect-maven-plugin</artifactId>
+259:                    <version>${moditect-plugin.version}</version>
+260-                </plugin>
+261-            </plugins>
+262-        </pluginManagement>
+263-        <plugins>
+
+ succeeded in 214ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.clickhouse</groupId>
+  <artifactId>org.apache.commons.compress</artifactId>
+  <versioning>
+    <latest>1.9.2</latest>
+    <release>1.9.2</release>
+    <versions>
+      <version>1.8.0</version>
+      <version>1.9.0</version>
+      <version>1.9.1</version>
+      <version>1.9.2</version>
+    </versions>
+    <lastUpdated>20230803134823</lastUpdated>
+  </versioning>
+</metadata>
+
+ succeeded in 387ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.clickhouse</groupId>
+        <artifactId>third-party-libraries</artifactId>
+        <version>1.9.2</version>
+    </parent>
+
+    <artifactId>org.apache.commons.compress</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>Repackaged Apache commons-compress as an alias</description>
+    <url>https://github.com/ClickHouse/clickhouse-java/tree/main/third-party-libraries/org.apache.commons.compress</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>org/apache/**/*.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>shade</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <createSourcesJar>false</createSourcesJar>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
+                            <module>
+                                <moduleInfoFile>src/main/java/module-info.java</moduleInfoFile>
+                            </module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+-- properties --
+artifactId=org.apache.commons.compress
+groupId=com.clickhouse
+version=1.9.2
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/commits?q=repo:ClickHouse/clickhouse-java+1.9.2+third-party-libraries' -H 'Accept: application/vnd.github.cloak-preview'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ClickHouse/clickhouse-java/main/third-party-libraries/pom.xml | rg -n '<revision>|compress.version|commons-compress|<module>' -C 2" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=repo:ClickHouse/clickhouse-java+%221.9.2%22+%22third-party-libraries%22'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/third-party-libraries/1.9.2/third-party-libraries-1.9.2.pom | rg -n '<revision>|compress.version|commons-compress|<url>|<scm>|<version>|<description>' -C 2" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ exited 1 in 166ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 109ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 245ms:
+{
+  "total_count": 0,
+  "incomplete_results": false,
+  "items": [
+
+  ]
+}
+
+ succeeded in 246ms:
+5-  <groupId>com.clickhouse</groupId>
+6-  <artifactId>third-party-libraries</artifactId>
+7:  <version>1.9.2</version>
+8-  <packaging>pom</packaging>
+9-  <name>third-party-libraries</name>
+10:  <description>Repackaged third party libraries for JPMS compatibility</description>
+11:  <url>https://github.com/ClickHouse/clickhouse-java/tree/main/third-party-libraries</url>
+12-  <licenses>
+13-    <license>
+14-      <name>The Apache Software License, Version 2.0</name>
+15:      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+16-      <distribution>repo</distribution>
+17-    </license>
+--
+25-    </developer>
+26-  </developers>
+27:  <scm>
+28-    <connection>scm:git@github.com:ClickHouse/clickhouse-java.git</connection>
+29-    <developerConnection>scm:git@github.com:ClickHouse/clickhouse-java.git</developerConnection>
+30:    <url>https://github.com/ClickHouse/clickhouse-java</url>
+31-  </scm>
+32-</project>
+
+exec
+/usr/bin/bash -lc "unzip -p /tmp/org.apache.commons.compress-1.9.2.jar META-INF/maven/com.clickhouse/org.apache.commons.compress/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.clickhouse</groupId>
+        <artifactId>third-party-libraries</artifactId>
+        <version>1.9.2</version>
+    </parent>
+
+    <artifactId>org.apache.commons.compress</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>Repackaged Apache commons-compress as an alias</description>
+    <url>https://github.com/ClickHouse/clickhouse-java/tree/main/third-party-libraries/org.apache.commons.compress</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>org/apache/**/*.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>shade</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <createSourcesJar>false</createSourcesJar>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
+                            <module>
+                                <moduleInfoFile>src/main/java/module-info.java</moduleInfoFile>
+                            </module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+exec
+/usr/bin/bash -lc "unzip -p /tmp/org.apache.commons.compress-1.9.2.jar META-INF/MANIFEST.MF | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Created-By: Maven JAR Plugin 3.3.0
+Build-Jdk-Spec: 11
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ClickHouse/clickhouse-java/v0.6.2/pom.xml | sed -n '88,130p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+        <revision>0.6.2-SNAPSHOT</revision>
+        <project.current.year>2024</project.current.year>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <annotations-api.version>6.0.53</annotations-api.version>
+        <apache.httpclient.version>5.2.1</apache.httpclient.version>
+        <arrow.version>12.0.1</arrow.version>
+        <asm.version>9.5</asm.version>
+        <avro.version>1.11.3</avro.version>
+        <brotli.version>0.1.2</brotli.version>
+        <brotli4j.version>1.12.0</brotli4j.version>
+        <caffeine.version>3.1.7</caffeine.version>
+        <compress.version>1.26.1</compress.version>
+        <dnsjava.version>3.5.2</dnsjava.version>
+        <fastutil.version>8.5.12</fastutil.version>
+        <grpc.version>1.57.1</grpc.version>
+        <gson.version>2.10.1</gson.version>
+        <jctools.version>4.0.1</jctools.version>
+        <opencensus.version>0.31.1</opencensus.version>
+        <protobuf.version>3.23.4</protobuf.version>
+        <lz4.version>1.8.0</lz4.version>
+        <msgpack.version>0.9.5</msgpack.version>
+        <roaring-bitmap.version>0.9.47</roaring-bitmap.version>
+        <slf4j.version>2.0.7</slf4j.version>
+        <snappy.version>1.1.10.4</snappy.version>
+        <xz.version>1.9</xz.version>
+        <zstd-jni.version>1.5.5-5</zstd-jni.version>
+        <testcontainers.version>1.19.7</testcontainers.version>
+        <!-- stay 7.5 for JDK 8 support -->
+        <testng.version>7.5.1</testng.version>
+
+        <mariadb-driver.version>3.1.4</mariadb-driver.version>
+        <mysql-driver.version>8.1.0</mysql-driver.version>
+        <postgresql-driver.version>42.6.1</postgresql-driver.version>
+
+        <repackaged.version>1.9.2</repackaged.version>
+        <shade.base>${project.groupId}.client.internal</shade.base>
+
+        <antrun-plugin.version>3.1.0</antrun-plugin.version>
+        <assembly-plugin.version>3.6.0</assembly-plugin.version>
+        <clean-plugin.version>3.3.1</clean-plugin.version>
+        <compiler-plugin.version>3.13.0</compiler-plugin.version>
+
+exec
+/usr/bin/bash -lc "javap -classpath /tmp/org.apache.commons.compress-1.9.2.jar -verbose org.apache.commons.compress.archivers.ArchiveStreamFactory | rg 'major version|SourceFile|RuntimeVisibleAnnotations|Implementation|version|COMPRESS' -n -C 2" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 395ms:
+4-  Compiled from "ArchiveStreamFactory.java"
+5-public class org.apache.commons.compress.archivers.ArchiveStreamFactory implements org.apache.commons.compress.archivers.ArchiveStreamProvider
+6:  minor version: 0
+7:  major version: 52
+8-  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+9-  this_class: #9                          // org/apache/commons/compress/archivers/ArchiveStreamFactory
+--
+256-  #244 = Utf8               setEntryEncoding
+257-  #245 = Utf8               Deprecated
+258:  #246 = Utf8               RuntimeVisibleAnnotations
+259-  #247 = Utf8               Ljava/lang/Deprecated;
+260-  #248 = Utf8               lambda$putAll$4
+--
+266-  #254 = Utf8               lambda$null$0
+267-  #255 = Utf8               <clinit>
+268:  #256 = Utf8               SourceFile
+269-  #257 = Utf8               ArchiveStreamFactory.java
+270-  #258 = Utf8               org/apache/commons/compress/archivers/ArchiveStreamProvider
+--
+1608-        frame_type = 17 /* same */
+1609-    Deprecated: true
+1610:    RuntimeVisibleAnnotations:
+1611-      0: #247()
+1612-        java.lang.Deprecated
+--
+1625-        line 98: 0
+1626-}
+1627:SourceFile: "ArchiveStreamFactory.java"
+1628-InnerClasses:
+1629-  public static final #465= #464 of #468; // Lookup=class java/lang/invoke/MethodHandles$Lookup of class java/lang/invoke/MethodHandles
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2-javadoc.jar -o /tmp/org.apache.commons.compress-1.9.2-javadoc.jar && jar tf /tmp/org.apache.commons.compress-1.9.2-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2-test-sources.jar || true; curl -fsSL -I https://repo1.maven.org/maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2-tests.jar || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/ClickHouse/clickhouse-java/contents/third-party-libraries/org.apache.commons.compress/src?ref=v0.6.2' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/ClickHouse/clickhouse-java/v0.6.2/third-party-libraries/org.apache.commons.compress/src/main/java/module-info.java | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 177ms:
+[
+  {
+    "name": "main",
+    "path": "third-party-libraries/org.apache.commons.compress/src/main",
+    "sha": "efd86714fb9d5fc02c28f777ff6b9a149c2f9ad7",
+    "size": 0,
+    "url": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/third-party-libraries/org.apache.commons.compress/src/main?ref=v0.6.2",
+    "html_url": "https://github.com/ClickHouse/clickhouse-java/tree/v0.6.2/third-party-libraries/org.apache.commons.compress/src/main",
+    "git_url": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/efd86714fb9d5fc02c28f777ff6b9a149c2f9ad7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/ClickHouse/clickhouse-java/contents/third-party-libraries/org.apache.commons.compress/src/main?ref=v0.6.2",
+      "git": "https://api.github.com/repos/ClickHouse/clickhouse-java/git/trees/efd86714fb9d5fc02c28f777ff6b9a149c2f9ad7",
+      "html": "https://github.com/ClickHouse/clickhouse-java/tree/v0.6.2/third-party-libraries/org.apache.commons.compress/src/main"
+    }
+  }
+]
+
+ succeeded in 181ms:
+module org.apache.commons.compress {
+    exports org.apache.commons.compress;
+    exports org.apache.commons.compress.compressors;
+    exports org.apache.commons.compress.compressors.bzip2;
+    exports org.apache.commons.compress.compressors.deflate;
+    exports org.apache.commons.compress.compressors.gzip;
+    exports org.apache.commons.compress.compressors.lz4;
+    exports org.apache.commons.compress.compressors.snappy;
+}
+
+ succeeded in 429ms:
+META-INF/
+META-INF/MANIFEST.MF
+src/
+src/org.apache.commons.compress/
+jquery/
+jquery/external/
+jquery/external/jquery/
+jquery/jszip-utils/
+jquery/jszip-utils/dist/
+jquery/jszip/
+jquery/jszip/dist/
+resources/
+org.apache.commons.compress/
+org.apache.commons.compress/org/
+org.apache.commons.compress/org/apache/
+org.apache.commons.compress/org/apache/commons/
+org.apache.commons.compress/org/apache/commons/compress/
+org.apache.commons.compress/org/apache/commons/compress/compressors/
+org.apache.commons.compress/org/apache/commons/compress/compressors/lz4/
+org.apache.commons.compress/org/apache/commons/compress/compressors/lz4/class-use/
+org.apache.commons.compress/org/apache/commons/compress/compressors/bzip2/
+org.apache.commons.compress/org/apache/commons/compress/compressors/bzip2/class-use/
+org.apache.commons.compress/org/apache/commons/compress/compressors/snappy/
+org.apache.commons.compress/org/apache/commons/compress/compressors/snappy/class-use/
+org.apache.commons.compress/org/apache/commons/compress/compressors/gzip/
+org.apache.commons.compress/org/apache/commons/compress/compressors/gzip/class-use/
+org.apache.commons.compress/org/apache/commons/compress/compressors/deflate/
+org.apache.commons.compress/org/apache/commons/compress/compressors/deflate/class-use/
+org.apache.commons.compress/org/apache/commons/compress/compressors/class-use/
+org.apache.commons.compress/org/apache/commons/compress/class-use/
+help-doc.html
+allclasses.html
+stylesheet.css
+type-search-index.zip
+module-search-index.zip
+package-search-index.js
+allpackages-index.html
+element-list
+module-search-index.js
+member-search-index.js
+member-search-index.zip
+package-search-index.zip
+jquery/external/jquery/jquery.js
+jquery/jquery-3.6.1.min.js
+jquery/jquery-ui.min.js
+jquery/jquery-ui.min.css
+jquery/jszip-utils/dist/jszip-utils-ie.js
+jquery/jszip-utils/dist/jszip-utils.min.js
+jquery/jszip-utils/dist/jszip-utils.js
+jquery/jszip-utils/dist/jszip-utils-ie.min.js
+jquery/jszip/dist/jszip.min.js
+jquery/jszip/dist/jszip.js
+index-all.html
+index.html
+search.js
+resources/glass.png
+resources/x.png
+overview-tree.html
+constant-values.html
+allclasses-index.html
+script.js
+deprecated-list.html
+type-search-index.js
+jquery-ui.overrides.css
+org.apache.commons.compress/org/apache/commons/compress/package-use.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/package-use.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/lz4/package-use.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/lz4/package-tree.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/lz4/DummyClass.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/lz4/package-summary.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/lz4/class-use/DummyClass.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/package-tree.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/bzip2/package-use.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/bzip2/package-tree.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/bzip2/DummyClass.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/bzip2/package-summary.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/bzip2/class-use/DummyClass.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/DummyClass.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/snappy/package-use.html
+org.apache.commons.compress/org/apache/commons/compress/compressors/snappy/package-tree.html
+
+ succeeded in 539ms:
+HTTP/2 404 
+date: Sun, 03 May 2026 08:44:22 GMT
+content-type: text/html
+cf-ray: 9f5dfbc1f9d77dd2-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 08:44:23 GMT
+content-type: text/html
+cf-ray: 9f5dfbc3ea21039c-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name 'com.clickhouse*json' -print | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+
+exec
+/usr/bin/bash -lc "rg -n 'com.clickhouse:org.apache.commons.compress|org.apache.commons.compress|repository-url|source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json:2:  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2"
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:6:    "repository-url" : "https://github.com/redis/lettuce",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:6:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:33:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:51:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:66:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:21:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:22:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:6:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:36:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-$version$/activemq-client/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org/maven2/.+sources.jar|javadoc.jar|test-sources.jar|tests.jar' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-sources.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/dev.failsafe/failsafe/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/failsafe/failsafe/$version$/failsafe-$version$-sources.jar",
+metadata/dev.failsafe/failsafe/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/dev/failsafe/failsafe/$version$/failsafe-$version$-tests.jar",
+metadata/dev.failsafe/failsafe/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/failsafe/failsafe/$version$/failsafe-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:30:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:44:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-openwire-legacy/$version$/activemq-openwire-legacy-$version$-sources.jar",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-javadoc.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline-reader/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+metadata/org.jline/jline-reader/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+
+codex
+I found no Kotlin/Groovy/Scala marker and the jar contains normal JVM `.class` files, so I’m leaving `language` and `not-for-native-image` absent. For tests, I’m using `N/A`: Maven has no published tests/test-sources artifact, and the ClickHouse module at the matching release tag contains only `src/main`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+index e4d48fd464b991a1915c34fe42d1071a12f1a3f2..f5960b039f8c2850393eba4f47a4c4d370cb5ddc
+--- a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2"
++  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-javadoc.jar",
++  "description" : "This artifact repackages Apache Commons Compress under the ClickHouse group as a JPMS-compatible alias. It provides the Commons Compress APIs for reading and writing archive and compression formats such as ZIP, TAR, GZIP, BZip2, LZ4, and Snappy."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+index e4d48fd464b991a1915c34fe42d1071a12f1a3f2..f5960b039f8c2850393eba4f47a4c4d370cb5ddc
+--- a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2"
++  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-javadoc.jar",
++  "description" : "This artifact repackages Apache Commons Compress under the ClickHouse group as a JPMS-compatible alias. It provides the Commons Compress APIs for reading and writing archive and compression formats such as ZIP, TAR, GZIP, BZip2, LZ4, and Snappy."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+{
+  "coordinates": "com.clickhouse:org.apache.commons.compress:1.9.2",
+  "repository-url": "https://github.com/ClickHouse/clickhouse-java",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-javadoc.jar",
+  "description": "This artifact repackages Apache Commons Compress under the ClickHouse group as a JPMS-compatible alias. It provides the Commons Compress APIs for reading and writing archive and compression formats such as ZIP, TAR, GZIP, BZip2, LZ4, and Snappy."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2-sources.jar && curl -fsSL -I https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/1.9.2/org.apache.commons.compress-1.9.2-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+index e4d48fd464b991a1915c34fe42d1071a12f1a3f2..f5960b039f8c2850393eba4f47a4c4d370cb5ddc
+--- a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2"
++  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-javadoc.jar",
++  "description" : "This artifact repackages Apache Commons Compress under the ClickHouse group as a JPMS-compatible alias. It provides the Commons Compress APIs for reading and writing archive and compression formats such as ZIP, TAR, GZIP, BZip2, LZ4, and Snappy."
+ }
+
+ succeeded in 665ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 08:44:40 GMT
+content-type: application/java-archive
+content-length: 5754
+cf-ray: 9f5dfc324f6001f8-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "66a8bb6f1be69cb8f69097939d1f346f"
+last-modified: Thu, 03 Aug 2023 13:45:58 GMT
+x-checksum-md5: 66a8bb6f1be69cb8f69097939d1f346f
+x-checksum-sha1: 9317f2a0b0a36653e3e08a2129fefc6d10e78682
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 08:44:41 GMT
+content-type: application/java-archive
+content-length: 352013
+cf-ray: 9f5dfc3499f5bb15-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "7e9b4f68e4d2f80ed257454cb20f7373"
+last-modified: Thu, 03 Aug 2023 13:45:59 GMT
+x-checksum-md5: 7e9b4f68e4d2f80ed257454cb20f7373
+x-checksum-sha1: 5b83ac87361d6ba2a45cc3186b76fd89e80f3230
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+index e4d48fd464b991a1915c34fe42d1071a12f1a3f2..f5960b039f8c2850393eba4f47a4c4d370cb5ddc
+--- a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2"
++  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-javadoc.jar",
++  "description" : "This artifact repackages Apache Commons Compress under the ClickHouse group as a JPMS-compatible alias. It provides the Commons Compress APIs for reading and writing archive and compression formats such as ZIP, TAR, GZIP, BZip2, LZ4, and Snappy."
+ }
+
+ succeeded in 216ms:
+web search: 
+web search: https://github.com/ClickHouse/clickhouse-java/tree/v0.6.2/third-party-libraries/org.apache.commons.compress
+web search: 
+web search: repo.maven.apache.org com/clickhouse/org.apache.commons.compress/1.9.2 org.apache.commons.compress-1.9.2-javadoc.jar sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/com.clickhouse/org.apache.commons.compress
+codex
+Updated [com.clickhouse-org.apache.commons.compress-1.9.2.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json).
+
+Set the repository root to ClickHouse’s `clickhouse-java`, used Maven Central source and javadoc jars with `$version$`, and set `test-code-url` to `N/A` because no Maven test artifact exists and the matching ClickHouse module listing only exposes `src/main`. The artifact is a JVM jar, not Kotlin/Groovy/Scala-specific, so I left `language` and `not-for-native-image` absent. ([central.sonatype.com](https://central.sonatype.com/artifact/com.clickhouse/org.apache.commons.compress))
+
+Verified the JSON with `jq` and checked the Maven source/javadoc URLs return `200`.
+diff --git a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+index e4d48fd464b991a1915c34fe42d1071a12f1a3f2..f5960b039f8c2850393eba4f47a4c4d370cb5ddc
+--- a/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
++++ b/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2"
++  "coordinates" : "com.clickhouse:org.apache.commons.compress:1.9.2",
++  "repository-url" : "https://github.com/ClickHouse/clickhouse-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/clickhouse/org.apache.commons.compress/$version$/org.apache.commons.compress-$version$-javadoc.jar",
++  "description" : "This artifact repackages Apache Commons Compress under the ClickHouse group as a JPMS-compatible alias. It provides the Commons Compress APIs for reading and writing archive and compression formats such as ZIP, TAR, GZIP, BZip2, LZ4, and Snappy."
+ }
+
+tokens used
+82,354
+Updated [com.clickhouse-org.apache.commons.compress-1.9.2.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498/build/discovered-artifact-metadata/com.clickhouse-org.apache.commons.compress-1.9.2.json).
+
+Set the repository root to ClickHouse’s `clickhouse-java`, used Maven Central source and javadoc jars with `$version$`, and set `test-code-url` to `N/A` because no Maven test artifact exists and the matching ClickHouse module listing only exposes `src/main`. The artifact is a JVM jar, not Kotlin/Groovy/Scala-specific, so I left `language` and `not-for-native-image` absent. ([central.sonatype.com](https://central.sonatype.com/artifact/com.clickhouse/org.apache.commons.compress))
+
+Verified the JSON with `jq` and checked the Maven source/javadoc URLs return `200`.
+Ran agent for com.clickhouse:org.apache.commons.compress:1.9.2 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498/build/agent-artifact-discovery-logs/com.clickhouse-org.apache.commons.compress-1.9.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4747-4d5e6498/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 5s
+9 actionable tasks: 4 executed, 5 from cache
