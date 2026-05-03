@@ -202,6 +202,17 @@ public class AnnotationsTest {
                         ThreadSafe.class);
     }
 
+    @Test
+    void sdkTestInternalAnnotationsCanDocumentGeneratedFixtureFactories() {
+        GeneratedFixtureFactory factory = new GeneratedFixtureFactory("aws-sdk-java");
+
+        GeneratedFixture fixture = factory.create("annotations-contract");
+
+        assertThat(factory.generator()).isEqualTo("aws-sdk-java");
+        assertThat(fixture.displayName()).isEqualTo("aws-sdk-java:annotations-contract");
+        assertThat(fixture.rebuildToken()).isEqualTo("rebuild-annotations-contract");
+    }
+
     @NotNull
     @Generated("metadata-contract")
     @interface MetadataContract {
@@ -313,6 +324,54 @@ public class AnnotationsTest {
         @Generated(value = "smithy-codegen", comments = "release-candidate fixture")
         String generatedDescription(String generator) {
             return generator + ":" + name;
+        }
+    }
+
+    @SdkTestInternalApi
+    @Generated(value = "test-fixture-generator", comments = "exercise type-level generated metadata")
+    static final class GeneratedFixtureFactory {
+        @SdkTestInternalApi
+        @Generated(value = "generator-field", comments = "test fixture state")
+        private final String generator;
+
+        @NotNull
+        @SdkTestInternalApi
+        @Generated(value = "factory-constructor", comments = "test fixture construction")
+        GeneratedFixtureFactory(@Generated("generator-parameter") @NotNull String generator) {
+            this.generator = generator;
+        }
+
+        @SdkTestInternalApi
+        String generator() {
+            return generator;
+        }
+
+        @SdkTestInternalApi
+        @Generated(value = "fixture-factory", comments = "test fixture creation")
+        GeneratedFixture create(@Generated("fixture-name") @NotNull String name) {
+            return new GeneratedFixture(generator, name);
+        }
+    }
+
+    @SdkTestInternalApi
+    static final class GeneratedFixture {
+        private final String generator;
+        private final String name;
+
+        @SdkTestInternalApi
+        GeneratedFixture(String generator, String name) {
+            this.generator = generator;
+            this.name = name;
+        }
+
+        @SdkTestInternalApi
+        String displayName() {
+            return generator + ":" + name;
+        }
+
+        @SdkTestInternalApi
+        String rebuildToken() {
+            return "rebuild-" + name;
         }
     }
 }
