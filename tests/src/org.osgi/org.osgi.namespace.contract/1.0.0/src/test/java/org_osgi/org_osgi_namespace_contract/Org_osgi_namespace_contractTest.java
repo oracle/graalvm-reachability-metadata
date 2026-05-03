@@ -207,6 +207,21 @@ public class Org_osgi_namespace_contractTest {
     }
 
     @Test
+    void frameworkFilterMatchesVersionTypedContractAttribute() throws Exception {
+        SyntheticResource resource = new SyntheticResource();
+        resource.addContractCapability(JAKARTA_SERVLET_CONTRACT, "4.0.0", Map.of());
+        Capability compatibleContract = resource.addContractCapability(JAKARTA_SERVLET_CONTRACT, "5.0.0", Map.of());
+        resource.addContractCapability(JAKARTA_SERVLET_CONTRACT, "6.0.0", Map.of());
+        resource.addContractCapability(JAX_RS_CONTRACT, "5.0.0", Map.of());
+        Requirement requirement = resource.addRequirement(
+                ContractNamespace.CONTRACT_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE, contractFilter(JAKARTA_SERVLET_CONTRACT, "5.0.0", "6.0.0")),
+                Map.of());
+
+        assertThat(contractCapabilitiesMatchingFilter(resource, requirement)).containsExactly(compatibleContract);
+    }
+
+    @Test
     void qualifiedContractVersionParticipatesInVersionRangeSelection() {
         SyntheticResource resource = new SyntheticResource();
         resource.addContractCapability(CDI_CONTRACT, "4.0.0", Map.of());
