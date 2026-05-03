@@ -31,6 +31,7 @@ import com.google.iam.v1.TestIamPermissionsRequest;
 import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.iam.v1.logging.AuditData;
 import com.google.iam.v1.logging.AuditDataProto;
+import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.Descriptors;
@@ -207,6 +208,27 @@ public class Proto_google_iam_v1Test {
         assertThat(PolicyDelta.parseFrom(delta.toByteArray())).isEqualTo(delta);
         assertThat(AuditData.parseFrom(auditData.toByteArray())).isEqualTo(auditData);
         assertThat(AuditData.parser().parseFrom(ByteString.copyFrom(auditData.toByteArray()))).isEqualTo(auditData);
+    }
+
+    @Test
+    void auditDataPacksIntoAnyServiceDataAndUnpacksByTypeUrl() throws Exception {
+        PolicyDelta policyDelta = PolicyDelta.newBuilder()
+                .addBindingDeltas(BindingDelta.newBuilder()
+                        .setAction(BindingDelta.Action.ADD)
+                        .setRole("roles/iam.securityReviewer")
+                        .setMember("group:security@example.com"))
+                .build();
+        AuditData auditData = AuditData.newBuilder()
+                .setPolicyDelta(policyDelta)
+                .build();
+
+        Any serviceData = Any.pack(auditData);
+
+        assertThat(serviceData.getTypeUrl()).isEqualTo("type.googleapis.com/google.iam.v1.logging.AuditData");
+        assertThat(serviceData.is(AuditData.class)).isTrue();
+        assertThat(serviceData.unpack(AuditData.class)).isEqualTo(auditData);
+        assertThat(serviceData.unpack(AuditData.class).getPolicyDelta().getBindingDeltas(0).getMember())
+                .isEqualTo("group:security@example.com");
     }
 
     @Test
