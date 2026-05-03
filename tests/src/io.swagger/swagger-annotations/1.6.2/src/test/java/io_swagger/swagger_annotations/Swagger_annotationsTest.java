@@ -221,6 +221,22 @@ public class Swagger_annotationsTest {
     }
 
     @Test
+    void methodParameterAnnotationsRetainRequestParameterMetadata() throws NoSuchMethodException {
+        Method findPets = PetResource.class.getDeclaredMethod("findPets", String.class, int.class);
+
+        ApiParam limit = findPets.getParameters()[1].getAnnotation(ApiParam.class);
+
+        assertThat(limit).isNotNull();
+        assertThat(limit.name()).isEqualTo("limit");
+        assertThat(limit.value()).isEqualTo("Maximum result count");
+        assertThat(limit.defaultValue()).isEqualTo("10");
+        assertThat(limit.allowableValues()).isEqualTo("range[1,100]");
+        assertThat(limit.required()).isTrue();
+        assertThat(limit.type()).isEqualTo("integer");
+        assertThat(limit.format()).isEqualTo("int32");
+    }
+
+    @Test
     void enumHelpersResolveWireValuesAndPreserveDeclarationOrder() {
         assertThat(ApiKeyAuthDefinition.ApiKeyLocation.HEADER.toValue()).isEqualTo("header");
         assertThat(ApiKeyAuthDefinition.ApiKeyLocation.QUERY.toValue()).isEqualTo("query");
