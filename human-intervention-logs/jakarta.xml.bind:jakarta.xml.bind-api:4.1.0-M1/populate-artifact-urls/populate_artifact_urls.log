@@ -1,0 +1,1398 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dece1-027b-70b0-803a-1b4fa6b23f28
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.1.0-M1" when "$version$" is replaced with "4.1.0-M1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+- Entry selector: "metadata-version" = "4.1.0-M1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing version "4.1.0-M1".
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "4.1.0-M1".
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "4.1.0-M1".
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for entry metadata-version "4.1.0-M1" and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 4.1.0-M1
+- Entry metadata-version: 4.1.0-M1
+- Entry test-version: 4.1.0-M1
+codex
+I’ll verify the artifact and versioned URLs first, then patch only the missing JSON fields for the `4.1.0-M1` entry. After that I’ll validate the JSON shape so the metadata stays mechanically clean.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"4\\.1\\.0-M1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+4:    "metadata-version" : "4.1.0-M1",
+28:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+29:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-api",
+30:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/$version$/jakarta.xml.bind-api-test-$version$-sources.jar",
+31:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
+32:    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"|\"source-code-url\"|\"test-code-url\"' metadata/jakarta.xml.bind metadata/jakarta.* metadata/javax.xml.bind 2>/dev/null" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+metadata/javax.xml.bind/jaxb-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/$version$/jaxb-api-$version$-sources.jar",
+metadata/javax.xml.bind/jaxb-api/index.json:7:    "test-code-url" : "https://github.com/javaee/jaxb-spec/tree/$version$/jaxb-api-test/src/test",
+metadata/javax.xml.bind/jaxb-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/$version$/jaxb-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:21:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:36:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:50:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-javadoc.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:28:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:30:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/$version$/jakarta.xml.bind-api-test-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:31:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
+metadata/jakarta.inject/jakarta.inject-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/$version$/jakarta.inject-api-$version$-sources.jar",
+metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.inject/jakarta.inject-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/$version$/jakarta.inject-api-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:24:    "test-code-url" : "N/A",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/cdi-tck-lang-model/$version$/cdi-tck-lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-javadoc.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:25:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/cdi-tck-lang-model/$version$/cdi-tck-lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-javadoc.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:28:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:30:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/$version$/jakarta.xml.bind-api-test-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:31:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/$version$/jakarta.validation-api-$version$-sources.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/$version$/jakarta.validation-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:6:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:21:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/messaging/3.0/jakarta-messaging-tck-$version$.zip",
+metadata/jakarta.jms/jakarta.jms-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:22:    "test-code-url" : "N/A",
+metadata/jakarta.jms/jakarta.jms-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/$version$/persistence-tck-dist-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/$version$/persistence-tck-dist-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:35:    "test-code-url" : "https://download.eclipse.org/jakartaee/persistence/3.2/jakarta-persistence-tck-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:47:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "test-code-url" : "N/A",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:50:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+
+codex
+The file already has URL templates later in the same index, but I need to confirm whether those belong to a different metadata entry before touching the requested `4.1.0-M1` object. I’m checking the actual JSON structure and the rendered Maven URLs now.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.1.0-M1",
+    "tested-versions" : [
+      "4.1.0-M1"
+    ],
+    "allowed-packages" : [
+      "jakarta.xml.bind"
+    ]
+  },
+  {
+    "metadata-version" : "4.0.0",
+    "tested-versions" : [
+      "4.0.0",
+      "4.0.1",
+      "4.0.2",
+      "4.0.3",
+      "4.0.4",
+      "4.0.5"
+    ],
+    "allowed-packages" : [
+      "jakarta.xml.bind"
+    ]
+  },
+  {
+    "metadata-version" : "3.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-api",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/$version$/jakarta.xml.bind-api-test-$version$-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
+    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+    "tested-versions" : [
+      "3.0.0",
+      "3.0.1"
+    ],
+    "allowed-packages" : [
+      "jakarta.xml.bind"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "for u in \\
+'https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1-sources.jar' \\
+'https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1-javadoc.jar' \\
+'https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/4.1.0-M1/jakarta.xml.bind-api-test-4.1.0-M1-sources.jar' \\
+'https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/4.1.0-M1/jakarta.xml.bind-api-test-4.1.0-M1.jar' \\
+'https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1.pom'; do code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u"); printf '"'%s %s\\n' \""'$code" "$u"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 820ms:
+200 https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1-javadoc.jar
+404 https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/4.1.0-M1/jakarta.xml.bind-api-test-4.1.0-M1-sources.jar
+404 https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/4.1.0-M1/jakarta.xml.bind-api-test-4.1.0-M1.jar
+200 https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1.pom
+
+web search: 
+web search: jakarta.xml.bind-api 4.1.0-M1 Maven Central
+web search: 
+web search: https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/
+web search: 
+web search: repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1.pom
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json</a>      2026-05-02 19:08      5762      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.asc" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.asc">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json....</a>  2026-05-02 19:08       833      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.md5" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.md5">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json....</a>  2026-05-02 19:08        32      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.sha1" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.sha1">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json....</a>  2026-05-02 19:08        40      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.sha256" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.sha256">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json....</a>  2026-05-02 19:08        64      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.sha512" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json.sha512">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.json....</a>  2026-05-02 19:08       128      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml</a>       2026-05-02 19:08      5156      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.asc" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.asc">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.a...</a>  2026-05-02 19:08       833      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.md5" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.md5">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.m...</a>  2026-05-02 19:08        32      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.sha1" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.sha1">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.s...</a>  2026-05-02 19:08        40      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.sha256" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.sha256">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.s...</a>  2026-05-02 19:08        64      
+<a href="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.sha512" title="jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.sha512">jakarta.xml.bind-api-4.1.0-M1-cyclonedx.xml.s...</a>  2026-05-02 19:08       128      
+<a href="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar" title="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar">jakarta.xml.bind-api-4.1.0-M1-javadoc.jar</a>         2026-05-02 19:08    506760      
+<a href="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.asc" title="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.asc">jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.asc</a>     2026-05-02 19:08       833      
+<a href="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.md5" title="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.md5">jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.md5</a>     2026-05-02 19:08        32      
+<a href="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.sha1" title="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.sha1">jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.sha...</a>  2026-05-02 19:08        40      
+<a href="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.sha256" title="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.sha256">jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.sha...</a>  2026-05-02 19:08        64      
+<a href="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.sha512" title="jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.sha512">jakarta.xml.bind-api-4.1.0-M1-javadoc.jar.sha...</a>  2026-05-02 19:08       128      
+<a href="jakarta.xml.bind-api-4.1.0-M1-sources.jar" title="jakarta.xml.bind-api-4.1.0-M1-sources.jar">jakarta.xml.bind-api-4.1.0-M1-sources.jar</a>         2026-05-02 19:08    200126      
+<a href="jakarta.xml.bind-api-4.1.0-M1-sources.jar.asc" title="jakarta.xml.bind-api-4.1.0-M1-sources.jar.asc">jakarta.xml.bind-api-4.1.0-M1-sources.jar.asc</a>     2026-05-02 19:08       833      
+<a href="jakarta.xml.bind-api-4.1.0-M1-sources.jar.md5" title="jakarta.xml.bind-api-4.1.0-M1-sources.jar.md5">jakarta.xml.bind-api-4.1.0-M1-sources.jar.md5</a>     2026-05-02 19:08        32      
+<a href="jakarta.xml.bind-api-4.1.0-M1-sources.jar.sha1" title="jakarta.xml.bind-api-4.1.0-M1-sources.jar.sha1">jakarta.xml.bind-api-4.1.0-M1-sources.jar.sha...</a>  2026-05-02 19:08        40      
+<a href="jakarta.xml.bind-api-4.1.0-M1-sources.jar.sha256" title="jakarta.xml.bind-api-4.1.0-M1-sources.jar.sha256">jakarta.xml.bind-api-4.1.0-M1-sources.jar.sha...</a>  2026-05-02 19:08        64      
+<a href="jakarta.xml.bind-api-4.1.0-M1-sources.jar.sha512" title="jakarta.xml.bind-api-4.1.0-M1-sources.jar.sha512">jakarta.xml.bind-api-4.1.0-M1-sources.jar.sha...</a>  2026-05-02 19:08       128      
+<a href="jakarta.xml.bind-api-4.1.0-M1.jar" title="jakarta.xml.bind-api-4.1.0-M1.jar">jakarta.xml.bind-api-4.1.0-M1.jar</a>                 2026-05-02 19:08    132549      
+<a href="jakarta.xml.bind-api-4.1.0-M1.jar.asc" title="jakarta.xml.bind-api-4.1.0-M1.jar.asc">jakarta.xml.bind-api-4.1.0-M1.jar.asc</a>             2026-05-02 19:08       833      
+<a href="jakarta.xml.bind-api-4.1.0-M1.jar.md5" title="jakarta.xml.bind-api-4.1.0-M1.jar.md5">jakarta.xml.bind-api-4.1.0-M1.jar.md5</a>             2026-05-02 19:08        32      
+<a href="jakarta.xml.bind-api-4.1.0-M1.jar.sha1" title="jakarta.xml.bind-api-4.1.0-M1.jar.sha1">jakarta.xml.bind-api-4.1.0-M1.jar.sha1</a>            2026-05-02 19:08        40      
+<a href="jakarta.xml.bind-api-4.1.0-M1.jar.sha256" title="jakarta.xml.bind-api-4.1.0-M1.jar.sha256">jakarta.xml.bind-api-4.1.0-M1.jar.sha256</a>          2026-05-02 19:08        64      
+<a href="jakarta.xml.bind-api-4.1.0-M1.jar.sha512" title="jakarta.xml.bind-api-4.1.0-M1.jar.sha512">jakarta.xml.bind-api-4.1.0-M1.jar.sha512</a>          2026-05-02 19:08       128      
+<a href="jakarta.xml.bind-api-4.1.0-M1.pom" title="jakarta.xml.bind-api-4.1.0-M1.pom">jakarta.xml.bind-api-4.1.0-M1.pom</a>                 2026-05-02 19:08     12780      
+<a href="jakarta.xml.bind-api-4.1.0-M1.pom.asc" title="jakarta.xml.bind-api-4.1.0-M1.pom.asc">jakarta.xml.bind-api-4.1.0-M1.pom.asc</a>             2026-05-02 19:08       833      
+<a href="jakarta.xml.bind-api-4.1.0-M1.pom.md5" title="jakarta.xml.bind-api-4.1.0-M1.pom.md5">jakarta.xml.bind-api-4.1.0-M1.pom.md5</a>             2026-05-02 19:08        32      
+<a href="jakarta.xml.bind-api-4.1.0-M1.pom.sha1" title="jakarta.xml.bind-api-4.1.0-M1.pom.sha1">jakarta.xml.bind-api-4.1.0-M1.pom.sha1</a>            2026-05-02 19:08        40      
+<a href="jakarta.xml.bind-api-4.1.0-M1.pom.sha256" title="jakarta.xml.bind-api-4.1.0-M1.pom.sha256">jakarta.xml.bind-api-4.1.0-M1.pom.sha256</a>          2026-05-02 19:08        64      
+<a href="jakarta.xml.bind-api-4.1.0-M1.pom.sha512" title="jakarta.xml.bind-api-4.1.0-M1.pom.sha512">jakarta.xml.bind-api-4.1.0-M1.pom.sha512</a>          2026-05-02 19:08       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation.
+    Copyright (c) 2018, 2023 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>jakarta.xml.bind-api-parent</artifactId>
+        <groupId>jakarta.xml.bind</groupId>
+        <version>4.1.0-M1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>jakarta.xml.bind-api</artifactId>
+    <packaging>jar</packaging>
+    <name>Jakarta XML Binding API</name>
+
+    <properties>
+        <config.dir>${project.basedir}/../etc/config</config.dir>
+        <legal.doc.source>${project.basedir}/..</legal.doc.source>
+        <spotbugs.exclude>${project.basedir}/../etc/spotbugs-exclude.xml</spotbugs.exclude>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <configuration>
+                        <rules>
+                            <requireJavaVersion>
+                                <version>[11,)</version>
+                            </requireJavaVersion>
+                            <requireMavenVersion>
+                                <version>[3.6.0,)</version>
+                            </requireMavenVersion>
+                            <DependencyConvergence/>
+                        </rules>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <configuration>
+                        <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                        <shortRevisionLength>7</shortRevisionLength>
+                        <revisionOnScmFailure>false</revisionOnScmFailure>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <failOnWarnings>true</failOnWarnings>
+                        <doclint>all,-missing</doclint>
+                        <quiet>true</quiet>
+                        <nodeprecated>false</nodeprecated>
+                        <notimestamp>true</notimestamp>
+                        <nosince>true</nosince>
+                        <use>false</use>
+                        <author>true</author>
+                        <version>true</version>
+                        <description>Jakarta XML Binding API documentation</description>
+                        <doctitle>Jakarta XML Binding API documentation</doctitle>
+                        <windowtitle>Jakarta XML Binding API documentation</windowtitle>
+                        <header><![CDATA[Jakarta XML Binding<br>v${project.version}]]>
+                        </header>
+                        <bottom>
+                            <![CDATA[
+Comments to : <a href="mailto:${release.spec.feedback}">${release.spec.feedback}</a>.<br>
+Copyright &#169; 2019, ${current.year} Eclipse Foundation. All rights reserved.<br>
+Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">license terms</a>.]]>
+                        </bottom>
+                        <detectJavaApiLink>false</detectJavaApiLink>
+                        <docfilessubdirs>true</docfilessubdirs>
+                        <groups>
+                            <group>
+                                <title>Jakarta XML Binding API Packages</title>
+                                <packages>jakarta.xml.bind*</packages>
+                            </group>
+                        </groups>
+                        <tags>
+                            <tag>
+                                <name>apiNote</name>
+                                <!-- todo tag for all places -->
+                                <placement>a</placement>
+                                <head>API Note:</head>
+                            </tag>
+                            <tag>
+                                <name>implSpec</name>
+                                <!-- todo tag for all places -->
+                                <placement>a</placement>
+                                <head>Implementation Requirements:</head>
+                            </tag>
+                            <tag>
+                                <name>implNote</name>
+                                <!-- todo tag for all places -->
+                                <placement>a</placement>
+                                <head>Implementation Note:</head>
+                            </tag>
+                        </tags>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>currentyear-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>current.year</name>
+                            <locale>en,US</locale>
+                            <pattern>yyyy</pattern>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-legal-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${legal.doc.source}</directory>
+                                    <includes>
+                                        <include>NOTICE.md</include>
+                                        <include>LICENSE.md</include>
+                                    </includes>
+                                    <targetPath>META-INF</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                        <arg>-Xdoclint:all,-missing</arg>
+                    </compilerArgs>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <addDefaultEntries>false</addDefaultEntries>
+                                </manifest>
+                            </archive>
+                            <niceManifest>true</niceManifest>
+
+exec
+/usr/bin/bash -lc "curl -L -s 'https://api.github.com/repos/eclipse-ee4j/jaxb-api/tags?per_page=100' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+{"message":"API rate limit exceeded for 213.55.246.60. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)","documentation_url":"https://docs.github.com/rest/overview/resources-in-the-rest-api#rate-limiting"}
+
+exec
+/usr/bin/bash -lc "for url in 'https://github.com/eclipse-ee4j/jaxb-api' 'https://github.com/jakartaee/jaxb-api'; do printf '%s -> ' \""'$url"; curl -L -s -o /dev/null -w '"'%{url_effective} %{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 1122ms:
+https://github.com/jakartaee/jaxb-api 200
+https://github.com/jakartaee/jaxb-api -> https://github.com/jakartaee/jaxb-api 200
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/jakarta/xml/bind/ | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/xml/bind</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/xml/bind</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.xml.bind-api/" title="jakarta.xml.bind-api/">jakarta.xml.bind-api/</a>                                            -         -      
+<a href="jakarta.xml.bind-api-parent/" title="jakarta.xml.bind-api-parent/">jakarta.xml.bind-api-parent/</a>                                     -         -      
+<a href="jakarta.xml.bind-api-test/" title="jakarta.xml.bind-api-test/">jakarta.xml.bind-api-test/</a>                                       -         -      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-parent/4.1.0-M1/jakarta.xml.bind-api-parent-4.1.0-M1.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+
+    Copyright (c) 2026 Contributors to the Eclipse Foundation.
+    Copyright (c) 1997, 2025 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>2.0.2</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>jakarta.xml.bind</groupId>
+    <artifactId>jakarta.xml.bind-api-parent</artifactId>
+    <version>4.1.0-M1</version>
+    <packaging>pom</packaging>
+    <name>Jakarta XML Binding</name>
+    <description>Jakarta XML Binding API</description>
+    <url>https://github.com/jakartaee/jaxb-api</url>
+
+    <scm>
+        <connection>scm:git:git://github.com/jakartaee/jaxb-api.git</connection>
+        <developerConnection>scm:git:git@github.com:jakartaee/jaxb-api.git</developerConnection>
+        <url>https://github.com/jakartaee/jaxb-api.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Eclipse Distribution License - v 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Roman Grigoriadi</name>
+            <email>roman.grigoriadi@oracle.com</email>
+            <organization>Oracle Corporation</organization>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/jakartaee/jaxb-api/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Jakarta XML Binding mailing list</name>
+            <post>jaxb-dev@eclipse.org</post>
+            <subscribe>https://accounts.eclipse.org/mailing-list/jaxb-dev</subscribe>
+            <unsubscribe>https://accounts.eclipse.org/mailing-list/jaxb-dev</unsubscribe>
+            <archive>https://dev.eclipse.org/mhonarc/lists/jaxb-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <properties>
+        <copyright.exclude>${config.dir}/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>true</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.templatefile>${config.dir}/edl-copyright.txt</copyright.templatefile>
+        <copyright.update>false</copyright.update>
+        <spotbugs.skip>false</spotbugs.skip>
+        <spotbugs.threshold>Low</spotbugs.threshold>
+        <spotbugs.version>4.9.8.3</spotbugs.version>
+
+        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.testRelease>${maven.compiler.release}</maven.compiler.testRelease>
+
+        <release.spec.feedback>jaxb-dev@eclipse.org</release.spec.feedback>
+        <release.spec.date>Mar 2022</release.spec.date>
+        <api.package>jakarta.xml.bind</api.package>
+        <extension.name>jakarta.xml.bind</extension.name>
+        <spec.version>4.1</spec.version>
+        <activation.version>2.2.0-M2</activation.version>
+        <junit.version>6.0.3</junit.version>
+        <config.dir>${project.basedir}/etc/config</config.dir>
+        <vendor.name>Eclipse Foundation</vendor.name>
+    </properties>
+
+    <modules>
+        <module>api</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${activation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.6.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.15.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.5.5</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.12.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.6.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>6.0.2</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.1.4</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.10.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.copyright</groupId>
+                <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                <configuration>
+                    <templateFile>${copyright.templatefile}</templateFile>
+                    <excludeFile>${copyright.exclude}</excludeFile>
+                    <!-- skip files not under SCM-->
+                    <scmOnly>${copyright.scmonly}</scmOnly>
+                    <!-- for use with repair -->
+                    <update>${copyright.update}</update>
+                    <!-- check that year is correct -->
+                    <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                    <quiet>false</quiet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>test</id>
+            <modules>
+                <module>jaxb-api-test</module>
+            </modules>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jakartaee/jaxb-api.git | rg '4\\.1\\.0|4\\.1|4_1|jakarta|jaxb|M1|m1'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 338ms:
+db99d9fa59e4a5355099e7c3ae3046b40e16e49a	refs/tags/4.1.0-M1
+c783ff2bca396c5dc595969b640774e5d18d10b1	refs/tags/4.1.0-M1^{}
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/xml/bind/jakarta.xml.bind-api-test</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/xml/bind/jakarta.xml.bind-api-test</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="2.3.2/" title="2.3.2/">2.3.2/</a>                                            2018-12-27 15:31         -      
+<a href="2.3.3/" title="2.3.3/">2.3.3/</a>                                            2020-01-27 09:35         -      
+<a href="3.0.0/" title="3.0.0/">3.0.0/</a>                                            2020-09-23 11:14         -      
+<a href="3.0.0-RC1/" title="3.0.0-RC1/">3.0.0-RC1/</a>                                        2020-02-07 11:19         -      
+<a href="3.0.0-RC2/" title="3.0.0-RC2/">3.0.0-RC2/</a>                                        2020-03-23 15:44         -      
+<a href="3.0.0-RC3/" title="3.0.0-RC3/">3.0.0-RC3/</a>                                        2020-03-31 09:35         -      
+<a href="3.0.1/" title="3.0.1/">3.0.1/</a>                                            2021-03-22 19:18         -      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2021-04-27 11:28       546      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2021-04-27 11:28        32      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2021-04-27 11:28        40      
+<a href="maven-metadata.xml.sha256" title="maven-metadata.xml.sha256">maven-metadata.xml.sha256</a>                         2021-04-27 11:28        64      
+<a href="maven-metadata.xml.sha512" title="maven-metadata.xml.sha512">maven-metadata.xml.sha512</a>                         2021-04-27 11:28       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "for url in \\
+'https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test/src/test' \\
+'https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test' \\
+'https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test' \\
+'https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test/java' \\
+'https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test' ; do code="'$(curl -L -s -o /dev/null -w '"'%{http_code} %{url_effective}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/jakartaee/jaxb-api.git | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 293ms:
+ccda7b475485e783b76183e66c0a465463e9e176	refs/heads/4.0.0-RC2-RELEASE
+73459167514e00986f191993ddc307740cb4b416	refs/heads/4.0.0-RC3-RELEASE
+01cd0e800da19a23824ec92b63427b2e4ce170c2	refs/heads/4.0.0-RELEASE
+f4475d2179945a3e9ab206e2bda1ac94e12a5c17	refs/heads/4.0.1-RELEASE
+6088c626236ba8978f8fd95c4c14edb17aaec9dd	refs/heads/4.0.2-RELEASE
+dee2c19078544580b90f0b6085be0991f345e8ee	refs/heads/EE10_11
+2b4e9545fb836e9ed4752e01bcab5bbdac8355e2	refs/heads/EE4J_8
+40b4c5c2ac90ffa43d182ec07121b15beb1d5efa	refs/heads/main
+
+ succeeded in 2744ms:
+200 https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test/src/test https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test/src/test
+200 https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test
+200 https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test
+200 https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test/java https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test/java
+200 https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test
+
+codex
+Maven Central has the API sources and Javadoc for `4.1.0-M1`, but the old Maven-hosted `jakarta.xml.bind-api-test` template stops at `3.0.1`, so I’m switching the test URL to the version tag in the canonical GitHub repository. The tag `4.1.0-M1` exists and GitHub resolves the test paths under it.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -L -s -o "$tmp/jaxb.zip" https://codeload.github.com/jakartaee/jaxb-api/zip/refs/tags/4.1.0-M1; unzip -Z1 "$tmp/jaxb.zip" | rg '"'("'^|/)src/test/|jaxb-api-test'"' | sed -n '1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+exec
+/usr/bin/bash -lc "for u in \\
+'https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1' \\
+'https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test/src/test' \\
+'https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test/java'; do curl -L -s \""'$u" | rg -m1 '"'title=\"Page not found|Not Found|jaxb-api-test|api/src/test|Jakarta XML Binding|github.com/jakartaee/jaxb-api' || true; printf 'checked %s\\n' \""'$u"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 361ms:
+jaxb-api-4.1.0-M1/api/src/test/
+jaxb-api-4.1.0-M1/api/src/test/java/
+jaxb-api-4.1.0-M1/api/src/test/java/org/
+jaxb-api-4.1.0-M1/api/src/test/java/org/eclipse/
+jaxb-api-4.1.0-M1/api/src/test/java/org/eclipse/jaxb/
+jaxb-api-4.1.0-M1/api/src/test/java/org/eclipse/jaxb/api/
+jaxb-api-4.1.0-M1/api/src/test/java/org/eclipse/jaxb/api/DatatypeConverterTest.java
+jaxb-api-4.1.0-M1/jaxb-api-test/
+jaxb-api-4.1.0-M1/jaxb-api-test/pom.xml
+jaxb-api-4.1.0-M1/jaxb-api-test/src/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/java/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/java/jakarta/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/java/jakarta/xml/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/java/jakarta/xml/bind/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/java/jakarta/xml/bind/tests/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/java/jakarta/xml/bind/tests/SampleTest.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/javadoc/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/javadoc/doc-files/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/main/javadoc/doc-files/speclicense.html
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jakarta/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jakarta/xml/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jakarta/xml/bind/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jakarta/xml/bind/test/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jakarta/xml/bind/test/JAXBContextOldParameterized.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jakarta/xml/bind/test/JAXBContextServiceProviderNPETest.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jakarta/xml/bind/test/JAXBContextTest.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jakarta/xml/bind/test/JAXBContextWrapExceptionTest.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/legacy/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/legacy/Invalid.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/legacy/Valid.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/legacy/Valid2.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/legacy/Valid3.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/spi/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/spi/Invalid.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/spi/Valid.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/spi/Valid2.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/factory/spi/Valid3.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/test/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/test/usr/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/java/jaxb/test/usr/A.java
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/jakarta/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/jakarta/xml/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/jakarta/xml/bind/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/jakarta/xml/bind/test/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/jakarta/xml/bind/test/allScenarios.csv
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/jaxb/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/jaxb/test/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/jaxb/test/usr/
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/jaxb/test/usr/jaxb.index
+jaxb-api-4.1.0-M1/jaxb-api-test/src/test/resources/logging.properties
+
+ succeeded in 851ms:
+    <meta name="apple-itunes-app" content="app-id=1477376905, app-argument=https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1" />
+checked https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1
+  <title>jaxb-api/jaxb-api-test/src/test at 4.1.0-M1 · jakartaee/jaxb-api · GitHub</title>
+checked https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test/src/test
+  <title>jaxb-api/api/src/test/java at 4.1.0-M1 · jakartaee/jaxb-api · GitHub</title>
+checked https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/api/src/test/java
+
+codex
+I’m going to add the verified Maven source/Javadoc templates, canonical GitHub repo root, GitHub-tagged test suite path, and the two-sentence description to only the `4.1.0-M1` object. I’ll leave `language` absent because this is not one of the Kotlin, Groovy, or Scala language-specific library cases.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+diff --git a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+index 46991cd34e5dd5f52fd4c0244fadace56dc4f646..6c3339f8892e6a62acd2bdd286330708f0dd596d
+--- a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
++++ b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.1.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaxb-api",
++    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
++    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+     "tested-versions" : [
+       "4.1.0-M1"
+     ],
+
+diff --git a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+index 46991cd34e5dd5f52fd4c0244fadace56dc4f646..6c3339f8892e6a62acd2bdd286330708f0dd596d
+--- a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
++++ b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.1.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaxb-api",
++    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
++    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+     "tested-versions" : [
+       "4.1.0-M1"
+     ],
+
+codex
+The JSON has been patched. I’m running a quick structural check plus the repository’s metadata validator for the specific coordinate so any formatting or schema issue is caught before I close out.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"4.1.0-M1\")' metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "4.1.0-M1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+  "repository-url": "https://github.com/jakartaee/jaxb-api",
+  "test-code-url": "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
+  "description": "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+  "tested-versions": [
+    "4.1.0-M1"
+  ],
+  "allowed-packages": [
+    "jakarta.xml.bind"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "for u in \\
+'https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1-sources.jar' \\
+'https://github.com/jakartaee/jaxb-api' \\
+'https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test/src/test' \\
+'https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1-javadoc.jar'; do code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u"); printf '"'%s %s\\n' \""'$code" "$u"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 1068ms:
+200 https://github.com/jakartaee/jaxb-api
+200 https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test/src/test
+200 https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.1.0-M1/jakarta.xml.bind-api-4.1.0-M1-javadoc.jar
+
+diff --git a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+index 46991cd34e5dd5f52fd4c0244fadace56dc4f646..6c3339f8892e6a62acd2bdd286330708f0dd596d
+--- a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
++++ b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.1.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaxb-api",
++    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
++    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+     "tested-versions" : [
+       "4.1.0-M1"
+     ],
+
+ exited 1 in 1778ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/metadata/jakarta.xml.bind/jakarta.xml.bind-api/4.1.0-M1/
+
+> Task :checkMetadataFiles FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/metadata/jakarta.xml.bind/jakarta.xml.bind-api/4.1.0-M1/
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/build/reports/problems/problems-report.html
+
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/metadata/jakarta.xml.bind/jakarta.xml.bind-api/4.1.0-M1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+BUILD FAILED in 1s
+
+diff --git a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+index 46991cd34e5dd5f52fd4c0244fadace56dc4f646..6c3339f8892e6a62acd2bdd286330708f0dd596d
+--- a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
++++ b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.1.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaxb-api",
++    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
++    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+     "tested-versions" : [
+       "4.1.0-M1"
+     ],
+
+codex
+The targeted Gradle metadata check fails before validating the new URL fields because this repository has no `metadata/.../4.1.0-M1/reachability-metadata.json` directory entry yet. I’m doing a final diff review now; the JSON itself parses and all rendered URLs returned HTTP 200.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+diff --git i/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json w/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+index 46991cd34e..6c3339f889 100644
+--- i/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
++++ w/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.1.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaxb-api",
++    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
++    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+     "tested-versions" : [
+       "4.1.0-M1"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json metadata/jakarta.xml.bind/jakarta.xml.bind-api/4.1.0-M1' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+ M metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+
+diff --git a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+index 46991cd34e5dd5f52fd4c0244fadace56dc4f646..6c3339f8892e6a62acd2bdd286330708f0dd596d
+--- a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
++++ b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.1.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaxb-api",
++    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
++    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+     "tested-versions" : [
+       "4.1.0-M1"
+     ],
+
+web search: 
+web search: https://github.com/jakartaee/jaxb-api/tree/4.1.0-M1/jaxb-api-test/src/test
+web search: 
+web search: repo.maven.apache.org jakarta.xml.bind-api 4.1.0-M1 sources javadoc
+web search: 
+web search: 
+web search: 
+web search: site:mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api/4.1.0-M1 "Jakarta XML Binding API"
+web search: 
+web search: "jakarta.xml.bind-api-4.1.0-M1-javadoc.jar" "repo.maven.apache.org"
+exec
+/usr/bin/bash -lc "nl -ba metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json | sed -n '1,18p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "4.1.0-M1",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/jakartaee/jaxb-api",
+     7	    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
+     9	    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+    10	    "tested-versions" : [
+    11	      "4.1.0-M1"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "jakarta.xml.bind"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "4.0.0",
+
+diff --git a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+index 46991cd34e5dd5f52fd4c0244fadace56dc4f646..6c3339f8892e6a62acd2bdd286330708f0dd596d
+--- a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
++++ b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.1.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaxb-api",
++    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
++    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+     "tested-versions" : [
+       "4.1.0-M1"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:4) for `metadata-version` `4.1.0-M1`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+Left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- JSON parses with `jq`.
+- Rendered source, repository, test, and documentation URLs all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1 --stacktrace` failed because `metadata/jakarta.xml.bind/jakarta.xml.bind-api/4.1.0-M1/reachability-metadata.json` is missing, which is outside the requested URL/description update.
+diff --git a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+index 46991cd34e5dd5f52fd4c0244fadace56dc4f646..6c3339f8892e6a62acd2bdd286330708f0dd596d
+--- a/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
++++ b/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.1.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaxb-api",
++    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
++    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+     "tested-versions" : [
+       "4.1.0-M1"
+     ],
+
+tokens used
+66,691
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:4) for `metadata-version` `4.1.0-M1`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+Left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- JSON parses with `jq`.
+- Rendered source, repository, test, and documentation URLs all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1 --stacktrace` failed because `metadata/jakarta.xml.bind/jakarta.xml.bind-api/4.1.0-M1/reachability-metadata.json` is missing, which is outside the requested URL/description update.
+Ran agent for jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/build/agent-url-discovery-logs/jakarta.xml.bind-jakarta.xml.bind-api-4.1.0-M1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4422-a3e9df38/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 53s
+9 actionable tasks: 1 executed, 8 up-to-date
