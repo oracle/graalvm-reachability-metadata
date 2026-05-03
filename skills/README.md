@@ -41,13 +41,31 @@ It covers native-image runtime-failure repair PRs for existing libraries and app
 Closes new-library support pull requests.
 It finds the issue linked by the PR, removes the issue assignee, rolls the linked project item from `In Progress` back to `Todo`, and preserves `Done` when another PR has already completed the issue.
 
+### `close-human-intervention-and-failing-ci-prs`
+
+Closes batches of open pull requests that have the `human-intervention` label or failing CI.
+It resolves each linked issue, clears all assignees, and moves project status back to `Todo`.
+
+### `ipr`
+
+Creates a GitHub issue and pull request for `oracle/graalvm-reachability-metadata`, links the PR to the issue, and requests reviews from `kimeta`, `jormundur00`, and `vjovanov`.
+
 ## Loading Locally
 
-Repo-local skill links are committed as direct directory symlinks:
+Repo-root skill links are committed as direct directory symlinks:
 
 - `.codex/skills -> ../skills`
 - `.claude/skills -> ../skills`
 - `.pi/skills -> ../skills`
 - `.antigravity/skills -> ../skills`
+
+The `forge/` sub-workspace also carries links for agents launched from that
+directory:
+
+- `forge/skills -> ../skills`
+- `forge/.codex/skills -> ../../skills`
+- `forge/.claude/skills -> ../../skills`
+- `forge/.pi/skills -> ../../skills`
+- `forge/.antigravity/skills -> ../../skills`
 
 Any other agent-local state remains ignored by Git.
