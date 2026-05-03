@@ -41,6 +41,16 @@ final class Magnolia_3Test {
   }
 
   @Test
+  def evaluatesProductDefaultParameterValues(): Unit = {
+    val descriptor: Inspectable[RetryPolicy] = summon[Inspectable[RetryPolicy]]
+
+    assertEquals(Right(RetryPolicy("standard", 3, enabled = true)), descriptor.parseFields(Map("name" -> "standard")))
+    assertEquals(Right(RetryPolicy("custom", 5, enabled = true)), descriptor.parseFields(Map("name" -> "custom", "attempts" -> "5")))
+    assertEquals(Right(RetryPolicy("disabled", 3, enabled = false)), descriptor.parseFields(Map("name" -> "disabled", "enabled" -> "false")))
+    assertEquals(Left(List("missing name")), descriptor.parseFields(Map.empty))
+  }
+
+  @Test
   def derivesSealedTraitSubtypesAndChoosesRuntimeSubtype(): Unit = {
     val descriptor: Inspectable[Payment] = summon[Inspectable[Payment]]
 
@@ -223,6 +233,10 @@ object Magnolia_3TestFixtures {
   )
 
   given Inspectable[Account] = Inspectable.derived[Account]
+
+  final case class RetryPolicy(name: String, attempts: Int = 3, enabled: Boolean = true)
+
+  given Inspectable[RetryPolicy] = Inspectable.derived[RetryPolicy]
 
   sealed trait Payment
   final case class Card(number: String, cvv: Int) extends Payment
