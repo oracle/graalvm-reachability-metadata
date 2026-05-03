@@ -85,6 +85,23 @@ public class Utils_liteTest {
     }
 
     @Test
+    void putWithNullValueForLastKeyRemovesInheritedStorage() throws InterruptedException {
+        SdkInternalThreadLocal.put("detached-key", "parent-value");
+        SdkInternalThreadLocal.put("detached-key", null);
+
+        runInThread(() -> {
+            assertThat(SdkInternalThreadLocal.get("detached-key")).isNull();
+
+            SdkInternalThreadLocal.put("child-key", "child-value");
+
+            assertThat(SdkInternalThreadLocal.get("child-key")).isEqualTo("child-value");
+        });
+
+        assertThat(SdkInternalThreadLocal.get("child-key")).isNull();
+        assertThat(SdkInternalThreadLocal.containsKey("child-key")).isFalse();
+    }
+
+    @Test
     void nullKeysAreRejectedByAllKeyBasedOperations() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> SdkInternalThreadLocal.put(null, "value"))
