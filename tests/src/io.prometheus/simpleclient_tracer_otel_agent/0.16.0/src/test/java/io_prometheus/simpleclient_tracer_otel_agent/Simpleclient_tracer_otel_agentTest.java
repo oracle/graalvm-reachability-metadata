@@ -77,6 +77,27 @@ public class Simpleclient_tracer_otel_agentTest {
         assertThatThrownBy(supplier::isSampled).isInstanceOf(LinkageError.class);
     }
 
+    @Test
+    void inactivePropertyDoesNotMaskSpanContextLookups() {
+        Properties properties = System.getProperties();
+        boolean hadPreviousValue = properties.containsKey(OTEL_EXEMPLARS_PROPERTY);
+        String previousValue = properties.getProperty(OTEL_EXEMPLARS_PROPERTY);
+        try {
+            System.setProperty(OTEL_EXEMPLARS_PROPERTY, "inactive");
+            SpanContextSupplier supplier = new OpenTelemetryAgentSpanContextSupplier();
+
+            assertThatThrownBy(supplier::getTraceId).isInstanceOf(LinkageError.class);
+            assertThatThrownBy(supplier::getSpanId).isInstanceOf(LinkageError.class);
+            assertThatThrownBy(supplier::isSampled).isInstanceOf(LinkageError.class);
+        } finally {
+            if (hadPreviousValue) {
+                System.setProperty(OTEL_EXEMPLARS_PROPERTY, previousValue);
+            } else {
+                System.clearProperty(OTEL_EXEMPLARS_PROPERTY);
+            }
+        }
+    }
+
     private static boolean isAvailableWithOtelExemplarsProperty(String propertyValue) {
         Properties properties = System.getProperties();
         boolean hadPreviousValue = properties.containsKey(OTEL_EXEMPLARS_PROPERTY);
