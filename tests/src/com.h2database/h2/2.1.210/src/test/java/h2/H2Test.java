@@ -10,7 +10,10 @@ import org.h2.api.Interval;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -31,13 +34,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Moritz Halbritter
  */
 public class H2Test {
+    private static final String FILE_URL = "jdbc:h2:./data/test";
+
     static {
         System.setProperty("h2.javaObjectSerializer", JdbcUtilsTest.TestJavaObjectSerializer.class.getName());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"jdbc:h2:./data/test", "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1"})
+    @ValueSource(strings = {FILE_URL, "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1"})
     void test(String url) throws Exception {
+        cleanupFileBackedDatabase(url);
+
         // Cleanup
         withConnection(url, connection -> {
             connection.prepareStatement("DROP TABLE IF EXISTS test").execute();
@@ -133,6 +140,23 @@ public class H2Test {
                 }
             }
         });
+    }
+
+    private static void cleanupFileBackedDatabase(String url) throws IOException {
+        if (!FILE_URL.equals(url)) {
+            return;
+        }
+        Path dataDirectory = Path.of("data");
+        if (!Files.exists(dataDirectory)) {
+            return;
+        }
+        try (var files = Files.list(dataDirectory)) {
+            for (Path file : files.filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().startsWith("test."))
+                    .toList()) {
+                Files.deleteIfExists(file);
+            }
+        }
     }
 
     private static void withConnection(String url, ConnectionCallback callback) throws SQLException {
