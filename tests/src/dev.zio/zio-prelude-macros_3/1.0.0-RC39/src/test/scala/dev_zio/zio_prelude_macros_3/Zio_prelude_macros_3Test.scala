@@ -133,6 +133,24 @@ class Zio_prelude_macros_3Test {
   }
 
   @Test
+  def regexDslSupportsCharacterSetsBuiltFromRegexFragments(): Unit = {
+    val hexadecimalDigit: Regex =
+      Regex.start ~ Regex.anyRegexOf(Regex.digit, Regex.inRange('a', 'f'), Regex.inRange('A', 'F')) ~ Regex.end
+
+    assertPasses(Assertion.matches(hexadecimalDigit), "7")
+    assertPasses(Assertion.matches(hexadecimalDigit), "c")
+    assertPasses(Assertion.matches(hexadecimalDigit), "E")
+    assertFails(Assertion.matches(hexadecimalDigit), "g", failureMessageStartsWith = "g did not satisfy matches(^[")
+
+    val nonDigitOrUnderscore: Regex =
+      Regex.start ~ Regex.notAnyRegexOf(Regex.digit, Regex.literal("_"), Regex.inRange('a', 'f')) ~ Regex.end
+
+    assertPasses(Assertion.matches(nonDigitOrUnderscore), ".")
+    assertFails(Assertion.matches(nonDigitOrUnderscore), "_", failureMessageStartsWith = "_ did not satisfy matches(^[^")
+    assertFails(Assertion.matches(nonDigitOrUnderscore), "5", failureMessageStartsWith = "5 did not satisfy matches(^[^")
+  }
+
+  @Test
   def terminalAssertionsAlwaysPassOrFailForAnyInputType(): Unit = {
     assertPasses(Assertion.anything, "accepted")
     assertPasses(Assertion.anything, 42)
