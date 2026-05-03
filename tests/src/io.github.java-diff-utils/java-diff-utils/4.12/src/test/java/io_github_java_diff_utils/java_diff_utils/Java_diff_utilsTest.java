@@ -24,7 +24,9 @@ import com.github.difflib.text.DiffRowGenerator;
 import com.github.difflib.unifieddiff.UnifiedDiff;
 import com.github.difflib.unifieddiff.UnifiedDiffFile;
 import com.github.difflib.unifieddiff.UnifiedDiffReader;
+import com.github.difflib.unifieddiff.UnifiedDiffWriter;
 import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -225,6 +227,32 @@ public class Java_diff_utilsTest {
                 .containsExactlyElementsOf(revisedReadme);
         assertThat(unifiedDiff.applyPatchTo("notes.txt"::equals, originalNotes))
                 .containsExactlyElementsOf(revisedNotes);
+    }
+
+    @Test
+    void writesUnifiedDiffDocumentsWithMetadataAndContextLines() throws Exception {
+        List<String> original = List.of("one", "two", "three", "four", "five");
+        List<String> revised = List.of("one", "two updated", "three", "four", "five", "six");
+        UnifiedDiffFile file = UnifiedDiffFile.from(
+                "src/example.txt", "src/example.txt", DiffUtils.diff(original, revised));
+        file.setDiffCommand("diff --git a/src/example.txt b/src/example.txt");
+        file.setIndex("1111111..2222222 100644");
+        UnifiedDiff unifiedDiff = UnifiedDiff.from("repository header", "repository tail", file);
+        StringWriter writer = new StringWriter();
+
+        UnifiedDiffWriter.write(unifiedDiff, path -> {
+            assertThat(path).isEqualTo("src/example.txt");
+            return original;
+        }, writer, 1);
+        String writtenDiff = writer.toString();
+        List<String> writtenLines = writtenDiff.lines().toList();
+        assertThat(writtenLines).startsWith(
+                "repository header",
+                "diff --git a/src/example.txt b/src/example.txt",
+                "index 1111111..2222222 100644",
+                "--- src/example.txt",
+                "+++ src/example.txt");
+        assertThat(writtenLines).contains("-two", "+two updated", "+six", "--", "repository tail");
     }
 
     private static AbstractDelta<String> singleDelta(Patch<String> patch) {
