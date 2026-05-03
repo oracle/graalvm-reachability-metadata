@@ -1,0 +1,1095 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dec9c-70a0-7f03-87c3-293e932dba4e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven.resolver:maven-resolver-impl:1.9.25
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.9.25" when "$version$" is replaced with "1.9.25".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+- Set "coordinates" to "org.apache.maven.resolver:maven-resolver-impl:1.9.25".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.9.25".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata format first, then verify Maven Central and the upstream tag URLs so the fields match the repository’s conventions.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25"
+}
+
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+codex
+The target file only has coordinates right now, and there are no peer discovered files in that build directory. I’m checking the checked-in metadata schema and then I’ll update this artifact directly.
+exec
+/usr/bin/bash -lc "find . -maxdepth 3 -type f \\( -name '*schema*' -o -name '*.json' \\) | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+./stats/schemas/run-metrics-output-schema-v1.0.1.json
+./stats/schemas/library-stats-schema-v1.0.2.json
+./metadata/library-and-framework-list.json
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json
+./metadata/schemas/reachability-metadata-schema-v1.2.0.json
+./metadata/schemas/library-and-framework-list-schema-v1.0.0.json
+./build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+./forge/strategies/predefined_strategies.json
+./forge/benchmarks/benchmark_suite.json
+./forge/schemas/strategy_schema.json
+./forge/schemas/benchmark_suite_schema.json
+./forge/schemas/benchmark_run_metrics_schema.json
+./forge/tests/test_schema_validator.py
+./forge/utility_scripts/schema_validator.py
+./ci.json
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -g '*.json' metadata tests build | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/com.google.javascript/closure-compiler-externs/index.json:    "repository-url" : "https://github.com/google/closure-compiler",
+metadata/org.apiguardian/apiguardian-api/index.json:    "repository-url" : "https://github.com/apiguardian-team/apiguardian",
+metadata/javax.activation/javax.activation-api/index.json:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:    "repository-url" : "https://github.com/javaee/activation",
+metadata/org.apache.arrow/arrow-format/index.json:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.apache.arrow/arrow-format/index.json:    "repository-url" : "https://github.com/apache/arrow",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+metadata/org.javamoney.moneta/moneta-core/index.json:    "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+metadata/dev.failsafe/failsafe/index.json:    "repository-url" : "https://github.com/failsafe-lib/failsafe",
+metadata/nekohtml/xercesMinimal/index.json:    "repository-url" : "https://sourceforge.net/p/nekohtml/code/HEAD/tree/",
+metadata/org.aspectj/aspectjweaver/index.json:    "repository-url" : "https://github.com/eclipse-aspectj/aspectj",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:    "repository-url" : "https://github.com/jbossinterceptors/jbossinterceptors",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:    "repository-url" : "https://github.com/jakartaee/websocket",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:    "repository-url" : "https://github.com/jakartaee/websocket",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/org.junit.platform/junit-platform-engine/index.json:    "repository-url" : "https://github.com/junit-team/junit-framework",
+metadata/org.junit.platform/junit-platform-commons/index.json:    "repository-url" : "https://github.com/junit-team/junit5",
+metadata/com.sun.mail/jakarta.mail/index.json:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:    "repository-url" : "https://github.com/antlr/antlr4",
+metadata/com.google.auth/google-auth-library-credentials/index.json:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+metadata/org.clojure/google-closure-library-third-party/index.json:    "repository-url" : "https://github.com/google/closure-library",
+metadata/org.clojure/google-closure-library-third-party/index.json:    "repository-url" : "https://github.com/google/closure-library",
+metadata/org.postgresql/postgresql/index.json:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+metadata/org.postgresql/postgresql/index.json:    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+metadata/javax.servlet/servlet-api/index.json:    "repository-url" : "https://github.com/apache/tomcat55",
+metadata/javax.servlet/servlet-api/index.json:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/javax.servlet/servlet-api/index.json:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/javax.servlet/javax.servlet-api/index.json:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/com.android.tools/annotations/index.json:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/org.eclipse.aether/aether-util/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+metadata/org.eclipse.aether/aether-api/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+metadata/org.eclipse.aether/aether-spi/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+metadata/org.eclipse.aether/aether-impl/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "repository-url": "https://github.com/spotbugs/spotbugs",
+metadata/org.codehaus.woodstox/stax2-api/index.json:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+metadata/backport-util-concurrent/backport-util-concurrent/index.json:    "repository-url" : "svn://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/",
+metadata/org.dom4j/dom4j/index.json:    "repository-url" : "https://github.com/dom4j/dom4j",
+metadata/org.latencyutils/LatencyUtils/index.json:    "repository-url" : "https://github.com/LatencyUtils/LatencyUtils",
+metadata/commons-fileupload/commons-fileupload/index.json:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "repository-url": "https://github.com/fusesource/hawtbuf",
+metadata/jakarta.validation/jakarta.validation-api/index.json:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/com.github.ghik/silencer-lib_2.13/index.json:    "repository-url" : "https://github.com/ghik/silencer",
+metadata/org.eclipse.microprofile.openapi/microprofile-openapi-api/index.json:    "repository-url" : "https://github.com/microprofile/microprofile-open-api",
+metadata/org.xmlunit/xmlunit-placeholders/index.json:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+metadata/org.xmlunit/xmlunit-core/index.json:    "repository-url" : "https://github.com/xmlunit/xmlunit",
+metadata/aopalliance/aopalliance/index.json:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+metadata/javax.annotation/jsr250-api/index.json:    "repository-url": "N/A",
+metadata/javax.annotation/javax.annotation-api/index.json:    "repository-url" : "https://github.com/javaee/javax.annotation",
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.apache.santuario/xmlsec/index.json:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+metadata/javax.jcr/jcr/index.json:    "repository-url" : "N/A",
+metadata/org.sonatype.aether/aether-util/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-util/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-api/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-api/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-api/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-api/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-spi/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.sonatype.aether/aether-spi/index.json:    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+metadata/com.vaadin.external.google/android-json/index.json:    "repository-url" : "http://developer.android.com/sdk/",
+metadata/org.glassfish/javax.ejb/index.json:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/org.glassfish/javax.ejb/index.json:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/org.glassfish/javax.servlet/index.json:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/org.glassfish/javax.annotation/index.json:    "repository-url" : "https://github.com/javaee/glassfish",
+metadata/org.glassfish/javax.annotation/index.json:    "repository-url" : "https://github.com/javaee/glassfish",
+
+exec
+/usr/bin/bash -lc "rg '\"not-for-native-image\"|\"language\"' -g '*.json' . | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "language" : {
+./metadata/com.github.ghik/silencer-lib_2.13/index.json:    "language" : {
+./metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "language" : {
+./metadata/io.netty/netty-resolver-dns-native-macos/index.json:    "not-for-native-image": true,
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:    "not-for-native-image": true,
+./metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:    "not-for-native-image": true,
+./metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:    "language" : {
+./metadata/org.scala-lang/scala3-interfaces/index.json:    "language" : {
+./metadata/org.jboss.weld/weld-build-config/index.json:    "not-for-native-image": true,
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "language": {
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "not-for-native-image",
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "not-for-native-image": {
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "language": {
+./metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "not-for-native-image": true,
+./metadata/org.scala-sbt/util-interface/index.json:    "language" : {
+./metadata/org.scala-sbt/test-interface/index.json:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:    "language" : {
+./metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:    "not-for-native-image": true,
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.postgresql/postgresql/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "42.7.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-sources.jar",
+    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-jdbc-src.tar.gz",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+    "description" : "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+    "tested-versions" : [
+      "42.7.3",
+      "42.7.4",
+      "42.7.5",
+      "42.7.6",
+      "42.7.7",
+      "42.7.8",
+      "42.7.9",
+      "42.7.10",
+      "42.7.11"
+    ],
+    "allowed-packages" : [
+      "org.postgresql"
+    ]
+  },
+  {
+    "metadata-version" : "42.3.4",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-sources.jar",
+    "repository-url" : "https://github.com/pgjdbc/pgjdbc",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-jdbc-src.tar.gz",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+    "description" : "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+    "tested-versions" : [
+      "42.3.4"
+    ],
+    "allowed-packages" : [
+      "org.postgresql"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/io.netty/netty-resolver-dns-native-macos/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The default and macOS classifier JARs contain no JVM class files; they package Maven metadata and native library resources only.",
+    "replacement": "io.netty:netty-resolver-dns-classes-macos:4.1.74.Final"
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/org.eclipse.aether/aether-impl/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.2.v20150114",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
+    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/$version$/aether-$version$-source-release.zip",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
+    "description" : "Aether Implementation provides the default services that implement Eclipse Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository layout selection, and integration points for service locators and dependency injection.",
+    "tested-versions" : [
+      "1.0.2.v20150114",
+      "1.1.0"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.aether.impl",
+      "org.eclipse.aether.internal.impl"
+    ]
+  }
+]
+
+web search: 
+web search: org.apache.maven.resolver maven-resolver-impl 1.9.25 Maven Central sources javadoc
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.9.25/maven-resolver-impl-1.9.25.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven.resolver</groupId>
+    <artifactId>maven-resolver</artifactId>
+    <version>1.9.25</version>
+  </parent>
+
+  <artifactId>maven-resolver-impl</artifactId>
+
+  <name>Maven Artifact Resolver Implementation</name>
+  <description>An implementation of the repository system.</description>
+
+  <properties>
+    <bnd.instructions.additions><![CDATA[
+      # Mark optional Maven dependencies as optional
+      Import-Package: \
+        org.eclipse.aether*;version="${range;[===,===];${mavenResolverVersion}}", \
+        org.slf4j.spi;version="[1.7,3)", \
+        javax.inject;resolution:=optional,\
+        com.google.inject*;resolution:=optional, \
+        org.eclipse.sisu*;resolution:=optional, \
+        *
+    ]]></bnd.instructions.additions>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-named-locks</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.inject</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <classifier>classes</classifier>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.9.25/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/resolver/maven-resolver-impl/1.9.25</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/resolver/maven-resolver-impl/1.9.25</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-resolver-impl-1.9.25-cyclonedx.json" title="maven-resolver-impl-1.9.25-cyclonedx.json">maven-resolver-impl-1.9.25-cyclonedx.json</a>         2025-12-06 12:54     47504      
+<a href="maven-resolver-impl-1.9.25-cyclonedx.json.asc" title="maven-resolver-impl-1.9.25-cyclonedx.json.asc">maven-resolver-impl-1.9.25-cyclonedx.json.asc</a>     2025-12-06 12:54       866      
+<a href="maven-resolver-impl-1.9.25-cyclonedx.json.md5" title="maven-resolver-impl-1.9.25-cyclonedx.json.md5">maven-resolver-impl-1.9.25-cyclonedx.json.md5</a>     2025-12-06 12:54        32      
+<a href="maven-resolver-impl-1.9.25-cyclonedx.json.sha1" title="maven-resolver-impl-1.9.25-cyclonedx.json.sha1">maven-resolver-impl-1.9.25-cyclonedx.json.sha...</a>  2025-12-06 12:54        40      
+<a href="maven-resolver-impl-1.9.25-cyclonedx.xml" title="maven-resolver-impl-1.9.25-cyclonedx.xml">maven-resolver-impl-1.9.25-cyclonedx.xml</a>          2025-12-06 12:54     42974      
+<a href="maven-resolver-impl-1.9.25-cyclonedx.xml.asc" title="maven-resolver-impl-1.9.25-cyclonedx.xml.asc">maven-resolver-impl-1.9.25-cyclonedx.xml.asc</a>      2025-12-06 12:54       866      
+<a href="maven-resolver-impl-1.9.25-cyclonedx.xml.md5" title="maven-resolver-impl-1.9.25-cyclonedx.xml.md5">maven-resolver-impl-1.9.25-cyclonedx.xml.md5</a>      2025-12-06 12:54        32      
+<a href="maven-resolver-impl-1.9.25-cyclonedx.xml.sha1" title="maven-resolver-impl-1.9.25-cyclonedx.xml.sha1">maven-resolver-impl-1.9.25-cyclonedx.xml.sha1</a>     2025-12-06 12:54        40      
+<a href="maven-resolver-impl-1.9.25-javadoc.jar" title="maven-resolver-impl-1.9.25-javadoc.jar">maven-resolver-impl-1.9.25-javadoc.jar</a>            2025-12-06 12:54   1147738      
+<a href="maven-resolver-impl-1.9.25-javadoc.jar.asc" title="maven-resolver-impl-1.9.25-javadoc.jar.asc">maven-resolver-impl-1.9.25-javadoc.jar.asc</a>        2025-12-06 12:54       866      
+<a href="maven-resolver-impl-1.9.25-javadoc.jar.md5" title="maven-resolver-impl-1.9.25-javadoc.jar.md5">maven-resolver-impl-1.9.25-javadoc.jar.md5</a>        2025-12-06 12:54        32      
+<a href="maven-resolver-impl-1.9.25-javadoc.jar.sha1" title="maven-resolver-impl-1.9.25-javadoc.jar.sha1">maven-resolver-impl-1.9.25-javadoc.jar.sha1</a>       2025-12-06 12:54        40      
+<a href="maven-resolver-impl-1.9.25-sources.jar" title="maven-resolver-impl-1.9.25-sources.jar">maven-resolver-impl-1.9.25-sources.jar</a>            2025-12-06 12:54    223135      
+<a href="maven-resolver-impl-1.9.25-sources.jar.asc" title="maven-resolver-impl-1.9.25-sources.jar.asc">maven-resolver-impl-1.9.25-sources.jar.asc</a>        2025-12-06 12:54       866      
+<a href="maven-resolver-impl-1.9.25-sources.jar.md5" title="maven-resolver-impl-1.9.25-sources.jar.md5">maven-resolver-impl-1.9.25-sources.jar.md5</a>        2025-12-06 12:54        32      
+<a href="maven-resolver-impl-1.9.25-sources.jar.sha1" title="maven-resolver-impl-1.9.25-sources.jar.sha1">maven-resolver-impl-1.9.25-sources.jar.sha1</a>       2025-12-06 12:54        40      
+<a href="maven-resolver-impl-1.9.25.jar" title="maven-resolver-impl-1.9.25.jar">maven-resolver-impl-1.9.25.jar</a>                    2025-12-06 12:54    327261      
+<a href="maven-resolver-impl-1.9.25.jar.asc" title="maven-resolver-impl-1.9.25.jar.asc">maven-resolver-impl-1.9.25.jar.asc</a>                2025-12-06 12:54       866      
+<a href="maven-resolver-impl-1.9.25.jar.md5" title="maven-resolver-impl-1.9.25.jar.md5">maven-resolver-impl-1.9.25.jar.md5</a>                2025-12-06 12:54        32      
+<a href="maven-resolver-impl-1.9.25.jar.sha1" title="maven-resolver-impl-1.9.25.jar.sha1">maven-resolver-impl-1.9.25.jar.sha1</a>               2025-12-06 12:54        40      
+<a href="maven-resolver-impl-1.9.25.pom" title="maven-resolver-impl-1.9.25.pom">maven-resolver-impl-1.9.25.pom</a>                    2025-12-06 12:54      4203      
+<a href="maven-resolver-impl-1.9.25.pom.asc" title="maven-resolver-impl-1.9.25.pom.asc">maven-resolver-impl-1.9.25.pom.asc</a>                2025-12-06 12:54       866      
+<a href="maven-resolver-impl-1.9.25.pom.md5" title="maven-resolver-impl-1.9.25.pom.md5">maven-resolver-impl-1.9.25.pom.md5</a>                2025-12-06 12:54        32      
+<a href="maven-resolver-impl-1.9.25.pom.sha1" title="maven-resolver-impl-1.9.25.pom.sha1">maven-resolver-impl-1.9.25.pom.sha1</a>               2025-12-06 12:54        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.9.25/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/resolver/maven-resolver/1.9.25</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/resolver/maven-resolver/1.9.25</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-resolver-1.9.25-cyclonedx.json" title="maven-resolver-1.9.25-cyclonedx.json">maven-resolver-1.9.25-cyclonedx.json</a>              2025-12-06 12:53    168835      
+<a href="maven-resolver-1.9.25-cyclonedx.json.asc" title="maven-resolver-1.9.25-cyclonedx.json.asc">maven-resolver-1.9.25-cyclonedx.json.asc</a>          2025-12-06 12:53       866      
+<a href="maven-resolver-1.9.25-cyclonedx.json.md5" title="maven-resolver-1.9.25-cyclonedx.json.md5">maven-resolver-1.9.25-cyclonedx.json.md5</a>          2025-12-06 12:53        32      
+<a href="maven-resolver-1.9.25-cyclonedx.json.sha1" title="maven-resolver-1.9.25-cyclonedx.json.sha1">maven-resolver-1.9.25-cyclonedx.json.sha1</a>         2025-12-06 12:53        40      
+<a href="maven-resolver-1.9.25-cyclonedx.xml" title="maven-resolver-1.9.25-cyclonedx.xml">maven-resolver-1.9.25-cyclonedx.xml</a>               2025-12-06 12:53    157338      
+<a href="maven-resolver-1.9.25-cyclonedx.xml.asc" title="maven-resolver-1.9.25-cyclonedx.xml.asc">maven-resolver-1.9.25-cyclonedx.xml.asc</a>           2025-12-06 12:53       866      
+<a href="maven-resolver-1.9.25-cyclonedx.xml.md5" title="maven-resolver-1.9.25-cyclonedx.xml.md5">maven-resolver-1.9.25-cyclonedx.xml.md5</a>           2025-12-06 12:53        32      
+<a href="maven-resolver-1.9.25-cyclonedx.xml.sha1" title="maven-resolver-1.9.25-cyclonedx.xml.sha1">maven-resolver-1.9.25-cyclonedx.xml.sha1</a>          2025-12-06 12:53        40      
+<a href="maven-resolver-1.9.25-source-release.zip" title="maven-resolver-1.9.25-source-release.zip">maven-resolver-1.9.25-source-release.zip</a>          2025-12-06 12:53   1706787      
+<a href="maven-resolver-1.9.25-source-release.zip.asc" title="maven-resolver-1.9.25-source-release.zip.asc">maven-resolver-1.9.25-source-release.zip.asc</a>      2025-12-06 12:53       866      
+<a href="maven-resolver-1.9.25-source-release.zip.md5" title="maven-resolver-1.9.25-source-release.zip.md5">maven-resolver-1.9.25-source-release.zip.md5</a>      2025-12-06 12:53        32      
+<a href="maven-resolver-1.9.25-source-release.zip.sha1" title="maven-resolver-1.9.25-source-release.zip.sha1">maven-resolver-1.9.25-source-release.zip.sha1</a>     2025-12-06 12:53        40      
+<a href="maven-resolver-1.9.25-source-release.zip.sha512" title="maven-resolver-1.9.25-source-release.zip.sha512">maven-resolver-1.9.25-source-release.zip.sha5...</a>  2025-12-06 12:53       128      
+<a href="maven-resolver-1.9.25.pom" title="maven-resolver-1.9.25.pom">maven-resolver-1.9.25.pom</a>                         2025-12-06 12:53     24519      
+<a href="maven-resolver-1.9.25.pom.asc" title="maven-resolver-1.9.25.pom.asc">maven-resolver-1.9.25.pom.asc</a>                     2025-12-06 12:53       866      
+<a href="maven-resolver-1.9.25.pom.md5" title="maven-resolver-1.9.25.pom.md5">maven-resolver-1.9.25.pom.md5</a>                     2025-12-06 12:53        32      
+<a href="maven-resolver-1.9.25.pom.sha1" title="maven-resolver-1.9.25.pom.sha1">maven-resolver-1.9.25.pom.sha1</a>                    2025-12-06 12:53        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/maven-resolver/tree/maven-resolver-1.9.25/maven-resolver-impl/src/test/java' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 540ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 06:53:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0daf7db9cde1bac763d7e4d00febb265"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=xRxb%2F%2BPPvMPh0OLDz%2F3NHgEDSo5%2B3SWuQVBp2afTb%2B0KCMFqMge6g9a3I87nriAHsq4whZeSZZu40o1YupjFY2ATYyUmy2ocFDauYAof2YbgBpb7fvbUnXuy2cgg%2Fh7O5pB2%2B2RVsHKPou0b%2BdH2eVWEx8e0iiXBrr3eIK1NPErdI1IJ7fZMTF2R611cumXSTKiUzSkbHbeK3T1TqZTZqqLaaW7zkQeaYx0MDQXhnky93lxBgf4lvMF4wWwUdoim8t2oZMKUIu468Ib1Us45cg%3D%3D--sAnn5ZlU7xEGeQLh--rXcWMf8cQ0sSQLSYtYgYMA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.866146305.1777791194; expires=Mon, 03 May 2027 06:53:14 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 06:53:14 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:79934:141623D:F5E667:69F6F0DA
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.9.25/maven-resolver-1.9.25.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>45</version>
+    <relativePath />
+  </parent>
+
+  <groupId>org.apache.maven.resolver</groupId>
+  <artifactId>maven-resolver</artifactId>
+  <version>1.9.25</version>
+  <packaging>pom</packaging>
+
+  <name>Maven Artifact Resolver</name>
+  <description>The parent and aggregator for the repository system.</description>
+  <url>https://maven.apache.org/resolver/</url>
+  <inceptionYear>2010</inceptionYear>
+
+  <contributors>
+    <contributor>
+      <name>Matej Cimbora</name>
+    </contributor>
+  </contributors>
+
+  <modules>
+    <!-- NOTE: Be sure to update the bin assembly descriptor as well if the module list changes -->
+    <module>maven-resolver-api</module>
+    <module>maven-resolver-spi</module>
+    <module>maven-resolver-util</module>
+    <module>maven-resolver-named-locks</module>
+    <module>maven-resolver-named-locks-hazelcast</module>
+    <module>maven-resolver-named-locks-redisson</module>
+    <module>maven-resolver-impl</module>
+    <module>maven-resolver-test-util</module>
+    <module>maven-resolver-connector-basic</module>
+    <module>maven-resolver-transport-classpath</module>
+    <module>maven-resolver-transport-file</module>
+    <module>maven-resolver-transport-http</module>
+    <module>maven-resolver-transport-wagon</module>
+    <module>maven-resolver-supplier</module>
+    <module>maven-resolver-demos</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-resolver.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-resolver.git</developerConnection>
+    <tag>maven-resolver-1.9.25</tag>
+    <url>https://github.com/apache/maven-resolver/tree/${project.scm.tag}</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/maven-resolver/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://ci-maven.apache.org/job/Maven/job/maven-box/job/maven-resolver/</url>
+  </ciManagement>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scm:svn:https://svn.apache.org/repos/asf/maven/website/components/${maven.site.path}</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <javaVersion>8</javaVersion>
+    <surefire.redirectTestOutputToFile>true</surefire.redirectTestOutputToFile>
+    <failsafe.redirectTestOutputToFile>${surefire.redirectTestOutputToFile}</failsafe.redirectTestOutputToFile>
+    <maven.site.path>resolver-archives/resolver-LATEST-1.x</maven.site.path>
+    <checkstyle.violation.ignore>None</checkstyle.violation.ignore>
+    <sisuVersion>0.9.0.M4</sisuVersion>
+    <!-- the same version as in Maven 3.9.x -->
+    <guiceVersion>5.1.0</guiceVersion>
+    <slf4jVersion>1.7.36</slf4jVersion>
+    <!-- used by supplier and demo only -->
+    <mavenVersion>3.9.11</mavenVersion>
+    <minimalMavenBuildVersion>[3.8.7,)</minimalMavenBuildVersion>
+    <minimalJavaBuildVersion>[1.8.0-362,)</minimalJavaBuildVersion>
+    <project.build.outputTimestamp>2025-12-06T12:51:05Z</project.build.outputTimestamp>
+    <bnd.instructions.additions />
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-spi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-util</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-named-locks</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-connector-basic</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-transport-classpath</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-transport-file</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-transport-http</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-transport-wagon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-supplier</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-test-util</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest</artifactId>
+        <version>3.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-core</artifactId>
+        <version>3.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>4.11.0</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <!-- the same version as in Maven 3.9,x -->
+        <version>3.6.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.inject</artifactId>
+        <version>${sisuVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.plexus</artifactId>
+        <version>${sisuVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${guiceVersion}</version>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.9.25/maven-resolver-impl-1.9.25.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 06:53:20 GMT
+content-type: application/java-archive
+content-length: 327261
+cf-ray: 9f5d591adef501db-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 940993
+etag: "4792489c7592c08bebd235a7f2a3d4a1"
+last-modified: Sat, 06 Dec 2025 12:54:16 GMT
+x-checksum-md5: 4792489c7592c08bebd235a7f2a3d4a1
+x-checksum-sha1: cc1bde9b56a2e95a181207958dcf40715dc71ab3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.9.25/maven-resolver-1.9.25-source-release.zip' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 06:53:20 GMT
+content-type: application/zip
+content-length: 1706787
+cf-ray: 9f5d591b0af701f4-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 195453
+etag: "f0b437190edcaf2e92ce5b90c13f1d03"
+last-modified: Sat, 06 Dec 2025 12:53:00 GMT
+x-checksum-md5: f0b437190edcaf2e92ce5b90c13f1d03
+x-checksum-sha1: efadcbe16bf2832e4824fc89aa33c6d35793b436
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://maven.apache.org/resolver/archives/resolver-1.9.25/maven-resolver-impl/apidocs/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ exited 22 in 0ms:
+HTTP/2 404 
+server: Apache
+last-modified: Wed, 29 Apr 2026 10:05:52 GMT
+etag: "21e5-650967e2dfdc8;650b2753117d6
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Sun, 03 May 2026 06:53:20 GMT
+x-served-by: cache-hel1410033-HEL, cache-fra-eddf8230190-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1777791201.548092,VS0,VE29
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 8677
+
+curl: (22) The requested URL returned error: 404
+
+codex
+Maven Central has the module source and Javadoc JARs, and the parent distribution has a `maven-resolver-$version$-source-release.zip` that includes the test tree, so I’m using those Maven-hosted URLs. The artifact is a normal JVM JAR with class files, so it should remain a Native Image metadata target and does not need language or not-for-native-image fields.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+index 933384dd9d209fe969ed9a3de1ef797ed1a3437a..425e7ef0441379e13e4a36f9036f19cd1ce097e1
+--- a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25"
++  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25",
++  "repository-url" : "https://github.com/apache/maven-resolver",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
++  "description" : "Maven Resolver Impl provides the default implementation of the Maven Artifact Resolver repository system used to collect dependencies, resolve artifacts and metadata, and install or deploy them. It wires Resolver API, SPI, named locks, and utility services into concrete repository-system components for Maven-compatible dependency management."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+index 933384dd9d209fe969ed9a3de1ef797ed1a3437a..425e7ef0441379e13e4a36f9036f19cd1ce097e1
+--- a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25"
++  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25",
++  "repository-url" : "https://github.com/apache/maven-resolver",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
++  "description" : "Maven Resolver Impl provides the default implementation of the Maven Artifact Resolver repository system used to collect dependencies, resolve artifacts and metadata, and install or deploy them. It wires Resolver API, SPI, named locks, and utility services into concrete repository-system components for Maven-compatible dependency management."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven.resolver:maven-resolver-impl:1.9.25",
+  "repository-url": "https://github.com/apache/maven-resolver",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
+  "description": "Maven Resolver Impl provides the default implementation of the Maven Artifact Resolver repository system used to collect dependencies, resolve artifacts and metadata, and install or deploy them. It wires Resolver API, SPI, named locks, and utility services into concrete repository-system components for Maven-compatible dependency management."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.9.25/maven-resolver-impl-1.9.25-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 06:53:35 GMT
+content-type: application/java-archive
+content-length: 1147738
+cf-ray: 9f5d5978dceabe59-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2070772
+etag: "4a42df6a6a4af9f2286b5bfd0b722a71"
+last-modified: Sat, 06 Dec 2025 12:54:16 GMT
+x-checksum-md5: 4a42df6a6a4af9f2286b5bfd0b722a71
+x-checksum-sha1: 57eb76cbe203cb8edbd6926f284e1fb94cebb25b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.9.25/maven-resolver-impl-1.9.25-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 06:53:35 GMT
+content-type: application/java-archive
+content-length: 223135
+cf-ray: 9f5d5978ec4ebbf9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1031974
+etag: "603bca70ec268ff8e245b87f3e73c3d7"
+last-modified: Sat, 06 Dec 2025 12:54:16 GMT
+x-checksum-md5: 603bca70ec268ff8e245b87f3e73c3d7
+x-checksum-sha1: d030297780ca08cfc9fda9e51800626564d8280f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/1.9.25/maven-resolver-1.9.25-source-release.zip' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 06:53:35 GMT
+content-type: application/zip
+content-length: 1706787
+cf-ray: 9f5d59795ce8bc48-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 195468
+etag: "f0b437190edcaf2e92ce5b90c13f1d03"
+last-modified: Sat, 06 Dec 2025 12:53:00 GMT
+x-checksum-md5: f0b437190edcaf2e92ce5b90c13f1d03
+x-checksum-sha1: efadcbe16bf2832e4824fc89aa33c6d35793b436
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+index 933384dd9d209fe969ed9a3de1ef797ed1a3437a..425e7ef0441379e13e4a36f9036f19cd1ce097e1
+--- a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25"
++  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25",
++  "repository-url" : "https://github.com/apache/maven-resolver",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
++  "description" : "Maven Resolver Impl provides the default implementation of the Maven Artifact Resolver repository system used to collect dependencies, resolve artifacts and metadata, and install or deploy them. It wires Resolver API, SPI, named locks, and utility services into concrete repository-system components for Maven-compatible dependency management."
+ }
+
+web search: 
+web search: Maven Resolver 1.9.25 maven-resolver-impl Maven Central
+web search: 
+web search: https://maven.apache.org/components/resolver-archives/resolver-1.9.25/maven-resolver-impl/dependencies.html
+web search: 
+web search: site:maven.apache.org resolver-1.9.25 maven-resolver-impl scm maven-resolver-1.9.25
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/1.9.25/maven-resolver-impl-1.9.25.jar -o /tmp/maven-resolver-impl-1.9.25.jar && jar tf /tmp/maven-resolver-impl-1.9.25.jar | rg '\\.class"'$'"' | head -5" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+index 933384dd9d209fe969ed9a3de1ef797ed1a3437a..425e7ef0441379e13e4a36f9036f19cd1ce097e1
+--- a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25"
++  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25",
++  "repository-url" : "https://github.com/apache/maven-resolver",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
++  "description" : "Maven Resolver Impl provides the default implementation of the Maven Artifact Resolver repository system used to collect dependencies, resolve artifacts and metadata, and install or deploy them. It wires Resolver API, SPI, named locks, and utility services into concrete repository-system components for Maven-compatible dependency management."
+ }
+
+ succeeded in 174ms:
+org/eclipse/aether/impl/ArtifactDescriptorReader.class
+org/eclipse/aether/impl/ArtifactResolver.class
+org/eclipse/aether/impl/DefaultServiceLocator$Entry.class
+org/eclipse/aether/impl/DefaultServiceLocator$ErrorHandler.class
+org/eclipse/aether/impl/DefaultServiceLocator.class
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+index 933384dd9d209fe969ed9a3de1ef797ed1a3437a..425e7ef0441379e13e4a36f9036f19cd1ce097e1
+--- a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25"
++  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25",
++  "repository-url" : "https://github.com/apache/maven-resolver",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
++  "description" : "Maven Resolver Impl provides the default implementation of the Maven Artifact Resolver repository system used to collect dependencies, resolve artifacts and metadata, and install or deploy them. It wires Resolver API, SPI, named locks, and utility services into concrete repository-system components for Maven-compatible dependency management."
+ }
+
+ succeeded in 132ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25",
+  "repository-url" : "https://github.com/apache/maven-resolver",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
+  "description" : "Maven Resolver Impl provides the default implementation of the Maven Artifact Resolver repository system used to collect dependencies, resolve artifacts and metadata, and install or deploy them. It wires Resolver API, SPI, named locks, and utility services into concrete repository-system components for Maven-compatible dependency management."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+index 933384dd9d209fe969ed9a3de1ef797ed1a3437a..425e7ef0441379e13e4a36f9036f19cd1ce097e1
+--- a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25"
++  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25",
++  "repository-url" : "https://github.com/apache/maven-resolver",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
++  "description" : "Maven Resolver Impl provides the default implementation of the Maven Artifact Resolver repository system used to collect dependencies, resolve artifacts and metadata, and install or deploy them. It wires Resolver API, SPI, named locks, and utility services into concrete repository-system components for Maven-compatible dependency management."
+ }
+
+web search: 
+web search: Apache Maven Resolver 1.9.25 maven-resolver-impl source jar javadoc jar Maven Central
+codex
+Updated [org.apache.maven.resolver-maven-resolver-impl-1.9.25.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json:1) with the repository, Maven-hosted source/Javadoc URLs, Maven source-release test URL, and a two-sentence description.
+
+Validation done:
+- JSON parses with `jq`.
+- Source, test source-release, and Javadoc URLs return `200` after replacing `$version$` with `1.9.25`.
+- The artifact JAR contains JVM `.class` files, so I left `not-for-native-image`, `reason`, `replacement`, and `language` absent.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+index 933384dd9d209fe969ed9a3de1ef797ed1a3437a..425e7ef0441379e13e4a36f9036f19cd1ce097e1
+--- a/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25"
++  "coordinates" : "org.apache.maven.resolver:maven-resolver-impl:1.9.25",
++  "repository-url" : "https://github.com/apache/maven-resolver",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
++  "description" : "Maven Resolver Impl provides the default implementation of the Maven Artifact Resolver repository system used to collect dependencies, resolve artifacts and metadata, and install or deploy them. It wires Resolver API, SPI, named locks, and utility services into concrete repository-system components for Maven-compatible dependency management."
+ }
+
+tokens used
+72,463
+Updated [org.apache.maven.resolver-maven-resolver-impl-1.9.25.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751/build/discovered-artifact-metadata/org.apache.maven.resolver-maven-resolver-impl-1.9.25.json:1) with the repository, Maven-hosted source/Javadoc URLs, Maven source-release test URL, and a two-sentence description.
+
+Validation done:
+- JSON parses with `jq`.
+- Source, test source-release, and Javadoc URLs return `200` after replacing `$version$` with `1.9.25`.
+- The artifact JAR contains JVM `.class` files, so I left `not-for-native-image`, `reason`, `replacement`, and `language` absent.
+Ran agent for org.apache.maven.resolver:maven-resolver-impl:1.9.25 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751/build/agent-artifact-discovery-logs/org.apache.maven.resolver-maven-resolver-impl-1.9.25.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3775-86ef0751/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 17s
+9 actionable tasks: 4 executed, 5 from cache
