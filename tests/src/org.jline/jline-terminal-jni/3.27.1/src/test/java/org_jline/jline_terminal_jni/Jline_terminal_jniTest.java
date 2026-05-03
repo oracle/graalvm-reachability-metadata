@@ -8,6 +8,7 @@ package org_jline.jline_terminal_jni;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -101,7 +102,7 @@ public class Jline_terminal_jniTest {
                 InputStream masterInput = pty.getMasterInput();
                 OutputStream slaveOutput = pty.getSlaveOutput();
                 ExecutorService executor = newDaemonSingleThreadExecutor("jni-pty-reader");
-                Future<byte[]> readFromMaster = executor.submit(() -> masterInput.readNBytes(payload.length));
+                Future<byte[]> readFromMaster = executor.submit(() -> readExactly(masterInput, payload.length));
 
                 try {
                     slaveOutput.write(payload);
@@ -190,6 +191,19 @@ public class Jline_terminal_jniTest {
             thread.setDaemon(true);
             return thread;
         });
+    }
+
+    private static byte[] readExactly(InputStream input, int length) throws Exception {
+        byte[] buffer = new byte[length];
+        int offset = 0;
+        while (offset < length) {
+            int read = input.read(buffer, offset, length - offset);
+            if (read < 0) {
+                throw new EOFException("Expected " + length + " bytes, read " + offset);
+            }
+            offset += read;
+        }
+        return buffer;
     }
 
     private static Terminal buildTerminal(ByteArrayOutputStream output) throws Exception {
