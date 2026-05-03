@@ -33,7 +33,7 @@ public class JacksonAnnotatedMethodTest {
         assertThat(noArgumentFactory.call()).isEqualTo(new FactoryTarget("empty"));
 
         AnnotatedMethod stringFactory = findFactoryMethod(beanDescription, "fromString", String.class);
-        assertThat(stringFactory.call(new Object[] { "array" })).isEqualTo(new FactoryTarget("array"));
+        assertThat(stringFactory.call(new Object[] {"array"})).isEqualTo(new FactoryTarget("array"));
         assertThat(stringFactory.call1("single")).isEqualTo(new FactoryTarget("single"));
     }
 
