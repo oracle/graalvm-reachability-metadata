@@ -76,6 +76,16 @@ final class Magnolia_3Test {
   }
 
   @Test
+  def capturesGenericTypeInformation(): Unit = {
+    val descriptor: Inspectable[Envelope[String]] = summon[Inspectable[Envelope[String]]]
+
+    assertEquals("Envelope", descriptor.typeName)
+    assertEquals(List("String"), descriptor.typeParameters)
+    assertEquals(List("String"), descriptor.params.map(_.typeName))
+    assertEquals("Envelope(value=payload)", descriptor.render(Envelope("payload")))
+  }
+
+  @Test
   def evaluatesCallByNeedValuesOnlyWhenRequested(): Unit = {
     var evaluations: Int = 0
     val value: CallByNeed[String] = CallByNeed.createLazy(() => {
@@ -116,6 +126,7 @@ object Magnolia_3TestFixtures {
 
   trait Inspectable[A] {
     def typeName: String
+    def typeParameters: List[String]
     def annotations: List[String]
     def params: List[ParameterSummary]
     def subtypes: List[SubtypeSummary]
@@ -143,6 +154,7 @@ object Magnolia_3TestFixtures {
 
     override def join[A](caseClass: CaseClass[Inspectable, A]): Inspectable[A] = new Inspectable[A] {
       override val typeName: String = caseClass.typeInfo.short
+      override val typeParameters: List[String] = caseClass.typeInfo.typeParams.map(_.short).toList
       override val annotations: List[String] = caseClass.annotations.map(annotationSummary).toList
       override def params: List[ParameterSummary] = caseClass.params.map { param =>
         ParameterSummary(
@@ -190,6 +202,7 @@ object Magnolia_3TestFixtures {
 
     override def split[A](sealedTrait: SealedTrait[Inspectable, A]): Inspectable[A] = new Inspectable[A] {
       override val typeName: String = sealedTrait.typeInfo.short
+      override val typeParameters: List[String] = sealedTrait.typeInfo.typeParams.map(_.short).toList
       override val annotations: List[String] = sealedTrait.annotations.map(annotationSummary).toList
       override val params: List[ParameterSummary] = Nil
       override val subtypes: List[SubtypeSummary] = sealedTrait.subtypes.map { subtype =>
@@ -208,6 +221,7 @@ object Magnolia_3TestFixtures {
 
     private def primitive[A](name: String, renderValue: A => String, parseValue: String => Either[String, A]): Inspectable[A] = new Inspectable[A] {
       override val typeName: String = name
+      override val typeParameters: List[String] = Nil
       override val annotations: List[String] = Nil
       override val params: List[ParameterSummary] = Nil
       override val subtypes: List[SubtypeSummary] = Nil
@@ -249,4 +263,8 @@ object Magnolia_3TestFixtures {
   final case class Add(left: Expr, right: Expr) extends Expr
 
   given Inspectable[Expr] = Inspectable.derived[Expr]
+
+  final case class Envelope[A](value: A)
+
+  given Inspectable[Envelope[String]] = Inspectable.derived[Envelope[String]]
 }
