@@ -39,6 +39,33 @@ from utility_scripts.repo_path_resolver import resolve_repo_roots
 REPO = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = 'master'
 REVIEWERS = get_configured_reviewers()
+SEVERE_METADATA_DROP_RATIO = 0.25
+
+
+def is_severe_metadata_drop(previous_entries: int, new_entries: int) -> bool:
+    """Return true when a native-image-run fix drops most prior metadata entries."""
+    return previous_entries > 0 and new_entries < previous_entries * SEVERE_METADATA_DROP_RATIO
+
+
+def format_severe_metadata_drop_pr_section(
+        old_coordinates: str,
+        new_coordinates: str,
+        previous_entries: int,
+        new_entries: int,
+) -> str:
+    """Format a PR warning for severe unexplained metadata drops."""
+    retained_ratio = new_entries / previous_entries if previous_entries else 0
+    retained_percent = retained_ratio * 100
+    return (
+        "\n\n### Human Intervention: Severe Metadata Drop\n\n"
+        "Forge detected a severe drop in reachability metadata entries for this "
+        "Native Image run fix. This PR needs human review unless the branch includes "
+        "concrete proof that the new library version no longer needs the removed "
+        "registrations.\n\n"
+        f"- Previous metadata entries (`{old_coordinates}`): {previous_entries}\n"
+        f"- New metadata entries (`{new_coordinates}`): {new_entries}\n"
+        f"- Retained metadata entries: {retained_percent:.2f}%"
+    )
 
 
 def stage_and_commit(
@@ -99,6 +126,7 @@ def create_pull_request(
     previous_test_entries = count_test_only_metadata_entries(repo_path, group, artifact, old_version)
     previous_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, old_version)
     new_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, new_version)
+    severe_metadata_drop = is_severe_metadata_drop(previous_entries, new_entries)
 
     stats_section = format_stats_diff(repo_path, old_coordinates, new_coordinates)
 
@@ -130,9 +158,19 @@ def create_pull_request(
         f"\n\n{format_forge_revision_section()}"
         f"{stats_section}"
     )
+    if severe_metadata_drop:
+        body += format_severe_metadata_drop_pr_section(
+            old_coordinates,
+            new_coordinates,
+            previous_entries,
+            new_entries,
+        )
     if local_ci_verification is not None:
         body += format_local_ci_verification_pr_section(local_ci_verification.to_metrics())
 
+    local_ci_human_intervention = (
+        local_ci_verification is not None and local_ci_verification.human_intervention_required
+    )
     cmd = [
         "gh", "pr", "create",
         "--repo", REPO,
@@ -142,7 +180,7 @@ def create_pull_request(
         "--head", f"{origin_owner}:{branch}",
         "--label", "fixes-native-image-run-fail",
     ]
-    if local_ci_verification is not None and local_ci_verification.human_intervention_required:
+    if severe_metadata_drop or local_ci_human_intervention:
         cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
     for r in REVIEWERS:
         cmd.extend(["--reviewer", r])
