@@ -1,0 +1,2929 @@
+Starting a Gradle Daemon, 12 busy and 3 incompatible and 110 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019deea7-509d-7490-9412-9645c1cbbf4b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.cloud:google-cloud-spanner:6.116.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "6.116.1" when "$version$" is replaced with "6.116.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+- Set "coordinates" to "com.google.cloud:google-cloud-spanner:6.116.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "6.116.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream Google Cloud Java repository, then update the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
+}
+
+exec
+/usr/bin/bash -lc 'find ~/.m2/repository/com/google/cloud/google-cloud-spanner -maxdepth 3 -type f | sort | tail -50' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+find: ‘/home/vjovanov/.m2/repository/com/google/cloud/google-cloud-spanner’: No such file or directory
+
+exec
+/usr/bin/bash -lc 'rg -n "google-cloud-spanner|com.google.cloud:google-cloud-spanner" metadata tests build/discovered-artifact-metadata || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json:2:  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/6.116.1/build.gradle:14:    testImplementation "com.google.api.grpc:proto-google-cloud-spanner-admin-instance-v1:$libraryVersion"
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/6.116.1/settings.gradle:20:rootProject.name = 'com.google.api.grpc.proto-google-cloud-spanner-admin-instance-v1_tests'
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/6.116.1/gradle.properties:4:library.coordinates = com.google.api.grpc:proto-google-cloud-spanner-admin-instance-v1:6.116.1
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/6.116.1/gradle.properties:6:metadata.dir = com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/6.116.1/
+
+web search: 
+web search: Maven Central com.google.cloud google-cloud-spanner 6.116.1 sources tests javadoc
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/6.116.1/google-cloud-spanner-6.116.1.pom
+codex
+The local entry only has coordinates, and this repository already prefers Maven Central URLs for source/test/javadoc artifacts when those classifiers exist. I’m checking the published 6.116.1 files directly so the templated URLs won’t point at missing artifacts.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/6.116.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/6.116.1/google-cloud-spanner-6.116.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>google-cloud-spanner</artifactId>
+  <version>6.116.1</version>
+  <name>Google Cloud Spanner</name>
+  <description>Java idiomatic client for Google Cloud Spanner.</description>
+  <url>https://github.com/googleapis/google-cloud-java</url>
+  <organization>
+    <name>Google LLC</name>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>chingor</id>
+      <name>Jeff Ching</name>
+      <email>chingor@google.com</email>
+      <organization>Google</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
+    <connection>scm:git:git@github.com:googleapis/google-cloud-java.git</connection>
+    <developerConnection>scm:git:git@github.com:googleapis/google-cloud-java.git</developerConnection>
+    <url>https://github.com/googleapis/google-cloud-java</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/googleapis/google-cloud-java/issues</url>
+  </issueManagement>
+  <distributionManagement>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://google.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://google.oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>grpc-gcp</artifactId>
+      <version>1.10.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-netty-shaded</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opencensus</groupId>
+          <artifactId>opencensus-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value-annotations</artifactId>
+      <version>1.11.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-api</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>2.45.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-auth</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-credentials</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-inprocess</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-core</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.android</groupId>
+          <artifactId>annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.perfmark</groupId>
+          <artifactId>perfmark-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-context</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>annotations</artifactId>
+      <version>4.1.1.4</version>
+      <scope>runtime</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>animal-sniffer-annotations</artifactId>
+      <version>1.26</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.perfmark</groupId>
+      <artifactId>perfmark-api</artifactId>
+      <version>0.27.0</version>
+      <scope>runtime</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-context</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.perfmark</groupId>
+          <artifactId>perfmark-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-annotations</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-util</artifactId>
+      <version>1.80.0</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf-lite</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf-lite</artifactId>
+      <version>1.80.0</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-javalite</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-opentelemetry</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-annotations</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>api-common</artifactId>
+      <version>2.62.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.j2objc</groupId>
+          <artifactId>j2objc-annotations</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.j2objc</groupId>
+      <artifactId>j2objc-annotations</artifactId>
+      <version>3.1</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>4.33.2</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>4.33.2</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-common-protos</artifactId>
+      <version>2.70.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-common-protos</artifactId>
+      <version>2.70.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf-lite</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>failureaccess</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>listenablefuture</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jspecify</groupId>
+          <artifactId>jspecify</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.j2objc</groupId>
+          <artifactId>j2objc-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>failureaccess</artifactId>
+      <version>1.0.3</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>listenablefuture</artifactId>
+      <version>9999.0-empty-to-avoid-conflict-with-guava</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>1.0.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-iam-v1</artifactId>
+      <version>1.65.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-core</artifactId>
+      <version>2.69.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>gax</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-iam-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.threeten</groupId>
+          <artifactId>threetenbp</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-credentials</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-oauth2-http</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client-gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.http-client</groupId>
+      <artifactId>google-http-client-gson</artifactId>
+      <version>2.1.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-core-grpc</artifactId>
+      <version>2.69.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-credentials</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.cloud</groupId>
+          <artifactId>google-cloud-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>gax</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>gax-grpc</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-api</artifactId>
+      <version>0.31.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-context</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-contrib-grpc-util</artifactId>
+      <version>0.31.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.opencensus</groupId>
+          <artifactId>opencensus-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+      <version>1.51.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-context</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-context</artifactId>
+      <version>1.51.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk</artifactId>
+      <version>1.51.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-sdk-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-sdk-trace</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-sdk-metrics</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-sdk-logs</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-trace</artifactId>
+      <version>1.51.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-sdk-common</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-logs</artifactId>
+      <version>1.51.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-sdk-common</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-common</artifactId>
+      <version>1.51.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-metrics</artifactId>
+      <version>1.51.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-sdk-common</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.opentelemetry</groupId>
+      <artifactId>detector-resources-support</artifactId>
+      <version>0.33.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-monitoring</artifactId>
+      <version>3.92.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf-lite</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.j2objc</groupId>
+          <artifactId>j2objc-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-cloud-monitoring-v3</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>failureaccess</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>listenablefuture</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jspecify</groupId>
+          <artifactId>jspecify</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>gax</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-credentials</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opencensus</groupId>
+          <artifactId>opencensus-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>gax-grpc</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-inprocess</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.android</groupId>
+          <artifactId>annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-alts</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.conscrypt</groupId>
+          <artifactId>conscrypt-openjdk-uber</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-auth</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-netty-shaded</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.perfmark</groupId>
+          <artifactId>perfmark-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-googleapis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-xds</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-services</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.re2j</groupId>
+          <artifactId>re2j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.threeten</groupId>
+          <artifactId>threetenbp</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-oauth2-http</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opencensus</groupId>
+          <artifactId>opencensus-contrib-http-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client-gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.conscrypt</groupId>
+      <artifactId>conscrypt-openjdk-uber</artifactId>
+      <version>2.5.2</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-xds</artifactId>
+      <version>1.80.0</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-services</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-auth</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-alts</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.re2j</groupId>
+          <artifactId>re2j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-netty-shaded</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-services</artifactId>
+      <version>1.80.0</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.re2j</groupId>
+      <artifactId>re2j</artifactId>
+      <version>1.8</version>
+      <scope>runtime</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.14</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.18.0</version>
+      <scope>runtime</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+      <version>4.4.16</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-contrib-http-util</artifactId>
+      <version>0.31.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.opencensus</groupId>
+          <artifactId>opencensus-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-monitoring-v3</artifactId>
+      <version>3.92.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.j2objc</groupId>
+          <artifactId>j2objc-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>failureaccess</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>listenablefuture</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jspecify</groupId>
+          <artifactId>jspecify</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>1.46.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-credentials</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client-gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.http-client</groupId>
+      <artifactId>google-http-client</artifactId>
+      <version>2.1.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.j2objc</groupId>
+          <artifactId>j2objc-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opencensus</groupId>
+          <artifactId>opencensus-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opencensus</groupId>
+          <artifactId>opencensus-contrib-http-util</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-spanner-admin-instance-v1</artifactId>
+      <version>6.116.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-iam-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-spanner-v1</artifactId>
+      <version>6.116.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-spanner-admin-database-v1</artifactId>
+      <version>6.116.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-iam-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-cloud-spanner-admin-instance-v1</artifactId>
+      <version>6.116.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-cloud-spanner-admin-instance-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-iam-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-cloud-spanner-v1</artifactId>
+      <version>6.116.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-cloud-spanner-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-cloud-spanner-admin-database-v1</artifactId>
+      <version>6.116.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-cloud-spanner-admin-database-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-iam-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.5.0-jre</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>failureaccess</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>listenablefuture</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jspecify</groupId>
+          <artifactId>jspecify</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.j2objc</groupId>
+          <artifactId>j2objc-annotations</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>gax</artifactId>
+      <version>2.79.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-credentials</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.threeten</groupId>
+          <artifactId>threetenbp</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opencensus</groupId>
+          <artifactId>opencensus-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-oauth2-http</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.graalvm.sdk</groupId>
+          <artifactId>nativeimage</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>gax-grpc</artifactId>
+      <version>2.79.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>gax</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-credentials</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-inprocess</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.threeten</groupId>
+          <artifactId>threetenbp</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-oauth2-http</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-alts</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-auth</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-netty-shaded</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-googleapis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.graalvm.sdk</groupId>
+          <artifactId>nativeimage</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>gax-httpjson</artifactId>
+      <version>2.79.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>gax</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-credentials</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.threeten</groupId>
+          <artifactId>threetenbp</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-oauth2-http</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client-gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.threeten</groupId>
+      <artifactId>threetenbp</artifactId>
+      <version>1.7.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.2</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.12.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-credentials</artifactId>
+      <version>1.46.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-alts</artifactId>
+      <version>1.80.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-auth</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.conscrypt</groupId>
+          <artifactId>conscrypt-openjdk-uber</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-oauth2-http</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-netty-shaded</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-googleapis</artifactId>
+      <version>1.80.0</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-alts</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-xds</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-rls</artifactId>
+      <version>1.80.0</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.graalvm.sdk</groupId>
+      <artifactId>nativeimage</artifactId>
+      <version>25.0.0</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.graalvm.sdk</groupId>
+          <artifactId>word</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-spanner-executor-v1</artifactId>
+      <version>6.116.1</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-iam-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-cloud-spanner-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-cloud-spanner-admin-instance-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-cloud-spanner-admin-database-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-cloud-spanner-executor-v1</artifactId>
+      <version>6.116.1</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-stub</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-cloud-spanner-executor-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <version>1.3.2</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>google-maven-central-copy</id>
+      <name>Google Maven Central copy</name>
+      <url>https://maven-central.storage-download.googleapis.com/maven2</url>
+    </repository>
+    <repository>
+      <id>maven-central</id>
+      <name>Maven Central</name>
+      <url>https://repo1.maven.org/maven2</url>
+    </repository>
+  </repositories>
+  <profiles>
+    <profile>
+      <id>java9</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+          <version>1.3.2</version>
+          <scope>compile</scope>
+          <optional>false</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>executor-tests</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-cloud-spanner-executor-v1</artifactId>
+          <version>6.116.1</version>
+          <scope>compile</scope>
+          <optional>false</optional>
+        </dependency>
+        <dependency>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>grpc-google-cloud-spanner-executor-v1</artifactId>
+          <version>6.116.1</version>
+          <scope>compile</scope>
+          <optional>false</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/6.116.1/google-cloud-spanner-6.116.1-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/6.116.1/google-cloud-spanner-6.116.1-tests.jar && curl -fsI https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/6.116.1/google-cloud-spanner-6.116.1-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 197ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/cloud/google-cloud-spanner/6.116.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/cloud/google-cloud-spanner/6.116.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="google-cloud-spanner-6.116.1-javadoc.jar" title="google-cloud-spanner-6.116.1-javadoc.jar">google-cloud-spanner-6.116.1-javadoc.jar</a>          2026-04-21 22:15   2198918      
+<a href="google-cloud-spanner-6.116.1-javadoc.jar.asc" title="google-cloud-spanner-6.116.1-javadoc.jar.asc">google-cloud-spanner-6.116.1-javadoc.jar.asc</a>      2026-04-21 22:15       488      
+<a href="google-cloud-spanner-6.116.1-javadoc.jar.md5" title="google-cloud-spanner-6.116.1-javadoc.jar.md5">google-cloud-spanner-6.116.1-javadoc.jar.md5</a>      2026-04-21 22:15        32      
+<a href="google-cloud-spanner-6.116.1-javadoc.jar.sha1" title="google-cloud-spanner-6.116.1-javadoc.jar.sha1">google-cloud-spanner-6.116.1-javadoc.jar.sha1</a>     2026-04-21 22:15        40      
+<a href="google-cloud-spanner-6.116.1-sources.jar" title="google-cloud-spanner-6.116.1-sources.jar">google-cloud-spanner-6.116.1-sources.jar</a>          2026-04-21 22:15    889275      
+<a href="google-cloud-spanner-6.116.1-sources.jar.asc" title="google-cloud-spanner-6.116.1-sources.jar.asc">google-cloud-spanner-6.116.1-sources.jar.asc</a>      2026-04-21 22:15       488      
+<a href="google-cloud-spanner-6.116.1-sources.jar.md5" title="google-cloud-spanner-6.116.1-sources.jar.md5">google-cloud-spanner-6.116.1-sources.jar.md5</a>      2026-04-21 22:15        32      
+<a href="google-cloud-spanner-6.116.1-sources.jar.sha1" title="google-cloud-spanner-6.116.1-sources.jar.sha1">google-cloud-spanner-6.116.1-sources.jar.sha1</a>     2026-04-21 22:15        40      
+<a href="google-cloud-spanner-6.116.1-tests.jar" title="google-cloud-spanner-6.116.1-tests.jar">google-cloud-spanner-6.116.1-tests.jar</a>            2026-04-21 22:15   3074814      
+<a href="google-cloud-spanner-6.116.1-tests.jar.asc" title="google-cloud-spanner-6.116.1-tests.jar.asc">google-cloud-spanner-6.116.1-tests.jar.asc</a>        2026-04-21 22:15       488      
+<a href="google-cloud-spanner-6.116.1-tests.jar.md5" title="google-cloud-spanner-6.116.1-tests.jar.md5">google-cloud-spanner-6.116.1-tests.jar.md5</a>        2026-04-21 22:15        32      
+<a href="google-cloud-spanner-6.116.1-tests.jar.sha1" title="google-cloud-spanner-6.116.1-tests.jar.sha1">google-cloud-spanner-6.116.1-tests.jar.sha1</a>       2026-04-21 22:15        40      
+<a href="google-cloud-spanner-6.116.1.jar" title="google-cloud-spanner-6.116.1.jar">google-cloud-spanner-6.116.1.jar</a>                  2026-04-21 22:15   1689402      
+<a href="google-cloud-spanner-6.116.1.jar.asc" title="google-cloud-spanner-6.116.1.jar.asc">google-cloud-spanner-6.116.1.jar.asc</a>              2026-04-21 22:15       488      
+<a href="google-cloud-spanner-6.116.1.jar.md5" title="google-cloud-spanner-6.116.1.jar.md5">google-cloud-spanner-6.116.1.jar.md5</a>              2026-04-21 22:15        32      
+<a href="google-cloud-spanner-6.116.1.jar.sha1" title="google-cloud-spanner-6.116.1.jar.sha1">google-cloud-spanner-6.116.1.jar.sha1</a>             2026-04-21 22:15        40      
+<a href="google-cloud-spanner-6.116.1.pom" title="google-cloud-spanner-6.116.1.pom">google-cloud-spanner-6.116.1.pom</a>                  2026-04-21 22:15     71989      
+<a href="google-cloud-spanner-6.116.1.pom.asc" title="google-cloud-spanner-6.116.1.pom.asc">google-cloud-spanner-6.116.1.pom.asc</a>              2026-04-21 22:15       488      
+<a href="google-cloud-spanner-6.116.1.pom.md5" title="google-cloud-spanner-6.116.1.pom.md5">google-cloud-spanner-6.116.1.pom.md5</a>              2026-04-21 22:15        32      
+<a href="google-cloud-spanner-6.116.1.pom.sha1" title="google-cloud-spanner-6.116.1.pom.sha1">google-cloud-spanner-6.116.1.pom.sha1</a>             2026-04-21 22:15        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 1178ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 16:24:14 GMT
+content-type: application/java-archive
+content-length: 889275
+cf-ray: 9f609d5fa90a1a65-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "654c1e4f82798062d9800b4d0545ef5e"
+last-modified: Tue, 21 Apr 2026 22:15:35 GMT
+x-checksum-md5: 654c1e4f82798062d9800b4d0545ef5e
+x-checksum-sha1: 2de4059d5a178ae62eded6140f1ddbb98d593b28
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 16:24:14 GMT
+content-type: application/java-archive
+content-length: 3074814
+cf-ray: 9f609d623b6bcb74-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "dcb6498cfb76ebc5d54890541555bd69"
+last-modified: Tue, 21 Apr 2026 22:15:35 GMT
+x-checksum-md5: dcb6498cfb76ebc5d54890541555bd69
+x-checksum-sha1: ece2abc0c41b9202cab39fb55eac3766f1710f7b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 03 May 2026 16:24:15 GMT
+content-type: application/java-archive
+content-length: 2198918
+cf-ray: 9f609d64cd59739d-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "0f2248bd7c98c929437d4c0e966cdb0e"
+last-modified: Tue, 21 Apr 2026 22:15:35 GMT
+x-checksum-md5: 0f2248bd7c98c929437d4c0e966cdb0e
+x-checksum-sha1: d0748a0efbdb1de75b00d152a6f6f95b029700f7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"https://github.com/googleapis/google-cloud-java\"' metadata build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "6.116.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+    "description" : "This artifact contains the generated Java Protocol Buffer model classes for the Cloud Spanner Instance Admin v1 API. It provides message types, resource-name helpers, and protobuf descriptors used by higher-level Spanner admin gRPC and client libraries to create, list, update, and delete instances, instance configs, and instance partitions.",
+    "tested-versions" : [
+      "6.116.1"
+    ],
+    "allowed-packages" : [
+      "com.google.spanner.admin.instance.v1"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -10 | xargs -r sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|documentation-url|language|not-for-native-image|repository-url' metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:21:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:6:    "repository-url": "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+metadata/dev.zio/zio-config_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-config",
+metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:6:    "repository-url" : "https://github.com/zio/zio",
+metadata/dev.zio/zio-stacktracer_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:10:    "language" : {
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:6:    "repository-url" : "https://github.com/javafxports/openjdk-jfx",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+metadata/dev.zio/zio-http_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-http",
+
+exec
+/usr/bin/bash -lc "rg -n 'not-for-native-image|replacement|\"language\"' . | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+./gradlew:197:        set -- "$@" "$arg"      # push replacement arg
+./skills/review-fixes-java-run-fail/SKILL.md:95:- Dynamic-access coverage drops without a credible explanation and replacement coverage.
+./skills/review-fixes-native-image-run-fail/SKILL.md:91:- Dynamic-access coverage drops without a credible explanation and replacement coverage.
+./skills/review-fixes-javac-fail/SKILL.md:92:- Dynamic-access coverage drops without a credible explanation and replacement coverage.
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:119:                    "not-for-native-image": true,
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:130:                .hasMessageContaining("not-for-native-image");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:209:                .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:258:                .containsEntry("language", Map.of("name", "groovy", "version", "4.0"));
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:88:                    "not-for-native-image": true,
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:442:        LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:454:                List.of(replacement),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:458:        assertThat(merged.versions()).containsExactly(replacement);
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:481:        LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:493:                List.of(replacement),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:497:        assertThat(merged.versions()).containsExactly(replacement, untouchedVersion);
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:498:        assertThat(LibraryStatsSupport.requireVersionStats(merged, "com.example:demo:1.0.0")).isEqualTo(replacement);
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:279:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:284:                If the library is not language-specific, leave the "language" field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:297:                - Set the "language" field only when the library is language-specific.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:366:                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:370:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:383:                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:154:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:159:                If the library is not language-specific, leave the "language" field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:161:                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:162:                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:163:                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:177:                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-stacktracer_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-internal-macros_3/index.json:10:    "language" : {
+./tests/src/org.springframework/spring-instrument/5.3.31/src/test/java/org_springframework/spring_instrument/Spring_instrumentTest.java:44:        Instrumentation replacementInstrumentation = new TestInstrumentation("replacement");
+./tests/src/org.springframework/spring-instrument/5.3.31/src/test/java/org_springframework/spring_instrument/Spring_instrumentTest.java:47:        InstrumentationSavingAgent.agentmain("attach options", replacementInstrumentation);
+./tests/src/org.springframework/spring-instrument/5.3.31/src/test/java/org_springframework/spring_instrument/Spring_instrumentTest.java:49:        assertThat(InstrumentationSavingAgent.getInstrumentation()).isSameAs(replacementInstrumentation);
+./metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+./tests/src/org.slf4j/slf4j-api/1.5.3/src/test/java/org_slf4j/slf4j_api/Slf4j_apiTest.java:153:        Map<String, String> replacementContext = new LinkedHashMap<>();
+./tests/src/org.slf4j/slf4j-api/1.5.3/src/test/java/org_slf4j/slf4j_api/Slf4j_apiTest.java:158:        replacementContext.put("requestId", "84");
+./tests/src/org.slf4j/slf4j-api/1.5.3/src/test/java/org_slf4j/slf4j_api/Slf4j_apiTest.java:159:        replacementContext.put("user", "tester");
+./tests/src/org.slf4j/slf4j-api/1.5.3/src/test/java/org_slf4j/slf4j_api/Slf4j_apiTest.java:160:        MDC.setContextMap(replacementContext);
+./metadata/org.slf4j/log4j-over-slf4j/index.json:9:    "description" : "log4j-over-slf4j provides replacement classes for the Log4j version 1 API that route logging calls to SLF4J. It lets applications and dependencies written against Log4j use the SLF4J binding selected by the application without keeping a Log4j version 1 runtime implementation on the classpath.",
+./metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+./metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+./metadata/org.jetbrains.compose.ui/ui/index.json:5:    "replacement": "org.jetbrains.compose.ui:ui-desktop:1.8.2"
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:249:            throw new GradleException("Cannot mark a new version latest for not-for-native-image artifact: " + newCoords.group() + ":" + newCoords.artifact());
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:317:                null, // not-for-native-image
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:319:                null // replacement
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:424:                entry.replacement()
+./metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:136:            throw new IllegalStateException("Cannot add tested versions to not-for-native-image artifact: " + coordinatesMetadataIndex);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:37:        @JsonProperty("language")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:51:        @JsonProperty("replacement")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:52:        String replacement
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:26:        @JsonProperty("language")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("not-for-native-image")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:32:        @JsonProperty("replacement")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:33:        String replacement
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:100:            throw new IllegalStateException("Artifact '%s:%s' is marked not-for-native-image. Remove the marker before scaffolding Native Image metadata.".formatted(coordinates.group(), coordinates.artifact()));
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:347:                null, // not-for-native-image
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:349:                null // replacement
+./metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+./metadata/io.netty/netty-resolver-dns-native-macos/index.json:3:    "not-for-native-image": true,
+./metadata/io.netty/netty-resolver-dns-native-macos/index.json:5:    "replacement": "io.netty:netty-resolver-dns-classes-macos:4.1.74.Final"
+./metadata/org.jboss.logmanager/jboss-logmanager/index.json:9:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+./metadata/org.jboss.logmanager/jboss-logmanager/index.json:26:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+./metadata/org.jboss.logmanager/jboss-logmanager/index.json:41:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+./metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+./tests/src/org.apache.commons/commons-fileupload2-javax/2.0.0-M5/src/test/java/org_apache_commons/commons_fileupload2_javax/Commons_fileupload2_javaxTest.java:266:        FileCleaningTracker replacement = new FileCleaningTracker();
+./tests/src/org.apache.commons/commons-fileupload2-javax/2.0.0-M5/src/test/java/org_apache_commons/commons_fileupload2_javax/Commons_fileupload2_javaxTest.java:267:        JavaxFileCleaner.setFileCleaningTracker(servletContext, replacement);
+./tests/src/org.apache.commons/commons-fileupload2-javax/2.0.0-M5/src/test/java/org_apache_commons/commons_fileupload2_javax/Commons_fileupload2_javaxTest.java:268:        assertThat(JavaxFileCleaner.getFileCleaningTracker(servletContext)).isSameAs(replacement);
+./tests/src/org.apache.commons/commons-fileupload2-javax/2.0.0-M5/src/test/java/org_apache_commons/commons_fileupload2_javax/Commons_fileupload2_javaxTest.java:271:        assertThat(replacement.getTrackCount()).isZero();
+./tests/src/org.apache.commons/commons-fileupload2-javax/2.0.0-M2/src/test/java/org_apache_commons/commons_fileupload2_javax/Commons_fileupload2_javaxTest.java:261:        FileCleaningTracker replacement = new FileCleaningTracker();
+./tests/src/org.apache.commons/commons-fileupload2-javax/2.0.0-M2/src/test/java/org_apache_commons/commons_fileupload2_javax/Commons_fileupload2_javaxTest.java:262:        JavaxFileCleaner.setFileCleaningTracker(servletContext, replacement);
+
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|coordinates\" :' . | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+./forge/utility_scripts/native_image_artifact.py:34:    return os.path.join(repo_path, "build", "discovered-artifact-metadata", f"{sanitized}.json")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:58:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:71:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java && sed -n '1,220p' tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {}
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.harness.tasks;
+
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+class DiscoverArtifactMetadataTests {
+
+    @TempDir
+    Path tempDir;
+
+    @Test
+    void runPrintsPromptForOpencodeRun() throws IOException, InterruptedException {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+        DiscoverArtifactMetadata task = project.getTasks().create("discoverArtifactMetadata", DiscoverArtifactMetadata.class);
+        task.setCoordinatesOption("io.ktor:ktor-server-core-jvm:3.1.0");
+        task.setAgentCommandOption("opencode run");
+
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+        try (PrintStream capturedOut = new PrintStream(outputBuffer, true, StandardCharsets.UTF_8)) {
+            System.setOut(capturedOut);
+            task.run();
+        } finally {
+            System.setOut(originalOut);
+        }
+
+        String output = outputBuffer.toString(StandardCharsets.UTF_8);
+        assertThat(output)
+                .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.ktor:ktor-server-core-jvm:3.1.0")
+                .contains("Also determine whether this is a language-specific library.")
+                .contains("{ \"name\": \"groovy\", \"version\": \"<groovy major.minor, e.g. 4.0>\" }")
+                .contains("{ \"name\": \"scala\", \"version\": \"3\" }")
+                .contains("If the library is not language-specific, leave the \"language\" field absent.")
+                .contains("The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version \"3.1.0\" when \"$version$\" is replaced with \"3.1.0\".")
+                .contains("Update this file directly:")
+                .contains("Set \"coordinates\" to \"io.ktor:ktor-server-core-jvm:3.1.0\".")
+                .contains("Set \"source-code-url\", \"test-code-url\", and \"documentation-url\" to the discovered values with \"$version$\" replacing version \"3.1.0\".")
+                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+        assertThat(tempDir.resolve("build/agent-artifact-discovery-logs")).doesNotExist();
+    }
+
+    @Test
+    void runDeletesInitializedDiscoveryFileWhenAgentCommandNotFound() {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+        DiscoverArtifactMetadata task = project.getTasks().create("discoverArtifactMetadata", DiscoverArtifactMetadata.class);
+        task.setCoordinatesOption("io.ktor:ktor-server-core-jvm:3.1.0");
+        task.setAgentCommandOption("definitely-not-a-real-agent-command-xyz");
+
+        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+
+        assertThatThrownBy(task::run).isInstanceOf(IOException.class);
+
+        // A stale, initialized discovery file would silently block the next run, so it must be cleaned up.
+        assertThat(Files.exists(discoveryFile)).isFalse();
+    }
+}
+
+codex
+The Maven directory confirms that sources, tests, and javadoc jars are all published for 6.116.1, and the POM points the artifact at the googleapis/google-cloud-java repository. I’m going to fill the discovered metadata with those Maven URLs and leave language/not-for-native-image unset because this is a normal Java JVM jar.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+index e4ffbf87f787ef8ba9b383f4943744c48eb52aa7..7d7e2ef60349d6aa435102d7baacf3b45716ac45
+--- a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
++  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1",
++  "repository-url" : "https://github.com/googleapis/google-cloud-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
++  "description" : "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+index e4ffbf87f787ef8ba9b383f4943744c48eb52aa7..7d7e2ef60349d6aa435102d7baacf3b45716ac45
+--- a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
++  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1",
++  "repository-url" : "https://github.com/googleapis/google-cloud-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
++  "description" : "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+{
+  "coordinates": "com.google.cloud:google-cloud-spanner:6.116.1",
+  "repository-url": "https://github.com/googleapis/google-cloud-java",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
+  "description": "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+}
+
+exec
+/usr/bin/bash -lc 'for classifier in sources tests javadoc; do curl -fsI "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/6.116.1/google-cloud-spanner-6.116.1-${classifier}.jar" >/dev/null || exit 1; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+exec
+/usr/bin/bash -lc "jar tf <(curl -fsSL https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/6.116.1/google-cloud-spanner-6.116.1.jar) | rg '\\.class"'$'"' | head" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+curl: (23) Failure writing output to destination
+
+ succeeded in 160ms:
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+index e4ffbf87f787ef8ba9b383f4943744c48eb52aa7..7d7e2ef60349d6aa435102d7baacf3b45716ac45
+--- a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
++  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1",
++  "repository-url" : "https://github.com/googleapis/google-cloud-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
++  "description" : "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+ }
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp)
+curl -fsSL -o "$tmp" https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/6.116.1/google-cloud-spanner-6.116.1.jar
+jar tf "$tmp" | rg '"'\\.class"'$'"' | head
+rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+index e4ffbf87f787ef8ba9b383f4943744c48eb52aa7..7d7e2ef60349d6aa435102d7baacf3b45716ac45
+--- a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
++  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1",
++  "repository-url" : "https://github.com/googleapis/google-cloud-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
++  "description" : "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+ }
+
+ succeeded in 378ms:
+com/google/cloud/spanner/Value$LazyBytesArrayImpl$1.class
+com/google/cloud/spanner/GrpcValueIterator.class
+com/google/cloud/spanner/AbstractReadContext.class
+com/google/cloud/spanner/TransactionContextFutureImpl$CommittableAsyncTransactionManager.class
+com/google/cloud/spanner/StreamingUtil.class
+com/google/cloud/spanner/LazySpannerInitializer.class
+com/google/cloud/spanner/encryption/BackupEncryptionConfig.class
+com/google/cloud/spanner/encryption/EncryptionConfigProtoMapper.class
+com/google/cloud/spanner/encryption/RestoreEncryptionConfig.class
+com/google/cloud/spanner/encryption/UseDatabaseEncryption.class
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+index e4ffbf87f787ef8ba9b383f4943744c48eb52aa7..7d7e2ef60349d6aa435102d7baacf3b45716ac45
+--- a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
++  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1",
++  "repository-url" : "https://github.com/googleapis/google-cloud-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
++  "description" : "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+index e4ffbf87f787ef8ba9b383f4943744c48eb52aa7..7d7e2ef60349d6aa435102d7baacf3b45716ac45
+--- a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
++  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1",
++  "repository-url" : "https://github.com/googleapis/google-cloud-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
++  "description" : "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+ }
+
+ succeeded in 166ms:
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org com.google.cloud google-cloud-spanner 6.116.1 javadoc sources tests jar
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1",
+     3	  "repository-url" : "https://github.com/googleapis/google-cloud-java",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
+     5	  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
+     7	  "description" : "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+index e4ffbf87f787ef8ba9b383f4943744c48eb52aa7..7d7e2ef60349d6aa435102d7baacf3b45716ac45
+--- a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
++  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1",
++  "repository-url" : "https://github.com/googleapis/google-cloud-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
++  "description" : "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+ }
+
+codex
+Updated [com.google.cloud-google-cloud-spanner-6.116.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json:1) with the repository, Maven Central source/test/javadoc URLs, and a two-sentence description.
+
+Validation done:
+- `jq` parses the JSON successfully.
+- Maven Central has the `sources`, `tests`, and `javadoc` jars for `6.116.1`.
+- The main jar contains JVM `.class` files, so I left `not-for-native-image` absent.
+- It is a Java client artifact, not Kotlin/Groovy/Scala-specific, so I left `language` absent.
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+index e4ffbf87f787ef8ba9b383f4943744c48eb52aa7..7d7e2ef60349d6aa435102d7baacf3b45716ac45
+--- a/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1"
++  "coordinates" : "com.google.cloud:google-cloud-spanner:6.116.1",
++  "repository-url" : "https://github.com/googleapis/google-cloud-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-spanner/$version$/google-cloud-spanner-$version$-javadoc.jar",
++  "description" : "Google Cloud Spanner is an idiomatic Java client for accessing Cloud Spanner databases. It provides APIs for sessions, reads, writes, transactions, administration clients, and integration with Google Cloud authentication and gRPC transport."
+ }
+
+tokens used
+54,932
+Updated [com.google.cloud-google-cloud-spanner-6.116.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b/build/discovered-artifact-metadata/com.google.cloud-google-cloud-spanner-6.116.1.json:1) with the repository, Maven Central source/test/javadoc URLs, and a two-sentence description.
+
+Validation done:
+- `jq` parses the JSON successfully.
+- Maven Central has the `sources`, `tests`, and `javadoc` jars for `6.116.1`.
+- The main jar contains JVM `.class` files, so I left `not-for-native-image` absent.
+- It is a Java client artifact, not Kotlin/Groovy/Scala-specific, so I left `language` absent.
+Ran agent for com.google.cloud:google-cloud-spanner:6.116.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b/build/agent-artifact-discovery-logs/com.google.cloud-google-cloud-spanner-6.116.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4478-43e3727b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 47s
+9 actionable tasks: 4 executed, 5 from cache
