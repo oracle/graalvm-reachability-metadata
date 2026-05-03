@@ -158,6 +158,20 @@ public class Endpoints_spiTest {
     }
 
     @Test
+    void attributesWithSameNameAndDifferentValueTypesDoNotCollide() {
+        EndpointAttributeKey<String> stringTimeoutKey = new EndpointAttributeKey<>("timeout", String.class);
+        EndpointAttributeKey<Integer> integerTimeoutKey = new EndpointAttributeKey<>("timeout", Integer.class);
+
+        Endpoint endpoint = Endpoint.builder()
+                .putAttribute(stringTimeoutKey, "standard")
+                .putAttribute(integerTimeoutKey, 30)
+                .build();
+
+        assertThat(endpoint.attribute(stringTimeoutKey)).isEqualTo("standard");
+        assertThat(endpoint.attribute(integerTimeoutKey)).isEqualTo(30);
+    }
+
+    @Test
     void endpointProviderIsUsableAsPublicMarkerInterface() {
         EndpointAttributeKey<String> resolverKey = new EndpointAttributeKey<>("resolver", String.class);
         EndpointProvider provider = new StaticEndpointProvider(Endpoint.builder()
