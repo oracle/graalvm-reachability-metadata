@@ -184,6 +184,21 @@ class Zio_internal_macros_3Test {
   }
 
   @Test
+  def ambiguousLayerRendererUsesSingularWordingForOneAmbiguousType(): Unit = {
+    val rendered: String = TerminalRendering.ambiguousLayersError(
+      List("example.Repository" -> List("primaryRepositoryLayer", "fallbackRepositoryLayer"))
+    )
+    val plainText: String = removeAnsiEscapes(rendered)
+
+    assertThat(plainText).contains("Ambiguous layers! I cannot decide which to use.")
+    assertThat(plainText).contains("You have provided more than one layer for the following type:")
+    assertThat(plainText).doesNotContain("following 1 types")
+    assertThat(plainText).contains("example.Repository is provided by:")
+    assertThat(plainText).contains("1. primaryRepositoryLayer")
+    assertThat(plainText).contains("2. fallbackRepositoryLayer")
+  }
+
+  @Test
   def byNameParameterRendererShowsOriginalSignatureAndLambdaWorkaround(): Unit = {
     val rendered: String = TerminalRendering.byNameParameterInMacroError(
       method = "createLayerByName",
