@@ -11,7 +11,9 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "io.quarkus:quarkus-bootstrap-runner:$libraryVersion"
+    testImplementation("io.quarkus:quarkus-bootstrap-runner:$libraryVersion") {
+        exclude group: 'org.jboss.logmanager', module: 'jboss-logmanager'
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
