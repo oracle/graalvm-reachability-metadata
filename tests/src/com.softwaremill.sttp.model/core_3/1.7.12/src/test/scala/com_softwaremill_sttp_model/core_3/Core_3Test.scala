@@ -92,6 +92,25 @@ class Core_3Test {
   }
 
   @Test
+  def uriInterpolatorBuildsSchemeAuthorityUserInfoAndPortComponents(): Unit = {
+    val scheme: String = "https"
+    val username: String = "user"
+    val password: String = "secret"
+    val host: String = "api.example.com"
+    val port: Int = 8443
+
+    val interpolated: Uri = uri"$scheme://$username:$password@$host:$port"
+
+    assertEquals("https://user:secret@api.example.com:8443", interpolated.toString)
+    assertEquals(Some(scheme), interpolated.scheme)
+    assertEquals(Some(Uri.UserInfo(username, Some(password))), interpolated.userInfo)
+    assertEquals(Some(host), interpolated.host)
+    assertEquals(Some(port), interpolated.port)
+    assertTrue(interpolated.isAbsolute)
+    assertFalse(interpolated.isRelative)
+  }
+
+  @Test
   def uriInterpolatorExpandsCollectionsAndOmitsMissingQueryValues(): Unit = {
     val pathSegments: List[String] = List("team a", "report/42")
     val optionalMode: Option[String] = Some("fast")
