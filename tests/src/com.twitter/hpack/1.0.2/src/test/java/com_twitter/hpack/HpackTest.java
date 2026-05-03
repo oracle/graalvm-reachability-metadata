@@ -75,6 +75,25 @@ public class HpackTest {
     }
 
     @Test
+    void encodesStringLiteralsWithHuffmanWhenItReducesHeaderBlockSize() throws IOException {
+        Encoder encoder = new Encoder(0);
+        Decoder decoder = new Decoder(8192, 0);
+        byte[] value = ascii("www.example.com");
+        ByteArrayOutputStream headerBlock = new ByteArrayOutputStream();
+
+        encoder.encodeHeader(headerBlock, ascii(":authority"), value, false);
+        byte[] encoded = headerBlock.toByteArray();
+
+        assertThat(encoded).hasSizeGreaterThanOrEqualTo(2);
+        int huffmanLength = encoded[1] & 0x7f;
+        assertThat(encoded[0]).isEqualTo((byte) 0x01);
+        assertThat(encoded[1] & 0x80).isEqualTo(0x80);
+        assertThat(huffmanLength).isLessThan(value.length);
+        assertThat(encoded).hasSize(2 + huffmanLength);
+        assertThat(decode(decoder, encoded)).containsExactly(header(":authority", "www.example.com", false));
+    }
+
+    @Test
     void encodesCustomHeadersWithoutDynamicIndexingWhenTableCapacityIsZero() throws IOException {
         Encoder encoder = new Encoder(0);
         Decoder decoder = new Decoder(8192, 0);
