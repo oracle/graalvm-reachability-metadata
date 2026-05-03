@@ -1,0 +1,1389 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ded89-5366-7fc0-8971-71498f87805b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sf.saxon:Saxon-HE:9.9.1-6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "9.9.1-6" when "$version$" is replaced with "9.9.1-6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+- Set "coordinates" to "net.sf.saxon:Saxon-HE:9.9.1-6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "9.9.1-6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact identity and versioned upstream links first, then update the JSON in place with the conservative fields only.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+{
+  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'net\\.sf\\.saxon|Saxon-HE|saxon' build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json:2:  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6"
+
+web search: 
+web search: net.sf.saxon Saxon-HE 9.9.1-6 maven source jar
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/
+web search: 
+web search: Saxon HE GitHub 9.9 source test suite
+web search: 
+web search: 
+web search: 
+web search: Saxonica Saxon-Archive 9.9.1.6 source tests
+web search: 
+web search: https://github.com/Saxonica/Saxon-Archive
+web search: 
+web search: https://github.com/Saxonica/Saxon-Archive/tree/main/Saxon-HE/9
+web search: 
+web search: https://github.com/Saxonica/Saxon-Archive/tree/main/Saxon-HE/9/9.9
+codex
+The Maven Central entry has exact source and javadoc artifacts for `9.9.1-6`, but no visible tests artifact. I’m checking the upstream archive now to see whether there is a version-specific test suite or only shared 9.9 resources.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/sf/saxon/Saxon-HE/9.9.1-6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/sf/saxon/Saxon-HE/9.9.1-6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="Saxon-HE-9.9.1-6-javadoc.jar" title="Saxon-HE-9.9.1-6-javadoc.jar">Saxon-HE-9.9.1-6-javadoc.jar</a>                      2019-12-06 15:41  11007455      
+<a href="Saxon-HE-9.9.1-6-javadoc.jar.asc" title="Saxon-HE-9.9.1-6-javadoc.jar.asc">Saxon-HE-9.9.1-6-javadoc.jar.asc</a>                  2019-12-06 15:41       488      
+<a href="Saxon-HE-9.9.1-6-javadoc.jar.asc.md5" title="Saxon-HE-9.9.1-6-javadoc.jar.asc.md5">Saxon-HE-9.9.1-6-javadoc.jar.asc.md5</a>              2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6-javadoc.jar.asc.sha1" title="Saxon-HE-9.9.1-6-javadoc.jar.asc.sha1">Saxon-HE-9.9.1-6-javadoc.jar.asc.sha1</a>             2019-12-06 15:41        40      
+<a href="Saxon-HE-9.9.1-6-javadoc.jar.md5" title="Saxon-HE-9.9.1-6-javadoc.jar.md5">Saxon-HE-9.9.1-6-javadoc.jar.md5</a>                  2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6-javadoc.jar.sha1" title="Saxon-HE-9.9.1-6-javadoc.jar.sha1">Saxon-HE-9.9.1-6-javadoc.jar.sha1</a>                 2019-12-06 15:41        40      
+<a href="Saxon-HE-9.9.1-6-sources.jar" title="Saxon-HE-9.9.1-6-sources.jar">Saxon-HE-9.9.1-6-sources.jar</a>                      2019-12-06 15:41   5139102      
+<a href="Saxon-HE-9.9.1-6-sources.jar.asc" title="Saxon-HE-9.9.1-6-sources.jar.asc">Saxon-HE-9.9.1-6-sources.jar.asc</a>                  2019-12-06 15:41       488      
+<a href="Saxon-HE-9.9.1-6-sources.jar.asc.md5" title="Saxon-HE-9.9.1-6-sources.jar.asc.md5">Saxon-HE-9.9.1-6-sources.jar.asc.md5</a>              2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6-sources.jar.asc.sha1" title="Saxon-HE-9.9.1-6-sources.jar.asc.sha1">Saxon-HE-9.9.1-6-sources.jar.asc.sha1</a>             2019-12-06 15:41        40      
+<a href="Saxon-HE-9.9.1-6-sources.jar.md5" title="Saxon-HE-9.9.1-6-sources.jar.md5">Saxon-HE-9.9.1-6-sources.jar.md5</a>                  2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6-sources.jar.sha1" title="Saxon-HE-9.9.1-6-sources.jar.sha1">Saxon-HE-9.9.1-6-sources.jar.sha1</a>                 2019-12-06 15:41        40      
+<a href="Saxon-HE-9.9.1-6-xqj.jar" title="Saxon-HE-9.9.1-6-xqj.jar">Saxon-HE-9.9.1-6-xqj.jar</a>                          2019-12-06 15:41    111828      
+<a href="Saxon-HE-9.9.1-6-xqj.jar.asc" title="Saxon-HE-9.9.1-6-xqj.jar.asc">Saxon-HE-9.9.1-6-xqj.jar.asc</a>                      2019-12-06 15:41       488      
+<a href="Saxon-HE-9.9.1-6-xqj.jar.asc.md5" title="Saxon-HE-9.9.1-6-xqj.jar.asc.md5">Saxon-HE-9.9.1-6-xqj.jar.asc.md5</a>                  2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6-xqj.jar.asc.sha1" title="Saxon-HE-9.9.1-6-xqj.jar.asc.sha1">Saxon-HE-9.9.1-6-xqj.jar.asc.sha1</a>                 2019-12-06 15:41        40      
+<a href="Saxon-HE-9.9.1-6-xqj.jar.md5" title="Saxon-HE-9.9.1-6-xqj.jar.md5">Saxon-HE-9.9.1-6-xqj.jar.md5</a>                      2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6-xqj.jar.sha1" title="Saxon-HE-9.9.1-6-xqj.jar.sha1">Saxon-HE-9.9.1-6-xqj.jar.sha1</a>                     2019-12-06 15:41        40      
+<a href="Saxon-HE-9.9.1-6.jar" title="Saxon-HE-9.9.1-6.jar">Saxon-HE-9.9.1-6.jar</a>                              2019-12-06 15:41   5493887      
+<a href="Saxon-HE-9.9.1-6.jar.asc" title="Saxon-HE-9.9.1-6.jar.asc">Saxon-HE-9.9.1-6.jar.asc</a>                          2019-12-06 15:41       488      
+<a href="Saxon-HE-9.9.1-6.jar.asc.md5" title="Saxon-HE-9.9.1-6.jar.asc.md5">Saxon-HE-9.9.1-6.jar.asc.md5</a>                      2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6.jar.asc.sha1" title="Saxon-HE-9.9.1-6.jar.asc.sha1">Saxon-HE-9.9.1-6.jar.asc.sha1</a>                     2019-12-06 15:41        40      
+<a href="Saxon-HE-9.9.1-6.jar.md5" title="Saxon-HE-9.9.1-6.jar.md5">Saxon-HE-9.9.1-6.jar.md5</a>                          2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6.jar.sha1" title="Saxon-HE-9.9.1-6.jar.sha1">Saxon-HE-9.9.1-6.jar.sha1</a>                         2019-12-06 15:41        40      
+<a href="Saxon-HE-9.9.1-6.pom" title="Saxon-HE-9.9.1-6.pom">Saxon-HE-9.9.1-6.pom</a>                              2019-12-06 15:41      3933      
+<a href="Saxon-HE-9.9.1-6.pom.asc" title="Saxon-HE-9.9.1-6.pom.asc">Saxon-HE-9.9.1-6.pom.asc</a>                          2019-12-06 15:41       488      
+<a href="Saxon-HE-9.9.1-6.pom.asc.md5" title="Saxon-HE-9.9.1-6.pom.asc.md5">Saxon-HE-9.9.1-6.pom.asc.md5</a>                      2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6.pom.asc.sha1" title="Saxon-HE-9.9.1-6.pom.asc.sha1">Saxon-HE-9.9.1-6.pom.asc.sha1</a>                     2019-12-06 15:41        40      
+<a href="Saxon-HE-9.9.1-6.pom.md5" title="Saxon-HE-9.9.1-6.pom.md5">Saxon-HE-9.9.1-6.pom.md5</a>                          2019-12-06 15:41        32      
+<a href="Saxon-HE-9.9.1-6.pom.sha1" title="Saxon-HE-9.9.1-6.pom.sha1">Saxon-HE-9.9.1-6.pom.sha1</a>                         2019-12-06 15:41        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/Saxon-HE-9.9.1-6.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.saxon</groupId>
+  <artifactId>Saxon-HE</artifactId>
+  <version>9.9.1-6</version>
+  <packaging>jar</packaging>
+
+  <name>Saxon-HE</name>
+  <description>The XSLT and XQuery Processor</description>
+  <url>http://www.saxonica.com/</url>
+
+  <licenses>
+    <license>
+      <name>Mozilla Public License Version 2.0</name>
+      <url>http://www.mozilla.org/MPL/2.0/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:svn:https://dev.saxonica.com/repos/archive/opensource/</connection>
+    <developerConnection>scm:svn:https://dev.saxonica.com/repos/archive/opensource/</developerConnection>
+    <url>https://dev.saxonica.com/repos/archive/opensource/</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>mike</id>
+      <name>Michael Kay</name>
+      <email>mike@saxonica.com</email>
+    </developer>
+    <developer>
+      <id>ond1</id>
+      <name>O'Neil Delpratt</name>
+      <email>oneil@saxonica.com</email>
+    </developer>
+    <developer>
+      <id>debbie</id>
+      <name>Debbie Lockett</name>
+      <email>debbie@saxonica.com</email>
+    </developer>
+    <developer>
+      <id>John</id>
+      <name>John Lumley</name>
+      <email>john@saxonica.com</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <skipTests>false</skipTests>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss</maven.build.timestamp.format>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <issueManagement>
+    <system>Saxon Community</system>
+    <url>https://saxonica.plan.io/projects/saxon</url>
+  </issueManagement>
+
+  <inceptionYear>1999</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>User List</name>
+      <post>saxon-help@lists.sourceforge.net</post>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_name=saxon-help</archive>
+    </mailingList>
+  </mailingLists>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <version>1.1.3</version>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom2</artifactId>
+      <version>2.0.6</version>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>com.io7m.xom</groupId>
+      <artifactId>xom</artifactId>
+      <version>1.2.10</version>
+      <optional>true</optional>
+    </dependency>
+
+  <!-- https://mvnrepository.com/artifact/com.ibm.icu/icu4j -->
+  <dependency>
+    <groupId>com.ibm.icu</groupId>
+    <artifactId>icu4j</artifactId>
+    <version>63.1</version>
+    <optional>true</optional>
+  </dependency>
+
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.6.1</version>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>xml-resolver</groupId>
+      <artifactId>xml-resolver</artifactId>
+      <version>1.2</version>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.ws.commons.axiom</groupId>
+      <artifactId>axiom-impl</artifactId>
+      <version>1.2.15</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+
+  <organization>
+    <name>Saxonica</name>
+    <url>http://www.saxonica.com</url>
+  </organization>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/Saxonica/Saxon-Archive/contents/Saxon-HE/9/9.9 | sed -n '1,260p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 403
+
+exec
+/usr/bin/bash -lc "curl -fsSL -H 'User-Agent: codex' https://api.github.com/repos/Saxonica/Saxon-Archive/contents/Saxon-HE/9/9.9 | sed -n '1,260p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 403
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/Saxon-HE-9.9.1-6-test-sources.jar || true
+curl -fsSL -I https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/Saxon-HE-9.9.1-6-tests.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://dev.saxonica.com/repos/archive/opensource/ || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 430ms:
+curl: (22) HTTP/2 301 
+server: CloudFront
+date: Sun, 03 May 2026 11:12:12 GMT
+content-length: 0
+location: /repos/archive/opensource/index.html
+x-cache: FunctionGeneratedResponse from cloudfront
+via: 1.1 2fea9bb55456bdcc8f2da3765c8fd6ea.cloudfront.net (CloudFront)
+x-amz-cf-pop: ZRH52-P1
+x-amz-cf-id: BvMYSuqSg0Ir70UbAxj2valFidOUxEMDIV54LLa-5zvp5v9layJz7g==
+
+HTTP/2 404 
+content-type: text/html
+content-length: 1120
+date: Sun, 03 May 2026 00:54:19 GMT
+last-modified: Tue, 05 Dec 2023 11:36:41 GMT
+etag: "4ab69a89be547ce3d194fd4c086cea3f"
+x-amz-server-side-encryption: AES256
+accept-ranges: bytes
+server: AmazonS3
+x-cache: Error from cloudfront
+via: 1.1 2fea9bb55456bdcc8f2da3765c8fd6ea.cloudfront.net (CloudFront)
+x-amz-cf-pop: ZRH52-P1
+x-amz-cf-id: upTOlKj1RSmmV9F3Wqy4QGq-zgK0qr3qCaz-t-_M7D9NHLcPbFvqzQ==
+age: 37074
+
+The requested URL returned error: 404
+
+ succeeded in 489ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 11:12:12 GMT
+content-type: text/html
+cf-ray: 9f5ed44abee43dba-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sf/saxon/Saxon-HE/9.9.1-6/Saxon-HE-9.9.1-6-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 11:12:12 GMT
+content-type: text/html
+cf-ray: 9f5ed44c5bdcbe59-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sf/saxon/Saxon-HE/9.9.1-6/Saxon-HE-9.9.1-6-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://github.com/Saxonica/Saxon-Archive/tree/main/Saxon-HE/9/9.9
+web search: 
+web search: https://github.com/Saxonica/Saxon-Archive/blob/main/Saxon-HE/9/9.9/saxon9-9-1-6source.zip
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"' build/discovered-artifact-metadata metadata | head -80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/javax.validation/validation-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:21:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-$version$/activemq-client/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:22:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/$version$/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/activemq-broker/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:29:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:43:    "test-code-url" : "https://github.com/apache/activemq-artemis/tree/$version$/artemis-log-annotation-processor/src/test",
+metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/org.jline/jline-reader/index.json:8:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.jline/jline-reader/index.json:22:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-$version$",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_6_1/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:23:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_5/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:38:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_4_2/org.eclipse.jdt.core.tests.compiler/src",
+metadata/javax.el/el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/parameter-names/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:39:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-$version$/src/test",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\".*repo1.maven|\"documentation-url\".*javadoc.jar|\"test-code-url\" : \"N/A\"' build/discovered-artifact-metadata metadata | head -120" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-sources.jar",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/$version$/handlebars-helpers-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/com.twitter/hpack/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-sources.jar",
+metadata/com.twitter/hpack/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/io.nats/jnats/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/io/nats/jnats/$version$/jnats-$version$-sources.jar",
+metadata/io.nats/jnats/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/io/nats/jnats/$version$/jnats-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-sources.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:38:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:114:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:115:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/$version$/findbugs-annotations-$version$-sources.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/$version$/findbugs-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-sources.jar",
+metadata/com.google.code.findbugs/annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.google.code.findbugs/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.code.findbugs/annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/org.immutables/value/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-sources.jar",
+metadata/org.immutables/value/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-javadoc.jar",
+metadata/org.immutables/value/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-sources.jar",
+metadata/org.immutables/value/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-javadoc.jar",
+metadata/org.immutables/value/index.json:38:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-sources.jar",
+metadata/org.immutables/value/index.json:41:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:22:    "test-code-url" : "N/A",
+metadata/jakarta.jms/jakarta.jms-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/$version$/jsr305-$version$.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:6:    "test-code-url" : "N/A",
+metadata/com.google.code.findbugs/jsr305/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/$version$/jsr305-$version$-sources.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:21:    "test-code-url" : "N/A",
+metadata/com.google.code.findbugs/jsr305/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/$version$/jsr305-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-jcache/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-jcache/$version$/hibernate-jcache-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.http2/http2-hpack/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-hpack/$version$/http2-hpack-$version$-sources.jar",
+metadata/org.eclipse.jetty.http2/http2-hpack/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-hpack/$version$/http2-hpack-$version$-javadoc.jar",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-processor/$version$/jboss-logging-processor-$version$-javadoc.jar",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging-processor/$version$/jboss-logging-processor-$version$-sources.jar",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging-processor/$version$/jboss-logging-processor-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/javax.transaction/transaction-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.xerial/sqlite-jdbc/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/$version$/sqlite-jdbc-$version$-javadoc.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/$version$/sqlite-jdbc-$version$-javadoc.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3-javadoc.jar",
+metadata/javax.transaction/jta/index.json:7:    "test-code-url" : "N/A",
+metadata/io.dropwizard.metrics/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/org.jboss.logging/jboss-logging/index.json:15:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging/$version$/jboss-logging-$version$-sources.jar",
+metadata/org.jboss.logging/jboss-logging/index.json:18:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging/$version$/jboss-logging-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-graphite/$version$/metrics-graphite-$version$-javadoc.jar",
+metadata/com.shapesecurity/salvation2/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/shapesecurity/salvation2/$version$/salvation2-$version$-sources.jar",
+metadata/com.shapesecurity/salvation2/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/shapesecurity/salvation2/$version$/salvation2-$version$-javadoc.jar",
+metadata/net.i2p.crypto/eddsa/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/net/i2p/crypto/eddsa/$version$/eddsa-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.ibm.async/asyncutil/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/ibm/async/asyncutil/$version$/asyncutil-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:24:    "test-code-url" : "N/A",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'Saxon|saxonica|saxon' build/discovered-artifact-metadata metadata || true" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json:2:  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6"
+
+web search: 
+web search: GitHub Saxonica Saxon-Archive Saxon-HE 9.9.1-6 source zip saxon9-9-1-6source.zip
+web search: 
+web search: https://github.com/Saxonica/Saxon-Archive
+web search: 
+web search: https://github.com/Saxonica/Saxon-Archive/tree/main/Saxon-HE/9/9.9
+web search: 
+web search: https://github.com/Saxonica/Saxon-Archive/blob/main/Saxon-HE/9/9.9/README.md
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/Saxonica/Saxon-Archive/main/Saxon-HE/9/9.9/readme99.txt | sed -n '1,180p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/Saxonica/Saxon-Archive/raw/refs/heads/main/Saxon-HE/9/9.9/saxon-resources9-9.zip || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/Saxonica/Saxon-Archive/raw/refs/heads/main/Saxon-HE/9/9.9/saxon9-9-1-6source.zip || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 189ms:
+==============================
+
+Saxon-HE 9.9.1.8 is the latest maintenance release on the 9.9 branch of the open-source edition of Saxon.
+
+A later branch, Saxon 10, has been available since March 2020 with new features, and is now considered stable.
+See https://sourceforge.net/projects/saxon/files/Saxon-HE/10/ for details of maintenance releases on the Saxon 10 branch.
+
+The 9.9 branch will remain supported until 2021-09-27, but in the interests of reliability, the maintenance
+approach is conservative: bug fixes will only be produced if there is a strong technical reason, and minimal technical risk.
+
+It is available for the Java and .NET platforms. Releases on C/C++/PHP platforms are still on 9.9.1.5, but will be updated soon.
+
+The documentation for Saxon is at http://www.saxonica.com/documentation/
+and includes a detailed list of changes for each release.
+
+For the Java platform, download file SaxonHE9-9-1-8J.zip.
+
+Installation instructions are at:
+
+http://www.saxonica.com/documentation/index.html#!about/installationjava
+
+The file saxon-resources9-9.zip contains documentation, sample files, test drivers and other miscellaneous resources. 
+It is common to all platforms, and is not normally updated when new maintenance releases appear.
+
+The file saxon9–9-1-8source.zip contains source code for both platforms; a new version is produced with each maintenance release.
+Source code with the latest patches can also be obtained from a Subversion repository maintained at https://dev.saxonica.com/repos/archive/opensource.
+The Subversion repository on the SourceForge site is no longer maintained.
+
+The following bugs are cleared in 9.9.1.8, issued 2020-10-22 (this includes bugs that appear only in the commercial
+versions of the product). Bugs are listed under the number used on the new Saxonica Community site at
+https://saxonica.plan.io/projects/saxon/issues :
+
+Bug #3202: --multipleSchemaImports has no effect when processing a cycle of schema documents
+Bug #4238: In Saxon-EE, element-available() always returns true for IXSL extension elements
+Bug #4323: ErrorListener for schema compilation invoked by xsl:import-schema
+Bug #4347: Imported schema component model requires XSD version 1.1 when running XQuery with EE license
+Bug #4391: Cannot find a 0-argument function named {http://saxonica.com/ns/interactiveXSLT}page()
+Bug #4458: annotatedConfig.xsd does not allow saxon:attribute-order with *
+Bug #4475: collection() fails java.util.concurrent.ExecutionException: java.lang.NegativeArraySizeException in 9.9.1.7
+Bug #4476: Type error evaluating (fn:collection(...))
+Bug #4478: java.lang.NullPointerException: while trying to invoke the method net.sf.saxon.om.Sequence.head() of a null object loaded from local variable 'actual'
+Bug #4486: Attribute saxon:explain doesn't work
+Bug #4490: NPE in getItemType if type hierarchy is null for merged maps.
+Bug #4500: ArrayIndexOutOfBounds exception processing XDM Arrays in XSLT
+Bug #4502: StackOverflowError on Saxon 10.0
+Bug #4507: TinyTree used for assertion checking during schema validation includes excessive NamespaceBinding objects
+Bug #4515: xsl:expose names="foo:*" with undeclared prefix foo causes NullPointerException
+Bug #4518: Saxon XSD 1.1 using Saxon EE : use of xs:override
+Bug #4519: Schema for SCM files does not allow @dmk attribute
+Bug #4522: NullPointerException in Atomizer.iterate
+Bug #4527: Regex with grouping and escape triggers java.lang.IndexOutOfBoundsException
+Bug #4530: NullPointerException with `<xsl:copy-of select="/"/>`
+Bug #4532: Compiling package to SEF fails when the package (a) uses keys, and (b) was itself loaded from a SEF file
+Bug #4534: NullPointerException with invalidly-initialized global variable
+Bug #4535: Misleading error message when array index out of bound
+Bug #4541: Effect of xs:iterate/xsl:param/@as
+Bug #4542: xsl:iterate/xsl:on-completion is not executed when processing a singleton
+Bug #4543: Poor diagnostics when Transform -lib names a non-existent SEF file
+Bug #4544: Packages listed in -lib on Transform command line must be source XSLT, not SEF files
+Bug #4546: Bad location information when @use-when expression in an imported module has a syntax error
+Bug #4548: Transform command line: spurious warning "Warning: -jit:on is ignored when -nogo is set"
+Bug #4549: Saxon seems to use only a single index for multiple keys
+Bug #4555: NullPointerException on Saxon 10.1
+Bug #4563: Reuse of Xslt30Transformer causes wrong results (namespace)
+Bug #4578: NullPointerException when array:fold-left|right $zero argument is an empty sequence
+Bug #4582: format-date() with language="en-GB" prefixes the output with "[Language: en]"
+Bug #4599: Supplying a character map in a serialization parameter document does not work when method is unspecified
+Bug #4600: xsl:output with parameter document using method="adaptive" and character maps goes into infinite recursion
+Bug #4602: Failure to locate parameter document: wrong base URI
+Bug #4610: Bug in XPath optimizer with positional filter
+Bug #4621: Exception raised by xsl:message terminate="yes" is intercepted by an Atomizer
+Bug #4632: Stylesheet behavior varies depending on presence or absence of an xsl:message
+Bug #4636: AssertionError compiling xsl:for-each-group with a higher-order-function
+Bug #4640: Reference to a variable as an XPath step
+Bug #4657: Ambiguous accumulator rules - should choose the last
+Bug #4677: JUnit Tests testMultipleSchemaImportsOn and testMultipleSchemaImportsOff in TestValidator
+Bug #4683: chained descendant axes gathering extra nodes
+Bug #4684: NullPointerException compiling a stylesheet using eXist-DB transform() function
+Bug #4688: EE 9.9.1.7 strange function parameter overriding
+Bug #4689: IllegalStateException when getting XdmNode after chaining transformation
+Bug #4691: Simplified stylesheet: xsl:version attribute is missing
+Bug #4692: MapTest as subtype of Function Type
+Bug #4698: Constructor XdmAtomicValue(decimal d) should use d.ToString(CultureInfo.InvariantCulture) instead of d.ToString()
+Bug #4721: NullPointerException for calling fn:apply on empty sequence
+Bug #4738: Optimization bug: xsl:choose with branches uniformly comparing untypedAtomic to numeric
+Bug #4745: Testing for "the same" schema location is not sensitive to relative path
+Bug #4765: NPE in LoopLifter (from StackOverflow)
+Bug #4788: Exception thrown in ExtensionFunctionCall prevents thread pool shutdown
+Bug #4793: xsl:copy-of with copy-namespaces="no" not working
+
+
+The following bugs are cleared in 9.9.1.7, issued 2020-03-04 (this includes bugs that appear only in the commercial
+versions of the product). Bugs are listed under the number used on the new Saxonica Community site at
+https://saxonica.plan.io/projects/saxon/issues :
+
+Bug #4246: XSLT variable contains document node with zero-length text node
+Bug #4315: Named output ignored in 9.9 when using result-document with format attribute
+Bug #4326: NullPointerException in XSLGeneralIncorporate
+Bug #4331: XTSE3051 is not raised
+Bug #4382: NullPointerException when running collection() with recurse=yes over a directory tree containing a large number of files
+Bug #4403: Internal error when calling saxon:transform() with stylesheet without primary output
+Bug #4405: Internal error: local variable encountered whose binding has been deleted
+Bug #4406: README lists version 9.9.1.6 twice
+Bug #4407: Unescaped right curly brace in regular expression
+Bug #4408: Use of reserved namespace http://www.w3.org/2005/xpath-functions/map in user-defined function
+Bug #4412: Disable-output-escaping has no effect when expand-text="yes" is in force
+Bug #4414: Unnecessary log messages when using array:xxx() extension functions
+Bug #4419: fn:normalize-unicode fails when DTD-based validation of source data is turned on
+Bug #4430: Unpredictable output when streaming accumulators call other accumulators
+Bug #4433: Saxon 9.9.1-5 outputs malformed XML due to duplicate default namespace declaration
+Bug #4435: saxon:query() parameters
+Bug #4437: IntHashSet.copy()
+Bug #4441: Filter expression: NoDynamicContextException
+Bug #4443: Type check: xs:byte, unary expression
+Bug #4444: Problem with count(//parent::node()) and schematron comparison operators
+Bug #4445: Problem with validation [ArrayIndexOutOfBoundsException in TinyTree]
+Bug #4446: Schema-Aware Transformation: wrong node set
+Bug #4447: Grouping with type declaration → XQST0094
+Bug #4448: Local variables in xsl:key definition: Internal error: Cannot set local variable: no slot allocated
+Bug #4449: NPE in CaseVariants
+Bug #4453: SXST0067: No transmission watch for $input!element() with XSLT 3 code trying to use streaming
+Bug #4457: MessageListener.message() terminate parameter set incorrectly
+Bug #4459: ArrayIndexOutOfBoundsException at net.sf.saxon.serialize.HTMLIndenter.comment
+Bug #4462: Incorrect code in XSDSimpleContentRestriction
+Bug #4469: XQJ bindDocument() fails java.lang.IllegalStateException: Attempt to output end tag with no matching start tag
+Bug #4470: Higher order functions under XQuery with EET license
+Bug #4471: Base URI of configuration file supplied to fn:transform()
+Bug #4473: URIResolver returning null when applied to source-location in fn:transform
+Bug #4474: JDK9: Illegal reflective access by net.sf.saxon.java.JavaPlatform to constructor com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl()
+
+
+
+The following bugs are cleared in 9.9.1.6, issued 2019-12-06 (this includes bugs that appear only in the commercial
+versions of the product). Bugs are listed under the number used on the new Saxonica Community site at
+https://saxonica.plan.io/projects/saxon/issues :
+
+
+Bug #4279: net.sf.saxon.trans.LicenseException: Invalid license file found.
+Bug #4314: Problem using current-merge-group() as argument to function call on the right hand side of simple map expression
+Bug #4315: Named output ignored in 9.9 when using result-document with format attribute
+Bug #4316: Reserved namespace "http://www.w3.org/2011/xquery-options"
+Bug #4324: java.lang.NullPointerException when attribute xsl:use-package/@name is absent
+Bug #4327: Error SXST0067: No transmission filter available for parent::(document-node()|element())
+Bug #4328: saxon:get-pseudo-attribute() returns empty string on no match
+Bug #4329: Getting warning "Source document ignored - query does not access the context item" although XQuery accesses /*/* (in right hand side of let expression)
+Bug #4330: NullPointerException with XQuery using tumbling window in right hand side of let expression
+Bug #4342: Sporadic spikes in XSL processing time due to internal looping
+Bug #4343: XQMetaData.getXQJVersion() yields 0.9 rather than 1.0
+Bug #4344: Incorrect type inference for schema-aware types
+Bug #4346: Streamed optimization of xsl:copy doesn't converge
+Bug #4350: TimingTraceListener (-TP option) has a built-in limit of 1500 on the number of stack frames
+Bug #4353: Extra namespaces present when serializing XdmValue using Serializer API
+Bug #4354: AttributeGetter does not have NO_NODES_NEWLY_CREATED property
+Bug #4357: XSLT using accumulator passes streamability analysis but crashed with java.lang.UnsupportedOperationException: net.sf.saxon.trans.XPathException: Navigation using preceding-sibling axis is not supported from a streamed input node
+Bug #4361: Multiple function bindings for EXPath Archive extract-map()
+Bug #4363: ConcurrentModificationException in XQueryCompiler
+Bug #4364: Better handling for UncheckedXPathException
+Bug #4376: xsl:message content is not available within xsl:catch as $err:value
+Bug #4378: analyze-string() in saxon:threads fails
+Bug #4384: ClassCastException when accumulator declaration is in no namespace
+Bug #4385: Infinite recursion in optimizer
+Bug #4389: ClassCastException when running EE rather than HE
+Bug #4390: Command line: -val has no default value
+Bug #4394: NullPointerException during error recovery with a misplaced character map
+Bug #4397: Obscure issue when using "instance of" inside function on results of array:filter
+Bug #4399: functx:non-distinct-values says cannot compare xs:integer to xs:integer, in 9.8 EE only
+Bug #4402: Cannot be cast to net.sf.saxon.type.ComplexType
+
+
+The following bugs are cleared in 9.9.1.5, issued 2019-09-05 (this includes bugs that appear only in the commercial
+versions of the product). Bugs are listed under the number used on the new Saxonica Community site at
+https://saxonica.plan.io/projects/saxon/issues :
+
+NOTE: Saxon.NET backward compatibility issue in regards to XdmEnumerator:
+We hope this won't distrupt many users, but as a result of the patch to address the bug issue
+https://saxonica.plan.io/issues/4296 the classes IXdmEnumerator and IXdmEnumerable disappear;
+in their place we use IEnumerator<XdmItem> and IEnumerable<XdmItem>.
+Any code that implements ExtensionFunctionCall will need to change; in most cases it's just a
+matter of changing IXdmEnumerator to IEnumerator<XdmItem> in both the arguments and the result
+type of the Call() method. The C# Examples in the saxon-resources have been updated to illustrates the changes.
+
+ succeeded in 980ms:
+HTTP/2 302 
+date: Sun, 03 May 2026 11:12:35 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+access-control-allow-origin: 
+location: https://raw.githubusercontent.com/Saxonica/Saxon-Archive/refs/heads/main/Saxon-HE/9/9.9/saxon9-9-1-6source.zip
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+x-github-request-id: 5129:B07A8:3A30CDF:2B57F0E:69F72DA3
+
+HTTP/2 200 
+cache-control: max-age=300
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+content-type: application/zip
+etag: "b1f3a13c0f29e1a509fd4df1e9867b795a6451f1c0ce9dbd2ee08e42b4e58201"
+strict-transport-security: max-age=31536000
+x-content-type-options: nosniff
+x-frame-options: deny
+x-xss-protection: 1; mode=block
+x-github-request-id: D80E:23DAB5:2623772:2A5CCE2:69F72DA3
+accept-ranges: bytes
+date: Sun, 03 May 2026 11:12:36 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230149-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777806756.798489,VS0,VE341
+vary: Authorization,Accept-Encoding
+access-control-allow-origin: *
+cross-origin-resource-policy: cross-origin
+x-fastly-request-id: 6275ae59e1434ef9fa89358e7042654bb997cf94
+expires: Sun, 03 May 2026 11:17:36 GMT
+source-age: 0
+content-length: 5007661
+
+
+ succeeded in 1126ms:
+HTTP/2 302 
+date: Sun, 03 May 2026 11:12:35 GMT
+content-type: text/html; charset=utf-8
+content-length: 0
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+access-control-allow-origin: 
+location: https://raw.githubusercontent.com/Saxonica/Saxon-Archive/refs/heads/main/Saxon-HE/9/9.9/saxon-resources9-9.zip
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+x-github-request-id: 5126:269E4E:3A8F6AA:2B99376:69F72DA3
+
+HTTP/2 200 
+cache-control: max-age=300
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+content-type: application/zip
+etag: "c36da6929fe0512356643a5dde46cb265251731b26ae7526511a850eb5549411"
+strict-transport-security: max-age=31536000
+x-content-type-options: nosniff
+x-frame-options: deny
+x-xss-protection: 1; mode=block
+x-github-request-id: 14F8:AA705:2562B65:299BF81:69F72DA2
+accept-ranges: bytes
+date: Sun, 03 May 2026 11:12:36 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230134-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777806755.358787,VS0,VE821
+vary: Authorization,Accept-Encoding
+access-control-allow-origin: *
+cross-origin-resource-policy: cross-origin
+x-fastly-request-id: 7ba525feaf129fd8efc9221c74be7a07a18c429b
+expires: Sun, 03 May 2026 11:17:36 GMT
+source-age: 1
+content-length: 22121887
+
+
+codex
+The upstream 9.9 README says the resources ZIP contains documentation, sample files, and test drivers, and that it is shared across 9.9 maintenance releases. I’m checking its contents before deciding whether it is a confident `test-code-url` or should be `N/A`.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/saxon-resources9-9.zip" https://raw.githubusercontent.com/Saxonica/Saxon-Archive/refs/heads/main/Saxon-HE/9/9.9/saxon-resources9-9.zip; unzip -l "$tmp/saxon-resources9-9.zip" | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/Saxon-HE-9.9.1-6-sources.jar" https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/Saxon-HE-9.9.1-6-sources.jar; jar tf "$tmp/Saxon-HE-9.9.1-6-sources.jar" | sed -n '"'1,100p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/Saxon-HE-9.9.1-6.jar" https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/Saxon-HE-9.9.1-6.jar; jar tf "$tmp/Saxon-HE-9.9.1-6.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 691ms:
+META-INF/MANIFEST.MF
+META-INF/TE-050AC.SF
+META-INF/TE-050AC.RSA
+META-INF/
+net/
+net/sf/
+net/sf/saxon/
+net/sf/saxon/data/
+net/sf/saxon/data/w3c/
+net/sf/saxon/data/w3c/mathml/
+net/sf/saxon/data/w3c/mathml/mathml1/
+net/sf/saxon/data/w3c/mathml/mathml2/
+net/sf/saxon/data/w3c/mathml/mathml2/html/
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/
+net/sf/saxon/data/w3c/mathml/mathml2/mathml/
+net/sf/saxon/data/w3c/mathml/mathml3/
+net/sf/saxon/data/w3c/rddl/
+net/sf/saxon/data/w3c/svg10/
+net/sf/saxon/data/w3c/svg11/
+net/sf/saxon/data/w3c/svg11/templates/
+net/sf/saxon/data/w3c/xhtml10/
+net/sf/saxon/data/w3c/xhtml11/
+net/sf/saxon/data/w3c/xlink/
+net/sf/saxon/data/w3c/xmlschema10/
+net/sf/saxon/data/w3c/xmlschema11/
+net/sf/saxon/data/w3c/xmlspec/
+net/sf/saxon/data/w3c/xslt3/
+net/sf/saxon/data/analyze-string.xsd
+net/sf/saxon/data/casevariants.xml
+net/sf/saxon/data/categories.xml
+net/sf/saxon/data/chameleon.xsl
+net/sf/saxon/data/json.xsd
+net/sf/saxon/data/normalizationData.xml
+net/sf/saxon/data/override.xsl
+net/sf/saxon/data/profile.xsl
+net/sf/saxon/data/unicodeBlocks.xml
+net/sf/saxon/data/w3c/catalog.dtd
+net/sf/saxon/data/w3c/catalog.xml
+net/sf/saxon/data/w3c/generate-resolver.xsl
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsa.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsb.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsc.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsn.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamso.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsr.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isobox.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isocyr1.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isocyr2.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isodia.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isogrk1.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isogrk2.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isogrk3.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isogrk4.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isolat1.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isolat2.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isomfrk.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isomopf.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isomscr.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isonum.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isopub.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isotech.ent
+net/sf/saxon/data/w3c/mathml/mathml1/mathml.dtd
+net/sf/saxon/data/w3c/mathml/mathml1/mmlalias.ent
+net/sf/saxon/data/w3c/mathml/mathml1/mmlextra.ent
+net/sf/saxon/data/w3c/mathml/mathml2/html/lat1.ent
+net/sf/saxon/data/w3c/mathml/mathml2/html/special.ent
+net/sf/saxon/data/w3c/mathml/mathml2/html/symbol.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsa.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsb.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsc.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsn.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamso.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsr.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isobox.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isocyr1.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isocyr2.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isodia.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isogrk1.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isogrk2.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isogrk3.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isogrk4.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isolat1.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isolat2.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isonum.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isopub.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isotech.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isoamsa.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isoamsb.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isoamsc.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isoamsn.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isoamso.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isoamsr.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isogrk3.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isogrk4.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isomfrk.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isomopf.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isomscr.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/isotech.ent
+net/sf/saxon/data/w3c/mathml/mathml2/isoamsa.ent
+
+ succeeded in 1185ms:
+META-INF/MANIFEST.MF
+META-INF/TE-050AC.SF
+META-INF/TE-050AC.RSA
+META-INF/
+META-INF/services/
+META-INF/services/javax.xml.transform.TransformerFactory
+net/
+net/sf/
+net/sf/saxon/
+net/sf/saxon/data/
+net/sf/saxon/data/w3c/
+net/sf/saxon/data/w3c/mathml/
+net/sf/saxon/data/w3c/mathml/mathml1/
+net/sf/saxon/data/w3c/mathml/mathml2/
+net/sf/saxon/data/w3c/mathml/mathml2/html/
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/
+net/sf/saxon/data/w3c/mathml/mathml2/iso9573-13/
+net/sf/saxon/data/w3c/mathml/mathml2/mathml/
+net/sf/saxon/data/w3c/mathml/mathml3/
+net/sf/saxon/data/w3c/rddl/
+net/sf/saxon/data/w3c/svg10/
+net/sf/saxon/data/w3c/svg11/
+net/sf/saxon/data/w3c/svg11/templates/
+net/sf/saxon/data/w3c/xhtml10/
+net/sf/saxon/data/w3c/xhtml11/
+net/sf/saxon/data/w3c/xlink/
+net/sf/saxon/data/w3c/xmlschema10/
+net/sf/saxon/data/w3c/xmlschema11/
+net/sf/saxon/data/w3c/xmlspec/
+net/sf/saxon/data/w3c/xslt3/
+net/sf/saxon/data/analyze-string.xsd
+net/sf/saxon/data/casevariants.xml
+net/sf/saxon/data/categories.xml
+net/sf/saxon/data/chameleon.xsl
+net/sf/saxon/data/json.xsd
+net/sf/saxon/data/normalizationData.xml
+net/sf/saxon/data/override.xsl
+net/sf/saxon/data/profile.xsl
+net/sf/saxon/data/unicodeBlocks.xml
+net/sf/saxon/data/w3c/catalog.dtd
+net/sf/saxon/data/w3c/catalog.xml
+net/sf/saxon/data/w3c/generate-resolver.xsl
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsa.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsb.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsc.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsn.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamso.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isoamsr.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isobox.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isocyr1.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isocyr2.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isodia.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isogrk1.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isogrk2.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isogrk3.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isogrk4.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isolat1.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isolat2.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isomfrk.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isomopf.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isomscr.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isonum.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isopub.ent
+net/sf/saxon/data/w3c/mathml/mathml1/isotech.ent
+net/sf/saxon/data/w3c/mathml/mathml1/mathml.dtd
+net/sf/saxon/data/w3c/mathml/mathml1/mmlalias.ent
+net/sf/saxon/data/w3c/mathml/mathml1/mmlextra.ent
+net/sf/saxon/data/w3c/mathml/mathml2/html/lat1.ent
+net/sf/saxon/data/w3c/mathml/mathml2/html/special.ent
+net/sf/saxon/data/w3c/mathml/mathml2/html/symbol.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsa.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsb.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsc.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsn.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamso.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isoamsr.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isobox.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isocyr1.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isocyr2.ent
+net/sf/saxon/data/w3c/mathml/mathml2/iso8879/isodia.ent
+
+ succeeded in 1345ms:
+Archive:  /tmp/tmp.sUFfTD3aDC/saxon-resources9-9.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2019-09-05 15:54   build/
+        0  2019-09-05 15:54   doc/
+        0  2019-09-05 15:53   doc/dotnetdoc/
+        0  2019-09-05 15:53   doc/dotnetdoc/Saxon/
+        0  2019-09-05 15:53   doc/dotnetdoc/Saxon/Api/
+        0  2019-09-05 15:53   doc/dotnetdoc/Saxon/Api/XdmDestination/
+        0  2019-09-05 15:53   doc/dotnetdoc/Saxon/Api/XsltExecutable/
+        0  2019-09-05 15:54   doc/img/
+        0  2019-09-05 15:54   doc/javadoc/
+        0  2019-09-05 15:54   doc/javadoc/com/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/config/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/config/pe/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/bytecode/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/bytecode/converter/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/bytecode/iter/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/bytecode/map/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/bytecode/simtype/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/bytecode/util/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/config/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/domino/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/extfn/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/extfn/js/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/jaxp/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/optim/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/s9api/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/schema/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/schema/fsa/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/schema/sdoc/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/stream/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/stream/adjunct/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/stream/feed/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/stream/om/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/stream/watch/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/trans/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/update/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/validate/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ee/xtupdate/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/expr/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/expr/sort/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/functions/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/functions/extfn/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/functions/extfn/EXPathArchive/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/functions/hof/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/functions/registry/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/functions/sql/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/ptree/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/serialize/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/trans/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/xqj/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/xqj/pull/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/xsltextn/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/xsltextn/instruct/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/xsltextn/pedigree/
+        0  2019-09-05 15:54   doc/javadoc/com/saxonica/xsltextn/style/
+        0  2019-09-05 15:54   doc/javadoc/javax/
+        0  2019-09-05 15:54   doc/javadoc/javax/xml/
+        0  2019-09-05 15:54   doc/javadoc/javax/xml/xquery/
+        0  2019-09-05 15:54   doc/javadoc/net/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/dom/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/event/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/expr/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/expr/accum/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/expr/compat/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/expr/flwor/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/expr/instruct/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/expr/number/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/expr/oper/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/expr/parser/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/expr/sort/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/functions/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/functions/registry/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/java/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/jaxp/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/lib/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/ma/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/ma/arrays/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/ma/json/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/ma/map/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/ma/parray/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/ma/trie/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/om/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/option/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/option/axiom/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/option/dom4j/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/option/exslt/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/option/jdom/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/option/jdom2/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/option/local/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/option/sql/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/option/xom/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/pattern/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/pull/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/query/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/regex/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/regex/charclass/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/resource/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/s9api/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/s9api/streams/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/serialize/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/serialize/charcode/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/serialize/codenorm/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/stax/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/style/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/sxpath/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/trace/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/trans/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/trans/packages/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/trans/rules/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/tree/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/tree/iter/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/tree/jiter/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/tree/linked/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/tree/tiny/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/tree/util/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/tree/wrapper/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/type/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/value/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/xpath/
+        0  2019-09-05 15:54   doc/javadoc/net/sf/saxon/z/
+        0  2019-09-05 15:54   doc/javadoc/resources/
+        0  2019-09-05 15:49   drivers/
+        0  2019-09-05 15:49   drivers/java/
+        0  2019-09-05 15:49   drivers/java/classes/
+        0  2019-09-05 15:49   drivers/java/classes/com/
+        0  2019-09-05 15:49   drivers/java/classes/com/saxonica/
+        0  2019-09-05 15:49   drivers/java/classes/com/saxonica/testdriver/
+        0  2019-09-05 15:49   drivers/java/classes/com/saxonica/testdriver/ee/
+        0  2019-09-05 15:49   drivers/java/classes/com/saxonica/testdriver/gui/
+        0  2019-09-05 15:49   drivers/java/classes/com/saxonica/testdriver/gui/images/
+        0  2019-09-05 15:49   drivers/java/classes/net/
+        0  2019-09-05 15:49   drivers/java/classes/net/sf/
+        0  2019-09-05 15:49   drivers/java/classes/net/sf/saxon/
+        0  2019-09-05 15:49   drivers/java/classes/net/sf/saxon/testdriver/
+        0  2019-09-05 15:49   drivers/java/com/
+        0  2019-09-05 15:49   drivers/java/com/saxonica/
+        0  2019-09-05 15:49   drivers/java/com/saxonica/testdriver/
+        0  2019-09-05 15:49   drivers/java/com/saxonica/testdriver/ee/
+        0  2019-09-05 15:49   drivers/java/com/saxonica/testdriver/gui/
+        0  2019-09-05 15:49   drivers/java/com/saxonica/testdriver/gui/images/
+        0  2019-09-05 15:49   drivers/java/net/
+        0  2019-09-05 15:49   drivers/java/net/sf/
+        0  2019-09-05 15:49   drivers/java/net/sf/saxon/
+        0  2019-09-05 15:49   drivers/java/net/sf/saxon/testdriver/
+        0  2019-09-05 15:54   notices/
+        0  2019-09-05 15:54   samples/
+        0  2019-09-05 15:54   samples/config/
+        0  2019-09-05 15:54   samples/cs/
+        0  2019-09-05 15:54   samples/cs/TestRunner9.9/
+        0  2019-09-05 15:54   samples/cs/bin/
+        0  2019-09-05 15:54   samples/data/
+        0  2019-09-05 15:54   samples/java/
+        0  2019-09-05 15:54   samples/java/classes/
+        0  2019-09-05 15:54   samples/java/classes/ee/
+
+codex
+There is no Maven test artifact, and the upstream resources ZIP only advertises shared 9.9 test drivers rather than a clearly versioned test suite for `9.9.1-6`. I’m going to keep `test-code-url` as `N/A`, use the exact Maven source and javadoc artifacts, and leave language/native-image special fields absent because this is a JVM JAR with class files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+diff --git a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+index 44fb5284a8fbb72b307eea9aab1d793ac7da29f9..99dbe623fc93e5d7f0d56d4ee314836770def263
+--- a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
++++ b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6"
++  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6",
++  "repository-url" : "https://dev.saxonica.com/repos/archive/opensource/",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-javadoc.jar",
++  "description" : "Saxon-HE is Saxonica's open-source XSLT and XQuery processor for the JVM. It provides APIs and command-line tooling for processing XML with XSLT, XPath, XQuery, and related XML standards."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+index 44fb5284a8fbb72b307eea9aab1d793ac7da29f9..99dbe623fc93e5d7f0d56d4ee314836770def263
+--- a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
++++ b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6"
++  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6",
++  "repository-url" : "https://dev.saxonica.com/repos/archive/opensource/",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-javadoc.jar",
++  "description" : "Saxon-HE is Saxonica's open-source XSLT and XQuery processor for the JVM. It provides APIs and command-line tooling for processing XML with XSLT, XPath, XQuery, and related XML standards."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+{
+  "coordinates": "net.sf.saxon:Saxon-HE:9.9.1-6",
+  "repository-url": "https://dev.saxonica.com/repos/archive/opensource/",
+  "source-code-url": "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-javadoc.jar",
+  "description": "Saxon-HE is Saxonica's open-source XSLT and XQuery processor for the JVM. It provides APIs and command-line tooling for processing XML with XSLT, XPath, XQuery, and related XML standards."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/Saxon-HE-9.9.1-6-sources.jar >/tmp/saxon_sources_head.txt && sed -n '1,20p' /tmp/saxon_sources_head.txt
+curl -fsSL -I https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/Saxon-HE-9.9.1-6-javadoc.jar >/tmp/saxon_javadoc_head.txt && sed -n '1,20p' /tmp/saxon_javadoc_head.txt" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+diff --git a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+index 44fb5284a8fbb72b307eea9aab1d793ac7da29f9..99dbe623fc93e5d7f0d56d4ee314836770def263
+--- a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
++++ b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6"
++  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6",
++  "repository-url" : "https://dev.saxonica.com/repos/archive/opensource/",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-javadoc.jar",
++  "description" : "Saxon-HE is Saxonica's open-source XSLT and XQuery processor for the JVM. It provides APIs and command-line tooling for processing XML with XSLT, XPath, XQuery, and related XML standards."
+ }
+
+ succeeded in 247ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 11:13:18 GMT
+content-type: application/java-archive
+content-length: 11007455
+cf-ray: 9f5ed5e798b7862a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "1070b9a44ffca5727cc3362d95e50a8b"
+last-modified: Fri, 06 Dec 2019 15:42:41 GMT
+x-checksum-md5: 1070b9a44ffca5727cc3362d95e50a8b
+x-checksum-sha1: 134acaaaf3ff706976518a433e2173cf35e6939c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6",
+     3	  "repository-url" : "https://dev.saxonica.com/repos/archive/opensource/",
+     4	  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-sources.jar",
+     5	  "test-code-url" : "N/A",
+     6	  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-javadoc.jar",
+     7	  "description" : "Saxon-HE is Saxonica's open-source XSLT and XQuery processor for the JVM. It provides APIs and command-line tooling for processing XML with XSLT, XPath, XQuery, and related XML standards."
+     8	}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+index 44fb5284a8fbb72b307eea9aab1d793ac7da29f9..99dbe623fc93e5d7f0d56d4ee314836770def263
+--- a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
++++ b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6"
++  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6",
++  "repository-url" : "https://dev.saxonica.com/repos/archive/opensource/",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-javadoc.jar",
++  "description" : "Saxon-HE is Saxonica's open-source XSLT and XQuery processor for the JVM. It provides APIs and command-line tooling for processing XML with XSLT, XPath, XQuery, and related XML standards."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f
+diff --git a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+index 44fb5284a8fbb72b307eea9aab1d793ac7da29f9..99dbe623fc93e5d7f0d56d4ee314836770def263
+--- a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
++++ b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6"
++  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6",
++  "repository-url" : "https://dev.saxonica.com/repos/archive/opensource/",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-javadoc.jar",
++  "description" : "Saxon-HE is Saxonica's open-source XSLT and XQuery processor for the JVM. It provides APIs and command-line tooling for processing XML with XSLT, XPath, XQuery, and related XML standards."
+ }
+
+ succeeded in 101ms:
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/
+codex
+Updated [net.sf.saxon-Saxon-HE-9.9.1-6.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json:2).
+
+I used the exact Maven Central source and javadoc artifacts, set `test-code-url` to `N/A` because no Maven test artifact is listed and the upstream resources ZIP is only shared 9.9 test-driver material, and used Saxonica’s maintained SVN archive URL as the repository root. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/))
+
+Left `language` absent and did not set `not-for-native-image`; this is a JVM JAR artifact. Validated the JSON with `jq` and confirmed the source/javadoc URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+index 44fb5284a8fbb72b307eea9aab1d793ac7da29f9..99dbe623fc93e5d7f0d56d4ee314836770def263
+--- a/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
++++ b/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6"
++  "coordinates" : "net.sf.saxon:Saxon-HE:9.9.1-6",
++  "repository-url" : "https://dev.saxonica.com/repos/archive/opensource/",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/$version$/Saxon-HE-$version$-javadoc.jar",
++  "description" : "Saxon-HE is Saxonica's open-source XSLT and XQuery processor for the JVM. It provides APIs and command-line tooling for processing XML with XSLT, XPath, XQuery, and related XML standards."
+ }
+
+tokens used
+122,813
+Updated [net.sf.saxon-Saxon-HE-9.9.1-6.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f/build/discovered-artifact-metadata/net.sf.saxon-Saxon-HE-9.9.1-6.json:2).
+
+I used the exact Maven Central source and javadoc artifacts, set `test-code-url` to `N/A` because no Maven test artifact is listed and the upstream resources ZIP is only shared 9.9 test-driver material, and used Saxonica’s maintained SVN archive URL as the repository root. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/9.9.1-6/))
+
+Left `language` absent and did not set `not-for-native-image`; this is a JVM JAR artifact. Validated the JSON with `jq` and confirmed the source/javadoc URLs return HTTP 200.
+Ran agent for net.sf.saxon:Saxon-HE:9.9.1-6 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f/build/agent-artifact-discovery-logs/net.sf.saxon-Saxon-HE-9.9.1-6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3645-6b9b031f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 11s
+9 actionable tasks: 4 executed, 5 from cache
