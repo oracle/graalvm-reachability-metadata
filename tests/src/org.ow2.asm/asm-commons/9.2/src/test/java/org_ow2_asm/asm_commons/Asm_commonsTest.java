@@ -26,8 +26,10 @@ import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
 import org.objectweb.asm.commons.Method;
 import org.objectweb.asm.commons.ModuleHashesAttribute;
+import org.objectweb.asm.commons.ModuleRemapper;
 import org.objectweb.asm.commons.ModuleResolutionAttribute;
 import org.objectweb.asm.commons.ModuleTargetAttribute;
+import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.commons.SerialVersionUIDAdder;
 import org.objectweb.asm.commons.SignatureRemapper;
 import org.objectweb.asm.commons.SimpleRemapper;
@@ -315,6 +317,30 @@ public class Asm_commonsTest {
     }
 
     @Test
+    void moduleRemapperRewritesModuleDirectives() {
+        ClassNode remappedClass = readClass(remappedModuleDescriptorClass());
+
+        assertThat(remappedClass.module.name).isEqualTo("target.module");
+        assertThat(remappedClass.module.mainClass).isEqualTo("new/main/RenamedMain");
+        assertThat(remappedClass.module.packages).containsExactly("new/api");
+        assertThat(remappedClass.module.requires).extracting(require -> require.module)
+                .containsExactly("java.base", "ally.module");
+        assertThat(remappedClass.module.exports).singleElement().satisfies(export -> {
+            assertThat(export.packaze).isEqualTo("new/api");
+            assertThat(export.modules).containsExactly("ally.module");
+        });
+        assertThat(remappedClass.module.opens).singleElement().satisfies(open -> {
+            assertThat(open.packaze).isEqualTo("new/internal");
+            assertThat(open.modules).containsExactly("ally.module");
+        });
+        assertThat(remappedClass.module.uses).containsExactly("new/service/RenamedService");
+        assertThat(remappedClass.module.provides).singleElement().satisfies(provide -> {
+            assertThat(provide.service).isEqualTo("new/service/RenamedService");
+            assertThat(provide.providers).containsExactly("new/impl/RenamedServiceImpl");
+        });
+    }
+
+    @Test
     void moduleAttributeImplementationsRoundTripThroughClassReader() {
         ClassWriter classWriter = new ClassWriter(0);
         classWriter.visit(V9, ACC_MODULE, "module-info", null, null, null);
@@ -386,6 +412,58 @@ public class Asm_commonsTest {
         getter.visitEnd();
         classWriter.visitEnd();
         return classWriter.toByteArray();
+    }
+
+    private static byte[] remappedModuleDescriptorClass() {
+        ClassWriter classWriter = new ClassWriter(0);
+        classWriter.visit(V9, ACC_MODULE, "module-info", null, null, null);
+        Remapper remapper = moduleDirectiveRemapper();
+        ModuleVisitor moduleVisitor = new ModuleRemapper(
+                classWriter.visitModule(remapper.mapModuleName("source.module"), ACC_OPEN, null),
+                remapper);
+        moduleVisitor.visitMainClass("old/main/Main");
+        moduleVisitor.visitPackage("old/api");
+        moduleVisitor.visitRequire("java.base", ACC_MANDATED, null);
+        moduleVisitor.visitRequire("friend.module", 0, null);
+        moduleVisitor.visitExport("old/api", 0, "friend.module");
+        moduleVisitor.visitOpen("old/internal", 0, "friend.module");
+        moduleVisitor.visitUse("old/service/Service");
+        moduleVisitor.visitProvide("old/service/Service", "old/impl/ServiceImpl");
+        moduleVisitor.visitEnd();
+        classWriter.visitEnd();
+        return classWriter.toByteArray();
+    }
+
+    private static Remapper moduleDirectiveRemapper() {
+        Map<String, String> internalNameMappings = new HashMap<>();
+        internalNameMappings.put("old/main/Main", "new/main/RenamedMain");
+        internalNameMappings.put("old/service/Service", "new/service/RenamedService");
+        internalNameMappings.put("old/impl/ServiceImpl", "new/impl/RenamedServiceImpl");
+
+        Map<String, String> packageMappings = new HashMap<>();
+        packageMappings.put("old/api", "new/api");
+        packageMappings.put("old/internal", "new/internal");
+
+        Map<String, String> moduleMappings = new HashMap<>();
+        moduleMappings.put("source.module", "target.module");
+        moduleMappings.put("friend.module", "ally.module");
+
+        return new Remapper() {
+            @Override
+            public String map(String internalName) {
+                return internalNameMappings.get(internalName);
+            }
+
+            @Override
+            public String mapPackageName(String name) {
+                return packageMappings.getOrDefault(name, name);
+            }
+
+            @Override
+            public String mapModuleName(String name) {
+                return moduleMappings.getOrDefault(name, name);
+            }
+        };
     }
 
     private static byte[] simpleArithmeticClass() {
