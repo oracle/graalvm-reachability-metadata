@@ -314,6 +314,179 @@ class Core_3Test {
     assertEquals("/next", Header.location(Uri.relative(Seq("next"))).value)
   }
 
+  @Test
+  def uriFactoryValidationSegmentEncodingAndMutationMethodsCompose(): Unit = {
+    val ipv6Uri: Uri = Uri(
+      "https",
+      Some(Uri.Authority(None, Uri.HostSegment("2001:db8::1"), Some(443))),
+      Seq(Uri.PathSegment("a b")),
+      Seq(
+        Uri.QuerySegment.Plain("raw=1&kept=2&", Uri.QuerySegmentEncoding.Relaxed),
+        Uri.QuerySegment.Value("lonely value"),
+        Uri.QuerySegment.KeyValue("brackets[]", "x/y")
+      ),
+      Some(Uri.FragmentSegment("frag/part"))
+    )
+
+    assertEquals("https://[2001:db8::1]:443/a%20b?raw=1&kept=2&lonely+value&brackets%5B%5D=x/y#frag/part", ipv6Uri.toString)
+    assertEquals("2001:db8::1", ipv6Uri.authority.map(_.host).get)
+    assertEquals(Seq("a b"), ipv6Uri.path)
+
+    val relaxedQuery: Uri = Uri
+      .relative(Nil, Seq(Uri.QuerySegment.KeyValue("filter[]", "a b")), None)
+      .querySegmentsEncoding(Uri.QuerySegmentEncoding.RelaxedWithBrackets)
+    assertEquals("?filter[]=a+b", relaxedQuery.toString)
+
+    val normalized: Uri = Uri
+      .unsafeParse("https://example.com/root/")
+      .addPath("child")
+      .userInfo("user")
+      .port(None)
+      .fragment(None)
+    assertEquals("https://user@example.com/root/child", normalized.toString)
+    assertEquals(Some(Uri.UserInfo("user", None)), normalized.userInfo)
+    assertEquals(None, normalized.port)
+
+    assertEquals("mailto:user@example.com", Uri.unsafeApply("mailto", Seq("user@example.com")).toString)
+    assertTrue(Uri.safeApply("1https", "example.com").isLeft)
+    assertTrue(Uri.safeApply("https", "").isLeft)
+    assertTrue(Uri.Authority.safeApply("").isLeft)
+  }
+
+  @Test
+  def acceptNegotiationContentTypeRangesAndMediaTypePredicatesCoverWildcards(): Unit = {
+    assertEquals(Seq(ContentTypeRange.AnyRange), right(Accepts.parse(Nil)))
+    assertEquals(
+      Seq(
+        ContentTypeRange(ContentTypeRange.Wildcard, ContentTypeRange.Wildcard, "iso-8859-1", Map.empty),
+        ContentTypeRange(ContentTypeRange.Wildcard, ContentTypeRange.Wildcard, "utf-8", Map.empty)
+      ),
+      right(Accepts.parse(Seq(Header.acceptCharset("utf-8;q=0.2, iso-8859-1;q=0.9"))))
+    )
+
+    val versionedJson: MediaType = MediaType("Application", "JSON", otherParameters = Map("profile" -> "v1"))
+    val exactNoCharset: ContentTypeRange = ContentTypeRange.exactNoCharset(versionedJson.charset("utf-8"))
+    assertTrue(versionedJson.matches(exactNoCharset))
+    assertEquals(ContentTypeRange("Application", ContentTypeRange.Wildcard, ContentTypeRange.Wildcard, Map("profile" -> "v1")), exactNoCharset.anySubType)
+    assertEquals("Application/*; profile=v1", exactNoCharset.anySubType.toString)
+    assertTrue(versionedJson == MediaType("application", "json", otherParameters = Map("PROFILE" -> "V1")))
+    assertTrue(MediaType.safeApply("bad type", "json").isLeft)
+    assertTrue(Accepts.parse(Seq(Header.accept("text/plain;q=1.0000"))).isLeft)
+
+    assertTrue(MediaType("audio", "mpeg").isAudio)
+    assertTrue(MediaType("image", "png").isImage)
+    assertTrue(MediaType("message", "rfc822").isMessage)
+    assertTrue(MediaType("multipart", "mixed").isMultipart)
+    assertTrue(MediaType("video", "mp4").isVideo)
+    assertTrue(MediaType("font", "woff2").isFont)
+    assertTrue(MediaType("example", "demo").isExample)
+    assertTrue(MediaType("model", "gltf+json").isModel)
+  }
+
+  @Test
+  def headerFactoriesDatesAndSafetyHelpersHandleTypedValues(): Unit = {
+    val instant: Instant = Instant.parse("1994-11-06T08:49:37Z")
+    assertEquals(instant, right(Header.parseHttpDate("Sun, 06-Nov-94 08:49:37 GMT")))
+
+    assertEquals(Header(HeaderNames.Cookie, "a=1; b=2"), Header.cookie(Cookie("a", "1"), Cookie("b", "2")))
+    assertEquals(Header(HeaderNames.Etag, "W/\"abc\""), Header.etag(ETag("abc", weak = true)))
+    assertEquals(Header(HeaderNames.IfNoneMatch, "\"a\", W/\"b\""), Header.ifNoneMatch(List(ETag("a"), ETag("b", weak = true))))
+    assertEquals(Header(HeaderNames.Expires, Header.toHttpDateString(instant)), Header.expires(instant))
+    assertEquals(Header(HeaderNames.IfModifiedSince, Header.toHttpDateString(instant)), Header.ifModifiedSince(instant))
+    assertEquals(Header(HeaderNames.IfUnmodifiedSince, Header.toHttpDateString(instant)), Header.ifUnmodifiedSince(instant))
+    assertEquals(Header(HeaderNames.ContentEncoding, "gzip"), Header.contentEncoding("gzip"))
+    assertEquals(Header(HeaderNames.Vary, "Accept, Accept-Encoding"), Header.vary(HeaderNames.Accept, HeaderNames.AcceptEncoding))
+    assertEquals(Header(HeaderNames.ProxyAuthorization, "Basic dXNlcjpwYXNz"), Header.proxyAuthorization("Basic", "dXNlcjpwYXNz"))
+
+    assertTrue(HeaderNames.isContent(Header.contentType(MediaType.TextPlain)))
+    assertTrue(HeaderNames.isSensitive(Header.cookie(Cookie("session", "secret"))))
+    assertEquals(Seq("Authorization: ***", "X-Trace: visible"), Headers.toStringSafe(Seq(
+      Header.authorization("Bearer", "token"),
+      Header("X-Trace", "visible")
+    )))
+  }
+
+  @Test
+  def cookiesValueMetadataAndMutatorsValidateAndRenderAllDirectives(): Unit = {
+    val cookie: CookieWithMeta = CookieWithMeta("id", "1")
+      .value("2")
+      .expires(Some(Instant.parse("2024-05-01T12:00:00Z")))
+      .maxAge(Some(120L))
+      .domain(Some("example.com"))
+      .path(Some("/app"))
+      .secure(true)
+      .httpOnly(true)
+      .sameSite(Some(Cookie.SameSite.Lax))
+      .otherDirective("Priority" -> Some("High"))
+      .otherDirective("Partitioned" -> None)
+
+    val rendered: String = cookie.toString
+    assertTrue(rendered.contains("id=2; Expires=Wed, 01 May 2024 12:00:00 GMT; Max-Age=120"))
+    assertTrue(rendered.contains("; Domain=example.com; Path=/app; Secure; HttpOnly; SameSite=Lax"))
+    assertTrue(rendered.contains("; Priority=High"))
+    assertTrue(rendered.contains("; Partitioned"))
+
+    val parsed: CookieWithMeta = right(CookieWithMeta.parse("id=2; Expires=Wed, 01-May-24 12:00:00 GMT; Max-Age=120; Domain=example.com; Path=/app; Secure; HttpOnly; SameSite=None; Priority=High"))
+    assertEquals("id", parsed.name)
+    assertEquals("2", parsed.value)
+    assertEquals(Some(Instant.parse("2024-05-01T12:00:00Z")), parsed.expires)
+    assertEquals(Some(Cookie.SameSite.None), parsed.sameSite)
+    assertEquals(Map("Priority" -> Some("High")), parsed.otherDirectives)
+
+    assertTrue(CookieValueWithMeta.safeApply("ok", path = Some("bad;path")).isLeft)
+    assertTrue(CookieWithMeta.parse("id=1; SameSite=invalid").isLeft)
+    assertTrue(Cookie.parse("bad=va\u0001lue").isLeft)
+  }
+
+  @Test
+  def rangesContentRangesCacheDirectivesAndAuthenticationCoverVariantForms(): Unit = {
+    val suffixRange: Range = right(Range.safeApply(None, Some(500L), ContentRangeUnits.Bytes)).head
+    val openEndedRange: Range = right(Range.parse("bytes=500-")).head
+    assertEquals("bytes=-500", suffixRange.toString)
+    assertEquals("bytes=500-", openEndedRange.toString)
+    assertTrue(suffixRange.isValid(1000L))
+    assertTrue(openEndedRange.isValid(1000L))
+    assertEquals(0L, openEndedRange.contentLength)
+    assertEquals(ContentRange(ContentRangeUnits.Bytes, None, Some(1000L)), openEndedRange.toContentRange(1000L))
+    assertEquals(ContentRange(ContentRangeUnits.Bytes, None, Some(1234L)), right(ContentRange.parse("bytes */1234")))
+    assertTrue(ContentRange.parse("bytes */*").isLeft)
+    assertTrue(Range.safeApply(None, None, ContentRangeUnits.Bytes).isLeft)
+
+    assertEquals(
+      List(
+        Right(CacheDirective.MaxAge(1.second)),
+        Right(CacheDirective.MaxStale(Some(2.seconds))),
+        Right(CacheDirective.MaxStale(None)),
+        Right(CacheDirective.MinFresh(3.seconds)),
+        Right(CacheDirective.NoStore),
+        Right(CacheDirective.NoTransform),
+        Right(CacheDirective.OnlyIfCached),
+        Right(CacheDirective.MustRevalidate),
+        Right(CacheDirective.Public),
+        Right(CacheDirective.Private),
+        Right(CacheDirective.ProxyRevalidate),
+        Right(CacheDirective.SMaxage(4.seconds)),
+        Right(CacheDirective.Immutable),
+        Right(CacheDirective.StaleWhileRevalidate(5.seconds))
+      ),
+      CacheDirective.parse("max-age=1, max-stale=2, max-stale, min-fresh=3, no-store, no-transform, only-if-cached, must-revalidate, public, private, proxy-revalidate, s-maxage=4, immutable, stale-while-revalidate=5")
+    )
+    assertTrue(CacheDirective.parse("unknown").head.isLeft)
+
+    val digest: WWWAuthenticateChallenge = right(WWWAuthenticateChallenge.parseSingle(
+      "Digest realm=\"api\", nonce=\"n\", opaque=\"o\", qop=\"auth\", algorithm=\"MD5\", userhash=\"false\""
+    ))
+    assertEquals("Digest", digest.scheme)
+    assertEquals(Some("api"), digest.realm)
+    assertEquals(Some("n"), digest.param("nonce"))
+    assertEquals(Some("o"), digest.param("opaque"))
+    assertEquals(Some("auth"), digest.param("qop"))
+    assertEquals(Some("MD5"), digest.param("algorithm"))
+    assertEquals(Some("false"), digest.param("userhash"))
+    assertTrue(WWWAuthenticateChallenge.parseSingle("Digest realm=\"api\", opaque=\"o\", qop=\"auth\"").isLeft)
+    assertTrue(WWWAuthenticateChallenge.parseSingle("Basic realm=\"a\", charset=\"UTF-8\", extra=\"ignored\"").isLeft)
+  }
+
   private def right[A](either: Either[String, A]): A = either match {
     case Right(value) => value
     case Left(error)  => throw new AssertionError(s"Expected Right but got Left($error)")
