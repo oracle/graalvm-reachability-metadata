@@ -19,6 +19,7 @@ from git_scripts.common_git import (
     get_agent_name,
     format_stats_diff,
     format_forge_revision_section,
+    assert_no_dynamic_access_category_regressions,
     build_ai_branch_name,
     delete_remote_branch_if_exists,
 )
@@ -96,6 +97,8 @@ def create_pull_request(
     if view.returncode == 0:
         print(f"Pull request already exists for branch {branch}.")
         return
+
+    assert_no_dynamic_access_category_regressions(repo_path, old_coordinates, new_coordinates)
 
     issue_no = find_issue_common(new_coordinates, REPO)
     metrics_entry = read_pending_metrics(metrics_repo_root)
@@ -273,6 +276,7 @@ def push_current_branch_to_origin(
         base_commit=base_ref,
         metrics_repo_path=metrics_repo_path,
     )
+    assert_no_dynamic_access_category_regressions(repo_path, old_coordinates, new_coordinates)
 
     subprocess.run(
         ["git", "push", "origin", branch],

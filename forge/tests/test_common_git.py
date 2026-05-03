@@ -23,6 +23,168 @@ class ForgeRevisionSectionTests(unittest.TestCase):
         self.assertIn("- Forge commit hash: `abc123`", section)
 
 
+class DynamicAccessCategoryRegressionTests(unittest.TestCase):
+    def test_reports_fully_covered_category_that_becomes_uncovered(self) -> None:
+        old_stats = {
+            "dynamicAccess": {
+                "coveredCalls": 3,
+                "totalCalls": 3,
+                "coverageRatio": 1.0,
+                "breakdown": {
+                    "resources": {
+                        "coveredCalls": 3,
+                        "totalCalls": 3,
+                        "coverageRatio": 1.0,
+                    },
+                },
+            },
+        }
+        new_stats = {
+            "dynamicAccess": {
+                "coveredCalls": 5,
+                "totalCalls": 6,
+                "coverageRatio": 0.833333,
+                "breakdown": {
+                    "resources": {
+                        "coveredCalls": 0,
+                        "totalCalls": 1,
+                        "coverageRatio": 0.0,
+                    },
+                },
+            },
+        }
+
+        regressions = common_git.dynamic_access_category_regressions(
+            "jline:jline:2.14.6",
+            "jline:jline:3.0.0.M1",
+            old_stats,
+            new_stats,
+        )
+
+        self.assertEqual(len(regressions), 1)
+        self.assertIn("resources", regressions[0])
+        self.assertIn("3/3 covered calls", regressions[0])
+        self.assertIn("0/1 covered calls", regressions[0])
+
+    def test_allows_category_that_remains_fully_covered(self) -> None:
+        old_stats = {
+            "dynamicAccess": {
+                "coveredCalls": 3,
+                "totalCalls": 3,
+                "coverageRatio": 1.0,
+                "breakdown": {
+                    "resources": {
+                        "coveredCalls": 3,
+                        "totalCalls": 3,
+                        "coverageRatio": 1.0,
+                    },
+                },
+            },
+        }
+        new_stats = {
+            "dynamicAccess": {
+                "coveredCalls": 1,
+                "totalCalls": 1,
+                "coverageRatio": 1.0,
+                "breakdown": {
+                    "resources": {
+                        "coveredCalls": 1,
+                        "totalCalls": 1,
+                        "coverageRatio": 1.0,
+                    },
+                },
+            },
+        }
+
+        self.assertEqual(
+            common_git.dynamic_access_category_regressions(
+                "jline:jline:2.14.6",
+                "jline:jline:3.0.0.M1",
+                old_stats,
+                new_stats,
+            ),
+            [],
+        )
+
+    def test_allows_category_that_was_not_fully_covered_before(self) -> None:
+        old_stats = {
+            "dynamicAccess": {
+                "coveredCalls": 20,
+                "totalCalls": 22,
+                "coverageRatio": 0.909091,
+                "breakdown": {
+                    "reflection": {
+                        "coveredCalls": 20,
+                        "totalCalls": 22,
+                        "coverageRatio": 0.909091,
+                    },
+                },
+            },
+        }
+        new_stats = {
+            "dynamicAccess": {
+                "coveredCalls": 5,
+                "totalCalls": 6,
+                "coverageRatio": 0.833333,
+                "breakdown": {
+                    "reflection": {
+                        "coveredCalls": 5,
+                        "totalCalls": 6,
+                        "coverageRatio": 0.833333,
+                    },
+                },
+            },
+        }
+
+        self.assertEqual(
+            common_git.dynamic_access_category_regressions(
+                "jline:jline:2.14.6",
+                "jline:jline:3.0.0.M1",
+                old_stats,
+                new_stats,
+            ),
+            [],
+        )
+
+    def test_assertion_raises_before_publication(self) -> None:
+        old_stats = {
+            "dynamicAccess": {
+                "coveredCalls": 1,
+                "totalCalls": 1,
+                "coverageRatio": 1.0,
+                "breakdown": {
+                    "resources": {
+                        "coveredCalls": 1,
+                        "totalCalls": 1,
+                        "coverageRatio": 1.0,
+                    },
+                },
+            },
+        }
+        new_stats = {
+            "dynamicAccess": {
+                "coveredCalls": 0,
+                "totalCalls": 1,
+                "coverageRatio": 0.0,
+                "breakdown": {
+                    "resources": {
+                        "coveredCalls": 0,
+                        "totalCalls": 1,
+                        "coverageRatio": 0.0,
+                    },
+                },
+            },
+        }
+
+        with patch.object(common_git, "load_library_stats", side_effect=[old_stats, new_stats]):
+            with self.assertRaisesRegex(RuntimeError, "Dynamic-access category regression"):
+                common_git.assert_no_dynamic_access_category_regressions(
+                    "/repo",
+                    "org.example:demo:1.0.0",
+                    "org.example:demo:1.1.0",
+                )
+
+
 class RemoteBranchDeletionTests(unittest.TestCase):
     def test_delete_remote_branch_if_exists_skips_missing_remote_branch(self) -> None:
         with patch.object(common_git, "git_remote_branch_exists", return_value=False), \

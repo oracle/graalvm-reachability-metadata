@@ -652,6 +652,63 @@ def load_library_stats(repo_path, coordinates):
     return load_library_stats_entry(repo_path, group, artifact, version)
 
 
+def dynamic_access_category_regressions(
+        old_coordinates: str,
+        new_coordinates: str,
+        old_version_stats: dict | None,
+        new_version_stats: dict | None,
+) -> list[str]:
+    """Return fully covered dynamic-access categories that became uncovered."""
+    old_da = old_version_stats.get("dynamicAccess") if old_version_stats else None
+    new_da = new_version_stats.get("dynamicAccess") if new_version_stats else None
+    if not is_dynamic_access_stats_entry(old_da) or not is_dynamic_access_stats_entry(new_da):
+        return []
+
+    regressions = []
+    old_breakdown = old_da.get("breakdown", {})
+    new_breakdown = new_da.get("breakdown", {})
+    for category in sorted(set(old_breakdown.keys()) & set(new_breakdown.keys())):
+        old_category = old_breakdown.get(category)
+        new_category = new_breakdown.get(category)
+        if not is_dynamic_access_stats_entry(old_category) or not is_dynamic_access_stats_entry(new_category):
+            continue
+        old_total = int(old_category.get("totalCalls", 0))
+        new_total = int(new_category.get("totalCalls", 0))
+        old_covered = int(old_category.get("coveredCalls", 0))
+        new_covered = int(new_category.get("coveredCalls", 0))
+        if old_total <= 0 or new_total <= 0:
+            continue
+        if old_covered == old_total and new_covered < new_total:
+            regressions.append(
+                f"{category}: `{old_coordinates}` was {format_dynamic_access_entry(old_category)}, "
+                f"but `{new_coordinates}` is {format_dynamic_access_entry(new_category)}"
+            )
+    return regressions
+
+
+def assert_no_dynamic_access_category_regressions(
+        repo_path: str,
+        old_coordinates: str,
+        new_coordinates: str,
+) -> None:
+    """Fail PR publication if old/new stats show a dynamic-access category regression."""
+    old_version_stats = load_library_stats(repo_path, old_coordinates)
+    new_version_stats = load_library_stats(repo_path, new_coordinates)
+    regressions = dynamic_access_category_regressions(
+        old_coordinates,
+        new_coordinates,
+        old_version_stats,
+        new_version_stats,
+    )
+    if regressions:
+        regression_lines = "\n".join(f"- {regression}" for regression in regressions)
+        raise RuntimeError(
+            "Dynamic-access category regression detected between old and new library stats:\n"
+            f"{regression_lines}\n"
+            "Restore the category coverage or route the PR to human intervention with an explicit explanation."
+        )
+
+
 def format_dynamic_access_entry(stats):
     """Format a single dynamic-access stats entry."""
     return "{covered}/{total} covered calls ({ratio:.2f}%)".format(
