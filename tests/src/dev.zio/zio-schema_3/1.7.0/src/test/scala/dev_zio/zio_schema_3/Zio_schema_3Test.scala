@@ -85,6 +85,62 @@ private object Payment {
   )
 }
 
+private sealed trait RecursiveTree
+
+private object RecursiveTree {
+  final case class Leaf(value: Int) extends RecursiveTree
+  final case class Branch(label: String, children: Chunk[RecursiveTree]) extends RecursiveTree
+
+  val schema: Schema[RecursiveTree] = Schema.defer {
+    val leafSchema: Schema.CaseClass1[Int, Leaf] = Schema.CaseClass1[Int, Leaf](
+      id0 = TypeId.parse("example.RecursiveTree.Leaf"),
+      field0 = Schema.Field[Leaf, Int](
+        name0 = "value",
+        schema0 = Schema[Int],
+        get0 = _.value,
+        set0 = (leaf, value) => leaf.copy(value = value)
+      ),
+      defaultConstruct0 = value => Leaf(value)
+    )
+
+    val branchSchema: Schema.CaseClass2[String, Chunk[RecursiveTree], Branch] =
+      Schema.CaseClass2[String, Chunk[RecursiveTree], Branch](
+        id0 = TypeId.parse("example.RecursiveTree.Branch"),
+        field01 = Schema.Field[Branch, String](
+          name0 = "label",
+          schema0 = Schema[String],
+          get0 = _.label,
+          set0 = (branch, label) => branch.copy(label = label)
+        ),
+        field02 = Schema.Field[Branch, Chunk[RecursiveTree]](
+          name0 = "children",
+          schema0 = Schema.chunk(schema),
+          get0 = _.children,
+          set0 = (branch, children) => branch.copy(children = children)
+        ),
+        construct0 = (label: String, children: Chunk[RecursiveTree]) => Branch(label, children)
+      )
+
+    Schema.Enum2[Leaf, Branch, RecursiveTree](
+      id = TypeId.parse("example.RecursiveTree"),
+      case1 = Schema.Case[RecursiveTree, Leaf](
+        "Leaf",
+        leafSchema,
+        _.asInstanceOf[Leaf],
+        leaf => leaf,
+        _.isInstanceOf[Leaf]
+      ),
+      case2 = Schema.Case[RecursiveTree, Branch](
+        "Branch",
+        branchSchema,
+        _.asInstanceOf[Branch],
+        branch => branch,
+        _.isInstanceOf[Branch]
+      )
+    )
+  }
+}
+
 class Zio_schema_3Test {
   @Test
   def primitiveOptionalTupleEitherAndCollectionSchemasRoundTripThroughDynamicValues(): Unit = {
@@ -212,6 +268,86 @@ class Zio_schema_3Test {
     )
     assertThat(schema.fromDynamic(dynamicCard)).isEqualTo(Right(card))
     assertThat(schema.fromDynamic(DynamicValue.Enumeration(TypeId.parse("example.Payment"), "Unknown" -> DynamicValue.NoneValue)).isLeft).isTrue()
+  }
+
+  @Test
+  def deferredRecursiveSchemasRoundTripNestedDynamicValues(): Unit = {
+    val schema: Schema[RecursiveTree] = RecursiveTree.schema
+    val tree: RecursiveTree = RecursiveTree.Branch(
+      "root",
+      Chunk(
+        RecursiveTree.Leaf(1),
+        RecursiveTree.Branch("child", Chunk(RecursiveTree.Leaf(2)))
+      )
+    )
+
+    val dynamic: DynamicValue = schema.toDynamic(tree)
+
+    assertThat(dynamic).isEqualTo(
+      DynamicValue.Enumeration(
+        TypeId.parse("example.RecursiveTree"),
+        "Branch" -> DynamicValue.Record(
+          TypeId.parse("example.RecursiveTree.Branch"),
+          ListMap(
+            "label" -> DynamicValue("root"),
+            "children" -> DynamicValue.Sequence(
+              Chunk(
+                DynamicValue.Enumeration(
+                  TypeId.parse("example.RecursiveTree"),
+                  "Leaf" -> DynamicValue.Record(
+                    TypeId.parse("example.RecursiveTree.Leaf"),
+                    ListMap("value" -> DynamicValue(1))
+                  )
+                ),
+                DynamicValue.Enumeration(
+                  TypeId.parse("example.RecursiveTree"),
+                  "Branch" -> DynamicValue.Record(
+                    TypeId.parse("example.RecursiveTree.Branch"),
+                    ListMap(
+                      "label" -> DynamicValue("child"),
+                      "children" -> DynamicValue.Sequence(
+                        Chunk(
+                          DynamicValue.Enumeration(
+                            TypeId.parse("example.RecursiveTree"),
+                            "Leaf" -> DynamicValue.Record(
+                              TypeId.parse("example.RecursiveTree.Leaf"),
+                              ListMap("value" -> DynamicValue(2))
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    assertThat(schema.fromDynamic(dynamic)).isEqualTo(Right(tree))
+
+    val malformedNestedLeaf: DynamicValue = DynamicValue.Enumeration(
+      TypeId.parse("example.RecursiveTree"),
+      "Branch" -> DynamicValue.Record(
+        TypeId.parse("example.RecursiveTree.Branch"),
+        ListMap(
+          "label" -> DynamicValue("root"),
+          "children" -> DynamicValue.Sequence(
+            Chunk(
+              DynamicValue.Enumeration(
+                TypeId.parse("example.RecursiveTree"),
+                "Leaf" -> DynamicValue.Record(
+                  TypeId.parse("example.RecursiveTree.Leaf"),
+                  ListMap("value" -> DynamicValue("one"))
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    assertThat(schema.fromDynamic(malformedNestedLeaf).isLeft).isTrue()
   }
 
   @Test
