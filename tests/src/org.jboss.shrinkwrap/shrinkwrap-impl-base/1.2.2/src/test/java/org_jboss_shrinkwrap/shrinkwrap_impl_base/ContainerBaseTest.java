@@ -34,10 +34,11 @@ public class ContainerBaseTest {
     @Test
     void addClassByNameWithClassLoaderAddsClassEntry() {
         JavaArchive archive = newArchive(Thread.currentThread().getContextClassLoader());
+        Class<?> classToAdd = ContainerBaseTest.class;
 
-        archive.addClass(Shrinkwrap_impl_baseTest.class.getName(), Shrinkwrap_impl_baseTest.class.getClassLoader());
+        archive.addClass(classToAdd.getName(), classToAdd.getClassLoader());
 
-        assertThat(archive.contains("/" + Shrinkwrap_impl_baseTest.class.getName().replace('.', '/') + ".class"))
+        assertThat(archive.contains("/" + classToAdd.getName().replace('.', '/') + ".class"))
             .isTrue();
     }
 
