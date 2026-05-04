@@ -57,6 +57,25 @@ public class RetriesTest {
     }
 
     @Test
+    void standardStrategyUsesThrottlingBackoffForFailuresMarkedAsThrottling() {
+        StandardRetryStrategy strategy = StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .treatAsThrottling(ThrottlingFailure.class::isInstance)
+            .backoffStrategy(BackoffStrategy.fixedDelayWithoutJitter(Duration.ofMillis(3)))
+            .throttlingBackoffStrategy(BackoffStrategy.fixedDelayWithoutJitter(Duration.ofMillis(29)))
+            .circuitBreakerEnabled(false)
+            .build();
+
+        RetryToken token = strategy.acquireInitialToken(AcquireInitialTokenRequest.create("standard-throttled"))
+            .token();
+        RefreshRetryTokenResponse retry = strategy.refreshRetryToken(
+            refreshRequest(token, new ThrottlingFailure()).build());
+
+        assertThat(retry.delay()).isEqualTo(Duration.ofMillis(29));
+    }
+
+    @Test
     void suggestedDelayOverridesComputedBackoffWhenItIsLonger() {
         RetryStrategy strategy = DefaultRetryStrategy.standardStrategyBuilder()
             .maxAttempts(2)
