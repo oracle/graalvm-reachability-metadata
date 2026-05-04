@@ -25,7 +25,7 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 
 ---
 
-## Manually request library support
+## Manually Request Library Support
 
 <p align="center">
   <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library.svg" width="460"></a>
