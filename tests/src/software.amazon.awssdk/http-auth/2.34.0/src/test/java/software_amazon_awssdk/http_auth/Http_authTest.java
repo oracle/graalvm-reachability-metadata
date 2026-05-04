@@ -25,7 +25,9 @@ import software.amazon.awssdk.http.SdkHttpMethod;
 import software.amazon.awssdk.http.auth.scheme.BearerAuthScheme;
 import software.amazon.awssdk.http.auth.scheme.NoAuthAuthScheme;
 import software.amazon.awssdk.http.auth.signer.BearerHttpSigner;
+import software.amazon.awssdk.http.auth.spi.signer.AsyncSignRequest;
 import software.amazon.awssdk.http.auth.spi.signer.AsyncSignedRequest;
+import software.amazon.awssdk.http.auth.spi.signer.HttpSigner;
 import software.amazon.awssdk.http.auth.spi.signer.SignRequest;
 import software.amazon.awssdk.http.auth.spi.signer.SignedRequest;
 import software.amazon.awssdk.identity.spi.IdentityProvider;
@@ -110,6 +112,38 @@ public class Http_authTest {
     }
 
     @Test
+    void bearerSignerCanCreateIdentityAgnosticNoOpSigner() throws Exception {
+        HttpSigner<NoAuthAuthScheme.AnonymousIdentity> unsignedSigner = BearerHttpSigner.create().doNotSign();
+        NoAuthAuthScheme.AnonymousIdentity anonymousIdentity = new TestAnonymousIdentity();
+        SdkHttpFullRequest request = httpRequest("/bearer-do-not-sign")
+                .toBuilder()
+                .putHeader("Authorization", "existing value")
+                .build();
+        ContentStreamProvider syncPayload = ContentStreamProvider.fromUtf8String("unsigned-body");
+
+        SignedRequest signedRequest = unsignedSigner.sign(SignRequest.builder(anonymousIdentity)
+                .request(request)
+                .payload(syncPayload)
+                .build());
+
+        assertThat(signedRequest.request()).isSameAs(request);
+        assertThat(signedRequest.request().firstMatchingHeader("Authorization")).contains("existing value");
+        assertThat(signedRequest.payload()).containsSame(syncPayload);
+        assertThat(readUtf8(signedRequest.payload())).isEqualTo("unsigned-body");
+
+        FixedPublisher asyncPayload = new FixedPublisher("unsigned-async-body");
+        AsyncSignedRequest asyncSignedRequest = unsignedSigner.signAsync(AsyncSignRequest.builder(anonymousIdentity)
+                        .request(request)
+                        .payload(asyncPayload)
+                        .build())
+                .get(5, TimeUnit.SECONDS);
+
+        assertThat(asyncSignedRequest.request()).isSameAs(request);
+        assertThat(asyncSignedRequest.request().firstMatchingHeader("Authorization")).contains("existing value");
+        assertThat(asyncSignedRequest.payload()).containsSame(asyncPayload);
+    }
+
+    @Test
     void noAuthSchemeProvidesAnonymousIdentityAndNoOpSigner() throws Exception {
         NoAuthAuthScheme authScheme = NoAuthAuthScheme.create();
         IdentityProviders emptyProviders = IdentityProviders.builder().build();
@@ -181,6 +215,9 @@ public class Http_authTest {
         } catch (IOException e) {
             throw new AssertionError("Unable to read payload", e);
         }
+    }
+
+    private static final class TestAnonymousIdentity implements NoAuthAuthScheme.AnonymousIdentity {
     }
 
     private static final class TokenIdentityProvider implements IdentityProvider<TokenIdentity> {
