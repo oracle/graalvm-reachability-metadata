@@ -94,6 +94,22 @@ public class Api_commonTest {
     }
 
     @Test
+    void pathTemplateSupportsCustomVerbSuffixes() {
+        PathTemplate template = PathTemplate.create("projects/{project}/operations/{operation}:cancel");
+        Map<String, String> bindings = Map.of("project", "project one", "operation", "operation-123");
+
+        String resourcePath = template.instantiate(bindings);
+
+        assertThat(resourcePath).isEqualTo("projects/project+one/operations/operation-123:cancel");
+        assertThat(template.endsWithCustomVerb()).isTrue();
+        assertThat(template.endsWithLiteral()).isFalse();
+        assertThat(template.matches(resourcePath)).isTrue();
+        assertThat(template.match(resourcePath)).containsExactlyEntriesOf(bindings);
+        assertThat(template.match("projects/project+one/operations/operation-123:delete")).isNull();
+        assertThat(template.parentTemplate().toString()).isEqualTo("projects/{project=*}/operations/{operation=*}");
+    }
+
+    @Test
     void pathTemplateReportsValidationErrorsForInvalidNames() {
         PathTemplate template = PathTemplate.create("projects/{project}/locations/{location}");
 
