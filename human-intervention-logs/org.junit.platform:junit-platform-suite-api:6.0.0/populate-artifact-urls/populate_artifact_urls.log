@@ -1,0 +1,586 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df50b-175f-7910-8f26-8988181e57df
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.junit.platform:junit-platform-suite-api:6.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [6.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88/metadata/org.junit.platform/junit-platform-suite-api/index.json
+- Entry selector: "metadata-version" = "6.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 6.0.0
+- Entry metadata-version: 6.0.0
+- Entry test-version: 6.0.0
+- Entry tested-versions: [6.0.0]
+codex
+I’ll inspect the existing metadata shape first, then verify the artifact URLs against Maven/JUnit sources before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.junit.platform/junit-platform-suite-api/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "6.0.0",
+    "tested-versions" : [
+      "6.0.0"
+    ],
+    "allowed-packages" : [
+      "org.junit.platform.suite.api"
+    ]
+  },
+  {
+    "metadata-version" : "1.13.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/junit-team/junit-framework",
+    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.13.4/platform-tests/src/test/java/org/junit/platform/suite",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
+    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+    "tested-versions" : [
+      "1.13.4"
+    ],
+    "allowed-packages" : [
+      "org.junit.platform.suite.api"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"artifact-id\": \"junit-platform-suite-api\"|junit-platform-suite-api|junit-platform' metadata/org.junit.platform metadata/org.junit.jupiter metadata/org.junit.vintage" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+ exited 2 in 0ms:
+rg: metadata/org.junit.vintage: No such file or directory (os error 2)
+metadata/org.junit.platform/junit-platform-suite-api/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-suite-api/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-suite-api/index.json:18:    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+metadata/org.junit.platform/junit-platform-launcher/1.9.2/reachability-metadata.json:65:      "glob" : "junit-platform.properties"
+metadata/org.junit.platform/junit-platform-launcher/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-launcher/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-launcher/index.json:47:      "org.junit.platform:junit-platform-reporting"
+metadata/org.junit.platform/junit-platform-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-engine/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-engine/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-commons/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-reporting/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-reporting/$version$/junit-platform-reporting-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-reporting/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-reporting/$version$/junit-platform-reporting-$version$-javadoc.jar",
+
+web search: 
+web search: Maven Central org.junit.platform junit-platform-suite-api 6.0.0 sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0
+web search: 
+web search: site:github.com/junit-team/junit-framework/tree/r6.0.0 platform-tests suite api tests
+web search: 
+web search: https://github.com/junit-team/junit-framework/tree/r6.0.0/platform-tests/src/test/java/org/junit/platform/suite
+web search: 
+web search: https://github.com/junit-team/junit-framework/tree/r6.0.0/platform-tests/src/test/java/org/junit/platform/suite/engine
+codex
+The existing older entry already uses Maven Central for source and javadoc, and GitHub for tests. For 6.0.0 I’m checking the Maven artifact directory and the JUnit `r6.0.0` tag so the new values are versioned templates that actually resolve.
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0/junit-platform-suite-api-6.0.0-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0/junit-platform-suite-api-6.0.0-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0/junit-platform-suite-api-6.0.0-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0/junit-platform-suite-api-6.0.0-tests.jar \\
+  https://github.com/junit-team/junit-framework/tree/r6.0.0/platform-tests/src/test/java/org/junit/platform/suite \\
+  https://github.com/junit-team/junit-framework/tree/r6.0.0; do
+  printf '%s -> ' \""'$u"
+  curl -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$u"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0/junit-platform-suite-api-6.0.0.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.junit.platform</groupId>
+  <artifactId>junit-platform-suite-api</artifactId>
+  <version>6.0.0</version>
+  <name>JUnit Platform Suite API</name>
+  <description>Module "junit-platform-suite-api" of JUnit</description>
+  <url>https://junit.org/</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License v2.0</name>
+      <url>https://www.eclipse.org/legal/epl-v20.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>bechte</id>
+      <name>Stefan Bechtold</name>
+      <email>stefan.bechtold@me.com</email>
+    </developer>
+    <developer>
+      <id>jlink</id>
+      <name>Johannes Link</name>
+      <email>business@johanneslink.net</email>
+    </developer>
+    <developer>
+      <id>marcphilipp</id>
+      <name>Marc Philipp</name>
+      <email>mail@marcphilipp.de</email>
+    </developer>
+    <developer>
+      <id>mmerdes</id>
+      <name>Matthias Merdes</name>
+      <email>matthias.merdes@heidelpay.com</email>
+    </developer>
+    <developer>
+      <id>sbrannen</id>
+      <name>Sam Brannen</name>
+      <email>sam@sambrannen.com</email>
+    </developer>
+    <developer>
+      <id>sormuras</id>
+      <name>Christian Stein</name>
+      <email>sormuras@gmail.com</email>
+    </developer>
+    <developer>
+      <id>juliette-derancourt</id>
+      <name>Juliette de Rancourt</name>
+      <email>derancourt.juliette@gmail.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/junit-team/junit-framework.git</connection>
+    <developerConnection>scm:git:git://github.com/junit-team/junit-framework.git</developerConnection>
+    <url>https://github.com/junit-team/junit-framework</url>
+  </scm>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>6.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-commons</artifactId>
+      <version>6.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apiguardian</groupId>
+      <artifactId>apiguardian-api</artifactId>
+      <version>1.1.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>1.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/junit-team/junit-framework.git 'refs/tags/r6.0.0'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+ succeeded in 373ms:
+6a5c30547a5d572d941c1b1797acc7ea8dd36558	refs/tags/r6.0.0
+
+ succeeded in 2678ms:
+200
+https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0/junit-platform-suite-api-6.0.0-test-sources.jar -> 404
+https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0/junit-platform-suite-api-6.0.0-tests.jar -> 404
+https://github.com/junit-team/junit-framework/tree/r6.0.0/platform-tests/src/test/java/org/junit/platform/suite -> 200
+https://github.com/junit-team/junit-framework/tree/r6.0.0 -> 200
+
+web search: 
+web search: Maven Central org.junit.platform junit-platform-suite-api 6.0.0 POM scm junit-framework
+web search: 
+web search: https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0
+codex
+I found Maven-hosted source and javadoc artifacts for `6.0.0`; Maven does not publish test-source or tests jars for this artifact, so I’ll use the JUnit Framework `r6.0.0` test tree for `test-code-url`. Next I’m adding only the missing fields on the `metadata-version` `6.0.0` entry.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88/metadata/org.junit.platform/junit-platform-suite-api/index.json
+diff --git a/metadata/org.junit.platform/junit-platform-suite-api/index.json b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+index 8f12cb474117a372fddcff0ee8f4702a2db1022c..d782df7999fb9b7e8f02759d2019f38abb8aa648
+--- a/metadata/org.junit.platform/junit-platform-suite-api/index.json
++++ b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "6.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/junit-team/junit-framework",
++    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
++    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+     "tested-versions" : [
+       "6.0.0"
+     ],
+
+diff --git a/metadata/org.junit.platform/junit-platform-suite-api/index.json b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+index 8f12cb474117a372fddcff0ee8f4702a2db1022c..d782df7999fb9b7e8f02759d2019f38abb8aa648
+--- a/metadata/org.junit.platform/junit-platform-suite-api/index.json
++++ b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "6.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/junit-team/junit-framework",
++    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
++    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+     "tested-versions" : [
+       "6.0.0"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.junit.platform/junit-platform-suite-api/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"6.0.0\")' metadata/org.junit.platform/junit-platform-suite-api/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "6.0.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
+  "repository-url": "https://github.com/junit-team/junit-framework",
+  "test-code-url": "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
+  "description": "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+  "tested-versions": [
+    "6.0.0"
+  ],
+  "allowed-packages": [
+    "org.junit.platform.suite.api"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0/junit-platform-suite-api-6.0.0-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0/junit-platform-suite-api-6.0.0-javadoc.jar \\
+  https://github.com/junit-team/junit-framework/tree/r6.0.0/platform-tests/src/test/java/org/junit/platform/suite; do
+  printf '%s -> ' \""'$u"
+  curl -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$u"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+diff --git a/metadata/org.junit.platform/junit-platform-suite-api/index.json b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+index 8f12cb474117a372fddcff0ee8f4702a2db1022c..d782df7999fb9b7e8f02759d2019f38abb8aa648
+--- a/metadata/org.junit.platform/junit-platform-suite-api/index.json
++++ b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "6.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/junit-team/junit-framework",
++    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
++    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+     "tested-versions" : [
+       "6.0.0"
+     ],
+
+ succeeded in 816ms:
+200
+https://github.com/junit-team/junit-framework/tree/r6.0.0/platform-tests/src/test/java/org/junit/platform/suite -> 200
+
+codex
+The edit is in place and JSON parsing passes. I also re-rendered the three templated URLs with `6.0.0`; each returned HTTP 200.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.junit.platform/junit-platform-suite-api/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+ succeeded in 0ms:
+diff --git i/metadata/org.junit.platform/junit-platform-suite-api/index.json w/metadata/org.junit.platform/junit-platform-suite-api/index.json
+index 8f12cb4741..d782df7999 100644
+--- i/metadata/org.junit.platform/junit-platform-suite-api/index.json
++++ w/metadata/org.junit.platform/junit-platform-suite-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "6.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/junit-team/junit-framework",
++    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
++    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+     "tested-versions" : [
+       "6.0.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.junit.platform:junit-platform-suite-api:6.0.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+diff --git a/metadata/org.junit.platform/junit-platform-suite-api/index.json b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+index 8f12cb474117a372fddcff0ee8f4702a2db1022c..d782df7999fb9b7e8f02759d2019f38abb8aa648
+--- a/metadata/org.junit.platform/junit-platform-suite-api/index.json
++++ b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "6.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/junit-team/junit-framework",
++    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
++    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+     "tested-versions" : [
+       "6.0.0"
+     ],
+
+ exited 1 in 2025ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.junit.platform:junit-platform-suite-api:6.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88/metadata/org.junit.platform/junit-platform-suite-api/6.0.0/
+
+
+FAILURE: Build failed with an exception.[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88/build/reports/problems/problems-report.html
+
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.junit.platform:junit-platform-suite-api:6.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88/metadata/org.junit.platform/junit-platform-suite-api/6.0.0/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: junit-platform-suite-api 6.0.0 Maven Central sources javadoc
+web search: 
+web search: https://github.com/junit-team/junit-framework/tree/r6.0.0/platform-tests/src/test/java/org/junit/platform/suite
+web search: 
+web search: https://central.sonatype.com/artifact/org.junit.platform/junit-platform-suite-api/6.0.0
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.junit.platform/junit-platform-suite-api/index.json | sed -n '1,30p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "6.0.0",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/junit-team/junit-framework",
+     7	    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
+     9	    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+    10	    "tested-versions" : [
+    11	      "6.0.0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.junit.platform.suite.api"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.13.4",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/junit-team/junit-framework",
+    21	    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r5.13.4/platform-tests/src/test/java/org/junit/platform/suite",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
+    23	    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+    24	    "tested-versions" : [
+    25	      "1.13.4"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "org.junit.platform.suite.api"
+    29	    ]
+    30	  }
+
+diff --git a/metadata/org.junit.platform/junit-platform-suite-api/index.json b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+index 8f12cb474117a372fddcff0ee8f4702a2db1022c..d782df7999fb9b7e8f02759d2019f38abb8aa648
+--- a/metadata/org.junit.platform/junit-platform-suite-api/index.json
++++ b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "6.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/junit-team/junit-framework",
++    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
++    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+     "tested-versions" : [
+       "6.0.0"
+     ],
+
+web search: 
+web search: Maven Central org.junit.platform junit-platform-suite-api 6.0.0 sources jar javadoc jar
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.junit.platform/junit-platform-suite-api/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88
+ succeeded in 0ms:
+ M metadata/org.junit.platform/junit-platform-suite-api/index.json
+
+diff --git a/metadata/org.junit.platform/junit-platform-suite-api/index.json b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+index 8f12cb474117a372fddcff0ee8f4702a2db1022c..d782df7999fb9b7e8f02759d2019f38abb8aa648
+--- a/metadata/org.junit.platform/junit-platform-suite-api/index.json
++++ b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "6.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/junit-team/junit-framework",
++    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
++    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+     "tested-versions" : [
+       "6.0.0"
+     ],
+
+web search: 
+web search: junit-platform-suite-api 6.0.0 maven central source javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0
+web search: 
+web search: https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88/metadata/org.junit.platform/junit-platform-suite-api/index.json:5) for `metadata-version` `6.0.0`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the exact two-sentence `description`. Maven Central publishes the `6.0.0` source and javadoc jars, and the repository root is the JUnit Framework GitHub repo; the suite API description is based on JUnit’s `@Suite` API behavior. ([repo1.maven.org](https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0))
+
+No `language` field was added because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- `jq empty metadata/org.junit.platform/junit-platform-suite-api/index.json` passed.
+- Rendered source, docs, and test URLs for `6.0.0` returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.junit.platform:junit-platform-suite-api:6.0.0` failed because `metadata/org.junit.platform/junit-platform-suite-api/6.0.0/reachability-metadata.json` is missing.
+diff --git a/metadata/org.junit.platform/junit-platform-suite-api/index.json b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+index 8f12cb474117a372fddcff0ee8f4702a2db1022c..d782df7999fb9b7e8f02759d2019f38abb8aa648
+--- a/metadata/org.junit.platform/junit-platform-suite-api/index.json
++++ b/metadata/org.junit.platform/junit-platform-suite-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "6.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/junit-team/junit-framework",
++    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/platform-tests/src/test/java/org/junit/platform/suite",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-suite-api/$version$/junit-platform-suite-api-$version$-javadoc.jar",
++    "description" : "JUnit Platform Suite API provides annotations for defining test suites on the JUnit Platform. It lets developers select engines, packages, classes, tags, and configuration parameters that are consumed by suite engines such as junit-platform-suite-engine.",
+     "tested-versions" : [
+       "6.0.0"
+     ],
+
+tokens used
+89,473
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88/metadata/org.junit.platform/junit-platform-suite-api/index.json:5) for `metadata-version` `6.0.0`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the exact two-sentence `description`. Maven Central publishes the `6.0.0` source and javadoc jars, and the repository root is the JUnit Framework GitHub repo; the suite API description is based on JUnit’s `@Suite` API behavior. ([repo1.maven.org](https://repo1.maven.org/maven2/org/junit/platform/junit-platform-suite-api/6.0.0))
+
+No `language` field was added because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- `jq empty metadata/org.junit.platform/junit-platform-suite-api/index.json` passed.
+- Rendered source, docs, and test URLs for `6.0.0` returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.junit.platform:junit-platform-suite-api:6.0.0` failed because `metadata/org.junit.platform/junit-platform-suite-api/6.0.0/reachability-metadata.json` is missing.
+Ran agent for org.junit.platform:junit-platform-suite-api:6.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88/build/agent-url-discovery-logs/org.junit.platform-junit-platform-suite-api-6.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5854-6fab9f88/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m
+9 actionable tasks: 1 executed, 8 up-to-date
