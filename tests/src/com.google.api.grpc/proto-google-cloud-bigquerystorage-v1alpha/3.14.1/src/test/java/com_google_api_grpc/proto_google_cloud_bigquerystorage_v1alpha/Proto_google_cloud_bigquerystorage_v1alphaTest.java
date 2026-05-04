@@ -8,9 +8,12 @@ package com_google_api_grpc.proto_google_cloud_bigquerystorage_v1alpha;
 
 import com.google.api.AnnotationsProto;
 import com.google.api.ClientProto;
+import com.google.api.FieldBehavior;
+import com.google.api.FieldBehaviorProto;
 import com.google.api.HttpRule;
 import com.google.api.ResourceDescriptor;
 import com.google.api.ResourceProto;
+import com.google.api.ResourceReference;
 import com.google.cloud.bigquery.storage.v1alpha.BatchCreateMetastorePartitionsRequest;
 import com.google.cloud.bigquery.storage.v1alpha.BatchCreateMetastorePartitionsResponse;
 import com.google.cloud.bigquery.storage.v1alpha.BatchDeleteMetastorePartitionsRequest;
@@ -291,6 +294,50 @@ public class Proto_google_cloud_bigquerystorage_v1alphaTest {
     }
 
     @Test
+    void exposesFieldBehaviorAndResourceReferenceAnnotations() {
+        Descriptors.FileDescriptor partitionDescriptor = MetastorePartitionProto.getDescriptor();
+        Descriptors.Descriptor partition = partitionDescriptor.findMessageTypeByName("MetastorePartition");
+        Descriptors.Descriptor storageDescriptor = partitionDescriptor.findMessageTypeByName("StorageDescriptor");
+        Descriptors.Descriptor serdeInfo = partitionDescriptor.findMessageTypeByName("SerDeInfo");
+        Descriptors.Descriptor readStream = partitionDescriptor.findMessageTypeByName("ReadStream");
+        Descriptors.FileDescriptor serviceDescriptor = MetastorePartitionServiceProto.getDescriptor();
+        Descriptors.Descriptor createRequest = serviceDescriptor.findMessageTypeByName("CreateMetastorePartitionRequest");
+        Descriptors.Descriptor batchCreateRequest =
+                        serviceDescriptor.findMessageTypeByName("BatchCreateMetastorePartitionsRequest");
+        Descriptors.Descriptor listRequest = serviceDescriptor.findMessageTypeByName("ListMetastorePartitionsRequest");
+
+        assertThat(fieldBehaviors(partition, "values")).containsExactly(FieldBehavior.REQUIRED);
+        assertThat(fieldBehaviors(partition, "create_time")).containsExactly(FieldBehavior.OUTPUT_ONLY);
+        assertThat(fieldBehaviors(partition, "storage_descriptor")).containsExactly(FieldBehavior.OPTIONAL);
+        assertThat(fieldBehaviors(partition, "parameters")).containsExactly(FieldBehavior.OPTIONAL);
+        assertThat(fieldBehaviors(partition, "fields")).containsExactly(FieldBehavior.OPTIONAL);
+        assertThat(fieldBehaviors(storageDescriptor, "serde_info")).containsExactly(FieldBehavior.OPTIONAL);
+        assertThat(fieldBehaviors(serdeInfo, "serialization_library")).containsExactly(FieldBehavior.REQUIRED);
+        assertThat(fieldBehaviors(readStream, "name"))
+                        .containsExactly(FieldBehavior.OUTPUT_ONLY, FieldBehavior.IDENTIFIER);
+
+        Descriptors.FieldDescriptor createParent = createRequest.findFieldByName("parent");
+        Descriptors.FieldDescriptor batchCreateParent = batchCreateRequest.findFieldByName("parent");
+        Descriptors.FieldDescriptor listParent = listRequest.findFieldByName("parent");
+        ResourceReference createParentReference = createParent.getOptions().getExtension(ResourceProto.resourceReference);
+        ResourceReference batchCreateParentReference =
+                        batchCreateParent.getOptions().getExtension(ResourceProto.resourceReference);
+        ResourceReference listParentReference = listParent.getOptions().getExtension(ResourceProto.resourceReference);
+
+        assertThat(createParent.getOptions().getExtension(FieldBehaviorProto.fieldBehavior))
+                        .containsExactly(FieldBehavior.REQUIRED);
+        assertThat(batchCreateParent.getOptions().getExtension(FieldBehaviorProto.fieldBehavior))
+                        .containsExactly(FieldBehavior.REQUIRED);
+        assertThat(listParent.getOptions().getExtension(FieldBehaviorProto.fieldBehavior))
+                        .containsExactly(FieldBehavior.REQUIRED);
+        assertThat(fieldBehaviors(listRequest, "filter")).containsExactly(FieldBehavior.OPTIONAL);
+        assertThat(fieldBehaviors(listRequest, "trace_id")).containsExactly(FieldBehavior.OPTIONAL);
+        assertThat(createParentReference.getType()).isEqualTo("bigquery.googleapis.com/Table");
+        assertThat(batchCreateParentReference.getType()).isEqualTo("bigquery.googleapis.com/Table");
+        assertThat(listParentReference.getType()).isEqualTo("bigquery.googleapis.com/Table");
+    }
+
+    @Test
     void exposesResourceNameHelpersAndProtoDescriptors() {
         TableName tableName = TableName.of("project-one", "dataset_one", "table_one");
         String formatted = TableName.format("project-one", "dataset_one", "table_one");
@@ -336,6 +383,10 @@ public class Proto_google_cloud_bigquerystorage_v1alphaTest {
         MetastorePartitionProto.registerAllExtensions(registry);
         MetastorePartitionServiceProto.registerAllExtensions(registry);
         assertThat(registry.getUnmodifiable()).isNotNull();
+    }
+
+    private static List<FieldBehavior> fieldBehaviors(Descriptors.Descriptor descriptor, String fieldName) {
+        return descriptor.findFieldByName(fieldName).getOptions().getExtension(FieldBehaviorProto.fieldBehavior);
     }
 
     private static MetastorePartition samplePartition(String year, String month) {
