@@ -6,6 +6,16 @@
  */
 package com_aayushatharva_brotli4j.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
@@ -60,6 +70,19 @@ public class ServiceTest {
         assertThat(platformNames).isEmpty();
     }
 
+    @Test
+    void providerImplementationsCanBeDiscoveredFromServiceConfiguration() {
+        ServiceConfigurationClassLoader classLoader = new ServiceConfigurationClassLoader(
+                ServiceTest.class.getClassLoader(), DiscoverableBrotliNativeProvider.class.getName());
+        ServiceLoader<BrotliNativeProvider> providers = ServiceLoader.load(BrotliNativeProvider.class, classLoader);
+
+        List<Class<? extends BrotliNativeProvider>> providerTypes = providers.stream()
+                .map(ServiceLoader.Provider::type)
+                .collect(Collectors.toList());
+
+        assertThat(providerTypes).containsExactly(DiscoverableBrotliNativeProvider.class);
+    }
+
     private static String readPlatformName(BrotliNativeProvider provider) {
         return provider.platformName();
     }
@@ -74,6 +97,55 @@ public class ServiceTest {
         @Override
         public String platformName() {
             return platformName;
+        }
+    }
+
+    public static final class DiscoverableBrotliNativeProvider implements BrotliNativeProvider {
+        @Override
+        public String platformName() {
+            return "test-platform";
+        }
+    }
+
+    private static final class ServiceConfigurationClassLoader extends ClassLoader {
+        private static final String SERVICE_CONFIGURATION_PATH = "META-INF/services/"
+                + BrotliNativeProvider.class.getName();
+
+        private final byte[] serviceConfiguration;
+
+        private ServiceConfigurationClassLoader(ClassLoader parent, String providerClassName) {
+            super(parent);
+            this.serviceConfiguration = (providerClassName + System.lineSeparator()).getBytes(StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            if (!SERVICE_CONFIGURATION_PATH.equals(name)) {
+                return super.getResources(name);
+            }
+
+            List<URL> resources = new ArrayList<>(Collections.list(super.getResources(name)));
+            resources.add(serviceConfigurationUrl());
+            return Collections.enumeration(resources);
+        }
+
+        private URL serviceConfigurationUrl() throws IOException {
+            return new URL(null, "memory:brotli4j-service-provider", new URLStreamHandler() {
+                @Override
+                protected URLConnection openConnection(URL url) {
+                    return new URLConnection(url) {
+                        @Override
+                        public void connect() {
+                            connected = true;
+                        }
+
+                        @Override
+                        public InputStream getInputStream() {
+                            return new ByteArrayInputStream(serviceConfiguration);
+                        }
+                    };
+                }
+            });
         }
     }
 }
