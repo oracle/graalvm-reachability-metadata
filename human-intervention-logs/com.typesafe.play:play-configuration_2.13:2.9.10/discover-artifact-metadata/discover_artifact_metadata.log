@@ -1,0 +1,1209 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df198-bc65-77c3-bc5c-691a95873aa7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.typesafe.play:play-configuration_2.13:2.9.10
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.9.10" when "$version$" is replaced with "2.9.10".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+- Set "coordinates" to "com.typesafe.play:play-configuration_2.13:2.9.10".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.9.10".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream sources first, then patch the JSON in place.
+web search: 
+web search: com.typesafe.play play-configuration_2.13 2.9.10 Maven sources test-sources
+web search: 
+web search: https://mvnrepository.com/artifact/com.typesafe.play/play-configuration_2.13/2.9.10
+web search: 
+web search: https://github.com/playframework/playframework
+codex
+Maven confirms this is a Scala 2.13-targeted JAR and points back to the Play Framework repository. I’m checking whether Central publishes source/test source artifacts for this exact module before choosing GitHub tag URLs.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+-rw-rw-r-- 1 vjovanov vjovanov 73 May  4 08:06 build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+{
+  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/typesafe/play/play-configuration_2.13/2.9.10</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/typesafe/play/play-configuration_2.13/2.9.10</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="play-configuration_2.13-2.9.10-javadoc.jar" title="play-configuration_2.13-2.9.10-javadoc.jar">play-configuration_2.13-2.9.10-javadoc.jar</a>        2025-12-22 00:16   1177555      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.asc" title="play-configuration_2.13-2.9.10-javadoc.jar.asc">play-configuration_2.13-2.9.10-javadoc.jar.as...</a>  2025-12-22 00:16       833      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.asc.md5" title="play-configuration_2.13-2.9.10-javadoc.jar.asc.md5">play-configuration_2.13-2.9.10-javadoc.jar.as...</a>  2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.asc.sha1" title="play-configuration_2.13-2.9.10-javadoc.jar.asc.sha1">play-configuration_2.13-2.9.10-javadoc.jar.as...</a>  2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.md5" title="play-configuration_2.13-2.9.10-javadoc.jar.md5">play-configuration_2.13-2.9.10-javadoc.jar.md...</a>  2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.sha1" title="play-configuration_2.13-2.9.10-javadoc.jar.sha1">play-configuration_2.13-2.9.10-javadoc.jar.sh...</a>  2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10-sources.jar" title="play-configuration_2.13-2.9.10-sources.jar">play-configuration_2.13-2.9.10-sources.jar</a>        2025-12-22 00:16      9659      
+<a href="play-configuration_2.13-2.9.10-sources.jar.asc" title="play-configuration_2.13-2.9.10-sources.jar.asc">play-configuration_2.13-2.9.10-sources.jar.as...</a>  2025-12-22 00:16       833      
+<a href="play-configuration_2.13-2.9.10-sources.jar.asc.md5" title="play-configuration_2.13-2.9.10-sources.jar.asc.md5">play-configuration_2.13-2.9.10-sources.jar.as...</a>  2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10-sources.jar.asc.sha1" title="play-configuration_2.13-2.9.10-sources.jar.asc.sha1">play-configuration_2.13-2.9.10-sources.jar.as...</a>  2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10-sources.jar.md5" title="play-configuration_2.13-2.9.10-sources.jar.md5">play-configuration_2.13-2.9.10-sources.jar.md...</a>  2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10-sources.jar.sha1" title="play-configuration_2.13-2.9.10-sources.jar.sha1">play-configuration_2.13-2.9.10-sources.jar.sh...</a>  2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10.jar" title="play-configuration_2.13-2.9.10.jar">play-configuration_2.13-2.9.10.jar</a>                2025-12-22 00:16     51576      
+<a href="play-configuration_2.13-2.9.10.jar.asc" title="play-configuration_2.13-2.9.10.jar.asc">play-configuration_2.13-2.9.10.jar.asc</a>            2025-12-22 00:16       833      
+<a href="play-configuration_2.13-2.9.10.jar.asc.md5" title="play-configuration_2.13-2.9.10.jar.asc.md5">play-configuration_2.13-2.9.10.jar.asc.md5</a>        2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10.jar.asc.sha1" title="play-configuration_2.13-2.9.10.jar.asc.sha1">play-configuration_2.13-2.9.10.jar.asc.sha1</a>       2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10.jar.md5" title="play-configuration_2.13-2.9.10.jar.md5">play-configuration_2.13-2.9.10.jar.md5</a>            2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10.jar.sha1" title="play-configuration_2.13-2.9.10.jar.sha1">play-configuration_2.13-2.9.10.jar.sha1</a>           2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10.pom" title="play-configuration_2.13-2.9.10.pom">play-configuration_2.13-2.9.10.pom</a>                2025-12-22 00:16      3228      
+<a href="play-configuration_2.13-2.9.10.pom.asc" title="play-configuration_2.13-2.9.10.pom.asc">play-configuration_2.13-2.9.10.pom.asc</a>            2025-12-22 00:16       833      
+<a href="play-configuration_2.13-2.9.10.pom.asc.md5" title="play-configuration_2.13-2.9.10.pom.asc.md5">play-configuration_2.13-2.9.10.pom.asc.md5</a>        2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10.pom.asc.sha1" title="play-configuration_2.13-2.9.10.pom.asc.sha1">play-configuration_2.13-2.9.10.pom.asc.sha1</a>       2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10.pom.md5" title="play-configuration_2.13-2.9.10.pom.md5">play-configuration_2.13-2.9.10.pom.md5</a>            2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10.pom.sha1" title="play-configuration_2.13-2.9.10.pom.sha1">play-configuration_2.13-2.9.10.pom.sha1</a>           2025-12-22 00:16        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: site:github.com/playframework/playframework play-configuration_2.13 2.9.10 tag
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10.pom
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.typesafe.play</groupId>
+    <artifactId>play-configuration_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Play-Configuration</description>
+    <url>https://github.com/playframework/playframework</url>
+    <version>2.9.10</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Play-Configuration</name>
+    <organization>
+        <name>The Play Framework Project</name>
+        <url>https://playframework.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/playframework/playframework</url>
+        <connection>scm:git:https://github.com/playframework/playframework.git</connection>
+        <developerConnection>scm:git:git@github.com:playframework/playframework.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>playframework</id>
+            <name>The Play Framework Contributors</name>
+            <url>https://github.com/playframework</url>
+            <email>contact@playframework.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.playframework.com/documentation/2.9.10/api/scala/index.html</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.18</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.play</groupId>
+            <artifactId>play-exceptions</artifactId>
+            <version>2.9.10</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-core_2.13</artifactId>
+            <version>4.20.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-junit_2.13</artifactId>
+            <version>4.20.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.17.8</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-agent</artifactId>
+            <version>1.17.8</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/git/ref/tags/2.9.10' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 210ms:
+{
+  "ref": "refs/tags/2.9.10",
+  "node_id": "MDM6UmVmMjM0MDU0OTpyZWZzL3RhZ3MvMi45LjEw",
+  "url": "https://api.github.com/repos/playframework/playframework/git/refs/tags/2.9.10",
+  "object": {
+    "sha": "358829333971e0b8ad453c551dcd578ad3f61be4",
+    "type": "tag",
+    "url": "https://api.github.com/repos/playframework/playframework/git/tags/358829333971e0b8ad453c551dcd578ad3f61be4"
+  }
+}
+
+ exited 22 in 277ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 06:07:19 GMT
+content-type: text/html
+cf-ray: 9f65530fae7001fc-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg 'documentation-url|source-code-url|test-code-url|language|not-for-native-image' -n build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'repo.maven.apache.org.*sources.jar|javadoc.jar|github.com/.*/tree/\\"'$version'"\\"'$|playframework'"' -n build/discovered-artifact-metadata metadata tests | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:188:                "/maven/com/example/demo/1.0.0/demo-1.0.0-javadoc.jar", zipArchive("index.html", "<html></html>")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:199:                    baseUrl + "/maven/com/example/demo/1.0.0-M20/demo-1.0.0-M20-javadoc.jar"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:212:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:229:                "/maven/com/example/demo/1.0.0/demo-1.0.0-javadoc.jar", zipArchive("index.html", "<html></html>")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:240:                    baseUrl + "/maven/com/example/demo/" + urlVersion + "/demo-" + urlVersion + "-javadoc.jar"
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:253:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:30:                    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:62:                    "source-code-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-sources.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:63:                    "documentation-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-executor-v1/$version$/grpc-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-iam-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-iam-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+metadata/ru.vyarus/generics-resolver/index.json:7:    "test-code-url" : "https://github.com/xvik/generics-resolver/tree/$version$/src/test",
+metadata/ru.vyarus/generics-resolver/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-javadoc.jar",
+metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-stacktracer_3/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-sources.jar",
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+metadata/dev.zio/zio-http_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-internal-macros_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-javadoc.jar",
+metadata/dev.zio/izumi-reflect_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-sources.jar",
+metadata/dev.zio/izumi-reflect_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema-derivation_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-derivation_3/$version$/zio-schema-derivation_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema-derivation_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-derivation_3/$version$/zio-schema-derivation_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-schema-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-prelude-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude-macros_3/$version$/zio-prelude-macros_3-$version$-sources.jar",
+metadata/dev.zio/zio-prelude-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude-macros_3/$version$/zio-prelude-macros_3-$version$-javadoc.jar",
+metadata/dev.zio/zio-config-typesafe_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config-typesafe_3/$version$/zio-config-typesafe_3-$version$-sources.jar",
+metadata/dev.zio/zio-config-typesafe_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config-typesafe_3/$version$/zio-config-typesafe_3-$version$-javadoc.jar",
+metadata/org.scalatra/scalatra-common_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatra/scalatra-common_3/$version$/scalatra-common_3-$version$-sources.jar",
+metadata/org.scalatra/scalatra-common_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatra/scalatra-common_3/$version$/scalatra-common_3-$version$-javadoc.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.apache.arrow/arrow-format/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:7:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+metadata/org.javamoney.moneta/moneta-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/org.javamoney.moneta/moneta-core/index.json:21:    "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/$version$/moneta-core/src/test",
+metadata/org.javamoney.moneta/moneta-core/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/$version$/moneta-core-$version$-javadoc.jar",
+metadata/dev.failsafe/failsafe/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/failsafe/failsafe/$version$/failsafe-$version$-javadoc.jar",
+metadata/org.aspectj/aspectjweaver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-sources.jar",
+metadata/org.aspectj/aspectjweaver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/$version$/animal-sniffer-annotation-$version$-javadoc.jar",
+metadata/com.google.api/gax/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/gax/$version$/gax-$version$-sources.jar",
+metadata/com.google.api/gax/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/gax/$version$/gax-$version$-javadoc.jar",
+metadata/com.google.api/api-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/$version$/jboss-interceptor-spi-$version$-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/$version$/jboss-interceptor-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-javadoc.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/$version$/jackson-datatype-jdk8-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-sources.jar",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-launcher/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-launcher/$version$/junit-platform-launcher-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-engine/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-engine/$version$/junit-platform-engine-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-commons/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-commons/$version$/junit-platform-commons-$version$-javadoc.jar",
+metadata/org.junit.platform/junit-platform-reporting/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-reporting/$version$/junit-platform-reporting-$version$-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/$version$/mail/src/test",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-javadoc.jar",
+metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/tunnelvisionlabs/antlr4-annotations/$version$/antlr4-annotations-$version$-sources.jar",
+metadata/com.tunnelvisionlabs/antlr4-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/tunnelvisionlabs/antlr4-annotations/$version$/antlr4-annotations-$version$-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/$version$/google-auth-library-credentials-$version$-javadoc.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/org.clojure/google-closure-library-third-party/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/postgresql/postgresql/$version$/postgresql-$version$-javadoc.jar",
+metadata/javax.servlet/servlet-api/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-javadoc.jar",
+metadata/com.android.tools/annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/android/tools/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/$version$-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10-sources.jar -o /tmp/play-configuration_2.13-2.9.10-sources.jar && jar tf /tmp/play-configuration_2.13-2.9.10-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/playframework/playframework/git/trees/2.9.10?recursive=1' | rg 'play-configuration|Configuration|configuration' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 196ms:
+META-INF/MANIFEST.MF
+play/
+play/api/
+play/Environment.java
+play/Mode.java
+play/api/Configuration.scala
+play/api/Environment.scala
+play/api/Mode.scala
+
+ succeeded in 510ms:
+      "path": "core/play-configuration",
+      "path": "core/play-configuration/src",
+      "path": "core/play-configuration/src/main",
+      "path": "core/play-configuration/src/main/java",
+      "path": "core/play-configuration/src/main/java/play",
+      "path": "core/play-configuration/src/main/java/play/Environment.java",
+      "path": "core/play-configuration/src/main/java/play/Mode.java",
+      "path": "core/play-configuration/src/main/scala",
+      "path": "core/play-configuration/src/main/scala/play",
+      "path": "core/play-configuration/src/main/scala/play/api",
+      "path": "core/play-configuration/src/main/scala/play/api/Configuration.scala",
+      "path": "core/play-configuration/src/main/scala/play/api/Environment.scala",
+      "path": "core/play-configuration/src/main/scala/play/api/Mode.scala",
+      "path": "core/play-configuration/src/test",
+      "path": "core/play-configuration/src/test/resources",
+      "path": "core/play-configuration/src/test/resources/reference.conf",
+      "path": "core/play-configuration/src/test/scala",
+      "path": "core/play-configuration/src/test/scala/play",
+      "path": "core/play-configuration/src/test/scala/play/api",
+      "path": "core/play-configuration/src/test/scala/play/api/ConfigurationSpec.scala",
+      "path": "core/play-configuration/src/test/scala/play/api/ModeSpec.scala",
+      "path": "core/play-integration-test/src/test/scala/play/it/api/SecretConfigurationParserSpec.scala",
+      "path": "core/play/src/main/java/play/components/ConfigurationComponents.java",
+      "path": "core/play/src/main/java/play/components/HttpConfigurationComponents.java",
+      "path": "core/play/src/main/scala/play/api/http/HttpConfiguration.scala",
+      "path": "core/play/src/test/scala/play/api/http/HttpConfigurationSpec.scala",
+      "path": "core/play/src/test/scala/play/api/http/SecretConfigurationParserSpec.scala",
+      "path": "documentation/manual/working/commonGuide/configuration",
+      "path": "documentation/manual/working/commonGuide/configuration/ApplicationSecret.md",
+      "path": "documentation/manual/working/commonGuide/configuration/ConfigFile.md",
+      "path": "documentation/manual/working/commonGuide/configuration/Configuration.md",
+      "path": "documentation/manual/working/commonGuide/configuration/SettingsAkkaHttp.md",
+      "path": "documentation/manual/working/commonGuide/configuration/SettingsJDBC.md",
+      "path": "documentation/manual/working/commonGuide/configuration/SettingsLogger.md",
+      "path": "documentation/manual/working/commonGuide/configuration/SettingsNetty.md",
+      "path": "documentation/manual/working/commonGuide/configuration/SettingsSession.md",
+      "path": "documentation/manual/working/commonGuide/configuration/ThreadPools.md",
+      "path": "documentation/manual/working/commonGuide/configuration/WsCache.md",
+      "path": "documentation/manual/working/commonGuide/configuration/WsSSL.md",
+      "path": "documentation/manual/working/commonGuide/configuration/code",
+      "path": "documentation/manual/working/commonGuide/configuration/code/Configuration.scala",
+      "path": "documentation/manual/working/commonGuide/configuration/code/CustomAkkaHttpServer.scala",
+      "path": "documentation/manual/working/commonGuide/configuration/code/JavaLog4JLoggerConfigurator.java",
+      "path": "documentation/manual/working/commonGuide/configuration/code/Log4j2LoggerConfigurator.scala",
+      "path": "documentation/manual/working/commonGuide/configuration/code/ThreadPools.scala",
+      "path": "documentation/manual/working/commonGuide/configuration/code/application.conf",
+      "path": "documentation/manual/working/commonGuide/configuration/code/build.sbt",
+      "path": "documentation/manual/working/commonGuide/configuration/code/detailedtopics",
+      "path": "documentation/manual/working/commonGuide/configuration/code/detailedtopics/ThreadPoolsJava.java",
+      "path": "documentation/manual/working/commonGuide/configuration/code/detailedtopics/clec",
+      "path": "documentation/manual/working/commonGuide/configuration/code/detailedtopics/clec/MyController.java",
+      "path": "documentation/manual/working/commonGuide/configuration/code/javaguide",
+      "path": "documentation/manual/working/commonGuide/configuration/code/javaguide/configuration",
+      "path": "documentation/manual/working/commonGuide/configuration/code/javaguide/configuration/MyController.java",
+      "path": "documentation/manual/working/commonGuide/configuration/index.toc",
+      "path": "documentation/manual/working/commonGuide/filters/code/detailedtopics/configuration",
+      "path": "documentation/manual/working/commonGuide/filters/code/detailedtopics/configuration/gzipencoding",
+      "path": "documentation/manual/working/commonGuide/filters/code/detailedtopics/configuration/gzipencoding/CustomFilters.java",
+      "path": "documentation/manual/working/commonGuide/production/ProductionConfiguration.md",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/dev.zio/zio-config_3/index.json 2>/dev/null || true && sed -n '1,80p' metadata/io.github.oshai/kotlin-logging-jvm/index.json 2>/dev/null || true" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/zio/zio-config",
+    "test-code-url" : "https://github.com/zio/zio-config/tree/v$version$/core/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+    "description" : "ZIO Config is a Scala library that extends ZIO's Config model with composable tools for reading, documenting, deriving, and validating application configuration. It supports flat and nested configuration sources, automatic documentation generation, automatic derivation for data types, refined validations, accumulated errors, and integrations with common configuration backends.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "4.0.4"
+    ],
+    "allowed-packages" : [
+      "zio.config"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg '\"language\"' metadata build/discovered-artifact-metadata -n | head -60" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:225:        "language": {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:28:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:46:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+metadata/eu.timepit/refined_3/index.json:10:    "language" : {
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-parallel-collections_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-circe_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:10:    "language" : {
+
+codex
+There’s already repo convention for this exact family, so I’m going to align the new discovered metadata with the existing Play entries while keeping the requested 2.9.10-specific URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/com.typesafe.play/play-configuration_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.7",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+    "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.9.7"
+    ],
+    "allowed-packages" : [
+      "play"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/com.typesafe.play/play-configuration_2.13/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.10",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
+    "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.9.10"
+    ],
+    "allowed-packages" : [
+      "play"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name 'com.typesafe.play*' -print | sort | xargs -r -n1 sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+{
+  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
+}
+
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f ! -name '"'com.typesafe.play-play-configuration_2.13-2.9.10.json' | head -5 | xargs -r -n1 sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'discovered-artifact-metadata|coordinates\"|repository-url' -n tests src buildSrc . | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+rg: src: No such file or directory (os error 2)
+rg: buildSrc: No such file or directory (os error 2)
+tests/tck-build-logic/src/main/resources/contributing/questions.json:3:    "question-key": "coordinates",
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:64:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:75:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:76:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:39:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./build.gradle:278:                    def coords = (parsed["coordinates"] as List) ?: []
+./build.gradle:281:                                .collect { it instanceof Map ? it["coordinates"] : null }
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./forge/forge_metadata.py:2739:            "--coordinates", claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:2766:            "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:2791:            "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:2816:            "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:2838:            "--coordinates", claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:3611:                    "--coordinates", claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:3619:                "--coordinates", claimed_issue.issue_coordinates,
+./forge/forge_metadata.py:3630:                "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:3641:                "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:3652:                "--coordinates", claimed_issue.current_coordinates,
+./forge/forge_metadata.py:3663:                "--coordinates", claimed_issue.issue_coordinates,
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./forge/utility_scripts/native_image_artifact.py:53:    return os.path.join(repo_path, "build", "discovered-artifact-metadata", f"{sanitized}.json")
+./forge/utility_scripts/gradle_test_runner.py:114:    return match.group("coordinates").strip("'\"")
+./metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:349:                null, // repository-url
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:91:    @Option(option = "coordinates", description = "GAV coordinates of the library")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:98:        String coordinates = (String) getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:430:            else if (lines.get(i).startsWith("library.coordinates")) lines.set(i, "library.coordinates = " + group + ":" + artifact + ":" + newVersion);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:37:        Object coordsProp = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:49:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:59:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:66:        String prop = (String) getProject().findProperty("coordinates");
+./docs/FUNCTIONAL_SPEC.md:163:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.0.1` → `v2.0.2` or `v2.0.x` → `v2.1.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`); patch bumps refine validation of those same auxiliary fields. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+./docs/DEVELOPING.md:108:In GitHub Actions, this task also writes a space-separated list to the GITHUB_OUTPUT key "coordinates".
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:29:        @JsonProperty("repository-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:62:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./forge/utility_scripts/local_ci_verification.py:323:        coordinates = str(entry.get("coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:339:        coordinates = str(entry.get("coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:377:        coordinates = str(entry.get("coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:494:            "changed-index-coordinates",
+./forge/utility_scripts/local_ci_verification.py:498:    changed_coordinates = str(output.get("changed-coordinates") or "").strip()
+./forge/utility_scripts/local_ci_verification.py:530:    coordinates = matrix.get("coordinates")
+./forge/utility_scripts/local_ci_verification.py:623:            str(entry.get("coordinates") or ""),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ContributionTask.java:140:        ContributingQuestion question = questions.get("coordinates");
+./forge/utility_scripts/source_context.py:225:        repository_url=normalize_url_value(index_entry.get("repository-url")),
+./forge/git_scripts/make_pr_java_run_fix.py:209:        "--coordinates",
+./forge/tests/test_forge_metadata.py:126:            "--coordinates", "org.example:lib:1.0.0",
+./forge/tests/test_forge_metadata.py:652:        pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
+./forge/tests/test_forge_metadata.py:660:                "--coordinates", claimed_issue.issue_coordinates,
+./forge/tests/test_forge_metadata.py:671:        pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
+./forge/tests/test_forge_metadata.py:679:                "--coordinates", claimed_issue.issue_coordinates,
+./forge/git_scripts/make_pr_not_for_native_image.py:48:    parser.add_argument("--coordinates", required=True, help="Coordinates in group:artifact:version form")
+./forge/tests/test_make_pr_not_for_native_image.py:74:                patch.object(make_pr_not_for_native_image, "find_issue_for_coordinates", return_value=1234), \
+./forge/git_scripts/make_pr_ni_run_fix.py:210:        "--coordinates",
+./forge/git_scripts/make_pr_improve_coverage.py:286:        "--coordinates",
+./forge/git_scripts/make_pr_javac_fix.py:291:        "--coordinates",
+./forge/git_scripts/make_pr_new_library_support.py:293:        "--coordinates",
+./forge/tests/test_local_ci_verification.py:281:                [{"coordinates": "org.example:demo:1.0.0", "versions": ["1.0.0"]}],
+./forge/tests/test_local_ci_verification.py:293:                "coordinates": "org.example:demo:1.0.0",
+./forge/tests/test_local_ci_verification.py:300:                "coordinates": "org.example:other:2.0.0",
+./forge/tests/test_local_ci_verification.py:309:                "coordinates": "org.example:demo:1.0.0",
+./forge/tests/test_local_ci_verification.py:358:                        {"coordinates": "org.example:plain-demo:1.0.0", "versions": ["1.0.0"]},
+./forge/tests/test_local_ci_verification.py:359:                        {"coordinates": "org.example:docker-demo:1.0.0", "versions": ["1.0.0"]},
+./forge/tests/test_local_ci_verification.py:417:                    [{"coordinates": "org.example:demo:2.0.1", "versions": ["2.0.1"]}],
+./forge/tests/test_local_ci_verification.py:563:                [{"coordinates": "org.example:demo:1.0.0", "version": "25", "nativeImageMode": "future-defaults-all"}],
+./forge/tests/test_local_ci_verification.py:607:                    [{"coordinates": "org.example:demo:1.0.0"}],
+./forge/tests/test_local_ci_verification.py:675:                return {"include": [{"coordinates": "org.example:demo:1.0.0"}]}
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-firestore",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:109:                List.of(Map.of("coordinates", "1/2")),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:121:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:127:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:133:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:139:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:150:                List.of(Map.of("coordinates", "1/2")),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:162:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:168:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:174:                        "coordinates", "1/2",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+./tests/tck-build-logic/src/main/resources/contributing/questions.json:3:    "question-key": "coordinates",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:39:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:349:                null, // repository-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:91:    @Option(option = "coordinates", description = "GAV coordinates of the library")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:98:        String coordinates = (String) getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:430:            else if (lines.get(i).startsWith("library.coordinates")) lines.set(i, "library.coordinates = " + group + ":" + artifact + ":" + newVersion);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:37:        Object coordsProp = getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:49:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:59:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:66:        String prop = (String) getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:29:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:62:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/TestInvocationTask.java:51:        String coordinateFilter = Objects.toString(getProject().findProperty("coordinates"), "");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:68:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:82:        Object prop = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AllCoordinatesExecTask.java:74:            String filter = Objects.toString(getProject().findProperty("coordinates"), "");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ContributionTask.java:140:        ContributingQuestion question = questions.get("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java:96:        Object prop = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AbstractLibraryStatsTask.java:49:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AbstractLibraryStatsTask.java:59:        Object property = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AnalyzeExternalLibraryDynamicAccessTask.java:58:    @Option(option = "coordinates", description = "External Maven coordinate in group:artifact:version form")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AnalyzeExternalLibraryDynamicAccessTask.java:160:        Object property = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ComputeAndPullAllowedDockerImagesTask.java:52:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ComputeAndPullAllowedDockerImagesTask.java:66:        Object prop = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:56:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch).")
+
+exec
+/usr/bin/bash -lc "rg 'not-for-native-image|replacement|reason' -n metadata build.gradle* tests | head -100" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:9:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:26:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:41:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-strict-jvm:2.1.0.",
+metadata/co.touchlab/stately-strict/index.json:5:    "replacement": "co.touchlab:stately-strict-jvm:2.1.0"
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:290:            throw new GradleException("Cannot mark a new version latest for not-for-native-image artifact: " + newCoords.group() + ":" + newCoords.artifact());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:358:                null, // not-for-native-image
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:359:                null, // reason
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:360:                null // replacement
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:464:                entry.reason(),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:465:                entry.replacement()
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:92:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:136:            throw new IllegalStateException("Cannot add tested versions to not-for-native-image artifact: " + coordinatesMetadataIndex);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:323:    private GradleException staleUrlException(String fieldName, String promotedUrl, String oldVersion, String newVersion, String reason) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:326:                        "Candidate URL failed verification: " + promotedUrl + ". Reason: " + reason
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:75:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:233:        properties.putObject("reason").put("$ref", "#/$defs/reason");
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/SkippedVersionEntry.java:11: * along with the reason why this version is skipped.
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/SkippedVersionEntry.java:15:        String reason
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:49:        @JsonProperty("reason")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:50:        String reason,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:51:        @JsonProperty("replacement")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:52:        String replacement
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("not-for-native-image")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:30:        @JsonProperty("reason")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:31:        String reason,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:32:        @JsonProperty("replacement")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:33:        String replacement
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:100:            throw new IllegalStateException("Artifact '%s:%s' is marked not-for-native-image. Remove the marker before scaffolding Native Image metadata.".formatted(coordinates.group(), coordinates.artifact()));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:347:                null, // not-for-native-image
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:348:                null, // reason
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:349:                null // replacement
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:161:                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:162:                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:163:                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:177:                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:119:                    "not-for-native-image": true,
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:120:                    "reason": "Scala.js artifact; not a JVM library consumed by native-image."
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:130:                .hasMessageContaining("not-for-native-image");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:88:                    "not-for-native-image": true,
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:89:                    "reason": "Scala.js artifact; not a JVM library consumed by native-image."
+tests/src/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/src/test/java/org_eclipse_jetty_websocket/websocket_api/Websocket_apiTest.java:606:        public void close(int statusCode, String reason) {
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:442:        LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:454:                List.of(replacement),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:458:        assertThat(merged.versions()).containsExactly(replacement);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:481:        LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:493:                List.of(replacement),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:497:        assertThat(merged.versions()).containsExactly(replacement, untouchedVersion);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:498:        assertThat(LibraryStatsSupport.requireVersionStats(merged, "com.example:demo:1.0.0")).isEqualTo(replacement);
+tests/src/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/src/test/java/org_eclipse_jetty_websocket/websocket_common/AbstractMethodAnnotationScannerTest.java:41:        public void onClose(int statusCode, String reason) {
+tests/src/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/src/test/java/org_eclipse_jetty_websocket/websocket_common/AbstractMethodAnnotationScannerTest.java:42:            events.add("close:" + statusCode + ":" + reason);
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.compose.ui:ui-desktop:1.8.2.",
+metadata/org.jetbrains.compose.ui/ui/index.json:5:    "replacement": "org.jetbrains.compose.ui:ui-desktop:1.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the Gradle module metadata redirects JVM variants to kotlinx-io-bytestring-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0.",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0"
+metadata/org.slf4j/log4j-over-slf4j/index.json:9:    "description" : "log4j-over-slf4j provides replacement classes for the Log4j version 1 API that route logging calls to SLF4J. It lets applications and dependencies written against Log4j use the SLF4J binding selected by the application without keeping a Log4j version 1 runtime implementation on the classpath.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the JVM artifact is published separately as kotlinx-io-core-jvm.",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+tests/src/io.suzaku/boopickle_3/1.4.0/src/test/scala/io_suzaku/boopickle_3/Boopickle_3Test.scala:32:final case class StockRemoved(sku: String, count: Int, reason: String) extends InventoryEvent
+metadata/net.jcip/jcip-annotations/index.json:9:    "description" : "JCIP Annotations provides marker annotations from Java Concurrency in Practice to document thread-safety contracts such as @ThreadSafe, @NotThreadSafe, @Immutable, and @GuardedBy. The library contains only annotation types and adds no runtime behavior, helping tools and developers reason about concurrent code.",
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:33:          "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:34:            "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:131:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:132:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:156:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:157:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:186:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:187:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:243:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:244:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:282:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:283:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:344:    "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:103:          "description": "Versions explicitly excluded from support, each with a reason.",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:108:            "required": [ "version", "reason" ],
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:114:              "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:137:        "reason"
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:145:        "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:150:        "replacement": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:153:          "description": "Optional replacement artifact or guidance for users."
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:243:          { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:250:        "reason": "Scala.js artifact; not a JVM library consumed by native-image.",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:251:        "replacement": "Use the JVM artifact if one exists."
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:4:    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+metadata/com.squareup/kotlinpoet/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup/kotlinpoet/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to com.squareup:kotlinpoet-jvm:2.3.0.",
+metadata/com.squareup/kotlinpoet/index.json:5:    "replacement": "com.squareup:kotlinpoet-jvm:2.3.0"
+metadata/app.cash.sqldelight/runtime/index.json:3:    "not-for-native-image": true,
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+exec
+/usr/bin/bash -lc "sed -n '130,190p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+                throw new GradleException("Discovered metadata file " + discoveryFile + " has unexpected coordinates: " + metadata.coordinates());
+            }
+            success = true;
+        } finally {
+            if (!success) {
+                Files.deleteIfExists(discoveryFile);
+            }
+        }
+    }
+
+    private String effectiveAgentCommand() {
+        if (hasText(agentCommand)) {
+            return agentCommand.trim();
+        }
+        Object prop = getProject().findProperty("codingAgentCommand");
+        if (prop == null) {
+            prop = getProject().findProperty("agentCommand");
+        }
+        return prop == null ? null : prop.toString().trim();
+    }
+
+    private String buildPrompt(Coordinates parsedCoordinates, Path discoveryFile) {
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+                The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "%s" when "$version$" is replaced with "%s".
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+
+                Update this file directly:
+                - File: %s
+                - Set "coordinates" to "%s".
+                - Set "repository-url" to the discovered repository root URL.
+                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+                - Set "description" to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+                - Keep the JSON valid and consistently formatted.
+                """.formatted(
+                parsedCoordinates.toString(),
+                parsedCoordinates.version(),
+                parsedCoordinates.version(),
+                discoveryFile.toString().replace('\\', '/'),
+                parsedCoordinates.toString(),
+                parsedCoordinates.version()
+        ).strip();
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {}
+
+codex
+I’m patching the discovered metadata object now. Since the artifact is a normal JVM JAR with class files and not a JS/Native/Wasm variant, I’m leaving the Native Image exclusion fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..560db5d80fb691a195040e8b5e398e68f3357137
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..560db5d80fb691a195040e8b5e398e68f3357137
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/
+web search: 
+web search: https://mvnrepository.com/artifact/com.typesafe.play/play-configuration_2.13/2.9.10
+web search: 
+web search: https://github.com/playframework/playframework/tree/2.9.10/core/play-configuration/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/typesafe/play/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+{
+  "coordinates": "com.typesafe.play:play-configuration_2.13:2.9.10",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
+  "repository-url": "https://github.com/playframework/playframework",
+  "test-code-url": "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
+  "description": "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10-sources.jar' \\
+  'https://github.com/playframework/playframework/tree/2.9.10/core/play-configuration/src/test' \\
+  'https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10-javadoc.jar'; do curl -fsSI -L \""'$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10.jar -o /tmp/play-configuration_2.13-2.9.10.jar && jar tf /tmp/play-configuration_2.13-2.9.10.jar | rg '\\.class"'$'"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 633ms:
+play/Environment.class
+play/Mode.class
+play/api/ConfigLoader$$anonfun$apply$2.class
+play/api/ConfigLoader$$anonfun$map$2.class
+play/api/ConfigLoader$$anonfun$mapLoader$3.class
+play/api/ConfigLoader$$anonfun$optionLoader$2.class
+play/api/ConfigLoader$.class
+play/api/ConfigLoader.class
+play/api/Configuration$$anon$1.class
+play/api/Configuration$$anonfun$getDeprecated$1.class
+play/api/Configuration$.class
+play/api/Configuration.class
+play/api/Environment$.class
+play/api/Environment.class
+play/api/Mode$.class
+play/api/Mode$Dev$.class
+play/api/Mode$Prod$.class
+play/api/Mode$Test$.class
+play/api/Mode.class
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..560db5d80fb691a195040e8b5e398e68f3357137
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 1049ms:
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+
+web search: 
+web search: Maven Central com.typesafe.play play-configuration_2.13 2.9.10 sources javadoc
+web search: 
+web search: https://mvnrepository.com/artifact/com.typesafe.play/play-configuration_2.13/2.9.10
+web search: 
+web search: 
+web search: 
+web search: "play-configuration_2.13-2.9.10-sources.jar"
+web search: 
+web search: central.sonatype.com artifact com.typesafe.play play-configuration_2.13 2.9.10
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..560db5d80fb691a195040e8b5e398e68f3357137
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 390ms:
+web search: 
+web search: com.typesafe.play play-configuration_2.13 2.9.10 MvnRepository
+web search: 
+web search: github playframework playframework 2.9.10 core/play-configuration/src/test
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
+     3	  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
+     4	  "repository-url" : "https://github.com/playframework/playframework",
+     5	  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
+     7	  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
+     8	  "language" : {
+     9	    "name" : "scala",
+    10	    "version" : "2"
+    11	  }
+    12	}
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..560db5d80fb691a195040e8b5e398e68f3357137
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+codex
+Updated [com.typesafe.play-play-configuration_2.13-2.9.10.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json:1) with the repository, Maven source/Javadoc URLs, GitHub test URL, two-sentence description, and Scala 2 language metadata.
+
+Verification: JSON parses with `jq`; the source, test, and documentation URLs all return HTTP 200 after substituting `2.9.10`; the published artifact contains JVM `.class` files, so I left `not-for-native-image` absent.
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..560db5d80fb691a195040e8b5e398e68f3357137
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+167,306
+Updated [com.typesafe.play-play-configuration_2.13-2.9.10.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json:1) with the repository, Maven source/Javadoc URLs, GitHub test URL, two-sentence description, and Scala 2 language metadata.
+
+Verification: JSON parses with `jq`; the source, test, and documentation URLs all return HTTP 200 after substituting `2.9.10`; the published artifact contains JVM `.class` files, so I left `not-for-native-image` absent.
+Ran agent for com.typesafe.play:play-configuration_2.13:2.9.10 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339/build/agent-artifact-discovery-logs/com.typesafe.play-play-configuration_2.13-2.9.10.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-a098b339/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 14s
+9 actionable tasks: 4 executed, 5 from cache
