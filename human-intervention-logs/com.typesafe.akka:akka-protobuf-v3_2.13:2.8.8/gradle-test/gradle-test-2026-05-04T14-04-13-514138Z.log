@@ -1,0 +1,131 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.typesafe.akka:akka-protobuf-v3_2.13:2.8.8
+Command: `/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5782-be445050/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 11 busy and 7 incompatible and 151 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :compileScala NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :tck-test-support:compileJava
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes
+> Task :tck-test-support:jar
+Note: Some input files use or override a deprecated API.
+> Task :compileTestJava
+
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :compileTestScala
+[Warn] /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5782-be445050/tests/src/com.typesafe.akka/akka-protobuf-v3_2.13/2.8.8/src/test/scala/com_typesafe_akka/akka_protobuf_v3_2_13/DescriptorMessageInfoFactoryTest.scala:61:5: method mergeFromAndMakeImmutableInternal in class GeneratedMessageV3 is deprecated
+[Warn] /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5782-be445050/tests/src/com.typesafe.akka/akka-protobuf-v3_2.13/2.8.8/src/test/scala/com_typesafe_akka/akka_protobuf_v3_2_13/DescriptorMessageInfoFactoryTest.scala:112:5: method mergeFromAndMakeImmutableInternal in class GeneratedMessageV3 is deprecated
+two warnings found
+
+> Task :testClasses
+
+> Task :test
+
+MessageSchemaTest > rawMessageInfoSchemaCreationReportsMissingReflectedField() FAILED
+    org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <java.lang.RuntimeException> but was: <java.lang.ExceptionInInitializerError>
+        at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+        at app//org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+        at app//org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+        at app//org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3083)
+        at app//com_typesafe_akka.akka_protobuf_v3_2_13.MessageSchemaTest.rawMessageInfoSchemaCreationReportsMissingReflectedField(MessageSchemaTest.scala:26)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError
+            at com_typesafe_akka.akka_protobuf_v3_2_13.MessageSchemaTest.$anonfun$rawMessageInfoSchemaCreationReportsMissingReflectedField$1(MessageSchemaTest.scala:26)
+            at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+            ... 3 more
+
+            Caused by:
+            java.lang.RuntimeException: Field missing_ for com_typesafe_akka.akka_protobuf_v3_2_13.BrokenRawInfoLiteMessage not found. Known fields are [private static final java.lang.String com_typesafe_akka.akka_protobuf_v3_2_13.BrokenRawInfoLiteMessage.MALFORMED_FIELD_INFO, private static final com_typesafe_akka.akka_protobuf_v3_2_13.BrokenRawInfoLiteMessage com_typesafe_akka.akka_protobuf_v3_2_13.BrokenRawInfoLiteMessage.DEFAULT_INSTANCE, private int com_typesafe_akka.akka_protobuf_v3_2_13.BrokenRawInfoLiteMessage.value_]
+                at akka.protobufv3.internal.MessageSchema.reflectField(MessageSchema.java:615)
+                at akka.protobufv3.internal.MessageSchema.newSchemaForRawMessageInfo(MessageSchema.java:508)
+                at akka.protobufv3.internal.MessageSchema.newSchema(MessageSchema.java:228)
+                at akka.protobufv3.internal.ManifestSchemaFactory.newSchema(ManifestSchemaFactory.java:85)
+                at akka.protobufv3.internal.ManifestSchemaFactory.createSchema(ManifestSchemaFactory.java:71)
+                at akka.protobufv3.internal.Protobuf.schemaFor(Protobuf.java:90)
+                at akka.protobufv3.internal.Protobuf.schemaFor(Protobuf.java:104)
+                at akka.protobufv3.internal.GeneratedMessageLite.makeImmutable(GeneratedMessageLite.java:226)
+                at akka.protobufv3.internal.GeneratedMessageLite.registerDefaultInstance(GeneratedMessageLite.java:410)
+                at com_typesafe_akka.akka_protobuf_v3_2_13.BrokenRawInfoLiteMessage.<clinit>(BrokenRawInfoLiteMessage.java:22)
+                ... 5 more
+
+20 tests completed, 1 failed
+
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5782-be445050/tests/src/com.typesafe.akka/akka-protobuf-v3_2.13/2.8.8/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5782-be445050/tests/src/com.typesafe.akka/akka-protobuf-v3_2.13/2.8.8/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 1m 30s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+16 actionable tasks: 8 executed, 8 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5782-be445050/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.typesafe.akka:akka-protobuf-v3_2.13:2.8.8 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 34s
+9 actionable tasks: 1 executed, 8 up-to-date
