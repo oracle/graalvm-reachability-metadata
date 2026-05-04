@@ -18,6 +18,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
+import java.sql.SQLException
 import java.util.Properties
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
@@ -184,6 +185,56 @@ public class Sqlite_driverTest {
         }
 
         assertThat(events).containsExactly("migrate-0-to-2")
+    }
+
+    @Test
+    fun constructorAppliesSQLiteConnectionProperties(): Unit {
+        val properties: Properties = Properties().apply {
+            setProperty("foreign_keys", "true")
+        }
+
+        JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY, properties).use { driver: JdbcSqliteDriver ->
+            val foreignKeysEnabled: Boolean = driver.executeQuery(
+                identifier = null,
+                sql = "PRAGMA foreign_keys",
+                mapper = { cursor ->
+                    assertThat(cursor.next().value).isTrue()
+                    QueryResult.Value(cursor.getLong(0) == 1L)
+                },
+                parameters = 0,
+                binders = null,
+            ).value
+
+            driver.execute(
+                identifier = null,
+                sql = "CREATE TABLE owners (id INTEGER PRIMARY KEY)",
+                parameters = 0,
+                binders = null,
+            )
+            driver.execute(
+                identifier = null,
+                sql = """
+                    CREATE TABLE pets (
+                      id INTEGER PRIMARY KEY,
+                      owner_id INTEGER NOT NULL REFERENCES owners(id)
+                    )
+                """.trimIndent(),
+                parameters = 0,
+                binders = null,
+            )
+
+            assertThat(foreignKeysEnabled).isTrue()
+            assertThatThrownBy {
+                driver.execute(
+                    identifier = 50,
+                    sql = "INSERT INTO pets (id, owner_id) VALUES (?, ?)",
+                    parameters = 2,
+                ) {
+                    bindLong(0, 1L)
+                    bindLong(1, 100L)
+                }
+            }.isInstanceOf(SQLException::class.java)
+        }
     }
 
     @Test
