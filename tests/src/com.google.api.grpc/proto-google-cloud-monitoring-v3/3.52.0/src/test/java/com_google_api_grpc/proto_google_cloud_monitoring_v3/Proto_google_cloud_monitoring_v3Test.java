@@ -16,12 +16,19 @@ import com.google.monitoring.v3.AlertPolicy;
 import com.google.monitoring.v3.AlertPolicyName;
 import com.google.monitoring.v3.BasicSli;
 import com.google.monitoring.v3.ComparisonType;
+import com.google.monitoring.v3.CreateGroupRequest;
 import com.google.monitoring.v3.CreateServiceLevelObjectiveRequest;
 import com.google.monitoring.v3.CreateServiceRequest;
 import com.google.monitoring.v3.CreateTimeSeriesRequest;
 import com.google.monitoring.v3.CreateUptimeCheckConfigRequest;
 import com.google.monitoring.v3.DistributionCut;
+import com.google.monitoring.v3.Group;
+import com.google.monitoring.v3.GroupName;
 import com.google.monitoring.v3.InternalChecker;
+import com.google.monitoring.v3.ListGroupMembersRequest;
+import com.google.monitoring.v3.ListGroupMembersResponse;
+import com.google.monitoring.v3.ListGroupsRequest;
+import com.google.monitoring.v3.ListGroupsResponse;
 import com.google.monitoring.v3.ListServiceLevelObjectivesResponse;
 import com.google.monitoring.v3.ListTimeSeriesRequest;
 import com.google.monitoring.v3.ListTimeSeriesResponse;
@@ -43,6 +50,7 @@ import com.google.monitoring.v3.TimeInterval;
 import com.google.monitoring.v3.TimeSeries;
 import com.google.monitoring.v3.TimeSeriesRatio;
 import com.google.monitoring.v3.TypedValue;
+import com.google.monitoring.v3.UpdateGroupRequest;
 import com.google.monitoring.v3.UpdateUptimeCheckConfigRequest;
 import com.google.monitoring.v3.UptimeCheckConfig;
 import com.google.monitoring.v3.UptimeCheckConfigName;
@@ -361,6 +369,73 @@ public class Proto_google_cloud_monitoring_v3Test {
         assertThat(response.getServiceLevelObjectives(1).getServiceLevelIndicator().getBasicSli().getMethodList())
                 .containsExactly("GET");
         assertThat(distributionCut.getRange().getMax()).isEqualTo(500.0);
+    }
+
+    @Test
+    void groupsRequestsAndMembershipResponsesModelHierarchies() {
+        String parentGroupName = GroupName.ofProjectGroupName(PROJECT_ID, "checkout-parent").toString();
+        String childGroupName = GroupName.ofProjectGroupName(PROJECT_ID, "checkout-workers").toString();
+        Group parentGroup = Group.newBuilder()
+                .setName(parentGroupName)
+                .setDisplayName("Checkout production")
+                .setFilter("resource.type = starts_with(\"gce_\") AND metadata.user_labels.service = \"checkout\"")
+                .setIsCluster(true)
+                .build();
+        Group childGroup = Group.newBuilder()
+                .setName(childGroupName)
+                .setDisplayName("Checkout workers")
+                .setParentName(parentGroupName)
+                .setFilter("resource.labels.zone = \"us-central1-a\"")
+                .build();
+        CreateGroupRequest createRequest = CreateGroupRequest.newBuilder()
+                .setName(PROJECT_NAME)
+                .setGroup(childGroup)
+                .setValidateOnly(true)
+                .build();
+        UpdateGroupRequest updateRequest = UpdateGroupRequest.newBuilder()
+                .setGroup(childGroup.toBuilder().setDisplayName("Checkout workers in us-central1-a"))
+                .build();
+        ListGroupsRequest childrenRequest = ListGroupsRequest.newBuilder()
+                .setName(PROJECT_NAME)
+                .setChildrenOfGroup(parentGroupName)
+                .setPageSize(10)
+                .setPageToken("groups-page")
+                .build();
+        ListGroupsResponse groupsResponse = ListGroupsResponse.newBuilder()
+                .addGroup(parentGroup)
+                .addGroup(childGroup)
+                .setNextPageToken("groups-next")
+                .build();
+        MonitoredResource member = MonitoredResource.newBuilder()
+                .setType("gce_instance")
+                .putLabels("project_id", PROJECT_ID)
+                .putLabels("instance_id", "1234567890")
+                .putLabels("zone", "us-central1-a")
+                .build();
+        ListGroupMembersRequest membersRequest = ListGroupMembersRequest.newBuilder()
+                .setName(childGroupName)
+                .setFilter("resource.type = \"gce_instance\"")
+                .setInterval(interval(1_700_002_000L, 1_700_002_300L))
+                .setPageSize(5)
+                .setPageToken("members-page")
+                .build();
+        ListGroupMembersResponse membersResponse = ListGroupMembersResponse.newBuilder()
+                .addMembers(member)
+                .setNextPageToken("members-next")
+                .setTotalSize(1)
+                .build();
+
+        assertThat(parentGroup.getIsCluster()).isTrue();
+        assertThat(createRequest.getValidateOnly()).isTrue();
+        assertThat(createRequest.getGroup().getParentName()).isEqualTo(parentGroupName);
+        assertThat(updateRequest.getGroup().getDisplayName()).isEqualTo("Checkout workers in us-central1-a");
+        assertThat(childrenRequest.getFilterCase()).isEqualTo(ListGroupsRequest.FilterCase.CHILDREN_OF_GROUP);
+        assertThat(childrenRequest.getChildrenOfGroup()).isEqualTo(parentGroupName);
+        assertThat(groupsResponse.getGroupList()).containsExactly(parentGroup, childGroup);
+        assertThat(membersRequest.hasInterval()).isTrue();
+        assertThat(membersRequest.getInterval().getEndTime().getSeconds()).isEqualTo(1_700_002_300L);
+        assertThat(membersResponse.getMembers(0).getLabelsOrThrow("zone")).isEqualTo("us-central1-a");
+        assertThat(membersResponse.getTotalSize()).isEqualTo(1);
     }
 
     private static Duration duration(int seconds) {
