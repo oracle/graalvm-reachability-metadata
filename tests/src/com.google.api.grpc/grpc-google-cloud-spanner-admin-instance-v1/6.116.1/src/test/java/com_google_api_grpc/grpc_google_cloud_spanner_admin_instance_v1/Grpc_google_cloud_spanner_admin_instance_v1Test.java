@@ -56,6 +56,7 @@ import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.ServiceDescriptor;
 import io.grpc.Status;
+import io.grpc.StatusException;
 import io.grpc.protobuf.ProtoMethodDescriptorSupplier;
 import io.grpc.protobuf.ProtoServiceDescriptorSupplier;
 import io.grpc.stub.StreamObserver;
@@ -273,6 +274,29 @@ public class Grpc_google_cloud_spanner_admin_instance_v1Test {
         assertThat(channel.calls.get(0).callOptions.isWaitForReady()).isTrue();
         assertThat(channel.calls.get(1).callOptions.getDeadline()).isNotNull();
         assertThat(channel.calls.get(2).callOptions.getCompressor()).isEqualTo("identity");
+    }
+
+    @Test
+    void blockingV2StubPropagatesGrpcStatusAsCheckedException() {
+        FailingChannel channel = new FailingChannel(Status.UNAVAILABLE.withDescription("backend unavailable"));
+        StatusException exception = null;
+
+        try {
+            InstanceAdminGrpc.newBlockingV2Stub(channel)
+                    .withWaitForReady()
+                    .getInstance(getInstanceRequest());
+        } catch (StatusException caught) {
+            exception = caught;
+        }
+
+        assertThat(exception).isNotNull();
+        assertThat(exception.getStatus().getCode()).isEqualTo(Status.Code.UNAVAILABLE);
+        assertThat(exception.getStatus().getDescription()).isEqualTo("backend unavailable");
+        assertThat(channel.calls).hasSize(1);
+        assertThat(channel.calls.get(0).method.getFullMethodName())
+                .isEqualTo(InstanceAdminGrpc.getGetInstanceMethod().getFullMethodName());
+        assertThat(channel.calls.get(0).request).isEqualTo(getInstanceRequest());
+        assertThat(channel.calls.get(0).callOptions.isWaitForReady()).isTrue();
     }
 
     private static List<UnaryMethodCase<?, ?>> methodCases() {
@@ -642,6 +666,69 @@ public class Grpc_google_cloud_spanner_admin_instance_v1Test {
         public void halfClose() {
             listener.onMessage(response);
             listener.onClose(Status.OK, new Metadata());
+        }
+
+        @Override
+        public void sendMessage(RequestT message) {
+            recordedCall.request = message;
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+    }
+
+    private static final class FailingChannel extends Channel {
+        private final Status status;
+        private final List<RecordedCall> calls = new ArrayList<>();
+
+        private FailingChannel(Status status) {
+            this.status = status;
+        }
+
+        @Override
+        public <RequestT, ResponseT> ClientCall<RequestT, ResponseT> newCall(
+                MethodDescriptor<RequestT, ResponseT> methodDescriptor, CallOptions callOptions) {
+            RecordedCall call = new RecordedCall(methodDescriptor, callOptions);
+            calls.add(call);
+            return new FailingClientCall<>(call, status);
+        }
+
+        @Override
+        public String authority() {
+            return "failing-spanner-admin.test";
+        }
+    }
+
+    private static final class FailingClientCall<RequestT, ResponseT> extends ClientCall<RequestT, ResponseT> {
+        private final RecordedCall recordedCall;
+        private final Status status;
+        private Listener<ResponseT> listener;
+
+        private FailingClientCall(RecordedCall recordedCall, Status status) {
+            this.recordedCall = recordedCall;
+            this.status = status;
+        }
+
+        @Override
+        public void start(Listener<ResponseT> responseListener, Metadata headers) {
+            listener = responseListener;
+            listener.onHeaders(new Metadata());
+        }
+
+        @Override
+        public void request(int numMessages) {
+        }
+
+        @Override
+        public void cancel(String message, Throwable cause) {
+            listener.onClose(Status.CANCELLED.withDescription(message).withCause(cause), new Metadata());
+        }
+
+        @Override
+        public void halfClose() {
+            listener.onClose(status, new Metadata());
         }
 
         @Override
