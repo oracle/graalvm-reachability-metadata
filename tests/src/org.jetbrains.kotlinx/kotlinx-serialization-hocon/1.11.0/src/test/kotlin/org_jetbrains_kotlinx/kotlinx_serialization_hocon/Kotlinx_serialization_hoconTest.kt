@@ -19,6 +19,7 @@ import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -235,6 +236,29 @@ public class Kotlinx_serialization_hoconTest {
         assertThat(payload.getBoolean("urgent")).isFalse()
         assertThat(hocon.decodeFromConfig(NotificationEnvelopeSerializer, encoded)).isEqualTo(expected)
     }
+
+    @Test
+    fun preservesExplicitNullConfigValues(): Unit {
+        val hocon: Hocon = Hocon {
+            encodeDefaults = true
+            useConfigNamingConvention = true
+        }
+        val config: Config = ConfigFactory.parseString(
+            """
+            primary-owner = null
+            fallback-owner = release-team
+            """.trimIndent()
+        )
+
+        val decoded: Ownership = hocon.decodeFromConfig(OwnershipSerializer, config)
+        val encoded: Config = hocon.encodeToConfig(OwnershipSerializer, decoded)
+
+        assertThat(decoded).isEqualTo(Ownership(primaryOwner = null, fallbackOwner = "release-team"))
+        assertThat(encoded.hasPathOrNull("primary-owner")).isTrue()
+        assertThat(encoded.getIsNull("primary-owner")).isTrue()
+        assertThat(encoded.getString("fallback-owner")).isEqualTo("release-team")
+        assertThat(hocon.decodeFromConfig(OwnershipSerializer, encoded)).isEqualTo(decoded)
+    }
 }
 
 private data class DatabaseConfig(
@@ -275,6 +299,11 @@ private data class SmsNotification(
 private data class NotificationEnvelope(
     val id: String,
     val notification: Notification
+)
+
+private data class Ownership(
+    val primaryOwner: String?,
+    val fallbackOwner: String
 )
 
 private object DatabaseConfigSerializer : KSerializer<DatabaseConfig> {
@@ -471,6 +500,39 @@ private object NotificationEnvelopeSerializer : KSerializer<NotificationEnvelope
         NotificationEnvelope(
             id = id ?: missingField("id"),
             notification = notification ?: missingField("notification")
+        )
+    }
+}
+
+private object OwnershipSerializer : KSerializer<Ownership> {
+    private val nullableStringSerializer: KSerializer<String?> = String.serializer().nullable
+
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor(
+        "org_jetbrains_kotlinx.kotlinx_serialization_hocon.Ownership"
+    ) {
+        element("primaryOwner", nullableStringSerializer.descriptor)
+        element<String>("fallbackOwner")
+    }
+
+    override fun serialize(encoder: Encoder, value: Ownership): Unit = encoder.encodeStructure(descriptor) {
+        encodeNullableSerializableElement(descriptor, 0, nullableStringSerializer, value.primaryOwner)
+        encodeStringElement(descriptor, 1, value.fallbackOwner)
+    }
+
+    override fun deserialize(decoder: Decoder): Ownership = decoder.decodeStructure(descriptor) {
+        var primaryOwner: String? = null
+        var fallbackOwner: String? = null
+        while (true) {
+            when (val index: Int = decodeElementIndex(descriptor)) {
+                0 -> primaryOwner = decodeNullableSerializableElement(descriptor, index, nullableStringSerializer)
+                1 -> fallbackOwner = decodeStringElement(descriptor, index)
+                CompositeDecoder.DECODE_DONE -> break
+                else -> throw SerializationException("Unexpected ownership element index: $index")
+            }
+        }
+        Ownership(
+            primaryOwner = primaryOwner,
+            fallbackOwner = fallbackOwner ?: missingField("fallbackOwner")
         )
     }
 }
