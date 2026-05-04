@@ -1,0 +1,131 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: io.netty:netty-transport-classes-kqueue:4.2.2.Final
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5596-c0fdade0/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :tck-test-support:compileJava
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes
+> Task :tck-test-support:jar
+
+> Task :compileTestJava
+
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5596-c0fdade0/tests/src/io.netty/netty-transport-classes-kqueue/4.2.2.Final/src/test/java/io_netty/netty_transport_classes_kqueue/Netty_transport_classes_kqueueTest.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+> Task :testClasses
+
+> Task :test FAILED
+
+Netty_transport_classes_kqueueTest > domainSocketChannelConfigControlsReadModeAndHalfClosure() FAILED
+    java.lang.AssertionError: 
+    Expecting actual throwable to be an instance of:
+      java.lang.UnsatisfiedLinkError
+    but was:
+      java.lang.NoClassDefFoundError: Could not initialize class io.netty.channel.kqueue.Native
+    	at io.netty.channel.kqueue.AbstractKQueueChannel.<clinit>(AbstractKQueueChannel.java:76)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	...(13 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+        at io_netty.netty_transport_classes_kqueue.Netty_transport_classes_kqueueTest.domainSocketChannelConfigControlsReadModeAndHalfClosure(Netty_transport_classes_kqueueTest.java:169)
+
+Netty_transport_classes_kqueueTest > socketChannelConfigControlsTcpNoPushOption() FAILED
+    java.lang.AssertionError: 
+    Expecting actual throwable to be an instance of:
+      java.lang.UnsatisfiedLinkError
+    but was:
+      java.lang.NoClassDefFoundError: Could not initialize class io.netty.channel.kqueue.AbstractKQueueStreamChannel
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1337)
+    	...(12 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+        at io_netty.netty_transport_classes_kqueue.Netty_transport_classes_kqueueTest.socketChannelConfigControlsTcpNoPushOption(Netty_transport_classes_kqueueTest.java:142)
+
+Netty_transport_classes_kqueueTest > publicChannelConstructorsRespectTransportAvailability() FAILED
+    java.lang.AssertionError: 
+    Expecting actual throwable to be an instance of:
+      java.lang.UnsatisfiedLinkError
+    but was:
+      java.lang.NoClassDefFoundError: Could not initialize class io.netty.channel.kqueue.KQueueSocketChannel
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1337)
+    	...(13 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+        at io_netty.netty_transport_classes_kqueue.Netty_transport_classes_kqueueTest.assertChannelConstructorMatchesAvailability(Netty_transport_classes_kqueueTest.java:185)
+
+8 tests completed, 3 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5596-c0fdade0/tests/src/io.netty/netty-transport-classes-kqueue/4.2.2.Final/build/reports/tests/test/index.html
+        at io_netty.netty_transport_classes_kqueue.Netty_transport_classes_kqueueTest.publicChannelConstructorsRespectTransportAvailability(Netty_transport_classes_kqueueTest.java:107)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5596-c0fdade0/tests/src/io.netty/netty-transport-classes-kqueue/4.2.2.Final/build/reports/problems/problems-report.html
+
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+14 actionable tasks: 6 executed, 8 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5596-c0fdade0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.netty:netty-transport-classes-kqueue:4.2.2.Final failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 7s
+9 actionable tasks: 1 executed, 8 up-to-date
