@@ -6,59 +6,60 @@
  */
 package org_aesh.readline;
 
-import org.aesh.terminal.tty.utils.Signals;
+import org.jline.utils.Signals;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SignalsTest {
-    private static final String[] TEST_SIGNALS = {"WINCH", "USR2", "USR1", "CONT"};
+public class JlineSignalsTest {
+    private static final String[] TEST_SIGNALS = {"WINCH", "CONT", "USR2", "USR1"};
 
     @Test
-    void signalRegistrationUtilitiesReachNativeSignalApi() throws Exception {
-        TestSignal testSignal = installTemporaryIgnoredSignal();
+    @Timeout(10)
+    void registersDefaultAndRunnableHandlersThroughJlineSignals() throws Exception {
+        Logger logger = Logger.getLogger("org.jline");
+        Level previousLevel = logger.getLevel();
+        TestSignal testSignal = findSupportedSignal();
 
         try {
-            AtomicInteger registeredHandlerInvocations = new AtomicInteger();
-            Signals.register(
+            logger.setLevel(Level.FINEST);
+
+            Object previousDefaultHandler = Signals.registerDefault(testSignal.name);
+            assertThat(previousDefaultHandler).isNotNull();
+
+            AtomicInteger invocations = new AtomicInteger();
+            Object previousRunnableHandler = Signals.register(
                     testSignal.name,
-                    registeredHandlerInvocations::incrementAndGet,
-                    getClass().getClassLoader());
+                    invocations::incrementAndGet,
+                    JlineSignalsTest.class.getClassLoader());
+            assertThat(previousRunnableHandler).isNotNull();
 
             Signal.raise(testSignal.signal);
-            awaitInvocation(registeredHandlerInvocations);
+            awaitInvocation(invocations);
 
-            Signals.registerIgnore(testSignal.name);
-            Signals.registerDefault(testSignal.name);
-
-            AtomicInteger invokedHandlerInvocations = new AtomicInteger();
-            AtomicReference<String> invokedSignalName = new AtomicReference<>();
-            SignalHandler handler = handledSignal -> {
-                invokedSignalName.set(handledSignal.getName());
-                invokedHandlerInvocations.incrementAndGet();
-            };
-
-            Signals.invokeHandler(testSignal.name, handler);
-
-            assertThat(invokedHandlerInvocations.get()).isEqualTo(1);
-            assertThat(invokedSignalName.get()).isEqualTo(testSignal.name);
+            Signals.unregister(testSignal.name, previousRunnableHandler);
+            Signals.unregister(testSignal.name, previousDefaultHandler);
         } finally {
             Signal.handle(testSignal.signal, testSignal.previousHandler);
+            logger.setLevel(previousLevel);
         }
     }
 
-    private static TestSignal installTemporaryIgnoredSignal() {
+    private static TestSignal findSupportedSignal() {
         IllegalArgumentException lastFailure = null;
         for (String signalName : TEST_SIGNALS) {
             try {
                 Signal signal = new Signal(signalName);
                 SignalHandler previousHandler = Signal.handle(signal, SignalHandler.SIG_IGN);
+                Signal.handle(signal, previousHandler);
                 return new TestSignal(signalName, signal, previousHandler);
             } catch (IllegalArgumentException e) {
                 lastFailure = e;
@@ -68,11 +69,11 @@ public class SignalsTest {
     }
 
     private static void awaitInvocation(AtomicInteger invocations) throws InterruptedException {
-        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2L);
         while (invocations.get() == 0 && System.nanoTime() < deadline) {
-            Thread.sleep(10);
+            TimeUnit.MILLISECONDS.sleep(10L);
         }
-        assertThat(invocations.get()).isGreaterThanOrEqualTo(1);
+        assertThat(invocations).hasValue(1);
     }
 
     private static final class TestSignal {
