@@ -267,8 +267,8 @@ public class Camel_management_apiTest {
                 utilizationCompositeType,
                 Map.of("url", "direct:start", "hits", 42L)));
 
-        assertThat(utilizationTable.containsKey(new Object[] { "direct:start" })).isTrue();
-        assertThat(utilizationTable.get(new Object[] { "direct:start" }).get("hits")).isEqualTo(42L);
+        assertThat(utilizationTable.containsKey(new Object[] {"direct:start" })).isTrue();
+        assertThat(utilizationTable.get(new Object[] {"direct:start" }).get("hits")).isEqualTo(42L);
 
         CompositeType variablesCompositeType = CamelOpenMBeanTypes.camelVariablesCompositeType();
         TabularDataSupport variablesTable = new TabularDataSupport(CamelOpenMBeanTypes.camelVariablesTabularType());
@@ -276,8 +276,8 @@ public class Camel_management_apiTest {
                 variablesCompositeType,
                 Map.of("id", "global", "key", "threshold", "className", "java.lang.Integer", "value", "10")));
 
-        assertThat(variablesTable.containsKey(new Object[] { "global", "threshold" })).isTrue();
-        assertThat(variablesTable.get(new Object[] { "global", "threshold" }).get("value")).isEqualTo("10");
+        assertThat(variablesTable.containsKey(new Object[] {"global", "threshold" })).isTrue();
+        assertThat(variablesTable.get(new Object[] {"global", "threshold" }).get("value")).isEqualTo("10");
     }
 
     private static List<OpenMBeanDescriptor> openMBeanDescriptors() {
@@ -291,23 +291,23 @@ public class Camel_management_apiTest {
         descriptors.add(new OpenMBeanDescriptor(
                 "rests", "listRestServices", CamelOpenMBeanTypes::listRestServicesCompositeType,
                 CamelOpenMBeanTypes::listRestServicesTabularType,
-                new String[] { "url", "baseUrl", "basePath", "uriTemplate", "method", "consumes", "produces", "inType",
+                new String[] {"url", "baseUrl", "basePath", "uriTemplate", "method", "consumes", "produces", "inType",
                         "outType", "kind", "state", "description" },
                 "url", "method"));
         descriptors.add(new OpenMBeanDescriptor(
                 "endpoints", "listEndpoints", CamelOpenMBeanTypes::listEndpointsCompositeType,
                 CamelOpenMBeanTypes::listEndpointsTabularType,
-                new String[] { "url", "static", "dynamic" },
+                new String[] {"url", "static", "dynamic" },
                 "url"));
         descriptors.add(new OpenMBeanDescriptor(
                 "factories", "listExchangeFactory", CamelOpenMBeanTypes::listExchangeFactoryCompositeType,
                 CamelOpenMBeanTypes::listExchangeFactoryTabularType,
-                new String[] { "url", "routeId", "capacity", "pooled", "created", "acquired", "released", "discarded" },
+                new String[] {"url", "routeId", "capacity", "pooled", "created", "acquired", "released", "discarded" },
                 "url"));
         descriptors.add(new OpenMBeanDescriptor(
                 "endpoints", "listRuntimeEndpoints", CamelOpenMBeanTypes::listRuntimeEndpointsCompositeType,
                 CamelOpenMBeanTypes::listRuntimeEndpointsTabularType,
-                new String[] { "index", "url", "routeId", "direction", "static", "dynamic", "hits" },
+                new String[] {"index", "url", "routeId", "direction", "static", "dynamic", "hits" },
                 "index"));
         descriptors.add(new OpenMBeanDescriptor(
                 "components", "listComponents", CamelOpenMBeanTypes::listComponentsCompositeType,
@@ -319,69 +319,69 @@ public class Camel_management_apiTest {
         descriptors.add(new OpenMBeanDescriptor(
                 "threads", "listAwaitThreads", CamelOpenMBeanTypes::listAwaitThreadsCompositeType,
                 CamelOpenMBeanTypes::listAwaitThreadsTabularType,
-                new String[] { "id", "name", "exchangeId", "routeId", "nodeId", "duration" },
+                new String[] {"id", "name", "exchangeId", "routeId", "nodeId", "duration" },
                 "id"));
         descriptors.add(new OpenMBeanDescriptor(
                 "eips", "listEips", CamelOpenMBeanTypes::listEipsCompositeType,
                 CamelOpenMBeanTypes::listEipsTabularType,
-                new String[] { "name", "title", "description", "label", "status", "type" },
+                new String[] {"name", "title", "description", "label", "status", "type" },
                 "name"));
         descriptors.add(new OpenMBeanDescriptor(
                 "exchanges", "listInflightExchanges", CamelOpenMBeanTypes::listInflightExchangesCompositeType,
                 CamelOpenMBeanTypes::listInflightExchangesTabularType,
-                new String[] { "exchangeId", "fromRouteId", "routeId", "nodeId", "elapsed", "duration" },
+                new String[] {"exchangeId", "fromRouteId", "routeId", "nodeId", "elapsed", "duration" },
                 "exchangeId"));
         descriptors.add(new OpenMBeanDescriptor(
                 "predicates", "choice", CamelOpenMBeanTypes::choiceCompositeType,
                 CamelOpenMBeanTypes::choiceTabularType,
-                new String[] { "predicate", "language", "matches" },
+                new String[] {"predicate", "language", "matches" },
                 "predicate"));
         descriptors.add(new OpenMBeanDescriptor(
                 "exceptions", "doTry", CamelOpenMBeanTypes::doTryCompositeType,
                 CamelOpenMBeanTypes::doTryTabularType,
-                new String[] { "exception", "predicate", "language", "matches" },
+                new String[] {"exception", "predicate", "language", "matches" },
                 "exception"));
         descriptors.add(new OpenMBeanDescriptor(
                 "exceptions", "exception", CamelOpenMBeanTypes::loadbalancerExceptionsCompositeType,
                 CamelOpenMBeanTypes::loadbalancerExceptionsTabularType,
-                new String[] { "exception", "failures" },
+                new String[] {"exception", "failures" },
                 "exception"));
         descriptors.add(new OpenMBeanDescriptor(
                 "endpoints", "endpointsUtilization", CamelOpenMBeanTypes::endpointsUtilizationCompositeType,
                 CamelOpenMBeanTypes::endpointsUtilizationTabularType,
-                new String[] { "url", "hits" },
+                new String[] {"url", "hits" },
                 "url"));
         descriptors.add(new OpenMBeanDescriptor(
                 "transformers", "listTransformers", CamelOpenMBeanTypes::listTransformersCompositeType,
                 CamelOpenMBeanTypes::listTransformersTabularType,
-                new String[] { "name", "from", "to", "static", "dynamic", "description" },
+                new String[] {"name", "from", "to", "static", "dynamic", "description" },
                 "name", "from", "to"));
         descriptors.add(new OpenMBeanDescriptor(
                 "validators", "listValidators", CamelOpenMBeanTypes::listValidatorsCompositeType,
                 CamelOpenMBeanTypes::listValidatorsTabularType,
-                new String[] { "type", "static", "dynamic", "description" },
+                new String[] {"type", "static", "dynamic", "description" },
                 "type"));
         descriptors.add(new OpenMBeanDescriptor(
                 "healthDetails", "healthDetails", CamelOpenMBeanTypes::camelHealthDetailsCompositeType,
                 CamelOpenMBeanTypes::camelHealthDetailsTabularType,
-                new String[] { "id", "group", "state", "enabled", "message", "failureUri", "failureCount",
+                new String[] {"id", "group", "state", "enabled", "message", "failureUri", "failureCount",
                         "failureStackTrace", "readiness", "liveness" },
                 "id"));
         descriptors.add(new OpenMBeanDescriptor(
                 "routeProperties", "routeProperties", CamelOpenMBeanTypes::camelRoutePropertiesCompositeType,
                 CamelOpenMBeanTypes::camelRoutePropertiesTabularType,
-                new String[] { "key", "value" },
+                new String[] {"key", "value" },
                 "key"));
         descriptors.add(new OpenMBeanDescriptor(
                 "routes", "routeStatus", CamelOpenMBeanTypes::supervisingRouteControllerRouteStatusCompositeType,
                 CamelOpenMBeanTypes::supervisingRouteControllerRouteStatusTabularType,
-                new String[] { "index", "routeId", "status", "supervising", "attempts", "elapsed", "last", "error",
+                new String[] {"index", "routeId", "status", "supervising", "attempts", "elapsed", "last", "error",
                         "stacktrace" },
                 "index"));
         descriptors.add(new OpenMBeanDescriptor(
                 "variables", "variables", CamelOpenMBeanTypes::camelVariablesCompositeType,
                 CamelOpenMBeanTypes::camelVariablesTabularType,
-                new String[] { "id", "key", "className", "value" },
+                new String[] {"id", "key", "className", "value" },
                 "id", "key"));
         descriptors.add(new OpenMBeanDescriptor(
                 "tasks", "listBackoff", CamelOpenMBeanTypes::listBackoffTaskCompositeType,
@@ -400,7 +400,7 @@ public class Camel_management_apiTest {
         descriptors.add(new OpenMBeanDescriptor(
                 "errors", "listErrors", CamelOpenMBeanTypes::listErrorRegistryCompositeType,
                 CamelOpenMBeanTypes::listErrorRegistryTabularType,
-                new String[] { "exchangeId", "routeId", "endpointUri", "timestamp", "handled", "exceptionType",
+                new String[] {"exchangeId", "routeId", "endpointUri", "timestamp", "handled", "exceptionType",
                         "exceptionMessage" },
                 "exchangeId"));
         return descriptors;
