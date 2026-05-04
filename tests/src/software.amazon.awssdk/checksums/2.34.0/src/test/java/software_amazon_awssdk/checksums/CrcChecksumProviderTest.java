@@ -8,6 +8,9 @@ package software_amazon_awssdk.checksums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.CRC32C;
 import org.junit.jupiter.api.MethodOrderer;
@@ -47,5 +50,25 @@ public class CrcChecksumProviderTest {
 
         assertThat(checksum.getValue()).isNotZero();
         assertThat(checksum.getChecksumBytes()).hasSize(Long.BYTES);
+    }
+
+    @Test
+    @Order(3)
+    void packagePrivateCrtCrc32cFactoryUsesCrtConstructor() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(CrcChecksumProvider.class, MethodHandles.lookup());
+        MethodHandle createCrtCrc32C = lookup.findStatic(
+            CrcChecksumProvider.class,
+            "createCrtCrc32C",
+            MethodType.methodType(SdkChecksum.class));
+
+        SdkChecksum checksum = (SdkChecksum) createCrtCrc32C.invokeExact();
+        CRC32C expected = new CRC32C();
+
+        checksum.update(PAYLOAD);
+        expected.update(PAYLOAD, 0, PAYLOAD.length);
+
+        assertThat(checksum.getClass().getSimpleName()).isEqualTo("CrcCloneOnMarkChecksum");
+        assertThat(checksum.getValue()).isEqualTo(expected.getValue());
+        assertThat(checksum.getChecksumBytes()).hasSize(Integer.BYTES);
     }
 }
