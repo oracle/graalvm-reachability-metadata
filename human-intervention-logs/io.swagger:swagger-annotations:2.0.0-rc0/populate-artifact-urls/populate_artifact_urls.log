@@ -1,0 +1,1203 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df2a2-324c-7c10-a783-16a65589020f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.swagger:swagger-annotations:2.0.0-rc0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0-rc0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/metadata/io.swagger/swagger-annotations/index.json
+- Entry selector: "metadata-version" = "2.0.0-rc0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0.0-rc0
+- Entry metadata-version: 2.0.0-rc0
+- Entry test-version: 2.0.0-rc0
+- Entry tested-versions: [2.0.0-rc0]
+codex
+I’ll inspect the existing metadata entry first, then verify version-specific Maven/GitHub URLs before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/io.swagger/swagger-annotations/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0-rc0",
+    "tested-versions" : [
+      "2.0.0-rc0"
+    ],
+    "allowed-packages" : [
+      "io.swagger.annotations"
+    ]
+  },
+  {
+    "metadata-version" : "1.6.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/swagger-api/swagger-core",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+    "description" : "Swagger Annotations provides Java annotations used by swagger-core to describe REST APIs, operations, models, parameters, responses, and security metadata for Swagger/OpenAPI 2.0 generation. It contains annotation types under io.swagger.annotations so JVM applications and frameworks can decorate code without bringing in the full swagger-core runtime.",
+    "tested-versions" : [
+      "1.6.2"
+    ],
+    "allowed-packages" : [
+      "io.swagger.annotations"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'swagger-annotations|io.swagger' metadata/io.swagger -S" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+ succeeded in 0ms:
+metadata/io.swagger/swagger-annotations/index.json:9:      "io.swagger.annotations"
+metadata/io.swagger/swagger-annotations/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/io.swagger/swagger-annotations/index.json:18:    "description" : "Swagger Annotations provides Java annotations used by swagger-core to describe REST APIs, operations, models, parameters, responses, and security metadata for Swagger/OpenAPI 2.0 generation. It contains annotation types under io.swagger.annotations so JVM applications and frameworks can decorate code without bringing in the full swagger-core runtime.",
+metadata/io.swagger/swagger-annotations/index.json:23:      "io.swagger.annotations"
+
+web search: 
+web search: Maven io.swagger swagger-annotations 2.0.0-rc0
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/
+codex
+The Maven Central entry has sources and javadocs for `2.0.0-rc0`, but no test jar. I’m checking the POM and repository tags now so the test URL lands on the matching release tag.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-project</artifactId>
+        <version>2.0.0-rc0</version>
+        <relativePath>../..</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.swagger</groupId>
+    <artifactId>swagger-annotations</artifactId>
+    <version>2.0.0-rc0</version>
+    <packaging>bundle</packaging>
+    <name>swagger-annotations</name>
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <defaultGoal>install</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${felix-version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>io.swagger.oas.annotations</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>publish-javadocs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>${enforcer-plugin-version}</version>
+                        <executions>
+                            <execution>
+                                <id>enforce-no-snapshots</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireReleaseVersion>
+                                            <message>Publish javadocs for a SNAPSHOT is not allowed.</message>
+                                        </requireReleaseVersion>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>2.7</version>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <!-- here the phase you need -->
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/javadocprep/swagger-core/${project.version}/apidocs</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/apidocs</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.pyx4j</groupId>
+                        <artifactId>maven-junction-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>link</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <links>
+                                <!-- link the html generated by client to webapp directory -->
+                                <link>
+                                    <dst>${project.build.directory}/javadocprep/swagger-core/current</dst>
+                                    <src>${project.build.directory}/javadocprep/swagger-core/${project.version}</src>
+                                </link>
+                            </links>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-publish-plugin</artifactId>
+                        <version>1.1</version>
+                        <configuration>
+                            <checkoutDirectory>${project.build.directory}/scmpublish</checkoutDirectory>
+                            <checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}</checkinComment>
+                            <content>${project.build.directory}/javadocprep</content>
+                            <skipDeletedFiles>true</skipDeletedFiles>
+                            <pubScmUrl>scm:git:https://github.com/swagger-api/swagger-core</pubScmUrl>
+                            <scmBranch>gh-pages</scmBranch>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>publish-javadocs</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>publish-scm</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-javadoc.jar && curl -fsSI https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-tests.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/swagger-api/swagger-core.git | rg '2\\.0\\.0|rc0|RC0|v2|swagger'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+ exited 22 in 165ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 10:57:05 GMT
+content-type: application/java-archive
+content-length: 186765
+cf-ray: 9f66fb884db70200-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 52194
+etag: "74b9ac92bc0bc1ef301e9006ca9c74bf"
+last-modified: Wed, 16 Aug 2017 16:36:16 GMT
+x-checksum-md5: 74b9ac92bc0bc1ef301e9006ca9c74bf
+x-checksum-sha1: 1a7a450dfd289eedef9f5e57db1be917f22d7f5f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 04 May 2026 10:57:05 GMT
+content-type: text/html
+cf-ray: 9f66fb88aa0123bc-ZRH
+cf-cache-status: HIT
+age: 1373
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 388ms:
+b54a27b37b80e674c9ed556d75cae93fe78c525b	refs/tags/swagger-project-1.01
+9ada215fefadf6c525a3f32b05542cec4f589e3f	refs/tags/swagger-project-1.01^{}
+e35d0461dc734e367096a3b352b800eaa0b96829	refs/tags/swagger-project_2.10-1.3.1
+58d9109ff01f6c8edfc111bafce721d183b44f6f	refs/tags/swagger-project_2.10-1.3.1^{}
+4329c46261bbf8c1f8cd3b9b4ec71f61130dec96	refs/tags/swagger-project_2.10-1.3.2
+8abac0ca61ca5a497adf481256ac2b79d18c34f0	refs/tags/swagger-project_2.10-1.3.2^{}
+2d1690281f4985daf37f67d4fdaa51ef3393ec3f	refs/tags/swagger-project_2.10.0-1.2.0
+ef023bc9851a4fe292d32621a2f8c9b162aa97c0	refs/tags/swagger-project_2.10.0-1.2.0^{}
+a820c68a39e9317877b6c2e99a898ed8807d3a62	refs/tags/swagger-project_2.10.0-1.2.2
+0c8375e138399170c0bb40706e9404f907b8f073	refs/tags/swagger-project_2.10.0-1.2.2^{}
+55c1a89c25efba586919f0e26993987f4a9b517f	refs/tags/swagger-project_2.10.0-1.2.3
+0d50ed514f5f2d5f56c7a2c6078d5dfe86128827	refs/tags/swagger-project_2.10.0-1.2.3^{}
+593c61d941268ceba5c53ab1c5a7328cda0d90b2	refs/tags/swagger-project_2.10.0-1.2.4
+3dffd7b4048ae0ab6e388d02071c3f6c3d34e91f	refs/tags/swagger-project_2.10.0-1.2.4^{}
+e7a9132c5e3b369046afe8228eb7813e01e56507	refs/tags/swagger-project_2.10.0-1.3.0
+f741233651aaaf76a072eebe227049f904257a09	refs/tags/swagger-project_2.10.0-1.3.0^{}
+2887a9558c8b3eee63cda755c3f43009acf481ac	refs/tags/swagger-project_2.10.0-1.3.5
+cbd57b4a69508c010afec892c3faa05c81657c67	refs/tags/swagger-project_2.10.0-1.3.5^{}
+4e1a108924ea39bc54c37556868dd8ef0f41f9bd	refs/tags/swagger-project_2.10.0-1.3.6
+061a825da37f169b4ee8ca87bc16bbf7a0567802	refs/tags/swagger-project_2.10.0-1.3.6^{}
+dd567d6c12d520490836d8c4d04f16f91896cae8	refs/tags/swagger-project_2.10.0-1.3.7
+e79e4cc7cabebfe06a226e3425f0ab7fefcb05dd	refs/tags/swagger-project_2.10.0-RC2-1.2.0
+00f417b41a50e7160c0446bfff34b4c8e0ddb4f8	refs/tags/swagger-project_2.10.0-RC2-1.2.0^{}
+b35c053834e2b967cea4978ad8c644facb09b51d	refs/tags/swagger-project_2.10.0-RC3-1.2.0
+490218a0e87af349316089043d1b4dc7c2279ff3	refs/tags/swagger-project_2.10.0-RC3-1.2.0^{}
+ea8b425b44af72c465f09974b16f468c6cf72c6f	refs/tags/swagger-project_2.10.0-RC5-1.2.0
+491001bee1e3abb66dec5a5c5a91548790585b9e	refs/tags/swagger-project_2.10.0-RC5-1.2.0^{}
+b5cc0b784329f4a672068b3c198e3a015a30ce79	refs/tags/swagger-project_2.9.1-1.0.1
+7f419d2cbdfd72422724512d00112fab7b5d994d	refs/tags/swagger-project_2.9.1-1.0.1^{}
+3cdb8dbcbcbb1e872d185bdbd0224234382427ac	refs/tags/swagger-project_2.9.1-1.0.2
+bb9072f0647167c9583a14ae995c1fa5abc88597	refs/tags/swagger-project_2.9.1-1.0.2^{}
+6a81776e70ff41e77519bf3894c1bdbf8957ad77	refs/tags/swagger-project_2.9.1-1.1.0
+7488a50b78a73e4f7c68d8a4450eecaf006142ab	refs/tags/swagger-project_2.9.1-1.1.0^{}
+0d1ee7b654b2d54e77c0f2a50c3599bc4c1058f5	refs/tags/swagger-project_2.9.1-1.2.0
+127dbc6abc16c508685aa590cac8eaaa3a1e7789	refs/tags/swagger-project_2.9.1-1.2.0^{}
+ca498ba7a52758af76bec72e204d9d0687cf8584	refs/tags/swagger-project_2.9.1-1.2.1
+7bfc8722ea06f18178538a206c4c971f5e4d2146	refs/tags/swagger-project_2.9.1-1.2.1^{}
+9c12d92b6d2a29573eb33300efb17fe8dd1410e4	refs/tags/swagger-project_2.9.1-1.2.2
+eb15e04f809c3e84b041b8daed8037d33be1e4c5	refs/tags/swagger-project_2.9.1-1.2.2^{}
+bcc18589036ed96202a5da2eab58de1bc9e3948b	refs/tags/swagger-project_2.9.1-1.2.3
+4a23dd0c8f344a1749ef0cd35e35f1e86f162a84	refs/tags/swagger-project_2.9.1-1.2.3^{}
+50f6f0d4ee3bdca1ff7b1202219b159eced54232	refs/tags/swagger-project_2.9.1-1.2.4
+f24e355fdc5e4b5768f76e0015d3f302f40b0e71	refs/tags/swagger-project_2.9.1-1.2.4^{}
+2208850271c3ce4677325ff39aaa407d96d92cf1	refs/tags/swagger-project_2.9.1-1.3.0
+c3d7e1077763e33ab0eb7509c157e0d67eef1e14	refs/tags/swagger-project_2.9.1-1.3.0^{}
+81e76495e93372d3aabc4bafe5ec0fd7be22d02e	refs/tags/swagger-project_2.9.1-1.3.0-RC1
+81e76495e93372d3aabc4bafe5ec0fd7be22d02e	refs/tags/swagger-project_2.9.1-1.3.0-SNAPSHOT
+5491776dfacf6bcc38bca05e73bb001dd3664d2e	refs/tags/swagger-project_2.9.1-1.3.4
+51e0076a6a7c0ae3394f3933b3cec57653497866	refs/tags/swagger-project_2.9.1-1.3.4^{}
+10ecce0572808d7a08299d6fdd98c9fc3e17f5e6	refs/tags/v2.0.0
+69bdb6987a8e2c275a095e4718e1d6be6beb1087	refs/tags/v2.0.0-rc0
+344f875a5f1a3aadae4de09bf40dcf26fac94a50	refs/tags/v2.0.0-rc0^{}
+47d85306d09c4516834a4591a13e8dfc009e4968	refs/tags/v2.0.0-rc1
+7394f7cf9db8112d04c7fa2633cfb89313ed7727	refs/tags/v2.0.0-rc1^{}
+fde7986cd5ad29e9399a4b482e4eb9ab562be872	refs/tags/v2.0.0-rc2
+a72b040c8774052ca79082b3d1af574960fbd41b	refs/tags/v2.0.0-rc2^{}
+e39422fadf7949eaa5b9f96e5f2422e30c14ceb3	refs/tags/v2.0.0-rc3
+c5c2a0ca1142f0dbb8441de07ac71ed029326d54	refs/tags/v2.0.0-rc4
+8b58a26971e707fe35e9663da64a0f5bcb4645af	refs/tags/v2.0.0-rc4^{}
+41eeaf386d86dc723e21a1a345fa996f774093c6	refs/tags/v2.0.1
+c25c0706cd72da16c79704a64913d338e9c1fa6d	refs/tags/v2.0.10
+2d956c5a16ef8b455727607c3821536d07e73fe5	refs/tags/v2.0.2
+168e9b5da7bcd105b0ad04f2572da26623f9cc56	refs/tags/v2.0.3
+bde7078eab83d48fe4196de3725b7a0268871d2a	refs/tags/v2.0.4
+7090ca2647ca22045b574c5d8c3bc0dab27695c1	refs/tags/v2.0.5
+3aa986450349f2424ce8aec0c9f83a690b9702ee	refs/tags/v2.0.6
+debe4bffa90bc13072194db213ecc72b19b0a885	refs/tags/v2.0.7
+053b876c1792b3c2b4d71c98f31663612fa945c0	refs/tags/v2.0.8
+9aed89e247cac228cc0ebd6d4f69ad0de0494d61	refs/tags/v2.0.9
+7637cbfb5c0cd42b4a1146e34f2c95820502abcc	refs/tags/v2.1.0
+795d31c5ee2cc3e1c07102c139584f75b9fba0d3	refs/tags/v2.1.1
+e983e03207a2e8471ebb8d22a14784034b6b0d7c	refs/tags/v2.1.10
+edb1eac1fe08b5b90d57e09261bf2a3a6140c230	refs/tags/v2.1.11
+0d7cfb2b42ee91f63956487ec47d7e0a112d60aa	refs/tags/v2.1.12
+884ecec245bbebbc48933cdeed2403e3ee102ba5	refs/tags/v2.1.13
+a78875c8e24db082105d3dc3b34cb40d6513d471	refs/tags/v2.1.2
+1aa6f1f82c5a3e7e075e8dba606d2210da70a097	refs/tags/v2.1.3
+40dc245640f00f126aba7e5d74953f5b40545d0b	refs/tags/v2.1.4
+573674cfaf15f88741b9ee08c1ea7458593f70d9	refs/tags/v2.1.5
+f1fcdc233aeab4bc0beab35284c59c6d4f64df6d	refs/tags/v2.1.6
+ad55869e39838bffb9281bde1df8e8e1ce13c6bd	refs/tags/v2.1.7
+123577e8713d343d26f6a175cda028d84178390b	refs/tags/v2.1.8
+ff64b437030687e02fb00025cc5cc0de1b2d6263	refs/tags/v2.1.9
+2e98a903d841ae7a7afffe0b76ae34d5c4c4dc55	refs/tags/v2.2.0
+f2685343be09e225c4269017f35ee821550a2519	refs/tags/v2.2.1
+ff489c3127fe994ff00ff23bd9fea9988b9b2819	refs/tags/v2.2.10
+67b1377c802bc50b28510118289bfe2fb447d66a	refs/tags/v2.2.11
+f0170ca16ea72115085dd1a5e20f7adefb2252af	refs/tags/v2.2.12
+ce06c5ec8e7b4fb028be85335d74905ea311609c	refs/tags/v2.2.13
+4735cc6d37834c8522e1507b3a70a6ab7d2b75e7	refs/tags/v2.2.14
+20ca53cf5643500c6e8d96d8b16d62bd38311b61	refs/tags/v2.2.15
+444b34373edae0d4315cb0cf4c54017339c20680	refs/tags/v2.2.16
+7266a89fcb3476076ad6c149582cfb6740fd1dee	refs/tags/v2.2.17
+74d826dee89e8af0a87e664cd4e5485141877047	refs/tags/v2.2.18
+8de530a0f7256da04d371b76718b30b913936642	refs/tags/v2.2.19
+01f1d717ae73696c5e7d1236e13990e77e19fbe2	refs/tags/v2.2.2
+acd716e7ced9d5e12f676ca938a78cacbe24ecfe	refs/tags/v2.2.20
+516159820d3bdd78bdfc7ea94d5132dc74c82eaf	refs/tags/v2.2.21
+e0efd374b470b3ce4a352518f12be82b1cd7c249	refs/tags/v2.2.22
+2ac5ea387febb0e8031dea0fb966d8878a0b29bf	refs/tags/v2.2.23
+675d6bf970d9f3c6175f043b80c82407336f756d	refs/tags/v2.2.24
+1cd887bb77900ec7d885e821477328a91b1cae7c	refs/tags/v2.2.25
+30b0e46e884cce8c45d4b0864238a7ba922ac7c8	refs/tags/v2.2.26
+caaff0dc699781c26498b789c9131dfaf0242bed	refs/tags/v2.2.27
+73ef27a05d8f62e3e68bd074161aa79602ea1307	refs/tags/v2.2.28
+31fde11125294a09286bb3053ee5e9a5e5773ddf	refs/tags/v2.2.29
+d721fc26f3c6448f0a08e8b80e5a961f005cc40c	refs/tags/v2.2.3
+82d8df794105ff8ad5985cd5ea62aafd2d766f2b	refs/tags/v2.2.30
+1d90b9ffffdeebc882fd88fbb4a2b23504394f87	refs/tags/v2.2.31
+37bd387899af0457a1fc534554a3d88e784972a6	refs/tags/v2.2.32
+8deb34ab7150939afad8bd7dd5e4464dc45263dd	refs/tags/v2.2.33
+22b289bf8709eec82ec74c788ebc35c9bf579f1a	refs/tags/v2.2.34
+f8b720f93aa97ccf162e52ca836c4e9f94762603	refs/tags/v2.2.35
+f1f0b20d721f27fa065d2e00feda230937387946	refs/tags/v2.2.36
+7aaa116f8dbfb6e9d05e419986304464fc4d54ab	refs/tags/v2.2.37
+0fd37647b79e20ae046e79e13dfce3c808397129	refs/tags/v2.2.38
+358cf4c7e57fb7991b828bdaa2e36c02bd8dc605	refs/tags/v2.2.39
+09061d025079f7587dce998f9723d29fd28560d8	refs/tags/v2.2.4
+1b170bf6db6177d97c88dc2cd09a8fb2717f947c	refs/tags/v2.2.40
+fae397a526537b5da6f1834d7a7a167babbce224	refs/tags/v2.2.41
+07935caa711a31f7baf8f5ca9f84e0476918c50d	refs/tags/v2.2.42
+48b8686865c7a1f39b338feb64a0326eca71a6e9	refs/tags/v2.2.43
+3bca86983e31986fdf45486ba8fbadfa40de40ad	refs/tags/v2.2.44
+d474f37eff7692ab7642a46c35ff629dc3fed207	refs/tags/v2.2.45
+f8e24d13758a2199769e81f4105cdd04664c80de	refs/tags/v2.2.46
+50c10478198f85cabf8ee050a8c4a19aee5c4545	refs/tags/v2.2.47
+ebfcfbc7b988e1c072aea554a2c3f04f96761709	refs/tags/v2.2.48
+3ebcde85ab6223ff57c5591afc0c89937e3cfff4	refs/tags/v2.2.49
+72bd6acef6acddd71031001f0367a96a032ac08c	refs/tags/v2.2.5
+6c7fdb8ff76ef66e59754c1c9925e5cd49d86021	refs/tags/v2.2.6
+603a037514efe20960d08a481552e0c0dd0e3869	refs/tags/v2.2.7
+79dcc0dff32e891939461e94eb2b57203d3077f3	refs/tags/v2.2.8
+05281d3bb09eed2c14f2d6baa1b516265928766e	refs/tags/v2.2.9
+
+web search: 
+web search: https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0.pom
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/
+codex
+The release tag is `v2.0.0-rc0`, and the versioned Maven directory confirms both `-sources.jar` and `-javadoc.jar`; I’m now resolving the exact test directory under that tag.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/swagger-api/swagger-core/git/trees/v2.0.0-rc0?recursive=1' | jq -r '.tree[].path' | rg '("'^|/)swagger-annotations(/|$)|src/test'"'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+ succeeded in 326ms:
+modules/swagger-annotations
+modules/swagger-annotations/pom.xml
+modules/swagger-annotations/src
+modules/swagger-annotations/src/main
+modules/swagger-annotations/src/main/java
+modules/swagger-annotations/src/main/java/io
+modules/swagger-annotations/src/main/java/io/swagger
+modules/swagger-annotations/src/main/java/io/swagger/oas
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/ExternalDocumentation.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/Operation.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/Parameter.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/callbacks
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/callbacks/Callback.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/enums
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/enums/Explode.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/extensions
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/extensions/Extension.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/extensions/ExtensionProperty.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/info
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/info/Contact.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/info/Info.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/info/License.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/links
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/links/Link.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/links/LinkParameters.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/media
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/media/ArraySchema.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/media/Content.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/media/DiscriminatorMapping.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/media/ExampleObject.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/media/Schema.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/parameters
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/parameters/Parameters.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/parameters/RequestBody.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/responses
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/responses/ApiResponse.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/security
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/security/OAuthFlow.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/security/OAuthFlows.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/security/Scopes.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/security/SecurityRequirement.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/security/SecurityScheme.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/servers
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/servers/Server.java
+modules/swagger-annotations/src/main/java/io/swagger/oas/annotations/servers/ServerVariable.java
+modules/swagger-core/src/test
+modules/swagger-core/src/test/java
+modules/swagger-core/src/test/java/io
+modules/swagger-core/src/test/java/io/swagger
+modules/swagger-core/src/test/java/io/swagger/converting
+modules/swagger-core/src/test/java/io/swagger/converting/ByteConverterTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/CompositionTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/CovariantGetterTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/EnumPropertyTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/GuavaTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/ModelConverterTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/ModelPropertyTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/NumericFormatTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/PojoTests.java
+modules/swagger-core/src/test/java/io/swagger/converting/SwaggerSerializerTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/override
+modules/swagger-core/src/test/java/io/swagger/converting/override/CustomConverterTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/override/GericModelConverter.java
+modules/swagger-core/src/test/java/io/swagger/converting/override/ModelPropertyOverrideTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/override/OverrideTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/override/SamplePropertyConverter.java
+modules/swagger-core/src/test/java/io/swagger/converting/override/SnakeCaseConverterTest.java
+modules/swagger-core/src/test/java/io/swagger/converting/override/resources
+modules/swagger-core/src/test/java/io/swagger/converting/override/resources/GenericModel.java
+modules/swagger-core/src/test/java/io/swagger/converting/override/resources/MyCustomClass.java
+modules/swagger-core/src/test/java/io/swagger/deserialization
+modules/swagger-core/src/test/java/io/swagger/deserialization/JsonDeserializationTest.java
+modules/swagger-core/src/test/java/io/swagger/deserialization/ObjectPropertyTest.java
+modules/swagger-core/src/test/java/io/swagger/deserialization/ParameterDeSerializationTest.java
+modules/swagger-core/src/test/java/io/swagger/deserialization/properties
+modules/swagger-core/src/test/java/io/swagger/deserialization/properties/ArrayPropertyDeserializerTest.java
+modules/swagger-core/src/test/java/io/swagger/deserialization/properties/JsonPropertiesDeserializationTest.java
+modules/swagger-core/src/test/java/io/swagger/deserialization/properties/MapPropertyDeserializerTest.java
+modules/swagger-core/src/test/java/io/swagger/deserialization/properties/PropertyDeserializerTest.java
+modules/swagger-core/src/test/java/io/swagger/filter
+modules/swagger-core/src/test/java/io/swagger/filter/InternalModelPropertiesRemoverFilter.java
+modules/swagger-core/src/test/java/io/swagger/filter/NoGetOperationsFilter.java
+modules/swagger-core/src/test/java/io/swagger/filter/NoOpOperationsFilter.java
+modules/swagger-core/src/test/java/io/swagger/filter/NoUserOperationsFilter.java
+modules/swagger-core/src/test/java/io/swagger/filter/RemoveInternalParamsFilter.java
+modules/swagger-core/src/test/java/io/swagger/filter/RemoveUnreferencedDefinitionsFilter.java
+modules/swagger-core/src/test/java/io/swagger/filter/SpecFilterTest.java
+modules/swagger-core/src/test/java/io/swagger/matchers
+modules/swagger-core/src/test/java/io/swagger/matchers/SerializationMatchers.java
+modules/swagger-core/src/test/java/io/swagger/oas
+modules/swagger-core/src/test/java/io/swagger/oas/models
+modules/swagger-core/src/test/java/io/swagger/oas/models/Address.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ApiFirstRequiredFieldModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/BeanValidationsModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Car.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Cat.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Children.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ClientOptInput.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Department.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Employee.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/EmptyModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Error.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/GuavaModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Issue534.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/JCovariantGetter.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/JacksonReadonlyModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/JodaDateTimeModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Link.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Manufacturers.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Model1155.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Model1979.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelExampleTest.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelPropertyName.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithAltPropertyName.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithApiModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithBooleanProperty.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithEnumArray.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithEnumField.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithEnumProperty.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithFormattedStrings.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithJAXBAnnotations.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithJaxBDefaultValues.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithModelPropertyOverrides.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithNumbers.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithOffset.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithPrimitiveArray.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithRanges.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ModelWithTuple2.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/Person.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ReadOnlyFields.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/ReadOnlyModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/SpecialOrderItem.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/TestEnum.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/XmlFirstRequiredFieldModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/AbstractBaseModelWithSubTypes.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/AbstractBaseModelWithoutFields.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/AbstractModelWithApiModel.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/Animal.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/AnimalClass.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/Human.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/HumanClass.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/ModelWithFieldWithSubTypes.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/ModelWithUrlProperty.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/ModelWithValueProperty.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/Pet.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/PetClass.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/Thing1.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/Thing2.java
+modules/swagger-core/src/test/java/io/swagger/oas/models/composition/Thing3.java
+modules/swagger-core/src/test/java/io/swagger/resolving
+modules/swagger-core/src/test/java/io/swagger/resolving/ATMTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/BaseReaderUtilsTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/BeanValidatorTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/ComplexPropertyTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/ContainerTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/EnumTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/HiddenFieldTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/InheritedBeanTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/JaxBDefaultValueTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/JodaDateTimeConverterTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/JodaLocalDateConverterTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/JodaTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/ModelWithRangesTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/RequiredFieldModelTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/SimpleGenerationTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/SwaggerTestBase.java
+modules/swagger-core/src/test/java/io/swagger/resolving/XMLGregorianCalendarTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/XMLInfoTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/XmlModelTest.java
+modules/swagger-core/src/test/java/io/swagger/resolving/resources
+modules/swagger-core/src/test/java/io/swagger/resolving/resources/InnerType.java
+modules/swagger-core/src/test/java/io/swagger/serialization
+modules/swagger-core/src/test/java/io/swagger/serialization/JsonSerializationTest.java
+modules/swagger-core/src/test/java/io/swagger/serialization/ModelSerializerTest.java
+modules/swagger-core/src/test/java/io/swagger/serialization/ParameterSerializationTest.java
+modules/swagger-core/src/test/java/io/swagger/serialization/ResponseExamplesTest.java
+modules/swagger-core/src/test/java/io/swagger/serialization/SecurityDefinitionTest.java
+modules/swagger-core/src/test/java/io/swagger/serialization/YamlSerializerTest.java
+modules/swagger-core/src/test/java/io/swagger/serialization/auth
+modules/swagger-core/src/test/java/io/swagger/serialization/auth/AuthSerializationTest.java_
+modules/swagger-core/src/test/java/io/swagger/serialization/properties
+modules/swagger-core/src/test/java/io/swagger/serialization/properties/PropertySerializationTest.java
+modules/swagger-core/src/test/java/io/swagger/util
+modules/swagger-core/src/test/java/io/swagger/util/OutputReplacer.java
+modules/swagger-core/src/test/java/io/swagger/util/PathUtilsTest.java
+modules/swagger-core/src/test/java/io/swagger/util/ResourceUtils.java
+modules/swagger-core/src/test/java/io/swagger/util/TestUtils.java
+modules/swagger-core/src/test/java/io/swagger/util/reflection
+modules/swagger-core/src/test/java/io/swagger/util/reflection/ReflectionUtilsTest.java
+modules/swagger-core/src/test/java/io/swagger/util/reflection/resources
+modules/swagger-core/src/test/java/io/swagger/util/reflection/resources/Child.java
+modules/swagger-core/src/test/java/io/swagger/util/reflection/resources/IGrandparent.java
+modules/swagger-core/src/test/java/io/swagger/util/reflection/resources/IParent.java
+modules/swagger-core/src/test/java/io/swagger/util/reflection/resources/IndirectAnnotation.java
+modules/swagger-core/src/test/java/io/swagger/util/reflection/resources/Parent.java
+modules/swagger-core/src/test/resources
+modules/swagger-core/src/test/resources/AbstractBaseModelWithoutFields.json
+modules/swagger-core/src/test/resources/Animal.json
+modules/swagger-core/src/test/resources/AnimalClass.json
+modules/swagger-core/src/test/resources/Cat.json
+modules/swagger-core/src/test/resources/GuavaTestModel.json
+modules/swagger-core/src/test/resources/Human.json
+modules/swagger-core/src/test/resources/JodaDateTimeModel.json
+modules/swagger-core/src/test/resources/ModelWithFieldWithSubTypes.json
+modules/swagger-core/src/test/resources/ModelWithFormattedStrings.json
+modules/swagger-core/src/test/resources/ModelWithSecurityRequirements.json
+modules/swagger-core/src/test/resources/Person.json
+modules/swagger-core/src/test/resources/Pet.json
+modules/swagger-core/src/test/resources/json-schema-validation
+modules/swagger-core/src/test/resources/json-schema-validation/array.json
+modules/swagger-core/src/test/resources/json-schema-validation/map.json
+modules/swagger-core/src/test/resources/logback-test.xml
+modules/swagger-core/src/test/resources/specFiles
+modules/swagger-core/src/test/resources/specFiles/additionalpropsmodel.json
+modules/swagger-core/src/test/resources/specFiles/brokenrefmodel.json
+modules/swagger-core/src/test/resources/specFiles/compositionTest-3.0.json
+modules/swagger-core/src/test/resources/specFiles/compositionTest.json
+modules/swagger-core/src/test/resources/specFiles/deprecatedoperationmodel.json
+modules/swagger-core/src/test/resources/specFiles/noModels.json
+modules/swagger-core/src/test/resources/specFiles/oas3.yaml
+modules/swagger-core/src/test/resources/specFiles/paramAndResponseRef.json
+modules/swagger-core/src/test/resources/specFiles/paramAndResponseRefArray.json
+modules/swagger-core/src/test/resources/specFiles/paramAndResponseRefComposed.json
+modules/swagger-core/src/test/resources/specFiles/pathRef.json
+modules/swagger-core/src/test/resources/specFiles/petstore-3.0.json
+modules/swagger-core/src/test/resources/specFiles/petstore-3.0.yaml
+modules/swagger-core/src/test/resources/specFiles/petstore.json
+modules/swagger-core/src/test/resources/specFiles/propertiesWithConstraints.json
+modules/swagger-core/src/test/resources/specFiles/propertyWithVendorExtensions.json
+modules/swagger-core/src/test/resources/specFiles/recursivemodels.json
+modules/swagger-core/src/test/resources/specFiles/responseRef.json
+modules/swagger-core/src/test/resources/specFiles/sampleSpec.json
+modules/swagger-core/src/test/resources/specFiles/securityDefinitions.json
+modules/swagger-core/src/test/resources/uber.json
+modules/swagger-hibernate-validations/src/test
+modules/swagger-hibernate-validations/src/test/java
+modules/swagger-hibernate-validations/src/test/java/io
+modules/swagger-hibernate-validations/src/test/java/io/swagger
+modules/swagger-hibernate-validations/src/test/java/io/swagger/HibernateBeanValidationsTest.java
+modules/swagger-hibernate-validations/src/test/java/io/swagger/models
+modules/swagger-hibernate-validations/src/test/java/io/swagger/models/HibernateBeanValidationsModel.java
+modules/swagger-integration/src/test
+modules/swagger-integration/src/test/java
+modules/swagger-integration/src/test/java/io
+modules/swagger-integration/src/test/java/io/swagger
+modules/swagger-integration/src/test/java/io/swagger/oas
+modules/swagger-integration/src/test/java/io/swagger/oas/integration
+modules/swagger-integration/src/test/java/io/swagger/oas/integration/IntegrationTest.java
+modules/swagger-jaxrs2/src/test
+modules/swagger-jaxrs2/src/test/java
+modules/swagger-jaxrs2/src/test/java/com
+modules/swagger-jaxrs2/src/test/java/com/my
+modules/swagger-jaxrs2/src/test/java/com/my/project
+modules/swagger-jaxrs2/src/test/java/com/my/project/resources
+modules/swagger-jaxrs2/src/test/java/com/my/project/resources/ResourceInPackageA.java
+modules/swagger-jaxrs2/src/test/java/io
+modules/swagger-jaxrs2/src/test/java/io/swagger
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/ReaderTest.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/AbstractAnnotationTest.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/callbacks
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/callbacks/CallbackTest.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/info
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/info/InfoTest.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/operations
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/operations/AnnotatedOperationMethodTest.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/operations/MergedOperationTest.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/parameters
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/parameters/ParametersTest.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/pathItems
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/pathItems/OperationsWithLinksTest.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/security
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/annotations/security/SecurityTests.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/integration
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/integration/IntegrationTest.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/matchers
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/matchers/SerializationMatchers.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/BasicClass.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/BasicFieldsResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/CompleteFieldsResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/DeprecatedFieldsResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/DuplicatedOperationIdResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/DuplicatedSecurityResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/ExternalDocsReference.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/LinkParametersResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/ParametersResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/PetResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/QueryResultBean.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/RequestBodyResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/ResponsesResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/SecurityResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/SimpleCallbackResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/SimpleMethods.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/SimpleUserResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/TagsResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/UserResource.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/data
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/data/PetData.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/data/UserData.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/exception
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/exception/ApiException.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/exception/NotFoundException.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/model
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/model/Category.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/model/Pet.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/model/Tag.java
+modules/swagger-jaxrs2/src/test/java/io/swagger/jaxrs2/resources/model/User.java
+modules/swagger-jaxrs2/src/test/java/org
+modules/swagger-jaxrs2/src/test/java/org/my
+modules/swagger-jaxrs2/src/test/java/org/my/project
+modules/swagger-jaxrs2/src/test/java/org/my/project/resources
+modules/swagger-jaxrs2/src/test/java/org/my/project/resources/ResourceInPackageB.java
+modules/swagger-jaxrs2/src/test/resources
+modules/swagger-jaxrs2/src/test/resources/integration
+modules/swagger-jaxrs2/src/test/resources/integration/openapi-configuration.json
+modules/swagger-models/src/test
+modules/swagger-models/src/test/java
+modules/swagger-models/src/test/java/io
+modules/swagger-models/src/test/java/io/swagger
+modules/swagger-models/src/test/java/io/swagger/test
+modules/swagger-models/src/test/java/io/swagger/test/SimpleBuilderTest.java
+modules/swagger-servlet/src/test
+modules/swagger-servlet/src/test/java
+modules/swagger-servlet/src/test/java/io
+modules/swagger-servlet/src/test/java/io/swagger
+modules/swagger-servlet/src/test/java/io/swagger/servlet
+modules/swagger-servlet/src/test/java/io/swagger/servlet/ReaderTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/BaseServletReaderExtensionTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/CheckReadableApiTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/ConsumesProducesTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/DeprecatedMethodTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/HttpMethodGetterTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/ImplicitParametersTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/OperationIdTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/ParametersTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/PathGetterTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/ReaderExtension1.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/ReaderExtension2.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/ReaderExtensionsTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/ResponsesTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/SchemesTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/SecurityRequirementsTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/SummaryDescriptionTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/extensions/TagsTest.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/models
+modules/swagger-servlet/src/test/java/io/swagger/servlet/models/SampleData.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/resources
+modules/swagger-servlet/src/test/java/io/swagger/servlet/resources/HiddenResource.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/resources/ResourceWithAnnotations.java
+modules/swagger-servlet/src/test/java/io/swagger/servlet/resources/ResourceWithoutApiAnnotation.java
+modules/swagger-servlet/src/test/resources
+modules/swagger-servlet/src/test/resources/META-INF
+modules/swagger-servlet/src/test/resources/META-INF/services
+modules/swagger-servlet/src/test/resources/META-INF/services/io.swagger.servlet.extensions.ReaderExtension
+
+codex
+There is no `modules/swagger-annotations/src/test` directory at the `v2.0.0-rc0` tag and Maven Central does not publish a tests jar for this artifact, so I’ll mark the test URL as `N/A`. The source and documentation URLs can safely use the Maven `$version$` template for the single tested alias.
+codex
+I’m adding only the missing fields to the `2.0.0-rc0` entry and leaving the later `1.6.2` entry unchanged.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/metadata/io.swagger/swagger-annotations/index.json
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 994c731d300c008d416e99260a4dd95470e0d5b9..e5c06c52e9a0d8968f7e709b0c0c3a0adf598dd1
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by swagger-core to describe OpenAPI operations, parameters, schemas, responses, security, servers, and other API metadata. It lets JVM applications decorate resource and model classes so swagger-core integrations can generate OpenAPI definitions without coupling application code to the full runtime.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 994c731d300c008d416e99260a4dd95470e0d5b9..e5c06c52e9a0d8968f7e709b0c0c3a0adf598dd1
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by swagger-core to describe OpenAPI operations, parameters, schemas, responses, security, servers, and other API metadata. It lets JVM applications decorate resource and model classes so swagger-core integrations can generate OpenAPI definitions without coupling application code to the full runtime.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+codex
+The file is edited. I’ll run a quick JSON parse, re-check the rendered URLs, and then use the repo’s metadata validation for this coordinate.
+exec
+/usr/bin/bash -lc 'jq . metadata/io.swagger/swagger-annotations/index.json >/dev/null' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.swagger/swagger-annotations/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+ succeeded in 0ms:
+diff --git i/metadata/io.swagger/swagger-annotations/index.json w/metadata/io.swagger/swagger-annotations/index.json
+index 994c731d30..e5c06c52e9 100644
+--- i/metadata/io.swagger/swagger-annotations/index.json
++++ w/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by swagger-core to describe OpenAPI operations, parameters, schemas, responses, security, servers, and other API metadata. It lets JVM applications decorate resource and model classes so swagger-core integrations can generate OpenAPI definitions without coupling application code to the full runtime.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-sources.jar >/dev/null && curl -fsSI https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-javadoc.jar >/dev/null && curl -fsSI https://github.com/swagger-api/swagger-core >/dev/null' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 994c731d300c008d416e99260a4dd95470e0d5b9..e5c06c52e9a0d8968f7e709b0c0c3a0adf598dd1
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by swagger-core to describe OpenAPI operations, parameters, schemas, responses, security, servers, and other API metadata. It lets JVM applications decorate resource and model classes so swagger-core integrations can generate OpenAPI definitions without coupling application code to the full runtime.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+ succeeded in 875ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.swagger:swagger-annotations:2.0.0-rc0 --stacktrace' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 994c731d300c008d416e99260a4dd95470e0d5b9..e5c06c52e9a0d8968f7e709b0c0c3a0adf598dd1
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by swagger-core to describe OpenAPI operations, parameters, schemas, responses, security, servers, and other API metadata. It lets JVM applications decorate resource and model classes so swagger-core integrations can generate OpenAPI definitions without coupling application code to the full runtime.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+ exited 1 in 1970ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for io.swagger:swagger-annotations:2.0.0-rc0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/metadata/io.swagger/swagger-annotations/2.0.0-rc0/
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - io.swagger:swagger-annotations:2.0.0-rc0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/metadata/io.swagger/swagger-annotations/2.0.0-rc0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - io.swagger:swagger-annotations:2.0.0-rc0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/metadata/io.swagger/swagger-annotations/2.0.0-rc0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+9 actionable tasks: 1 executed, 8 up-to-date
+BUILD FAILED in 1s
+
+web search: 
+web search: https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0
+web search: 
+web search: io.swagger swagger-annotations 2.0.0-rc0 Maven Central sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/
+web search: 
+web search: https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0/modules/swagger-annotations
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/io.swagger/swagger-annotations/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "nl -ba metadata/io.swagger/swagger-annotations/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.0.0-rc0",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/swagger-api/swagger-core",
+     7	    "test-code-url" : "N/A",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+     9	    "description" : "Swagger Annotations provides Java annotation types used by swagger-core to describe OpenAPI operations, parameters, schemas, responses, security, servers, and other API metadata. It lets JVM applications decorate resource and model classes so swagger-core integrations can generate OpenAPI definitions without coupling application code to the full runtime.",
+    10	    "tested-versions" : [
+    11	      "2.0.0-rc0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "io.swagger.annotations"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.6.2",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/swagger-api/swagger-core",
+    21	    "test-code-url" : "N/A",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+    23	    "description" : "Swagger Annotations provides Java annotations used by swagger-core to describe REST APIs, operations, models, parameters, responses, and security metadata for Swagger/OpenAPI 2.0 generation. It contains annotation types under io.swagger.annotations so JVM applications and frameworks can decorate code without bringing in the full swagger-core runtime.",
+    24	    "tested-versions" : [
+
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 994c731d300c008d416e99260a4dd95470e0d5b9..e5c06c52e9a0d8968f7e709b0c0c3a0adf598dd1
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by swagger-core to describe OpenAPI operations, parameters, schemas, responses, security, servers, and other API metadata. It lets JVM applications decorate resource and model classes so swagger-core integrations can generate OpenAPI definitions without coupling application code to the full runtime.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+web search: 
+web search: Maven Central io.swagger swagger-annotations 2.0.0-rc0
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/
+web search: 
+web search: https://github.com/swagger-api/swagger-core
+web search: 
+web search: https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0/modules/swagger-annotations
+codex
+Updated [metadata/io.swagger/swagger-annotations/index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/metadata/io.swagger/swagger-annotations/index.json:5) for `metadata-version` `2.0.0-rc0`.
+
+Set the missing source and documentation URLs to the Maven `$version$` templates because Maven Central lists both the `2.0.0-rc0` sources and javadoc jars; set `test-code-url` to `N/A` because there is no Maven tests jar and the tagged `swagger-annotations` module has only `src/main/java` plus `pom.xml`, not `src/test`. ([repo1.maven.org](https://repo1.maven.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/))
+
+I left `language` absent because this is a Java annotation artifact, not a Kotlin, Groovy, or Scala-specific library. Verification: `jq`, URL HEAD checks, and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=io.swagger:swagger-annotations:2.0.0-rc0 --stacktrace` failed because the coordinate directory is missing `reachability-metadata.json`, which is outside the requested index-field update.
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 994c731d300c008d416e99260a4dd95470e0d5b9..e5c06c52e9a0d8968f7e709b0c0c3a0adf598dd1
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by swagger-core to describe OpenAPI operations, parameters, schemas, responses, security, servers, and other API metadata. It lets JVM applications decorate resource and model classes so swagger-core integrations can generate OpenAPI definitions without coupling application code to the full runtime.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+tokens used
+100,751
+Updated [metadata/io.swagger/swagger-annotations/index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/metadata/io.swagger/swagger-annotations/index.json:5) for `metadata-version` `2.0.0-rc0`.
+
+Set the missing source and documentation URLs to the Maven `$version$` templates because Maven Central lists both the `2.0.0-rc0` sources and javadoc jars; set `test-code-url` to `N/A` because there is no Maven tests jar and the tagged `swagger-annotations` module has only `src/main/java` plus `pom.xml`, not `src/test`. ([repo1.maven.org](https://repo1.maven.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/))
+
+I left `language` absent because this is a Java annotation artifact, not a Kotlin, Groovy, or Scala-specific library. Verification: `jq`, URL HEAD checks, and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=io.swagger:swagger-annotations:2.0.0-rc0 --stacktrace` failed because the coordinate directory is missing `reachability-metadata.json`, which is outside the requested index-field update.
+Ran agent for io.swagger:swagger-annotations:2.0.0-rc0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/build/agent-url-discovery-logs/io.swagger-swagger-annotations-2.0.0-rc0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-7a5eeb57/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 32s
+9 actionable tasks: 1 executed, 8 up-to-date
