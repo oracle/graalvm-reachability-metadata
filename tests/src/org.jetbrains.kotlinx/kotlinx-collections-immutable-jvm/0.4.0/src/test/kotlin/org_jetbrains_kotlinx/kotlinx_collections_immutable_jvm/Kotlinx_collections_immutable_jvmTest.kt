@@ -71,6 +71,33 @@ public class Kotlinx_collections_immutable_jvmTest {
     }
 
     @Test
+    fun persistentListBuilderMutableIteratorSupportsInPlaceTraversalEdits(): Unit {
+        val original: PersistentList<String> = persistentListOf("red", "green", "blue", "yellow")
+        val builder: PersistentList.Builder<String> = original.builder()
+        val iterator: MutableListIterator<String> = builder.listIterator()
+
+        while (iterator.hasNext()) {
+            when (iterator.next()) {
+                "red" -> iterator.set("crimson")
+                "green" -> iterator.add("lime")
+                "blue" -> iterator.remove()
+            }
+        }
+
+        assertThat(original).containsExactly("red", "green", "blue", "yellow")
+        assertThat(builder.build()).containsExactly("crimson", "green", "lime", "yellow")
+
+        val reverseIterator: MutableListIterator<String> = builder.listIterator(builder.size)
+        while (reverseIterator.hasPrevious()) {
+            if (reverseIterator.previous() == "yellow") {
+                reverseIterator.set("amber")
+            }
+        }
+
+        assertThat(builder.build()).containsExactly("crimson", "green", "lime", "amber")
+    }
+
+    @Test
     fun persistentListFactoriesConversionsOperatorsAndMutateProduceExpectedLists(): Unit {
         val fromVararg: PersistentList<String> = persistentListOf("alpha", "beta")
         val extended: PersistentList<String> = fromVararg + arrayOf("gamma", "delta") + sequenceOf("epsilon")
