@@ -372,6 +372,31 @@ public class Arrow_atomic_jvmTest {
     }
 
     @Test
+    fun atomicReferenceSupportsPolymorphicStateTransitions() {
+        val state = Atomic<ConnectionState>(Disconnected(reason = "idle"))
+
+        val previous = state.getAndUpdate { current ->
+            when (current) {
+                is Disconnected -> Connected(activeRequests = current.reason.length)
+                is Connected -> current.copy(activeRequests = current.activeRequests + 1)
+            }
+        }
+
+        assertThat(previous).isEqualTo(Disconnected(reason = "idle"))
+        assertThat(state.value).isEqualTo(Connected(activeRequests = 4))
+
+        val updated = state.updateAndGet { current ->
+            when (current) {
+                is Disconnected -> current
+                is Connected -> current.copy(activeRequests = current.activeRequests + 1)
+            }
+        }
+
+        assertThat(updated).isEqualTo(Connected(activeRequests = 5))
+        assertThat(state.value).isEqualTo(Connected(activeRequests = 5))
+    }
+
+    @Test
     fun atomicReferenceSupportsNullableValues() {
         val state = Atomic<String?>(null)
 
@@ -508,6 +533,16 @@ public class Arrow_atomic_jvmTest {
         assertThat(transitions).containsExactly("5->7")
         assertThat(state.value).isEqualTo(State(step = 100, label = "interfering write"))
     }
+
+    private sealed interface ConnectionState
+
+    private data class Disconnected(
+        val reason: String,
+    ) : ConnectionState
+
+    private data class Connected(
+        val activeRequests: Int,
+    ) : ConnectionState
 
     private data class State(
         val step: Int,
