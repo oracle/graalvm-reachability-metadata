@@ -804,6 +804,21 @@ tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
     }
 }
 
+// gradle addLibraryMetadataIndexJson -Pcoordinates=<maven-coordinates> [-PtestVersion=<version>]
+tasks.register("addLibraryMetadataIndexJson", DefaultTask) { task ->
+    task.setDescription("Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("coordinates")) {
+            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact:version>")
+        }
+        def coordsStr = project.findProperty("coordinates").toString()
+        def coords = CoordinateUtils.fromString(coordsStr)
+        def testVersion = project.hasProperty("testVersion") ? project.findProperty("testVersion").toString() : null
+        MetadataGenerationUtils.addVersionToIndexJson(project.layout, coords, testVersion)
+    }
+}
+
 // gradle extractLibraryTestParams -Pcoordinates=<group:artifact[:version]>
 tasks.register("extractLibraryTestParams", DefaultTask) { task ->
     task.setDescription("Extracts TEST_PATH, LATEST_VERSION and TEST_COORDINATES for given coordinates (group:artifact[:version]). Writes them into GITHUB_ENV.")

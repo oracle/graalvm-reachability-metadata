@@ -274,6 +274,18 @@ public final class MetadataGenerationUtils {
      * within its corresponding {@code index.json}.
      */
     public static void makeVersionLatestInIndexJson(ProjectLayout layout, Coordinates newCoords, String testVersion) throws IOException {
+        addVersionToIndexJson(layout, newCoords, testVersion, true);
+    }
+
+    /**
+     * Adds a metadata entry for {@code newCoords} while preserving the current {@code latest}
+     * entry within its corresponding {@code index.json}.
+     */
+    public static void addVersionToIndexJson(ProjectLayout layout, Coordinates newCoords, String testVersion) throws IOException {
+        addVersionToIndexJson(layout, newCoords, testVersion, false);
+    }
+
+    private static void addVersionToIndexJson(ProjectLayout layout, Coordinates newCoords, String testVersion, boolean markAsLatest) throws IOException {
         String indexPathTemplate = "metadata/$group$/$artifact$/index.json";
         File indexFile = GeneralUtils.getPathFromProject(layout, CoordinateUtils.replace(indexPathTemplate, newCoords)).toFile();
 
@@ -305,42 +317,24 @@ public final class MetadataGenerationUtils {
         List<String> latestAllowedPackages = null;
         List<String> latestRequires = null;
         LibraryLanguage latestLanguage = null;
-        // Remove 'latest' flag from any existing latest entry
+        // Copy default metadata properties from the current latest entry.
         for (int i = 0; i < entries.size(); i++) {
             MetadataVersionsIndexEntry entry = entries.get(i);
             if (Boolean.TRUE.equals(entry.latest())) {
-                entries.set(i, new MetadataVersionsIndexEntry(
-                        null, // latest removed
-                        entry.override(),
-                        entry.defaultFor(),
-                        entry.metadataVersion(),
-                        entry.testVersion(),
-                        entry.sourceCodeUrl(),
-                        entry.repositoryUrl(),
-                        entry.testCodeUrl(),
-                        entry.documentationUrl(),
-                        entry.description(),
-                        entry.language(),
-                        entry.testedVersions(),
-                        entry.skippedVersions(),
-                        entry.allowedPackages(),
-                        entry.requires(),
-                        null,
-                        null,
-                        null
-                ));
                 latestAllowedPackages = entry.allowedPackages();
                 latestRequires = entry.requires();
                 latestLanguage = entry.language();
+                if (markAsLatest) {
+                    entries.set(i, copyWithLatest(entry, null));
+                }
             }
         }
 
-        // Add the new entry and mark it as latest.
         // When this creates a new metadata boundary inside an existing range,
         // move covered tested versions to the new entry so index validation keeps passing.
         List<String> testedVersions = moveTestedVersionsCoveredByNewMetadata(entries, newCoords.version());
         MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(
-                Boolean.TRUE, // latest
+                markAsLatest ? Boolean.TRUE : null, // latest
                 null, // override
                 null, // default-for
                 newCoords.version(), // metadata-version
@@ -359,7 +353,11 @@ public final class MetadataGenerationUtils {
                 null, // reason
                 null // replacement
         );
-        entries.addFirst(newEntry);
+        if (markAsLatest) {
+            entries.addFirst(newEntry);
+        } else {
+            entries.add(insertIndexAfterLatest(entries), newEntry);
+        }
 
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
@@ -368,6 +366,15 @@ public final class MetadataGenerationUtils {
             json = json + System.lineSeparator();
         }
         Files.writeString(indexFile.toPath(), json, java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    private static int insertIndexAfterLatest(List<MetadataVersionsIndexEntry> entries) {
+        for (int i = 0; i < entries.size(); i++) {
+            if (Boolean.TRUE.equals(entries.get(i).latest())) {
+                return i + 1;
+            }
+        }
+        return 0;
     }
 
     private static List<String> moveTestedVersionsCoveredByNewMetadata(List<MetadataVersionsIndexEntry> entries, String newVersion) {
@@ -457,6 +464,29 @@ public final class MetadataGenerationUtils {
                 entry.description(),
                 entry.language(),
                 testedVersions,
+                entry.skippedVersions(),
+                entry.allowedPackages(),
+                entry.requires(),
+                entry.notForNativeImage(),
+                entry.reason(),
+                entry.replacement()
+        );
+    }
+
+    private static MetadataVersionsIndexEntry copyWithLatest(MetadataVersionsIndexEntry entry, Boolean latest) {
+        return new MetadataVersionsIndexEntry(
+                latest,
+                entry.override(),
+                entry.defaultFor(),
+                entry.metadataVersion(),
+                entry.testVersion(),
+                entry.sourceCodeUrl(),
+                entry.repositoryUrl(),
+                entry.testCodeUrl(),
+                entry.documentationUrl(),
+                entry.description(),
+                entry.language(),
+                entry.testedVersions(),
                 entry.skippedVersions(),
                 entry.allowedPackages(),
                 entry.requires(),

@@ -51,12 +51,14 @@ class JavaFailWorkflowConfig:
         task_type: str,
         branch_prefix: str,
         metrics_filename: str,
+        metadata_index_task: str,
     ):
         self.mode = mode
         self.default_strategy_name = default_strategy_name
         self.task_type = task_type
         self.branch_prefix = branch_prefix
         self.metrics_filename = metrics_filename
+        self.metadata_index_task = metadata_index_task
 
 
 JAVAC_CONFIG = JavaFailWorkflowConfig(
@@ -65,6 +67,7 @@ JAVAC_CONFIG = JavaFailWorkflowConfig(
     task_type="fix-javac-fail",
     branch_prefix="fix-javac",
     metrics_filename="fix_javac_fail.json",
+    metadata_index_task="addLibraryMetadataIndexJson",
 )
 
 JAVA_RUN_CONFIG = JavaFailWorkflowConfig(
@@ -73,6 +76,7 @@ JAVA_RUN_CONFIG = JavaFailWorkflowConfig(
     task_type="fix-java-run-fail",
     branch_prefix="fix-java-run",
     metrics_filename="fix_java_run_fail.json",
+    metadata_index_task="addLibraryAsLatestMetadataIndexJson",
 )
 
 
@@ -229,10 +233,10 @@ def run_gradle_task(task: str, coordinates: str) -> None:
     subprocess.run(command, shell=True, check=True)
 
 
-def update_metadata_index_json(group, artifact, updated_library_version):
-    """Update metadata index.json to point to the new library version."""
+def update_metadata_index_json(config, group, artifact, updated_library_version):
+    """Update metadata index.json for the target library version."""
     new_version_coordinates = f"{group}:{artifact}:{updated_library_version}"
-    run_gradle_task("addLibraryAsLatestMetadataIndexJson", new_version_coordinates)
+    run_gradle_task(config.metadata_index_task, new_version_coordinates)
 
 
 def create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version):
@@ -378,7 +382,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
     metadata_dir_preexisted = os.path.exists(metadata_dir)
 
     copy_and_prepare_project_dir(group, artifact, old_library_version, updated_library_version)
-    update_metadata_index_json(group, artifact, updated_library_version)
+    update_metadata_index_json(config, group, artifact, updated_library_version)
     create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version)
     commit_checkpoint = create_project_prep_checkpoint(config, group, artifact, updated_library_version)
     updated_library = f"{group}:{artifact}:{updated_library_version}"
