@@ -156,6 +156,16 @@ public class ArrowExceptionUtilsJvmTest {
     }
 
     @Test
+    fun `mergeSuppressed ignores self-suppression`() {
+        val failure: IllegalArgumentException = IllegalArgumentException("same failure")
+
+        val result: Throwable? = failure.mergeSuppressed(failure)
+
+        assertThat(result).isSameAs(failure)
+        assertThat(failure.suppressed).isEmpty()
+    }
+
+    @Test
     fun `mergeSuppressed rethrows fatal secondary failures unchanged`() {
         val primary: IllegalArgumentException = IllegalArgumentException("primary")
         val fatal: LinkageError = LinkageError("linkage")
