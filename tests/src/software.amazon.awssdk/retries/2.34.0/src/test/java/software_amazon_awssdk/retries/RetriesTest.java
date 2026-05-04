@@ -320,6 +320,29 @@ public class RetriesTest {
     }
 
     @Test
+    void adaptiveStrategyRateLimitsInitialAttemptsWithinThrottledScope() {
+        AdaptiveRetryStrategy strategy = AdaptiveRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .backoffStrategy(BackoffStrategy.retryImmediately())
+            .throttlingBackoffStrategy(BackoffStrategy.retryImmediately())
+            .treatAsThrottling(ThrottlingFailure.class::isInstance)
+            .useClientDefaults(false)
+            .build();
+        String scope = "adaptive-throttled-initial-attempt";
+        RetryToken firstAttemptToken = strategy.acquireInitialToken(AcquireInitialTokenRequest.create(scope)).token();
+
+        RefreshRetryTokenResponse throttledRetry = strategy.refreshRetryToken(
+            refreshRequest(firstAttemptToken, new ThrottlingFailure()).build());
+        AcquireInitialTokenResponse nextInitialAttempt = strategy.acquireInitialToken(
+            AcquireInitialTokenRequest.create(scope));
+
+        assertThat(throttledRetry.token()).isNotNull();
+        assertThat(nextInitialAttempt.token()).isNotNull();
+        assertThat(nextInitialAttempt.delay()).isGreaterThan(Duration.ZERO);
+    }
+
+    @Test
     void retryPredicateConvenienceMethodsHandleExactTypeCauseAndRootCause() {
         assertRefreshSucceeds(StandardRetryStrategy.builder()
             .maxAttempts(2)
