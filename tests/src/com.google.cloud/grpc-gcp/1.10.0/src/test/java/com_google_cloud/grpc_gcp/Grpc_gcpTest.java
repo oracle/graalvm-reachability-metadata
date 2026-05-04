@@ -39,6 +39,7 @@ import io.grpc.DecompressorRegistry;
 import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.NameResolver;
 import io.grpc.Status;
@@ -62,6 +63,7 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BooleanSupplier;
 import org.junit.jupiter.api.Test;
 
 public class Grpc_gcpTest {
@@ -332,6 +334,37 @@ public class Grpc_gcpTest {
     }
 
     @Test
+    void fallbackChannelSwitchesToFallbackWhenPrimaryErrorRateThresholdIsReached() throws Exception {
+        GcpFallbackChannelOptions options = GcpFallbackChannelOptions.newBuilder()
+                .setEnableFallback(true)
+                .setErrorRateThreshold(0.5f)
+                .setErroneousStates(EnumSet.of(Status.Code.UNAVAILABLE))
+                .setPeriod(Duration.ofMillis(100))
+                .setMinFailedCalls(2)
+                .setGcpFallbackOpenTelemetry(GcpFallbackOpenTelemetry.newBuilder().disableAllMetrics().build())
+                .build();
+        StatusManagedChannel primary = new StatusManagedChannel("primary-authority", Status.UNAVAILABLE);
+        StatusManagedChannel fallback = new StatusManagedChannel("fallback-authority", Status.OK);
+        GcpFallbackChannel channel = new GcpFallbackChannel(options, primary, fallback);
+        try {
+            startCall(channel);
+            startCall(channel);
+
+            assertThat(primary.newCallCount()).isEqualTo(2);
+            assertThat(fallback.newCallCount()).isZero();
+
+            waitUntil(channel::isInFallbackMode);
+            assertThat(channel.authority()).isEqualTo("fallback-authority");
+
+            startCall(channel);
+            assertThat(fallback.newCallCount()).isEqualTo(1);
+        } finally {
+            channel.shutdownNow();
+            assertThat(channel.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void fallbackOptionsConfigureFallbackChannelAndDelegateLifecycle() throws Exception {
         GcpFallbackOpenTelemetry openTelemetry = GcpFallbackOpenTelemetry.newBuilder()
                 .withSdk(OpenTelemetry.noop())
@@ -389,6 +422,20 @@ public class Grpc_gcpTest {
             channel.shutdownNow();
             channel.awaitTermination(5, TimeUnit.SECONDS);
         }
+    }
+
+    private static void startCall(ManagedChannel channel) {
+        ClientCall<String, String> call = channel.newCall(METHOD, CallOptions.DEFAULT);
+        call.start(new ClientCall.Listener<>() {
+        }, new Metadata());
+    }
+
+    private static void waitUntil(BooleanSupplier condition) throws InterruptedException {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+        while (!condition.getAsBoolean() && System.nanoTime() < deadline) {
+            Thread.sleep(10);
+        }
+        assertThat(condition.getAsBoolean()).isTrue();
     }
 
     private static final class StringMarshaller implements MethodDescriptor.Marshaller<String> {
@@ -543,9 +590,93 @@ public class Grpc_gcpTest {
         }
     }
 
+    private static final class StatusManagedChannel extends ManagedChannel {
+        private final String authority;
+        private final Status closeStatus;
+        private final AtomicInteger newCallCount = new AtomicInteger();
+        private volatile boolean shutdown;
+
+        private StatusManagedChannel(String authority, Status closeStatus) {
+            this.authority = authority;
+            this.closeStatus = closeStatus;
+        }
+
+        private int newCallCount() {
+            return newCallCount.get();
+        }
+
+        @Override
+        public ManagedChannel shutdown() {
+            shutdown = true;
+            return this;
+        }
+
+        @Override
+        public ManagedChannel shutdownNow() {
+            shutdown = true;
+            return this;
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return shutdown;
+        }
+
+        @Override
+        public boolean isTerminated() {
+            return shutdown;
+        }
+
+        @Override
+        public boolean awaitTermination(long timeout, TimeUnit unit) {
+            return shutdown;
+        }
+
+        @Override
+        public <RequestT, ResponseT> ClientCall<RequestT, ResponseT> newCall(
+                MethodDescriptor<RequestT, ResponseT> methodDescriptor, CallOptions callOptions) {
+            newCallCount.incrementAndGet();
+            return new StatusClientCall<>(closeStatus);
+        }
+
+        @Override
+        public String authority() {
+            return authority;
+        }
+    }
+
+    private static final class StatusClientCall<RequestT, ResponseT> extends ClientCall<RequestT, ResponseT> {
+        private final Status closeStatus;
+
+        private StatusClientCall(Status closeStatus) {
+            this.closeStatus = closeStatus;
+        }
+
+        @Override
+        public void start(Listener<ResponseT> responseListener, Metadata headers) {
+            responseListener.onClose(closeStatus, new Metadata());
+        }
+
+        @Override
+        public void request(int numMessages) {
+        }
+
+        @Override
+        public void cancel(String message, Throwable cause) {
+        }
+
+        @Override
+        public void halfClose() {
+        }
+
+        @Override
+        public void sendMessage(RequestT message) {
+        }
+    }
+
     private static final class NoopClientCall<RequestT, ResponseT> extends ClientCall<RequestT, ResponseT> {
         @Override
-        public void start(Listener<ResponseT> responseListener, io.grpc.Metadata headers) {
+        public void start(Listener<ResponseT> responseListener, Metadata headers) {
         }
 
         @Override
