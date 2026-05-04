@@ -118,6 +118,40 @@ public class Http_auth_spiTest {
     }
 
     @Test
+    void buildersRejectMissingRequiredValues() {
+        AwsCredentialsIdentity identity = AwsCredentialsIdentity.create("access-key", "secret-key");
+        SdkHttpFullRequest request = httpRequest("/validation");
+
+        assertThatThrownBy(() -> AuthSchemeOption.builder().build())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("schemeId");
+        assertThatThrownBy(() -> AuthSchemeOption.builder().schemeId(" ").build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("schemeId");
+
+        assertThatThrownBy(() -> SignRequest.builder(identity).build())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("request");
+        assertThatThrownBy(() -> SignRequest.builder((AwsCredentialsIdentity) null).request(request).build())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("identity");
+
+        assertThatThrownBy(() -> AsyncSignRequest.builder(identity).build())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("request");
+        assertThatThrownBy(() -> AsyncSignRequest.builder((AwsCredentialsIdentity) null).request(request).build())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("identity");
+
+        assertThatThrownBy(() -> SignedRequest.builder().build())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("request");
+        assertThatThrownBy(() -> AsyncSignedRequest.builder().build())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("request");
+    }
+
+    @Test
     void signRequestBuilderRetainsIdentityRequestPayloadAndProperties() {
         AwsCredentialsIdentity identity = AwsCredentialsIdentity.create("access-key", "secret-key");
         SdkHttpFullRequest request = httpRequest("/sync");
