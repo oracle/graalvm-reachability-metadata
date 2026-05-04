@@ -1,0 +1,153 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.h2database:h2:2.1.210
+Command: `/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-8ea7ee1a/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 25 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+> Task :compileTestJava
+Note: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-8ea7ee1a/tests/src/com.h2database/h2/2.1.210/src/test/java/h2/DefaultAuthenticatorTest.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+
+> Task :test
+
+DatabaseTest > instantiatesConfiguredDatabaseEventListenerAndJavaObjectSerializer() FAILED
+    org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE serialized_payload([*]value JAVA_OBJECT)"; expected "identifier"; SQL statement:
+    CREATE TABLE serialized_payload(value JAVA_OBJECT) [42001-210]
+        at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:521)
+        at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:496)
+        at app//org.h2.message.DbException.getSyntaxError(DbException.java:265)
+        at app//org.h2.command.Parser.readIdentifier(Parser.java:5759)
+        at app//org.h2.command.Parser.parseTableColumnDefinition(Parser.java:9355)
+        at app//org.h2.command.Parser.parseCreateTable(Parser.java:9298)
+        at app//org.h2.command.Parser.parseCreate(Parser.java:6779)
+        at app//org.h2.command.Parser.parsePrepared(Parser.java:746)
+        at app//org.h2.command.Parser.parse(Parser.java:674)
+        at app//org.h2.command.Parser.parse(Parser.java:644)
+        at app//org.h2.command.Parser.prepareCommand(Parser.java:551)
+        at app//org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:615)
+        at app//org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:553)
+        at app//org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1116)
+        at app//org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:237)
+        at app//org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:223)
+        at app//h2.DatabaseTest.instantiatesConfiguredDatabaseEventListenerAndJavaObjectSerializer(DatabaseTest.java:31)
+
+ScriptCommandTest > scriptsDatabaseObjectsInSortedArrays() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "-- H2 2.1.210;"
+    to contain:
+      "CREATE" 
+        at h2.ScriptCommandTest.scriptsDatabaseObjectsInSortedArrays(ScriptCommandTest.java:27)
+
+SourceCompilerTest > compilesSourceAndReturnsPublicStaticMethod() FAILED
+    org.h2.message.DbException: Syntax error in SQL statement "/h2/dynamic/GeneratedFunction.java:6: error: repeated modifier\000a    public static public class GeneratedFunction {\000a                  ^\000a1 error\000a" [42000-210]
+        at app//org.h2.message.DbException.get(DbException.java:227)
+        at app//org.h2.message.DbException.get(DbException.java:203)
+        at app//org.h2.util.SourceCompiler.handleSyntaxError(SourceCompiler.java:449)
+        at app//org.h2.util.SourceCompiler.javaxToolsJavac(SourceCompiler.java:352)
+        at app//org.h2.util.SourceCompiler$1.findClass(SourceCompiler.java:161)
+        at java.base@25.0.2/java.lang.ClassLoader.loadClass(ClassLoader.java:557)
+        at java.base@25.0.2/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+        at app//org.h2.util.SourceCompiler.getClass(SourceCompiler.java:175)
+        at app//org.h2.util.SourceCompiler.getMethod(SourceCompiler.java:235)
+        at app//h2.SourceCompilerTest.compilesSourceAndReturnsPublicStaticMethod(SourceCompilerTest.java:29)
+
+        Caused by:
+        org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "/h2/dynamic/GeneratedFunction.java:6: error: repeated modifier\000a    public static public class GeneratedFunction {\000a                  ^\000a1 error\000a" [42000-210]
+            at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:521)
+            at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:496)
+            ... 10 more
+
+TraceSystemTest > createsTraceWriterAdapterForAdapterLevel() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: 4
+     but was: 1
+        at java.base@25.0.2/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.2/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//h2.TraceSystemTest.createsTraceWriterAdapterForAdapterLevel(TraceSystemTest.java:21)
+
+23 tests completed, 4 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-8ea7ee1a/tests/src/com.h2database/h2/2.1.210/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-8ea7ee1a/tests/src/com.h2database/h2/2.1.210/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED in 45s
+15 actionable tasks: 4 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3992-8ea7ee1a/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.h2database:h2:2.1.210 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 51s
+9 actionable tasks: 1 executed, 8 up-to-date
