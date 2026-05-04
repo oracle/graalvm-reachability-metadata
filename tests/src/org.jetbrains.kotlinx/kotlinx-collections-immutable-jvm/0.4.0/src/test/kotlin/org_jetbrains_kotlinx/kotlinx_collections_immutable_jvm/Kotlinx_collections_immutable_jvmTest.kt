@@ -205,6 +205,47 @@ public class Kotlinx_collections_immutable_jvmTest {
         assertThat(mapOf("right" to 20).toPersistentHashMap()).containsEntry("right", 20)
     }
 
+    @Test
+    fun hashPersistentMapBuilderViewsSupportEntryUpdatesAndRemovals(): Unit {
+        val one: CollidingValue = CollidingValue(1)
+        val two: CollidingValue = CollidingValue(2)
+        val three: CollidingValue = CollidingValue(3)
+        val four: CollidingValue = CollidingValue(4)
+        val five: CollidingValue = CollidingValue(5)
+        val original: PersistentMap<CollidingValue, String> = persistentHashMapOf(
+            one to "one",
+            two to "two",
+            three to "three",
+            four to "four",
+        )
+
+        val builder: PersistentMap.Builder<CollidingValue, String> = original.builder()
+        val beforeViewChanges: PersistentMap<CollidingValue, String> = builder.build()
+        val updatedEntry: MutableMap.MutableEntry<CollidingValue, String> = builder.entries.single { it.key == two }
+        val oldValue: String = updatedEntry.setValue("dos")
+
+        builder.entries.remove(builder.entries.single { it.key == three })
+        builder.keys.remove(one)
+        builder.values.remove("four")
+        builder[five] = "five"
+
+        assertThat(oldValue).isEqualTo("two")
+        assertThat(beforeViewChanges).isEqualTo(original)
+        assertThat(original)
+            .containsEntry(one, "one")
+            .containsEntry(two, "two")
+            .containsEntry(three, "three")
+            .containsEntry(four, "four")
+            .hasSize(4)
+        assertThat(builder.build())
+            .containsEntry(two, "dos")
+            .containsEntry(five, "five")
+            .doesNotContainKey(one)
+            .doesNotContainKey(three)
+            .doesNotContainKey(four)
+            .hasSize(2)
+    }
+
     private fun <E> ListIterator<E>.asReversedList(): List<E> {
         val reversed: MutableList<E> = mutableListOf()
         while (hasPrevious()) {
