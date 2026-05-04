@@ -15,10 +15,15 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+}
+
 graalvmNative {
     binaries {
         all {
             buildArgs.add('--initialize-at-run-time=org.aesh.terminal.utils.OSUtils')
+            buildArgs.add('--add-opens=java.base/java.lang=ALL-UNNAMED')
         }
     }
     agent {
