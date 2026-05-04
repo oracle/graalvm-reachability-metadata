@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.retries.AdaptiveRetryStrategy;
 import software.amazon.awssdk.retries.DefaultRetryStrategy;
@@ -383,6 +384,30 @@ public class RetriesTest {
         assertRefreshSucceeds(strategy, new IllegalStateException("transient connection reset"));
         assertRefreshSucceeds(strategy, new UnsupportedOperationException("retryable by second predicate"));
         assertRefreshFails(strategy, new IllegalStateException("permanent validation failure"));
+    }
+
+    @Test
+    void throttlingPredicateIsNotEvaluatedForNonRetryableFailures() {
+        AtomicBoolean throttlingPredicateCalled = new AtomicBoolean(false);
+        RetryStrategy strategy = StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnException(IllegalStateException.class)
+            .treatAsThrottling(failure -> {
+                throttlingPredicateCalled.set(true);
+                return true;
+            })
+            .throttlingBackoffStrategy(BackoffStrategy.fixedDelayWithoutJitter(Duration.ofMillis(17)))
+            .circuitBreakerEnabled(false)
+            .build();
+        RetryToken token = strategy.acquireInitialToken(AcquireInitialTokenRequest.create("non-retryable-throttling"))
+            .token();
+        IllegalArgumentException failure = new IllegalArgumentException("not retryable");
+
+        assertThatExceptionOfType(TokenAcquisitionFailedException.class)
+            .isThrownBy(() -> strategy.refreshRetryToken(refreshRequest(token, failure).build()))
+            .withCause(failure)
+            .withMessageContaining("non-retryable");
+        assertThat(throttlingPredicateCalled).isFalse();
     }
 
     @Test
