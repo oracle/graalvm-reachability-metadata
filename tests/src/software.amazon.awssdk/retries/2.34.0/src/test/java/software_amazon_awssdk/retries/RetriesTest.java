@@ -637,6 +637,98 @@ public class RetriesTest {
     }
 
     @Test
+    void defaultStrategyBuildersProvideConfiguredRetryBehaviorWithoutCustomBackoff() {
+        StandardRetryStrategy standard = DefaultRetryStrategy.standardStrategyBuilder()
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .treatAsThrottling(ThrottlingFailure.class::isInstance)
+            .circuitBreakerEnabled(false)
+            .build();
+        LegacyRetryStrategy legacy = DefaultRetryStrategy.legacyStrategyBuilder()
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .treatAsThrottling(ThrottlingFailure.class::isInstance)
+            .circuitBreakerEnabled(false)
+            .build();
+        AdaptiveRetryStrategy adaptive = DefaultRetryStrategy.adaptiveStrategyBuilder()
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .treatAsThrottling(ThrottlingFailure.class::isInstance)
+            .useClientDefaults(false)
+            .build();
+
+        assertThat(standard.maxAttempts()).isEqualTo(3);
+        assertThat(standard.useClientDefaults()).isTrue();
+        assertThat(refreshDelay(standard, new RuntimeException("standard default"), "default-standard-normal"))
+            .isBetween(Duration.ZERO, Duration.ofMillis(99));
+        assertThat(refreshDelay(standard, new ThrottlingFailure(), "default-standard-throttled"))
+            .isBetween(Duration.ZERO, Duration.ofMillis(999));
+
+        assertThat(legacy.maxAttempts()).isEqualTo(4);
+        assertThat(legacy.useClientDefaults()).isTrue();
+        assertThat(refreshDelay(legacy, new RuntimeException("legacy default"), "default-legacy-normal"))
+            .isBetween(Duration.ZERO, Duration.ofMillis(99));
+        assertThat(refreshDelay(legacy, new ThrottlingFailure(), "default-legacy-throttled"))
+            .isBetween(Duration.ofMillis(250), Duration.ofMillis(500));
+
+        assertThat(adaptive.maxAttempts()).isEqualTo(3);
+        assertThat(adaptive.useClientDefaults()).isFalse();
+        assertThat(adaptive.acquireInitialToken(AcquireInitialTokenRequest.create("default-adaptive-initial"))
+            .delay()).isEqualTo(Duration.ZERO);
+    }
+
+    @Test
+    void retryStrategyInterfaceBuilderCanCopyAndRebuildStrategies() {
+        RetryStrategy original = StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .backoffStrategy(BackoffStrategy.retryImmediately())
+            .circuitBreakerEnabled(false)
+            .build();
+
+        RetryStrategy rebuilt = original.toBuilder()
+            .maxAttempts(3)
+            .build();
+
+        assertThat(original.maxAttempts()).isEqualTo(2);
+        assertThat(rebuilt.maxAttempts()).isEqualTo(3);
+        assertThat(rebuilt.refreshRetryToken(refreshRequest(
+            rebuilt.acquireInitialToken(AcquireInitialTokenRequest.create("rebuilt-interface")).token(),
+            new RuntimeException("retryable through rebuilt strategy")).build()).delay()).isEqualTo(Duration.ZERO);
+    }
+
+    @Test
+    void factoryMethodsRejectNullTokensAndDelays() {
+        RetryToken token = new ForeignRetryToken();
+
+        assertThatThrownBy(() -> RecordSuccessRequest.create(null))
+            .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> AcquireInitialTokenResponse.create(null, Duration.ZERO))
+            .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> AcquireInitialTokenResponse.create(token, null))
+            .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> RefreshRetryTokenResponse.create(null, Duration.ZERO))
+            .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> RefreshRetryTokenResponse.create(token, null))
+            .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> RecordSuccessResponse.create(null))
+            .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void backoffStrategiesExposeReadableConfigurationStrings() {
+        assertThat(BackoffStrategy.retryImmediately().toString())
+            .contains("Immediately");
+        assertThat(BackoffStrategy.fixedDelay(Duration.ofMillis(12)).toString())
+            .contains("FixedDelayWithJitter", "delay=PT0.012S");
+        assertThat(BackoffStrategy.fixedDelayWithoutJitter(Duration.ofMillis(12)).toString())
+            .contains("FixedDelayWithoutJitter", "delay=PT0.012S");
+        assertThat(BackoffStrategy.exponentialDelay(Duration.ofMillis(10), Duration.ofMillis(30)).toString())
+            .contains("ExponentialDelayWithJitter", "baseDelay=PT0.01S", "maxDelay=PT0.03S");
+        assertThat(BackoffStrategy.exponentialDelayHalfJitter(Duration.ofMillis(10), Duration.ofMillis(30)).toString())
+            .contains("ExponentialDelayWithHalfJitter", "baseDelay=PT0.01S", "maxDelay=PT0.03S");
+        assertThat(BackoffStrategy.exponentialDelayWithoutJitter(Duration.ofMillis(10), Duration.ofMillis(30))
+            .toString()).contains("ExponentialDelayWithoutJitter", "baseDelay=PT0.01S", "maxDelay=PT0.03S");
+    }
+
+    @Test
     void strategiesAndTokensExposeReadableDiagnosticStrings() {
         StandardRetryStrategy strategy = StandardRetryStrategy.builder()
             .maxAttempts(2)
