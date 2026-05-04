@@ -175,6 +175,42 @@ public class Grpc_opentelemetryTest {
     }
 
     @Test
+    void grpcOpenTelemetryRegisterGlobalAppliesToNewBuilders() throws Exception {
+        AtomicInteger targetFilterCalls = new AtomicInteger();
+        GrpcOpenTelemetry openTelemetry = GrpcOpenTelemetry.newBuilder()
+                .targetAttributeFilter(target -> {
+                    targetFilterCalls.incrementAndGet();
+                    return target.contains("otel-global-test");
+                })
+                .build();
+        openTelemetry.registerGlobal();
+        String serverName = "otel-global-test-" + UUID.randomUUID();
+        Server server = InProcessServerBuilder.forName(serverName)
+                .directExecutor()
+                .addService(echoService())
+                .build()
+                .start();
+        ManagedChannel channel = InProcessChannelBuilder.forName(serverName)
+                .directExecutor()
+                .build();
+        try {
+            String response = ClientCalls.blockingUnaryCall(
+                    channel,
+                    ECHO_METHOD,
+                    CallOptions.DEFAULT.withDeadlineAfter(5, TimeUnit.SECONDS),
+                    "global");
+
+            assertThat(response).isEqualTo("echo:global");
+            assertThat(targetFilterCalls.get()).isGreaterThanOrEqualTo(1);
+        } finally {
+            channel.shutdownNow();
+            server.shutdownNow();
+            assertThat(channel.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(server.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void grpcOpenTelemetryDoesNotMaskRpcFailures() throws Exception {
         GrpcOpenTelemetry openTelemetry = GrpcOpenTelemetry.newBuilder().build();
         String serverName = "otel-failure-test-" + UUID.randomUUID();
