@@ -14,6 +14,7 @@ import com.google.cloud.location.ListLocationsRequest;
 import com.google.cloud.location.ListLocationsResponse;
 import com.google.cloud.location.Location;
 import com.google.cloud.location.LocationsGrpc;
+import com.google.cloud.location.LocationsProto;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.longrunning.CancelOperationRequest;
 import com.google.longrunning.DeleteOperationRequest;
@@ -22,8 +23,10 @@ import com.google.longrunning.ListOperationsRequest;
 import com.google.longrunning.ListOperationsResponse;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsGrpc;
+import com.google.longrunning.OperationsProto;
 import com.google.longrunning.WaitOperationRequest;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.StringValue;
@@ -38,6 +41,8 @@ import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.ServiceDescriptor;
 import io.grpc.Status;
+import io.grpc.protobuf.ProtoMethodDescriptorSupplier;
+import io.grpc.protobuf.ProtoServiceDescriptorSupplier;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,6 +103,61 @@ public class Grpc_google_common_protosTest {
         assertThat(serviceDefinition.getServiceDescriptor().getName()).isEqualTo(LOCATIONS_SERVICE);
         assertThat(serviceDefinition.getMethod(listMethod.getFullMethodName())).isNotNull();
         assertThat(serviceDefinition.getMethod(getMethod.getFullMethodName())).isNotNull();
+    }
+
+    @Test
+    void schemaDescriptorsExposeUnderlyingProtobufDefinitions() {
+        Descriptors.ServiceDescriptor operationsService = assertServiceSchema(
+                OperationsGrpc.getServiceDescriptor(),
+                OperationsProto.getDescriptor(),
+                OPERATIONS_SERVICE);
+        assertMethodSchema(
+                OperationsGrpc.getListOperationsMethod(),
+                operationsService,
+                "ListOperations",
+                ListOperationsRequest.getDescriptor(),
+                ListOperationsResponse.getDescriptor());
+        assertMethodSchema(
+                OperationsGrpc.getGetOperationMethod(),
+                operationsService,
+                "GetOperation",
+                GetOperationRequest.getDescriptor(),
+                Operation.getDescriptor());
+        assertMethodSchema(
+                OperationsGrpc.getDeleteOperationMethod(),
+                operationsService,
+                "DeleteOperation",
+                DeleteOperationRequest.getDescriptor(),
+                Empty.getDescriptor());
+        assertMethodSchema(
+                OperationsGrpc.getCancelOperationMethod(),
+                operationsService,
+                "CancelOperation",
+                CancelOperationRequest.getDescriptor(),
+                Empty.getDescriptor());
+        assertMethodSchema(
+                OperationsGrpc.getWaitOperationMethod(),
+                operationsService,
+                "WaitOperation",
+                WaitOperationRequest.getDescriptor(),
+                Operation.getDescriptor());
+
+        Descriptors.ServiceDescriptor locationsService = assertServiceSchema(
+                LocationsGrpc.getServiceDescriptor(),
+                LocationsProto.getDescriptor(),
+                LOCATIONS_SERVICE);
+        assertMethodSchema(
+                LocationsGrpc.getListLocationsMethod(),
+                locationsService,
+                "ListLocations",
+                ListLocationsRequest.getDescriptor(),
+                ListLocationsResponse.getDescriptor());
+        assertMethodSchema(
+                LocationsGrpc.getGetLocationMethod(),
+                locationsService,
+                "GetLocation",
+                GetLocationRequest.getDescriptor(),
+                Location.getDescriptor());
     }
 
     @Test
@@ -332,6 +392,39 @@ public class Grpc_google_common_protosTest {
         assertThat(method.getRequestMarshaller()).isNotNull();
         assertThat(method.getResponseMarshaller()).isNotNull();
         assertThat(method.getSchemaDescriptor()).isNotNull();
+    }
+
+    private static Descriptors.ServiceDescriptor assertServiceSchema(
+            ServiceDescriptor serviceDescriptor,
+            Descriptors.FileDescriptor fileDescriptor,
+            String serviceName) {
+        assertThat(serviceDescriptor.getSchemaDescriptor()).isInstanceOf(ProtoServiceDescriptorSupplier.class);
+        ProtoServiceDescriptorSupplier serviceSupplier =
+                (ProtoServiceDescriptorSupplier) serviceDescriptor.getSchemaDescriptor();
+
+        assertThat(serviceSupplier.getFileDescriptor()).isEqualTo(fileDescriptor);
+        Descriptors.ServiceDescriptor protoService = serviceSupplier.getServiceDescriptor();
+        assertThat(protoService.getFullName()).isEqualTo(serviceName);
+        assertThat(protoService.getFile()).isEqualTo(fileDescriptor);
+        return protoService;
+    }
+
+    private static <RequestT, ResponseT> void assertMethodSchema(
+            MethodDescriptor<RequestT, ResponseT> grpcMethod,
+            Descriptors.ServiceDescriptor protoService,
+            String methodName,
+            Descriptors.Descriptor requestType,
+            Descriptors.Descriptor responseType) {
+        assertThat(grpcMethod.getSchemaDescriptor()).isInstanceOf(ProtoMethodDescriptorSupplier.class);
+        ProtoMethodDescriptorSupplier methodSupplier =
+                (ProtoMethodDescriptorSupplier) grpcMethod.getSchemaDescriptor();
+
+        Descriptors.MethodDescriptor protoMethod = methodSupplier.getMethodDescriptor();
+        assertThat(protoMethod).isEqualTo(protoService.findMethodByName(methodName));
+        assertThat(protoMethod.getInputType()).isEqualTo(requestType);
+        assertThat(protoMethod.getOutputType()).isEqualTo(responseType);
+        assertThat(methodSupplier.getServiceDescriptor()).isEqualTo(protoService);
+        assertThat(methodSupplier.getFileDescriptor()).isEqualTo(protoService.getFile());
     }
 
     private static <RequestT, ResponseT> void assertMarshallerRoundTrip(
