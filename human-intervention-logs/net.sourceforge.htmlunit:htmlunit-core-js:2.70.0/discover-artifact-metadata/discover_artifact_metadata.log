@@ -1,0 +1,447 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df000-d8df-7c11-8d87-15cdb63a7917
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sourceforge.htmlunit:htmlunit-core-js:2.70.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.70.0" when "$version$" is replaced with "2.70.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+- Set "coordinates" to "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.70.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream repository/tag, then patch the JSON directly. After that I’ll do a quick JSON validity check so the file is usable.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json && sed -n '1,220p' build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+-rw-rw-r-- 1 vjovanov vjovanov 73 May  4 00:41 build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+{
+  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "htmlunit-core-js|net.sourceforge.htmlunit|htmlunit" metadata tests build/discovered-artifact-metadata -S' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json:2:  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:9:    "description" : "HtmlUnit CSS Parser is a Java library that parses CSS for the HtmlUnit browser automation project. It provides CSS syntax parsing components used to read and process stylesheets in Java applications.",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:5:        "typeReached": "net.sourceforge.htmlunit.xerces.parsers.AbstractDOMParser"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:7:      "type": "net.sourceforge.htmlunit.xerces.dom.DocumentImpl",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:19:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:25:        "typeReached": "net.sourceforge.htmlunit.cyberneko.HTMLConfiguration$ErrorReporter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:27:      "glob": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:31:        "typeReached": "net.sourceforge.htmlunit.cyberneko.HTMLConfiguration$ErrorReporter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:33:      "glob": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:37:        "typeReached": "net.sourceforge.htmlunit.cyberneko.HTMLConfiguration$ErrorReporter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:39:      "glob": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:43:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:45:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:49:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:51:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:55:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:57:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:61:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:63:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:67:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:69:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:73:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:75:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:79:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:81:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:85:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:87:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:91:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:93:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:96:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.DOMMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:99:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.SAXMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:102:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.XMLMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:105:      "bundle": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:9:    "description" : "NekoHtmlUnit is HtmlUnit's adaptation of NekoHTML, a tolerant HTML parser for Java. It preserves NekoHTML-style parsing while exposing HTML element classes in a way HtmlUnit can override and integrate into its browser simulation stack.",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:14:      "net.sourceforge.htmlunit"
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/build.gradle:14:    testImplementation "net.sourceforge.htmlunit:htmlunit-cssparser:$libraryVersion"
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/settings.gradle:20:rootProject.name = 'net.sourceforge.htmlunit.htmlunit-cssparser_tests'
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/src/test/java/net_sourceforge_htmlunit/htmlunit_cssparser/CSSStyleSheetImplTest.java:7:package net_sourceforge_htmlunit.htmlunit_cssparser;
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/src/test/java/net_sourceforge_htmlunit/htmlunit_cssparser/CSSMediaRuleImplTest.java:7:package net_sourceforge_htmlunit.htmlunit_cssparser;
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/gradle.properties:4:library.coordinates = net.sourceforge.htmlunit:htmlunit-cssparser:1.14.0
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/gradle.properties:6:metadata.dir = net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/build.gradle:14:    testImplementation "net.sourceforge.htmlunit:neko-htmlunit:$libraryVersion"
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/settings.gradle:20:rootProject.name = 'net.sourceforge.htmlunit.neko-htmlunit_tests'
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/XMLMessageFormatterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/XMLMessageFormatterTest.java:9:import net.sourceforge.htmlunit.xerces.impl.msg.XMLMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/SAXMessageFormatterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/SAXMessageFormatterTest.java:11:import net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:9:import net.sourceforge.htmlunit.cyberneko.HTMLConfiguration;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:10:import net.sourceforge.htmlunit.cyberneko.HTMLErrorReporter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:11:import net.sourceforge.htmlunit.xerces.xni.parser.XMLConfigurationException;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/DOMMessageFormatterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/DOMMessageFormatterTest.java:9:import net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:11:import net.sourceforge.htmlunit.cyberneko.parsers.DOMParser;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:12:import net.sourceforge.htmlunit.xerces.dom.DocumentImpl;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/gradle.properties:4:library.coordinates = net.sourceforge.htmlunit:neko-htmlunit:2.70.0
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/gradle.properties:6:metadata.dir = net.sourceforge.htmlunit/neko-htmlunit/2.70.0/
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/user-code-filter.json:7:      "includeClasses" : "net.sourceforge.htmlunit.**"
+
+web search: 
+web search: Maven Central net.sourceforge.htmlunit htmlunit-core-js 2.70.0 pom scm url
+web search: 
+web search: https://central.sonatype.com/artifact/net.sourceforge.htmlunit/htmlunit-core-js
+web search: 
+web search: site:github.com/HtmlUnit/htmlunit-core-js htmlunit-core-js
+web search: 
+web search: https://github.com/HtmlUnit/htmlunit-core-js
+web search: 
+web search: 'src' in https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0
+codex
+Maven Central has sources and Javadoc jars for `2.70.0`, but no tests/test-sources classifier in the artifact directory. I found the version tag in the upstream `HtmlUnit/htmlunit-core-js` repository, so I’m using Maven for source/docs and the tag’s `src/test` tree for tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sourceforge.htmlunit</groupId>
+  <artifactId>htmlunit-core-js</artifactId>
+  <version>2.70.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <name>HtmlUnit Core JS</name>
+  <organization>
+    <name>Gargoyle Software Inc.</name>
+    <url>http://www.GargoyleSoftware.com/</url>
+  </organization>
+  <packaging>jar</packaging>
+  <url>http://htmlunit.sourceforge.net</url>
+  <description>HtmlUnit adaptation of Mozilla Rhino Javascript engine for Java. Changes are documented by a diff (rhinoDiff.txt) contained in the generated jar files.</description>
+  <licenses>
+    <license>
+      <name>Mozilla Public License, Version 2.0</name>
+      <url>http://www.mozilla.org/MPL/2.0/index.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git@github.com:HtmlUnit/htmlunit-core-js.git</connection>
+    <developerConnection>scm:git:git@github.com:HtmlUnit/htmlunit-core-js.git</developerConnection>
+    <url>https://github.com/htmlunit</url>
+  </scm>
+  <developers>
+    <developer>
+      <name>Mozilla Rhino Team</name>
+      <id>MozillaRhinoTeam</id>
+    </developer>
+    <developer>
+      <name>HtmlUnit Team</name>
+      <id>HtmlUnitTeam</id>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-tests.jar || true
+curl -fsSI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+ succeeded in 233ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/sourceforge/htmlunit/htmlunit-core-js/2.70.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/sourceforge/htmlunit/htmlunit-core-js/2.70.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="htmlunit-core-js-2.70.0-javadoc.jar" title="htmlunit-core-js-2.70.0-javadoc.jar">htmlunit-core-js-2.70.0-javadoc.jar</a>               2023-01-22 11:00   1869868      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.asc" title="htmlunit-core-js-2.70.0-javadoc.jar.asc">htmlunit-core-js-2.70.0-javadoc.jar.asc</a>           2023-01-22 11:00       486      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.asc.md5" title="htmlunit-core-js-2.70.0-javadoc.jar.asc.md5">htmlunit-core-js-2.70.0-javadoc.jar.asc.md5</a>       2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.asc.sha1" title="htmlunit-core-js-2.70.0-javadoc.jar.asc.sha1">htmlunit-core-js-2.70.0-javadoc.jar.asc.sha1</a>      2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.md5" title="htmlunit-core-js-2.70.0-javadoc.jar.md5">htmlunit-core-js-2.70.0-javadoc.jar.md5</a>           2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.sha1" title="htmlunit-core-js-2.70.0-javadoc.jar.sha1">htmlunit-core-js-2.70.0-javadoc.jar.sha1</a>          2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0-sources.jar" title="htmlunit-core-js-2.70.0-sources.jar">htmlunit-core-js-2.70.0-sources.jar</a>               2023-01-22 11:00    990484      
+<a href="htmlunit-core-js-2.70.0-sources.jar.asc" title="htmlunit-core-js-2.70.0-sources.jar.asc">htmlunit-core-js-2.70.0-sources.jar.asc</a>           2023-01-22 11:00       486      
+<a href="htmlunit-core-js-2.70.0-sources.jar.asc.md5" title="htmlunit-core-js-2.70.0-sources.jar.asc.md5">htmlunit-core-js-2.70.0-sources.jar.asc.md5</a>       2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0-sources.jar.asc.sha1" title="htmlunit-core-js-2.70.0-sources.jar.asc.sha1">htmlunit-core-js-2.70.0-sources.jar.asc.sha1</a>      2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0-sources.jar.md5" title="htmlunit-core-js-2.70.0-sources.jar.md5">htmlunit-core-js-2.70.0-sources.jar.md5</a>           2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0-sources.jar.sha1" title="htmlunit-core-js-2.70.0-sources.jar.sha1">htmlunit-core-js-2.70.0-sources.jar.sha1</a>          2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0.jar" title="htmlunit-core-js-2.70.0.jar">htmlunit-core-js-2.70.0.jar</a>                       2023-01-22 11:00   1346966      
+<a href="htmlunit-core-js-2.70.0.jar.asc" title="htmlunit-core-js-2.70.0.jar.asc">htmlunit-core-js-2.70.0.jar.asc</a>                   2023-01-22 11:00       486      
+<a href="htmlunit-core-js-2.70.0.jar.asc.md5" title="htmlunit-core-js-2.70.0.jar.asc.md5">htmlunit-core-js-2.70.0.jar.asc.md5</a>               2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0.jar.asc.sha1" title="htmlunit-core-js-2.70.0.jar.asc.sha1">htmlunit-core-js-2.70.0.jar.asc.sha1</a>              2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0.jar.md5" title="htmlunit-core-js-2.70.0.jar.md5">htmlunit-core-js-2.70.0.jar.md5</a>                   2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0.jar.sha1" title="htmlunit-core-js-2.70.0.jar.sha1">htmlunit-core-js-2.70.0.jar.sha1</a>                  2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0.pom" title="htmlunit-core-js-2.70.0.pom">htmlunit-core-js-2.70.0.pom</a>                       2023-01-22 11:00      1763      
+<a href="htmlunit-core-js-2.70.0.pom.asc" title="htmlunit-core-js-2.70.0.pom.asc">htmlunit-core-js-2.70.0.pom.asc</a>                   2023-01-22 11:00       486      
+<a href="htmlunit-core-js-2.70.0.pom.asc.md5" title="htmlunit-core-js-2.70.0.pom.asc.md5">htmlunit-core-js-2.70.0.pom.asc.md5</a>               2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0.pom.asc.sha1" title="htmlunit-core-js-2.70.0.pom.asc.sha1">htmlunit-core-js-2.70.0.pom.asc.sha1</a>              2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0.pom.md5" title="htmlunit-core-js-2.70.0.pom.md5">htmlunit-core-js-2.70.0.pom.md5</a>                   2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0.pom.sha1" title="htmlunit-core-js-2.70.0.pom.sha1">htmlunit-core-js-2.70.0.pom.sha1</a>                  2023-01-22 11:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 549ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 22:41:48 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"bec84403c1d71c15563def61c9cfcc1c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=KRZrYPKppV5vM4Gsrg3ZA1R5o%2BK%2BZutB6zo7zb%2BR7J05UqWnysaV2uOg4YMBCHBnThu9em9OsV0R3RPe8Of3betSNHctkhSAq4HqzFMsbdXUOen%2BOThh7%2FnnbUR9KIUljD1q%2F42Acnc3Px6k8HLUBU5DNzYPcGuHXw6bdGifoPRhlBxkrdSr9vcZLnjYIJ959mF7G8Ces5%2BbWXN1xMDD7s2r8njJ1vzClUUb%2FiZK3zcWwHPpDTRwVegFAloaDEVimB%2BIVndWCnkF0Zbfq%2FsYvw%3D%3D--KG115VVELSgANJNG--TpBZXtQVvTQvEGH6ue5fPA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.265418254.1777848108; expires=Mon, 03 May 2027 22:41:48 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 03 May 2027 22:41:48 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5101:F790A:1075950:CD1B6F:69F7CF2C
+
+
+ succeeded in 630ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 22:41:48 GMT
+content-type: text/html
+cf-ray: 9f62c6768ceb504e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 03 May 2026 22:41:49 GMT
+content-type: text/html
+cf-ray: 9f62c6788e9bc4a5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Central Repository htmlunit-core-js 2.70.0 Maven
+web search: 
+web search: github.com/HtmlUnit/htmlunit-core-js
+web search: 
+web search: https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/
+web search: 
+web search: https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/src/test
+codex
+I’m going to add only the artifact metadata fields requested. Since the published `jar` exists and this is a Java library artifact usable from JVM code, I’ll leave `language` and `not-for-native-image` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+index d9dd23416aedb60e5761204d1af11d43d405059d..37a1d21ac38787593e91d432dbe9af855ceb8588
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-core-js",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
++  "description" : "HtmlUnit Core JS is HtmlUnit's maintained fork and adaptation of the Rhino JavaScript engine for Java. It supplies the JavaScript runtime pieces, packaging, and tests used by HtmlUnit to execute browser scripts from JVM applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+index d9dd23416aedb60e5761204d1af11d43d405059d..37a1d21ac38787593e91d432dbe9af855ceb8588
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-core-js",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
++  "description" : "HtmlUnit Core JS is HtmlUnit's maintained fork and adaptation of the Rhino JavaScript engine for Java. It supplies the JavaScript runtime pieces, packaging, and tests used by HtmlUnit to execute browser scripts from JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+ succeeded in 0ms:
+{
+  "coordinates": "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
+  "repository-url": "https://github.com/HtmlUnit/htmlunit-core-js",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
+  "test-code-url": "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
+  "description": "HtmlUnit Core JS is HtmlUnit's maintained fork and adaptation of the Rhino JavaScript engine for Java. It supplies the JavaScript runtime pieces, packaging, and tests used by HtmlUnit to execute browser scripts from JVM applications."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-sources.jar | sed -n '1,12p'
+curl -fsSI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-javadoc.jar | sed -n '1,12p'
+curl -fsSI https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991
+ succeeded in 198ms:
+HTTP/2 200 
+date: Sun, 03 May 2026 22:42:13 GMT
+content-type: application/java-archive
+content-length: 1869868
+cf-ray: 9f62c7148b12c8a4-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 310004
+etag: "4e8e327caf8b6b9be244cb3d2beb7d85"
+last-modified: Sun, 22 Jan 2023 11:00:58 GMT
+x-checksum-md5: 4e8e327caf8b6b9be244cb3d2beb7d85
+x-checksum-sha1: 3be7de6870f614e75bb075f05c7908d7fb31846c
+HTTP/2 200 
+date: Sun, 03 May 2026 22:41:48 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"bec84403c1d71c15563def61c9cfcc1c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+index d9dd23416aedb60e5761204d1af11d43d405059d..37a1d21ac38787593e91d432dbe9af855ceb8588
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-core-js",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
++  "description" : "HtmlUnit Core JS is HtmlUnit's maintained fork and adaptation of the Rhino JavaScript engine for Java. It supplies the JavaScript runtime pieces, packaging, and tests used by HtmlUnit to execute browser scripts from JVM applications."
+ }
+
+web search: 
+web search: net.sourceforge.htmlunit htmlunit-core-js 2.70.0 sources javadoc jar Maven Central
+codex
+Updated [net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json).
+
+I used Maven Central for the sources and Javadoc jars, and the upstream `HtmlUnit/htmlunit-core-js` repository/tag for the test suite URL. Central confirms the artifact is a JVM `jar`, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/?utm_source=openai))
+
+Validation done: `jq` parsed the JSON successfully, and the resolved source, documentation, and test URLs returned `200`.
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+index d9dd23416aedb60e5761204d1af11d43d405059d..37a1d21ac38787593e91d432dbe9af855ceb8588
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-core-js",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
++  "description" : "HtmlUnit Core JS is HtmlUnit's maintained fork and adaptation of the Rhino JavaScript engine for Java. It supplies the JavaScript runtime pieces, packaging, and tests used by HtmlUnit to execute browser scripts from JVM applications."
+ }
+
+tokens used
+73,534
+Updated [net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json).
+
+I used Maven Central for the sources and Javadoc jars, and the upstream `HtmlUnit/htmlunit-core-js` repository/tag for the test suite URL. Central confirms the artifact is a JVM `jar`, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/?utm_source=openai))
+
+Validation done: `jq` parsed the JSON successfully, and the resolved source, documentation, and test URLs returned `200`.
+Ran agent for net.sourceforge.htmlunit:htmlunit-core-js:2.70.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991/build/agent-artifact-discovery-logs/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-546bd991/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 10s
+9 actionable tasks: 4 executed, 5 from cache
