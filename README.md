@@ -11,9 +11,13 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 
 **Missing metadata for a library you depend on?** Run the Native Build Tools task in your project to discover gaps and open tickets here automatically:
 
+**Gradle**
+
 ```bash
 ./gradlew listLibrariesMissingMetadata -PcreateIssues=true
 ```
+
+**Maven**
 
 ```bash
 ./mvnw native:list-libraries-missing-metadata -DcreateIssues=true
