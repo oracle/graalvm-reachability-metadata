@@ -13,8 +13,10 @@ import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiException;
 import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.auth.ApiKeyCredentials;
 import com.google.auth.Credentials;
 import com.google.cloud.NoCredentials;
@@ -28,6 +30,7 @@ import com.google.cloud.grpc.BaseGrpcServiceException;
 import com.google.cloud.grpc.GrpcTransportOptions;
 import com.google.cloud.spi.ServiceRpcFactory;
 import io.grpc.Status;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -83,6 +86,44 @@ public class Google_cloud_core_grpcTest {
             executor.shutdownNow();
             otherExecutor.shutdownNow();
         }
+    }
+
+    @Test
+    void apiCallSettingsUseProvidedRetrySettings() {
+        RetrySettings retrySettings = RetrySettings.newBuilder()
+                .setTotalTimeoutDuration(Duration.ofSeconds(10))
+                .setInitialRetryDelayDuration(Duration.ofMillis(100))
+                .setRetryDelayMultiplier(1.5)
+                .setMaxRetryDelayDuration(Duration.ofSeconds(1))
+                .setMaxAttempts(3)
+                .setJittered(true)
+                .setInitialRpcTimeoutDuration(Duration.ofSeconds(2))
+                .setRpcTimeoutMultiplier(1.0)
+                .setMaxRpcTimeoutDuration(Duration.ofSeconds(2))
+                .build();
+
+        UnaryCallSettings<?, ?> callSettings = GrpcTransportOptions.newBuilder()
+                .build()
+                .getApiCallSettings(retrySettings)
+                .build();
+
+        RetrySettings configuredRetrySettings = callSettings.getRetrySettings();
+
+        assertThat(configuredRetrySettings.getTotalTimeoutDuration())
+                .isEqualTo(retrySettings.getTotalTimeoutDuration());
+        assertThat(configuredRetrySettings.getInitialRetryDelayDuration())
+                .isEqualTo(retrySettings.getInitialRetryDelayDuration());
+        assertThat(configuredRetrySettings.getRetryDelayMultiplier()).isEqualTo(retrySettings.getRetryDelayMultiplier());
+        assertThat(configuredRetrySettings.getMaxRetryDelayDuration())
+                .isEqualTo(retrySettings.getMaxRetryDelayDuration());
+        assertThat(configuredRetrySettings.getMaxAttempts()).isEqualTo(retrySettings.getMaxAttempts());
+        assertThat(configuredRetrySettings.isJittered()).isEqualTo(retrySettings.isJittered());
+        assertThat(configuredRetrySettings.getInitialRpcTimeoutDuration())
+                .isEqualTo(retrySettings.getInitialRpcTimeoutDuration());
+        assertThat(configuredRetrySettings.getRpcTimeoutMultiplier()).isEqualTo(retrySettings.getRpcTimeoutMultiplier());
+        assertThat(configuredRetrySettings.getMaxRpcTimeoutDuration())
+                .isEqualTo(retrySettings.getMaxRpcTimeoutDuration());
+        assertThat(callSettings.getRetryableCodes()).isEmpty();
     }
 
     @Test
