@@ -32,7 +32,7 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
   <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><img alt="Open an existing library update ticket" src="docs/assets/readme/button-update-metadata.svg" width="460"></a>
 </p>
 
-### 🔎 Check if Your Library or Framework Is Supported
+### 🔎 Check if Your Library or Framework is Supported
 
 To quickly check whether reachability metadata exists for a specific library, run this command directly from your terminal:
 
