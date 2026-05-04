@@ -47,6 +47,7 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.NamedAsset;
 import org.jboss.shrinkwrap.api.exporter.StreamExporter;
 import org.jboss.shrinkwrap.api.formatter.Formatter;
@@ -144,6 +145,15 @@ public class Arquillian_container_test_apiTest {
             markerBytes = markerStream.readAllBytes();
         }
         assertThat(markerBytes).isEmpty();
+    }
+
+    @Test
+    void testableRecognizesArchiveMarkedWithPublicMarkerPath() {
+        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "pre-marked.jar");
+
+        archive.add(EmptyAsset.INSTANCE, Testable.MARKER_FILE_PATH);
+
+        assertThat(Testable.isArchiveToTest(archive)).isTrue();
     }
 
     @Test
