@@ -218,6 +218,32 @@ public class Metrics_spiTest {
     }
 
     @Test
+    void metricCollectionReturnsAllDirectChildrenWithMatchingName() {
+        SdkMetric<String> outcome = SdkMetric.create(
+                uniqueMetricName("attempt-outcome"), String.class, MetricLevel.INFO, MetricCategory.CORE);
+        MetricCollector root = MetricCollector.create("duplicate-child-root");
+        MetricCollector firstAttempt = root.createChild("attempt");
+        MetricCollector secondAttempt = root.createChild("attempt");
+        MetricCollector operation = root.createChild("operation");
+
+        firstAttempt.reportMetric(outcome, "throttled");
+        secondAttempt.reportMetric(outcome, "success");
+        operation.reportMetric(outcome, "complete");
+        firstAttempt.createChild("attempt").reportMetric(outcome, "nested");
+        MetricCollection collection = root.collect();
+
+        List<MetricCollection> matchingAttempts = collection.childrenWithName("attempt")
+                .collect(Collectors.toList());
+
+        assertThat(matchingAttempts).hasSize(2);
+        assertThat(matchingAttempts).extracting(MetricCollection::name).containsExactly("attempt", "attempt");
+        assertThat(matchingAttempts).extracting(child -> child.metricValues(outcome))
+                .containsExactly(List.of("throttled"), List.of("success"));
+        assertThat(matchingAttempts.get(0).childrenWithName("attempt")).singleElement()
+                .satisfies(child -> assertThat(child.metricValues(outcome)).containsExactly("nested"));
+    }
+
+    @Test
     void metricCollectionStreamsAndIteratesOverCollectedMetricRecords() {
         SdkMetric<Integer> bytes = SdkMetric.create(
                 uniqueMetricName("bytes"), Integer.class, MetricLevel.TRACE, MetricCategory.HTTP_CLIENT);
