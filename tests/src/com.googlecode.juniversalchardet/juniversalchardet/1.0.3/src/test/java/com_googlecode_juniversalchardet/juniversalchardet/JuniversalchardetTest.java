@@ -113,6 +113,23 @@ public class JuniversalchardetTest {
     }
 
     @Test
+    void detectsSingleByteCyrillicTextAfterDataEnd() {
+        UniversalDetector detector = new UniversalDetector(null);
+        byte[] windows1251RussianText = repeat(bytes(
+                0xCF, 0xF0, 0xE8, 0xE2, 0xE5, 0xF2, ' ', 0xEC, 0xE8, 0xF0, '.', ' ',
+                0xDD, 0xF2, 0xEE, ' ', 0xF0, 0xF3, 0xF1, 0xF1, 0xEA, 0xE8, 0xE9, ' ',
+                0xF2, 0xE5, 0xEA, 0xF1, 0xF2, '.', ' ',
+                0xC4, 0xEB, 0xFF, ' ', 0xEF, 0xF0, 0xEE, 0xE2, 0xE5, 0xF0, 0xEA, 0xE8, ' ',
+                0xEE, 0xEF, 0xF0, 0xE5, 0xE4, 0xE5, 0xEB, 0xE5, 0xED, 0xE8, 0xFF, ' ',
+                0xEA, 0xEE, 0xE4, 0xE8, 0xF0, 0xEE, 0xE2, 0xEA, 0xE8, '.', ' '), 12);
+
+        feedWithOffsetChunks(detector, windows1251RussianText, 17);
+        detector.dataEnd();
+
+        assertThat(detector.getDetectedCharset()).isEqualTo(Constants.CHARSET_WINDOWS_1251);
+    }
+
+    @Test
     void handlesEmptyAndZeroLengthInputWithoutReportingCharset() {
         List<String> reports = new ArrayList<>();
         UniversalDetector detector = new UniversalDetector(reports::add);
@@ -135,6 +152,14 @@ public class JuniversalchardetTest {
             detector.handleData(paddedChunk, 2, count);
             sourceOffset += count;
         }
+    }
+
+    private static byte[] repeat(byte[] value, int count) {
+        byte[] result = new byte[value.length * count];
+        for (int index = 0; index < count; index++) {
+            System.arraycopy(value, 0, result, index * value.length, value.length);
+        }
+        return result;
     }
 
     private static byte[] bytes(int... values) {
