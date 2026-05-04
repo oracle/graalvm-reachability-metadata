@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import zio.prelude.NonEmptyList
+import zio.prelude.NonEmptyMap
 import zio.prelude.These
 import zio.prelude.ZSet
 import zio.prelude.ZValidation
@@ -35,6 +36,26 @@ class Zio_prelude_3Test {
     assertEquals(NonEmptyList((3, 0), (1, 1), (4, 2), (1, 3), (5, 4)), numbers.zipWithIndex)
     assertTrue(numbers.exists(_ == 4))
     assertFalse(numbers.forall(_ > 3))
+  }
+
+  @Test
+  def nonEmptyMapGroupsAndTransformsEntriesWithoutLosingNonEmptyInvariant(): Unit = {
+    val grouped: Option[NonEmptyMap[Int, Iterable[String]]] =
+      NonEmptyMap.groupByOption(List("pear", "plum", "fig", "kiwi"))(_.length)
+
+    assertEquals(Some(Map(4 -> List("pear", "plum", "kiwi"), 3 -> List("fig"))), grouped.map(_.mapValues(_.toList).toMap))
+    assertTrue(NonEmptyMap.groupByOption(List.empty[String])(_.length).isEmpty)
+
+    val inventory: NonEmptyMap[String, Int] =
+      (NonEmptyMap.single("apples" -> 2) + ("bananas" -> 3)) ++ List("pears" -> 4, "apples" -> 5)
+
+    assertEquals(Map("apples" -> 5, "bananas" -> 3, "pears" -> 4), inventory.toMap)
+    assertEquals(Set("apples", "bananas", "pears"), inventory.keySet.toSet)
+    assertEquals(Map("apples" -> "5 items", "bananas" -> "3 items", "pears" -> "4 items"), inventory.mapValues(count => s"$count items").toMap)
+    assertEquals(Map("bananas" -> 3, "pears" -> 4), inventory.remove("apples"))
+    assertTrue(inventory.tailNonEmpty.isDefined)
+    assertTrue(NonEmptyMap.fromMapOption(Map.empty[String, Int]).isEmpty)
+    assertEquals(Some(NonEmptyMap.single("only" -> 1)), NonEmptyMap.fromMapOption(Map("only" -> 1)))
   }
 
   @Test
