@@ -1,9 +1,21 @@
 # GraalVM Reachability Metadata Repository <img src="docs/assets/readme/title-robot-facing-user.png" height="64" align="middle" style="vertical-align: middle">
 
-[![Libraries supported](https://img.shields.io/badge/dynamic/json.svg?label=libraries%20supported&query=%24.badges.librariesSupported&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat-square&color=0A7EC2)](COVERAGE.md)
-[![Tested library versions](https://img.shields.io/badge/dynamic/json.svg?label=tested%20library%20versions&query=%24.badges.testedLibraryVersions&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat-square&color=BF8700)](COVERAGE.md)
-[![Dynamic access coverage](https://img.shields.io/badge/dynamic/json.svg?label=dynamic%20access%20coverage&query=%24.badges.dynamicAccessCoverage&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat-square&color=1F9D55)](COVERAGE.md)
-[![Tested lines of code](https://img.shields.io/badge/dynamic/json.svg?label=tested%20lines%20of%20code&query=%24.badges.testedLinesOfCode&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat-square&color=C2410C)](COVERAGE.md)
+<a href="COVERAGE.md"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/dynamic/json.svg?label=libraries%20supported&query=%24.badges.librariesSupported&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat&color=38BDF8&labelColor=21262D">
+  <img alt="Libraries supported" src="https://img.shields.io/badge/dynamic/json.svg?label=libraries%20supported&query=%24.badges.librariesSupported&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat&color=0A7EC2&labelColor=E5E7EB">
+</picture></a>
+<a href="COVERAGE.md"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/dynamic/json.svg?label=tested%20library%20versions&query=%24.badges.testedLibraryVersions&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat&color=F59E0B&labelColor=21262D">
+  <img alt="Tested library versions" src="https://img.shields.io/badge/dynamic/json.svg?label=tested%20library%20versions&query=%24.badges.testedLibraryVersions&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat&color=BF8700&labelColor=E5E7EB">
+</picture></a>
+<a href="COVERAGE.md"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/dynamic/json.svg?label=dynamic%20access%20coverage&query=%24.badges.dynamicAccessCoverage&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat&color=34D399&labelColor=21262D">
+  <img alt="Dynamic access coverage" src="https://img.shields.io/badge/dynamic/json.svg?label=dynamic%20access%20coverage&query=%24.badges.dynamicAccessCoverage&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat&color=1F9D55&labelColor=E5E7EB">
+</picture></a>
+<a href="COVERAGE.md"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/dynamic/json.svg?label=tested%20lines%20of%20code&query=%24.badges.testedLinesOfCode&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat&color=FB923C&labelColor=21262D">
+  <img alt="Tested lines of code" src="https://img.shields.io/badge/dynamic/json.svg?label=tested%20lines%20of%20code&query=%24.badges.testedLinesOfCode&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat&color=C2410C&labelColor=E5E7EB">
+</picture></a>
 
 This repository contains [reachability metadata](https://www.graalvm.org/latest/reference-manual/native-image/metadata/) for JVM libraries and frameworks, enabling them to work out of the box with [GraalVM Native Image](https://www.graalvm.org/latest/reference-manual/native-image/).
 
@@ -52,7 +64,7 @@ We welcome contributions from the community. Thank you!
 Before submitting a pull request, please [open a ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml) and [review our contribution guide](docs/CONTRIBUTING.md).
 
 > [!NOTE]
-> We always fix issues by changing the system, not the metadata itself. Tests are updated only very rarely, and the metadata itself is never modified by hand.
+> We always fix issues by changing the system, not the problem itself. Tests are updated only very rarely, and the metadata itself is never modified by hand.
 
 ### Further Information
 
