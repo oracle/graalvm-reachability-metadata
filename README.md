@@ -9,6 +9,11 @@ This repository provides [reachability metadata](https://www.graalvm.org/latest/
 
 To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html) or the [GraalVM Maven Plugin](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html); they automatically use the [reachability metadata](https://www.graalvm.org/latest/reference-manual/native-image/metadata/) from this repository.
 
+To collect metadata for a library that isn't covered yet, attach the `native-image-agent` via Native Build Tools and copy the result into your project:
+
+- Gradle: `./gradlew -Pagent test` then `./gradlew metadataCopy --task test --dir src/main/resources/META-INF/native-image` ([docs](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#agent-support)).
+- Maven: `./mvnw -Pnative -Dagent=true test native:metadata-copy` ([docs](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#agent-support)).
+
 ---
 
 <p align="center">
