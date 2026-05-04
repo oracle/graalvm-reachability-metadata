@@ -21,7 +21,6 @@ from utility_scripts.local_ci_verification import (
     run_local_ci_verification,
     _github_repo_slug_from_url,
     _graalvm_home_for_java_version,
-    _merge_test_matrix_entries,
     _run_infrastructure_matrix_entries,
     _run_recorded_command,
     _run_recorded_command_without_new_docker_images,
@@ -286,44 +285,6 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertEqual(gates, ["check-metadata-files", "run-consecutive-tests"])
         self.assertNotIn("disable-docker-networking", gates)
         self.assertNotIn("restore-docker-networking", gates)
-
-    def test_merge_test_matrix_preserves_metadata_batches_when_added_versions_exist(self) -> None:
-        metadata_entries = [
-            {
-                "coordinates": "org.example:demo:1.0.0",
-                "versions": ["1.0.0", "1.0.1"],
-                "version": "25",
-                "os": "ubuntu-22.04",
-                "nativeImageMode": "current-defaults",
-            },
-            {
-                "coordinates": "org.example:other:2.0.0",
-                "versions": ["2.0.0"],
-                "version": "25",
-                "os": "ubuntu-22.04",
-                "nativeImageMode": "current-defaults",
-            },
-        ]
-        added_version_entries = [
-            {
-                "coordinates": "org.example:demo:1.0.0",
-                "versions": ["1.0.1"],
-                "version": "25",
-                "os": "ubuntu-22.04",
-                "nativeImageMode": "current-defaults",
-            },
-        ]
-
-        merged = _merge_test_matrix_entries(metadata_entries, added_version_entries)
-
-        self.assertEqual(
-            merged,
-            [
-                metadata_entries[0],
-                metadata_entries[1],
-                added_version_entries[0],
-            ],
-        )
 
     def test_test_matrix_prepulls_docker_images_without_privileged_network_scripts(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:

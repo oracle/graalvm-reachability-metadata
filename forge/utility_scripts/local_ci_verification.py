@@ -244,13 +244,6 @@ def _run_verification_once(
             result,
             "changed-metadata-matrix",
         )
-        changed_tested_versions_matrix = _gradle_json_output(
-            repo_path,
-            "generateChangedTestedVersionsMatrix",
-            base_commit,
-            result,
-            "changed-tested-versions-matrix",
-        )
         changed_infrastructure_matrix = {}
         if _should_run_infrastructure_tests(changed_files):
             changed_infrastructure_matrix = _gradle_json_output(
@@ -263,10 +256,7 @@ def _run_verification_once(
     except _GradleOutputFailure as exc:
         return exc.record
 
-    test_entries = _merge_test_matrix_entries(
-        _matrix_entries(changed_metadata_matrix),
-        _matrix_entries(changed_tested_versions_matrix),
-    )
+    test_entries = _matrix_entries(changed_metadata_matrix)
     failed = _run_test_matrix_entries(repo_path, test_entries, result)
     if failed is not None:
         return failed
@@ -606,31 +596,6 @@ def _matrix_entries(matrix: dict) -> list[dict]:
     if isinstance(include, list):
         return [entry for entry in include if isinstance(entry, dict)]
     return []
-
-
-def _merge_test_matrix_entries(changed_metadata_entries: list[dict], changed_tested_version_entries: list[dict]) -> list[dict]:
-    """Preserve changed-metadata batches and added tested-version entries without exact duplicates."""
-    return _deduplicate_test_matrix_entries(changed_metadata_entries + changed_tested_version_entries)
-
-
-def _deduplicate_test_matrix_entries(entries: list[dict]) -> list[dict]:
-    seen: set[tuple[str, tuple[str, ...], str, str, str]] = set()
-    deduplicated: list[dict] = []
-    for entry in entries:
-        versions = entry.get("versions")
-        version_tuple = tuple(str(version) for version in versions) if isinstance(versions, list) else ()
-        key = (
-            str(entry.get("coordinates") or ""),
-            version_tuple,
-            str(entry.get("version") or ""),
-            str(entry.get("os") or ""),
-            str(entry.get("nativeImageMode") or ""),
-        )
-        if key in seen:
-            continue
-        seen.add(key)
-        deduplicated.append(entry)
-    return deduplicated
 
 
 def _matrix_env(entry: dict) -> dict[str, str]:
