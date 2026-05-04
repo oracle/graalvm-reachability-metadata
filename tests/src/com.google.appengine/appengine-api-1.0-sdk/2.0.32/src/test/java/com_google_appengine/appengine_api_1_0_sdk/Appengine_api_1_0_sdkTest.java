@@ -67,6 +67,8 @@ import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.apphosting.api.ApiProxy;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -378,6 +380,20 @@ public class Appengine_api_1_0_sdkTest {
         assertThat(message.getHeaders()).containsExactly(header);
         assertThat(header.getName()).isEqualTo("X-Correlation-Id");
         assertThat(header.getValue()).isEqualTo("corr-1");
+    }
+
+    @Test
+    void usersServiceReadsCurrentUserStateFromEnvironment() {
+        ensureAppEngineEnvironment();
+        UserService userService = UserServiceFactory.getUserService();
+        User currentUser = userService.getCurrentUser();
+
+        assertThat(userService.isUserLoggedIn()).isTrue();
+        assertThat(userService.isUserAdmin()).isFalse();
+        assertThat(currentUser).isNotNull();
+        assertThat(currentUser.getEmail()).isEqualTo("tester@example.com");
+        assertThat(currentUser.getAuthDomain()).isEqualTo("example.com");
+        assertThat(currentUser.getUserId()).isNull();
     }
 
     @Test
