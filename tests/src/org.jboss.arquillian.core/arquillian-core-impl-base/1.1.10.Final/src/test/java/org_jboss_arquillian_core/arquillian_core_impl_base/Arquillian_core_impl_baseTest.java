@@ -8,7 +8,7 @@ package org_jboss_arquillian_core.arquillian_core_impl_base;
 
 import org.junit.jupiter.api.Test;
 
-class Arquillian_core_impl_baseTest {
+public class Arquillian_core_impl_baseTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
