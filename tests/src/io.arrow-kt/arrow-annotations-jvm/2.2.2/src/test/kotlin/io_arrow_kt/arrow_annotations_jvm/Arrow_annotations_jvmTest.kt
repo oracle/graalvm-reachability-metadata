@@ -64,12 +64,15 @@ public class ArrowAnnotationsJvmTest {
         val defaultConfiguration: optics = optics()
         val prismDslConfiguration: optics = optics(arrayOf(OpticsTarget.PRISM, OpticsTarget.DSL))
         val equivalentConfiguration: optics = optics(arrayOf(OpticsTarget.PRISM, OpticsTarget.DSL))
+        val reorderedConfiguration: optics = optics(arrayOf(OpticsTarget.DSL, OpticsTarget.PRISM))
         val lensConfiguration: optics = optics(arrayOf(OpticsTarget.LENS))
 
         assertThat(defaultConfiguration.targets).isEmpty()
         assertThat(prismDslConfiguration.targets)
             .containsExactly(OpticsTarget.PRISM, OpticsTarget.DSL)
         assertThat(prismDslConfiguration).isEqualTo(equivalentConfiguration)
+        assertThat(prismDslConfiguration.hashCode()).isEqualTo(equivalentConfiguration.hashCode())
+        assertThat(prismDslConfiguration).isNotEqualTo(reorderedConfiguration)
         assertThat(prismDslConfiguration).isNotEqualTo(lensConfiguration)
     }
 
@@ -132,6 +135,21 @@ public class ArrowAnnotationsJvmTest {
     }
 
     @Test
+    fun opticsAnnotationsCanDecorateObjectsEnumsAndNestedDomainTypes() {
+        val original: OpticsAnnotatedSession = OpticsAnnotatedSession(
+            id = "session-1",
+            state = OpticsAnnotatedSession.State.OPEN,
+            defaults = OpticsAnnotatedDefaults,
+        )
+
+        val closed: OpticsAnnotatedSession = original.close()
+
+        assertThat(original.state.isTerminal()).isFalse()
+        assertThat(closed.state).isEqualTo(OpticsAnnotatedSession.State.CLOSED)
+        assertThat(closed.summary()).isEqualTo("session-1:closed:standard")
+    }
+
+    @Test
     fun opticsAnnotationCanUseDefaultTargetsOnSealedDomainModels() {
         val authorized: DefaultOpticsPayment = DefaultOpticsPayment.Authorized(reference = "auth-1")
         val rejected: DefaultOpticsPayment = DefaultOpticsPayment.Rejected(reason = "insufficient funds")
@@ -174,6 +192,16 @@ public class ArrowAnnotationsJvmTest {
         assertThat(SyntheticRegistry.names()).containsExactly("alpha", "beta")
         assertThat(SyntheticMode.ENABLED.render()).isEqualTo("enabled")
     }
+
+    @Test
+    fun syntheticAnnotationCanMarkReceiversAndLocalValues() {
+        val receiver: SyntheticAnnotatedReceiver = SyntheticAnnotatedReceiver("arrow")
+        val branchSelector: SyntheticLocalValueSelector = SyntheticLocalValueSelector(prefix = "mode")
+
+        assertThat(receiver.renderWithSyntheticReceiver("annotations")).isEqualTo("arrow:annotations")
+        assertThat(branchSelector.localValueBranch(enabled = true)).isEqualTo("mode:enabled")
+        assertThat(branchSelector.localValueBranch(enabled = false)).isEqualTo("mode:disabled")
+    }
 }
 
 private fun OpticsTarget.description(): String = when (this) {
@@ -215,6 +243,33 @@ private data class CopyAnnotatedPricing(
     val amount: Double,
     val currency: String,
 )
+
+@optics(targets = [OpticsTarget.LENS, OpticsTarget.DSL])
+private data class OpticsAnnotatedSession(
+    val id: String,
+    val state: State,
+    val defaults: OpticsAnnotatedDefaults,
+) {
+    fun close(): OpticsAnnotatedSession = copy(state = State.CLOSED)
+
+    fun summary(): String = "$id:${state.label}:${defaults.profileName}"
+
+    @optics(targets = [OpticsTarget.PRISM])
+    enum class State(
+        val label: String,
+    ) {
+        OPEN("open"),
+        CLOSED("closed"),
+        ;
+
+        fun isTerminal(): Boolean = this == CLOSED
+    }
+}
+
+@optics(targets = [OpticsTarget.ISO])
+private object OpticsAnnotatedDefaults {
+    const val profileName: String = "standard"
+}
 
 @optics
 private sealed interface DefaultOpticsPayment {
@@ -296,4 +351,25 @@ private enum class SyntheticMode {
 
     @synthetic
     fun render(): @synthetic SyntheticString = name.lowercase()
+}
+
+@synthetic
+private data class SyntheticAnnotatedReceiver(
+    val value: @synthetic SyntheticString,
+)
+
+@synthetic
+private fun @receiver:synthetic SyntheticAnnotatedReceiver.renderWithSyntheticReceiver(
+    @synthetic suffix: @synthetic SyntheticString,
+): @synthetic SyntheticString = "$value:$suffix"
+
+@synthetic
+private class SyntheticLocalValueSelector(
+    private val prefix: @synthetic SyntheticString,
+) {
+    @synthetic
+    fun localValueBranch(@synthetic enabled: Boolean): @synthetic SyntheticString {
+        @synthetic val mode: @synthetic SyntheticString = if (enabled) "enabled" else "disabled"
+        return "$prefix:$mode"
+    }
 }
