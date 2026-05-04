@@ -1,0 +1,1150 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019df399-8e29-75a0-a0e4-5263f1843004
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0.2" when "$version$" is replaced with "3.0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+- Set "coordinates" to "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven and the upstream repo, then update the JSON in place with version-templated URLs.
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+{
+  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2"
+}
+
+exec
+/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.github\\.ajalt\\.mordant-mordant-jvm-jna-jvm-3\\.0\\.2\\.json"'$'"'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+
+web search: 
+web search: Maven com.github.ajalt.mordant mordant-jvm-jna-jvm 3.0.2
+web search: 
+web search: https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/
+web search: 
+web search: 
+codex
+Maven Central has a JVM JAR plus a sources JAR for this exact artifact, so I’m treating it as a Native Image candidate. I’m checking the published POM/module and the upstream tag layout next, because the test URL usually needs to come from GitHub when no test JAR is published.
+exec
+/bin/bash -lc 'curl -L --fail --silent https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.ajalt.mordant</groupId>
+  <artifactId>mordant-jvm-jna-jvm</artifactId>
+  <version>3.0.2</version>
+  <name>Mordant JNA Interface</name>
+  <description>Colorful multiplatform styling Kotlin for command-line applications</description>
+  <url>https://github.com/ajalt/mordant/</url>
+  <inceptionYear>2018</inceptionYear>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>ajalt</id>
+      <name>AJ Alt</name>
+      <url>https://github.com/ajalt/</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/ajalt/mordant.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/ajalt/mordant.git</developerConnection>
+    <url>https://github.com/ajalt/</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.0.10</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.14.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ajalt.mordant</groupId>
+      <artifactId>mordant-core-jvm</artifactId>
+      <version>3.0.2</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+exec
+/bin/bash -lc 'curl -L --fail --silent https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2.module' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../mordant-jvm-jna/3.0.2/mordant-jvm-jna-3.0.2.module",
+    "group": "com.github.ajalt.mordant",
+    "module": "mordant-jvm-jna",
+    "version": "3.0.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.8"
+    }
+  },
+  "variants": [
+    {
+      "name": "jvmApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "mordant-jvm-jna-jvm.jar",
+          "url": "mordant-jvm-jna-jvm-3.0.2.jar",
+          "size": 38316,
+          "sha512": "2676044d0d1a0cf7de26642528acb07c40d674dbecf4d227ddb128ca5b437b17009f3ffb9374c3d91fb0691752089f6f065059834f47e51de7861e9f3dc37037",
+          "sha256": "41063442c8891b2774536a9b87a5062a7fd20e6f1949974c6da72f49472d6f4d",
+          "sha1": "64aa5240720a08af4fd72bc1cf52c05bd20dea1d",
+          "md5": "2248fd1a4a2aba94fa92893ca7bbcea2"
+        }
+      ]
+    },
+    {
+      "name": "jvmRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.10"
+          }
+        },
+        {
+          "group": "net.java.dev.jna",
+          "module": "jna",
+          "version": {
+            "requires": "5.14.0"
+          }
+        },
+        {
+          "group": "com.github.ajalt.mordant",
+          "module": "mordant-core",
+          "version": {
+            "requires": "3.0.2"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "mordant-jvm-jna-jvm.jar",
+          "url": "mordant-jvm-jna-jvm-3.0.2.jar",
+          "size": 38316,
+          "sha512": "2676044d0d1a0cf7de26642528acb07c40d674dbecf4d227ddb128ca5b437b17009f3ffb9374c3d91fb0691752089f6f065059834f47e51de7861e9f3dc37037",
+          "sha256": "41063442c8891b2774536a9b87a5062a7fd20e6f1949974c6da72f49472d6f4d",
+          "sha1": "64aa5240720a08af4fd72bc1cf52c05bd20dea1d",
+          "md5": "2248fd1a4a2aba94fa92893ca7bbcea2"
+        }
+      ]
+    },
+    {
+      "name": "jvmSourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "mordant-jvm-jna-jvm-sources.jar",
+          "url": "mordant-jvm-jna-jvm-3.0.2-sources.jar",
+          "size": 7766,
+          "sha512": "8086e95c64efcaaeca577e6b76fa96997b13740208f2b90ba96d7184f6d8a693704122fa7674bb5b2ab4af197edbfd36798e0cead640ffef62fd450e2269ba73",
+          "sha256": "ba4d912f4636a55b19aeb9754188161ecada44e904f47597697efcb1f3aa5c14",
+          "sha1": "f17ac292602303c4fc91efbe01f205273f5720eb",
+          "md5": "3b828c1619eb9834420e037ca090ffda"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+
+exec
+/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' metadata tests build | head -120" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:256:                    "source-code-url": "https://example.com/source-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:258:                    "test-code-url": "https://example.com/tests-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:259:                    "documentation-url": "https://example.com/docs-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:29:                    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:30:                    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:49:                        .contains("source-code-url")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:52:                        .contains("documentation-url")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:62:                    "source-code-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-sources.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:63:                    "documentation-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:204:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:206:                .containsEntry("test-code-url", "https://example.com/tests")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:207:                .containsEntry("documentation-url", "https://example.com/docs")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:209:                .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:253:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:255:                .containsEntry("test-code-url", "https://example.com/tests")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:256:                .containsEntry("documentation-url", "https://example.com/docs")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:258:                .containsEntry("language", Map.of("name", "groovy", "version", "4.0"));
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-$version$/src/test/java/",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-javadoc.jar",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/scala-logging/scala-logging_3/$version$/scala-logging_3-$version$-sources.jar",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:7:    "test-code-url" : "https://github.com/lightbend-labs/scala-logging/tree/v$version$/src/test",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/scala-logging/scala-logging_3/$version$/scala-logging_3-$version$-javadoc.jar",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/thauvin/erik/urlencoder/urlencoder-lib-jvm/$version$/urlencoder-lib-jvm-$version$-sources.jar",
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:7:    "test-code-url" : "https://github.com/ethauvin/urlencoder/tree/$version$/urlencoder-lib/src",
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/thauvin/erik/urlencoder/urlencoder-lib-jvm/$version$/urlencoder-lib-jvm-$version$-javadoc.jar",
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:211:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:212:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:213:            assertThat(indexEntries.get(0)).containsEntry("test-code-url", "N/A");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:252:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:253:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:288:                    .containsEntry("test-code-url", baseUrl + "/svn/demo/tags/$version$/src/test");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:380:        appendUrlField(fields, "source-code-url", sourceCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:381:        appendUrlField(fields, "test-code-url", testCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:382:        appendUrlField(fields, "documentation-url", documentationUrl);
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/$version$/opengauss-jdbc-$version$-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:10:    "test-code-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/io.netty/netty-codec-memcache/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+metadata/io.netty/netty-codec-memcache/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-memcache/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-javadoc.jar",
+metadata/io.netty/netty-codec-memcache/index.json:74:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+metadata/io.netty/netty-codec-memcache/index.json:76:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-memcache/index.json:77:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-javadoc.jar",
+metadata/antlr/antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/antlr/antlr/index.json:7:    "test-code-url" : "https://www.antlr2.org/download/antlr-$version$.tar.gz",
+metadata/antlr/antlr/index.json:8:    "documentation-url" : "https://www.antlr2.org/download/antlr-$version$.tar.gz",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/$version$/barchart-udt-bundle-$version$-sources.jar",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:7:    "test-code-url" : "https://github.com/barchart/barchart-udt/tree/barchart-udt-$version$/barchart-udt-it/barchart-udt-it-02-bundle-test/src/test",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/$version$/barchart-udt-bundle-$version$-javadoc.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-sources.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-tests.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-javadoc.jar",
+metadata/io.netty/netty-transport-classes-io_uring/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-io_uring/$version$/netty-transport-classes-io_uring-$version$-sources.jar",
+metadata/io.netty/netty-transport-classes-io_uring/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-io_uring/$version$/netty-transport-classes-io_uring-$version$-tests.jar",
+metadata/io.netty/netty-transport-classes-io_uring/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-io_uring/$version$/netty-transport-classes-io_uring-$version$-javadoc.jar",
+metadata/io.grpc/grpc-inprocess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-inprocess/$version$/grpc-inprocess-$version$-sources.jar",
+metadata/io.grpc/grpc-inprocess/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/inprocess/src/test",
+metadata/io.grpc/grpc-inprocess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-inprocess/$version$/grpc-inprocess-$version$-javadoc.jar",
+metadata/io.grpc/grpc-rls/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-rls/$version$/grpc-rls-$version$-sources.jar",
+metadata/io.grpc/grpc-rls/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/rls/src/test/java",
+metadata/io.grpc/grpc-rls/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-rls/$version$/grpc-rls-$version$-javadoc.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-sources.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:8:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-tests.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-javadoc.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:21:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-sources.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:23:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-tests.jar",
+metadata/io.netty/netty-codec-mqtt/index.json:24:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-javadoc.jar",
+metadata/io.grpc/grpc-grpclb/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-grpclb/$version$/grpc-grpclb-$version$-sources.jar",
+metadata/io.grpc/grpc-grpclb/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/grpclb/src/test",
+metadata/io.grpc/grpc-grpclb/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-grpclb/$version$/grpc-grpclb-$version$-javadoc.jar",
+metadata/io.grpc/grpc-googleapis/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-googleapis/$version$/grpc-googleapis-$version$-sources.jar",
+metadata/io.grpc/grpc-googleapis/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/googleapis/src/test",
+metadata/io.grpc/grpc-googleapis/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-googleapis/$version$/grpc-googleapis-$version$-javadoc.jar",
+metadata/io.netty/netty-codec-smtp/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:8:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-javadoc.jar",
+metadata/io.netty/netty-codec-smtp/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-smtp/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-javadoc.jar",
+metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/$version$/grpc-netty-$version$-sources.jar",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/netty/src/test",
+metadata/io.grpc/grpc-netty/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/$version$/grpc-netty-$version$-javadoc.jar",
+metadata/io.netty/netty-codec-xml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-xml/$version$/netty-codec-xml-$version$-sources.jar",
+metadata/io.netty/netty-codec-xml/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-xml/$version$/netty-codec-xml-$version$-test-sources.jar",
+metadata/io.netty/netty-codec-xml/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-xml/$version$/netty-codec-xml-$version$-javadoc.jar",
+metadata/io.grpc/grpc-context/index.json:5:    "source-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/context/java",
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/test/java/io/grpc",
+metadata/io.grpc/grpc-context/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-api/$version$/grpc-api-$version$-javadoc.jar",
+metadata/io.grpc/grpc-context/index.json:63:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/$version$/grpc-context-$version$-sources.jar",
+metadata/io.grpc/grpc-context/index.json:65:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/context/src/test",
+metadata/io.grpc/grpc-context/index.json:66:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/$version$/grpc-context-$version$-javadoc.jar",
+metadata/io.netty/netty-transport-classes-kqueue/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-kqueue/$version$/netty-transport-classes-kqueue-$version$-sources.jar",
+metadata/io.netty/netty-transport-classes-kqueue/index.json:7:    "test-code-url" : "https://github.com/netty/netty/tree/netty-$version$/transport-native-kqueue/src/test/java/io/netty/channel/kqueue",
+metadata/io.netty/netty-transport-classes-kqueue/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-kqueue/$version$/netty-transport-classes-kqueue-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+metadata/io.grpc/grpc-opentelemetry/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-opentelemetry/$version$/grpc-opentelemetry-$version$-sources.jar",
+metadata/io.grpc/grpc-opentelemetry/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/opentelemetry/src/test/java",
+metadata/io.grpc/grpc-opentelemetry/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-opentelemetry/$version$/grpc-opentelemetry-$version$-javadoc.jar",
+metadata/io.grpc/grpc-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/$version$/grpc-core-$version$-sources.jar",
+metadata/io.grpc/grpc-core/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/core/src/test",
+metadata/io.grpc/grpc-core/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/$version$/grpc-core-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/$version$/plexus-component-annotations-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/$version$/plexus-component-annotations-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-source-release.zip",
+metadata/org.codehaus.plexus/plexus-xml/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:27:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-source-release.zip",
+metadata/org.codehaus.plexus/plexus-xml/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-javadoc.jar",
+metadata/io.netty/netty-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+metadata/io.netty/netty-common/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-test-sources.jar",
+metadata/io.netty/netty-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-javadoc.jar",
+metadata/io.netty/netty-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+metadata/io.netty/netty-common/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-test-sources.jar",
+
+exec
+/bin/bash -lc "curl -I -L --fail --silent https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-javadoc.jar | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -I -L --silent https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-tests.jar | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc 'curl -L --fail --silent https://api.github.com/repos/ajalt/mordant/git/ref/tags/v3.0.2' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -I -L --silent https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-test-sources.jar | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 269ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 15:27:27 GMT
+content-type: text/html
+cf-ray: 9f688796799ee291-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 273ms:
+ succeeded in 329ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 15:27:28 GMT
+content-type: application/java-archive
+content-length: 261
+cf-ray: 9f6887967fbfe293-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "fa067bff8719cb48cad0d9d1132776de"
+last-modified: Sat, 15 Feb 2025 18:39:18 GMT
+x-checksum-md5: fa067bff8719cb48cad0d9d1132776de
+x-checksum-sha1: 4cdcd48f429a19113266d147f8a053155c4835ca
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 380ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 15:27:28 GMT
+content-type: text/html
+cf-ray: 9f6887967f57126d-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc 'curl -L --fail --silent https://api.github.com/repos/ajalt/mordant/git/ref/tags/3.0.2' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -I -L --silent https://github.com/ajalt/mordant/tree/v3.0.2 | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -I -L --silent https://github.com/ajalt/mordant/tree/3.0.2 | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 258ms:
+{
+  "ref": "refs/tags/3.0.2",
+  "node_id": "MDM6UmVmMTA0NjkzOTIxOnJlZnMvdGFncy8zLjAuMg==",
+  "url": "https://api.github.com/repos/ajalt/mordant/git/refs/tags/3.0.2",
+  "object": {
+    "sha": "8c3217d33d0b0e6ee562b17720631b2206c5151c",
+    "type": "commit",
+    "url": "https://api.github.com/repos/ajalt/mordant/git/commits/8c3217d33d0b0e6ee562b17720631b2206c5151c"
+  }
+}
+
+ succeeded in 508ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 15:27:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=3nnBsszLS5Pq8gFz0%2Brcv81D6Nn8czSHAUteG9FRBUVmD8IrZyNs%2BLEurVcb5reCnEJ6zhDyzgf9U3IRt1ZkUo0FbDorwhTBiL8UdG7mMnvEswqt3WAvgcyD%2F87FN5LvZ8xemjvfUImeQjKuUzsXZJevBW7jRm6M%2Fao4g%2BPGP6%2BwavNK5NvRv6LKuP68nZv%2BtujQmXGBuZt7FxMk0uH90ZSf87yno7JkjEW6eyVvJGe3tM8hvcHbOsM0kZ8B%2F6dQ2nPVY%2BZm0PVWTgVgQQYO0g%3D%3D--RAGnNARE1Bl9b6N%2B--74NftHf4ACEfwnJGtsDsSA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1591256524.1777908452; expires=Tue, 04 May 2027 15:27:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 15:27:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: B196:128124:2FB8E9A:25F5C07:69F8BAE4
+
+
+ succeeded in 928ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 15:27:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2443c1eb739df87ad9f1d2b611386eef"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=7ULGYq2LZQ7sILLg%2F5AseT6ROHoYpMrJSsIn5xT97ghVEjgF4EdHiojKMwTjIAfVdkiEyLEtc5KPfCQeXSu%2FrnlgSZ26hJz0r2uRCrfutpPgG0w9iBF5t1xb5OtLhKBvHJ0wWc72XQJtl2W53Jno1fBV1BniII4nt9CK%2BSL8j1QHKNtHgJZcVfE8WN6IwQ8nBzdEI%2BUjV2t1zeYw%2FCGgZR7Z5K5rmLslRcFf9Qs%2FnrdV55aq7n8nwIcxK1gx5uWENDki%2BBlPdhzg2VuBf9J63w%3D%3D--pxqaI6wymAxeEp20--HJHXXq5fC4xiQ4zHTfJcAQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1134708261.1777908452; expires=Tue, 04 May 2027 15:27:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 15:27:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: B198:FB0AC:2E283F7:24BE6AB:69F8BAE4
+
+
+exec
+/bin/bash -lc "curl -L --fail --silent https://api.github.com/repos/ajalt/mordant/git/trees/3.0.2?recursive=1 | rg 'mordant-jvm-jna|src/commonTest|src/jvmTest|src/test|docs|README|mkdocs|dokka'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -L --fail --silent https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-sources.jar -o /tmp/mordant-jvm-jna-jvm-3.0.2-sources.jar && jar tf /tmp/mordant-jvm-jna-jvm-3.0.2-sources.jar | sed -n '1,120p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -L --fail --silent https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2.jar -o /tmp/mordant-jvm-jna-jvm-3.0.2.jar && jar tf /tmp/mordant-jvm-jna-jvm-3.0.2.jar | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 162ms:
+META-INF/
+META-INF/MANIFEST.MF
+jvmMain/
+jvmMain/com/
+jvmMain/com/github/
+jvmMain/com/github/ajalt/
+jvmMain/com/github/ajalt/mordant/
+jvmMain/com/github/ajalt/mordant/terminal/
+jvmMain/com/github/ajalt/mordant/terminal/terminalinterface/
+jvmMain/com/github/ajalt/mordant/terminal/terminalinterface/jna/
+jvmMain/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface.jna.linux.kt
+jvmMain/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface.jna.macos.kt
+jvmMain/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface.jna.windows.kt
+jvmMain/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterfaceProvider.jna.kt
+
+ succeeded in 186ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/mordant-jvm-jna.kotlin_module
+com/
+com/github/
+com/github/ajalt/
+com/github/ajalt/mordant/
+com/github/ajalt/mordant/terminal/
+com/github/ajalt/mordant/terminal/terminalinterface/
+com/github/ajalt/mordant/terminal/terminalinterface/jna/
+com/github/ajalt/mordant/terminal/terminalinterface/jna/MacosLibC$termios.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/MacosLibC$winsize.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/MacosLibC.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/PosixLibC$termios.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/PosixLibC$winsize.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/PosixLibC.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterfaceJnaLinux.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterfaceJnaMacos.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterfaceJnaWindows.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterfaceProviderJna.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterfaceProviderJnaNative.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface_jna_macosKt.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$CONSOLE_SCREEN_BUFFER_INFO.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$COORD.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$Companion.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$FOCUS_EVENT_RECORD.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$HANDLE.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$INPUT_RECORD$Companion.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$INPUT_RECORD$EventUnion.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$INPUT_RECORD.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$KEY_EVENT_RECORD.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$MENU_EVENT_RECORD.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$MOUSE_EVENT_RECORD.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$SMALL_RECT.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$UnionChar.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib$WINDOW_BUFFER_SIZE_RECORD.class
+com/github/ajalt/mordant/terminal/terminalinterface/jna/WinKernel32Lib.class
+META-INF/native-image/
+META-INF/native-image/com.github.ajalt.mordant/
+META-INF/native-image/com.github.ajalt.mordant/mordant-jvm-jna/
+META-INF/native-image/com.github.ajalt.mordant/mordant-jvm-jna/reflection-config.json
+META-INF/native-image/com.github.ajalt.mordant/mordant-jvm-jna/resource-config.json
+META-INF/proguard/
+META-INF/proguard/mordant-jvm-jna.pro
+META-INF/services/
+META-INF/services/com.github.ajalt.mordant.terminal.TerminalInterfaceProvider
+
+ succeeded in 498ms:
+      "path": "README.md",
+      "path": "docs",
+      "path": "docs/css",
+      "path": "docs/css/logo-styles.css",
+      "path": "docs/guide.md",
+      "path": "docs/img",
+      "path": "docs/img/animation.svg",
+      "path": "docs/img/animation_text.gif",
+      "path": "docs/img/gradient_black_36dp.svg",
+      "path": "docs/img/gradient_white_24dp.svg",
+      "path": "docs/img/progess_simple.gif",
+      "path": "docs/img/progress_cells.gif",
+      "path": "docs/img/progress_context.gif",
+      "path": "docs/img/progress_multi.gif",
+      "path": "docs/img/select_list.gif",
+      "path": "docs/img/tour.png",
+      "path": "docs/input.md",
+      "path": "docs/progress.md",
+      "path": "mkdocs.yml",
+      "path": "mordant-coroutines/README.md",
+      "path": "mordant-coroutines/src/commonTest",
+      "path": "mordant-coroutines/src/commonTest/kotlin",
+      "path": "mordant-coroutines/src/commonTest/kotlin/com",
+      "path": "mordant-coroutines/src/commonTest/kotlin/com/github",
+      "path": "mordant-coroutines/src/commonTest/kotlin/com/github/ajalt",
+      "path": "mordant-coroutines/src/commonTest/kotlin/com/github/ajalt/mordant",
+      "path": "mordant-coroutines/src/commonTest/kotlin/com/github/ajalt/mordant/animation",
+      "path": "mordant-coroutines/src/commonTest/kotlin/com/github/ajalt/mordant/animation/coroutines",
+      "path": "mordant-coroutines/src/commonTest/kotlin/com/github/ajalt/mordant/animation/coroutines/CoroutinesAnimatorTest.kt",
+      "path": "mordant-jvm-ffm/README.md",
+      "path": "mordant-jvm-graal-ffi/README.md",
+      "path": "mordant-jvm-jna",
+      "path": "mordant-jvm-jna/README.md",
+      "path": "mordant-jvm-jna/api",
+      "path": "mordant-jvm-jna/api/mordant-jvm-jna.api",
+      "path": "mordant-jvm-jna/build.gradle.kts",
+      "path": "mordant-jvm-jna/gradle.properties",
+      "path": "mordant-jvm-jna/src",
+      "path": "mordant-jvm-jna/src/jvmMain",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface.jna.linux.kt",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface.jna.macos.kt",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface.jna.windows.kt",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterfaceProvider.jna.kt",
+      "path": "mordant-jvm-jna/src/jvmMain/resources",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image/com.github.ajalt.mordant",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image/com.github.ajalt.mordant/mordant-jvm-jna",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image/com.github.ajalt.mordant/mordant-jvm-jna/reflection-config.json",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image/com.github.ajalt.mordant/mordant-jvm-jna/resource-config.json",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/proguard",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/proguard/mordant-jvm-jna.pro",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/services",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/services/com.github.ajalt.mordant.terminal.TerminalInterfaceProvider",
+      "path": "mordant-markdown/README.md",
+      "path": "mordant-markdown/src/commonTest",
+      "path": "mordant-markdown/src/commonTest/kotlin",
+      "path": "mordant-markdown/src/commonTest/kotlin/com",
+      "path": "mordant-markdown/src/commonTest/kotlin/com/github",
+      "path": "mordant-markdown/src/commonTest/kotlin/com/github/ajalt",
+      "path": "mordant-markdown/src/commonTest/kotlin/com/github/ajalt/mordant",
+      "path": "mordant-markdown/src/commonTest/kotlin/com/github/ajalt/mordant/markdown",
+      "path": "mordant-markdown/src/commonTest/kotlin/com/github/ajalt/mordant/markdown/MarkdownTest.kt",
+      "path": "mordant-omnibus/README.md",
+      "path": "mordant/README.md",
+      "path": "mordant/src/commonTest",
+      "path": "mordant/src/commonTest/kotlin",
+      "path": "mordant/src/commonTest/kotlin/com",
+      "path": "mordant/src/commonTest/kotlin/com/github",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/animation",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/animation/AnimationTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/animation/progress",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/animation/progress/BaseProgressAnimationTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/input",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/input/InteractiveSelectListTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/input/SelectListAnimationTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/platform",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/platform/MultiplatformSystemTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/rendering",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/rendering/TextAlignmentTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/rendering/TextOverflowWrapTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/rendering/TextStyleOscTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/rendering/TextWhitespaceTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/rendering/ThemeTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/rendering/internal",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/rendering/internal/CellWidthTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/table",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/table/LinearLayoutTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/table/TableAlignmentTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/table/TableBorderStyleTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/table/TableBorderTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/table/TableColumnWidthTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/table/TableCsvTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/table/TableTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/terminal",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/terminal/HtmlRendererTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/terminal/PromptTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/terminal/TerminalCursorTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/terminal/TerminalTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/test",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/test/RenderingTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/test/TestUtils.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/DefinitionListTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/HorizontalRuleTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/MultiProgressLayoutTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/OrderedListTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/PaddingTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/PanelTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/ProgressBarTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/ProgressLayoutTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/SelectListTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/SpinnerTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/TextTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/UnorderedListTest.kt",
+      "path": "mordant/src/commonTest/kotlin/com/github/ajalt/mordant/widgets/ViewportTest.kt",
+      "path": "mordant/src/commonTest/resources",
+      "path": "mordant/src/commonTest/resources/multiplatform_system_test.txt",
+      "path": "mordant/src/jvmTest",
+      "path": "mordant/src/jvmTest/kotlin",
+      "path": "mordant/src/jvmTest/kotlin/com",
+      "path": "mordant/src/jvmTest/kotlin/com/github",
+      "path": "mordant/src/jvmTest/kotlin/com/github/ajalt",
+      "path": "mordant/src/jvmTest/kotlin/com/github/ajalt/mordant",
+      "path": "mordant/src/jvmTest/kotlin/com/github/ajalt/mordant/animation",
+      "path": "mordant/src/jvmTest/kotlin/com/github/ajalt/mordant/animation/progress",
+      "path": "mordant/src/jvmTest/kotlin/com/github/ajalt/mordant/animation/progress/ThreadAnimatorTest.kt",
+      "path": "mordant/src/jvmTest/kotlin/com/github/ajalt/mordant/terminal",
+      "path": "mordant/src/jvmTest/kotlin/com/github/ajalt/mordant/terminal/StderrTerminalTest.kt",
+      "path": "prepare_docs.sh",
+      "path": "samples/detection/README.md",
+      "path": "samples/drawing/README.md",
+      "path": "samples/hexviewer/README.md",
+      "path": "samples/markdown/README.md",
+      "path": "samples/progress/README.md",
+      "path": "samples/select/README.md",
+      "path": "samples/table/README.md",
+      "path": "test/graalvm/src/test",
+      "path": "test/graalvm/src/test/kotlin",
+      "path": "test/graalvm/src/test/kotlin/GraalSmokeTest.kt",
+
+exec
+/bin/bash -lc "curl -L --fail --silent https://api.github.com/repos/ajalt/mordant/git/trees/3.0.2?recursive=1 | rg 'jna.*Test|Test.*jna|mordant-jvm-jna/src/.*Test|jvm-jna'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc 'curl -L --fail --silent https://raw.githubusercontent.com/ajalt/mordant/3.0.2/mordant-jvm-jna/README.md' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -L --fail --silent https://raw.githubusercontent.com/ajalt/mordant/3.0.2/README.md | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 179ms:
+<h1 align="center">
+    <img src="docs/img/tour.png">
+</h1>
+
+Mordant is a multiplatform library for rendering styled text in the terminal. You can use it to
+add color and style to text, create tables, draw animations, and more.
+
+Mordant has:
+
+* Easy colorful ANSI output with automatic detection of terminal capabilities
+* Markdown rendering directly to the terminal
+* Widgets for laying out terminal output, including lists, tables, panels, and more
+* Support for animating any widget, like progress bars and dashboards
+
+## Documentation
+
+The full documentation can be found on [the website](https://ajalt.github.io/mordant/).
+
+## Installation
+
+Mordant is distributed through Maven Central.
+
+```groovy
+dependencies {
+    implementation("com.github.ajalt.mordant:mordant:3.0.2")
+
+    // optional extensions for running animations with coroutines
+    implementation("com.github.ajalt.mordant:mordant-coroutines:3.0.2")
+
+    // optional widget for rendering Markdown
+    implementation("com.github.ajalt.mordant:mordant-markdown:3.0.2")
+}
+```
+
+On JVM, there are more granular dependencies available. 
+[See the docs for details](https://ajalt.github.io/mordant/guide/).
+
+###### If you're using Maven instead of Gradle, use `<artifactId>mordant-jvm</artifactId>`
+
+#### Snapshots
+
+<details>
+<summary>Snapshot builds are also available</summary>
+
+<a href="https://oss.sonatype.org/content/repositories/snapshots/com/github/ajalt/mordant/mordant/"><img src="https://img.shields.io/nexus/s/com.github.ajalt.mordant/mordant?color=blue&label=latest%20shapshot&server=https%3A%2F%2Foss.sonatype.org"/></a>
+
+<p>
+You'll need to add the Sonatype snapshots repository:
+
+```kotlin
+repositories {
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+    }
+}
+```
+</p>
+</details>
+
+## License
+
+    Copyright 2018 AJ Alt
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ succeeded in 220ms:
+# Mordant JVM JNA
+
+This is a JVM-only module that adds a `TerminalInterface` implementation that uses [JNA]. This
+module supports all JDK versions, but links to a bundled native library, so it increases your JAR
+size.
+
+```kotlin
+implementation("com.github.ajalt.mordant:mordant-jvm-jna:$mordantVersion")
+```
+
+[JNA]: https://github.com/java-native-access/jna
+
+ succeeded in 224ms:
+      "path": "mordant-jvm-jna",
+      "path": "mordant-jvm-jna/README.md",
+      "path": "mordant-jvm-jna/api",
+      "path": "mordant-jvm-jna/api/mordant-jvm-jna.api",
+      "path": "mordant-jvm-jna/build.gradle.kts",
+      "path": "mordant-jvm-jna/gradle.properties",
+      "path": "mordant-jvm-jna/src",
+      "path": "mordant-jvm-jna/src/jvmMain",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface.jna.linux.kt",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface.jna.macos.kt",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterface.jna.windows.kt",
+      "path": "mordant-jvm-jna/src/jvmMain/kotlin/com/github/ajalt/mordant/terminal/terminalinterface/jna/TerminalInterfaceProvider.jna.kt",
+      "path": "mordant-jvm-jna/src/jvmMain/resources",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image/com.github.ajalt.mordant",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image/com.github.ajalt.mordant/mordant-jvm-jna",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image/com.github.ajalt.mordant/mordant-jvm-jna/reflection-config.json",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/native-image/com.github.ajalt.mordant/mordant-jvm-jna/resource-config.json",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/proguard",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/proguard/mordant-jvm-jna.pro",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/services",
+      "path": "mordant-jvm-jna/src/jvmMain/resources/META-INF/services/com.github.ajalt.mordant.terminal.TerminalInterfaceProvider",
+
+exec
+/bin/bash -lc 'curl -L --fail --silent https://raw.githubusercontent.com/ajalt/mordant/3.0.2/test/graalvm/src/test/kotlin/GraalSmokeTest.kt' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -I -L --silent https://github.com/ajalt/mordant/tree/3.0.2/test/graalvm/src/test | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc 'curl -L --fail --silent https://raw.githubusercontent.com/ajalt/mordant/3.0.2/mordant-jvm-jna/build.gradle.kts' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 224ms:
+package com.github.ajalt.mordant.graalvm
+
+import com.github.ajalt.mordant.animation.progress.animateOnThread
+import com.github.ajalt.mordant.animation.progress.execute
+import com.github.ajalt.mordant.markdown.Markdown
+import com.github.ajalt.mordant.rendering.AnsiLevel
+import com.github.ajalt.mordant.rendering.TextStyles.bold
+import com.github.ajalt.mordant.terminal.Terminal
+import com.github.ajalt.mordant.terminal.TerminalRecorder
+import com.github.ajalt.mordant.widgets.progress.progressBar
+import com.github.ajalt.mordant.widgets.progress.progressBarLayout
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledInNativeImage
+import java.util.concurrent.TimeUnit
+import kotlin.test.fail
+
+/**
+ * Smoke tests for the GraalVM platform.
+ *
+ * They just make sure nothing crashes; the actual output is verified in the normal test suite.
+ */
+@EnabledInNativeImage
+class GraalSmokeTest {
+    @Test
+    fun `terminal detection test`() {
+        val name = Terminal().terminalInterface::class.simpleName
+        Terminal()
+        val assertion = name!!.startsWith("TerminalInterfaceNativeImage")
+        if (!assertion) {
+            fail("Incorrect terminal interface: $name")
+        }
+    }
+
+    @Test
+    fun `progress animation test`() {
+        val t = Terminal(interactive = true, ansiLevel = AnsiLevel.TRUECOLOR)
+        val animation = progressBarLayout { progressBar() }.animateOnThread(t, total = 1)
+        val future = animation.execute()
+        Thread.sleep(100)
+        animation.update { completed = 1 }
+        future.get(1000, TimeUnit.MILLISECONDS)
+    }
+
+    @Test
+    fun `markdown test`() {
+        val vt = TerminalRecorder()
+        val t = Terminal(terminalInterface = vt)
+        t.print(Markdown("- Some **bold** text"))
+        assertEquals(" • Some ${bold("bold")} text", vt.output())
+    }
+}
+
+ succeeded in 235ms:
+plugins {
+    id("mordant-kotlin-conventions")
+    id("mordant-publishing-conventions")
+}
+
+kotlin {
+    jvm()
+    sourceSets {
+        commonMain.dependencies {
+            implementation(project(":mordant"))
+        }
+        jvmMain.dependencies {
+            implementation(libs.jna.core)
+            compileOnly(libs.graalvm.svm)
+        }
+    }
+}
+
+ succeeded in 736ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 15:27:53 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"f65515ed16e0e4adeae88f2753d048ee"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/bin/bash -lc 'for u in https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-sources.jar https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-javadoc.jar; do curl -I -L --silent "$u" | sed -n '"'1,8p'; done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -I -L --silent https://github.com/ajalt/mordant/tree/3.0.2/mordant-jvm-jna/src | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+exec
+/bin/bash -lc "curl -I -L --silent https://github.com/ajalt/mordant/tree/3.0.2/docs | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 245ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 15:28:02 GMT
+content-type: application/java-archive
+content-length: 7766
+cf-ray: 9f688871d825562e-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 179650
+HTTP/2 200 
+date: Mon, 04 May 2026 15:28:02 GMT
+content-type: application/java-archive
+content-length: 261
+cf-ray: 9f6888726a4d96e0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 306848
+
+ succeeded in 494ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 15:28:03 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"637c470927ce485d8e9d76504b0442bc"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+ succeeded in 518ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 15:28:03 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2d7917291e33a5eda5ef4d6643487ab1"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+codex
+I found no published test-sources/tests JAR and the `mordant-jvm-jna` module does not have its own test source directory at tag `3.0.2`, so I’ll set `test-code-url` to `N/A` rather than pointing at unrelated project tests. The artifact is a standard JVM/Kotlin module with class files and embedded native-image resources, so I’m not marking it as not-for-native-image.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+diff --git a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+index 187235887579e055d3cc951cf40ffdd1cc1fce6b..20326c5aaf6c9753cd02c517433fcaa52b767117
+--- a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
++++ b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2"
++  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2",
++  "repository-url" : "https://github.com/ajalt/mordant",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-javadoc.jar",
++  "description" : "Mordant is a Kotlin multiplatform library for rendering styled terminal output, including colored text, tables, widgets, Markdown, and animations. This JVM JNA module provides Mordant's JVM terminal interface implementation through JNA for terminal capability detection and native console interaction.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+index 187235887579e055d3cc951cf40ffdd1cc1fce6b..20326c5aaf6c9753cd02c517433fcaa52b767117
+--- a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
++++ b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2"
++  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2",
++  "repository-url" : "https://github.com/ajalt/mordant",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-javadoc.jar",
++  "description" : "Mordant is a Kotlin multiplatform library for rendering styled terminal output, including colored text, tables, widgets, Markdown, and animations. This JVM JNA module provides Mordant's JVM terminal interface implementation through JNA for terminal capability detection and native console interaction.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.0"
++  }
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+{
+  "coordinates": "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2",
+  "repository-url": "https://github.com/ajalt/mordant",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-javadoc.jar",
+  "description": "Mordant is a Kotlin multiplatform library for rendering styled terminal output, including colored text, tables, widgets, Markdown, and animations. This JVM JNA module provides Mordant's JVM terminal interface implementation through JNA for terminal capability detection and native console interaction.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.0"
+  }
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+exec
+/bin/bash -lc "curl -I -L --silent https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-sources.jar | sed -n '1,5p' && curl -I -L --silent https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/3.0.2/mordant-jvm-jna-jvm-3.0.2-javadoc.jar | sed -n '1,5p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+diff --git a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+index 187235887579e055d3cc951cf40ffdd1cc1fce6b..20326c5aaf6c9753cd02c517433fcaa52b767117
+--- a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
++++ b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2"
++  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2",
++  "repository-url" : "https://github.com/ajalt/mordant",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-javadoc.jar",
++  "description" : "Mordant is a Kotlin multiplatform library for rendering styled terminal output, including colored text, tables, widgets, Markdown, and animations. This JVM JNA module provides Mordant's JVM terminal interface implementation through JNA for terminal capability detection and native console interaction.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.0"
++  }
+ }
+
+ succeeded in 132ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 15:28:18 GMT
+content-type: application/java-archive
+content-length: 261
+cf-ray: 9f6888d52c0bf339-BEG
+
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+index 187235887579e055d3cc951cf40ffdd1cc1fce6b..20326c5aaf6c9753cd02c517433fcaa52b767117
+--- a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
++++ b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2"
++  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2",
++  "repository-url" : "https://github.com/ajalt/mordant",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-javadoc.jar",
++  "description" : "Mordant is a Kotlin multiplatform library for rendering styled terminal output, including colored text, tables, widgets, Markdown, and animations. This JVM JNA module provides Mordant's JVM terminal interface implementation through JNA for terminal capability detection and native console interaction.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.0"
++  }
+ }
+
+web search: 
+web search: https://github.com/ajalt/mordant/tree/3.0.2/mordant-jvm-jna
+web search: 
+web search: repo1.maven.org com.github.ajalt.mordant mordant-jvm-jna-jvm 3.0.2 pom kotlin-stdlib 2.0.10
+codex
+Updated [com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json) with repository, Maven sources/docs URLs, `test-code-url: "N/A"`, the two-sentence description, and Kotlin `2.0` language metadata.
+
+I left `not-for-native-image` absent because the artifact is a JVM module, and the upstream module README describes it as JVM-only and JNA-backed. ([github.com](https://github.com/ajalt/mordant/tree/3.0.2/mordant-jvm-jna)) I also verified the templated Maven source and javadoc URLs resolve for `3.0.2`.
+diff --git a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+index 187235887579e055d3cc951cf40ffdd1cc1fce6b..20326c5aaf6c9753cd02c517433fcaa52b767117
+--- a/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
++++ b/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2"
++  "coordinates" : "com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2",
++  "repository-url" : "https://github.com/ajalt/mordant",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-jna-jvm/$version$/mordant-jvm-jna-jvm-$version$-javadoc.jar",
++  "description" : "Mordant is a Kotlin multiplatform library for rendering styled terminal output, including colored text, tables, widgets, Markdown, and animations. This JVM JNA module provides Mordant's JVM terminal interface implementation through JNA for terminal capability detection and native console interaction.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.0"
++  }
+ }
+
+tokens used
+56,343
+Updated [com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06/build/discovered-artifact-metadata/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.json) with repository, Maven sources/docs URLs, `test-code-url: "N/A"`, the two-sentence description, and Kotlin `2.0` language metadata.
+
+I left `not-for-native-image` absent because the artifact is a JVM module, and the upstream module README describes it as JVM-only and JNA-backed. ([github.com](https://github.com/ajalt/mordant/tree/3.0.2/mordant-jvm-jna)) I also verified the templated Maven source and javadoc URLs resolve for `3.0.2`.
+Ran agent for com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06/build/agent-artifact-discovery-logs/com.github.ajalt.mordant-mordant-jvm-jna-jvm-3.0.2.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5405-80b3ab06/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 46s
+9 actionable tasks: 4 executed, 5 from cache
