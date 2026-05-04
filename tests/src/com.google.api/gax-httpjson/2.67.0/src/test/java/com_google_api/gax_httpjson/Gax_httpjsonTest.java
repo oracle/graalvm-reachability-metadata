@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.api.client.http.HttpHeaders;
+import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
 import com.google.api.gax.httpjson.GaxHttpJsonProperties;
 import com.google.api.gax.httpjson.HttpHeadersUtils;
@@ -23,6 +24,7 @@ import com.google.api.gax.httpjson.HttpJsonStatusRuntimeException;
 import com.google.api.gax.httpjson.HttpJsonTransportChannel;
 import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
 import com.google.api.gax.httpjson.ManagedHttpJsonChannel;
+import com.google.api.gax.httpjson.longrunning.OperationsSettings;
 import com.google.api.gax.httpjson.ProtoMessageRequestFormatter;
 import com.google.api.gax.httpjson.ProtoMessageResponseParser;
 import com.google.api.gax.httpjson.ProtoOperationTransformers;
@@ -320,6 +322,44 @@ public class Gax_httpjsonTest {
 
         assertThat(transportChannel.isShutdown()).isTrue();
         assertThat(transportChannel.awaitTermination(1, TimeUnit.SECONDS)).isTrue();
+    }
+
+    @Test
+    void operationsSettingsApplySharedRetryConfigurationToLongRunningOperationCalls() throws Exception {
+        RetrySettings retrySettings = RetrySettings.newBuilder()
+                .setMaxAttempts(3)
+                .setTotalTimeoutDuration(Duration.ofSeconds(12))
+                .setInitialRetryDelayDuration(Duration.ofMillis(25))
+                .setRetryDelayMultiplier(1.5)
+                .setMaxRetryDelayDuration(Duration.ofSeconds(1))
+                .setInitialRpcTimeoutDuration(Duration.ofSeconds(2))
+                .setRpcTimeoutMultiplier(1.0)
+                .setMaxRpcTimeoutDuration(Duration.ofSeconds(2))
+                .build();
+        OperationsSettings.Builder builder = OperationsSettings.newBuilder();
+        builder.setCredentialsProvider(NoCredentialsProvider.create());
+        builder.applyToAllUnaryMethods(
+                input -> {
+                    input.setRetrySettings(retrySettings);
+                    return null;
+                });
+
+        OperationsSettings settings = builder.build();
+
+        assertRetrySettingsMatch(settings.listOperationsSettings().getRetrySettings(), retrySettings);
+        assertRetrySettingsMatch(settings.getOperationSettings().getRetrySettings(), retrySettings);
+        assertRetrySettingsMatch(settings.deleteOperationSettings().getRetrySettings(), retrySettings);
+        assertRetrySettingsMatch(settings.cancelOperationSettings().getRetrySettings(), retrySettings);
+        assertThat(settings.toBuilder().getStubSettingsBuilder()).isNotNull();
+    }
+
+    private static void assertRetrySettingsMatch(RetrySettings actual, RetrySettings expected) {
+        assertThat(actual.getMaxAttempts()).isEqualTo(expected.getMaxAttempts());
+        assertThat(actual.getTotalTimeoutDuration()).isEqualTo(expected.getTotalTimeoutDuration());
+        assertThat(actual.getInitialRetryDelayDuration()).isEqualTo(expected.getInitialRetryDelayDuration());
+        assertThat(actual.getMaxRetryDelayDuration()).isEqualTo(expected.getMaxRetryDelayDuration());
+        assertThat(actual.getInitialRpcTimeoutDuration()).isEqualTo(expected.getInitialRpcTimeoutDuration());
+        assertThat(actual.getMaxRpcTimeoutDuration()).isEqualTo(expected.getMaxRpcTimeoutDuration());
     }
 
     private static ProtoMessageRequestFormatter<ListOperationsRequest> minimalListOperationsFormatter() {
