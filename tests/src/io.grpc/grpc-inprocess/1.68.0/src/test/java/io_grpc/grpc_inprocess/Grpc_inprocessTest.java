@@ -141,6 +141,35 @@ public class Grpc_inprocessTest {
         }
     }
 
+    @Test
+    void serverRejectsRequestsThatExceedInboundMetadataLimit() throws Exception {
+        String serverName = InProcessServerBuilder.generateName();
+        AtomicReference<String> observedRequestId = new AtomicReference<>();
+        Server server = InProcessServerBuilder.forName(serverName)
+                .directExecutor()
+                .maxInboundMetadataSize(128)
+                .addService(ServerServiceDefinition.builder(SERVICE_NAME)
+                        .addMethod(UNARY_METHOD, unaryHandler(observedRequestId))
+                        .build())
+                .build()
+                .start();
+        ManagedChannel channel = InProcessChannelBuilder.forName(serverName)
+                .directExecutor()
+                .intercept(requestIdInterceptor("x".repeat(1024)))
+                .build();
+        try {
+            RecordedCall<String> response = startCall(channel, UNARY_METHOD, 1);
+
+            Status status = response.awaitStatus();
+            assertThat(status.getCode()).isEqualTo(Status.Code.RESOURCE_EXHAUSTED);
+            assertThat(status.getDescription()).contains("Request metadata larger than");
+            assertThat(response.messages()).isEmpty();
+            assertThat(observedRequestId.get()).isNull();
+        } finally {
+            shutdown(channel, server);
+        }
+    }
+
     private static MethodDescriptor<String, String> method(String methodName, MethodDescriptor.MethodType methodType) {
         return MethodDescriptor.<String, String>newBuilder()
                 .setType(methodType)
