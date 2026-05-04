@@ -33,6 +33,9 @@ import nl.adaptivity.xmlutil.readSimpleElement
 import nl.adaptivity.xmlutil.serialize
 import nl.adaptivity.xmlutil.skipElement
 import nl.adaptivity.xmlutil.util.CompactFragment
+import nl.adaptivity.xmlutil.writeAttribute
+import nl.adaptivity.xmlutil.writeListIfNotEmpty
+import nl.adaptivity.xmlutil.writeSimpleElement
 import nl.adaptivity.xmlutil.xmlStreaming
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -318,6 +321,50 @@ public class CoreJvmcommonTest {
                 .forEach { it.writeTo(writer) }
         }
         assertThat(replayed).contains("<events", "e:item", "id=\"42\"", "payload")
+    }
+
+    @Test
+    fun writerUtilitiesCreateAttributedContainerAndSimpleChildren(): Unit {
+        val xml: String = buildXml { writer: XmlWriter ->
+            writer.setPrefix("bk", BOOK_NS)
+            writer.startTag(BOOK_NS, "order", "bk")
+            writer.namespaceAttr("bk", BOOK_NS)
+            writer.writeAttribute("id", "order-7")
+            writer.writeAttribute("lineCount", 2L)
+            writer.writeAttribute(QName(BOOK_NS, "category", "bk"), "fiction")
+            writer.writeListIfNotEmpty(
+                listOf("Alpha & Beta", "Gamma < Delta"),
+                BOOK_NS,
+                "lines",
+                "bk",
+            ) { value: String ->
+                writeSimpleElement(BOOK_NS, "line", "bk", value)
+            }
+            writer.endTag(BOOK_NS, "order", "bk")
+        }
+
+        assertThat(xml)
+            .contains("order-7")
+            .contains("lineCount=\"2\"")
+            .contains("Alpha &amp; Beta")
+            .contains("Gamma &lt; Delta")
+
+        xmlStreaming.newGenericReader(xml).use { reader: XmlReader ->
+            moveToStartElement(reader, "order")
+            assertThat(reader.name).isEqualTo(QName(BOOK_NS, "order", "bk"))
+            assertThat(reader.getAttributeValue("", "id")).isEqualTo("order-7")
+            assertThat(reader.getAttributeValue("", "lineCount")).isEqualTo("2")
+            assertThat(reader.getAttributeValue(BOOK_NS, "category")).isEqualTo("fiction")
+
+            assertThat(reader.nextTag()).isEqualTo(EventType.START_ELEMENT)
+            assertThat(reader.name).isEqualTo(QName(BOOK_NS, "lines", "bk"))
+            assertThat(reader.nextTag()).isEqualTo(EventType.START_ELEMENT)
+            assertThat(reader.readSimpleElement()).isEqualTo("Alpha & Beta")
+            assertThat(reader.nextTag()).isEqualTo(EventType.START_ELEMENT)
+            assertThat(reader.readSimpleElement()).isEqualTo("Gamma < Delta")
+            assertThat(reader.nextTag()).isEqualTo(EventType.END_ELEMENT)
+            assertThat(reader.localName).isEqualTo("lines")
+        }
     }
 
     private fun buildXml(block: (XmlWriter) -> Unit): String {
