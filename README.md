@@ -48,7 +48,7 @@ curl -sSL \
 
 We welcome contributions from the community. Thank you!
 
-Before submitting a pull request, please [open a ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml), mark that you want to fix it yourself, and [review our contribution guide](docs/CONTRIBUTING.md).
+Before submitting a pull request, please [open a ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml) and [review our contribution guide](docs/CONTRIBUTING.md).
 
 ### Further Information
 
@@ -57,4 +57,4 @@ Before submitting a pull request, please [open a ticket](https://github.com/orac
 3. Development workflow is described in [DEVELOPING.md](docs/DEVELOPING.md).
 
 ---
-❤️ by the community and the [GraalVM](https://www.graalvm.org/), [Spring](https://spring.io/projects/spring-boot), and [Micronaut](https://micronaut.io/) teams.
+Built with ❤️ by the community and the [GraalVM](https://www.graalvm.org/), [Spring](https://spring.io/projects/spring-boot), and [Micronaut](https://micronaut.io/) teams.
