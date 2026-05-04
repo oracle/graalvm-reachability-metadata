@@ -42,6 +42,17 @@ public class AnnotationsTest {
     }
 
     @Test
+    void immutableAnnotationsCanDocumentLazilyComputedInternalState() {
+        LazyEndpointDescriptor descriptor = new LazyEndpointDescriptor("dynamodb", "us-east-1");
+
+        assertThat(descriptor.endpointUri()).isEqualTo("https://dynamodb.us-east-1.amazonaws.com");
+        assertThat(descriptor.endpointUri()).isEqualTo("https://dynamodb.us-east-1.amazonaws.com");
+        assertThat(descriptor.routingHeaders())
+                .containsExactly("host:dynamodb.us-east-1.amazonaws.com", "region:us-east-1");
+        assertThat(descriptor.cacheStatisticsForTests()).isEqualTo("endpoint-computations=1");
+    }
+
+    @Test
     void sdkAnnotationsCanDocumentRecordBasedConfigurationComponents() {
         AnnotatedClientConfiguration configuration = new AnnotatedClientConfiguration("s3", "us-west-2", 3);
 
@@ -360,6 +371,61 @@ public class AnnotationsTest {
         @ToBuilderIgnoreField({"cachedEndpoint", "computedRegion"})
         List<String> builderIgnoredFields() {
             return List.of("cachedEndpoint", "computedRegion");
+        }
+    }
+
+    @Immutable
+    @ThreadSafe
+    @SdkPublicApi
+    static final class LazyEndpointDescriptor {
+        @NotNull
+        private final String service;
+
+        @NotNull
+        private final String region;
+
+        @SdkInternalApi
+        private volatile String cachedEndpointHost;
+
+        @SdkInternalApi
+        private int endpointComputations;
+
+        @SdkPublicApi
+        LazyEndpointDescriptor(@NotNull String service, @NotNull String region) {
+            this.service = service;
+            this.region = region;
+        }
+
+        @NotNull
+        @SdkPublicApi
+        String endpointUri() {
+            return "https://" + endpointHost();
+        }
+
+        @SdkProtectedApi
+        List<String> routingHeaders() {
+            String host = endpointHost();
+            return List.of("host:" + host, "region:" + region);
+        }
+
+        @SdkTestInternalApi
+        synchronized String cacheStatisticsForTests() {
+            return "endpoint-computations=" + endpointComputations;
+        }
+
+        private String endpointHost() {
+            String host = cachedEndpointHost;
+            if (host == null) {
+                synchronized (this) {
+                    host = cachedEndpointHost;
+                    if (host == null) {
+                        host = service + "." + region + ".amazonaws.com";
+                        endpointComputations++;
+                        cachedEndpointHost = host;
+                    }
+                }
+            }
+            return host;
         }
     }
 
