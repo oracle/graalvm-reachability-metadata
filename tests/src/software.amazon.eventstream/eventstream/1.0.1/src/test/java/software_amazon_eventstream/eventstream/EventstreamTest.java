@@ -119,6 +119,16 @@ public class EventstreamTest {
     }
 
     @Test
+    void messageToStringUsesBase64ForBinaryPayloadWhenContentTypeIsAbsent() {
+        Message message = new Message(Map.of("event", HeaderValue.fromString("binary")), new byte[] {0, -1, 66, 105, 110});
+
+        assertThat(message.toString())
+                .contains("event: \"binary\"")
+                .contains("AP9CaW4=")
+                .doesNotContain("\u0000");
+    }
+
+    @Test
     void encodeWritesTheSameBytesAsToByteBufferAndDecodeConsumesFromCurrentPosition() {
         Message message = new Message(encodableHeaders(), "payload".getBytes(StandardCharsets.UTF_8));
         ByteArrayOutputStream output = new ByteArrayOutputStream();
