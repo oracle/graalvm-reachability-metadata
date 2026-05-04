@@ -9,6 +9,7 @@ package javax_ws_rs.jsr311_api;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -50,12 +51,26 @@ public class FactoryFinderTest {
     }
 
     @Test
-    void loadsProviderFromSystemResourcesWhenContextClassLoaderIsNull() {
-        currentThread.setContextClassLoader(null);
+    void loadsProviderFromSystemResourcesWhenContextClassLoaderIsNull() throws Exception {
+        runWithContextClassLoader(null, () -> {
+            RuntimeDelegate.setInstance(null);
 
-        RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
+            RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
 
-        assertThat(runtimeDelegate).isInstanceOf(RuntimeDelegateProvider.class);
+            assertThat(runtimeDelegate).isInstanceOf(RuntimeDelegateProvider.class);
+        });
+    }
+
+    @Test
+    void loadsProviderFromSystemPropertyWhenContextClassLoaderIsNull() throws Exception {
+        System.setProperty(RuntimeDelegate.JAXRS_RUNTIME_DELEGATE_PROPERTY, RuntimeDelegateProvider.class.getName());
+        runWithContextClassLoader(null, () -> {
+            RuntimeDelegate.setInstance(null);
+
+            RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
+
+            assertThat(runtimeDelegate).isInstanceOf(RuntimeDelegateProvider.class);
+        });
     }
 
     @Test
@@ -68,12 +83,56 @@ public class FactoryFinderTest {
     }
 
     @Test
-    void fallsBackToSystemClassLookupWhenContextClassLoaderCannotLoadProviderClass() {
-        currentThread.setContextClassLoader(new SystemFallbackProviderClassLoader());
+    void fallsBackToSystemClassLookupWhenContextClassLoaderCannotLoadProviderClass() throws Exception {
+        runWithContextClassLoader(new SystemFallbackProviderClassLoader(), () -> {
+            RuntimeDelegate.setInstance(null);
 
-        RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
+            RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
 
-        assertThat(runtimeDelegate).isInstanceOf(RuntimeDelegateProvider.class);
+            assertThat(runtimeDelegate).isInstanceOf(RuntimeDelegateProvider.class);
+        });
+    }
+
+    private static void runWithContextClassLoader(ClassLoader contextClassLoader, ThrowingRunnable action)
+            throws Exception {
+        AtomicReference<Throwable> failure = new AtomicReference<>();
+        Thread worker = new Thread("factory-finder-context-loader") {
+            @Override
+            public ClassLoader getContextClassLoader() {
+                return contextClassLoader;
+            }
+
+            @Override
+            public void run() {
+                try {
+                    action.run();
+                } catch (Throwable throwable) {
+                    failure.set(throwable);
+                }
+            }
+        };
+
+        worker.start();
+        worker.join(10_000L);
+        if (worker.isAlive()) {
+            worker.interrupt();
+        }
+        assertThat(worker.isAlive()).isFalse();
+
+        Throwable throwable = failure.get();
+        if (throwable instanceof Error error) {
+            throw error;
+        }
+        if (throwable instanceof Exception exception) {
+            throw exception;
+        }
+        if (throwable != null) {
+            throw new AssertionError(throwable);
+        }
+    }
+
+    private interface ThrowingRunnable {
+        void run() throws Exception;
     }
 
     public static final class RuntimeDelegateProvider extends RuntimeDelegate {
@@ -107,6 +166,14 @@ public class FactoryFinderTest {
     private static final class SystemFallbackProviderClassLoader extends ClassLoader {
         private SystemFallbackProviderClassLoader() {
             super(null);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (RuntimeDelegateProvider.class.getName().equals(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            return super.loadClass(name, resolve);
         }
 
         @Override
