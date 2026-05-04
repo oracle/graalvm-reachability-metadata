@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -209,6 +210,29 @@ public class Metrics_spiTest {
         assertThat(actualMetrics).containsExactlyInAnyOrderElementsOf(expectedMetrics);
         assertThat(actualValues).containsExactlyInAnyOrderElementsOf(expectedValues);
         assertThat(iteratedValues).containsExactlyInAnyOrderElementsOf(expectedValues);
+    }
+
+    @Test
+    void metricCollectionSupportsDirectIterableTraversal() {
+        SdkMetric<Integer> responseSize = SdkMetric.create(
+                uniqueMetricName("response-size"), Integer.class, MetricLevel.INFO, MetricCategory.HTTP_CLIENT);
+        SdkMetric<String> serviceId = SdkMetric.create(
+                uniqueMetricName("service-id"), String.class, MetricLevel.INFO, MetricCategory.CORE);
+        MetricCollector collector = MetricCollector.create("iterable-collection");
+
+        collector.reportMetric(responseSize, 512);
+        collector.reportMetric(serviceId, "s3");
+        MetricCollection collection = collector.collect();
+        List<SdkMetric<?>> iteratedMetrics = new ArrayList<>();
+        List<Object> iteratedValues = new ArrayList<>();
+
+        for (MetricRecord<?> record : collection) {
+            iteratedMetrics.add(record.metric());
+            iteratedValues.add(record.value());
+        }
+
+        assertThat(iteratedMetrics).containsExactlyInAnyOrder(responseSize, serviceId);
+        assertThat(iteratedValues).containsExactlyInAnyOrder(512, "s3");
     }
 
     @Test
