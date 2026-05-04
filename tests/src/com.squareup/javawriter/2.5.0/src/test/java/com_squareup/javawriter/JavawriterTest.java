@@ -159,6 +159,55 @@ public class JavawriterTest {
     }
 
     @Test
+    void emitsEnumValuesIndividuallyWithConstructorArguments() throws IOException {
+        StringWriter output = new StringWriter();
+        JavaWriter writer = new JavaWriter(output);
+
+        writer.emitPackage("com.example")
+                .beginType("com.example.HttpStatus", "enum", EnumSet.of(Modifier.PUBLIC))
+                .emitEnumValue("OK(200, \"OK\")")
+                .emitEnumValue("NOT_FOUND(404, \"Not Found\")", true)
+                .emitField("int", "code", EnumSet.of(Modifier.PRIVATE, Modifier.FINAL))
+                .emitField("java.lang.String", "reason", EnumSet.of(Modifier.PRIVATE, Modifier.FINAL))
+                .beginConstructor(
+                        Collections.emptySet(),
+                        "int", "code",
+                        "java.lang.String", "reason")
+                .emitStatement("this.code = code")
+                .emitStatement("this.reason = reason")
+                .endConstructor()
+                .beginMethod("int", "code", EnumSet.of(Modifier.PUBLIC))
+                .emitStatement("return code")
+                .endMethod()
+                .beginMethod("java.lang.String", "reason", EnumSet.of(Modifier.PUBLIC))
+                .emitStatement("return reason")
+                .endMethod()
+                .endType();
+
+        assertThat(output).hasToString(
+                """
+                package com.example;
+
+                public enum HttpStatus {
+                  OK(200, "OK"),
+                  NOT_FOUND(404, "Not Found");
+                  private final int code;
+                  private final String reason;
+                  HttpStatus(int code, String reason) {
+                    this.code = code;
+                    this.reason = reason;
+                  }
+                  public int code() {
+                    return code;
+                  }
+                  public String reason() {
+                    return reason;
+                  }
+                }
+                """);
+    }
+
+    @Test
     void compressesImportedPackageAndJavaLangTypes() throws IOException {
         StringWriter output = new StringWriter();
         JavaWriter writer = new JavaWriter(output);
