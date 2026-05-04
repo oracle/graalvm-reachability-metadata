@@ -6,11 +6,19 @@
  */
 package com_typesafe_akka.akka_protobuf_v3_2_13
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class MessageSchemaTest {
+  @Test
+  def rawMessageInfoSchemaCreationReflectsExistingField(): Unit = {
+    val size: Int = ValidRawInfoLiteMessage.defaultInstance().getSerializedSize
+
+    assertEquals(0, size)
+  }
+
   @Test
   def rawMessageInfoSchemaCreationReportsMissingReflectedField(): Unit = {
     val error: RuntimeException = assertThrows(
