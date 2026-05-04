@@ -1,0 +1,732 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df0e1-8580-7873-b739-08cf2943761a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: software.amazon.awssdk:annotations:2.36.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.36.1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/metadata/software.amazon.awssdk/annotations/index.json
+- Entry selector: "metadata-version" = "2.36.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.36.1
+- Entry metadata-version: 2.36.1
+- Entry test-version: 2.36.1
+- Entry tested-versions: [2.36.1]
+codex
+I’ll verify the artifact coordinates against Maven and the project’s tagged upstream pages, then patch only the missing fields in the target JSON entry.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions|test-version' metadata/software.amazon.awssdk/annotations/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+4:    "metadata-version" : "2.36.1",
+5:    "tested-versions" : [
+13:    "metadata-version" : "2.34.0",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+15:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+16:    "test-code-url" : "N/A",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+18:    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+19:    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/software.amazon.awssdk/annotations/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.36.1",
+    "tested-versions" : [
+      "2.36.1"
+    ],
+    "allowed-packages" : [
+      "software.amazon.awssdk.annotations"
+    ]
+  },
+  {
+    "metadata-version" : "2.34.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+    "tested-versions" : [
+      "2.34.0"
+    ],
+    "allowed-packages" : [
+      "software.amazon.awssdk.annotations"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central software.amazon.awssdk annotations 2.36.1 sources javadoc
+web search: 
+web search: https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations
+web search: 
+web search: repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1 annotations-2.36.1-sources.jar
+web search: 
+web search: "annotations-2.36.1-sources.jar" "software/amazon/awssdk/annotations/2.36.1"
+web search: 
+web search: AWS SDK for Java API Reference 2.36.1 software.amazon.awssdk.annotations
+codex
+The target entry is blank for the requested fields, while the previous 2.34.0 entry already uses Maven source and javadoc artifacts with `test-code-url` set to `N/A`. I’m checking the 2.36.1 Maven directory and the GitHub tag now so the new values are version-valid rather than copied blindly.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: software/amazon/awssdk/annotations/2.36.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>software/amazon/awssdk/annotations/2.36.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="annotations-2.36.1-javadoc.jar" title="annotations-2.36.1-javadoc.jar">annotations-2.36.1-javadoc.jar</a>                    2025-10-23 22:51    356905      
+<a href="annotations-2.36.1-javadoc.jar.asc" title="annotations-2.36.1-javadoc.jar.asc">annotations-2.36.1-javadoc.jar.asc</a>                2025-10-23 22:51       833      
+<a href="annotations-2.36.1-javadoc.jar.md5" title="annotations-2.36.1-javadoc.jar.md5">annotations-2.36.1-javadoc.jar.md5</a>                2025-10-23 22:51        32      
+<a href="annotations-2.36.1-javadoc.jar.sha1" title="annotations-2.36.1-javadoc.jar.sha1">annotations-2.36.1-javadoc.jar.sha1</a>               2025-10-23 22:51        40      
+<a href="annotations-2.36.1-javadoc.jar.sha256" title="annotations-2.36.1-javadoc.jar.sha256">annotations-2.36.1-javadoc.jar.sha256</a>             2025-10-23 22:51        64      
+<a href="annotations-2.36.1-javadoc.jar.sha512" title="annotations-2.36.1-javadoc.jar.sha512">annotations-2.36.1-javadoc.jar.sha512</a>             2025-10-23 22:51       128      
+<a href="annotations-2.36.1-sources.jar" title="annotations-2.36.1-sources.jar">annotations-2.36.1-sources.jar</a>                    2025-10-23 22:51     19464      
+<a href="annotations-2.36.1-sources.jar.asc" title="annotations-2.36.1-sources.jar.asc">annotations-2.36.1-sources.jar.asc</a>                2025-10-23 22:51       833      
+<a href="annotations-2.36.1-sources.jar.md5" title="annotations-2.36.1-sources.jar.md5">annotations-2.36.1-sources.jar.md5</a>                2025-10-23 22:51        32      
+<a href="annotations-2.36.1-sources.jar.sha1" title="annotations-2.36.1-sources.jar.sha1">annotations-2.36.1-sources.jar.sha1</a>               2025-10-23 22:51        40      
+<a href="annotations-2.36.1-sources.jar.sha256" title="annotations-2.36.1-sources.jar.sha256">annotations-2.36.1-sources.jar.sha256</a>             2025-10-23 22:51        64      
+<a href="annotations-2.36.1-sources.jar.sha512" title="annotations-2.36.1-sources.jar.sha512">annotations-2.36.1-sources.jar.sha512</a>             2025-10-23 22:51       128      
+<a href="annotations-2.36.1.jar" title="annotations-2.36.1.jar">annotations-2.36.1.jar</a>                            2025-10-23 22:51     13300      
+<a href="annotations-2.36.1.jar.asc" title="annotations-2.36.1.jar.asc">annotations-2.36.1.jar.asc</a>                        2025-10-23 22:51       833      
+<a href="annotations-2.36.1.jar.md5" title="annotations-2.36.1.jar.md5">annotations-2.36.1.jar.md5</a>                        2025-10-23 22:51        32      
+<a href="annotations-2.36.1.jar.sha1" title="annotations-2.36.1.jar.sha1">annotations-2.36.1.jar.sha1</a>                       2025-10-23 22:51        40      
+<a href="annotations-2.36.1.jar.sha256" title="annotations-2.36.1.jar.sha256">annotations-2.36.1.jar.sha256</a>                     2025-10-23 22:51        64      
+<a href="annotations-2.36.1.jar.sha512" title="annotations-2.36.1.jar.sha512">annotations-2.36.1.jar.sha512</a>                     2025-10-23 22:51       128      
+<a href="annotations-2.36.1.pom" title="annotations-2.36.1.pom">annotations-2.36.1.pom</a>                            2025-10-23 22:51      1684      
+<a href="annotations-2.36.1.pom.asc" title="annotations-2.36.1.pom.asc">annotations-2.36.1.pom.asc</a>                        2025-10-23 22:51       833      
+<a href="annotations-2.36.1.pom.md5" title="annotations-2.36.1.pom.md5">annotations-2.36.1.pom.md5</a>                        2025-10-23 22:51        32      
+<a href="annotations-2.36.1.pom.sha1" title="annotations-2.36.1.pom.sha1">annotations-2.36.1.pom.sha1</a>                       2025-10-23 22:51        40      
+<a href="annotations-2.36.1.pom.sha256" title="annotations-2.36.1.pom.sha256">annotations-2.36.1.pom.sha256</a>                     2025-10-23 22:51        64      
+<a href="annotations-2.36.1.pom.sha512" title="annotations-2.36.1.pom.sha512">annotations-2.36.1.pom.sha512</a>                     2025-10-23 22:51       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-sources.jar && curl -I -L -s https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-javadoc.jar && curl -I -L -s https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-tests.jar && curl -I -L -s https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-test-sources.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/aws/aws-sdk-java-v2/2.36.1/core/annotations/pom.xml' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src/test && curl -I -L -s https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations/src/main/java/software/amazon/awssdk/annotations' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+ succeeded in 229ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License").
+  ~ You may not use this file except in compliance with the License.
+  ~ A copy of the License is located at
+  ~
+  ~  http://aws.amazon.com/apache2.0
+  ~
+  ~ or in the "license" file accompanying this file. This file is distributed
+  ~ on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+  ~ express or implied. See the License for the specific language governing
+  ~ permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>core</artifactId>
+        <groupId>software.amazon.awssdk</groupId>
+        <version>2.36.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>annotations</artifactId>
+    <name>AWS Java SDK :: Annotations</name>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>software.amazon.awssdk.annotations</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+ succeeded in 732ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 02:47:23 GMT
+content-type: application/java-archive
+content-length: 356905
+cf-ray: 9f642e3418c4bac6-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1709873
+etag: "8567a2e2e54d5313a53ac3da2013ded3"
+last-modified: Thu, 23 Oct 2025 22:51:57 GMT
+x-checksum-md5: 8567a2e2e54d5313a53ac3da2013ded3
+x-checksum-sha1: 8b6c3df834a44e8a0b72f8c1ec55bf1e76227178
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 04 May 2026 02:47:23 GMT
+content-type: text/html
+cf-ray: 9f642e34a849bc44-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 04 May 2026 02:47:24 GMT
+content-type: text/html
+cf-ray: 9f642e369c02df5e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/software/amazon/awssdk/annotations/2.36.1/annotations-2.36.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1094ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 02:47:23 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=onjifvSTwLJrlDKxYTkjYZh7aQhWr6h6XVJTK0xgfO%2F%2BOG%2BTKqLyF3la2MCnCI6H%2BspR8izNLpSWoS1vdui%2FKxPmZEukW0TMyIiiD003iQYatPLxEw4ghHFaFkkJAbghhgUeicsg382mWl6gPqMzXfy1pI9v7EmH83rr%2Fgs7LUzitFdyp1BBzIzfQ0ijB5TDQw4l8WhsGjSv0iGieCReT%2BwCfX%2Bwwl33XGvu3xfzH8eg9kGpIl1Gr4aR0vKlFlPP76FhZn9cMLClY4y1%2FrIgWA%3D%3D--I5ix6J5ca6GyNt1c--s1Y1sx1i9dm4P9sPobZdaw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1227526203.1777862843; expires=Tue, 04 May 2027 02:47:23 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 02:47:23 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5107:13D90:2A02F22:21FF43C:69F808BB
+
+HTTP/2 200 
+date: Mon, 04 May 2026 02:47:24 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"befc2e6f262c7cb29c29e90cf1a4a43d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=vO5QrYEj8w2xA5DREvfOCxu60l9n%2BnqVUOtYxzfO1xZzyM0GZkXBeNPixCyXO4ovynq3OxRvl1c3ZtZFhg5d21I%2FpuZcda0MfOxF2awTlJwXwSTZRLz%2FphGO2%2FNI3QyZR7dNkp5LY7XBwhyyNTI5zDfcfN4KJCQ7W%2B7i1h9a8DsGPR3A2kciZzk9DEC4nMYrRRIviNRQbCRHUm3QXZSzi00y%2BOalDPHHb6gz2gDAez5jfBhvr0NxzbfqQQ0w3YSEyRXwkIXUGYrH6fODQdfA2Q%3D%3D--xbbpTpcNopwI5OiR--qscdz1mbv%2BoyPZHXBmIAwg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1261683401.1777862844; expires=Tue, 04 May 2027 02:47:24 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 02:47:24 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510A:2A9A81:2B21304:22DFEDE:69F808BC
+
+
+codex
+Maven Central has the 2.36.1 source and javadoc jars, and no test/test-sources jars for this artifact. The tagged GitHub module exists, but there is no tagged `src/test` path for `core/annotations`, so I’m setting `test-code-url` to `N/A` and using Maven for source and docs as requested.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/metadata/software.amazon.awssdk/annotations/index.json
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index c328433f3e234ca6d3fe0188813d2a25c4c70937..a9aaf8376c449bc7400a80fe99628524ff76a95a
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by AWS SDK for Java version 2 to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers and do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index c328433f3e234ca6d3fe0188813d2a25c4c70937..a9aaf8376c449bc7400a80fe99628524ff76a95a
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by AWS SDK for Java version 2 to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers and do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+codex
+The JSON is patched. I’m doing a quick validity check and then running the repository’s metadata validation task for this coordinate.
+exec
+/usr/bin/bash -lc 'jq empty metadata/software.amazon.awssdk/annotations/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/software.amazon.awssdk/annotations/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+ succeeded in 0ms:
+diff --git i/metadata/software.amazon.awssdk/annotations/index.json w/metadata/software.amazon.awssdk/annotations/index.json
+index c328433f3e..a9aaf8376c 100644
+--- i/metadata/software.amazon.awssdk/annotations/index.json
++++ w/metadata/software.amazon.awssdk/annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by AWS SDK for Java version 2 to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers and do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index c328433f3e234ca6d3fe0188813d2a25c4c70937..a9aaf8376c449bc7400a80fe99628524ff76a95a
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by AWS SDK for Java version 2 to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers and do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=software.amazon.awssdk:annotations:2.36.1 --stacktrace' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index c328433f3e234ca6d3fe0188813d2a25c4c70937..a9aaf8376c449bc7400a80fe99628524ff76a95a
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by AWS SDK for Java version 2 to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers and do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+ exited 1 in 2905ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for software.amazon.awssdk:annotations:2.36.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/metadata/software.amazon.awssdk/annotations/2.36.1/
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - software.amazon.awssdk:annotations:2.36.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/metadata/software.amazon.awssdk/annotations/2.36.1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - software.amazon.awssdk:annotations:2.36.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/metadata/software.amazon.awssdk/annotations/2.36.1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+BUILD FAILED in 2s
+
+codex
+The Gradle metadata check runs far enough to read this coordinate but fails because `metadata/software.amazon.awssdk/annotations/2.36.1/reachability-metadata.json` is missing, which is outside the requested URL/index change. The JSON parse check passed, so I’m just capturing the final indexed fields now.
+exec
+/usr/bin/bash -lc "nl -ba metadata/software.amazon.awssdk/annotations/index.json | sed -n '1,34p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.36.1",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+     7	    "test-code-url" : "N/A",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+     9	    "description" : "This module provides shared Java annotations used by AWS SDK for Java version 2 to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers and do not implement AWS service clients or runtime behavior themselves.",
+    10	    "tested-versions" : [
+    11	      "2.36.1"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "software.amazon.awssdk.annotations"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "2.34.0",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    21	    "test-code-url" : "N/A",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
+    23	    "description" : "This module provides shared Java annotations used by the AWS SDK for Java 2.x to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers; they do not implement AWS service clients or runtime behavior themselves.",
+    24	    "tested-versions" : [
+    25	      "2.34.0"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "software.amazon.awssdk.annotations"
+    29	    ]
+    30	  }
+    31	]
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/software.amazon.awssdk/annotations/index.json metadata/software.amazon.awssdk/annotations/2.36.1' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335
+ succeeded in 0ms:
+ M metadata/software.amazon.awssdk/annotations/index.json
+
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index c328433f3e234ca6d3fe0188813d2a25c4c70937..a9aaf8376c449bc7400a80fe99628524ff76a95a
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by AWS SDK for Java version 2 to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers and do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+web search: 
+web search: https://github.com/aws/aws-sdk-java-v2/tree/2.36.1/core/annotations
+web search: 
+web search: https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/2.36.1/
+web search: 
+web search: https://mvnrepository.com/artifact/software.amazon.awssdk/annotations/versions
+codex
+Updated [metadata/software.amazon.awssdk/annotations/index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/metadata/software.amazon.awssdk/annotations/index.json:4) for metadata version `2.36.1`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the exact two-sentence `description`. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. Maven lists `2.36.1` in Central for `AWS Java SDK :: Annotations`, and the tagged upstream module exists under `aws/aws-sdk-java-v2/core/annotations`; that tag exposes `src/main` and `pom.xml`, but no `src/test` entry, so `test-code-url` is `N/A`. ([mvnrepository.com](https://mvnrepository.com/artifact/software.amazon.awssdk/annotations))
+
+Validation:
+- `jq empty metadata/software.amazon.awssdk/annotations/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=software.amazon.awssdk:annotations:2.36.1 --stacktrace` failed because `metadata/software.amazon.awssdk/annotations/2.36.1/reachability-metadata.json` is missing, which is outside the requested index URL update.
+diff --git a/metadata/software.amazon.awssdk/annotations/index.json b/metadata/software.amazon.awssdk/annotations/index.json
+index c328433f3e234ca6d3fe0188813d2a25c4c70937..a9aaf8376c449bc7400a80fe99628524ff76a95a
+--- a/metadata/software.amazon.awssdk/annotations/index.json
++++ b/metadata/software.amazon.awssdk/annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.36.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/annotations/$version$/annotations-$version$-javadoc.jar",
++    "description" : "This module provides shared Java annotations used by AWS SDK for Java version 2 to mark API stability, internal APIs, generated code, thread safety, and related contracts. These annotations are metadata helpers for SDK code and consumers and do not implement AWS service clients or runtime behavior themselves.",
+     "tested-versions" : [
+       "2.36.1"
+     ],
+
+tokens used
+67,468
+Updated [metadata/software.amazon.awssdk/annotations/index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/metadata/software.amazon.awssdk/annotations/index.json:4) for metadata version `2.36.1`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the exact two-sentence `description`. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. Maven lists `2.36.1` in Central for `AWS Java SDK :: Annotations`, and the tagged upstream module exists under `aws/aws-sdk-java-v2/core/annotations`; that tag exposes `src/main` and `pom.xml`, but no `src/test` entry, so `test-code-url` is `N/A`. ([mvnrepository.com](https://mvnrepository.com/artifact/software.amazon.awssdk/annotations))
+
+Validation:
+- `jq empty metadata/software.amazon.awssdk/annotations/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=software.amazon.awssdk:annotations:2.36.1 --stacktrace` failed because `metadata/software.amazon.awssdk/annotations/2.36.1/reachability-metadata.json` is missing, which is outside the requested index URL update.
+Ran agent for software.amazon.awssdk:annotations:2.36.1 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/build/agent-url-discovery-logs/software.amazon.awssdk-annotations-2.36.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5606-58dcb335/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 27s
+9 actionable tasks: 1 executed, 8 up-to-date
