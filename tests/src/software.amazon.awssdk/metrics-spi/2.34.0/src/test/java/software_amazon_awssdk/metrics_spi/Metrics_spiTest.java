@@ -156,6 +156,31 @@ public class Metrics_spiTest {
     }
 
     @Test
+    void metricCollectionIsIterableOverCollectedMetricRecords() {
+        SdkMetric<String> operationName = SdkMetric.create(
+                uniqueMetricName("iterableOperationName"), String.class, MetricLevel.INFO, MetricCategory.CORE);
+        SdkMetric<Integer> attemptCount = SdkMetric.create(
+                uniqueMetricName("iterableAttemptCount"), Integer.class, MetricLevel.INFO, MetricCategory.CORE);
+        MetricCollector collector = MetricCollector.create("IterableCollection");
+
+        collector.reportMetric(operationName, "ListObjects");
+        collector.reportMetric(operationName, "PutObject");
+        collector.reportMetric(attemptCount, 2);
+        MetricCollection collection = collector.collect();
+
+        List<String> visitedRecords = new ArrayList<>();
+        for (MetricRecord<?> record : collection) {
+            visitedRecords.add(record.metric().name() + "=" + record.value());
+            assertThat(record.toString()).contains(record.metric().name(), String.valueOf(record.value()));
+        }
+
+        assertThat(visitedRecords).containsExactlyInAnyOrder(
+                operationName.name() + "=ListObjects",
+                operationName.name() + "=PutObject",
+                attemptCount.name() + "=2");
+    }
+
+    @Test
     void collectorCapturesNestedChildrenAndFiltersChildrenByName() {
         SdkMetric<Integer> statusCode = SdkMetric.create(
                 uniqueMetricName("statusCode"), Integer.class, MetricLevel.ERROR, MetricCategory.HTTP_CLIENT);
