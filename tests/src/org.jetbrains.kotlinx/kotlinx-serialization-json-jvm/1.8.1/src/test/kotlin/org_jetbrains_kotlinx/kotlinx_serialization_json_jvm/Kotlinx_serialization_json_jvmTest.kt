@@ -29,10 +29,12 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.JsonTransformingSerializer
 import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.decodeToSequence
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.decodeToSequence
 import kotlinx.serialization.json.double
+import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -97,6 +99,34 @@ public class Kotlinx_serialization_json_jvmTest {
 
         assertThat(Json.parseToJsonElement(encoded).jsonArray).hasSize(2)
         assertThat(decoded).isEqualTo(input)
+    }
+
+    @Test
+    fun encodesAndDecodesStructuredValuesThroughJsonTree(): Unit {
+        val json: Json = Json { prettyPrint = false }
+        val project: Project = Project(
+            name = "json tree",
+            stars = 13,
+            tags = listOf("element", "roundtrip"),
+            active = true,
+        )
+
+        val encoded: JsonElement = json.encodeToJsonElement(ProjectSerializer, project)
+        val encodedObject: JsonObject = encoded.jsonObject
+        val edited: JsonObject = JsonObject(
+            encodedObject + mapOf(
+                "stars" to JsonPrimitive(21),
+                "tags" to buildJsonArray {
+                    add(JsonPrimitive("element"))
+                    add(JsonPrimitive("edited"))
+                },
+            ),
+        )
+        val decoded: Project = json.decodeFromJsonElement(ProjectSerializer, edited)
+
+        assertThat(encodedObject.keys).containsExactly("name", "stars", "tags", "active")
+        assertThat(encodedObject.getValue("name").jsonPrimitive.content).isEqualTo("json tree")
+        assertThat(decoded).isEqualTo(project.copy(stars = 21, tags = listOf("element", "edited")))
     }
 
     @Test
