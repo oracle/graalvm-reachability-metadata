@@ -153,6 +153,16 @@ public class Http_client_spiTest {
     }
 
     @Test
+    void contentStreamProviderCreatedFromMarkableInputStreamReplaysContent() throws Exception {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("replayable".getBytes(UTF_8));
+        ContentStreamProvider provider = ContentStreamProvider.fromInputStream(inputStream);
+
+        assertThat(readUtf8(provider)).isEqualTo("replayable");
+        assertThat(readUtf8(provider)).isEqualTo("replayable");
+        assertThat(provider.name()).isEqualTo("Stream");
+    }
+
+    @Test
     void abortableInputStreamDelegatesReadsAndAbortCallbacks() throws Exception {
         AtomicBoolean aborted = new AtomicBoolean();
         Abortable abortable = () -> aborted.set(true);
