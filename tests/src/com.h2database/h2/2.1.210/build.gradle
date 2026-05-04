@@ -12,7 +12,12 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
 	testImplementation("com.h2database:h2:$libraryVersion")
+	testImplementation("com.ibm.icu:icu4j:71.1")
 	testImplementation("org.assertj:assertj-core:3.22.0")
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty "h2.useThreadContextClassLoader", "true"
 }
 
 graalvmNative {
