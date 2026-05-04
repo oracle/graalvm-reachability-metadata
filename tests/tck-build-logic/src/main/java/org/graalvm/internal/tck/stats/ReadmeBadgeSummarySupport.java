@@ -232,8 +232,8 @@ public final class ReadmeBadgeSummarySupport {
         markdown.append("Updated: ")
                 .append(summary.date())
                 .append("\n\n");
-        markdown.append("![Coverage over time](latest/metrics-over-time.svg#gh-light-mode-only)\n");
-        markdown.append("![Coverage over time](latest/metrics-over-time-dark.svg#gh-dark-mode-only)\n\n");
+        markdown.append("![Coverage over Time](latest/metrics-over-time.svg#gh-light-mode-only)\n");
+        markdown.append("![Coverage over Time](latest/metrics-over-time-dark.svg#gh-dark-mode-only)\n\n");
         markdown.append("## Libraries\n\n");
         markdown.append("| Library | Description | Dynamic access coverage |\n");
         markdown.append("| --- | --- | ---: |\n");
@@ -468,7 +468,7 @@ public final class ReadmeBadgeSummarySupport {
         List<PanelSpec> panels = List.of(
                 new PanelSpec(
                         "libraries-supported",
-                        "Supported libraries",
+                        "Supported Libraries",
                         "Libraries with reachability metadata in the repository",
                         false,
                         "count",
@@ -478,7 +478,7 @@ public final class ReadmeBadgeSummarySupport {
                 ),
                 new PanelSpec(
                         "tested-versions",
-                        "Tested library versions",
+                        "Tested Library Versions",
                         "Tested library versions recorded across metadata indexes",
                         false,
                         "count",
@@ -488,7 +488,7 @@ public final class ReadmeBadgeSummarySupport {
                 ),
                 new PanelSpec(
                         "dynamic-access",
-                        "Dynamic access coverage",
+                        "Dynamic Access Coverage",
                         "Dynamic-access call coverage across repository metadata",
                         true,
                         "percent",
@@ -498,7 +498,7 @@ public final class ReadmeBadgeSummarySupport {
                 ),
                 new PanelSpec(
                         "tested-lines-of-code",
-                        "Tested lines of code",
+                        "Tested Lines of Code",
                         "Covered lines reported across library coverage stats",
                         false,
                         "count",
@@ -521,7 +521,7 @@ public final class ReadmeBadgeSummarySupport {
                 .append(DASHBOARD_HEIGHT)
                 .append("\" role=\"img\" aria-labelledby=\"graph-title graph-desc\">")
                 .append('\n');
-        svg.append("  <title id=\"graph-title\">Coverage over time</title>\n");
+        svg.append("  <title id=\"graph-title\">Coverage over Time</title>\n");
         svg.append("  <desc id=\"graph-desc\">A four-panel coverage dashboard showing libraries supported, tested library versions, dynamic access coverage, and tested lines of code over time.</desc>\n");
         svg.append("  <defs>\n");
         svg.append("    <linearGradient id=\"dashboard-bg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n");
@@ -557,7 +557,7 @@ public final class ReadmeBadgeSummarySupport {
                 .append(DASHBOARD_PADDING)
                 .append("\" y=\"62\" fill=\"")
                 .append(theme.titleText())
-                .append("\" font-size=\"34\" font-weight=\"700\">Coverage over time</text>\n");
+                .append("\" font-size=\"34\" font-weight=\"700\">Coverage over Time</text>\n");
         svg.append("  <text x=\"")
                 .append(DASHBOARD_PADDING)
                 .append("\" y=\"92\" fill=\"")
