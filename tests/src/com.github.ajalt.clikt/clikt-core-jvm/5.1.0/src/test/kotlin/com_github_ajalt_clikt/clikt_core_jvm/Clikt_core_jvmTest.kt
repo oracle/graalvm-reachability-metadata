@@ -212,6 +212,28 @@ public class Clikt_core_jvmTest {
         )
     }
 
+    @Test
+    fun `expands argument files before parsing command line tokens`() {
+        val command = ArgumentFileCommand(
+            mapOf(
+                "defaults.args" to """
+                    --profile "qa team"
+                    alpha
+                    beta
+                """.trimIndent(),
+            ),
+        )
+
+        command.parse(listOf("@defaults.args", "gamma"))
+
+        assertThat(command.request).isEqualTo(
+            ArgumentFileRequest(
+                profile = "qa team",
+                items = listOf("alpha", "beta", "gamma"),
+            ),
+        )
+    }
+
     private data class ProcessingResult(
         val count: Int,
         val mode: String,
@@ -388,6 +410,35 @@ public class Clikt_core_jvmTest {
 
         override fun run() {
             settings = ValueSourceSettings(host = host, port = port, label = label)
+        }
+    }
+
+    private data class ArgumentFileRequest(
+        val profile: String,
+        val items: List<String>,
+    )
+
+    private class ArgumentFileCommand(
+        private val argumentFiles: Map<String, String>,
+    ) : CoreCliktCommand("import") {
+        private val profile: String by option("--profile").required()
+        private val items: List<String> by argument("item").multiple(required = true)
+
+        var request: ArgumentFileRequest? = null
+            private set
+
+        init {
+            configureContext {
+                expandArgumentFiles = true
+                readArgumentFile = { path -> argumentFiles.getValue(path) }
+            }
+        }
+
+        override fun run() {
+            request = ArgumentFileRequest(
+                profile = profile,
+                items = items,
+            )
         }
     }
 }
