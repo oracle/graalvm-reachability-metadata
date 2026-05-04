@@ -1,0 +1,1007 @@
+Starting a Gradle Daemon, 3 busy and 1 incompatible and 269 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df4b8-223a-7b81-af71-f658c4c6e54b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.hsqldb:hsqldb:2.4.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.4.1" when "$version$" is replaced with "2.4.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+- Set "coordinates" to "org.hsqldb:hsqldb:2.4.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.4.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream project sources, then update the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json && sed -n '1,200p' build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+-rw-rw-r-- 1 vjovanov vjovanov 48 May  4 22:40 build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+{
+  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.hsqldb|hsqldb' build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json:2:  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
+metadata/org.jooq/jooq/3.18.2/reachability-metadata.json:272:      "type": "org.jooq.util.hsqldb.HSQLDBDataType"
+metadata/org.jooq/jooq/3.17.7/reachability-metadata.json:266:      "type": "org.jooq.util.hsqldb.HSQLDBDataType"
+metadata/org.jooq/jooq/3.20.0/reachability-metadata.json:296:      "type": "org.jooq.util.hsqldb.HSQLDBDataType"
+metadata/org.hibernate/hibernate-core/index.json:11:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate/hibernate-core/index.json:35:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:9304:        "typeReached": "org.hsqldb.jdbc.JDBCDriver"
+metadata/org.hibernate.orm/hibernate-core/index.json:10:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:35:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:59:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:85:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:119:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:152:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:177:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:200:      "org.hsqldb.jdbc.JDBCDriver",
+metadata/org.hibernate.orm/hibernate-core/index.json:224:      "org.hsqldb.jdbc.JDBCDriver",
+tests/src/io.opentelemetry/opentelemetry-semconv/1.25.0-alpha/src/test/java/io_opentelemetry/opentelemetry_semconv/Opentelemetry_semconvTest.java:491:                "hsqldb",
+tests/src/io.opentelemetry/opentelemetry-semconv/1.21.0-alpha/src/test/java/io_opentelemetry/opentelemetry_semconv/Opentelemetry_semconvTest.java:491:                "hsqldb",
+tests/src/io.opentelemetry/opentelemetry-semconv/1.19.0-alpha/src/test/java/io_opentelemetry/opentelemetry_semconv/Opentelemetry_semconvTest.java:491:                "hsqldb",
+tests/src/io.opentelemetry/opentelemetry-semconv/1.27.0-alpha/src/test/java/io_opentelemetry/opentelemetry_semconv/Opentelemetry_semconvTest.java:490:                "hsqldb",
+tests/src/io.opentelemetry/opentelemetry-semconv/1.23.0-alpha/src/test/java/io_opentelemetry/opentelemetry_semconv/Opentelemetry_semconvTest.java:491:                "hsqldb",
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/build.gradle:23:    testImplementation("org.hsqldb:hsqldb:2.7.1")
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:624:      "typeReachable": "org.hsqldb.jdbc.JDBCDriver"
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:626:    "name": "[Lorg.hsqldb.Constraint;"
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:630:      "typeReachable": "org.hsqldb.jdbc.JDBCDriver"
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:632:    "name": "[Lorg.hsqldb.index.Index;"
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:636:      "typeReachable": "org.hsqldb.jdbc.JDBCDriver"
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:638:    "name": "org.hsqldb.jdbc.JDBCClob",
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:648:      "typeReachable": "org.hsqldb.jdbc.JDBCDriver"
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:650:    "name": "org.hsqldb.jdbc.JDBCConnection",
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:660:      "typeReachable": "org.hsqldb.jdbc.JDBCDriver"
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:662:    "name": "org.hsqldb.jdbc.JDBCDriver",
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:672:      "typeReachable": "org.hsqldb.jdbc.JDBCDriver"
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:674:    "name": "org.hsqldb.persist.HsqlDatabaseProperties",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:13104:    "name": "[Lorg.hsqldb.Constraint;"
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:13110:    "name": "[Lorg.hsqldb.index.Index;"
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:13116:    "name": "[Lorg.hsqldb.index.Index;"
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:13122:    "name": "[Lorg.hsqldb.index.Index;"
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:13188:    "name": "org.hsqldb.jdbc.JDBCClob",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:13200:    "name": "org.hsqldb.jdbc.JDBCConnection",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:13212:    "name": "org.hsqldb.jdbc.JDBCDriver",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:13224:    "name": "org.hsqldb.persist.HsqlDatabaseProperties",
+
+web search: 
+web search: Maven Central org.hsqldb hsqldb 2.4.1 sources jar tests jar scm url
+web search: 
+web search: https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src
+codex
+Maven Central has the main jar, sources jar, and javadoc jar for `2.4.1`, but no test jar in that directory. The upstream POM points to SourceForge SVN tag `2.4.1`, and that tag contains `test-src`, so I’ll use Maven for sources/docs and the tagged SVN test directory for tests.
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|not-for-native-image|language' build/discovered-artifact-metadata | head -120" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.hsqldb</groupId>
+  <artifactId>hsqldb</artifactId>
+  <version>2.4.1</version>
+  <name>HyperSQL Database</name>
+  <description>HSQLDB - Lightweight 100% Java SQL Database Engine</description>
+  <url>http://hsqldb.org</url>
+  <inceptionYear>2001</inceptionYear>
+  <organization>
+    <name>The HSQL Development Group</name>
+    <url>http://hsqldb.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>HSQLDB License, a BSD open source license</name>
+      <url>http://hsqldb.org/web/hsqlLicense.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>unsaved</id>
+      <name>Blaine Simpson</name>
+      <email>blaine.simpson@admc.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:svn:http://svn.code.sf.net/p/hsqldb/svn/base/</connection>
+    <tag>2.4.1</tag>
+    <url>http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-javadoc.jar && curl -fsI https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-tests.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ exited 22 in 353ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 20:40:23 GMT
+content-type: text/html
+cf-ray: 9f6a51fb1c9224c4-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: HSQLDB Maven Central org.hsqldb hsqldb 2.4.1 POM SCM tag
+web search: 
+web search: https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/
+web search: 
+web search: site:sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src hsqldb
+exec
+/usr/bin/bash -lc 'svn ls http://svn.code.sf.net/p/hsqldb/svn/base/tags/2.4.1/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ exited 127 in 0ms:
+/usr/bin/bash: line 1: svn: command not found
+
+exec
+/usr/bin/bash -lc 'svn ls http://svn.code.sf.net/p/hsqldb/svn/base/tags/2.4.1/test-src/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ exited 127 in 0ms:
+/usr/bin/bash: line 1: svn: command not found
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d) && curl -fsSL -o "$tmpdir/hsqldb-2.4.1.jar" https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1.jar && jar tf "$tmpdir/hsqldb-2.4.1.jar" | head -80 && rm -rf "$tmpdir"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 329ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/hsqldb_lic.txt
+META-INF/hypersonic_lic.txt
+META-INF/services/
+META-INF/services/java.sql.Driver
+org/
+org/hsqldb/
+org/hsqldb/ClientConnection.class
+org/hsqldb/ClientConnectionHTTP.class
+org/hsqldb/ColumnBase.class
+org/hsqldb/ColumnSchema.class
+org/hsqldb/Constraint.class
+org/hsqldb/ConstraintCore.class
+org/hsqldb/Database$CheckpointRunner.class
+org/hsqldb/Database$TimeoutRunner.class
+org/hsqldb/Database.class
+org/hsqldb/DatabaseManager$1.class
+org/hsqldb/DatabaseManager.class
+org/hsqldb/DatabaseType$1.class
+org/hsqldb/DatabaseType.class
+org/hsqldb/DatabaseURL.class
+org/hsqldb/Expression.class
+org/hsqldb/ExpressionAccessor.class
+org/hsqldb/ExpressionAggregate.class
+org/hsqldb/ExpressionArithmetic.class
+org/hsqldb/ExpressionArrayAggregate.class
+org/hsqldb/ExpressionColumn.class
+org/hsqldb/ExpressionColumnAccessor.class
+org/hsqldb/ExpressionLike.class
+org/hsqldb/ExpressionLogical.class
+org/hsqldb/ExpressionOp.class
+org/hsqldb/ExpressionOrderBy.class
+org/hsqldb/ExpressionTable.class
+org/hsqldb/ExpressionValue.class
+org/hsqldb/FunctionCustom.class
+org/hsqldb/FunctionSQL.class
+org/hsqldb/FunctionSQLInvoked.class
+org/hsqldb/HsqlDateTime$Tokenizer.class
+org/hsqldb/HsqlDateTime.class
+org/hsqldb/HsqlException$HsqlRuntimeMemoryError.class
+org/hsqldb/HsqlException.class
+org/hsqldb/HsqlNameManager$1.class
+org/hsqldb/HsqlNameManager$HsqlName.class
+org/hsqldb/HsqlNameManager$SimpleName.class
+org/hsqldb/HsqlNameManager.class
+org/hsqldb/Like.class
+org/hsqldb/NumberSequence.class
+org/hsqldb/OpTypes.class
+org/hsqldb/ParserBase.class
+org/hsqldb/ParserCommand.class
+org/hsqldb/ParserDDL.class
+org/hsqldb/ParserDML.class
+org/hsqldb/ParserDQL$CompileContext.class
+org/hsqldb/ParserDQL.class
+org/hsqldb/ParserRoutine.class
+org/hsqldb/ParserTable.class
+org/hsqldb/QueryExpression.class
+org/hsqldb/QuerySpecification.class
+org/hsqldb/RangeGroup$RangeGroupEmpty.class
+org/hsqldb/RangeGroup$RangeGroupSimple.class
+org/hsqldb/RangeGroup.class
+org/hsqldb/RangeVariable$1.class
+org/hsqldb/RangeVariable$RangeIteratorBase.class
+org/hsqldb/RangeVariable$RangeIteratorCheck.class
+org/hsqldb/RangeVariable$RangeIteratorEmpty.class
+org/hsqldb/RangeVariable$RangeIteratorJoined.class
+org/hsqldb/RangeVariable$RangeIteratorMain.class
+org/hsqldb/RangeVariable$RangeIteratorRight.class
+org/hsqldb/RangeVariable$RangeVariableConditions.class
+org/hsqldb/RangeVariable.class
+org/hsqldb/RangeVariableJoined.class
+org/hsqldb/RangeVariableResolver.class
+org/hsqldb/ReferenceObject.class
+org/hsqldb/Routine.class
+org/hsqldb/RoutineSchema.class
+org/hsqldb/Row.class
+org/hsqldb/RowAVL.class
+org/hsqldb/RowAVLDisk.class
+org/hsqldb/RowAVLDiskData.class
+
+codex
+The artifact itself contains JVM `.class` files and a `java.sql.Driver` service descriptor, so this is a Native Image metadata target rather than one of the non-JVM exclusions. It also appears to be a plain Java library, not Kotlin/Groovy/Scala-specific.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/' | rg -n 'test-src|src|doc|2\\.4\\.1|Code Browser' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src/' | rg -n 'org|test|AllTest|hsqldb' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d) && curl -fsSL -o "$tmpdir/hsqldb-2.4.1-sources.jar" https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-sources.jar && jar tf "$tmpdir/hsqldb-2.4.1-sources.jar" | head -60 && rm -rf "$tmpdir"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 342ms:
+4:<!-- Server: sfs-forge-3 -->
+30:    / [r6841] /base/tags/2.4.1/test-src
+82:SF.floatingSitewideOrigin = 'https://sourceforge.net';
+90:                href="https://a.fsdn.com/allura/nf/1777910289/_ew_/_slim/css?href=allura%2Fcss%2Fforge%2Fhilite.css%3Ballura%2Fcss%2Fforge%2Ftooltipster.css"
+100:                href="https://a.fsdn.com/allura/nf/1777910289/_ew_/theme/sftheme/css/forge.css"
+126:.project-forge.mountpoint-site-support .view_holder .grid-4:nth-child(5),
+127:.project-forge.mountpoint-site-support .view_holder .grid-4:nth-child(6) {
+134:.project-forge.mountpoint-site-support .view_holder .grid-4:nth-child(5) label, .project-forge.mountpoint-site-support .view_holder .grid-4:nth-child(6) label {
+141:    <link rel="alternate" type="application/rss+xml" title="RSS" href="/p/hsqldb/svn/feed.rss"/>
+142:    <link rel="alternate" type="application/atom+xml" title="Atom" href="/p/hsqldb/svn/feed.atom"/>
+180:        <link rel="canonical" href="https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src/" />
+197:            dimension1: 'hsqldb',
+232:            let imageUrl = "https://io.narrative.io/?companyId=2440&id=first_party%3A2941635c-66b6-4b72-acff-ffa67f88d313&id=site_name%3Asourceforge.net&id=url%3A%2Fp%2Fhsqldb%2Fsvn%2FHEAD%2Ftree%2Fbase%2Ftags%2F2.4.1%2Ftest-src%2F&id=pagetitle%3A%24PAGE_TITLE&id=vertical%3AOpen+Source+Software&id=product%3AHyperSQL+Database+Engine+%28HSQLDB%29";
+258:" id="forge">
+290:<svg  data-name="search" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1216 832q0-185-131.5-316.5t-316.5-131.5-316.5 131.5-131.5 316.5 131.5 316.5 316.5 131.5 316.5-131.5 131.5-316.5zm512 832q0 52-38 90t-90 38q-54 0-90-38l-343-342q-179 124-399 124-143 0-273.5-55.5t-225-150-150-225-55.5-273.5 55.5-273.5 150-225 225-150 273.5-55.5 273.5 55.5 225 150 150 225 55.5 273.5q0 220-124 399l343 343q37 37 37 90z"/></svg>
+320:                <li><a href="https://sourceforge.net/articles/category/sourceforge-podcast/">SourceForge Podcast</a></li>
+322:                    <li><a href="https://sourceforge.net/p/forge/documentation/Docs%20Home/">Site Documentation</a></li>
+346:    SF.linkout_icon = '<svg  data-name="sf-linkout-icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve"><polygon class="st0" points="243.2,243.2 56.8,243.2 56.8,56.8 123,56.8 123,9 9,9 9,291 291,291 291,179.4 243.2,179 "/><polygon class="st0" points="128.5,213 155,186.5 176,165.5 206.7,196.3 235.5,132.5 248.9,102.6 290.6,9.8 291,9 290.6,9.2 197.4,51.1 169.1,63.8 103.7,93.3 137,126.5 115.9,147.5 89.5,174 "/></svg>';
+357:    <img src="https://a.fsdn.com/con/images/sandiego/sf-logo-full.svg"  alt="SourceForge logo" class="sf-logo-full"/>
+381:    <img src="https://a.fsdn.com/con/images/sandiego/sf-logo-full.svg"  alt="SourceForge logo" class="sf-logo-full"/>
+391:                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 653 102.6" style="enable-background:new 0 0 653 102.6;" xml:space="preserve"><path class="st0" d="M66.9,54.5c0-19.1-6.8-27.8-10.4-31.1c-0.7-0.6-1.8-0.1-1.7,0.9c0.7,10.8-12.9,13.5-12.9,30.4h0    c0,0,0,0.1,0,0.1c0,10.3,7.8,18.7,17.4,18.7c9.6,0,17.4-8.4,17.4-18.7c0,0,0-0.1,0-0.1h0c0-4.8-1.8-9.4-3.6-12.8    c-0.4-0.7-1.4-0.4-1.3,0.2C75.1,56.7,66.9,65.7,66.9,54.5z"></path><g>    <path class="st0" d="M46.2,94.8c-0.4,0-0.9-0.2-1.2-0.5L0.5,49.8c-0.6-0.6-0.6-1.7,0-2.4l47-47C47.8,0.2,48.2,0,48.6,0h13.5        c0.8,0,1.3,0.5,1.5,1c0.2,0.5,0.2,1.2-0.4,1.8L19.1,47c-0.9,0.9-0.9,2.3,0,3.2L54,85.2c0.6,0.6,0.6,1.7,0,2.4l-6.7,6.8        C47,94.6,46.6,94.8,46.2,94.8z"></path></g><g>    <path class="st0" d="M55.1,102.6c-0.8,0-1.3-0.5-1.5-1c-0.2-0.5-0.2-1.2,0.4-1.8l44.2-44.2c0.4-0.4,0.7-1,0.7-1.6        c0-0.6-0.2-1.2-0.7-1.6L63.2,17.4c-0.6-0.6-0.6-1.7,0-2.4l6.8-6.8c0.3-0.3,0.7-0.5,1.2-0.5S72,8,72.3,8.3l44.4,44.5        c0.3,0.3,0.5,0.7,0.5,1.2s-0.2,0.9-0.5,1.2l-47,47c-0.3,0.3-0.7,0.5-1.2,0.5H55.1z"></path></g><g>    <g>        <path class="st1" d="M167.2,32c-0.2,0.4-0.5,0.6-1,0.6c-0.3,0-0.7-0.2-1.2-0.7c-0.5-0.5-1.2-1-2-1.5c-0.9-0.6-1.9-1.1-3.2-1.5            c-1.3-0.5-2.9-0.7-4.8-0.7c-1.9,0-3.5,0.3-5,0.8c-1.4,0.5-2.6,1.3-3.6,2.2s-1.7,2-2.2,3.2c-0.5,1.2-0.8,2.5-0.8,3.8            c0,1.8,0.4,3.2,1.1,4.4c0.7,1.1,1.7,2.1,3,2.9c1.2,0.8,2.6,1.5,4.2,2c1.6,0.6,3.2,1.1,4.8,1.6c1.6,0.5,3.2,1.1,4.8,1.8            c1.6,0.6,2.9,1.5,4.2,2.4s2.2,2.2,3,3.6c0.7,1.4,1.1,3.2,1.1,5.3c0,2.2-0.4,4.2-1.1,6.1c-0.7,1.9-1.8,3.6-3.2,5            c-1.4,1.4-3.2,2.5-5.2,3.4c-2.1,0.8-4.4,1.2-7,1.2c-3.4,0-6.4-0.6-8.8-1.8c-2.5-1.2-4.6-2.9-6.5-5l1-1.6c0.3-0.4,0.6-0.5,1-0.5            c0.2,0,0.5,0.1,0.8,0.4c0.3,0.3,0.8,0.7,1.2,1.1c0.5,0.4,1.1,0.9,1.8,1.4c0.7,0.5,1.5,1,2.4,1.4c0.9,0.4,1.9,0.8,3.1,1.1            c1.2,0.3,2.5,0.4,4,0.4c2.1,0,3.9-0.3,5.5-0.9c1.6-0.6,3-1.5,4.1-2.5s2-2.4,2.6-3.8c0.6-1.5,0.9-3.1,0.9-4.7            c0-1.8-0.4-3.3-1.1-4.5c-0.7-1.2-1.7-2.2-3-3c-1.2-0.8-2.6-1.5-4.2-2c-1.6-0.5-3.2-1.1-4.8-1.6c-1.6-0.5-3.2-1.1-4.8-1.7            c-1.6-0.6-2.9-1.4-4.2-2.4c-1.2-1-2.2-2.2-3-3.7c-0.7-1.5-1.1-3.3-1.1-5.6c0-1.7,0.3-3.4,1-5c0.7-1.6,1.6-3,2.9-4.3            c1.3-1.2,2.8-2.2,4.7-3c1.9-0.7,4-1.1,6.4-1.1c2.7,0,5.1,0.4,7.3,1.3c2.1,0.9,4.1,2.2,5.9,3.9L167.2,32z"></path>        <path class="st2" d="M152.9,78.8c-3.5,0-6.6-0.6-9.1-1.9c-2.5-1.2-4.8-3-6.7-5.1l-0.3-0.3l1.3-2c0.6-0.7,1.1-0.8,1.5-0.8            c0.4,0,0.8,0.2,1.2,0.6c0.3,0.3,0.8,0.7,1.3,1.1c0.5,0.4,1.1,0.9,1.7,1.4c0.7,0.5,1.4,0.9,2.3,1.3c0.9,0.4,1.9,0.8,3,1            c1.1,0.3,2.4,0.4,3.9,0.4c2,0,3.8-0.3,5.3-0.9c1.5-0.6,2.8-1.4,3.9-2.4c1-1,1.9-2.2,2.4-3.6c0.6-1.4,0.8-2.9,0.8-4.5            c0-1.7-0.3-3.1-1-4.2c-0.7-1.1-1.6-2-2.8-2.8c-1.2-0.8-2.5-1.4-4-1.9c-1.5-0.5-3.1-1.1-4.8-1.6c-1.7-0.5-3.3-1.1-4.8-1.7            c-1.6-0.7-3.1-1.5-4.3-2.5c-1.3-1-2.3-2.4-3.1-3.9c-0.8-1.6-1.2-3.5-1.2-5.8c0-1.8,0.3-3.6,1-5.3c0.7-1.7,1.7-3.2,3-4.5            c1.3-1.3,3-2.3,4.9-3.1c1.9-0.8,4.2-1.2,6.6-1.2c2.8,0,5.3,0.4,7.5,1.3c2.2,0.9,4.2,2.3,6.1,4.1l0.3,0.3l-1.1,2.1            c-0.6,1.1-1.7,1.4-3.1,0.1c-0.5-0.4-1.1-0.9-2-1.4c-0.8-0.5-1.9-1-3.1-1.5c-1.2-0.4-2.7-0.7-4.6-0.7c-1.8,0-3.4,0.3-4.8,0.8            c-1.3,0.5-2.5,1.2-3.4,2.1c-0.9,0.9-1.6,1.9-2.1,3c-0.5,1.1-0.7,2.4-0.7,3.6c0,1.6,0.3,3,1,4c0.7,1.1,1.6,2,2.8,2.8            c1.2,0.8,2.5,1.4,4,2c1.5,0.5,3.1,1.1,4.8,1.6c1.6,0.5,3.3,1.1,4.8,1.8c1.6,0.7,3.1,1.5,4.3,2.5c1.3,1,2.3,2.3,3.1,3.8            c0.8,1.5,1.2,3.4,1.2,5.6c0,2.2-0.4,4.4-1.2,6.4c-0.8,2-1.9,3.7-3.4,5.2c-1.5,1.5-3.3,2.6-5.4,3.5            C158.1,78.3,155.6,78.8,152.9,78.8z M138.4,71.3c1.7,1.9,3.7,3.4,6,4.5c2.4,1.2,5.3,1.8,8.6,1.8c2.5,0,4.8-0.4,6.8-1.2            c2-0.8,3.6-1.9,5-3.2c1.3-1.3,2.4-3,3.1-4.8c0.7-1.8,1.1-3.8,1.1-5.9c0-2-0.4-3.7-1-5.1c-0.7-1.3-1.6-2.5-2.8-3.4            c-1.2-0.9-2.5-1.7-4-2.4c-1.5-0.6-3.1-1.2-4.7-1.8c-1.6-0.5-3.2-1.1-4.8-1.6c-1.6-0.6-3-1.3-4.3-2.1c-1.3-0.8-2.3-1.9-3.1-3.1            c-0.8-1.2-1.2-2.8-1.2-4.7c0-1.4,0.3-2.8,0.8-4.1c0.5-1.3,1.3-2.5,2.3-3.4c1-1,2.3-1.8,3.8-2.3c1.5-0.6,3.3-0.8,5.2-0.8            c1.9,0,3.6,0.2,5,0.7c1.3,0.5,2.5,1,3.3,1.6c0.9,0.6,1.6,1.1,2.1,1.6c0.6,0.5,0.8,0.5,0.8,0.5c0.1,0,0.3,0,0.4-0.3l0.7-1.3            c-1.6-1.5-3.4-2.7-5.3-3.5c-2.1-0.8-4.4-1.2-7-1.2c-2.3,0-4.4,0.4-6.2,1.1c-1.8,0.7-3.3,1.7-4.5,2.8c-1.2,1.2-2.1,2.5-2.8,4.1            c-0.6,1.5-0.9,3.1-0.9,4.8c0,2.1,0.4,3.9,1.1,5.3c0.7,1.4,1.6,2.6,2.8,3.5c1.2,0.9,2.5,1.7,4,2.3c1.5,0.6,3.1,1.2,4.7,1.7            c1.6,0.5,3.2,1,4.8,1.6c1.6,0.6,3,1.2,4.3,2.1c1.3,0.8,2.4,1.9,3.1,3.2c0.8,1.3,1.2,2.9,1.2,4.9c0,1.8-0.3,3.4-0.9,5            c-0.6,1.6-1.5,2.9-2.7,4c-1.2,1.1-2.6,2-4.3,2.7c-1.7,0.6-3.6,1-5.7,1c-1.5,0-2.9-0.2-4.2-0.5c-1.2-0.3-2.3-0.7-3.2-1.1            c-0.9-0.4-1.8-0.9-2.5-1.5c-0.7-0.5-1.3-1-1.8-1.4c-0.5-0.4-0.9-0.8-1.2-1.1c-0.3-0.3-0.5-0.3-0.5-0.3c-0.1,0-0.3,0-0.5,0.3            L138.4,71.3z"></path>    </g>    <g>        <path class="st1" d="M226.7,51.6c0,4-0.6,7.6-1.8,10.9c-1.2,3.3-2.9,6.1-5.1,8.4c-2.2,2.3-4.8,4.1-7.8,5.4            c-3,1.3-6.4,1.9-10.1,1.9c-3.6,0-7-0.6-10-1.9c-3-1.3-5.6-3-7.8-5.4c-2.2-2.3-3.9-5.1-5.1-8.4c-1.2-3.3-1.8-6.9-1.8-10.9            c0-4,0.6-7.6,1.8-10.9c1.2-3.3,2.9-6.1,5.1-8.4c2.2-2.3,4.8-4.1,7.8-5.4c3-1.3,6.4-1.9,10-1.9c3.7,0,7.1,0.6,10.1,1.9            c3,1.3,5.6,3,7.8,5.4c2.2,2.3,3.9,5.1,5.1,8.4C226.1,44,226.7,47.6,226.7,51.6z M222.8,51.6c0-3.6-0.5-6.9-1.5-9.8            c-1-2.9-2.4-5.3-4.2-7.3c-1.8-2-4-3.5-6.6-4.6c-2.6-1.1-5.4-1.6-8.5-1.6c-3.1,0-5.9,0.5-8.5,1.6c-2.6,1.1-4.8,2.6-6.6,4.6            c-1.8,2-3.3,4.4-4.3,7.3c-1,2.9-1.5,6.1-1.5,9.8c0,3.6,0.5,6.9,1.5,9.8c1,2.9,2.4,5.3,4.3,7.3c1.8,2,4,3.5,6.6,4.6            c2.6,1.1,5.4,1.6,8.5,1.6c3.1,0,6-0.5,8.5-1.6c2.6-1,4.8-2.6,6.6-4.6c1.8-2,3.2-4.4,4.2-7.3C222.3,58.5,222.8,55.3,222.8,51.6z"></path>        <path class="st2" d="M202,78.7c-3.7,0-7.2-0.7-10.2-1.9c-3.1-1.3-5.8-3.1-8-5.5c-2.2-2.4-4-5.2-5.2-8.6c-1.2-3.3-1.9-7.1-1.9-11.1            c0-4,0.6-7.8,1.9-11.1c1.2-3.3,3-6.2,5.2-8.6c2.2-2.4,4.9-4.2,8-5.5c3.1-1.3,6.5-2,10.2-2c3.8,0,7.2,0.7,10.3,1.9            c3.1,1.3,5.8,3.1,8,5.5c2.2,2.4,4,5.3,5.2,8.6c1.2,3.3,1.8,7,1.8,11.1c0,4.1-0.6,7.8-1.8,11.1c-1.2,3.3-3,6.2-5.2,8.6            c-2.2,2.4-4.9,4.2-8,5.5C209.2,78.1,205.7,78.7,202,78.7z M202,25.7c-3.5,0-6.8,0.6-9.8,1.9c-2.9,1.2-5.5,3-7.6,5.2            c-2.1,2.2-3.8,5-4.9,8.2c-1.2,3.2-1.8,6.8-1.8,10.7c0,3.9,0.6,7.5,1.8,10.7c1.2,3.2,2.8,5.9,4.9,8.2c2.1,2.2,4.7,4,7.6,5.2            c2.9,1.2,6.2,1.8,9.8,1.8c3.6,0,6.9-0.6,9.8-1.8c2.9-1.2,5.5-3,7.6-5.2c2.1-2.2,3.8-5,4.9-8.1c1.2-3.2,1.8-6.8,1.8-10.7            c0-3.9-0.6-7.5-1.8-10.7c-1.2-3.2-2.8-5.9-4.9-8.2c-2.1-2.2-4.7-4-7.6-5.2C208.9,26.3,205.6,25.7,202,25.7z"></path>    </g>    <g>        <path class="st1" d="M256.4,74.9c2.5,0,4.7-0.4,6.7-1.3c2-0.9,3.6-2.1,5-3.6c1.4-1.5,2.4-3.4,3.1-5.4c0.7-2.1,1.1-4.3,1.1-6.8            V25.7h3.7v32.1c0,2.9-0.5,5.5-1.4,8c-0.9,2.5-2.2,4.6-3.9,6.5c-1.7,1.8-3.8,3.3-6.2,4.3c-2.4,1-5.2,1.6-8.2,1.6            c-3,0-5.8-0.5-8.2-1.6c-2.4-1.1-4.5-2.5-6.2-4.3c-1.7-1.8-3-4-3.9-6.5c-0.9-2.5-1.4-5.2-1.4-8V25.7h3.8v32c0,2.4,0.4,4.7,1.1,6.8            c0.7,2.1,1.8,3.9,3.1,5.4c1.4,1.5,3,2.7,5,3.6C251.6,74.5,253.9,74.9,256.4,74.9z"></path>        <path class="st2" d="M256.4,78.8c-3.1,0-5.9-0.5-8.4-1.6c-2.5-1.1-4.7-2.6-6.4-4.5c-1.7-1.9-3.1-4.2-4-6.7            c-0.9-2.5-1.4-5.3-1.4-8.2V25.1h5v32.7c0,2.3,0.4,4.5,1,6.6c0.7,2,1.7,3.8,3,5.2c1.3,1.5,2.9,2.6,4.8,3.5c1.9,0.8,4,1.3,6.4,1.3            c2.4,0,4.6-0.4,6.4-1.2c1.9-0.8,3.5-2,4.8-3.5c1.3-1.5,2.3-3.2,3-5.2c0.7-2,1-4.2,1-6.6V25.1h5v32.7c0,2.9-0.5,5.7-1.4,8.2            c-0.9,2.5-2.3,4.8-4,6.7c-1.7,1.9-3.9,3.4-6.4,4.5C262.3,78.3,259.5,78.8,256.4,78.8z M237.3,26.3v31.5c0,2.8,0.4,5.4,1.3,7.8            c0.9,2.4,2.1,4.5,3.8,6.3c1.6,1.8,3.6,3.2,6,4.2c2.3,1,5,1.5,8,1.5c2.9,0,5.6-0.5,8-1.5c2.3-1,4.4-2.4,6-4.2            c1.6-1.8,2.9-3.9,3.8-6.3c0.9-2.4,1.3-5,1.3-7.8V26.3h-2.5v31.5c0,2.5-0.4,4.8-1.1,7c-0.7,2.2-1.8,4.1-3.3,5.7            c-1.4,1.6-3.2,2.9-5.2,3.8c-2,0.9-4.4,1.4-6.9,1.4c-2.6,0-4.9-0.5-6.9-1.4c-2-0.9-3.8-2.2-5.2-3.8c-1.4-1.6-2.5-3.5-3.2-5.7            c-0.7-2.1-1.1-4.5-1.1-7V26.3H237.3z"></path>    </g>    <g>        <path class="st1" d="M297.5,51.3c1,0,0.9,0,0.9,0l2.2,0c2.3,0,4.4-0.3,6.2-0.8c1.8-0.6,3.4-1.3,4.6-2.4c1.3-1,2.2-2.3,2.9-3.7            c0.7-1.4,1-3.1,1-4.9c0-3.7-1.2-6.4-3.6-8.2c-2.4-1.8-5.9-2.7-10.6-2.7h-9.5v22.7v2.8v23.5h-3.7V25.7h13.2c6,0,10.5,1.2,13.4,3.5            c3,2.3,4.4,5.7,4.4,10.2c0,2-0.3,3.8-1,5.4c-0.7,1.6-1.7,3.1-3,4.3c-1.3,1.2-2.8,2.3-4.6,3c-1.8,0.8-3.9,1.3-6.1,1.6            c0.6,0.4,1.1,0.9,1.6,1.5l17.9,22.4h-3.3c-0.4,0-0.7-0.1-1-0.2c-0.3-0.1-0.6-0.4-0.8-0.7l-16.6-21c-0.4-0.5-0.9-0.9-1.3-1.1            c-0.5-0.2-3.4-0.3-4.4-0.3C296.3,51.6,296.7,51.3,297.5,51.3z"></path>        <path class="st2" d="M325,78.2h-4.5c-0.5,0-0.9-0.1-1.3-0.3c-0.4-0.2-0.7-0.5-1-0.9l-16.6-21c-0.4-0.5-0.7-0.8-1.1-1            c-0.4-0.1-2.8-0.3-4.1-0.3h-0.6v-2.6c0-0.9,0.2-1.4,1.8-1.4c0.9,0,1,0,1,0l2.2,0c2.2,0,4.2-0.3,6-0.8c1.7-0.5,3.2-1.3,4.4-2.3            c1.2-1,2.1-2.1,2.7-3.5c0.6-1.4,0.9-2.9,0.9-4.6c0-3.5-1.1-6-3.4-7.7c-2.3-1.7-5.7-2.6-10.2-2.6h-8.9v48.9h-5V25.1h13.9            c6.1,0,10.7,1.2,13.8,3.6c3.1,2.4,4.7,6,4.7,10.7c0,2.1-0.4,4-1.1,5.7c-0.7,1.7-1.8,3.2-3.1,4.5c-1.3,1.3-3,2.3-4.8,3.2            c-1.5,0.6-3.1,1.1-4.9,1.4c0.2,0.2,0.4,0.4,0.6,0.7L325,78.2z M296.9,53.5c1.1,0,3.4,0.1,4,0.4c0.6,0.3,1.1,0.7,1.6,1.3l16.6,21            c0.2,0.3,0.4,0.5,0.6,0.6c0.2,0.1,0.4,0.2,0.7,0.2h2l-17.1-21.4c-0.4-0.6-0.9-1-1.4-1.3l-1.5-0.9l1.8-0.2c2.2-0.2,4.2-0.7,5.9-1.5            c1.7-0.8,3.2-1.7,4.5-2.9c1.2-1.2,2.2-2.5,2.8-4.1c0.6-1.6,1-3.3,1-5.2c0-4.3-1.4-7.5-4.2-9.7c-2.8-2.2-7.2-3.3-13-3.3h-12.6V77            h2.5V28h10.1c4.7,0,8.4,0.9,10.9,2.8c2.6,1.9,3.9,4.8,3.9,8.7c0,1.9-0.4,3.6-1,5.1c-0.7,1.5-1.7,2.8-3.1,3.9            c-1.3,1.1-2.9,1.9-4.8,2.5c-1.9,0.6-4,0.9-6.4,0.9l-2.2,0c-0.1,0-0.2,0-0.9,0C297.3,51.9,297,51.9,296.9,53.5z"></path>    </g>    <g>        <path class="st1" d="M367.6,68.8c0.2,0,0.5,0.1,0.6,0.3l1.5,1.6c-1.1,1.1-2.2,2.2-3.5,3.1c-1.3,0.9-2.7,1.7-4.2,2.3            c-1.5,0.6-3.2,1.1-4.9,1.5c-1.8,0.4-3.8,0.5-5.9,0.5c-3.6,0-6.9-0.6-9.9-1.9c-3-1.3-5.6-3-7.7-5.4c-2.1-2.3-3.8-5.1-5-8.4            c-1.2-3.3-1.8-6.9-1.8-10.9c0-3.9,0.6-7.5,1.9-10.8c1.2-3.3,3-6,5.2-8.4c2.2-2.3,4.9-4.1,8-5.4c3.1-1.3,6.6-1.9,10.3-1.9            c1.9,0,3.6,0.1,5.2,0.4c1.6,0.3,3,0.7,4.4,1.2c1.4,0.5,2.6,1.2,3.8,2c1.2,0.8,2.4,1.7,3.5,2.7l-1.1,1.6c-0.2,0.3-0.5,0.4-0.9,0.4            c-0.2,0-0.5-0.1-0.8-0.4c-0.3-0.3-0.8-0.6-1.3-1c-0.5-0.4-1.2-0.8-1.9-1.2c-0.7-0.5-1.6-0.9-2.7-1.2c-1-0.4-2.2-0.7-3.6-1            c-1.3-0.3-2.9-0.4-4.6-0.4c-3.2,0-6.1,0.5-8.7,1.6c-2.6,1.1-4.9,2.6-6.8,4.7c-1.9,2-3.4,4.5-4.5,7.3s-1.6,6.1-1.6,9.7            c0,3.7,0.5,6.9,1.6,9.8c1.1,2.9,2.5,5.3,4.4,7.3c1.9,2,4.1,3.5,6.6,4.6c2.5,1.1,5.3,1.6,8.2,1.6c1.9,0,3.5-0.1,5-0.4            c1.5-0.2,2.8-0.6,4-1.1c1.2-0.5,2.4-1.1,3.4-1.8c1.1-0.7,2.1-1.5,3.1-2.5c0.1-0.1,0.2-0.2,0.3-0.2            C367.3,68.9,367.5,68.8,367.6,68.8z"></path>        <path class="st2" d="M351.1,78.8c-3.7,0-7.1-0.7-10.1-1.9c-3.1-1.3-5.7-3.1-7.9-5.5c-2.2-2.4-3.9-5.2-5.1-8.6            c-1.2-3.3-1.8-7.1-1.8-11.1c0-4,0.6-7.7,1.9-11c1.3-3.3,3.1-6.2,5.3-8.6c2.3-2.4,5.1-4.3,8.2-5.6c3.2-1.3,6.7-2,10.6-2            c1.9,0,3.7,0.1,5.3,0.4c1.6,0.3,3.1,0.7,4.5,1.2c1.4,0.5,2.7,1.2,3.9,2c1.2,0.8,2.4,1.7,3.6,2.8l0.4,0.4l-1.4,2.1            c-0.2,0.3-0.6,0.7-1.4,0.7c-0.4,0-0.7-0.2-1.2-0.5c-0.3-0.3-0.8-0.6-1.3-0.9c-0.5-0.4-1.1-0.8-1.9-1.2c-0.7-0.4-1.6-0.8-2.6-1.2            c-1-0.4-2.2-0.7-3.5-0.9c-1.3-0.2-2.8-0.4-4.5-0.4c-3.1,0-5.9,0.5-8.5,1.6c-2.5,1.1-4.8,2.6-6.6,4.5c-1.8,1.9-3.3,4.3-4.3,7.1            c-1,2.8-1.6,6-1.6,9.4c0,3.6,0.5,6.8,1.5,9.6c1,2.8,2.4,5.2,4.2,7.1c1.8,1.9,3.9,3.4,6.4,4.4c2.4,1,5.1,1.5,8,1.5            c1.8,0,3.5-0.1,4.9-0.4c1.4-0.2,2.7-0.6,3.9-1.1c1.2-0.5,2.3-1.1,3.3-1.7c1-0.7,2-1.5,3-2.4c0.2-0.2,0.3-0.2,0.5-0.3            c0.5-0.3,1.3-0.2,1.7,0.3l1.9,2l-0.4,0.4c-1.1,1.2-2.3,2.2-3.6,3.2c-1.3,0.9-2.7,1.8-4.3,2.4c-1.5,0.7-3.2,1.2-5.1,1.5            C355.3,78.6,353.3,78.8,351.1,78.8z M352.2,25.7c-3.7,0-7.1,0.6-10.1,1.9c-3,1.2-5.7,3-7.8,5.3c-2.2,2.3-3.9,5-5.1,8.2            c-1.2,3.2-1.8,6.7-1.8,10.6c0,3.9,0.6,7.5,1.8,10.7c1.2,3.2,2.8,5.9,4.9,8.2c2.1,2.2,4.6,4,7.5,5.2c2.9,1.2,6.1,1.8,9.6,1.8            c2.1,0,4-0.2,5.8-0.5c1.7-0.3,3.4-0.8,4.8-1.5c1.5-0.6,2.8-1.4,4-2.3c1.1-0.8,2.1-1.7,3-2.6l-1.1-1.2c-0.1-0.1-0.2-0.1-0.3,0            c-0.1,0-0.2,0.1-0.3,0.2c-1,0.9-2.1,1.8-3.2,2.5c-1.1,0.7-2.3,1.4-3.5,1.9c-1.3,0.5-2.7,0.9-4.1,1.1c-1.5,0.2-3.2,0.4-5.1,0.4            c-3,0-5.9-0.6-8.5-1.6c-2.6-1.1-4.9-2.7-6.8-4.7c-1.9-2-3.4-4.6-4.5-7.5c-1.1-2.9-1.6-6.3-1.6-10c0-3.6,0.5-6.9,1.6-9.9            c1.1-2.9,2.6-5.5,4.6-7.5c2-2.1,4.3-3.7,7-4.8c2.7-1.1,5.7-1.7,8.9-1.7c1.7,0,3.3,0.1,4.7,0.4c1.4,0.3,2.6,0.6,3.7,1            c1.1,0.4,2,0.8,2.8,1.3c0.8,0.5,1.4,0.9,1.9,1.3c0.5,0.4,1,0.7,1.3,1c0.3,0.3,0.5,0.3,0.5,0.3c0.3,0,0.4-0.1,0.4-0.2l0.8-1.2            c-1-0.9-2-1.6-3-2.3c-1.2-0.8-2.4-1.4-3.7-1.9c-1.3-0.5-2.8-0.9-4.3-1.2C355.7,25.9,354,25.7,352.2,25.7z"></path>    </g>    <g>        <path class="st1" d="M410.3,25.7v3.1H383v21h22.7v3H383v21.6h27.3v3.1h-31.1V25.7H410.3z"></path>        <path class="st2" d="M410.9,78.2h-32.3V25.1h32.3v4.3h-27.3v19.7h22.7v4.3h-22.7v20.4h27.3V78.2z M379.8,77h29.9v-1.9h-27.3V52.2            h22.7v-1.8h-22.7V28.2h27.3v-1.9h-29.9V77z"></path>    </g>    <g>        <path class="st1" d="M456.8,25.1V33h-23.5v15.7h19.8v7.9h-19.8v21.6h-9.9v-53H456.8z"></path>    </g>    <g>        <path class="st1" d="M514.3,51.6c0,3.9-0.6,7.5-1.9,10.8c-1.3,3.3-3.1,6.2-5.5,8.6c-2.3,2.4-5.2,4.3-8.5,5.7c-3.3,1.4-7,2-11,2            c-4,0-7.7-0.7-11-2c-3.3-1.4-6.1-3.2-8.5-5.7c-2.4-2.4-4.2-5.3-5.5-8.6s-1.9-6.9-1.9-10.8s0.6-7.5,1.9-10.8            c1.3-3.3,3.1-6.2,5.5-8.6c2.4-2.4,5.2-4.3,8.5-5.7c3.3-1.4,7-2,11-2c4,0,7.7,0.7,11,2.1c3.3,1.4,6.1,3.3,8.5,5.7            c2.3,2.4,4.2,5.3,5.5,8.6C513.6,44.1,514.3,47.7,514.3,51.6z M504.2,51.6c0-2.9-0.4-5.5-1.2-7.8c-0.8-2.3-1.9-4.3-3.3-5.9            c-1.4-1.6-3.2-2.8-5.3-3.7c-2.1-0.9-4.4-1.3-7-1.3c-2.6,0-4.9,0.4-7,1.3c-2.1,0.9-3.8,2.1-5.3,3.7c-1.5,1.6-2.6,3.6-3.4,5.9            c-0.8,2.3-1.2,4.9-1.2,7.8s0.4,5.5,1.2,7.8c0.8,2.3,1.9,4.3,3.4,5.9c1.5,1.6,3.2,2.8,5.3,3.7c2.1,0.9,4.4,1.3,7,1.3            c2.6,0,4.9-0.4,7-1.3c2.1-0.9,3.8-2.1,5.3-3.7c1.4-1.6,2.5-3.6,3.3-5.9C503.8,57.1,504.2,54.5,504.2,51.6z"></path>    </g>    <g>        <path class="st1" d="M534.9,50.4l2.3,0c1.9,0,3.5-0.2,4.9-0.7c1.4-0.5,2.5-1.1,3.4-1.9c0.9-0.8,1.6-1.8,2-2.9            c0.4-1.1,0.7-2.4,0.7-3.7c0-2.7-0.9-4.8-2.7-6.2c-1.8-1.4-4.5-2.2-8.1-2.2H531v17.6v7.1v20.7h-9.9v-53h16.2c3.6,0,6.7,0.4,9.3,1.1            c2.6,0.7,4.7,1.8,6.3,3.1c1.6,1.3,2.9,3,3.6,4.8c0.8,1.9,1.2,3.9,1.2,6.2c0,1.8-0.3,3.5-0.8,5.1c-0.5,1.6-1.3,3-2.3,4.3            c-1,1.3-2.2,2.4-3.7,3.4c-1.5,1-3.1,1.8-5,2.3c1.2,0.7,2.3,1.7,3.2,3l13.3,19.6h-8.9c-0.9,0-1.6-0.2-2.2-0.5            c-0.6-0.3-1.1-0.8-1.5-1.5c0,0-11.1-17-11.1-17c-0.3-0.4-0.9-1.3-1.5-1.4c-1.2,0-2.4,0-3.5,0c0,0,0-6,0-6.4            C533.8,50.4,534.9,50.4,534.9,50.4z"></path>    </g>    <g>        <path class="st1" d="M591.4,70.9c2.2,0,4.2-0.2,5.8-0.6c1.6-0.4,3.2-1,4.7-1.7v-12h-6.6c-0.6,0-1.1-0.2-1.5-0.5            c-0.4-0.4-0.6-0.8-0.6-1.3v-5.6h17.6V73c-1.3,1-2.7,1.8-4.2,2.5c-1.5,0.7-3,1.3-4.7,1.8c-1.7,0.5-3.4,0.8-5.3,1            c-1.9,0.2-3.9,0.3-6.1,0.3c-3.9,0-7.4-0.7-10.7-2c-3.3-1.3-6.1-3.2-8.4-5.6c-2.4-2.4-4.2-5.3-5.6-8.6c-1.3-3.3-2-7-2-10.9            c0-4,0.6-7.6,1.9-11c1.3-3.3,3.1-6.2,5.5-8.6c2.4-2.4,5.3-4.3,8.7-5.6c3.4-1.3,7.2-2,11.4-2c4.3,0,8.1,0.6,11.2,1.9            c3.2,1.3,5.8,3,8,5l-2.9,4.5c-0.6,0.9-1.3,1.4-2.2,1.4c-0.6,0-1.2-0.2-1.8-0.6c-0.8-0.5-1.6-0.9-2.4-1.4c-0.8-0.5-1.7-0.9-2.7-1.2            c-1-0.3-2.1-0.6-3.3-0.8c-1.2-0.2-2.7-0.3-4.3-0.3c-2.6,0-5,0.4-7.1,1.3c-2.1,0.9-3.9,2.1-5.4,3.8c-1.5,1.6-2.6,3.6-3.4,5.9            c-0.8,2.3-1.2,4.9-1.2,7.7c0,3.1,0.4,5.8,1.3,8.2c0.9,2.4,2.1,4.4,3.6,6s3.4,2.9,5.5,3.8S588.9,70.9,591.4,70.9z"></path>    </g>    <g>        <path class="st1" d="M645.7,56.8h-16.1v13.4H653v7.9h-33.4v-53H653V33h-23.5v16.3H648v5.8C648,55.1,647.9,56.8,645.7,56.8z"></path>    </g></g></svg>
+405:            <a href="https://sourceforge.net/articles/category/sourceforge-podcast/">SourceForge Podcast</a>
+433:<svg  data-name="search" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1216 832q0-185-131.5-316.5t-316.5-131.5-316.5 131.5-131.5 316.5 131.5 316.5 316.5 131.5 316.5-131.5 131.5-316.5zm512 832q0 52-38 90t-90 38q-54 0-90-38l-343-342q-179 124-399 124-143 0-273.5-55.5t-225-150-150-225-55.5-273.5 55.5-273.5 150-225 225-150 273.5-55.5 273.5 55.5 225 150 150 225 55.5 273.5q0 220-124 399l343 343q37 37 37 90z"/></svg>
+464:<svg  data-name="search" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1216 832q0-185-131.5-316.5t-316.5-131.5-316.5 131.5-131.5 316.5 131.5 316.5 316.5 131.5 316.5-131.5 131.5-316.5zm512 832q0 52-38 90t-90 38q-54 0-90-38l-343-342q-179 124-399 124-143 0-273.5-55.5t-225-150-150-225-55.5-273.5 55.5-273.5 150-225 225-150 273.5-55.5 273.5 55.5 225 150 150 225 55.5 273.5q0 220-124 399l343 343q37 37 37 90z"/></svg>
+496:    <section id="page-body" class=" neighborhood-Projects project-hsqldb mountpoint-svn 
+519:        <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+520:            <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+524:            <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+537:                <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+538:                    <a itemprop="item" href="/p/hsqldb/"><span itemprop="name">HyperSQL Database Engine (HSQLDB)</span></a>
+542:                <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+567:    src="https://a.fsdn.com/allura/p/hsqldb/icon?1513717486&amp;w=90"
+568:    srcset="https://a.fsdn.com/allura/p/hsqldb/icon?w=135&amp;1513717486 1.5x
+570:            https://a.fsdn.com/allura/p/hsqldb/icon?w=180&amp;1513717486 2x"/></div>
+639:        <a href="/projects/hsqldb/" class="tool-summary-32" >
+647:        <a href="/projects/hsqldb/files/" class="tool-files-sf-32" >
+655:        <a href="/projects/hsqldb/reviews/" class="tool-reviews-32" >
+663:        <a href="/projects/hsqldb/support" class="tool-support-32" >
+671:        <a href="/p/hsqldb/wiki/" class="tool-wiki-32" >
+679:        <a href="/p/hsqldb/mailman/" class="tool-mailman-32" >
+687:        <a href="/p/hsqldb/_list/tickets" class="tool-tickets-32" >
+694:                    <li class=""><a href="/p/hsqldb/patches/" >Patches</a></li>
+696:                    <li class=""><a href="/p/hsqldb/bugs/" >Bugs</a></li>
+698:                    <li class=""><a href="/p/hsqldb/feature-requests/" >Feature Requests</a></li>
+700:                    <li class=""><a href="/p/hsqldb/hsqldb-utilities/" >HSQLDB Utilities</a></li>
+707:        <a href="/p/hsqldb/news/" class="tool-blog-32" >
+715:        <a href="/p/hsqldb/discussion/" class="tool-discussion-32" >
+723:        <a href="/p/hsqldb/tmp/" class="tool-git-32" >
+731:        <a href="/p/hsqldb/svn/" class="tool-svn-32" >
+739:        <a href="/p/hsqldb/cvs/" class="tool-cvs-32" >
+783:        <a class="icon" href="/p/hsqldb/svn/commit_browser" rel="nofollow" title="Browse Commits"><i class="fa fa-list"></i>
+794:        <a href="/p/hsqldb/svn/"  rel="nofollow" >
+829:Tree <a href="/p/hsqldb/svn/6841/" rel="nofollow">[r6841]</a> 
+845:    <a href="./" rel="nofollow">test-src</a> /
+853:<form class="tarball" action="/p/hsqldb/svn/HEAD/tarball" method="post">
+854:  <input type="hidden" name="path" value="/base/tags/2.4.1/test-src" />
+860:<a class="icon" href="/p/hsqldb/svn/6841/log/?path=/base/tags/2.4.1/test-src" rel="nofollow" title="History"><i class="fa fa-calendar"></i>&nbsp;History</a>
+862:<a class="icon" href="/p/hsqldb/svn/feed/" rel="nofollow" title="Feed"><i class="fa fa-rss"></i></a>
+879:            <a class="btn" data-url="svn checkout https://svn.code.sf.net/p/hsqldb/svn/ hsqldb-svn" title="HTTPS">
+883:            <a class="btn" data-url="svn checkout svn://svn.code.sf.net/p/hsqldb/svn/ hsqldb-svn" title="svn://">
+893:             value="svn checkout https://svn.code.sf.net/p/hsqldb/svn/ hsqldb-svn"/>
+921:        <a class="icon" href="org" rel="nofollow" title="org"><i class="fa fa-folder"></i>&nbsp;org</a>
+937:        <a href="/p/hsqldb/svn/5794/" rel="nofollow">
+939:          test updates
+966:                    <div class="as-h2">SourceForge</div>
+989:                                <span class="p-name p-org">SourceForge Headquarters</span><br>
+998:<a href="https://x.com/sourceforge" class="twitter" rel="nofollow" target="_blank" title="SourceForge on X">
+1001:<svg  class="vertical-icon-fix" data-name="x-logo" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" fill="white"/></svg></a>
+1002:<a href="https://fosstodon.org/@sourceforge" rel="me nofollow" target="_blank" title="SourceForge on Mastodon">
+1005:<svg  class="vertical-icon-fix" data-name="mastodon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.11c0-97.2-63.71-125.7-63.71-125.7-62.52-28.7-228.56-28.4-290.48 0 0 0-63.72 28.5-63.72 125.7 0 115.7-6.6 259.4 105.63 289.1 40.51 10.7 75.32 13 103.33 11.4 50.81-2.8 79.32-18.1 79.32-18.1l-1.7-36.9s-36.31 11.4-77.12 10.1c-40.41-1.4-83-4.4-89.63-54a102.54 102.54 0 0 1-.9-13.9c85.63 20.9 158.65 9.1 178.75 6.7 56.12-6.7 105-41.3 111.23-72.9 9.8-49.8 9-121.5 9-121.5zm-75.12 125.2h-46.63v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.33V197c0-58.5-64-56.6-64-6.9v114.2H90.19c0-122.1-5.2-147.9 18.41-175 25.9-28.9 79.82-30.8 103.83 6.1l11.6 19.5 11.6-19.5c24.11-37.1 78.12-34.8 103.83-6.1 23.71 27.3 18.4 53 18.4 175z"/></svg></a>
+1006:<a href="https://www.facebook.com/sourceforgenet/" class="facebook" rel="nofollow" target="_blank" title="SourceForge on Facebook">
+1009:<svg  data-name="facebook" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1343 12v264h-157q-86 0-116 36t-30 108v189h293l-39 296h-254v759h-306v-759h-255v-296h255v-218q0-186 104-288.5t277-102.5q147 0 228 12z"/></svg></a>
+1010:<a href="https://www.linkedin.com/company/sourceforge.net" class="linkedin" rel="nofollow" target="_blank" title="SourceForge on LinkedIn">
+1013:<svg  data-name="linkedin" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M477 625v991h-330v-991h330zm21-306q1 73-50.5 122t-135.5 49h-2q-82 0-132-49t-50-122q0-74 51.5-122.5t134.5-48.5 133 48.5 51 122.5zm1166 729v568h-329v-530q0-105-40.5-164.5t-126.5-59.5q-63 0-105.5 34.5t-63.5 85.5q-11 30-11 81v553h-329q2-399 2-647t-1-296l-1-48h329v144h-2q20-32 41-56t56.5-52 87-43.5 114.5-15.5q171 0 275 113.5t104 332.5z"/></svg></a>
+1026:                            <li><a href="/p/forge/documentation/Docs%20Home/" title="Site Documentation">Site Documentation</a></li>
+1028:                        <li><a href="https://fosstodon.org/@sourceforgestatus" title="Site Status" rel="me nofollow">Site Status</a></li>
+1029:                        <li><a href="/reviews" title="Reviews" rel="me nofollow">SourceForge Reviews</a></li>
+1038:    <img src="https://a.fsdn.com/con/images/sandiego/sf-logo-full.svg"  alt="SourceForge logo" class="sf-logo-full"/>
+1197:        $.get('/p/hsqldb/svn/status', function(data) {
+1300:            'page_location': 'https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src/',
+
+ succeeded in 393ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/hsqldb/
+org/hsqldb/SetFunctionValueAggregate.java
+org/hsqldb/SetFunctionValueArray.java
+org/hsqldb/SetFunctionValueUser.java
+org/hsqldb/Expression.java
+org/hsqldb/ExpressionAggregate.java
+org/hsqldb/ExpressionArrayAggregate.java
+org/hsqldb/FunctionSQLInvoked.java
+org/hsqldb/QuerySpecification.java
+org/hsqldb/SetFunction.java
+org/hsqldb/SortAndSlice.java
+org/hsqldb/SchemaManager.java
+org/hsqldb/FunctionCustom.java
+org/hsqldb/ExpressionValue.java
+org/hsqldb/FunctionSQL.java
+org/hsqldb/ParserDQL.java
+org/hsqldb/ClientConnectionHTTP.java
+org/hsqldb/ExpressionColumn.java
+org/hsqldb/ExpressionLogical.java
+org/hsqldb/ExpressionTable.java
+org/hsqldb/HsqlDateTime.java
+org/hsqldb/HsqlNameManager.java
+org/hsqldb/ParserRoutine.java
+org/hsqldb/QueryExpression.java
+org/hsqldb/RangeVariable.java
+org/hsqldb/RowDiskDataChange.java
+org/hsqldb/StatementDML.java
+org/hsqldb/StatementSchema.java
+org/hsqldb/StatementSession.java
+org/hsqldb/StatementSet.java
+org/hsqldb/Table.java
+org/hsqldb/TextTable.java
+org/hsqldb/TriggerDef.java
+org/hsqldb/TriggerDefSQL.java
+org/hsqldb/Session.java
+org/hsqldb/RangeVariableJoined.java
+org/hsqldb/Tokens.java
+org/hsqldb/DatabaseManager.java
+org/hsqldb/ParserDDL.java
+org/hsqldb/TableBase.java
+org/hsqldb/Database.java
+org/hsqldb/ParserBase.java
+org/hsqldb/ParserCommand.java
+org/hsqldb/Routine.java
+org/hsqldb/Schema.java
+org/hsqldb/SchemaObject.java
+org/hsqldb/SchemaObjectSet.java
+org/hsqldb/StatementCommand.java
+org/hsqldb/StatementDMQL.java
+org/hsqldb/StatementTypes.java
+org/hsqldb/TableDerived.java
+org/hsqldb/View.java
+org/hsqldb/Trigger.java
+org/hsqldb/ExpressionOp.java
+org/hsqldb/ParserTable.java
+org/hsqldb/RowAVLDisk.java
+org/hsqldb/RowAVLDiskLarge.java
+
+ succeeded in 436ms:
+30:    / [r6841] /base/tags/2.4.1
+43:<script src="https://a.fsdn.com/allura/nf/1777910289/_ew_/theme/sftheme/js/sftheme/cmp2.js"></script>
+116:        <script type="text/javascript" src="https://a.fsdn.com/allura/nf/1777910289/_ew_/_slim/js?href=allura%2Fjs%2Fjquery-3.6.0.min.js%3Ballura%2Fjs%2Fjquery.cookie-1.4.1.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fshared_head.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Ftypescript%2Fcompliance.js"></script>
+180:        <link rel="canonical" href="https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/" />
+196:      _paq.push(['trackPageView', document.title, {
+209:        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+210:        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'sf.js'; s.parentNode.insertBefore(g,s);
+232:            let imageUrl = "https://io.narrative.io/?companyId=2440&id=first_party%3Ab8ddc9c2-15aa-4ca7-b5d3-26f3559565ac&id=site_name%3Asourceforge.net&id=url%3A%2Fp%2Fhsqldb%2Fsvn%2FHEAD%2Ftree%2Fbase%2Ftags%2F2.4.1%2F&id=pagetitle%3A%24PAGE_TITLE&id=vertical%3AOpen+Source+Software&id=product%3AHyperSQL+Database+Engine+%28HSQLDB%29";
+233:            imageUrl = imageUrl.replace(encodeURIComponent("$PAGE_TITLE"), document.title);  
+243:            image.src = imageUrl.toString();
+247:            document.body.appendChild(image);
+322:                    <li><a href="https://sourceforge.net/p/forge/documentation/Docs%20Home/">Site Documentation</a></li>
+336:<script src="https://a.fsdn.com/con/js/ad_top.js?1777910289"></script>
+338:<script src="https://a.fsdn.com/con/js/asg_embed.js?1777910289"></script>
+357:    <img src="https://a.fsdn.com/con/images/sandiego/sf-logo-full.svg"  alt="SourceForge logo" class="sf-logo-full"/>
+381:    <img src="https://a.fsdn.com/con/images/sandiego/sf-logo-full.svg"  alt="SourceForge logo" class="sf-logo-full"/>
+567:    src="https://a.fsdn.com/allura/p/hsqldb/icon?1513717486&amp;w=90"
+568:    srcset="https://a.fsdn.com/allura/p/hsqldb/icon?w=135&amp;1513717486 1.5x
+843:    <a href="./" rel="nofollow">2.4.1</a> /
+852:  <input type="hidden" name="path" value="/base/tags/2.4.1" />
+858:<a class="icon" href="/p/hsqldb/svn/6841/log/?path=/base/tags/2.4.1" rel="nofollow" title="History"><i class="fa fa-calendar"></i>&nbsp;History</a>
+965:          Prep for 2.4.1 promotion.  Only comment/doc cha...
+975:        <a class="icon" href="doc-src" rel="nofollow" title="doc-src"><i class="fa fa-folder"></i>&nbsp;doc-src</a>
+993:          documentation updates
+1087:        <a class="icon" href="src" rel="nofollow" title="src"><i class="fa fa-folder"></i>&nbsp;src</a>
+1133:          Remove revision from top-level doc title pages ...
+1143:        <a class="icon" href="test-src" rel="nofollow" title="test-src"><i class="fa fa-folder"></i>&nbsp;test-src</a>
+1217:          documentation updates
+1245:          Prep for 2.4.1 promotion.  Only comment/doc cha...
+1257:This package contains HyperSQL v. 2.4.1
+1264:links to documentation and support resources.
+1345:                            <li><a href="/p/forge/documentation/Docs%20Home/" title="Site Documentation">Site Documentation</a></li>
+1357:    <img src="https://a.fsdn.com/con/images/sandiego/sf-logo-full.svg"  alt="SourceForge logo" class="sf-logo-full"/>
+1429:              src="https://a.fsdn.com/con/img/hi-logo.png"
+1434:              src="https://a.fsdn.com/con/img/hi-text.png"
+1449:        document.getElementById('mdb-sticky-close').parentNode.remove();
+1475:    <script type="text/javascript" src="https://a.fsdn.com/allura/nf/1777910289/_ew_/_slim/js?href=allura%2Fjs%2Fjquery.notify.js%3Ballura%2Fjs%2Fjquery.tooltipster.js%3Ballura%2Fjs%2Fallura-base.js%3Ballura%2Fjs%2Fchecklist.js%3Ballura%2Fjs%2Fadmin_modal.js%3Bjs%2Fjquery.lightbox_me.js%3Ballura%2Fjs%2Fmemorable.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fsandiego%2Ffloating-unit.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fshared.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fsticky.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fsandiego%2Fchrome.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fsandiego%2Futilities.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.core.min.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.util.mediaQuery.min.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.util.keyboard.min.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.util.box.min.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.util.nest.min.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.dropdownMenu.min.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.offcanvas.min.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.toggler.min.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fsandiego%2Fproject.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Fjquery.typeahead.min.js"></script>
+1485:    <script type="text/javascript" src="https://a.fsdn.com/allura/nf/1777910289/_ew_/_slim/js?href=theme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.util.triggers.min.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Ffoundation6%2Fplugins%2Ffoundation.reveal.min.js"></script>
+1510:  var repo_status = document.getElementById('repo_status');
+1542:        $(document).foundation();
+1563:            var s = document.getElementsByTagName('script')[0], cd = new Date(), mltag = document.createElement('script');
+1567:            mltag.src = '//ml314.com/tag.aspx?' + cd.getDate() + cd.getMonth() + cd.getFullYear();
+1578:    $(document).ready(function () {
+1609:            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+1610:        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+1619:            'page_location': 'https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/',
+
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"description\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' . | head -160" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:227:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:228:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:29:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:31:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:35:        @JsonProperty("description")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:37:        @JsonProperty("language")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:24:        @JsonProperty("description")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:26:        @JsonProperty("language")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("not-for-native-image")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:55:            "source-code-url",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:56:            "test-code-url",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:57:            "documentation-url"
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:280:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:285:                If the library is not language-specific, leave the "language" field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:290:                The "description" field must explain what the library does in exactly two sentences.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:297:                - Set the "description" field to the selected two-sentence explanation.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:298:                - Set the "language" field only when the library is language-specific.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:358:                    - Set "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:359:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:360:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                    - Set "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:363:                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:367:                    - Set "description" to a concise explanation of the library in exactly two sentences.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:372:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:375:                - Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:376:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:377:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:378:                - Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:379:                - Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:380:                - When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:384:                - Set missing "description" to a concise explanation of the library in exactly two sentences.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:385:                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:9:    "description" : "Brotli4j provides Brotli compression and decompression bindings for Java backed by native libraries. The service artifact contains the BrotliNativeProvider service interface used by Brotli4j native-provider JARs to advertise which platform-specific Brotli library they contain.",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:154:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:159:                If the library is not language-specific, leave the "language" field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:161:                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:162:                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:163:                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:168:                The "description" field must explain what the library does in exactly two sentences.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:173:                - Set "repository-url" to the discovered repository root URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:174:                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:175:                - Set "description" to the selected two-sentence explanation.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:177:                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:9:    "description" : "The biz.aQute.bnd.annotation artifact provides bnd-specific Java annotations for OSGi bundle metadata, package versioning, capabilities, service metadata, JPMS hints, licenses, and plugin declarations. These annotations are consumed by bnd and related tooling to generate or validate bundle headers and metadata without hard-coding that information in build instructions.",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:9:    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:9:    "description" : "HtmlUnit CSS Parser is a Java library that parses CSS for the HtmlUnit browser automation project. It provides CSS syntax parsing components used to read and process stylesheets in Java applications.",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:211:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:212:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:213:            assertThat(indexEntries.get(0)).containsEntry("test-code-url", "N/A");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:252:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:253:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:288:                    .containsEntry("test-code-url", baseUrl + "/svn/demo/tags/$version$/src/test");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:380:        appendUrlField(fields, "source-code-url", sourceCodeUrl);
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:381:        appendUrlField(fields, "test-code-url", testCodeUrl);
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:382:        appendUrlField(fields, "documentation-url", documentationUrl);
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:9:    "description" : "NekoHtmlUnit is HtmlUnit's adaptation of NekoHTML, a tolerant HTML parser for Java. It preserves NekoHTML-style parsing while exposing HTML element classes in a way HtmlUnit can override and integrate into its browser simulation stack.",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:119:                    "not-for-native-image": true,
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:130:                .hasMessageContaining("not-for-native-image");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:204:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:205:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:206:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:207:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:208:                .containsEntry("description", "Ktor provides asynchronous servers. It is designed for Kotlin applications.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:209:                .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:253:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:254:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:255:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:256:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:257:                .containsEntry("description", "Groovy JSON provides JSON parsing and generation APIs. It is designed for Groovy applications.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:258:                .containsEntry("language", Map.of("name", "groovy", "version", "4.0"));
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:9:    "description" : "Apache Yetus Audience Annotations provides Java annotations for declaring intended API audience and stability, such as public, limited-private, private, stable, evolving, and unstable. It also includes doclet tooling that can include or exclude annotated elements when generating audience-specific Javadocs.",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:26:    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:256:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:257:                    "repository-url": "https://example.com/repository-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:258:                    "test-code-url": "https://example.com/tests-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:259:                    "documentation-url": "https://example.com/docs-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:260:                    "description": "A concise explanation. Another concise explanation."
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:9:    "description" : "Jetty WebSocket Client provides Jetty 9's Java client implementation for opening, configuring, and managing WebSocket connections from applications. It builds on Jetty's HTTP client and WebSocket common runtime to perform handshakes, create sessions, and send or receive WebSocket messages asynchronously.",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:29:                    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:30:                    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:49:                        .contains("source-code-url")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:52:                        .contains("documentation-url")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:62:                    "source-code-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-sources.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:63:                    "documentation-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:88:                    "not-for-native-image": true,
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:9:    "description" : "Jetty WebSocket API provides the public interfaces and annotations used to define WebSocket endpoints, sessions, frames, and message handling for Jetty 9. It is the standalone API layer for Jetty's WebSocket implementation and intentionally avoids depending on other Jetty modules for web application classloader isolation.",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:9:    "description" : "Jetty WebSocket Common provides the internal implementation classes used by Jetty 9's WebSocket API, including session handling, frame parsing and generation, message streams, and extension support. It is intended as the shared runtime layer behind Jetty's WebSocket client, server, and servlet integrations rather than as an application-facing API.",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupportTests.java:456:                    "description": "Zeta library"
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupportTests.java:468:                    "description": "Old alpha description"
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupportTests.java:473:                    "description": "Alpha | library. Provides extended <docs> & utilities."
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupportTests.java:486:                    "description": "Ignored sample library"
+./metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+./metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_3/index.json:9:    "description" : "BooPickle is a Scala binary serialization library for pickling and unpickling values into compact ByteBuffer data. It supports primitives, collections, options, tuples, case classes, custom serializers, references, and deduplication without reflection across JVM, Scala.js, and Scala Native.",
+./metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+./metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:9:    "description" : "Closure Compiler Externs packages JavaScript extern definition files used by Google Closure Compiler to model browser, DOM, ES, and platform APIs during type checking and optimization. These definitions let the compiler recognize externally provided symbols so it can preserve public API names and perform safer JavaScript compilation.",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:9:    "description" : "Jakarta JSON Binding (JSON-B) is a standard API for converting Java objects to and from JSON documents. It defines default object mapping behavior and annotations and SPIs that allow applications and implementations to customize serialization and deserialization.",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-firestore",
+
+web search: 
+web search: repo.maven.apache.org org.hsqldb hsqldb 2.4.1 sources javadoc pom
+web search: 
+web search: https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/
+web search: 
+web search: "/base/tags/2.4.1/test-src" "hsqldb"
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src
+web search: 
+web search: 
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-javadoc.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.hsqldb</groupId>
+  <artifactId>hsqldb</artifactId>
+  <version>2.4.1</version>
+  <name>HyperSQL Database</name>
+  <description>HSQLDB - Lightweight 100% Java SQL Database Engine</description>
+  <url>http://hsqldb.org</url>
+  <inceptionYear>2001</inceptionYear>
+  <organization>
+    <name>The HSQL Development Group</name>
+    <url>http://hsqldb.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>HSQLDB License, a BSD open source license</name>
+      <url>http://hsqldb.org/web/hsqlLicense.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>unsaved</id>
+      <name>Blaine Simpson</name>
+      <email>blaine.simpson@admc.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:svn:http://svn.code.sf.net/p/hsqldb/svn/base/</connection>
+    <tag>2.4.1</tag>
+    <url>http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1</url>
+  </scm>
+</project>
+
+ succeeded in 101ms:
+codex
+I have enough evidence to fill the entry: Maven sources and javadocs resolve for the version, SourceForge has the matching `2.4.1` tag and `test-src`, and the jar is JVM bytecode. I’m updating the JSON now with no language or not-for-native-image fields.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..8e503bfb60ee3f34e37e35035e6ddeba2693e648
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..8e503bfb60ee3f34e37e35035e6ddeba2693e648
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+{
+  "coordinates": "org.hsqldb:hsqldb:2.4.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
+  "repository-url": "http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
+  "test-code-url": "http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
+  "description": "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1-javadoc.jar && curl -fsI http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..8e503bfb60ee3f34e37e35035e6ddeba2693e648
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "http://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+ }
+
+ succeeded in 280ms:
+HTTP/1.1 301 Moved Permanently
+Date: Mon, 04 May 2026 20:41:16 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Server: cloudflare
+set-cookie: __cf_bm=grpir6wJy4OFVBsEG9lpUyjoI2ogavZhqT6Pq8q_jIk-1777927276.748065-1.0.1.1-Q2bIfSnhmld7DnlHAT40MQq7EjehfHiVqM3O3qN7fkru41I8VZcZuD0OGCjis1BDPH7cudlTNnVCfDFSEK4JJdGX.l2vDn6K167Il5ItFcaobHIQAKts6zaDsE1hcF8w; HttpOnly; Path=/; Domain=sourceforge.net; Expires=Mon, 04 May 2026 21:11:16 GMT
+location: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src/
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+cf-cache-status: DYNAMIC
+CF-RAY: 9f6a5347aa3ebc62-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The rendered Maven URLs return `200`, and the SourceForge test URL redirects to HTTPS. I’m switching the SourceForge URLs to HTTPS so the stored values resolve directly.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..496d7dd7e26ff73fa041ccd95024a37e9f7d2783
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..496d7dd7e26ff73fa041ccd95024a37e9f7d2783
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+{
+  "coordinates": "org.hsqldb:hsqldb:2.4.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
+  "repository-url": "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
+  "test-code-url": "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
+  "description": "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/ && curl -fsI https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/test-src/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d) && curl -fsSL -o "$tmpdir/hsqldb-2.4.1.jar" https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/2.4.1/hsqldb-2.4.1.jar && jar tf "$tmpdir/hsqldb-2.4.1.jar" | rg -n '"'("'^org/hsqldb/jdbc/JDBCDriver.class$|''^META-INF/services/java.sql.Driver$)'"' && rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 282ms:
+6:META-INF/services/java.sql.Driver
+212:org/hsqldb/jdbc/JDBCDriver.class
+
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..496d7dd7e26ff73fa041ccd95024a37e9f7d2783
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+ }
+
+ succeeded in 932ms:
+HTTP/2 103 
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/lato.css?1777910289>; as=style; rel=preload
+
+HTTP/2 200 
+date: Mon, 04 May 2026 20:41:25 GMT
+content-type: text/html; charset=utf-8
+content-length: 56555
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1777910289>; rel=preload; as=style
+content-security-policy: object-src 'none'; fenced-frame-src https:; upgrade-insecure-requests; form-action 'self'; script-src-attr 'none' 'report-sample'; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; frame-ancestors 'self'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=311186e8-baba-4e49-9589-e398a35d2f1d; Max-Age=315360000; Path=/; expires=Thu, 01-May-2036 20:41:25 GMT; secure; HttpOnly
+set-cookie: _csrf_token=495f40200bd08ba4ac3d0f063e555a3968cf9a687d8fc04c3ed07cc316271ee6524bf8a4a80c40d9; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=huZJAwxfHQC00hHR36EeyY6zubp.oQZyCPELhoiEYcY-1777927285.4086432-1.0.1.1-uJw2A0kGifah_jA6TyaTjhMHv6q0X6ay254nsxEExOQKETGQRZs.uvUn2bnfJlihkcPSU0LTaQOuT76QA5ZVyJiwJZBUEP8dEp1Ckw6U0uX0Pa6U.GHr70ojVr89qTt3; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Mon, 04 May 2026 21:11:25 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9f6a537dcb64bc06-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 103 
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/lato.css?1777910289>; as=style; rel=preload
+
+HTTP/2 200 
+date: Mon, 04 May 2026 20:41:26 GMT
+content-type: text/html; charset=utf-8
+content-length: 55493
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1777910289>; rel=preload; as=style
+content-security-policy: fenced-frame-src https:; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; form-action 'self'; upgrade-insecure-requests; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; object-src 'none'; frame-ancestors 'self'; script-src-attr 'none' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=45d641a8-7c02-4dac-827a-5e86488ce8b6; Max-Age=315360000; Path=/; expires=Thu, 01-May-2036 20:41:26 GMT; secure; HttpOnly
+set-cookie: _csrf_token=7cb9a465fc52c6adab4bb945a1c1be5a78924cf40e7abe57d71055dcf467a4c7b8e2148ef5cd3a1c; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=SLSjefqxx0N2clv438APimvI54wcr9TYmCDgViAnHBo-1777927286.0038567-1.0.1.1-N7g9n2RYQbu014jifPXlb3Wgbi6fTg.KxxYOkBsZHpz2TH0.mDdWT7lfVeTCd6tI0J8lkii48KbKE3vey0Y8q0RYHGrTa4cl1Y.kQHb7qaiI7xD2Vt8Tf_fAB26BqjMi; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Mon, 04 May 2026 21:11:26 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9f6a53818b25f877-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..496d7dd7e26ff73fa041ccd95024a37e9f7d2783
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json && sed -n '1,120p' build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..496d7dd7e26ff73fa041ccd95024a37e9f7d2783
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+ }
+
+ succeeded in 510ms:
+{
+  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
+  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
+  "test-code-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
+  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+}
+
+web search: 
+web search: 
+web search: 
+web search: https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/2.4.1/
+codex
+Updated [org.hsqldb-hsqldb-2.4.1.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json:1).
+
+I used Maven Central for the sources and javadocs, and the SourceForge SVN repository/tag for the repository root and test suite location. Maven Central lists the `2.4.1` sources and javadoc jars, and SourceForge exposes the HSQLDB SVN tree used for the tagged test source path. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/?utm_source=openai))
+
+Validation done:
+- JSON parses with `jq`.
+- Rendered source, documentation, repository, and test URLs resolve.
+- Artifact jar contains JVM classes and `META-INF/services/java.sql.Driver`, so I left `not-for-native-image` absent.
+- No `language` field added; this is not Kotlin/Groovy/Scala-specific.
+diff --git a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+index 79be5efa981d7dcb152b45d30cbf96460c67ebef..496d7dd7e26ff73fa041ccd95024a37e9f7d2783
+--- a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
++++ b/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.hsqldb:hsqldb:2.4.1"
++  "coordinates" : "org.hsqldb:hsqldb:2.4.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/",
++  "test-code-url" : "https://sourceforge.net/p/hsqldb/svn/HEAD/tree/base/tags/$version$/test-src/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/hsqldb/hsqldb/$version$/hsqldb-$version$-javadoc.jar",
++  "description" : "HSQLDB is a lightweight SQL relational database engine implemented in Java for embedded and server-side use. It provides a JDBC driver, SQL database runtime, and supporting tools for applications that need an in-process or standalone database."
+ }
+
+tokens used
+97,994
+Updated [org.hsqldb-hsqldb-2.4.1.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a/build/discovered-artifact-metadata/org.hsqldb-hsqldb-2.4.1.json:1).
+
+I used Maven Central for the sources and javadocs, and the SourceForge SVN repository/tag for the repository root and test suite location. Maven Central lists the `2.4.1` sources and javadoc jars, and SourceForge exposes the HSQLDB SVN tree used for the tagged test source path. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.4.1/?utm_source=openai))
+
+Validation done:
+- JSON parses with `jq`.
+- Rendered source, documentation, repository, and test URLs resolve.
+- Artifact jar contains JVM classes and `META-INF/services/java.sql.Driver`, so I left `not-for-native-image` absent.
+- No `language` field added; this is not Kotlin/Groovy/Scala-specific.
+Ran agent for org.hsqldb:hsqldb:2.4.1 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a/build/agent-artifact-discovery-logs/org.hsqldb-hsqldb-2.4.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2626-1e5ee48a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 4 executed, 5 from cache
