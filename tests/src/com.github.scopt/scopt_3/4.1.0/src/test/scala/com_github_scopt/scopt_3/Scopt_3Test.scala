@@ -122,6 +122,30 @@ class Scopt_3Test {
   }
 
   @Test
+  def enforcesExplicitOccurrenceBoundsForRepeatableOptions(): Unit = {
+    val acceptedRun = OParser.runParser(
+      occurrenceBoundParser,
+      Seq("--tag", "alpha", "--tag", "beta", "--tag", "stable"),
+      OccurrenceConfig()
+    )
+    assertThat(acceptedRun._1.isDefined).isTrue()
+    assertThat(acceptedRun._1.get.tags.asJava).containsExactly("alpha", "beta", "stable")
+    assertThat(errorMessages(acceptedRun._2).asJava).isEmpty()
+
+    val tooFewRun = OParser.runParser(occurrenceBoundParser, Seq("--tag", "alpha"), OccurrenceConfig())
+    assertThat(tooFewRun._1.isEmpty).isTrue()
+    assertThat(errorMessages(tooFewRun._2).exists(_.contains("Option --tag must be given 2 times"))).isTrue()
+
+    val tooManyRun = OParser.runParser(
+      occurrenceBoundParser,
+      Seq("--tag", "alpha", "--tag", "beta", "--tag", "stable", "--tag", "extra"),
+      OccurrenceConfig()
+    )
+    assertThat(tooManyRun._1.isEmpty).isTrue()
+    assertThat(errorMessages(tooManyRun._2).exists(_.contains("Unknown option --tag"))).isTrue()
+  }
+
+  @Test
   def runsEffectsWithCallerSuppliedEffectSetup(): Unit = {
     val setup = new CapturingEffectSetup
 
@@ -219,6 +243,20 @@ class Scopt_3Test {
     )
   }
 
+  private def occurrenceBoundParser: OParser[?, OccurrenceConfig] = {
+    val builder: OParserBuilder[OccurrenceConfig] = OParser.builder[OccurrenceConfig]
+    import builder.*
+
+    OParser.sequence(
+      programName("deploy-tool"),
+      opt[String]("tag")
+        .minOccurs(2)
+        .maxOccurs(3)
+        .action((value: String, config: OccurrenceConfig) => config.copy(tags = config.tags :+ value))
+        .text("release tags to publish")
+    )
+  }
+
   private def runParser(args: Seq[String]): (Option[CliConfig], List[OEffect]) =
     OParser.runParser(commandParser, args, CliConfig())
 
@@ -235,6 +273,8 @@ class Scopt_3Test {
     }
 
   private final case class Port(value: Int)
+
+  private final case class OccurrenceConfig(tags: Seq[String] = Seq.empty)
 
   private final case class CliConfig(
       command: Option[String] = None,
