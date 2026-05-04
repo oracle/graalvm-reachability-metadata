@@ -25,6 +25,7 @@ import software.amazon.awssdk.checksums.internal.CrcChecksumProvider;
 public class CrcChecksumProviderTest {
     private static final byte[] PAYLOAD =
         "The quick brown fox jumps over the lazy dog".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] EXTRA_PAYLOAD = " on native image".getBytes(StandardCharsets.UTF_8);
     private static final String JAVA_CRC32C_PROVIDER_TYPE = "CrcCombineOnMarkChecksum";
 
     @Test
@@ -47,8 +48,16 @@ public class CrcChecksumProviderTest {
         SdkChecksum checksum = SdkChecksum.forAlgorithm(DefaultChecksumAlgorithm.CRC64NVME);
 
         checksum.update(PAYLOAD);
+        long markedValue = checksum.getValue();
 
-        assertThat(checksum.getValue()).isNotZero();
+        checksum.mark(Integer.MAX_VALUE);
+        checksum.update(EXTRA_PAYLOAD);
+
+        assertThat(checksum.getValue()).isNotEqualTo(markedValue);
+
+        checksum.reset();
+
+        assertThat(checksum.getValue()).isEqualTo(markedValue);
         assertThat(checksum.getChecksumBytes()).hasSize(Long.BYTES);
     }
 
@@ -66,7 +75,16 @@ public class CrcChecksumProviderTest {
 
         checksum.update(PAYLOAD);
         expected.update(PAYLOAD, 0, PAYLOAD.length);
+        long markedValue = checksum.getValue();
 
+        checksum.mark(Integer.MAX_VALUE);
+        checksum.update(EXTRA_PAYLOAD);
+
+        assertThat(checksum.getValue()).isNotEqualTo(markedValue);
+
+        checksum.reset();
+
+        assertThat(checksum.getValue()).isEqualTo(expected.getValue());
         assertThat(checksum.getClass().getSimpleName()).isEqualTo("CrcCloneOnMarkChecksum");
         assertThat(checksum.getValue()).isEqualTo(expected.getValue());
         assertThat(checksum.getChecksumBytes()).hasSize(Integer.BYTES);
