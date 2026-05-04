@@ -4,11 +4,13 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import argparse
+import json
 import os
 import re
 import shutil
 import subprocess
 import sys
+from dataclasses import dataclass
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
@@ -32,6 +34,7 @@ from utility_scripts.metrics_writer import (
 )
 from utility_scripts.large_library_progress import LABEL_LARGE_LIBRARY_PART, LargeLibraryProgressState
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.dynamic_access_report import DynamicAccessCallSite, load_dynamic_access_coverage_report
 from utility_scripts.local_ci_verification import (
     HUMAN_INTERVENTION_LABEL,
     LOCAL_CI_VERIFICATION_KEY,
@@ -45,6 +48,13 @@ REPO = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = 'master'
 REVIEWERS = get_configured_reviewers()
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
+DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_MAX_ITEMS = 8
+
+
+@dataclass(frozen=True)
+class DynamicAccessMetadataEvidence:
+    covered_call_sites: list[str]
+    metadata_rules: list[str]
 
 
 def _extract_covered_dynamic_access_calls(library_stats: dict | None) -> int | None:
@@ -62,22 +72,187 @@ def _extract_covered_dynamic_access_calls(library_stats: dict | None) -> int | N
     return covered_calls
 
 
-def format_dynamic_access_metadata_entry_note(metadata_entries: int, library_stats: dict | None) -> str:
+def format_dynamic_access_metadata_entry_note(
+        metadata_entries: int,
+        library_stats: dict | None,
+        evidence: DynamicAccessMetadataEvidence | None = None,
+) -> str:
     """Explain large dynamic-access/metadata-entry count differences in generated PR bodies."""
     covered_calls = _extract_covered_dynamic_access_calls(library_stats)
-    if metadata_entries <= 0 or covered_calls is None:
+    if covered_calls is None:
         return ""
-    if covered_calls < metadata_entries * DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO:
+    if metadata_entries > 0 and covered_calls < metadata_entries * DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO:
+        return ""
+    if metadata_entries <= 0 and covered_calls <= 0:
         return ""
 
-    return (
-        "\n### Metadata/dynamic-access evidence\n\n"
-        f"- Covered dynamic-access calls: {covered_calls}\n"
-        f"- Metadata entries: {metadata_entries}\n"
+    lines = [
+        "",
+        "### Metadata/dynamic-access evidence",
+        "",
+        f"- Covered dynamic-access calls: {covered_calls}",
+        f"- Metadata entries: {metadata_entries}",
         "- These counts are different dimensions: covered dynamic-access calls count observed call sites, "
-        "while metadata entries count generated reachability-config items. A single metadata entry can cover "
-        "multiple observed call sites when they require the same reachability rule.\n"
+        "while metadata entries count generated reachability-config items. Depending on the access type, "
+        "a single metadata rule can cover multiple observed call sites, or no shipped rule may be required "
+        "when the covered access does not target fixed library-owned metadata.",
+    ]
+    if evidence and evidence.covered_call_sites:
+        lines.append("- Covered call sites:")
+        lines.extend(f"  - {call_site}" for call_site in evidence.covered_call_sites)
+    if evidence and evidence.metadata_rules:
+        lines.append("- Generated metadata rules:")
+        lines.extend(f"  - {metadata_rule}" for metadata_rule in evidence.metadata_rules)
+    lines.append(
+        "- Use the call-site and metadata-rule lists together to review whether the observed dynamic-access "
+        "paths are explained by the generated reachability metadata."
     )
+    return "\n".join(lines) + "\n"
+
+
+def load_dynamic_access_metadata_evidence(repo_path: str, coordinates: str) -> DynamicAccessMetadataEvidence | None:
+    """Load covered dynamic-access call sites and generated metadata rules for PR evidence."""
+    group, artifact, version = parse_coordinate_parts(coordinates)
+    report_path = os.path.join(
+        repo_path,
+        "tests",
+        "src",
+        group,
+        artifact,
+        version,
+        "build",
+        "reports",
+        "dynamic-access",
+        "dynamic-access-coverage.json",
+    )
+    metadata_path = os.path.join(
+        repo_path,
+        "metadata",
+        group,
+        artifact,
+        version,
+        "reachability-metadata.json",
+    )
+
+    covered_call_sites = _load_covered_dynamic_access_call_sites(report_path)
+    metadata_rules = _load_metadata_rule_summaries(metadata_path)
+    if not covered_call_sites and not metadata_rules:
+        return None
+    return DynamicAccessMetadataEvidence(
+        covered_call_sites=covered_call_sites,
+        metadata_rules=metadata_rules,
+    )
+
+
+def _load_covered_dynamic_access_call_sites(report_path: str) -> list[str]:
+    if not os.path.isfile(report_path):
+        return []
+    report = load_dynamic_access_coverage_report(report_path)
+    call_sites = [
+        _format_dynamic_access_call_site(call_site)
+        for class_coverage in report.classes
+        for call_site in class_coverage.call_sites
+        if call_site.covered
+    ]
+    return _limit_evidence_items(call_sites)
+
+
+def _format_dynamic_access_call_site(call_site: DynamicAccessCallSite) -> str:
+    line_suffix = ""
+    if call_site.line is not None:
+        line_suffix = f" (line {call_site.line})"
+    return f"[{call_site.metadata_type}] {call_site.tracked_api} <- {call_site.frame}{line_suffix}"
+
+
+def _load_metadata_rule_summaries(metadata_path: str) -> list[str]:
+    if not os.path.isfile(metadata_path):
+        return []
+    with open(metadata_path, "r", encoding="utf-8") as metadata_file:
+        metadata = json.load(metadata_file)
+
+    summaries = []
+    reflection = metadata.get("reflection")
+    if isinstance(reflection, list):
+        for segment in reflection:
+            if not isinstance(segment, dict):
+                continue
+            summaries.extend(_summarize_reflection_segment(segment))
+
+    resources = metadata.get("resources")
+    if isinstance(resources, list):
+        for segment in resources:
+            if not isinstance(segment, dict):
+                continue
+            summaries.extend(_summarize_resource_segment(segment))
+
+    return _limit_evidence_items(summaries)
+
+
+def _summarize_reflection_segment(segment: dict) -> list[str]:
+    type_name = segment.get("type")
+    if not isinstance(type_name, str) or not type_name:
+        return []
+
+    condition_prefix = _format_metadata_condition_prefix(segment.get("condition"))
+    methods = segment.get("methods")
+    if isinstance(methods, list) and methods:
+        return [
+            f"{condition_prefix}make `{type_name}.{_format_metadata_method(method)}` available for reflection"
+            for method in methods
+            if isinstance(method, dict)
+        ]
+
+    return [f"{condition_prefix}make `{type_name}` available for reflection"]
+
+
+def _format_metadata_method(method: dict) -> str:
+    method_name = method.get("name")
+    if not isinstance(method_name, str) or not method_name:
+        method_name = "<unnamed>"
+    parameter_types = method.get("parameterTypes")
+    if not isinstance(parameter_types, list):
+        parameter_types = []
+    parameter_list = ", ".join(str(parameter_type) for parameter_type in parameter_types)
+    return f"{method_name}({parameter_list})"
+
+
+def _summarize_resource_segment(segment: dict) -> list[str]:
+    condition_prefix = _format_metadata_condition_prefix(segment.get("condition"))
+    pattern = segment.get("pattern")
+    if isinstance(pattern, str) and pattern:
+        return [f"{condition_prefix}include resource pattern `{pattern}`"]
+
+    includes = segment.get("includes")
+    if isinstance(includes, list):
+        summaries = []
+        for include in includes:
+            if not isinstance(include, dict):
+                continue
+            include_pattern = include.get("pattern")
+            if isinstance(include_pattern, str) and include_pattern:
+                summaries.append(f"{condition_prefix}include resource pattern `{include_pattern}`")
+        return summaries
+
+    return []
+
+
+def _format_metadata_condition_prefix(condition: object) -> str:
+    if not isinstance(condition, dict):
+        return ""
+    type_reached = condition.get("typeReached")
+    if isinstance(type_reached, str) and type_reached:
+        return f"when `{type_reached}` is reached, "
+    return ""
+
+
+def _limit_evidence_items(items: list[str]) -> list[str]:
+    if len(items) <= DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_MAX_ITEMS:
+        return items
+    omitted = len(items) - DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_MAX_ITEMS
+    return [
+        *items[:DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_MAX_ITEMS],
+        f"... and {omitted} more",
+    ]
 
 
 def build_pull_request_body(
@@ -95,6 +270,7 @@ def build_pull_request_body(
         large_library_part=None,
         series_id=None,
         local_ci_verification=None,
+        dynamic_access_evidence: DynamicAccessMetadataEvidence | None = None,
 ):
     """Build the PR body with metrics, strategy name, and optional stats."""
     input_tokens_used = metrics.get("input_tokens_used", 0)
@@ -139,7 +315,7 @@ Summary:
 - Generated lines of code: {generated_loc}
 - Tested library lines of code: {tested_library_loc}
 """
-    body += format_dynamic_access_metadata_entry_note(entries_found, library_stats)
+    body += format_dynamic_access_metadata_entry_note(entries_found, library_stats, dynamic_access_evidence)
     body += "\n" + format_forge_revision_section() + "\n"
     if library_stats:
         body += "\n" + format_stats_section(library_stats) + "\n"
@@ -232,6 +408,7 @@ def create_pull_request(
         title = f"{title} (part {large_library_part})"
 
     library_stats = load_library_stats(repo_path, coordinates)
+    dynamic_access_evidence = load_dynamic_access_metadata_evidence(repo_path, coordinates)
     body = build_pull_request_body(
         issue_no=issue_no,
         coordinates=coordinates,
@@ -247,6 +424,7 @@ def create_pull_request(
         is_final_large_library_part=is_final_large_library_part,
         large_library_part=large_library_part,
         series_id=series_id,
+        dynamic_access_evidence=dynamic_access_evidence,
     )
 
     cmd = [
