@@ -108,6 +108,16 @@ public class Arrow_exception_utils_jvmTest {
     }
 
     @Test
+    fun mergeSuppressedIgnoresSelfSuppression() {
+        val failure = IllegalStateException("same failure")
+
+        val result = failure.mergeSuppressed(failure)
+
+        assertThat(result).isSameAs(failure)
+        assertThat(failure.suppressed).isEmpty()
+    }
+
+    @Test
     fun mergeSuppressedAddsCancellationExceptionAsSuppressedInsteadOfThrowingIt() {
         val primary = IllegalStateException("primary")
         val cancellation = CancellationException("cancelled")
