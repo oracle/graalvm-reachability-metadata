@@ -25,13 +25,6 @@ If metadata is missing for a library you depend on, run the Native Build Tools t
 
 ---
 
-### Manually Request Library Support
-
-<p align="center">
-  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library.svg" width="340"></a>
-  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><img alt="Open an existing library update ticket" src="docs/assets/readme/button-update-metadata.svg" width="340"></a>
-</p>
-
 ### 🔎 Check if Your Library Is Supported
 
 To quickly check whether reachability metadata exists for a specific library, run this command directly from your terminal:
@@ -41,6 +34,17 @@ curl -sSL \
   https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh \
   | bash -s "<groupId>:<artifactId>:<version>"
 ```
+
+### Manually Request Library Support
+
+<p align="center">
+  <img alt="Manual intervention" src="docs/assets/readme/manual-intervention.svg" width="72">
+</p>
+
+<p align="center">
+  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library.svg" width="340"></a>
+  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><img alt="Open an existing library update ticket" src="docs/assets/readme/button-update-metadata.svg" width="340"></a>
+</p>
 
 ---
 
