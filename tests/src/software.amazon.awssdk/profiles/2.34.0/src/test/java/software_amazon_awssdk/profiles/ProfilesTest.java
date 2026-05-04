@@ -193,7 +193,7 @@ public class ProfilesTest {
         ProfileFile profileFile = credentialsFile("""
                 ; leading semicolon comment
                 [default] ; section comment
-                aws_access_key_id	=	key=value ; stripped comment
+                aws_access_key_id\t=\tkey=value ; stripped comment
                 !invalid = ignored
                   ignored-continuation
                 multiline = first line
@@ -218,10 +218,10 @@ public class ProfilesTest {
     @Test
     void configurationSectionsSupportTabsAndCredentialsFilesIgnoreSections() {
         ProfileFile configuration = configurationFile("""
-                [sso-session	admin]
+                [sso-session\tadmin]
                 sso_region = us-east-2
 
-                [services	local-services]
+                [services\tlocal-services]
                 sqs =
                   endpoint_url = http://localhost:9324
 
