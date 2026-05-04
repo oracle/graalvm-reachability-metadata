@@ -210,6 +210,19 @@ public class Retries_spiTest {
     }
 
     @Test
+    void jitteredExponentialBackoffUsesMaximumDelayAsTheCappedRange() {
+        BackoffStrategy fullJitter = BackoffStrategy.exponentialDelay(HUNDRED_MILLIS, TWO_HUNDRED_MILLIS);
+        BackoffStrategy halfJitter = BackoffStrategy.exponentialDelayHalfJitter(HUNDRED_MILLIS, TWO_HUNDRED_MILLIS);
+
+        assertThat(fullJitter.computeDelay(10))
+                .isGreaterThanOrEqualTo(Duration.ZERO)
+                .isLessThan(TWO_HUNDRED_MILLIS);
+        assertThat(halfJitter.computeDelay(10))
+                .isGreaterThanOrEqualTo(HUNDRED_MILLIS)
+                .isLessThanOrEqualTo(TWO_HUNDRED_MILLIS);
+    }
+
+    @Test
     void backoffStrategiesValidatePositiveAttemptsAndPositiveDurations() {
         BackoffStrategy immediate = BackoffStrategy.retryImmediately();
         BackoffStrategy fixed = BackoffStrategy.fixedDelayWithoutJitter(HUNDRED_MILLIS);
