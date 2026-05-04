@@ -48,6 +48,12 @@ public class SaslprepTest {
     }
 
     @Test
+    void preservesAsciiSpacesWithoutTrimmingOrCollapsing() {
+        assertThat(SaslPrep.saslPrep(" leading  inner  trailing ", true))
+                .isEqualTo(" leading  inner  trailing ");
+    }
+
+    @Test
     void handlesSupplementaryCodePointsWithoutSplittingSurrogatePairs() {
         String cjkExtensionB = "\uD840\uDC00";
         String deseretCapitalLetterLongI = "\uD801\uDC00";
