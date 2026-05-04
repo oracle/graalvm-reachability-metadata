@@ -14,6 +14,9 @@ import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.backends.BackendServiceFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.blobstore.ByteRange;
+import com.google.appengine.api.blobstore.RangeFormatException;
+import com.google.appengine.api.blobstore.UploadOptions;
 import com.google.appengine.api.capabilities.CapabilitiesServiceFactory;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.Category;
@@ -241,6 +244,35 @@ public class Appengine_api_1_0_sdkTest {
         assertThat(taskOptions.getTag()).isEqualTo("batch-a");
         assertThat(taskOptions.getDispatchDeadline()).isEqualTo(Duration.ofSeconds(15));
         assertThat(new LeaseOptions(leaseOptions)).isEqualTo(leaseOptions);
+    }
+
+    @Test
+    void blobstoreByteRangesAndUploadOptionsRetainConfiguration() {
+        ByteRange closedRange = ByteRange.parse("bytes=10-19");
+        ByteRange openRange = new ByteRange(128);
+        ByteRange suffixRange = ByteRange.parse("bytes=-50");
+        ByteRange contentRange = ByteRange.parseContentRange("bytes 20-29/200");
+        UploadOptions uploadOptions = UploadOptions.Builder.withMaxUploadSizeBytes(1_048_576L)
+                .maxUploadSizeBytesPerBlob(262_144L)
+                .googleStorageBucketName("metadata-test-bucket");
+
+        assertThat(closedRange.getStart()).isEqualTo(10L);
+        assertThat(closedRange.getEnd()).isEqualTo(19L);
+        assertThat(closedRange).hasToString("bytes=10-19");
+        assertThat(openRange.getStart()).isEqualTo(128L);
+        assertThat(openRange.hasEnd()).isFalse();
+        assertThat(openRange).hasToString("bytes=128-");
+        assertThat(suffixRange.getStart()).isEqualTo(-50L);
+        assertThat(suffixRange.hasEnd()).isFalse();
+        assertThat(contentRange).isEqualTo(new ByteRange(20, 29));
+        assertThat(uploadOptions.hasMaxUploadSizeBytes()).isTrue();
+        assertThat(uploadOptions.getMaxUploadSizeBytes()).isEqualTo(1_048_576L);
+        assertThat(uploadOptions.hasMaxUploadSizeBytesPerBlob()).isTrue();
+        assertThat(uploadOptions.getMaxUploadSizeBytesPerBlob()).isEqualTo(262_144L);
+        assertThat(uploadOptions.hasGoogleStorageBucketName()).isTrue();
+        assertThat(uploadOptions.getGoogleStorageBucketName()).isEqualTo("metadata-test-bucket");
+        assertThatThrownBy(() -> ByteRange.parse("items=10-19"))
+                .isInstanceOf(RangeFormatException.class);
     }
 
     @Test
