@@ -50,6 +50,8 @@ We welcome contributions from the community. Thank you!
 
 Before submitting a pull request, please [open a ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml) and [review our contribution guide](docs/CONTRIBUTING.md).
 
+Note: we always fix issues by changing the system, not the metadata itself.
+
 ### Further Information
 
 1. Continuous integration is described in [CI.md](docs/CI.md).
