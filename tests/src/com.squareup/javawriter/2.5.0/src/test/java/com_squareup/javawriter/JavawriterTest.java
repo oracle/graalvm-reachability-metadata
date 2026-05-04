@@ -284,6 +284,38 @@ public class JavawriterTest {
     }
 
     @Test
+    void closesControlFlowWithTrailingClause() throws IOException {
+        StringWriter output = new StringWriter();
+        JavaWriter writer = new JavaWriter(output);
+
+        writer.emitPackage("com.example")
+                .beginType("com.example.RetryCounter", "class")
+                .beginMethod("int", "countAttempts", EnumSet.of(Modifier.PUBLIC), "int", "max")
+                .emitStatement("int attempts = 0")
+                .beginControlFlow("do")
+                .emitStatement("attempts++")
+                .endControlFlow("while (attempts < max)")
+                .emitStatement("return attempts")
+                .endMethod()
+                .endType();
+
+        assertThat(output).hasToString(
+                """
+                package com.example;
+
+                class RetryCounter {
+                  public int countAttempts(int max) {
+                    int attempts = 0;
+                    do {
+                      attempts++;
+                    } while (attempts < max);
+                    return attempts;
+                  }
+                }
+                """);
+    }
+
+    @Test
     void stringAndTypeUtilitiesHandleEscapingGenericsAndRawTypes() {
         String charactersToEscape = "quote=\" slash=\\ backspace=\b tab=\t newline=\n "
                 + "formfeed=\f return=\r bell=\u0007";
