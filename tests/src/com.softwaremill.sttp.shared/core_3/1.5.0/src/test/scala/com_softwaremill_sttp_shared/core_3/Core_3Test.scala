@@ -91,6 +91,25 @@ class Core_3Test {
   }
 
   @Test
+  def attributeKeysPreserveParameterizedTypesWithSameRuntimeRepresentation(): Unit = {
+    val stringListKey: AttributeKey[List[String]] = AttributeKey[List[String]]
+    val intListKey: AttributeKey[List[Int]] = AttributeKey[List[Int]]
+    val explicitStringListKey: AttributeKey[List[String]] = new AttributeKey[List[String]](stringListKey.typeName)
+
+    assertNotEquals(stringListKey, intListKey)
+    assertEquals(stringListKey, explicitStringListKey)
+
+    val attributes: AttributeMap = AttributeMap.Empty
+      .put(stringListKey, List("alpha", "beta"))
+      .put(intListKey, List(1, 2, 3))
+
+    assertEquals(Some(List("alpha", "beta")), attributes.get(explicitStringListKey))
+    assertEquals(Some(List(1, 2, 3)), attributes.get(intListKey))
+    assertEquals(None, attributes.remove(stringListKey).get(stringListKey))
+    assertEquals(Some(List(1, 2, 3)), attributes.remove(stringListKey).get(intListKey))
+  }
+
+  @Test
   def streamLimitExceptionReportsLimitAndSupportsCaseClassOperations(): Unit = {
     val exception: StreamMaxLengthExceededException = StreamMaxLengthExceededException(1024L)
 
