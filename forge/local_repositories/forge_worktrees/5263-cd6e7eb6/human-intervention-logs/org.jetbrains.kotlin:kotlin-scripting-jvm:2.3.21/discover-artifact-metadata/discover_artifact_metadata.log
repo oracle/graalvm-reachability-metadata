@@ -1,0 +1,1439 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019df4b0-25d7-7e01-9851-cac50ccacc29
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.3.21" when "$version$" is replaced with "2.3.21".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+- Set "coordinates" to "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.3.21".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and the Kotlin repository layout, then update the JSON in place with version-tokenized URLs that resolve for `2.3.21`.
+exec
+/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json && sed -n '1,200p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+-rw-rw-r-- 1 jovan jovan 73 May  4 22:31 build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21"
+}
+
+exec
+/bin/bash -lc "rg -n 'kotlin-scripting-jvm|org.jetbrains.kotlin' build/discovered-artifact-metadata metadata tests || true" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json:2:  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21"
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.kotlin.template:10:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/1.6.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/$version$/kotlinx-serialization-core-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-collections-immutable-jvm/$version$/kotlinx-collections-immutable-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-collections-immutable-jvm/$version$/kotlinx-collections-immutable-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/$version$/atomicfu-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-hocon/$version$/kotlinx-serialization-hocon-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/$version$/kotlinx-datetime-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/$version$/kotlinx-datetime-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-protobuf-jvm/$version$/kotlinx-serialization-protobuf-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-properties-jvm/$version$/kotlinx-serialization-properties-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/$version$/kotlinx-io-core-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/$version$/kotlinx-io-core-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-benchmark-runtime-jvm:0.4.16"
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-cbor-jvm/$version$/kotlinx-serialization-cbor-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0.",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/$version$/kotlinx-serialization-json-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-html-jvm/$version$/kotlinx-html-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-html-jvm/$version$/kotlinx-html-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/$version$/kotlinx-io-bytestring-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/$version$/kotlinx-io-bytestring-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-cli-jvm/$version$/kotlinx-cli-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-cli-jvm/$version$/kotlinx-cli-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:18:      "org.jetbrains.kotlin.daemon"
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/$version$/kotlin-stdlib-jdk8-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/$version$/kotlin-stdlib-jdk8-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/$version$/kotlin-stdlib-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:55:      "org.jetbrains.kotlin"
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+tests/src/io.arrow-kt/arrow-autoclose-jvm/2.2.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/io.github.oshai/kotlin-logging-jvm/8.0.01/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/io.arrow-kt/arrow-atomic-jvm/2.2.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/io.arrow-kt/arrow-annotations-jvm/2.2.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/com.akuleshov7/ktoml-core-jvm/0.7.1/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/io.arrow-kt/arrow-exception-utils-jvm/2.2.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/io.mockk/mockk-agent-api-jvm/1.14.9/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-serialization-core-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/
+tests/src/io.mockk/mockk-core-jvm/1.14.9/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_core_jvm/PlatformKtTest.kt:9:package org_jetbrains_kotlinx.kotlinx_serialization_core_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_core_jvm/PlatformKtTest.kt:83:            "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.GeneratedStyleModel",
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_core_jvm/PlatformKtTest.kt:101:        "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.DefaultCompanionModel",
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_core_jvm/PlatformKtTest.kt:114:        "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.NamedCompanionModel",
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_core_jvm/PlatformKtTest.kt:127:        "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.SerializableSingleton",
+tests/src/org.jetbrains.kotlinx/kotlinx-html-jvm/0.12.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-html-jvm/0.12.0/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-html-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-hocon:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.DefaultCompanionModel",
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:18:      "type" : "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.DefaultCompanionModel$Companion",
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:30:      "type" : "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.NamedCompanionModel",
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:41:      "type" : "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.NamedCompanionModel$Custom",
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:53:      "type" : "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.GeneratedStyleModel"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:59:      "type" : "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.GeneratedStyleModel$$serializer",
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/src/test/resources/META-INF/native-image/reachability-metadata.json:70:      "type" : "org_jetbrains_kotlinx.kotlinx_serialization_core_jvm.SerializableSingleton",
+tests/src/org.jetbrains.kotlinx/kotlinx-html-jvm/0.12.0/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-html-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-serialization-hocon_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-html-jvm/0.12.0/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0
+tests/src/org.jetbrains.kotlinx/kotlinx-html-jvm/0.12.0/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-html-jvm/0.12.0/
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.11.0
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/
+tests/src/org.jetbrains.kotlinx/kotlinx-html-jvm/0.12.0/user-code-filter.json:10:      "includeClasses" : "org_jetbrains_kotlinx.kotlinx_html_jvm.**"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/user-code-filter.json:10:      "includeClasses" : "org_jetbrains_kotlinx.kotlinx_serialization_hocon.**"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/build.gradle:10:    id "org.jetbrains.kotlin.plugin.serialization" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/build.gradle:16:    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-serialization-protobuf-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-serialization-protobuf-jvm:1.9.0
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/user-code-filter.json:10:      "includeClasses" : "org_jetbrains_kotlinx.kotlinx_serialization_protobuf_jvm.**"
+tests/src/org.jetbrains.kotlinx/kotlinx-datetime-jvm/0.7.1/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-datetime-jvm/0.7.1/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-datetime-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-html-jvm/0.12.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_html_jvm/Kotlinx_html_jvmTest.kt:7:package org_jetbrains_kotlinx.kotlinx_html_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-datetime-jvm/0.7.1/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-datetime-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_hocon/Kotlinx_serialization_hoconTest.kt:9:package org_jetbrains_kotlinx.kotlinx_serialization_hocon
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_hocon/Kotlinx_serialization_hoconTest.kt:311:        "org_jetbrains_kotlinx.kotlinx_serialization_hocon.DatabaseConfig"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_hocon/Kotlinx_serialization_hoconTest.kt:345:        "org_jetbrains_kotlinx.kotlinx_serialization_hocon.AppSettings"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_hocon/Kotlinx_serialization_hoconTest.kt:478:        "org_jetbrains_kotlinx.kotlinx_serialization_hocon.NotificationEnvelope"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_hocon/Kotlinx_serialization_hoconTest.kt:511:        "org_jetbrains_kotlinx.kotlinx_serialization_hocon.Ownership"
+tests/src/org.jetbrains.kotlinx/kotlinx-datetime-jvm/0.7.1/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.7.1
+tests/src/org.jetbrains.kotlinx/kotlinx-datetime-jvm/0.7.1/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-datetime-jvm/0.7.1/
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_protobuf_jvm/Kotlinx_serialization_protobuf_jvmTest.kt:9:package org_jetbrains_kotlinx.kotlinx_serialization_protobuf_jvm
+tests/src/org.jetbrains.kotlinx/atomicfu-jvm/0.19.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/atomicfu-jvm/0.19.0/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:atomicfu-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/build.gradle:10:    id "org.jetbrains.kotlin.plugin.serialization" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/build.gradle:16:    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-properties-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-cli-jvm/0.3.6/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-cli-jvm/0.3.6/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-cli-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/atomicfu-jvm/0.19.0/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.atomicfu-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-serialization-properties-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-serialization-properties-jvm:1.11.0
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/
+tests/src/org.jetbrains.kotlinx/atomicfu-jvm/0.19.0/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:atomicfu-jvm:0.19.0
+tests/src/org.jetbrains.kotlinx/atomicfu-jvm/0.19.0/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/atomicfu-jvm/0.19.0/
+tests/src/org.jetbrains.kotlinx/kotlinx-cli-jvm/0.3.6/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-cli-jvm_tests'
+tests/src/com.fasterxml.jackson.module/jackson-module-kotlin/2.17.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/user-code-filter.json:10:      "includeClasses" : "org_jetbrains_kotlinx.kotlinx_serialization_properties_jvm.**"
+tests/src/org.jetbrains.kotlinx/kotlinx-cli-jvm/0.3.6/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-cli-jvm:0.3.6
+tests/src/org.jetbrains.kotlinx/kotlinx-cli-jvm/0.3.6/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-cli-jvm/0.3.6/
+tests/src/org.jetbrains.kotlinx/kotlinx-datetime-jvm/0.7.1/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_datetime_jvm/Kotlinx_datetime_jvmTest.kt:7:package org_jetbrains_kotlinx.kotlinx_datetime_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-cli-jvm/0.3.6/user-code-filter.json:10:      "includeClasses" : "org_jetbrains_kotlinx.kotlinx_cli_jvm.**"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.9.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.9.0/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-cbor-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_properties_jvm/Kotlinx_serialization_properties_jvmTest.kt:7:package org_jetbrains_kotlinx.kotlinx_serialization_properties_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.9.0/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-serialization-cbor-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.9.0/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-serialization-cbor-jvm:1.9.0
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.9.0/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.9.0/
+tests/src/org.jetbrains.kotlinx/atomicfu-jvm/0.19.0/src/test/kotlin/org_jetbrains_kotlinx/atomicfu_jvm/Atomicfu_jvmTest.kt:7:package org_jetbrains_kotlinx.atomicfu_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.9.0/user-code-filter.json:10:      "includeClasses" : "org_jetbrains_kotlinx.kotlinx_serialization_cbor_jvm.**"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.8.1/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.8.1/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.8.1/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-serialization-json-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-cli-jvm/0.3.6/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_cli_jvm/Kotlinx_cli_jvmTest.kt:7:package org_jetbrains_kotlinx.kotlinx_cli_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.8.1/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.8.1
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.8.1/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.8.1/
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.8.1/user-code-filter.json:10:      "includeClasses" : "org_jetbrains_kotlinx.kotlinx_serialization_json_jvm.**"
+tests/src/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/0.4.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/0.4.0/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/0.4.0/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-collections-immutable-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/0.4.0/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.4.0
+tests/src/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/0.4.0/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/0.4.0/
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.9.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_cbor_jvm/Kotlinx_serialization_cbor_jvmTest.kt:9:package org_jetbrains_kotlinx.kotlinx_serialization_cbor_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/0.4.0/user-code-filter.json:10:      "includeClasses" : "org_jetbrains_kotlinx.kotlinx_collections_immutable_jvm.**"
+tests/src/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/0.8.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/0.8.2/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/0.8.2/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-io-bytestring-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/0.8.2/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2
+tests/src/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/0.8.2/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/0.8.2/
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.8.1/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_serialization_json_jvm/Kotlinx_serialization_json_jvmTest.kt:7:package org_jetbrains_kotlinx.kotlinx_serialization_json_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/0.4.0/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_collections_immutable_jvm/Kotlinx_collections_immutable_jvmTest.kt:7:package org_jetbrains_kotlinx.kotlinx_collections_immutable_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/build.gradle:15:    testImplementation "org.jetbrains.kotlinx:kotlinx-io-core-jvm:$libraryVersion"
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/gradle.properties:4:library.coordinates = org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/gradle.properties:6:metadata.dir = org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlinx.kotlinx-io-core-jvm_tests'
+tests/src/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/0.8.2/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_io_bytestring_jvm/Kotlinx_io_bytestring_jvmTest.kt:7:package org_jetbrains_kotlinx.kotlinx_io_bytestring_jvm
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/src/test/kotlin/org_jetbrains_kotlinx/kotlinx_io_core_jvm/Kotlinx_io_core_jvmTest.kt:7:package org_jetbrains_kotlinx.kotlinx_io_core_jvm
+tests/src/org.jetbrains.kotlin/kotlin-reflect/1.7.10/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-reflect/1.7.10/build.gradle:15:    implementation "org.jetbrains.kotlin:kotlin-reflect:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-reflect/1.7.10/gradle.properties:2:metadata.dir = org.jetbrains.kotlin/kotlin-reflect/1.7.10
+tests/src/org.jetbrains.kotlin/kotlin-parcelize-runtime/1.7.10/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-parcelize-runtime/1.7.10/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-parcelize-runtime:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-parcelize-runtime/1.7.10/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-parcelize-runtime_tests'
+tests/src/org.jetbrains.kotlin/kotlin-parcelize-runtime/1.7.10/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-parcelize-runtime:1.7.10
+tests/src/org.jetbrains.kotlin/kotlin-parcelize-runtime/1.7.10/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-parcelize-runtime/1.7.10/
+tests/src/org.jetbrains.kotlin/kotlin-parcelize-runtime/1.7.10/src/test/kotlin/org_jetbrains_kotlin/kotlin_parcelize_runtime/Kotlin_parcelize_runtimeTest.kt:7:package org_jetbrains_kotlin.kotlin_parcelize_runtime
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/build.gradle:42:    testImplementation "org.jetbrains.kotlin:kotlin-daemon-embeddable:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/build.gradle:43:    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/build.gradle:44:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-daemon-embeddable_tests'
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-scripting-common:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/build.gradle:16:    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-daemon-embeddable:2.3.20
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-scripting-common_tests'
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/user-code-filter.json:7:      "includeClasses": "org.jetbrains.kotlin.daemon.**"
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-scripting-common:2.3.21
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/user-code-filter.json:10:      "includeClasses" : "org_jetbrains_kotlin.kotlin_scripting_common.**"
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:7:package org_jetbrains_kotlin.kotlin_daemon_embeddable;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:29:import org.jetbrains.kotlin.cli.common.CompilerSystemProperties;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:30:import org.jetbrains.kotlin.daemon.RemoteInputStreamClient;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:31:import org.jetbrains.kotlin.daemon.RemoteOutputStreamClient;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:32:import org.jetbrains.kotlin.daemon.RunningCompilations;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:33:import org.jetbrains.kotlin.daemon.common.ClientUtilsKt;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:34:import org.jetbrains.kotlin.daemon.common.CompilerId;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:35:import org.jetbrains.kotlin.daemon.common.DaemonJVMOptions;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:36:import org.jetbrains.kotlin.daemon.common.DaemonOptions;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:37:import org.jetbrains.kotlin.daemon.common.DaemonParamsKt;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:38:import org.jetbrains.kotlin.daemon.common.DaemonReportCategory;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:39:import org.jetbrains.kotlin.daemon.common.DaemonWithMetadata;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:40:import org.jetbrains.kotlin.daemon.common.DummyProfiler;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:41:import org.jetbrains.kotlin.daemon.common.LoopbackNetworkInterface;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:42:import org.jetbrains.kotlin.daemon.common.RemoteInputStream;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:43:import org.jetbrains.kotlin.daemon.common.RemoteOutputStream;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:44:import org.jetbrains.kotlin.progress.CompilationCanceledException;
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java:45:import org.jetbrains.kotlin.progress.CompilationCanceledStatus;
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/src/test/kotlin/org_jetbrains_kotlin/kotlin_scripting_common/PropertiesCollectionTest.kt:7:package org_jetbrains_kotlin.kotlin_scripting_common
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/src/test/kotlin/org_jetbrains_kotlin/kotlin_scripting_common/ConfigurationFromTemplateKtTest.kt:7:package org_jetbrains_kotlin.kotlin_scripting_common
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-stdlib-jdk8_tests'
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31/
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/src/test/resources/META-INF/native-image/reachability-metadata.json:4:      "type": "org_jetbrains_kotlin.kotlin_scripting_common.BaseAwareHostConfiguration",
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/src/test/resources/META-INF/native-image/reachability-metadata.json:8:      "type": "org_jetbrains_kotlin.kotlin_scripting_common.ConstructorBackedCompilationConfiguration",
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/src/test/resources/META-INF/native-image/reachability-metadata.json:12:      "type": "org_jetbrains_kotlin.kotlin_scripting_common.ConstructorBackedEvaluationConfiguration",
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/src/test/resources/META-INF/native-image/reachability-metadata.json:16:      "type": "org_jetbrains_kotlin.kotlin_scripting_common.DefaultConstructedHostConfiguration",
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31/user-code-filter.json:25:      "includeClasses" : "org_jetbrains_kotlin.kotlin_stdlib_jdk8.**"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib_jdk8/Kotlin_stdlib_jdk8Test.kt:7:package org_jetbrains_kotlin.kotlin_stdlib_jdk8
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/build.gradle:14:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-common:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-stdlib-common_tests'
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-stdlib-common:1.5.31
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/user-code-filter.json:7:      "includeClasses" : "org.jetbrains.kotlin.**"
+tests/src/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/3.0.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/src/test/java/org_jetbrains_kotlin/kotlin_stdlib_common/Kotlin_stdlib_commonTest.java:7:package org_jetbrains_kotlin.kotlin_stdlib_common;
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/src/test/java/org_jetbrains_kotlin/kotlin_stdlib_common/Kotlin_stdlib_commonTest.java:37:        Triple<String, String, String> coordinate = new Triple<>("org.jetbrains.kotlin", "kotlin-stdlib", "common");
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/src/test/java/org_jetbrains_kotlin/kotlin_stdlib_common/Kotlin_stdlib_commonTest.java:45:        assertThat(coordinate.component1()).isEqualTo("org.jetbrains.kotlin");
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/src/test/java/org_jetbrains_kotlin/kotlin_stdlib_common/Kotlin_stdlib_commonTest.java:48:        assertThat(TuplesKt.toList(coordinate)).containsExactly("org.jetbrains.kotlin", "kotlin-stdlib", "common");
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/src/test/java/org_jetbrains_kotlin/kotlin_stdlib_common/Kotlin_stdlib_commonTest.java:77:        String paddedCoordinate = "  org.jetbrains.kotlin:kotlin-stdlib-common:1.5.31  ";
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/src/test/java/org_jetbrains_kotlin/kotlin_stdlib_common/Kotlin_stdlib_commonTest.java:80:        assertThat(coordinate).isEqualTo("org.jetbrains.kotlin:kotlin-stdlib-common:1.5.31");
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/src/test/java/org_jetbrains_kotlin/kotlin_stdlib_common/Kotlin_stdlib_commonTest.java:81:        assertThat(StringsKt.substringBefore(coordinate, ":", "")).isEqualTo("org.jetbrains.kotlin");
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-test:$libraryVersion"
+tests/src/com.github.ajalt.mordant/mordant-core-jvm/3.0.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-test_tests'
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-test:2.0.21
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-test/2.0.21/
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/src/test/kotlin/org_jetbrains_kotlin/kotlin_test/Kotlin_testTest.kt:7:package org_jetbrains_kotlin.kotlin_test
+tests/src/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/build.gradle:14:    testImplementation "org.jetbrains.kotlin:kotlin-script-runtime:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-script-runtime_tests'
+tests/src/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-script-runtime:2.3.20
+tests/src/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-stdlib-jdk7_tests'
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.31
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/
+tests/src/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/src/test/java/org_jetbrains_kotlin/kotlin_script_runtime/Kotlin_script_runtimeTest.java:7:package org_jetbrains_kotlin.kotlin_script_runtime;
+tests/src/org.jetbrains.kotlin/kotlin-android-extensions-runtime/1.3.72/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-android-extensions-runtime/1.3.72/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-android-extensions-runtime/1.3.72/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-android-extensions-runtime_tests'
+tests/src/org.jetbrains.kotlin/kotlin-android-extensions-runtime/1.3.72/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-android-extensions-runtime:1.3.72
+tests/src/org.jetbrains.kotlin/kotlin-android-extensions-runtime/1.3.72/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-android-extensions-runtime/1.3.72/
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib_jdk7/Kotlin_stdlib_jdk7Test.kt:9:package org_jetbrains_kotlin.kotlin_stdlib_jdk7
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib_jdk7/Kotlin_stdlib_jdk7Test.kt:81:            metadataFile.writeText("library=org.jetbrains.kotlin\nstatus=initial", Charsets.UTF_8)
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib_jdk7/Kotlin_stdlib_jdk7Test.kt:87:                "library=org.jetbrains.kotlin\nstatus=initial\nsummary=JDK 7 path support ✓"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/build.gradle:15:    implementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/build.gradle:16:    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/build.gradle:18:    implementation 'org.jetbrains.kotlin:kotlin-test-junit:1.7.10'
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/gradle.properties:2:metadata.dir = org.jetbrains.kotlin/kotlin-stdlib/1.7.10
+tests/src/org.jetbrains.kotlin/kotlin-android-extensions-runtime/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_android_extensions_runtime/Kotlin_android_extensions_runtimeTest.kt:7:package org_jetbrains_kotlin.kotlin_android_extensions_runtime
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/build.gradle:15:    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/build.gradle:30:            configurationFileDirectories.from(tck.metadataRoot.dir("org.jetbrains.kotlin/kotlin-stdlib/1.3.72"))
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/settings.gradle:20:rootProject.name = 'org.jetbrains.kotlin.kotlin-stdlib_tests'
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/gradle.properties:4:library.coordinates = org.jetbrains.kotlin:kotlin-stdlib:1.3.72
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/gradle.properties:6:metadata.dir = org.jetbrains.kotlin/kotlin-stdlib/1.3.72/
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/PlatformImplementationsTest.kt:9:package org_jetbrains_kotlin.kotlin_stdlib
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/ArraysKt__ArraysJVMKtTest.kt:7:package org_jetbrains_kotlin.kotlin_stdlib
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/ModuleNameRetrieverTest.kt:7:package org_jetbrains_kotlin.kotlin_stdlib
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/ModuleNameRetrieverTest.kt:51:                .startsWith("org.jetbrains.kotlin.stdlib.modulenamefixture/")
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/ModuleNameRetrieverTest.kt:52:                .endsWith("org_jetbrains_kotlin.kotlin_stdlib.modulefixture.NamedModuleStackTraceSupplier")
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/ModuleNameRetrieverTest.kt:81:    private const val MODULE_NAME = "org.jetbrains.kotlin.stdlib.modulenamefixture"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/ModuleNameRetrieverTest.kt:83:        "org_jetbrains_kotlin.kotlin_stdlib.modulefixture.NamedModuleStackTraceSupplier"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/ModuleNameRetrieverTest.kt:85:        "org_jetbrains_kotlin/kotlin_stdlib/modulefixture/NamedModuleStackTraceSupplier"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/IntrinsicsTest.kt:9:package org_jetbrains_kotlin.kotlin_stdlib
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/IntrinsicsTest.kt:49:            "org_jetbrains_kotlin",
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/IntrinsicsTest.kt:56:        private const val MISSING_INTERNAL_NAME = "org/jetbrains/kotlin/stdlib/test/DefinitelyMissingRuntimeClass"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/IntrinsicsTest.kt:57:        private const val MISSING_FQ_NAME = "org.jetbrains.kotlin.stdlib.test.DefinitelyMissingRuntimeClass"
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/CollectionToArrayTest.kt:7:package org_jetbrains_kotlin.kotlin_stdlib
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/src/test/kotlin/org_jetbrains_kotlin/kotlin_stdlib/KotlinGenericDeclarationKtTest.kt:9:package org_jetbrains_kotlin.kotlin_stdlib
+tests/src/com.github.ajalt.colormath/colormath-jvm/3.6.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/com.squareup.okio/okio-jvm/3.0.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/com.github.ajalt.clikt/clikt-core-jvm/5.1.0/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/app.cash.sqldelight/jdbc-driver/2.3.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/app.cash.sqldelight/sqlite-driver/2.3.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/app.cash.sqldelight/coroutines-extensions-jvm/2.3.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/app.cash.sqldelight/runtime-jvm/2.3.2/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/io.github.pdvrieze.xmlutil/serialization-jvm/0.91.3/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+tests/src/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/build.gradle:9:    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+
+codex
+The repo already uses Maven-hosted source and javadoc jars for adjacent Kotlin artifacts when they exist, so I’m checking the published Maven directory first. For test suite URLs, Kotlin generally does not publish test jars for these runtime artifacts, so I’m verifying both Maven classifiers and the matching GitHub tag before choosing.
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21/ | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+exec
+/bin/bash -lc "curl -fsSI https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm | sed -n '1,30p' && curl -fsSI https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/test | sed -n '1,30p' && curl -fsSI https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/common/test | sed -n '1,30p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21/kotlin-scripting-jvm-2.3.21.pom | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-scripting-jvm</artifactId>
+  <version>2.3.21</version>
+  <name>Kotlin Scripting Jvm</name>
+  <description>Kotlin Scripting Jvm</description>
+  <url>https://kotlinlang.org/</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Kotlin Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/JetBrains/kotlin.git</connection>
+    <developerConnection>scm:git:https://github.com/JetBrains/kotlin.git</developerConnection>
+    <url>https://github.com/JetBrains/kotlin</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-script-runtime</artifactId>
+      <version>2.3.21</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.3.21</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-scripting-common</artifactId>
+      <version>2.3.21</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 275ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kotlin-scripting-jvm-2.3.21-javadoc.jar" title="kotlin-scripting-jvm-2.3.21-javadoc.jar">kotlin-scripting-jvm-2.3.21-javadoc.jar</a>           2026-04-22 09:31       261      
+<a href="kotlin-scripting-jvm-2.3.21-javadoc.jar.asc" title="kotlin-scripting-jvm-2.3.21-javadoc.jar.asc">kotlin-scripting-jvm-2.3.21-javadoc.jar.asc</a>       2026-04-22 09:31       689      
+<a href="kotlin-scripting-jvm-2.3.21-javadoc.jar.md5" title="kotlin-scripting-jvm-2.3.21-javadoc.jar.md5">kotlin-scripting-jvm-2.3.21-javadoc.jar.md5</a>       2026-04-22 09:31        32      
+<a href="kotlin-scripting-jvm-2.3.21-javadoc.jar.sha1" title="kotlin-scripting-jvm-2.3.21-javadoc.jar.sha1">kotlin-scripting-jvm-2.3.21-javadoc.jar.sha1</a>      2026-04-22 09:31        40      
+<a href="kotlin-scripting-jvm-2.3.21-sources.jar" title="kotlin-scripting-jvm-2.3.21-sources.jar">kotlin-scripting-jvm-2.3.21-sources.jar</a>           2026-04-22 09:31     26995      
+<a href="kotlin-scripting-jvm-2.3.21-sources.jar.asc" title="kotlin-scripting-jvm-2.3.21-sources.jar.asc">kotlin-scripting-jvm-2.3.21-sources.jar.asc</a>       2026-04-22 09:31       689      
+<a href="kotlin-scripting-jvm-2.3.21-sources.jar.md5" title="kotlin-scripting-jvm-2.3.21-sources.jar.md5">kotlin-scripting-jvm-2.3.21-sources.jar.md5</a>       2026-04-22 09:31        32      
+<a href="kotlin-scripting-jvm-2.3.21-sources.jar.sha1" title="kotlin-scripting-jvm-2.3.21-sources.jar.sha1">kotlin-scripting-jvm-2.3.21-sources.jar.sha1</a>      2026-04-22 09:31        40      
+<a href="kotlin-scripting-jvm-2.3.21.jar" title="kotlin-scripting-jvm-2.3.21.jar">kotlin-scripting-jvm-2.3.21.jar</a>                   2026-04-22 09:31    135462      
+<a href="kotlin-scripting-jvm-2.3.21.jar.asc" title="kotlin-scripting-jvm-2.3.21.jar.asc">kotlin-scripting-jvm-2.3.21.jar.asc</a>               2026-04-22 09:31       689      
+<a href="kotlin-scripting-jvm-2.3.21.jar.md5" title="kotlin-scripting-jvm-2.3.21.jar.md5">kotlin-scripting-jvm-2.3.21.jar.md5</a>               2026-04-22 09:31        32      
+<a href="kotlin-scripting-jvm-2.3.21.jar.sha1" title="kotlin-scripting-jvm-2.3.21.jar.sha1">kotlin-scripting-jvm-2.3.21.jar.sha1</a>              2026-04-22 09:31        40      
+<a href="kotlin-scripting-jvm-2.3.21.pom" title="kotlin-scripting-jvm-2.3.21.pom">kotlin-scripting-jvm-2.3.21.pom</a>                   2026-04-22 09:31      1745      
+<a href="kotlin-scripting-jvm-2.3.21.pom.asc" title="kotlin-scripting-jvm-2.3.21.pom.asc">kotlin-scripting-jvm-2.3.21.pom.asc</a>               2026-04-22 09:31       689      
+<a href="kotlin-scripting-jvm-2.3.21.pom.md5" title="kotlin-scripting-jvm-2.3.21.pom.md5">kotlin-scripting-jvm-2.3.21.pom.md5</a>               2026-04-22 09:31        32      
+<a href="kotlin-scripting-jvm-2.3.21.pom.sha1" title="kotlin-scripting-jvm-2.3.21.pom.sha1">kotlin-scripting-jvm-2.3.21.pom.sha1</a>              2026-04-22 09:31        40      
+<a href="kotlin-scripting-jvm-2.3.21.spdx.json" title="kotlin-scripting-jvm-2.3.21.spdx.json">kotlin-scripting-jvm-2.3.21.spdx.json</a>             2026-04-22 09:31      3987      
+<a href="kotlin-scripting-jvm-2.3.21.spdx.json.asc" title="kotlin-scripting-jvm-2.3.21.spdx.json.asc">kotlin-scripting-jvm-2.3.21.spdx.json.asc</a>         2026-04-22 09:31       689      
+<a href="kotlin-scripting-jvm-2.3.21.spdx.json.md5" title="kotlin-scripting-jvm-2.3.21.spdx.json.md5">kotlin-scripting-jvm-2.3.21.spdx.json.md5</a>         2026-04-22 09:31        32      
+<a href="kotlin-scripting-jvm-2.3.21.spdx.json.sha1" title="kotlin-scripting-jvm-2.3.21.spdx.json.sha1">kotlin-scripting-jvm-2.3.21.spdx.json.sha1</a>        2026-04-22 09:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 2274ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 20:31:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"eda49b27b68cae2de2286b85f4796ed7"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=dQjCihRIyJ%2F%2FOAqiXbBbp3m%2FctgXMXm7T4ZELl4SRynt5JNu1P2g%2FjCF6ivjKSAYg2eL9NzbX0Oo%2Fl0RFaHyTLqnrm9XyCoD5xBXI9CU8M9bsa4JZdQM9XckzaxsnqUjv33tsfaOeLlOeOMycQOx2VV5guma6yeesnpHxr2%2Bv9urv3HkSXURQdte2P5e%2FtUH88Kgp0P3tmQOR1aTuulN5SeplyS8lMEofVvCqgPYc1OmdIFQXXi25poCvqf%2BuyD2hWGjmeFoP%2BFACt%2BbVSQFTQ%3D%3D--Mf0%2FZhWBJ%2F4A2XWn--ZKRhqQFYzgMNtozUm3s3Mw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1349367837.1777926690; expires=Tue, 04 May 2027 20:31:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 20:31:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: B328:15E6CF:362A95B:28E401C:69F90222
+
+HTTP/2 200 
+date: Mon, 04 May 2026 20:31:31 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4aac012e8fef7ab25049b87bcaf7f38b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=qgvlfBFsXUBW%2F3NwclWx6ejuyzZBYpL4urfr44FH6BqQKuCwfpx2cHGZDY%2F4XuI3QuxMuecwQQFDbSO74DaCy4Uwxqzgv6KxXFMXt%2BC42qcDfInnpF1Wfg6p82nr%2Bg5HoT6bKca5B9rB9lyzPNgjwf3tUrYE2lJxqFxXNngcDqLAkpw1ax1rGxxORnhZnJGN1qYfgO06ESpD%2BcCPAwQLzRROJlnJyiYegchpeJmgmd9MZSwL%2BSZbqRPmSgqaZfdsL1w1AzLG%2BOeudq64Xy4%2Bdw%3D%3D--8wh1q9PthOVmpzgN--ykK51hUmn%2BILk1EwAG6pUQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.296242291.1777926691; expires=Tue, 04 May 2027 20:31:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 20:31:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: B32A:16D831:345ED02:2782097:69F90223
+
+HTTP/2 200 
+date: Mon, 04 May 2026 20:31:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"dca23c7df7207813384300451b3733a9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=rcQTXh9omzI74sYOhtG8HmQkkSCNnqP5HUltdFdyk1fGmCR%2Fpp5nwkKDprylcUVDaONoN%2FA%2Bnw8%2Bc2BS4dK%2FSdk3tmGubyzL1nogQ9L%2Bgy7G%2BjHSVAG9UDT582ZuMsyoukrOpkCuJELnWV5n95dcU%2BNnaybm%2FPORaTx705LWzbWw6R6X7mbYJbaaPxsydAQ%2FqXAiSYrOSLKW9wwwBp16iIvpNtvlW7jAPqnYOYn5OkVmMmA9oXzuRGg%2FiMrCwBY6xGCjbJ6WSuozrleii0f6fg%3D%3D--8wBVqcengumKxFtF--ZMg243A95s%2FXPz%2FZNLj%2BSw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.89099145.1777926691; expires=Tue, 04 May 2027 20:31:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 20:31:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: BCA2:27FD19:344391F:2771C0A:69F90223
+
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting?ref=v2.3.21 | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLO https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21/kotlin-scripting-jvm-2.3.21.jar; jar tf kotlin-scripting-jvm-2.3.21.jar | sed -n '"'1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLO https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21/kotlin-scripting-jvm-2.3.21-sources.jar; jar tf kotlin-scripting-jvm-2.3.21-sources.jar | sed -n '"'1,120p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 179ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/kotlin-scripting-jvm.kotlin_module
+kotlin/
+kotlin/script/
+kotlin/script/experimental/
+kotlin/script/experimental/jvm/
+kotlin/script/experimental/jvm/BasicJvmReplEvaluator$eval$1.class
+kotlin/script/experimental/jvm/BasicJvmReplEvaluator.class
+kotlin/script/experimental/jvm/BasicJvmScriptEvaluator$invoke$1.class
+kotlin/script/experimental/jvm/BasicJvmScriptEvaluator.class
+kotlin/script/experimental/jvm/BasicJvmScriptEvaluatorKt.class
+kotlin/script/experimental/jvm/CompiledJvmScriptsCache$NoCache.class
+kotlin/script/experimental/jvm/CompiledJvmScriptsCache.class
+kotlin/script/experimental/jvm/GetScriptingClassByClassLoader.class
+kotlin/script/experimental/jvm/JsDependency.class
+kotlin/script/experimental/jvm/JvmDependency$Companion.class
+kotlin/script/experimental/jvm/JvmDependency.class
+kotlin/script/experimental/jvm/JvmDependencyFromClassLoader.class
+kotlin/script/experimental/jvm/JvmGetScriptingClass$Companion.class
+kotlin/script/experimental/jvm/JvmGetScriptingClass.class
+kotlin/script/experimental/jvm/JvmScriptCachingKt.class
+kotlin/script/experimental/jvm/JvmScriptCompilationConfigurationBuilder$Companion.class
+kotlin/script/experimental/jvm/JvmScriptCompilationConfigurationBuilder.class
+kotlin/script/experimental/jvm/JvmScriptCompilationConfigurationKeys.class
+kotlin/script/experimental/jvm/JvmScriptCompilationKt.class
+kotlin/script/experimental/jvm/JvmScriptEvaluationConfigurationBuilder$Companion.class
+kotlin/script/experimental/jvm/JvmScriptEvaluationConfigurationBuilder.class
+kotlin/script/experimental/jvm/JvmScriptEvaluationConfigurationKeys.class
+kotlin/script/experimental/jvm/JvmScriptEvaluationKt.class
+kotlin/script/experimental/jvm/JvmScriptingHostConfigurationBuilder$Companion.class
+kotlin/script/experimental/jvm/JvmScriptingHostConfigurationBuilder.class
+kotlin/script/experimental/jvm/JvmScriptingHostConfigurationKeys.class
+kotlin/script/experimental/jvm/JvmScriptingHostConfigurationKt.class
+kotlin/script/experimental/jvm/KJvmEvaluatedSnippet.class
+kotlin/script/experimental/jvm/RunnerKt$runCompiledScript$1.class
+kotlin/script/experimental/jvm/RunnerKt.class
+kotlin/script/experimental/jvm/compat/
+kotlin/script/experimental/jvm/compat/DiagnosticsUtilKt$WhenMappings.class
+kotlin/script/experimental/jvm/compat/DiagnosticsUtilKt.class
+kotlin/script/experimental/jvm/impl/
+kotlin/script/experimental/jvm/impl/DualClassLoader$Companion.class
+kotlin/script/experimental/jvm/impl/DualClassLoader$Wrapper.class
+kotlin/script/experimental/jvm/impl/DualClassLoader.class
+kotlin/script/experimental/jvm/impl/KJvmCompiledModule.class
+kotlin/script/experimental/jvm/impl/KJvmCompiledModuleFromClassLoader.class
+kotlin/script/experimental/jvm/impl/KJvmCompiledModuleFromClassPath.class
+kotlin/script/experimental/jvm/impl/KJvmCompiledModuleInMemory.class
+kotlin/script/experimental/jvm/impl/KJvmCompiledScript$Companion.class
+kotlin/script/experimental/jvm/impl/KJvmCompiledScript.class
+kotlin/script/experimental/jvm/impl/KJvmCompiledScriptData$Companion.class
+kotlin/script/experimental/jvm/impl/KJvmCompiledScriptData.class
+kotlin/script/experimental/jvm/impl/KJvmCompiledScriptKt.class
+kotlin/script/experimental/jvm/impl/PathUtilKt.class
+kotlin/script/experimental/jvm/util/
+kotlin/script/experimental/jvm/util/AbsSourceCodePosition.class
+kotlin/script/experimental/jvm/util/ClassLoaderResourceRootFIlePathCalculator.class
+kotlin/script/experimental/jvm/util/ClasspathExtractionException.class
+kotlin/script/experimental/jvm/util/DiagnosticsHelpersKt.class
+kotlin/script/experimental/jvm/util/IdentifiersKt.class
+kotlin/script/experimental/jvm/util/JvmClassLoaderUtilKt.class
+kotlin/script/experimental/jvm/util/JvmClasspathUtilKt$classPathFromGetUrlsMethodOrNull$$inlined$filterIsInstance$1.class
+kotlin/script/experimental/jvm/util/JvmClasspathUtilKt.class
+kotlin/script/experimental/jvm/util/KotlinJars.class
+kotlin/script/experimental/jvm/util/RuntimeExceptionReportingKt.class
+kotlin/script/experimental/jvm/util/SnippetsHistory$Companion.class
+kotlin/script/experimental/jvm/util/SnippetsHistory.class
+kotlin/script/experimental/jvm/util/SnippetsHistoryKt.class
+kotlin/script/experimental/jvm/util/SourceCodeUtilsKt.class
+
+ succeeded in 199ms:
+META-INF/
+META-INF/MANIFEST.MF
+kotlin/
+kotlin/script/
+kotlin/script/experimental/
+kotlin/script/experimental/jvm/
+kotlin/script/experimental/jvm/BasicJvmReplEvaluator.kt
+kotlin/script/experimental/jvm/BasicJvmScriptEvaluator.kt
+kotlin/script/experimental/jvm/jvmScriptCaching.kt
+kotlin/script/experimental/jvm/jvmScriptCompilation.kt
+kotlin/script/experimental/jvm/jvmScriptEvaluation.kt
+kotlin/script/experimental/jvm/jvmScriptingHostConfiguration.kt
+kotlin/script/experimental/jvm/runner.kt
+kotlin/script/experimental/jvm/compat/
+kotlin/script/experimental/jvm/compat/diagnosticsUtil.kt
+kotlin/script/experimental/jvm/impl/
+kotlin/script/experimental/jvm/impl/KJvmCompiledModule.kt
+kotlin/script/experimental/jvm/impl/KJvmCompiledScript.kt
+kotlin/script/experimental/jvm/impl/pathUtil.kt
+kotlin/script/experimental/jvm/util/
+kotlin/script/experimental/jvm/util/SnippetsHistory.kt
+kotlin/script/experimental/jvm/util/diagnosticsHelpers.kt
+kotlin/script/experimental/jvm/util/identifiers.kt
+kotlin/script/experimental/jvm/util/jvmClassLoaderUtil.kt
+kotlin/script/experimental/jvm/util/jvmClasspathUtil.kt
+kotlin/script/experimental/jvm/util/runtimeExceptionReporting.kt
+kotlin/script/experimental/jvm/util/sourceCodeUtils.kt
+
+ succeeded in 260ms:
+[
+  {
+    "name": "common",
+    "path": "libraries/scripting/common",
+    "sha": "647c63c14cd83ad02d68c7d82a213c4dd093c429",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/common?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/common",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/647c63c14cd83ad02d68c7d82a213c4dd093c429",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/common?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/647c63c14cd83ad02d68c7d82a213c4dd093c429",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/common"
+    }
+  },
+  {
+    "name": "dependencies-maven-all",
+    "path": "libraries/scripting/dependencies-maven-all",
+    "sha": "d65347f42d3028c01a2b1a556b57babacc0eca46",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies-maven-all?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies-maven-all",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d65347f42d3028c01a2b1a556b57babacc0eca46",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies-maven-all?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/d65347f42d3028c01a2b1a556b57babacc0eca46",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies-maven-all"
+    }
+  },
+  {
+    "name": "dependencies-maven",
+    "path": "libraries/scripting/dependencies-maven",
+    "sha": "a8a234724d119b68178d3bbd87eb41ae42110f5b",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies-maven?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies-maven",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/a8a234724d119b68178d3bbd87eb41ae42110f5b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies-maven?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/a8a234724d119b68178d3bbd87eb41ae42110f5b",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies-maven"
+    }
+  },
+  {
+    "name": "dependencies",
+    "path": "libraries/scripting/dependencies",
+    "sha": "52c0faf8f35fd63743efe73f36fae4005dd8fbf2",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/52c0faf8f35fd63743efe73f36fae4005dd8fbf2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/dependencies?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/52c0faf8f35fd63743efe73f36fae4005dd8fbf2",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/dependencies"
+    }
+  },
+  {
+    "name": "intellij",
+    "path": "libraries/scripting/intellij",
+    "sha": "44aee476a5cb558f9613d26b524bddad7c941eff",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/intellij?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/intellij",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/44aee476a5cb558f9613d26b524bddad7c941eff",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/intellij?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/44aee476a5cb558f9613d26b524bddad7c941eff",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/intellij"
+    }
+  },
+  {
+    "name": "jsr223-embeddable",
+    "path": "libraries/scripting/jsr223-embeddable",
+    "sha": "2168402ce79197b733452409c813aed49220f889",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223-embeddable?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223-embeddable",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/2168402ce79197b733452409c813aed49220f889",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223-embeddable?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/2168402ce79197b733452409c813aed49220f889",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223-embeddable"
+    }
+  },
+  {
+    "name": "jsr223-test",
+    "path": "libraries/scripting/jsr223-test",
+    "sha": "6a8a6baaa21c7538b9e5ec8340aa0ec689c23883",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223-test?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223-test",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6a8a6baaa21c7538b9e5ec8340aa0ec689c23883",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223-test?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/6a8a6baaa21c7538b9e5ec8340aa0ec689c23883",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223-test"
+    }
+  },
+  {
+    "name": "jsr223",
+    "path": "libraries/scripting/jsr223",
+    "sha": "e6a7bf9c61e1b444b28f62f8234730521b593634",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/e6a7bf9c61e1b444b28f62f8234730521b593634",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jsr223?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/e6a7bf9c61e1b444b28f62f8234730521b593634",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jsr223"
+    }
+  },
+  {
+    "name": "jvm-host-embeddable",
+    "path": "libraries/scripting/jvm-host-embeddable",
+    "sha": "f5894c557d09061309f5881816bf4f04e212cfea",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm-host-embeddable?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm-host-embeddable",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/f5894c557d09061309f5881816bf4f04e212cfea",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm-host-embeddable?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/f5894c557d09061309f5881816bf4f04e212cfea",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm-host-embeddable"
+    }
+  },
+  {
+    "name": "jvm-host-test",
+    "path": "libraries/scripting/jvm-host-test",
+    "sha": "9876e5c925bf79affaf39b817d7fd8bacc4a369b",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm-host-test?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm-host-test",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/9876e5c925bf79affaf39b817d7fd8bacc4a369b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm-host-test?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/9876e5c925bf79affaf39b817d7fd8bacc4a369b",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm-host-test"
+    }
+  },
+  {
+    "name": "jvm-host",
+    "path": "libraries/scripting/jvm-host",
+    "sha": "c36455f4a68c2beae63d4e64b67181b83fcac81b",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm-host?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm-host",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c36455f4a68c2beae63d4e64b67181b83fcac81b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm-host?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c36455f4a68c2beae63d4e64b67181b83fcac81b",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm-host"
+    }
+  },
+  {
+    "name": "jvm",
+    "path": "libraries/scripting/jvm",
+    "sha": "bf5c60ecf00192970a77e8eb706b56c0bb8192c8",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/bf5c60ecf00192970a77e8eb706b56c0bb8192c8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/bf5c60ecf00192970a77e8eb706b56c0bb8192c8",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm"
+    }
+  }
+]
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm?ref=v2.3.21 | sed -n '1,260p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/test?ref=v2.3.21 | sed -n '1,260p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/src?ref=v2.3.21 | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 234ms:
+[
+  {
+    "name": "build.gradle.kts",
+    "path": "libraries/scripting/jvm/build.gradle.kts",
+    "sha": "3732356fc76032f04dddc19ec62f7ba900ce833f",
+    "size": 563,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/build.gradle.kts?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.21/libraries/scripting/jvm/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/3732356fc76032f04dddc19ec62f7ba900ce833f",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.21/libraries/scripting/jvm/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/build.gradle.kts?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/3732356fc76032f04dddc19ec62f7ba900ce833f",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.21/libraries/scripting/jvm/build.gradle.kts"
+    }
+  },
+  {
+    "name": "src",
+    "path": "libraries/scripting/jvm/src",
+    "sha": "c8472fe8f9083af01c74afc1a4585a4d7e695402",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/src?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/src",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c8472fe8f9083af01c74afc1a4585a4d7e695402",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/src?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/c8472fe8f9083af01c74afc1a4585a4d7e695402",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/src"
+    }
+  },
+  {
+    "name": "test",
+    "path": "libraries/scripting/jvm/test",
+    "sha": "e9cac3a8ae11073cfa1ee9c66d864eb4632e2d4b",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/test?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/test",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/e9cac3a8ae11073cfa1ee9c66d864eb4632e2d4b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/test?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/e9cac3a8ae11073cfa1ee9c66d864eb4632e2d4b",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/test"
+    }
+  },
+  {
+    "name": "testData",
+    "path": "libraries/scripting/jvm/testData",
+    "sha": "14c3257c16758449c76b7a597eedb9c909093251",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/testData?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/testData",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/14c3257c16758449c76b7a597eedb9c909093251",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/testData?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/14c3257c16758449c76b7a597eedb9c909093251",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/testData"
+    }
+  }
+]
+
+ succeeded in 254ms:
+[
+  {
+    "name": "kotlin",
+    "path": "libraries/scripting/jvm/test/kotlin",
+    "sha": "2042503bed699d47ba3cc16a8081d3a7096202c0",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/test/kotlin?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/test/kotlin",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/2042503bed699d47ba3cc16a8081d3a7096202c0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/test/kotlin?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/2042503bed699d47ba3cc16a8081d3a7096202c0",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/test/kotlin"
+    }
+  }
+]
+
+ succeeded in 268ms:
+[
+  {
+    "name": "kotlin",
+    "path": "libraries/scripting/jvm/src/kotlin",
+    "sha": "faf3b895bd113e9ee685a587da329b8ffe35bec8",
+    "size": 0,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/src/kotlin?ref=v2.3.21",
+    "html_url": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/src/kotlin",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/faf3b895bd113e9ee685a587da329b8ffe35bec8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/scripting/jvm/src/kotlin?ref=v2.3.21",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/trees/faf3b895bd113e9ee685a587da329b8ffe35bec8",
+      "html": "https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/src/kotlin"
+    }
+  }
+]
+
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json && sed -n '1,80p' metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json && sed -n '1,80p' metadata/org.jetbrains.kotlin/kotlin-reflect/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/common/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-javadoc.jar",
+    "description" : "Kotlin Scripting Common provides shared scripting APIs for defining script sources, diagnostics, compilation and evaluation configurations, and REPL interactions. It supplies the common types used by Kotlin scripting hosts and compiler integrations to configure, compile, and evaluate Kotlin scripts.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.3"
+    },
+    "tested-versions" : [
+      "2.3.21"
+    ],
+    "allowed-packages" : [
+      "kotlin.script.experimental"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.20",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+    "documentation-url" : "https://github.com/JetBrains/kotlin/releases/tag/v$version$",
+    "description" : "Provides the core Kotlin scripting runtime types, including standard script templates and dependency-resolution APIs used by Kotlin scripts. It supplies the classes that other Kotlin scripting components and hosts rely on to compile, configure, and run .kts scripts.",
+    "tested-versions" : [
+      "2.3.20",
+      "2.3.21-RC",
+      "2.3.21-RC2",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin.script"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/testData/codegen/box/reflection",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-javadoc.jar",
+    "description" : "kotlin-reflect is Kotlin's optional JVM runtime reflection library, providing full support for the kotlin.reflect API and related reflection extensions. It lets applications inspect Kotlin classes, functions, properties, and types at runtime without requiring reflection support in deployments that do not use it.",
+    "tested-versions" : [
+      "1.7.10",
+      "1.7.20",
+      "1.7.21",
+      "1.7.22",
+      "1.8.0",
+      "1.8.10",
+      "1.8.20",
+      "1.8.21",
+      "1.8.22",
+      "1.9.0",
+      "1.9.10",
+      "1.9.20",
+      "1.9.21",
+      "1.9.22",
+      "1.9.23",
+      "1.9.24",
+      "1.9.25",
+      "2.0.0",
+      "2.0.10",
+      "2.0.20",
+      "2.0.21",
+      "2.1.0",
+      "2.1.10",
+      "2.1.20",
+      "2.1.21",
+      "2.2.0",
+      "2.2.10",
+      "2.2.20",
+      "2.2.21",
+      "2.3.0",
+      "2.3.10",
+      "2.3.20",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "rg -n '\"language\"\\s*:' build/discovered-artifact-metadata metadata | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 0ms:
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/io.mockk/mockk-agent-api-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-core-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/os-lib_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upack_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-core_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/sourcecode_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/geny_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/ujson_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/scalatags_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/unroll-annotation_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/pprint_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-implicits_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.scopt/scopt_3/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13.16/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/org.sangria-graphql/sangria-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21/kotlin-scripting-jvm-2.3.21.spdx.json | sed -n '1,180p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 355ms:
+{
+  "SPDXID" : "SPDXRef-DOCUMENT",
+  "spdxVersion" : "SPDX-2.3",
+  "creationInfo" : {
+    "created" : "2026-04-21T13:59:49Z",
+    "creators" : [ "Tool: spdx-gradle-plugin", "Organization: JetBrains s.r.o." ]
+  },
+  "name" : "kotlin-scripting-jvm",
+  "dataLicense" : "CC0-1.0",
+  "documentNamespace" : "https://www.jetbrains.com/spdxdocs/675a45f5-6405-43be-a06c-0cc411da12c7",
+  "packages" : [ {
+    "SPDXID" : "SPDXRef-gnrtd0",
+    "copyrightText" : "NOASSERTION",
+    "description" : "",
+    "downloadLocation" : "NOASSERTION",
+    "filesAnalyzed" : false,
+    "licenseConcluded" : "NOASSERTION",
+    "licenseDeclared" : "NOASSERTION",
+    "licenseInfoFromFiles" : [ ],
+    "name" : "kotlin-scripting-jvm",
+    "sourceInfo" : "git+https://github.com/JetBrains/kotlin.git@v2.3.21#kotlin-scripting-jvm[:kotlin-scripting-jvm]",
+    "supplier" : "Organization: JetBrains s.r.o.",
+    "versionInfo" : "2.3.21"
+  }, {
+    "SPDXID" : "SPDXRef-gnrtd1",
+    "copyrightText" : "NOASSERTION",
+    "description" : "Kotlin Script Runtime",
+    "downloadLocation" : "NOASSERTION",
+    "filesAnalyzed" : false,
+    "licenseConcluded" : "NOASSERTION",
+    "licenseDeclared" : "NOASSERTION",
+    "licenseInfoFromFiles" : [ ],
+    "name" : "kotlin-script-runtime",
+    "sourceInfo" : "git+https://github.com/JetBrains/kotlin.git@v2.3.21#kotlin-script-runtime[:kotlin-script-runtime]",
+    "supplier" : "Organization: JetBrains s.r.o.",
+    "versionInfo" : "2.3.21"
+  }, {
+    "SPDXID" : "SPDXRef-gnrtd2",
+    "copyrightText" : "NOASSERTION",
+    "description" : "Kotlin Standard Library",
+    "downloadLocation" : "NOASSERTION",
+    "filesAnalyzed" : false,
+    "licenseConcluded" : "NOASSERTION",
+    "licenseDeclared" : "NOASSERTION",
+    "licenseInfoFromFiles" : [ ],
+    "name" : "kotlin-stdlib",
+    "sourceInfo" : "git+https://github.com/JetBrains/kotlin.git@v2.3.21#kotlin-stdlib[:kotlin-stdlib]",
+    "supplier" : "Organization: JetBrains s.r.o.",
+    "versionInfo" : "2.3.21"
+  }, {
+    "SPDXID" : "SPDXRef-gnrtd3",
+    "checksums" : [ {
+      "algorithm" : "SHA1",
+      "checksumValue" : "919f0dfe192fb4e063e7dacadee7f8bb9a2672a9"
+    }, {
+      "algorithm" : "SHA256",
+      "checksumValue" : "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478"
+    } ],
+    "copyrightText" : "NOASSERTION",
+    "downloadLocation" : "NOASSERTION",
+    "externalRefs" : [ {
+      "referenceCategory" : "PACKAGE-MANAGER",
+      "referenceLocator" : "pkg:maven/org.jetbrains/annotations@13.0",
+      "referenceType" : "purl"
+    } ],
+    "filesAnalyzed" : false,
+    "licenseConcluded" : "NOASSERTION",
+    "licenseDeclared" : "Apache-2.0",
+    "licenseInfoFromFiles" : [ ],
+    "name" : "org.jetbrains:annotations",
+    "supplier" : "Organization: JetBrains",
+    "versionInfo" : "13.0"
+  }, {
+    "SPDXID" : "SPDXRef-gnrtd4",
+    "copyrightText" : "NOASSERTION",
+    "description" : "",
+    "downloadLocation" : "NOASSERTION",
+    "filesAnalyzed" : false,
+    "licenseConcluded" : "NOASSERTION",
+    "licenseDeclared" : "NOASSERTION",
+    "licenseInfoFromFiles" : [ ],
+    "name" : "kotlin-scripting-common",
+    "sourceInfo" : "git+https://github.com/JetBrains/kotlin.git@v2.3.21#kotlin-scripting-common[:kotlin-scripting-common]",
+    "supplier" : "Organization: JetBrains s.r.o.",
+    "versionInfo" : "2.3.21"
+  } ],
+  "relationships" : [ {
+    "spdxElementId" : "SPDXRef-DOCUMENT",
+    "relationshipType" : "DESCRIBES",
+    "relatedSpdxElement" : "SPDXRef-gnrtd0"
+  }, {
+    "spdxElementId" : "SPDXRef-gnrtd0",
+    "relationshipType" : "DEPENDS_ON",
+    "relatedSpdxElement" : "SPDXRef-gnrtd4"
+  }, {
+    "spdxElementId" : "SPDXRef-gnrtd0",
+    "relationshipType" : "DEPENDS_ON",
+    "relatedSpdxElement" : "SPDXRef-gnrtd2"
+  }, {
+    "spdxElementId" : "SPDXRef-gnrtd0",
+    "relationshipType" : "DEPENDS_ON",
+    "relatedSpdxElement" : "SPDXRef-gnrtd1"
+  }, {
+    "spdxElementId" : "SPDXRef-gnrtd2",
+    "relationshipType" : "DEPENDS_ON",
+    "relatedSpdxElement" : "SPDXRef-gnrtd3"
+  } ]
+}
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org org.jetbrains.kotlin kotlin-scripting-jvm 2.3.21
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/
+web search: 
+web search: 
+web search: 
+web search: api.github.com repos JetBrains kotlin contents libraries/scripting/jvm ref v2.3.21
+codex
+I found the published `2.3.21` artifact on Maven Central with both `sources.jar` and `javadoc.jar`; the main JAR contains JVM `.class` files, so this remains a Native Image metadata target. The matching source tree has a `libraries/scripting/jvm/test` directory under the `v2.3.21` tag, which is the best test-suite URL since Maven does not publish a test jar for this artifact.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+index 2a5210f2a92fffc4b6a18c1c102640472266cced..78999919e5ed691b193d7c107ebb4601f27afa27
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/jvm/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting JVM provides JVM-specific APIs and utilities for compiling, configuring, and evaluating Kotlin scripts on the JVM. It supplies classpath handling, JVM script compilation and evaluation configuration, REPL support, and runtime helpers used by Kotlin scripting hosts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+index 2a5210f2a92fffc4b6a18c1c102640472266cced..78999919e5ed691b193d7c107ebb4601f27afa27
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/jvm/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting JVM provides JVM-specific APIs and utilities for compiling, configuring, and evaluating Kotlin scripts on the JVM. It supplies classpath handling, JVM script compilation and evaluation configuration, REPL support, and runtime helpers used by Kotlin scripting hosts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21",
+  "repository-url": "https://github.com/JetBrains/kotlin",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
+  "test-code-url": "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/jvm/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
+  "description": "Kotlin Scripting JVM provides JVM-specific APIs and utilities for compiling, configuring, and evaluating Kotlin scripts on the JVM. It supplies classpath handling, JVM script compilation and evaluation configuration, REPL support, and runtime helpers used by Kotlin scripting hosts.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.3"
+  }
+}
+
+exec
+/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21/kotlin-scripting-jvm-2.3.21-sources.jar' \\
+  'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21/kotlin-scripting-jvm-2.3.21-javadoc.jar' \\
+  'https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/test'; do \\
+  printf '%s -> ' \""'$url"; curl -fsSI "$url" | sed -n '"'1p'; \\
+done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+index 2a5210f2a92fffc4b6a18c1c102640472266cced..78999919e5ed691b193d7c107ebb4601f27afa27
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/jvm/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting JVM provides JVM-specific APIs and utilities for compiling, configuring, and evaluating Kotlin scripts on the JVM. It supplies classpath handling, JVM script compilation and evaluation configuration, REPL support, and runtime helpers used by Kotlin scripting hosts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 812ms:
+HTTP/2 200 
+https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/test -> HTTP/2 200 
+
+web search: 
+web search: Maven Central org.jetbrains.kotlin kotlin-scripting-jvm 2.3.21 sources javadoc
+web search: 
+web search: https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/test
+web search: 
+web search: https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-scripting-jvm
+web search: 
+web search: "kotlin-scripting-jvm-2.3.21-sources.jar"
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+index 2a5210f2a92fffc4b6a18c1c102640472266cced..78999919e5ed691b193d7c107ebb4601f27afa27
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/jvm/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting JVM provides JVM-specific APIs and utilities for compiling, configuring, and evaluating Kotlin scripts on the JVM. It supplies classpath handling, JVM script compilation and evaluation configuration, REPL support, and runtime helpers used by Kotlin scripting hosts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+exec
+/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json && git ls-files --others --ignored --exclude-standard build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+index 2a5210f2a92fffc4b6a18c1c102640472266cced..78999919e5ed691b193d7c107ebb4601f27afa27
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/jvm/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting JVM provides JVM-specific APIs and utilities for compiling, configuring, and evaluating Kotlin scripts on the JVM. It supplies classpath handling, JVM script compilation and evaluation configuration, REPL support, and runtime helpers used by Kotlin scripting hosts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 207ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+
+web search: 
+web search: https://github.com/JetBrains/kotlin/tree/v2.3.21/libraries/scripting/jvm/test
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.3.21/
+codex
+Updated [org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json) with repository, Maven source/javadoc URLs, GitHub test URL, two-sentence description, and Kotlin language metadata.
+
+I left `not-for-native-image` absent because this is a JVM artifact: it is tagged as `jvm`/`kotlin`/`scripting`, published as a JAR, and the GitHub `v2.3.21` tag contains the matching `libraries/scripting/jvm/test` suite. ([mvnrepository.com](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-scripting-jvm/2.3.21))
+
+Validated JSON with `jq` and confirmed the token-expanded source, documentation, and test URLs return `HTTP 200`.
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+index 2a5210f2a92fffc4b6a18c1c102640472266cced..78999919e5ed691b193d7c107ebb4601f27afa27
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/jvm/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
++  "description" : "Kotlin Scripting JVM provides JVM-specific APIs and utilities for compiling, configuring, and evaluating Kotlin scripts on the JVM. It supplies classpath handling, JVM script compilation and evaluation configuration, REPL support, and runtime helpers used by Kotlin scripting hosts.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+tokens used
+82,718
+Updated [org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.json) with repository, Maven source/javadoc URLs, GitHub test URL, two-sentence description, and Kotlin language metadata.
+
+I left `not-for-native-image` absent because this is a JVM artifact: it is tagged as `jvm`/`kotlin`/`scripting`, published as a JAR, and the GitHub `v2.3.21` tag contains the matching `libraries/scripting/jvm/test` suite. ([mvnrepository.com](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-scripting-jvm/2.3.21))
+
+Validated JSON with `jq` and confirmed the token-expanded source, documentation, and test URLs return `HTTP 200`.
+Ran agent for org.jetbrains.kotlin:kotlin-scripting-jvm:2.3.21 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6/build/agent-artifact-discovery-logs/org.jetbrains.kotlin-kotlin-scripting-jvm-2.3.21.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5263-cd6e7eb6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 47s
+9 actionable tasks: 4 executed, 5 from cache
