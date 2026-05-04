@@ -22,7 +22,7 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 ---
 
 <p align="center">
-  <strong>Choose the fastest path to the right ticket.</strong><br>
+  <strong>Manually request library support.</strong><br>
   <sub>These GitHub buttons route to the issue template our automation expects.</sub>
 </p>
 
