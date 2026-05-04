@@ -223,6 +223,29 @@ public class Retries_spiTest {
     }
 
     @Test
+    void backoffStrategiesCapVeryLargeDelaysToSupportedJitterRange() {
+        Duration veryLargeDelay = Duration.ofDays(365);
+        Duration ceiling = Duration.ofMillis(Integer.MAX_VALUE);
+        BackoffStrategy fixedWithJitter = BackoffStrategy.fixedDelay(veryLargeDelay);
+        BackoffStrategy exponentialWithoutJitter = BackoffStrategy.exponentialDelayWithoutJitter(
+                veryLargeDelay, veryLargeDelay);
+        BackoffStrategy exponentialWithJitter = BackoffStrategy.exponentialDelay(veryLargeDelay, veryLargeDelay);
+        BackoffStrategy exponentialWithHalfJitter = BackoffStrategy.exponentialDelayHalfJitter(
+                veryLargeDelay, veryLargeDelay);
+
+        assertThat(fixedWithJitter.computeDelay(1))
+                .isGreaterThanOrEqualTo(Duration.ZERO)
+                .isLessThan(ceiling);
+        assertThat(exponentialWithoutJitter.computeDelay(2)).isEqualTo(ceiling);
+        assertThat(exponentialWithJitter.computeDelay(2))
+                .isGreaterThanOrEqualTo(Duration.ZERO)
+                .isLessThan(ceiling);
+        assertThat(exponentialWithHalfJitter.computeDelay(2))
+                .isGreaterThanOrEqualTo(Duration.ofMillis(Integer.MAX_VALUE / 2))
+                .isLessThanOrEqualTo(ceiling);
+    }
+
+    @Test
     void backoffStrategiesValidatePositiveAttemptsAndPositiveDurations() {
         BackoffStrategy immediate = BackoffStrategy.retryImmediately();
         BackoffStrategy fixed = BackoffStrategy.fixedDelayWithoutJitter(HUNDRED_MILLIS);
