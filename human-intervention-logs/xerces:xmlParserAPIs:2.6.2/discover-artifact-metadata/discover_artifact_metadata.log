@@ -1,0 +1,2033 @@
+Starting a Gradle Daemon, 4 busy and 5 incompatible and 43 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df3e2-73ca-7300-8bd0-a1039f19fa88
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: xerces:xmlParserAPIs:2.6.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.6.2" when "$version$" is replaced with "2.6.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+- Set "coordinates" to "xerces:xmlParserAPIs:2.6.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.6.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream Xerces sources, then update the JSON in place with version-templated URLs where the target exists.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json && sed -n '1,200p' build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+-rw-rw-r-- 1 vjovanov vjovanov 51 May  4 18:46 build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+{
+  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "xmlParserAPIs|xerces" build/discovered-artifact-metadata metadata tests || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:5:        "typeReached": "net.sourceforge.htmlunit.xerces.parsers.AbstractDOMParser"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:7:      "type": "net.sourceforge.htmlunit.xerces.dom.DocumentImpl",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:19:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:43:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:45:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:49:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:51:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:55:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:57:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:61:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:63:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:67:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:69:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:73:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:75:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:79:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:81:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:85:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:87:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:91:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:93:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:96:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.DOMMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:99:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.SAXMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:102:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.XMLMessages"
+build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json:2:  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:74:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:86:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:98:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:110:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:122:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:134:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:4241:      "bundle": "com.sun.org.apache.xerces.internal.impl.msg.SAXMessages"
+metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json:4244:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.apache.commons/commons-configuration2/2.1.1/reachability-metadata.json:7:      "type" : "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.apache.commons/commons-configuration2/2.1.1/reachability-metadata.json:19:      "type" : "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/com.fasterxml.jackson.core/jackson-databind/2.15.2/reachability-metadata.json:266:      "type" : "com.sun.org.apache.xerces.internal.dom.ChildNode"
+metadata/com.fasterxml.jackson.core/jackson-databind/2.15.2/reachability-metadata.json:272:      "type" : "com.sun.org.apache.xerces.internal.dom.CoreDocumentImpl"
+metadata/com.fasterxml.jackson.core/jackson-databind/2.15.2/reachability-metadata.json:278:      "type" : "com.sun.org.apache.xerces.internal.dom.DocumentImpl"
+metadata/com.fasterxml.jackson.core/jackson-databind/2.15.2/reachability-metadata.json:284:      "type" : "com.sun.org.apache.xerces.internal.dom.ElementImpl"
+metadata/com.fasterxml.jackson.core/jackson-databind/2.15.2/reachability-metadata.json:290:      "type" : "com.sun.org.apache.xerces.internal.dom.NodeImpl"
+metadata/com.fasterxml.jackson.core/jackson-databind/2.15.2/reachability-metadata.json:296:      "type" : "com.sun.org.apache.xerces.internal.dom.ParentNode"
+metadata/com.fasterxml.jackson.core/jackson-databind/2.15.2/reachability-metadata.json:302:      "type" : "com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl",
+metadata/com.fasterxml.jackson.core/jackson-databind/2.15.2/reachability-metadata.json:314:      "type" : "com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl"
+metadata/nekohtml/xercesMinimal/index.json:9:    "description" : "xercesMinimal is a minimized package of Apache Xerces classes distributed with NekoHTML. It supplies the XNI parser interfaces and supporting utilities that NekoHTML needs without requiring the full Xerces implementation JAR.",
+metadata/nekohtml/xercesMinimal/index.json:14:      "org.apache.xerces"
+metadata/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/reachability-metadata.json:155:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/dom4j/dom4j/1.6.1/reachability-metadata.json:114:      "type" : "org.apache.xerces.dom.DocumentImpl"
+metadata/ch.qos.logback/logback-classic/1.5.7/reachability-metadata.json:1133:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json:19:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json:19:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.25.0/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.25.0/reachability-metadata.json:19:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.25.0/reachability-metadata.json:31:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.25.0/reachability-metadata.json:9019:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.liquibase/liquibase-core/4.20.0/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/xml-apis/xml-apis/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+metadata/xml-apis/xml-apis/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+metadata/org.liquibase/liquibase-core/5.0.1/reachability-metadata.json:161:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/5.0.1/reachability-metadata.json:173:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/5.0.1/reachability-metadata.json:185:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.liquibase/liquibase-core/5.0.1/reachability-metadata.json:8109:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.liquibase/liquibase-core/4.27.0/reachability-metadata.json:133:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.27.0/reachability-metadata.json:145:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.27.0/reachability-metadata.json:157:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.liquibase/liquibase-core/4.27.0/reachability-metadata.json:6992:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.liquibase/liquibase-core/4.17.0/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+tests/src/org.ehcache/ehcache/3.10.8-jakarta/src/test/resources/META-INF/native-image/jakarta.xml.bind/jakarta.xml.bind-api/3.0.1/reflect-config.json:18:    "name": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.dom4j/dom4j/2.1.1/reachability-metadata.json:89:      "type": "org.apache.xerces.dom.DocumentImpl"
+tests/src/org.ehcache/ehcache/3.10.8-jakarta/src/test/resources/META-INF/native-image/org.glassfish.jaxb/jaxb-runtime/3.0.2/reflect-config.json:18:    "name": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/com.hazelcast/hazelcast/5.2.1/reachability-metadata.json:6237:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/com.hazelcast/hazelcast/5.2.1/reachability-metadata.json:6249:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/com.hazelcast/hazelcast/5.2.1/reachability-metadata.json:6261:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/com.hazelcast/hazelcast/5.2.1/reachability-metadata.json:8094:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/XMLMessageFormatterTest.java:9:import net.sourceforge.htmlunit.xerces.impl.msg.XMLMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/SAXMessageFormatterTest.java:11:import net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:11:import net.sourceforge.htmlunit.xerces.xni.parser.XMLConfigurationException;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/DOMMessageFormatterTest.java:9:import net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:12:import net.sourceforge.htmlunit.xerces.dom.DocumentImpl;
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:55:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:67:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:79:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-jpamodelgen/5.6.14.Final/reachability-metadata.json:7:      "type" : "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-jpamodelgen/5.6.14.Final/reachability-metadata.json:19:      "type" : "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-jpamodelgen/5.6.14.Final/reachability-metadata.json:105:      "glob" : "com/sun/org/apache/xerces/internal/impl/xpath/regex/message.properties"
+metadata/org.hibernate/hibernate-jpamodelgen/5.6.14.Final/reachability-metadata.json:112:      "glob" : "com/sun/org/apache/xerces/internal/impl/xpath/regex/message_en.properties"
+metadata/org.hibernate/hibernate-jpamodelgen/5.6.14.Final/reachability-metadata.json:119:      "glob" : "com/sun/org/apache/xerces/internal/impl/xpath/regex/message_en_US.properties"
+metadata/org.hibernate/hibernate-jpamodelgen/5.6.14.Final/reachability-metadata.json:122:      "bundle" : "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:227:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:239:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:251:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:263:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:275:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:3259:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/org.apache.santuario/xmlsec/4.0.4/reachability-metadata.json:55:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/org.apache.santuario/xmlsec/4.0.4/reachability-metadata.json:67:      "type": "com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl",
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:97:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:109:      "type": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:11112:      "bundle": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message"
+metadata/com.jamesmurty.utils/java-xmlbuilder/0.6/reachability-metadata.json:19:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/com.jamesmurty.utils/java-xmlbuilder/1.1/reachability-metadata.json:19:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:7:      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+metadata/xalan/xalan/2.7.0/reachability-metadata.json:19:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/io.netty/netty-common/4.1.80.Final/reachability-metadata.json:1187:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+metadata/io.netty/netty-common/4.1.115.Final/reachability-metadata.json:1187:      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+tests/src/nekohtml/xercesMinimal/1.9.6.2/build.gradle:14:    testImplementation "nekohtml:xercesMinimal:$libraryVersion"
+tests/src/nekohtml/xercesMinimal/1.9.6.2/settings.gradle:20:rootProject.name = 'nekohtml.xercesMinimal_tests'
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:7:package nekohtml.xercesMinimal;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:24:import org.apache.xerces.util.AugmentationsImpl;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:25:import org.apache.xerces.util.DefaultErrorHandler;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:26:import org.apache.xerces.util.EncodingMap;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:27:import org.apache.xerces.util.NamespaceSupport;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:28:import org.apache.xerces.util.ParserConfigurationSettings;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:29:import org.apache.xerces.util.URI;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:30:import org.apache.xerces.util.XMLAttributesImpl;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:31:import org.apache.xerces.util.XMLResourceIdentifierImpl;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:32:import org.apache.xerces.util.XMLStringBuffer;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:33:import org.apache.xerces.util.XMLSymbols;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:34:import org.apache.xerces.xni.Augmentations;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:35:import org.apache.xerces.xni.NamespaceContext;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:36:import org.apache.xerces.xni.QName;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:37:import org.apache.xerces.xni.XMLLocator;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:38:import org.apache.xerces.xni.XMLString;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:39:import org.apache.xerces.xni.parser.XMLComponentManager;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:40:import org.apache.xerces.xni.parser.XMLConfigurationException;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:41:import org.apache.xerces.xni.parser.XMLInputSource;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/src/test/java/nekohtml/xercesMinimal/XercesMinimalTest.java:42:import org.apache.xerces.xni.parser.XMLParseException;
+tests/src/nekohtml/xercesMinimal/1.9.6.2/gradle.properties:4:library.coordinates = nekohtml:xercesMinimal:1.9.6.2
+tests/src/nekohtml/xercesMinimal/1.9.6.2/gradle.properties:6:metadata.dir = nekohtml/xercesMinimal/1.9.6.2/
+tests/src/nekohtml/xercesMinimal/1.9.6.2/user-code-filter.json:7:      "includeClasses" : "org.apache.xerces.**"
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/resource-config.json:4:      "name": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:1128:    "name": "com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:1140:    "name": "com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+
+web search: 
+web search: Maven xerces xmlParserAPIs 2.6.2 source jar
+web search: 
+web search: site:svn.apache.org/repos/asf/xerces/java/tags Xerces-J_2_6_2
+codex
+Maven Central only publishes the binary JAR and POM for this coordinate, so I’m checking the Apache release archive and SVN tag for the matching source tree, tests, and docs instead of inventing Maven source/test URLs that do not exist.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' -maxdepth 1 -print | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+{
+  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url' metadata/*/*/index.json | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+metadata/aopalliance/aopalliance/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/aopalliance/aopalliance/$version$/aopalliance-$version$-sources.jar",
+metadata/aopalliance/aopalliance/index.json:6:    "repository-url" : "https://sourceforge.net/p/aopalliance/code/",
+metadata/aopalliance/aopalliance/index.json:7:    "test-code-url" : "N/A",
+metadata/aopalliance/aopalliance/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/$version$/aopalliance.zip/download",
+metadata/ch.qos.cal10n/cal10n-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-sources.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:6:    "repository-url" : "https://github.com/qos-ch/cal10n",
+metadata/ch.qos.cal10n/cal10n-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-tests.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:8:    "documentation-url" : "https://github.com/qos-ch/cal10n/blob/v$version$/cal10n-site/src/site/pages/documentation.html",
+metadata/com.android.tools.build/builder-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.android.tools.build/builder-model/index.json:7:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-javadoc.jar",
+metadata/com.android.tools.build/builder-model/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:21:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.android.tools.build/builder-model/index.json:22:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-javadoc.jar",
+metadata/com.android.tools.build/builder-model/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-sources.jar",
+metadata/com.android.tools.build/builder-model/index.json:36:    "repository-url" : "https://android.googlesource.com/platform/tools/base",
+metadata/com.android.tools.build/builder-model/index.json:37:    "test-code-url" : "N/A",
+metadata/com.android.tools.build/builder-model/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/tools/build/builder-model/$version$/builder-model-$version$-javadoc.jar",
+metadata/com.datastax.oss/native-protocol/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/datastax/oss/native-protocol/$version$/native-protocol-$version$-sources.jar",
+metadata/com.datastax.oss/native-protocol/index.json:6:    "repository-url" : "https://github.com/datastax/native-protocol",
+metadata/com.datastax.oss/native-protocol/index.json:7:    "test-code-url" : "https://github.com/datastax/native-protocol/tree/$version$/src/test",
+metadata/com.datastax.oss/native-protocol/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/datastax/oss/native-protocol/$version$/native-protocol-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/$version$/jackson-jr-objects-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-$version$/jr-objects/src/test",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/$version$/jackson-jr-objects-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/$version$/jackson-jr-objects-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:23:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:24:    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-$version$/jr-objects/src/test",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/$version$/jackson-jr-objects-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/$version$/jackson-jr-objects-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:56:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:57:    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-$version$/jr-objects/src/test",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/$version$/jackson-jr-objects-$version$-javadoc.jar",
+metadata/com.github.docker-java/docker-java-transport/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/docker-java/docker-java-transport/$version$/docker-java-transport-$version$-sources.jar",
+metadata/com.github.docker-java/docker-java-transport/index.json:6:    "repository-url" : "https://github.com/docker-java/docker-java",
+metadata/com.github.docker-java/docker-java-transport/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/docker-java/docker-java-transport/$version$/docker-java-transport-$version$-tests.jar",
+metadata/com.github.docker-java/docker-java-transport/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/docker-java/docker-java-transport/$version$/docker-java-transport-$version$-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:6:    "repository-url" : "https://github.com/package-url/packageurl-java",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.google.api/api-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-sources.jar",
+metadata/com.google.api/api-common/index.json:6:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/com.google.api/api-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-tests.jar",
+metadata/com.google.api/api-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-javadoc.jar",
+metadata/com.google.cloud/grpc-gcp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
+metadata/com.google.cloud/grpc-gcp/index.json:6:    "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
+metadata/com.google.cloud/grpc-gcp/index.json:7:    "test-code-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
+metadata/com.google.cloud/grpc-gcp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:6:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/9a4774328bb797b49fb2a2513fea69b1656089d1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:21:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:22:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.0.1/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:36:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:37:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/0eec4c8390943c7875840b99bfba800d546d52ca/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:51:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:52:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/11a7348c1f24cfe9d16a9e1fcee856387e49a93a/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:64:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:65:    "repository-url" : "https://github.com/graphql-java/java-dataloader",
+metadata/com.graphql-java/java-dataloader/index.json:66:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:67:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -sSfL https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.pom && printf '\\n--- jar list ---\\n' && curl -sSfL -o /tmp/xmlParserAPIs-2.6.2.jar https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.jar && jar tf /tmp/xmlParserAPIs-2.6.2.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 342ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/xml/
+javax/xml/parsers/
+javax/xml/transform/
+javax/xml/transform/dom/
+javax/xml/transform/sax/
+javax/xml/transform/stream/
+license/
+org/
+org/apache/
+org/apache/xmlcommons/
+org/w3c/
+org/w3c/dom/
+org/w3c/dom/css/
+org/w3c/dom/events/
+org/w3c/dom/html/
+org/w3c/dom/ranges/
+org/w3c/dom/stylesheets/
+org/w3c/dom/traversal/
+org/w3c/dom/views/
+org/xml/
+org/xml/sax/
+org/xml/sax/ext/
+org/xml/sax/helpers/
+javax/xml/parsers/DocumentBuilder.class
+javax/xml/parsers/DocumentBuilderFactory.class
+javax/xml/parsers/FactoryConfigurationError.class
+javax/xml/parsers/FactoryFinder$ConfigurationError.class
+javax/xml/parsers/FactoryFinder.class
+javax/xml/parsers/FilePathToURI.class
+javax/xml/parsers/ParserConfigurationException.class
+javax/xml/parsers/SAXParser.class
+javax/xml/parsers/SAXParserFactory.class
+javax/xml/parsers/SecuritySupport.class
+javax/xml/parsers/SecuritySupport12$1.class
+javax/xml/parsers/SecuritySupport12$2.class
+javax/xml/parsers/SecuritySupport12$3.class
+javax/xml/parsers/SecuritySupport12$4.class
+javax/xml/parsers/SecuritySupport12$5.class
+javax/xml/parsers/SecuritySupport12$6.class
+javax/xml/parsers/SecuritySupport12.class
+javax/xml/transform/dom/DOMLocator.class
+javax/xml/transform/dom/DOMResult.class
+javax/xml/transform/dom/DOMSource.class
+javax/xml/transform/ErrorListener.class
+javax/xml/transform/FactoryFinder$ConfigurationError.class
+javax/xml/transform/FactoryFinder.class
+javax/xml/transform/OutputKeys.class
+javax/xml/transform/Result.class
+javax/xml/transform/sax/SAXResult.class
+javax/xml/transform/sax/SAXSource.class
+javax/xml/transform/sax/SAXTransformerFactory.class
+javax/xml/transform/sax/TemplatesHandler.class
+javax/xml/transform/sax/TransformerHandler.class
+javax/xml/transform/SecuritySupport.class
+javax/xml/transform/SecuritySupport12$1.class
+javax/xml/transform/SecuritySupport12$2.class
+javax/xml/transform/SecuritySupport12$3.class
+javax/xml/transform/SecuritySupport12$4.class
+javax/xml/transform/SecuritySupport12$5.class
+javax/xml/transform/SecuritySupport12$6.class
+javax/xml/transform/SecuritySupport12.class
+javax/xml/transform/Source.class
+javax/xml/transform/SourceLocator.class
+javax/xml/transform/stream/FilePathToURI.class
+javax/xml/transform/stream/StreamResult.class
+javax/xml/transform/stream/StreamSource.class
+javax/xml/transform/Templates.class
+javax/xml/transform/Transformer.class
+javax/xml/transform/TransformerConfigurationException.class
+javax/xml/transform/TransformerException.class
+javax/xml/transform/TransformerFactory.class
+javax/xml/transform/TransformerFactoryConfigurationError.class
+javax/xml/transform/URIResolver.class
+license/LICENSE.dom-documentation.txt
+license/LICENSE.dom-software.txt
+license/LICENSE.sax.txt
+license/README.dom.txt
+
+web search: 
+web search: Maven Repository xerces xmlParserAPIs 2.6.2
+web search: 
+web search: https://archive.apache.org/dist/xml/xerces-j/source/
+web search: 
+web search: 
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/src/
+web search: 
+web search: 
+web search: 
+web search: archive.apache.org dist xml xerces-j Xerces-J-bin.2.6.2.zip docs
+exec
+/usr/bin/bash -lc 'unzip -p /tmp/xmlParserAPIs-2.6.2.jar META-INF/MANIFEST.MF' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Created-By: 1.3.1 (IBM Corporation)
+
+Name: org/apache/xmlcommons/Version
+Comment: XmlCommonsExternal for http://xml.apache.org/ subproject's use
+Implementation-Title: org.apache.xmlcommons.Version
+Implementation-Version: 1.2.01
+Implementation-Vendor: Apache Software Foundation
+Implementation-URL: http://xml.apache.org/commons/
+
+Name: org/xml/sax/
+Comment: xml-commons for http://xml.apache.org/ subproject's use
+Specification-Title: Simple API for XML
+Specification-Vendor: David Megginson
+Specification-Version: 2.0.1
+Implementation-Title: org.xml.sax
+Implementation-Version: 2.0.1
+Implementation-Vendor: David Megginson
+Implementation-URL: http://www.saxproject.org/
+
+Name: org/w3c/dom/
+Comment: xml-commons for http://xml.apache.org/ subproject's use
+Specification-Title: Document Object Model, Level 2 Core
+Specification-Vendor: World Wide Web Consortium
+Specification-Version: 1.0
+Implementation-Title: org.w3c.dom
+Implementation-Version: 1.0
+Implementation-Vendor: World Wide Web Consortium
+Implementation-URL: http://www.w3c.org/DOM/
+
+Name: javax/xml/parsers/
+Comment: xml-commons for http://xml.apache.org/ subproject's use
+Specification-Title: Java API for XML Processing
+Specification-Version: 1.2
+Specification-Vendor: Sun Microsystems Inc.
+Implementation-Title: javax.xml.transform
+Implementation-Version: 1.2.01
+Implementation-Vendor: Sun Microsystems Inc.
+Implementation-URL: http://java.sun.com/xml/jaxp.html
+
+Name: javax/xml/transform/
+Comment: xml-commons for http://xml.apache.org/ subproject's use
+Specification-Title: Java API for XML Processing
+Specification-Version: 1.2
+Specification-Vendor: Sun Microsystems Inc.
+Implementation-Title: javax.xml.transform
+Implementation-Version: 1.2.01
+Implementation-Vendor: Sun Microsystems Inc.
+Implementation-URL: http://java.sun.com/xml/jaxp.html
+
+
+exec
+/usr/bin/bash -lc 'curl -sSfL -I https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-sources.jar || true
+curl -sSfL -I https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-tests.jar || true
+curl -sSfL -I https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-javadoc.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+exec
+/usr/bin/bash -lc 'curl -sSfL https://repo1.maven.org/maven2/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.pom || true
+curl -sSfL -I https://repo1.maven.org/maven2/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2-sources.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xerces</groupId>
+  <artifactId>xercesImpl</artifactId>
+  <version>2.6.2</version>
+</project>HTTP/2 200 
+date: Mon, 04 May 2026 16:47:41 GMT
+content-type: application/java-archive
+content-length: 2223905
+cf-ray: 9f68fd1a0afb03b1-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 129454
+etag: "6a3a2b58c39af611abf36495eac7de39"
+last-modified: Tue, 01 Nov 2005 16:40:06 GMT
+x-checksum-md5: 6a3a2b58c39af611abf36495eac7de39
+x-checksum-sha1: eb9e01cc90dfc083dd41d7f76a5efd102ab6b01e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 662ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 16:47:41 GMT
+content-type: text/html
+cf-ray: 9f68fd196b36039d-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 16:47:41 GMT
+content-type: text/html
+cf-ray: 9f68fd1acf0423bc-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 16:47:41 GMT
+content-type: text/html
+cf-ray: 9f68fd1c3c73e5d9-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: XmlCommonsExternal 1.2.01 xmlParserAPIs source
+exec
+/usr/bin/bash -lc "curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+exec
+/usr/bin/bash -lc "curl -sSfL https://svn.apache.org/repos/asf/xerces/java/tags/ | rg '2_6_2|2.6.2|Xerces-J_2' -n -C 2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+exec
+/usr/bin/bash -lc "curl -sSfL https://archive.apache.org/dist/xml/xerces-j/source/ | rg '2.6.2|2_6_2' -n -C 2
+curl -sSfL https://archive.apache.org/dist/xml/xerces-j/binaries/ | rg '2.6.2|2_6_2' -n -C 2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 128ms:
+<html><head><title>asf - Revision 1933817: /xerces/xml-commons/tags</title></head>
+<body>
+ <h2>asf - Revision 1933817: /xerces/xml-commons/tags</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="DOM_LEVEL_2/">DOM_LEVEL_2/</a></li>
+  <li><a href="JAXP-1_1/">JAXP-1_1/</a></li>
+  <li><a href="JDK1_4_IBMv1/">JDK1_4_IBMv1/</a></li>
+  <li><a href="JDK1_4_IBMv2/">JDK1_4_IBMv2/</a></li>
+  <li><a href="SAX-2_0-r2-prerelease/">SAX-2_0-r2-prerelease/</a></li>
+  <li><a href="SAX2-ext-1_0/">SAX2-ext-1_0/</a></li>
+  <li><a href="Xerces-J_2_3_0/">Xerces-J_2_3_0/</a></li>
+  <li><a href="Xerces-J_2_4_0/">Xerces-J_2_4_0/</a></li>
+  <li><a href="before-jaxp13-upgradation/">before-jaxp13-upgradation/</a></li>
+  <li><a href="factoryfinder-build/">factoryfinder-build/</a></li>
+  <li><a href="jaxp-ri-1_1_1/">jaxp-ri-1_1_1/</a></li>
+  <li><a href="jaxp-ri-1_1_2beta2/">jaxp-ri-1_1_2beta2/</a></li>
+  <li><a href="jaxp-ri-1_1_2beta3/">jaxp-ri-1_1_2beta3/</a></li>
+  <li><a href="jaxp-ri-1_1_3/">jaxp-ri-1_1_3/</a></li>
+  <li><a href="jaxp-ri-1_1_3-orig/">jaxp-ri-1_1_3-orig/</a></li>
+  <li><a href="jaxp-ri-1_1_4-tag1/">jaxp-ri-1_1_4-tag1/</a></li>
+  <li><a href="jdk-ri-1_4_0/">jdk-ri-1_4_0/</a></li>
+  <li><a href="sax-2_0_1/">sax-2_0_1/</a></li>
+  <li><a href="xalan-j_2_2_d12/">xalan-j_2_2_d12/</a></li>
+  <li><a href="xalan-j_2_2_d14/">xalan-j_2_2_d14/</a></li>
+  <li><a href="xalan-j_2_5_0/">xalan-j_2_5_0/</a></li>
+  <li><a href="xml-commons-1_0_b1/">xml-commons-1_0_b1/</a></li>
+  <li><a href="xml-commons-1_0_b2/">xml-commons-1_0_b2/</a></li>
+  <li><a href="xml-commons-external-1_2_01/">xml-commons-external-1_2_01/</a></li>
+  <li><a href="xml-commons-external-1_2_02/">xml-commons-external-1_2_02/</a></li>
+  <li><a href="xml-commons-external-1_2_03/">xml-commons-external-1_2_03/</a></li>
+  <li><a href="xml-commons-external-1_2_04/">xml-commons-external-1_2_04/</a></li>
+  <li><a href="xml-commons-external-1_2_05/">xml-commons-external-1_2_05/</a></li>
+  <li><a href="xml-commons-external-1_2_06/">xml-commons-external-1_2_06/</a></li>
+  <li><a href="xml-commons-external-1_3_01/">xml-commons-external-1_3_01/</a></li>
+  <li><a href="xml-commons-external-1_3_02/">xml-commons-external-1_3_02/</a></li>
+  <li><a href="xml-commons-external-1_3_03/">xml-commons-external-1_3_03/</a></li>
+  <li><a href="xml-commons-external-1_3_04/">xml-commons-external-1_3_04/</a></li>
+  <li><a href="xml-commons-external-1_3_05/">xml-commons-external-1_3_05/</a></li>
+  <li><a href="xml-commons-external-1_4_01/">xml-commons-external-1_4_01/</a></li>
+  <li><a href="xml-commons-resolver-1_0/">xml-commons-resolver-1_0/</a></li>
+  <li><a href="xml-commons-resolver-1_1/">xml-commons-resolver-1_1/</a></li>
+  <li><a href="xml-commons-resolver-1_1_b1/">xml-commons-resolver-1_1_b1/</a></li>
+  <li><a href="xml-commons-resolver-1_2/">xml-commons-resolver-1_2/</a></li>
+ </ul>
+</body></html>
+ succeeded in 126ms:
+26-  <li><a href="Xerces-J_1_4_3/">Xerces-J_1_4_3/</a></li>
+27-  <li><a href="Xerces-J_1_4_4/">Xerces-J_1_4_4/</a></li>
+28:  <li><a href="Xerces-J_2_0_0/">Xerces-J_2_0_0/</a></li>
+29:  <li><a href="Xerces-J_2_0_0_alpha/">Xerces-J_2_0_0_alpha/</a></li>
+30:  <li><a href="Xerces-J_2_0_0_beta/">Xerces-J_2_0_0_beta/</a></li>
+31:  <li><a href="Xerces-J_2_0_0_beta2/">Xerces-J_2_0_0_beta2/</a></li>
+32:  <li><a href="Xerces-J_2_0_0_beta3/">Xerces-J_2_0_0_beta3/</a></li>
+33:  <li><a href="Xerces-J_2_0_0beta4/">Xerces-J_2_0_0beta4/</a></li>
+34:  <li><a href="Xerces-J_2_0_1/">Xerces-J_2_0_1/</a></li>
+35:  <li><a href="Xerces-J_2_0_2/">Xerces-J_2_0_2/</a></li>
+36:  <li><a href="Xerces-J_2_10_0/">Xerces-J_2_10_0/</a></li>
+37:  <li><a href="Xerces-J_2_10_0-xml-schema-1.1-beta/">Xerces-J_2_10_0-xml-schema-1.1-beta/</a></li>
+38:  <li><a href="Xerces-J_2_11_0/">Xerces-J_2_11_0/</a></li>
+39:  <li><a href="Xerces-J_2_11_0-xml-schema-1.1-beta/">Xerces-J_2_11_0-xml-schema-1.1-beta/</a></li>
+40:  <li><a href="Xerces-J_2_12_0/">Xerces-J_2_12_0/</a></li>
+41:  <li><a href="Xerces-J_2_12_0-xml-schema-1.1/">Xerces-J_2_12_0-xml-schema-1.1/</a></li>
+42:  <li><a href="Xerces-J_2_12_1/">Xerces-J_2_12_1/</a></li>
+43:  <li><a href="Xerces-J_2_12_1-xml-schema-1.1/">Xerces-J_2_12_1-xml-schema-1.1/</a></li>
+44:  <li><a href="Xerces-J_2_12_2/">Xerces-J_2_12_2/</a></li>
+45:  <li><a href="Xerces-J_2_12_2-xml-schema-1.1/">Xerces-J_2_12_2-xml-schema-1.1/</a></li>
+46:  <li><a href="Xerces-J_2_1_0/">Xerces-J_2_1_0/</a></li>
+47:  <li><a href="Xerces-J_2_2_0/">Xerces-J_2_2_0/</a></li>
+48:  <li><a href="Xerces-J_2_2_1/">Xerces-J_2_2_1/</a></li>
+49:  <li><a href="Xerces-J_2_3_0/">Xerces-J_2_3_0/</a></li>
+50:  <li><a href="Xerces-J_2_4_0/">Xerces-J_2_4_0/</a></li>
+51:  <li><a href="Xerces-J_2_5_0/">Xerces-J_2_5_0/</a></li>
+52:  <li><a href="Xerces-J_2_6_0/">Xerces-J_2_6_0/</a></li>
+53:  <li><a href="Xerces-J_2_6_1/">Xerces-J_2_6_1/</a></li>
+54:  <li><a href="Xerces-J_2_6_2/">Xerces-J_2_6_2/</a></li>
+55:  <li><a href="Xerces-J_2_7_0/">Xerces-J_2_7_0/</a></li>
+56:  <li><a href="Xerces-J_2_7_1/">Xerces-J_2_7_1/</a></li>
+57:  <li><a href="Xerces-J_2_8_0/">Xerces-J_2_8_0/</a></li>
+58:  <li><a href="Xerces-J_2_8_1/">Xerces-J_2_8_1/</a></li>
+59:  <li><a href="Xerces-J_2_9_0/">Xerces-J_2_9_0/</a></li>
+60:  <li><a href="Xerces-J_2_9_1/">Xerces-J_2_9_1/</a></li>
+61:  <li><a href="Xerces-J_2_XNIMOD/">Xerces-J_2_XNIMOD/</a></li>
+62:  <li><a href="Xerces-J_2_pkgReorg_xs/">Xerces-J_2_pkgReorg_xs/</a></li>
+63-  <li><a href="beforeschemamerge/">beforeschemamerge/</a></li>
+64-  <li><a href="beforexercesj2/">beforexercesj2/</a></li>
+
+ succeeded in 373ms:
+37-<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-src.2.6.1.zip">Xerces-J-src.2.6.1.zip</a>          2004-01-30 18:17  2.5M  
+38-<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-src.2.6.1.zip.sig">Xerces-J-src.2.6.1.zip.sig</a>      2004-01-30 18:17   66   
+39:<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-src.2.6.2.tar.gz">Xerces-J-src.2.6.2.tar.gz</a>       2004-02-20 21:40  1.5M  
+40:<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-src.2.6.2.tar.gz.sig">Xerces-J-src.2.6.2.tar.gz.sig</a>   2004-02-20 21:40   66   
+41:<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-src.2.6.2.zip">Xerces-J-src.2.6.2.zip</a>          2004-02-20 21:40  2.6M  
+42:<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-src.2.6.2.zip.sig">Xerces-J-src.2.6.2.zip.sig</a>      2004-02-20 21:40   66   
+43-<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-src.2.7.0.tar.gz">Xerces-J-src.2.7.0.tar.gz</a>       2005-06-25 22:32  1.6M  
+44-<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-src.2.7.0.tar.gz.sig">Xerces-J-src.2.7.0.tar.gz.sig</a>   2005-06-25 22:32   66   
+--
+81-<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-tools.2.6.1.zip">Xerces-J-tools.2.6.1.zip</a>        2004-01-30 18:18  3.5M  
+82-<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-tools.2.6.1.zip.sig">Xerces-J-tools.2.6.1.zip.sig</a>    2004-01-30 18:18   66   
+83:<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-tools.2.6.2.tar.gz">Xerces-J-tools.2.6.2.tar.gz</a>     2004-02-20 21:40  3.5M  
+84:<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-tools.2.6.2.tar.gz.sig">Xerces-J-tools.2.6.2.tar.gz.sig</a> 2004-02-20 21:40   66   
+85:<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-tools.2.6.2.zip">Xerces-J-tools.2.6.2.zip</a>        2004-02-20 21:40  3.5M  
+86:<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-tools.2.6.2.zip.sig">Xerces-J-tools.2.6.2.zip.sig</a>    2004-02-20 21:40   66   
+87-<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-tools.2.7.0.tar.gz">Xerces-J-tools.2.7.0.tar.gz</a>     2005-06-25 22:32  3.8M  
+88-<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-tools.2.7.0.tar.gz.sig">Xerces-J-tools.2.7.0.tar.gz.sig</a> 2005-06-25 22:32   66   
+38-<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-bin.2.6.1.zip">Xerces-J-bin.2.6.1.zip</a>                2004-01-30 18:15  5.5M  
+39-<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-bin.2.6.1.zip.sig">Xerces-J-bin.2.6.1.zip.sig</a>            2004-01-30 18:15   66   
+40:<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-bin.2.6.2.tar.gz">Xerces-J-bin.2.6.2.tar.gz</a>             2004-02-20 21:42  3.8M  
+41:<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-bin.2.6.2.tar.gz.sig">Xerces-J-bin.2.6.2.tar.gz.sig</a>         2004-02-20 21:42   66   
+42:<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-bin.2.6.2.zip">Xerces-J-bin.2.6.2.zip</a>                2004-02-20 21:42  5.6M  
+43:<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-bin.2.6.2.zip.sig">Xerces-J-bin.2.6.2.zip.sig</a>            2004-02-20 21:42   66   
+44-<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-bin.2.7.0.tar.gz">Xerces-J-bin.2.7.0.tar.gz</a>             2005-06-25 22:32  4.4M  
+45-<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-bin.2.7.0.tar.gz.sig">Xerces-J-bin.2.7.0.tar.gz.sig</a>         2005-06-25 22:32   66   
+--
+72-<img src="/icons/compressed.gif" alt="[   ]"> <a href="beta2-dom3-Xerces-J-bin.2.6.1.zip">beta2-dom3-Xerces-J-bin.2.6.1.zip</a>     2004-01-30 18:15  5.4M  
+73-<img src="/icons/unknown.gif" alt="[   ]"> <a href="beta2-dom3-Xerces-J-bin.2.6.1.zip.sig">beta2-dom3-Xerces-J-bin.2.6.1.zip.sig</a> 2004-01-30 18:15   66   
+74:<img src="/icons/compressed.gif" alt="[   ]"> <a href="beta2-dom3-Xerces-J-bin.2.6.2.zip">beta2-dom3-Xerces-J-bin.2.6.2.zip</a>     2004-02-20 21:42  5.5M  
+75:<img src="/icons/unknown.gif" alt="[   ]"> <a href="beta2-dom3-Xerces-J-bin.2.6.2.zip.sig">beta2-dom3-Xerces-J-bin.2.6.2.zip.sig</a> 2004-02-20 21:42   66   
+76-<hr></pre>
+77-</body></html>
+
+exec
+/usr/bin/bash -lc "curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/ | sed -n '1,160p'
+curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/src/ | sed -n '1,120p'
+curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/src/javax/xml/parsers/DocumentBuilder.java | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+exec
+/usr/bin/bash -lc "curl -sSfL https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/ | sed -n '1,160p'
+curl -sSfL https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/data/ | sed -n '1,80p'
+curl -sSfL https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 344ms:
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 359ms:
+<html><head><title>asf - Revision 1933817: /xerces/java/tags/Xerces-J_2_6_2/data</title></head>
+<body>
+ <h2>asf - Revision 1933817: /xerces/java/tags/Xerces-J_2_6_2/data</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="personal-schema.xml">personal-schema.xml</a></li>
+  <li><a href="personal.dtd">personal.dtd</a></li>
+  <li><a href="personal.xml">personal.xml</a></li>
+  <li><a href="personal.xsd">personal.xsd</a></li>
+ </ul>
+</body></html><html><head><title>asf - Revision 1933817: /xerces/java/tags/Xerces-J_2_6_2/docs</title></head>
+<body>
+ <h2>asf - Revision 1933817: /xerces/java/tags/Xerces-J_2_6_2/docs</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="api.xml">api.xml</a></li>
+  <li><a href="bugzilla.xml">bugzilla.xml</a></li>
+  <li><a href="docs-book.xml">docs-book.xml</a></li>
+  <li><a href="dom.xml">dom.xml</a></li>
+  <li><a href="dom3.xml">dom3.xml</a></li>
+  <li><a href="download.cgi">download.cgi</a></li>
+  <li><a href="download.xml">download.xml</a></li>
+  <li><a href="dtd/">dtd/</a></li>
+  <li><a href="faq-build.xml">faq-build.xml</a></li>
+  <li><a href="faq-common.xml">faq-common.xml</a></li>
+  <li><a href="faq-contributing.xml">faq-contributing.xml</a></li>
+  <li><a href="faq-dom.xml">faq-dom.xml</a></li>
+  <li><a href="faq-general.xml">faq-general.xml</a></li>
+  <li><a href="faq-grammars.xml">faq-grammars.xml</a></li>
+  <li><a href="faq-pcfp.xml">faq-pcfp.xml</a></li>
+  <li><a href="faq-performance.xml">faq-performance.xml</a></li>
+  <li><a href="faq-sax.xml">faq-sax.xml</a></li>
+  <li><a href="faq-write.xml">faq-write.xml</a></li>
+  <li><a href="faq-xcatalogs.xml">faq-xcatalogs.xml</a></li>
+  <li><a href="faq-xinclude.xml">faq-xinclude.xml</a></li>
+  <li><a href="faq-xni.xml">faq-xni.xml</a></li>
+  <li><a href="faq-xs.xml">faq-xs.xml</a></li>
+  <li><a href="features.xml">features.xml</a></li>
+  <li><a href="install.xml">install.xml</a></li>
+  <li><a href="limitations.xml">limitations.xml</a></li>
+  <li><a href="properties.xml">properties.xml</a></li>
+  <li><a href="readme.xml">readme.xml</a></li>
+  <li><a href="releases.xml">releases.xml</a></li>
+  <li><a href="samples-dom.xml">samples-dom.xml</a></li>
+  <li><a href="samples-sax.xml">samples-sax.xml</a></li>
+  <li><a href="samples-socket.xml">samples-socket.xml</a></li>
+  <li><a href="samples-ui.xml">samples-ui.xml</a></li>
+  <li><a href="samples-xni.xml">samples-xni.xml</a></li>
+  <li><a href="samples.xml">samples.xml</a></li>
+  <li><a href="sax.xml">sax.xml</a></li>
+  <li><a href="style/">style/</a></li>
+  <li><a href="xml-schema.xml">xml-schema.xml</a></li>
+  <li><a href="xni-components-dependence.gif">xni-components-dependence.gif</a></li>
+  <li><a href="xni-components-overview.gif">xni-components-overview.gif</a></li>
+  <li><a href="xni-config.xml">xni-config.xml</a></li>
+  <li><a href="xni-core.xml">xni-core.xml</a></li>
+  <li><a href="xni-design.xml">xni-design.xml</a></li>
+  <li><a href="xni-entity-manager.gif">xni-entity-manager.gif</a></li>
+  <li><a href="xni-parser-configuration.gif">xni-parser-configuration.gif</a></li>
+  <li><a href="xni-pipeline-basic.gif">xni-pipeline-basic.gif</a></li>
+  <li><a href="xni-pipeline-detailed.gif">xni-pipeline-detailed.gif</a></li>
+  <li><a href="xni-xerces2.xml">xni-xerces2.xml</a></li>
+  <li><a href="xni.xml">xni.xml</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/ | sed -n '1,160p'
+curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/tests/ | sed -n '1,120p'
+curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/docs/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+exec
+/usr/bin/bash -lc "curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/ | sed -n '1,200p'
+curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 213ms:
+<html><head><title>asf - Revision 1933817: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external</title></head>
+<body>
+ <h2>asf - Revision 1933817: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="BUGS-sax">BUGS-sax</a></li>
+  <li><a href="ChangeLog-sax">ChangeLog-sax</a></li>
+  <li><a href="KEYS">KEYS</a></li>
+  <li><a href="LICENSE.dom-documentation.txt">LICENSE.dom-documentation.txt</a></li>
+  <li><a href="LICENSE.dom-software.txt">LICENSE.dom-software.txt</a></li>
+  <li><a href="LICENSE.sax.txt">LICENSE.sax.txt</a></li>
+  <li><a href="README-sax">README-sax</a></li>
+  <li><a href="README.dom.txt">README.dom.txt</a></li>
+  <li><a href="README.sax.txt">README.sax.txt</a></li>
+  <li><a href="build.bat">build.bat</a></li>
+  <li><a href="build.sh">build.sh</a></li>
+  <li><a href="build.xml">build.xml</a></li>
+  <li><a href="src/">src/</a></li>
+  <li><a href="xdocs/">xdocs/</a></li>
+ </ul>
+</body></html>
+ succeeded in 338ms:
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -sSfL https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/ | sed -n '1,160p'
+curl -sSfL https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/src/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+exec
+/usr/bin/bash -lc "curl -sSfL -o /tmp/Xerces-J-src-2.6.2.zip https://archive.apache.org/dist/xml/xerces-j/source/Xerces-J-src.2.6.2.zip && unzip -l /tmp/Xerces-J-src-2.6.2.zip | rg 'javax/xml/parsers/DocumentBuilder.java|org/xml/sax/XMLReader.java|tests/|docs/(readme|api)|xml-apis|xmlParserAPIs' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 212ms:
+<html><head><title>asf - Revision 1933817: /xerces/java/tags/Xerces-J_2_6_2/src</title></head>
+<body>
+ <h2>asf - Revision 1933817: /xerces/java/tags/Xerces-J_2_6_2/src</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="dom3/">dom3/</a></li>
+  <li><a href="manifest.xerces">manifest.xerces</a></li>
+  <li><a href="org/">org/</a></li>
+ </ul>
+</body></html>
+ succeeded in 3607ms:
+     4989  2004-02-20 14:01   xerces-2_6_2/docs/api.xml
+     6470  2004-02-20 14:01   xerces-2_6_2/docs/readme.xml
+
+exec
+/usr/bin/bash -lc "unzip -l /tmp/Xerces-J-src-2.6.2.zip | rg 'xml-commons-external|xml-apis|tests/|src/javax|src/org/xml/sax' | head -160" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -sSfL -o /tmp/xercesImpl-sources-2.6.2.jar https://repo1.maven.org/maven2/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2-sources.jar && jar tf /tmp/xercesImpl-sources-2.6.2.jar | rg 'javax/xml/parsers|org/xml/sax|org/w3c/dom|xml-commons|XMLReader.java' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+exec
+/usr/bin/bash -lc "curl -sSfL -o /tmp/xml-commons-external-1.2.01-src.zip https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip && unzip -l /tmp/xml-commons-external-1.2.01-src.zip | rg 'javax/xml/parsers/DocumentBuilder.java|org/xml/sax/XMLReader.java|xdocs|test|docs|README' | head -100" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 348ms:
+dom3/org/w3c/dom/
+dom3/org/w3c/dom/Attr.java
+dom3/org/w3c/dom/bootstrap/
+dom3/org/w3c/dom/bootstrap/DOMImplementationListImpl.java
+dom3/org/w3c/dom/bootstrap/DOMImplementationRegistry.java
+dom3/org/w3c/dom/CDATASection.java
+dom3/org/w3c/dom/CharacterData.java
+dom3/org/w3c/dom/Comment.java
+dom3/org/w3c/dom/Document.java
+dom3/org/w3c/dom/DocumentFragment.java
+dom3/org/w3c/dom/DocumentType.java
+dom3/org/w3c/dom/DOMConfiguration.java
+dom3/org/w3c/dom/DOMError.java
+dom3/org/w3c/dom/DOMErrorHandler.java
+dom3/org/w3c/dom/DOMException.java
+dom3/org/w3c/dom/DOMImplementation.java
+dom3/org/w3c/dom/DOMImplementationList.java
+dom3/org/w3c/dom/DOMImplementationSource.java
+dom3/org/w3c/dom/DOMLocator.java
+dom3/org/w3c/dom/DOMStringList.java
+dom3/org/w3c/dom/Element.java
+dom3/org/w3c/dom/Entity.java
+dom3/org/w3c/dom/EntityReference.java
+dom3/org/w3c/dom/NamedNodeMap.java
+dom3/org/w3c/dom/NameList.java
+dom3/org/w3c/dom/Node.java
+dom3/org/w3c/dom/NodeList.java
+dom3/org/w3c/dom/Notation.java
+dom3/org/w3c/dom/ProcessingInstruction.java
+dom3/org/w3c/dom/Text.java
+dom3/org/w3c/dom/TypeInfo.java
+dom3/org/w3c/dom/UserDataHandler.java
+org/w3c/dom/
+org/w3c/dom/html/
+org/w3c/dom/html/HTMLDOMImplementation.java
+org/w3c/dom/ls/
+org/w3c/dom/ls/DOMImplementationLS.java
+org/w3c/dom/ls/LSException.java
+org/w3c/dom/ls/LSInput.java
+org/w3c/dom/ls/LSLoadEvent.java
+org/w3c/dom/ls/LSOutput.java
+org/w3c/dom/ls/LSParser.java
+org/w3c/dom/ls/LSParserFilter.java
+org/w3c/dom/ls/LSProgressEvent.java
+org/w3c/dom/ls/LSResourceResolver.java
+org/w3c/dom/ls/LSSerializer.java
+org/w3c/dom/ls/LSSerializerFilter.java
+org/w3c/dom/xpath/
+org/w3c/dom/xpath/XPathEvaluator.java
+org/w3c/dom/xpath/XPathException.java
+org/w3c/dom/xpath/XPathExpression.java
+org/w3c/dom/xpath/XPathNamespace.java
+org/w3c/dom/xpath/XPathNSResolver.java
+org/w3c/dom/xpath/XPathResult.java
+
+ succeeded in 438ms:
+    10599  2003-01-10 20:40   javax/xml/parsers/DocumentBuilder.java
+    14568  2002-02-27 11:04   org/xml/sax/XMLReader.java
+     1242  2002-01-31 18:13   README.dom.txt
+      691  2002-01-31 18:26   README.sax.txt
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/xercesImpl-sources-2.6.2.jar | rg '"'^(javax/xml|org/xml/sax|org/w3c/dom/.+'"\\.java)' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+org/w3c/dom/html/HTMLDOMImplementation.java
+org/w3c/dom/ls/DOMImplementationLS.java
+org/w3c/dom/ls/LSException.java
+org/w3c/dom/ls/LSInput.java
+org/w3c/dom/ls/LSLoadEvent.java
+org/w3c/dom/ls/LSOutput.java
+org/w3c/dom/ls/LSParser.java
+org/w3c/dom/ls/LSParserFilter.java
+org/w3c/dom/ls/LSProgressEvent.java
+org/w3c/dom/ls/LSResourceResolver.java
+org/w3c/dom/ls/LSSerializer.java
+org/w3c/dom/ls/LSSerializerFilter.java
+org/w3c/dom/xpath/XPathEvaluator.java
+org/w3c/dom/xpath/XPathException.java
+org/w3c/dom/xpath/XPathExpression.java
+org/w3c/dom/xpath/XPathNamespace.java
+org/w3c/dom/xpath/XPathNSResolver.java
+org/w3c/dom/xpath/XPathResult.java
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/xmlParserAPIs-2.6.2.jar | rg '\\.class"'$'"' | sed 's|/["'^/]*$|/|'"' | sort -u | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+javax/xml/parsers/
+javax/xml/transform/
+javax/xml/transform/dom/
+javax/xml/transform/sax/
+javax/xml/transform/stream/
+org/apache/xmlcommons/
+org/w3c/dom/
+org/w3c/dom/css/
+org/w3c/dom/events/
+org/w3c/dom/html/
+org/w3c/dom/ranges/
+org/w3c/dom/stylesheets/
+org/w3c/dom/traversal/
+org/w3c/dom/views/
+org/xml/sax/
+org/xml/sax/ext/
+org/xml/sax/helpers/
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/xmlParserAPIs-2.6.2.jar | rg '\\.class"'$'"' | wc -l && jar tf /tmp/xmlParserAPIs-2.6.2.jar | rg '\\.class"'$'"' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 182ms:
+javax/xml/parsers/DocumentBuilder.class
+javax/xml/parsers/DocumentBuilderFactory.class
+javax/xml/parsers/FactoryConfigurationError.class
+javax/xml/parsers/FactoryFinder$ConfigurationError.class
+javax/xml/parsers/FactoryFinder.class
+javax/xml/parsers/FilePathToURI.class
+javax/xml/parsers/ParserConfigurationException.class
+javax/xml/parsers/SAXParser.class
+javax/xml/parsers/SAXParserFactory.class
+javax/xml/parsers/SecuritySupport.class
+javax/xml/parsers/SecuritySupport12$1.class
+javax/xml/parsers/SecuritySupport12$2.class
+javax/xml/parsers/SecuritySupport12$3.class
+javax/xml/parsers/SecuritySupport12$4.class
+javax/xml/parsers/SecuritySupport12$5.class
+javax/xml/parsers/SecuritySupport12$6.class
+javax/xml/parsers/SecuritySupport12.class
+javax/xml/transform/dom/DOMLocator.class
+javax/xml/transform/dom/DOMResult.class
+javax/xml/transform/dom/DOMSource.class
+javax/xml/transform/ErrorListener.class
+javax/xml/transform/FactoryFinder$ConfigurationError.class
+javax/xml/transform/FactoryFinder.class
+javax/xml/transform/OutputKeys.class
+javax/xml/transform/Result.class
+javax/xml/transform/sax/SAXResult.class
+javax/xml/transform/sax/SAXSource.class
+javax/xml/transform/sax/SAXTransformerFactory.class
+javax/xml/transform/sax/TemplatesHandler.class
+javax/xml/transform/sax/TransformerHandler.class
+javax/xml/transform/SecuritySupport.class
+javax/xml/transform/SecuritySupport12$1.class
+javax/xml/transform/SecuritySupport12$2.class
+javax/xml/transform/SecuritySupport12$3.class
+javax/xml/transform/SecuritySupport12$4.class
+javax/xml/transform/SecuritySupport12$5.class
+javax/xml/transform/SecuritySupport12$6.class
+javax/xml/transform/SecuritySupport12.class
+javax/xml/transform/Source.class
+javax/xml/transform/SourceLocator.class
+javax/xml/transform/stream/FilePathToURI.class
+javax/xml/transform/stream/StreamResult.class
+javax/xml/transform/stream/StreamSource.class
+javax/xml/transform/Templates.class
+javax/xml/transform/Transformer.class
+javax/xml/transform/TransformerConfigurationException.class
+javax/xml/transform/TransformerException.class
+javax/xml/transform/TransformerFactory.class
+javax/xml/transform/TransformerFactoryConfigurationError.class
+javax/xml/transform/URIResolver.class
+org/apache/xmlcommons/Version.class
+org/w3c/dom/Attr.class
+org/w3c/dom/CDATASection.class
+org/w3c/dom/CharacterData.class
+org/w3c/dom/Comment.class
+org/w3c/dom/css/Counter.class
+org/w3c/dom/css/CSS2Properties.class
+org/w3c/dom/css/CSSCharsetRule.class
+org/w3c/dom/css/CSSFontFaceRule.class
+org/w3c/dom/css/CSSImportRule.class
+org/w3c/dom/css/CSSMediaRule.class
+org/w3c/dom/css/CSSPageRule.class
+org/w3c/dom/css/CSSPrimitiveValue.class
+org/w3c/dom/css/CSSRule.class
+org/w3c/dom/css/CSSRuleList.class
+org/w3c/dom/css/CSSStyleDeclaration.class
+org/w3c/dom/css/CSSStyleRule.class
+org/w3c/dom/css/CSSStyleSheet.class
+org/w3c/dom/css/CSSUnknownRule.class
+org/w3c/dom/css/CSSValue.class
+org/w3c/dom/css/CSSValueList.class
+org/w3c/dom/css/DocumentCSS.class
+org/w3c/dom/css/DOMImplementationCSS.class
+org/w3c/dom/css/ElementCSSInlineStyle.class
+org/w3c/dom/css/Rect.class
+org/w3c/dom/css/RGBColor.class
+org/w3c/dom/css/ViewCSS.class
+org/w3c/dom/Document.class
+org/w3c/dom/DocumentFragment.class
+org/w3c/dom/DocumentType.class
+org/w3c/dom/DOMException.class
+org/w3c/dom/DOMImplementation.class
+org/w3c/dom/Element.class
+org/w3c/dom/Entity.class
+org/w3c/dom/EntityReference.class
+org/w3c/dom/events/DocumentEvent.class
+org/w3c/dom/events/Event.class
+org/w3c/dom/events/EventException.class
+org/w3c/dom/events/EventListener.class
+org/w3c/dom/events/EventTarget.class
+org/w3c/dom/events/MouseEvent.class
+org/w3c/dom/events/MutationEvent.class
+org/w3c/dom/events/UIEvent.class
+org/w3c/dom/html/HTMLAnchorElement.class
+org/w3c/dom/html/HTMLAppletElement.class
+org/w3c/dom/html/HTMLAreaElement.class
+org/w3c/dom/html/HTMLBaseElement.class
+org/w3c/dom/html/HTMLBaseFontElement.class
+org/w3c/dom/html/HTMLBodyElement.class
+org/w3c/dom/html/HTMLBRElement.class
+org/w3c/dom/html/HTMLButtonElement.class
+org/w3c/dom/html/HTMLCollection.class
+org/w3c/dom/html/HTMLDirectoryElement.class
+org/w3c/dom/html/HTMLDivElement.class
+org/w3c/dom/html/HTMLDListElement.class
+org/w3c/dom/html/HTMLDocument.class
+org/w3c/dom/html/HTMLElement.class
+org/w3c/dom/html/HTMLFieldSetElement.class
+org/w3c/dom/html/HTMLFontElement.class
+org/w3c/dom/html/HTMLFormElement.class
+org/w3c/dom/html/HTMLFrameElement.class
+org/w3c/dom/html/HTMLFrameSetElement.class
+org/w3c/dom/html/HTMLHeadElement.class
+org/w3c/dom/html/HTMLHeadingElement.class
+org/w3c/dom/html/HTMLHRElement.class
+org/w3c/dom/html/HTMLHtmlElement.class
+org/w3c/dom/html/HTMLIFrameElement.class
+org/w3c/dom/html/HTMLImageElement.class
+org/w3c/dom/html/HTMLInputElement.class
+org/w3c/dom/html/HTMLIsIndexElement.class
+org/w3c/dom/html/HTMLLabelElement.class
+org/w3c/dom/html/HTMLLegendElement.class
+org/w3c/dom/html/HTMLLIElement.class
+org/w3c/dom/html/HTMLLinkElement.class
+org/w3c/dom/html/HTMLMapElement.class
+org/w3c/dom/html/HTMLMenuElement.class
+org/w3c/dom/html/HTMLMetaElement.class
+org/w3c/dom/html/HTMLModElement.class
+org/w3c/dom/html/HTMLObjectElement.class
+org/w3c/dom/html/HTMLOListElement.class
+org/w3c/dom/html/HTMLOptGroupElement.class
+org/w3c/dom/html/HTMLOptionElement.class
+org/w3c/dom/html/HTMLParagraphElement.class
+org/w3c/dom/html/HTMLParamElement.class
+org/w3c/dom/html/HTMLPreElement.class
+org/w3c/dom/html/HTMLQuoteElement.class
+org/w3c/dom/html/HTMLScriptElement.class
+org/w3c/dom/html/HTMLSelectElement.class
+org/w3c/dom/html/HTMLStyleElement.class
+org/w3c/dom/html/HTMLTableCaptionElement.class
+org/w3c/dom/html/HTMLTableCellElement.class
+org/w3c/dom/html/HTMLTableColElement.class
+org/w3c/dom/html/HTMLTableElement.class
+org/w3c/dom/html/HTMLTableRowElement.class
+org/w3c/dom/html/HTMLTableSectionElement.class
+org/w3c/dom/html/HTMLTextAreaElement.class
+org/w3c/dom/html/HTMLTitleElement.class
+org/w3c/dom/html/HTMLUListElement.class
+org/w3c/dom/NamedNodeMap.class
+org/w3c/dom/Node.class
+org/w3c/dom/NodeList.class
+org/w3c/dom/Notation.class
+org/w3c/dom/ProcessingInstruction.class
+org/w3c/dom/ranges/DocumentRange.class
+org/w3c/dom/ranges/Range.class
+org/w3c/dom/ranges/RangeException.class
+org/w3c/dom/stylesheets/DocumentStyle.class
+org/w3c/dom/stylesheets/LinkStyle.class
+org/w3c/dom/stylesheets/MediaList.class
+org/w3c/dom/stylesheets/StyleSheet.class
+org/w3c/dom/stylesheets/StyleSheetList.class
+org/w3c/dom/Text.class
+org/w3c/dom/traversal/DocumentTraversal.class
+org/w3c/dom/traversal/NodeFilter.class
+org/w3c/dom/traversal/NodeIterator.class
+org/w3c/dom/traversal/TreeWalker.class
+org/w3c/dom/views/AbstractView.class
+org/w3c/dom/views/DocumentView.class
+org/xml/sax/AttributeList.class
+org/xml/sax/Attributes.class
+org/xml/sax/ContentHandler.class
+org/xml/sax/DocumentHandler.class
+org/xml/sax/DTDHandler.class
+org/xml/sax/EntityResolver.class
+org/xml/sax/ErrorHandler.class
+org/xml/sax/ext/DeclHandler.class
+org/xml/sax/ext/LexicalHandler.class
+org/xml/sax/HandlerBase.class
+org/xml/sax/helpers/AttributeListImpl.class
+org/xml/sax/helpers/AttributesImpl.class
+org/xml/sax/helpers/DefaultHandler.class
+org/xml/sax/helpers/LocatorImpl.class
+org/xml/sax/helpers/NamespaceSupport$Context.class
+org/xml/sax/helpers/NamespaceSupport.class
+org/xml/sax/helpers/NewInstance.class
+org/xml/sax/helpers/ParserAdapter$AttributeListAdapter.class
+org/xml/sax/helpers/ParserAdapter.class
+org/xml/sax/helpers/ParserFactory.class
+org/xml/sax/helpers/SecuritySupport.class
+org/xml/sax/helpers/SecuritySupport12$1.class
+org/xml/sax/helpers/SecuritySupport12$2.class
+org/xml/sax/helpers/SecuritySupport12$3.class
+org/xml/sax/helpers/SecuritySupport12$4.class
+org/xml/sax/helpers/SecuritySupport12.class
+org/xml/sax/helpers/XMLFilterImpl.class
+org/xml/sax/helpers/XMLReaderAdapter$AttributesAdapter.class
+org/xml/sax/helpers/XMLReaderAdapter.class
+org/xml/sax/helpers/XMLReaderFactory.class
+org/xml/sax/InputSource.class
+org/xml/sax/Locator.class
+
+exec
+/usr/bin/bash -lc "unzip -l /tmp/xml-commons-external-1.2.01-src.zip | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+Archive:  /tmp/xml-commons-external-1.2.01-src.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2003-11-18 15:19   javax/
+        0  2003-11-18 15:19   javax/xml/
+        0  2003-11-18 15:19   javax/xml/parsers/
+        0  2003-11-18 15:19   javax/xml/transform/
+        0  2003-11-18 15:19   javax/xml/transform/dom/
+        0  2003-11-18 15:19   javax/xml/transform/sax/
+        0  2003-11-18 15:19   javax/xml/transform/stream/
+        0  2003-11-18 15:19   org/
+        0  2003-11-18 15:19   org/apache/
+        0  2003-11-18 15:19   org/apache/xmlcommons/
+        0  2003-11-18 15:19   org/w3c/
+        0  2003-11-18 15:19   org/w3c/dom/
+        0  2003-11-18 15:19   org/w3c/dom/css/
+        0  2003-11-18 15:19   org/w3c/dom/events/
+        0  2003-11-18 15:19   org/w3c/dom/html/
+        0  2003-11-18 15:19   org/w3c/dom/ranges/
+        0  2003-11-18 15:19   org/w3c/dom/stylesheets/
+        0  2003-11-18 15:19   org/w3c/dom/traversal/
+        0  2003-11-18 15:19   org/w3c/dom/views/
+        0  2003-11-18 15:19   org/xml/
+        0  2003-11-18 15:19   org/xml/sax/
+        0  2003-11-18 15:19   org/xml/sax/ext/
+        0  2003-11-18 15:19   org/xml/sax/helpers/
+    10599  2003-01-10 20:40   javax/xml/parsers/DocumentBuilder.java
+    12735  2003-01-10 20:40   javax/xml/parsers/DocumentBuilderFactory.java
+     5260  2001-05-22 13:00   javax/xml/parsers/FactoryConfigurationError.java
+    16039  2003-02-12 15:06   javax/xml/parsers/FactoryFinder.java
+     6643  2002-12-12 11:44   javax/xml/parsers/FilePathToURI.java
+      223  2001-05-22 13:00   javax/xml/parsers/package.html
+     3315  2001-05-22 13:00   javax/xml/parsers/ParserConfigurationException.java
+    17906  2002-12-12 11:44   javax/xml/parsers/SAXParser.java
+     9797  2003-01-10 20:40   javax/xml/parsers/SAXParserFactory.java
+     5332  2003-01-24 10:27   javax/xml/parsers/SecuritySupport.java
+     5339  2003-01-24 10:27   javax/xml/parsers/SecuritySupport12.java
+     3313  2001-05-22 13:03   javax/xml/transform/dom/DOMLocator.java
+     6159  2003-01-10 20:40   javax/xml/transform/dom/DOMResult.java
+     5507  2003-01-10 20:40   javax/xml/transform/dom/DOMSource.java
+     2019  2001-05-21 21:01   javax/xml/transform/dom/package.html
+     5946  2001-05-22 13:01   javax/xml/transform/ErrorListener.java
+    16041  2003-02-12 15:06   javax/xml/transform/FactoryFinder.java
+    10484  2002-01-22 13:45   javax/xml/transform/OutputKeys.java
+     9583  2001-05-21 21:01   javax/xml/transform/overview.html
+     9431  2001-05-21 21:01   javax/xml/transform/package.html
+     4980  2003-01-10 20:40   javax/xml/transform/Result.java
+     3908  2001-05-21 21:01   javax/xml/transform/sax/package.html
+     5767  2003-01-10 20:40   javax/xml/transform/sax/SAXResult.java
+     7970  2003-01-10 20:40   javax/xml/transform/sax/SAXSource.java
+     7363  2003-01-10 20:40   javax/xml/transform/sax/SAXTransformerFactory.java
+     3947  2003-01-10 20:40   javax/xml/transform/sax/TemplatesHandler.java
+     3937  2003-01-10 20:40   javax/xml/transform/sax/TransformerHandler.java
+     5334  2003-01-24 10:27   javax/xml/transform/SecuritySupport.java
+     5341  2003-01-24 10:27   javax/xml/transform/SecuritySupport12.java
+     3478  2003-01-10 20:40   javax/xml/transform/Source.java
+     5165  2001-05-22 13:01   javax/xml/transform/SourceLocator.java
+     6652  2003-01-02 15:05   javax/xml/transform/stream/FilePathToURI.java
+     1581  2001-05-21 21:01   javax/xml/transform/stream/package.html
+     7801  2003-01-10 20:40   javax/xml/transform/stream/StreamResult.java
+    10615  2003-01-02 15:05   javax/xml/transform/stream/StreamSource.java
+     5023  2003-01-10 20:40   javax/xml/transform/Templates.java
+    11945  2001-05-22 13:02   javax/xml/transform/Transformer.java
+     5159  2001-05-22 13:02   javax/xml/transform/TransformerConfigurationException.java
+    13009  2003-01-10 20:40   javax/xml/transform/TransformerException.java
+    12648  2003-01-10 20:40   javax/xml/transform/TransformerFactory.java
+     5136  2001-05-22 13:02   javax/xml/transform/TransformerFactoryConfigurationError.java
+     3419  2001-05-22 13:02   javax/xml/transform/URIResolver.java
+     4019  2003-11-18 15:10   org/apache/xmlcommons/Version.java
+     3910  2003-11-18 15:10   org/apache/xmlcommons/Version.src
+     6695  2002-05-10 16:32   org/w3c/dom/Attr.java
+     2782  2002-05-10 16:32   org/w3c/dom/CDATASection.java
+     7704  2002-05-10 16:32   org/w3c/dom/CharacterData.java
+     1155  2001-06-01 07:13   org/w3c/dom/Comment.java
+     1324  2001-06-01 07:13   org/w3c/dom/css/Counter.java
+    90150  2002-05-10 16:32   org/w3c/dom/css/CSS2Properties.java
+     2611  2002-05-10 16:32   org/w3c/dom/css/CSSCharsetRule.java
+     1105  2001-06-01 07:13   org/w3c/dom/css/CSSFontFaceRule.java
+     1720  2001-06-01 07:13   org/w3c/dom/css/CSSImportRule.java
+     3171  2002-05-10 16:32   org/w3c/dom/css/CSSMediaRule.java
+     1937  2002-05-10 16:32   org/w3c/dom/css/CSSPageRule.java
+    13241  2002-05-10 16:32   org/w3c/dom/css/CSSPrimitiveValue.java
+     4211  2002-05-10 16:32   org/w3c/dom/css/CSSRule.java
+     1765  2002-01-04 15:20   org/w3c/dom/css/CSSRuleList.java
+     7470  2002-05-10 16:32   org/w3c/dom/css/CSSStyleDeclaration.java
+     2016  2002-05-10 16:32   org/w3c/dom/css/CSSStyleRule.java
+     3751  2002-05-10 16:32   org/w3c/dom/css/CSSStyleSheet.java
+      922  2001-06-01 07:13   org/w3c/dom/css/CSSUnknownRule.java
+     3180  2002-05-10 16:32   org/w3c/dom/css/CSSValue.java
+     2031  2002-01-04 15:20   org/w3c/dom/css/CSSValueList.java
+     2497  2002-05-10 16:32   org/w3c/dom/css/DocumentCSS.java
+     1748  2002-05-10 16:32   org/w3c/dom/css/DOMImplementationCSS.java
+     1410  2001-06-01 07:13   org/w3c/dom/css/ElementCSSInlineStyle.java
+     1507  2001-06-01 07:13   org/w3c/dom/css/Rect.java
+     1899  2001-06-01 07:13   org/w3c/dom/css/RGBColor.java
+     2032  2002-05-10 16:32   org/w3c/dom/css/ViewCSS.java
+    20835  2002-05-10 16:32   org/w3c/dom/Document.java
+     3128  2001-06-01 07:13   org/w3c/dom/DocumentFragment.java
+     3439  2002-05-10 16:32   org/w3c/dom/DocumentType.java
+     4588  2002-05-10 16:32   org/w3c/dom/DOMException.java
+     5757  2002-05-10 16:32   org/w3c/dom/DOMImplementation.java
+    16429  2002-05-10 16:32   org/w3c/dom/Element.java
+     3502  2002-05-10 16:32   org/w3c/dom/Entity.java
+     2167  2001-06-01 07:13   org/w3c/dom/EntityReference.java
+     2926  2002-01-04 15:20   org/w3c/dom/events/DocumentEvent.java
+     6253  2002-01-04 15:20   org/w3c/dom/events/Event.java
+     1423  2001-06-01 07:13   org/w3c/dom/events/EventException.java
+     2047  2002-05-10 16:32   org/w3c/dom/events/EventListener.java
+     5564  2002-01-04 15:20   org/w3c/dom/events/EventTarget.java
+     6758  2002-05-10 16:32   org/w3c/dom/events/MouseEvent.java
+     4677  2002-01-04 15:20   org/w3c/dom/events/MutationEvent.java
+     2425  2002-01-04 15:20   org/w3c/dom/events/UIEvent.java
+     3141  2002-05-10 16:33   org/w3c/dom/html/HTMLAnchorElement.java
+     3245  2002-05-10 16:33   org/w3c/dom/html/HTMLAppletElement.java
+     2342  2002-05-10 16:33   org/w3c/dom/html/HTMLAreaElement.java
+      783  2002-05-10 16:33   org/w3c/dom/html/HTMLBaseElement.java
+     1126  2002-05-10 16:33   org/w3c/dom/html/HTMLBaseFontElement.java
+     2075  2002-05-10 16:33   org/w3c/dom/html/HTMLBodyElement.java
+      668  2002-05-10 16:33   org/w3c/dom/html/HTMLBRElement.java
+     1856  2002-05-10 16:33   org/w3c/dom/html/HTMLButtonElement.java
+     1928  2002-05-10 16:33   org/w3c/dom/html/HTMLCollection.java
+      724  2002-05-10 16:33   org/w3c/dom/html/HTMLDirectoryElement.java
+      666  2002-05-10 16:33   org/w3c/dom/html/HTMLDivElement.java
+      676  2002-05-10 16:33   org/w3c/dom/html/HTMLDListElement.java
+     5483  2002-05-10 16:33   org/w3c/dom/html/HTMLDocument.java
+     1974  2002-05-10 16:33   org/w3c/dom/html/HTMLElement.java
+      661  2002-05-10 16:33   org/w3c/dom/html/HTMLFieldSetElement.java
+     1129  2002-05-10 16:33   org/w3c/dom/html/HTMLFontElement.java
+     2326  2002-05-10 16:33   org/w3c/dom/html/HTMLFormElement.java
+     2192  2002-05-10 16:33   org/w3c/dom/html/HTMLFrameElement.java
+      857  2002-05-10 16:33   org/w3c/dom/html/HTMLFrameSetElement.java
+      645  2002-05-10 16:33   org/w3c/dom/html/HTMLHeadElement.java
+      701  2002-05-10 16:33   org/w3c/dom/html/HTMLHeadingElement.java
+     1432  2002-05-10 16:33   org/w3c/dom/html/HTMLHRElement.java
+      696  2002-05-10 16:33   org/w3c/dom/html/HTMLHtmlElement.java
+     2619  2002-05-10 16:33   org/w3c/dom/html/HTMLIFrameElement.java
+     3224  2002-05-10 16:33   org/w3c/dom/html/HTMLImageElement.java
+     5784  2002-05-10 16:33   org/w3c/dom/html/HTMLInputElement.java
+      929  2002-05-10 16:33   org/w3c/dom/html/HTMLIsIndexElement.java
+     1126  2002-05-10 16:33   org/w3c/dom/html/HTMLLabelElement.java
+     1168  2002-05-10 16:33   org/w3c/dom/html/HTMLLegendElement.java
+      902  2002-05-10 16:33   org/w3c/dom/html/HTMLLIElement.java
+     2378  2002-05-10 16:33   org/w3c/dom/html/HTMLLinkElement.java
+      744  2002-05-10 16:33   org/w3c/dom/html/HTMLMapElement.java
+      715  2002-05-10 16:33   org/w3c/dom/html/HTMLMenuElement.java
+     1231  2002-05-10 16:33   org/w3c/dom/html/HTMLMetaElement.java
+      909  2002-05-10 16:33   org/w3c/dom/html/HTMLModElement.java
+     4721  2002-05-10 16:33   org/w3c/dom/html/HTMLObjectElement.java
+     1119  2002-05-10 16:33   org/w3c/dom/html/HTMLOListElement.java
+      892  2002-05-10 16:33   org/w3c/dom/html/HTMLOptGroupElement.java
+     1901  2002-05-10 16:33   org/w3c/dom/html/HTMLOptionElement.java
+      657  2002-05-10 16:33   org/w3c/dom/html/HTMLParagraphElement.java
+     1373  2002-05-10 16:33   org/w3c/dom/html/HTMLParamElement.java
+      655  2002-05-10 16:33   org/w3c/dom/html/HTMLPreElement.java
+      708  2002-05-10 16:33   org/w3c/dom/html/HTMLQuoteElement.java
+     1692  2002-05-10 16:33   org/w3c/dom/html/HTMLScriptElement.java
+     3478  2002-05-10 16:33   org/w3c/dom/html/HTMLSelectElement.java
+     1101  2002-05-10 16:33   org/w3c/dom/html/HTMLStyleElement.java
+      686  2002-05-10 16:33   org/w3c/dom/html/HTMLTableCaptionElement.java
+     3563  2002-05-10 16:33   org/w3c/dom/html/HTMLTableCellElement.java
+     1699  2002-05-10 16:33   org/w3c/dom/html/HTMLTableColElement.java
+     5110  2002-05-10 16:33   org/w3c/dom/html/HTMLTableElement.java
+     2447  2002-05-10 16:33   org/w3c/dom/html/HTMLTableRowElement.java
+     1745  2002-05-10 16:33   org/w3c/dom/html/HTMLTableSectionElement.java
+     2998  2002-05-10 16:33   org/w3c/dom/html/HTMLTextAreaElement.java
+      573  2002-05-10 16:33   org/w3c/dom/html/HTMLTitleElement.java
+      890  2002-05-10 16:33   org/w3c/dom/html/HTMLUListElement.java
+     8920  2002-05-10 16:32   org/w3c/dom/NamedNodeMap.java
+    23907  2002-05-10 16:32   org/w3c/dom/Node.java
+     1722  2002-05-10 16:32   org/w3c/dom/NodeList.java
+     1731  2001-06-01 07:13   org/w3c/dom/Notation.java
+     1940  2002-05-10 16:32   org/w3c/dom/ProcessingInstruction.java
+     1459  2001-06-01 07:13   org/w3c/dom/ranges/DocumentRange.java
+    18620  2002-05-10 16:32   org/w3c/dom/ranges/Range.java
+     1514  2001-06-01 07:13   org/w3c/dom/ranges/RangeException.java
+     1564  2001-06-01 07:13   org/w3c/dom/stylesheets/DocumentStyle.java
+     1316  2001-06-01 07:13   org/w3c/dom/stylesheets/LinkStyle.java
+     3681  2002-05-10 16:32   org/w3c/dom/stylesheets/MediaList.java
+     4825  2002-05-10 16:32   org/w3c/dom/stylesheets/StyleSheet.java
+     1715  2002-01-04 15:20   org/w3c/dom/stylesheets/StyleSheetList.java
+
+exec
+/usr/bin/bash -lc 'unzip -p /tmp/xml-commons-external-1.2.01-src.zip org/apache/xmlcommons/Version.java 2>/dev/null || unzip -p /tmp/xml-commons-external-1.2.01-src.zip src/org/apache/xmlcommons/Version.java 2>/dev/null || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+/*
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ */
+package org.apache.xmlcommons;
+
+/**
+ * <meta name="usage" content="general"/>
+ * Administrative class to keep track of the version number of
+ * xml-commons external sources releases.
+ * See xml-commons/java/external/build.xml for filtering on 1.0, etc.
+ */
+public class Version
+{
+
+  /**
+   * Get the basic version string for the current 
+   * xml-commons external sources release.
+   * Version String formatted like 
+   * <CODE>"XmlCommons v.r"</CODE>.
+   *
+   * Futurework: have this read version info from jar manifest.
+   *
+   * @return String denoting our current version
+   */
+  public static String getVersion()
+  {
+    return getProduct()+" "+getVersionNum();
+  }
+
+  /**
+   * Get just the product name.
+   *
+   * @return String denoting our product name
+   */
+  public static String getProduct()
+  {
+    return "XmlCommonsExternal";
+  }
+
+  /**
+   * Get just the version number v.r.
+   * @return String denoting our current version number
+   */
+  public static String getVersionNum()
+  {
+    return "1.2.01";
+  }
+
+  /**
+   * Print the release version to the command line.
+   * @param argv command line arguments, unused.
+   */
+  public static void main(String argv[])
+  {
+    System.out.println(getVersion());
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/ | sed -n '1,160p'
+curl -sSfL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/org/apache/xmlcommons/Version.java | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 219ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "unzip -l /tmp/Xerces-J-src-2.6.2.zip | sed -n '1,80p' && unzip -l /tmp/Xerces-J-src-2.6.2.zip | rg 'xml-commons-external|xml-apis.jar|tools/' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+Archive:  /tmp/Xerces-J-src-2.6.2.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2004-02-20 14:01   xerces-2_6_2/
+        0  2004-02-20 14:01   xerces-2_6_2/data/
+        0  2004-02-20 14:01   xerces-2_6_2/docs/
+        0  2004-02-20 14:01   xerces-2_6_2/docs/dtd/
+        0  2004-02-20 14:01   xerces-2_6_2/docs/style/
+        0  2004-02-20 14:01   xerces-2_6_2/docs/style/graphics/
+        0  2004-02-20 14:01   xerces-2_6_2/docs/style/resources/
+        0  2004-02-20 14:01   xerces-2_6_2/docs/style/stylesheets/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/dom/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/dom/traversal/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/dom/wrappers/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/sax/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/sax/helpers/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/simpletype/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/socket/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/socket/io/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/ui/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/xni/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/xni/parser/
+        0  2004-02-20 14:01   xerces-2_6_2/samples/xs/
+        0  2004-02-20 14:01   xerces-2_6_2/src/
+        0  2004-02-20 14:01   xerces-2_6_2/src/dom3/
+        0  2004-02-20 14:01   xerces-2_6_2/src/dom3/org/
+        0  2004-02-20 14:01   xerces-2_6_2/src/dom3/org/w3c/
+        0  2004-02-20 14:01   xerces-2_6_2/src/dom3/org/w3c/dom/
+        0  2004-02-20 14:01   xerces-2_6_2/src/dom3/org/w3c/dom/bootstrap/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/html/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/html/dom/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/wml/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/wml/dom/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/dom/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/dom/events/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/dom3/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/dom3/as/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/dom3/bootstrap/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/dtd/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/dtd/models/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/dv/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/dv/dtd/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/dv/util/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/dv/xs/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/io/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/msg/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/validation/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/xpath/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/xpath/regex/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/xs/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/xs/identity/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/xs/models/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/xs/opti/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/xs/traversers/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/impl/xs/util/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/jaxp/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/parsers/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/util/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/xinclude/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/xni/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/xni/grammars/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/xni/parser/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xerces/xs/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xml/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/apache/xml/serialize/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/w3c/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/w3c/dom/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/w3c/dom/html/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/w3c/dom/ls/
+        0  2004-02-20 14:01   xerces-2_6_2/src/org/w3c/dom/xpath/
+      843  2004-02-20 14:01   xerces-2_6_2/build.bat
+     1392  2004-02-20 14:01   xerces-2_6_2/build.sh
+    68658  2004-02-20 14:01   xerces-2_6_2/build.xml
+     1247  2004-02-20 14:01   xerces-2_6_2/data/personal-schema.xml
+      644  2004-02-20 14:01   xerces-2_6_2/data/personal.dtd
+
+exec
+/usr/bin/bash -lc "unzip -l /tmp/Xerces-J-src-2.6.2.zip | rg 'xml-commons-external|xml-apis.jar|xml-apis|tools/' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -sSfL -o /tmp/Xerces-J-tools-2.6.2.zip https://archive.apache.org/dist/xml/xerces-j/source/Xerces-J-tools.2.6.2.zip && unzip -l /tmp/Xerces-J-tools-2.6.2.zip | rg 'xml-commons-external|xml-apis|junit|tests' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 1342ms:
+    92244  2004-02-20 13:47   tools/junit.jar
+    12933  2004-02-20 13:47   tools/junit.LICENSE.txt
+   124724  2004-02-20 13:47   tools/xml-apis.jar
+     2689  2004-02-20 13:47   tools/xml-apis.LICENSE.txt
+     2689  2004-02-20 13:47   tools/xml-commons-external-1.2.01-src.LICENSE.txt
+   349320  2004-02-20 13:47   tools/xml-commons-external-1.2.01-src.zip
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"(?"'!.*'"\\"'$version'"\\"'$).*"'"' metadata/*/*/index.json | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+rg: regex parse error:
+    (?:"source-code-url" : "(?!.*\$version\$).*")
+                            ^^^
+error: look-around, including look-ahead and look-behind, is not supported
+
+Consider enabling PCRE2 with the --pcre2 flag, which can handle backreferences
+and look-around.
+
+exec
+/usr/bin/bash -lc "rg --pcre2 -n '\"source-code-url\" : \"(?"'![''^"]*'"\\"'$version'"\\"'$)[''^"]*"'"' metadata/*/*/index.json | head -60" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+metadata/io.netty/netty-handler-proxy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final-sources.jar",
+metadata/io.netty/netty-transport-native-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-epoll/4.1.42.Final/netty-transport-native-epoll-4.1.42.Final-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/org.aspectj/aspectjweaver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/aspectj/aspectjweaver/1.9.7/aspectjweaver-1.9.7-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+metadata/com.typesafe/config/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/config/1.4.2/config-1.4.2-sources.jar",
+metadata/org.jboss.logging/commons-logging-jboss-logging/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/commons-logging-jboss-logging/2.0.0.Final/commons-logging-jboss-logging-2.0.0.Final-sources.jar",
+metadata/xmlpull/xmlpull/index.json:5:    "source-code-url" : "N/A",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-sources.jar",
+metadata/org.hibernate/hibernate-jpamodelgen/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hibernate/hibernate-jpamodelgen/5.6.14.Final/hibernate-jpamodelgen-5.6.14.Final-sources.jar",
+metadata/org.mongodb/mongo-java-driver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mongodb/mongo-java-driver/3.9.0/mongo-java-driver-3.9.0-sources.jar",
+metadata/commons-logging/commons-logging-api/index.json:5:    "source-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/java",
+metadata/com.github.jknack/handlebars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-sources.jar",
+metadata/io.netty/netty-codec-socks/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.79.Final/netty-codec-socks-4.1.79.Final-sources.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:71:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.4.0/error_prone_annotations-2.4.0-sources.jar",
+metadata/avalon-framework/avalon-framework/index.json:5:    "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/framework/src/",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:40:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:46:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.eclipse.jdt/ecj/index.json:52:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.28.0/ecj-3.28.0-sources.jar",
+metadata/io.github.dmlloyd/jdk-classfile-backport/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/dmlloyd/jdk-classfile-backport/25.1/jdk-classfile-backport-25.1-sources.jar",
+metadata/io.netty/netty-transport-udt/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-sources.jar",
+metadata/org.osgi/osgi.core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0-sources.jar",
+metadata/io.netty/netty-resolver-dns-classes-macos/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver-dns-classes-macos/4.1.74.Final/netty-resolver-dns-classes-macos-4.1.74.Final-sources.jar",
+metadata/javax.servlet/servlet-api/index.json:5:    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
+metadata/com.github.java-json-tools/jackson-coreutils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/java-json-tools/jackson-coreutils/2.0/jackson-coreutils-2.0-sources.jar",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:5:    "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz",
+
+web search: 
+web search: https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/
+web search: 
+web search: svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2 tools xml-commons-external-1.2.01-src.zip
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/
+web search: 
+web search: https://xerces.apache.org/repo.html
+exec
+/usr/bin/bash -lc "rg -n \"discovered-artifact-metadata|documentation-url|source-code-url|repository-url|not-for-native-image|language\" build.gradle settings.gradle gradle src -g '*.groovy' -g '*.java' -g '*.kt' -g '*.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ exited 2 in 0ms:
+rg: src: No such file or directory (os error 2)
+
+exec
+/usr/bin/bash -lc "find . -maxdepth 4 -name '*schema*' -o -name '*.json' | rg 'schema|metadata' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+./stats/schemas
+./stats/schemas/run-metrics-output-schema-v1.0.1.json
+./stats/schemas/library-stats-schema-v1.0.2.json
+./stats/dev.zio/zio-schema-macros_3
+./stats/dev.zio/zio-schema-derivation_3
+./stats/dev.zio/zio-schema_3
+./metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+./metadata/org.eclipse.jetty/jetty-ee/index.json
+./metadata/org.eclipse.jetty/jetty-server/index.json
+./metadata/org.eclipse.jetty/jetty-client/index.json
+./metadata/org.eclipse.jetty/jetty-util/index.json
+./metadata/org.eclipse.jetty/jetty-http/index.json
+./metadata/org.eclipse.jetty/jetty-io/index.json
+./metadata/org.eclipse.jetty/jetty-session/index.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+./metadata/org.scalatest/scalatest-compatible/index.json
+./metadata/org.awaitility/awaitility/index.json
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json
+./metadata/org.apache.thrift/libthrift/index.json
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json
+./metadata/org.springframework/spring-jcl/index.json
+./metadata/org.springframework/spring-aspects/index.json
+./metadata/org.springframework/spring-instrument/index.json
+./metadata/com.rabbitmq/amqp-client/index.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json
+./metadata/net.postgis/postgis-jdbc/index.json
+./metadata/net.postgis/postgis-geometry/index.json
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json
+./metadata/io.prometheus/simpleclient_tracer_common/index.json
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json
+./metadata/io.prometheus/simpleclient/index.json
+./metadata/io.prometheus/simpleclient_caffeine/index.json
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json
+./metadata/com.google.re2j/re2j/index.json
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json
+./metadata/jakarta.json
+./metadata/jakarta.json/jakarta.json-api/index.json
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json
+./metadata/org.openjfx/javafx-base/index.json
+./metadata/org.apache.directory.api/api-util/index.json
+./metadata/org.apache.directory.api/api-i18n/index.json
+./metadata/org.glassfish.hk2/hk2-utils/index.json
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json
+./metadata/com.thoughtworks.paranamer/paranamer/index.json
+./metadata/log4j/log4j/index.json
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json
+./metadata/io.zipkin.zipkin2/zipkin/index.json
+./metadata/com.github.mwiede/jsch/index.json
+./metadata/org.datanucleus/javax.jdo/index.json
+./metadata/org.playframework/play-build-link/index.json
+./metadata/org.playframework/play-exceptions/index.json
+./metadata/io.opencensus/opencensus-contrib-grpc-util/index.json
+./metadata/io.opencensus/opencensus-api/index.json
+./metadata/org.ehcache/ehcache/index.json
+./metadata/org.jvnet.staxex/stax-ex/index.json
+./metadata/org.jline/jline-native/index.json
+./metadata/org.jline/jline-terminal/index.json
+./metadata/org.jline/jline/index.json
+./metadata/org.jline/jline-reader/index.json
+./metadata/org.jline/jline-console/index.json
+./metadata/org.jline/jline-terminal-jna/index.json
+./metadata/org.jline/jline-terminal-jni/index.json
+./metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json
+./metadata/com.diffplug.durian/durian-swt.os/index.json
+./metadata/com.github.stephenc.jcip/jcip-annotations/index.json
+./metadata/org.apache.activemq/activemq-openwire-legacy/index.json
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json
+./metadata/org.apache.activemq/activemq-broker/index.json
+./metadata/org.apache.activemq/activemq-client/index.json
+./metadata/org.apache.activemq/artemis-jms-client/index.json
+./metadata/javax.validation/validation-api/index.json
+
+codex
+I found that the JAR does contain JVM `.class` files and is not Kotlin/Groovy/Scala-specific, so I’m leaving `language` and `not-for-native-image` out. The source mapping is old: the coordinate is a Xerces 2.6.2 release artifact, while the API classes themselves come from the bundled XML Commons external 1.2.01 source archive in that release.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..75120da2115ce8e6e03207f6505dabe293af42a2
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..75120da2115ce8e6e03207f6505dabe293af42a2
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+{
+  "coordinates": "xerces:xmlParserAPIs:2.6.2",
+  "source-code-url": "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
+  "repository-url": "https://svn.apache.org/repos/asf/xerces/java/",
+  "test-code-url": "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
+  "documentation-url": "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
+  "description": "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://svn.apache.org/repos/asf/xerces/java/ \\
+  https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip \\
+  https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/ \\
+  https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/; do
+  printf '%s ' \""'$url"
+  curl -sS -o /dev/null -w '"'%{http_code}\\n' -L \""'$url"
+done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..75120da2115ce8e6e03207f6505dabe293af42a2
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+ succeeded in 838ms:
+200
+https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/ 200
+https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/ 200
+
+web search: 
+web search: 
+web search: 
+web search: site:svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2 Xerces-J_2_6_2 tools xml-commons-external-1.2.01-src.zip tests docs
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/java/tags/
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+{
+  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
+  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
+  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
+  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
+  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
+  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 126ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..75120da2115ce8e6e03207f6505dabe293af42a2
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+web search: 
+web search: site:svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2 "xml-commons-external-1.2.01-src.zip"
+web search: 
+web search: 
+web search: 
+web search: "/xerces/java/tags/Xerces-J_2_6_2" "xml-commons-external-1.2.01-src.zip"
+exec
+/usr/bin/bash -lc "unzip -l /tmp/Xerces-J-src-2.6.2.zip | rg '"'^'"\\s+.*xerces-2_6_2/tests/' | head -20 && unzip -l /tmp/Xerces-J-src-2.6.2.zip | rg 'tests/' | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..75120da2115ce8e6e03207f6505dabe293af42a2
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+exec
+/usr/bin/bash -lc "curl -sSfL https://archive.apache.org/dist/xml/xerces-j/ | sed -n '1,120p'
+find /tmp -maxdepth 1 -name 'Xerces-J*2.6.2*' -ls" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..75120da2115ce8e6e03207f6505dabe293af42a2
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+ succeeded in 122ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/xml/xerces-j</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                            <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/xml/">Parent Directory</a>                                     -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="binaries/">binaries/</a>                       2006-11-23 04:24    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="old_xerces1/">old_xerces1/</a>                    2003-10-13 10:38    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="old_xerces2/">old_xerces2/</a>                    2003-10-13 10:38    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="source/">source/</a>                         2006-11-23 04:23    -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-bin.1.4.4.tar.gz">Xerces-J-bin.1.4.4.tar.gz</a>       2003-10-13 10:38  2.4M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="Xerces-J-bin.1.4.4.tar.gz.asc">Xerces-J-bin.1.4.4.tar.gz.asc</a>   2003-10-13 10:38  246   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-bin.1.4.4.zip">Xerces-J-bin.1.4.4.zip</a>          2003-10-13 10:38  4.1M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="Xerces-J-bin.1.4.4.zip.asc">Xerces-J-bin.1.4.4.zip.asc</a>      2003-10-13 10:38  246   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-src.1.4.4.tar.gz">Xerces-J-src.1.4.4.tar.gz</a>       2003-10-13 10:38  967K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="Xerces-J-src.1.4.4.tar.gz.asc">Xerces-J-src.1.4.4.tar.gz.asc</a>   2003-10-13 10:38  246   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-src.1.4.4.zip">Xerces-J-src.1.4.4.zip</a>          2003-10-13 10:38  1.6M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="Xerces-J-src.1.4.4.zip.asc">Xerces-J-src.1.4.4.zip.asc</a>      2003-10-13 10:38  246   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-src.2.5.0.tar.gz">Xerces-J-src.2.5.0.tar.gz</a>       2003-10-13 10:38  1.4M  
+<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-src.2.5.0.tar.gz.sig">Xerces-J-src.2.5.0.tar.gz.sig</a>   2003-10-13 10:38   66   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-tools.1.4.4.tar.gz">Xerces-J-tools.1.4.4.tar.gz</a>     2003-10-13 10:38  1.5M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="Xerces-J-tools.1.4.4.tar.gz.asc">Xerces-J-tools.1.4.4.tar.gz.asc</a> 2003-10-13 10:38  246   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-tools.1.4.4.zip">Xerces-J-tools.1.4.4.zip</a>        2003-10-13 10:38  1.6M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="Xerces-J-tools.1.4.4.zip.asc">Xerces-J-tools.1.4.4.zip.asc</a>    2003-10-13 10:38  246   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-tools.2.5.0.tar.gz">Xerces-J-tools.2.5.0.tar.gz</a>     2003-10-13 10:38  3.5M  
+<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-tools.2.5.0.tar.gz.sig">Xerces-J-tools.2.5.0.tar.gz.sig</a> 2003-10-13 10:38   66   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="Xerces-J-tools.2.5.0.zip">Xerces-J-tools.2.5.0.zip</a>        2003-10-13 10:38  3.5M  
+<img src="/icons/unknown.gif" alt="[   ]"> <a href="Xerces-J-tools.2.5.0.zip.sig">Xerces-J-tools.2.5.0.zip.sig</a>    2003-10-13 10:38   66   
+<hr></pre>
+</body></html>
+  3934559   3628 -rw-rw-r--   1 vjovanov vjovanov  3714901 May  4 18:48 /tmp/Xerces-J-tools-2.6.2.zip
+  3934556   2660 -rw-rw-r--   1 vjovanov vjovanov  2721918 May  4 18:48 /tmp/Xerces-J-src-2.6.2.zip
+
+exec
+/usr/bin/bash -lc "rg -n '\\?["'^" ]*'"\\"'$version'"\\"'$|'"\\?' metadata/*/*/index.json | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+metadata/io.netty/netty-common/index.json:18:    "default-for" : "4\\.1\\.(0|[1-9][0-9]?|1[01][0-4])\\.Final",
+metadata/io.netty/netty-transport/index.json:36:    "default-for": "4\\.1\\.(0|[1-9][0-9]?|1[01][0-4])\\.Final",
+metadata/javax.transaction/transaction-api/index.json:8:    "documentation-url" : "https://download.oracle.com/otndocs/jcp/jta-$version$-javadoc-oth-JSpec/?submit=Download",
+metadata/org.apache.commons/commons-text/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf?p=commons-text.git",
+
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..75120da2115ce8e6e03207f6505dabe293af42a2
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip?version=2.6.2' \\
+  'https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/?version=2.6.2' \\
+  'https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/?version=2.6.2'; do
+  printf '%s ' \""'$url"
+  curl -sS -o /dev/null -w '"'%{http_code}\\n' -L \""'$url"
+done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..75120da2115ce8e6e03207f6505dabe293af42a2
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+ succeeded in 597ms:
+200
+https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/?version=2.6.2 200
+https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/?version=2.6.2 200
+
+codex
+I’m adding the `$version$` placeholder to the versioned SVN URLs via a harmless query parameter, because the actual Apache tag encodes `2.6.2` as `Xerces-J_2_6_2` and cannot be templated directly with dotted version text. The rendered URLs still resolve with `2.6.2` substituted.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..d3474dddbda59b5f8a743af230b142813b28b913
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip?version=$version$",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/?version=$version$",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/?version=$version$",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..d3474dddbda59b5f8a743af230b142813b28b913
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip?version=$version$",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/?version=$version$",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/?version=$version$",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+ succeeded in 0ms:
+{
+  "coordinates": "xerces:xmlParserAPIs:2.6.2",
+  "source-code-url": "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip?version=$version$",
+  "repository-url": "https://svn.apache.org/repos/asf/xerces/java/",
+  "test-code-url": "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/?version=$version$",
+  "documentation-url": "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/?version=$version$",
+  "description": "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip?version=2.6.2' \\
+  'https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/?version=2.6.2' \\
+  'https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/?version=2.6.2'; do
+  printf '%s ' \""'$url"
+  curl -sS -o /dev/null -w '"'%{http_code}\\n' -L \""'$url"
+done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..d3474dddbda59b5f8a743af230b142813b28b913
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip?version=$version$",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/?version=$version$",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/?version=$version$",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+ succeeded in 629ms:
+200
+https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/?version=2.6.2 200
+https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/?version=2.6.2 200
+
+web search: 
+web search: 
+web search: 
+web search: "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/"
+codex
+Updated [xerces-xmlParserAPIs-2.6.2.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json:1).
+
+I set the Xerces SVN repository root, tagged source/test/docs URLs, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because the artifact contains JVM `.class` files. The Xerces repository uses the expected `tags/` layout, and the selected tag is `Xerces-J_2_6_2`. ([cwiki.apache.org](https://cwiki.apache.org/confluence/display/XERCES/XercesjRepositoryAccess?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and all rendered `$version$ = 2.6.2` URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+index 867722e8c20e2d0224340ac720739b140c070558..d3474dddbda59b5f8a743af230b142813b28b913
+--- a/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
++++ b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xerces:xmlParserAPIs:2.6.2"
++  "coordinates" : "xerces:xmlParserAPIs:2.6.2",
++  "source-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tools/xml-commons-external-1.2.01-src.zip?version=$version$",
++  "repository-url" : "https://svn.apache.org/repos/asf/xerces/java/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/tests/?version=$version$",
++  "documentation-url" : "https://svn.apache.org/repos/asf/xerces/java/tags/Xerces-J_2_6_2/docs/?version=$version$",
++  "description" : "xmlParserAPIs is the Apache XML Commons external API bundle distributed with Xerces, providing the DOM, SAX, and JAXP interfaces used by Java XML parsers and transformers. It supplies API classes rather than a parser implementation, so applications typically use it alongside an implementation such as Xerces."
+ }
+
+tokens used
+189,869
+Updated [xerces-xmlParserAPIs-2.6.2.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b/build/discovered-artifact-metadata/xerces-xmlParserAPIs-2.6.2.json:1).
+
+I set the Xerces SVN repository root, tagged source/test/docs URLs, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because the artifact contains JVM `.class` files. The Xerces repository uses the expected `tags/` layout, and the selected tag is `Xerces-J_2_6_2`. ([cwiki.apache.org](https://cwiki.apache.org/confluence/display/XERCES/XercesjRepositoryAccess?utm_source=openai))
+
+Validation done: JSON parses with `jq`, and all rendered `$version$ = 2.6.2` URLs returned HTTP 200.
+Ran agent for xerces:xmlParserAPIs:2.6.2 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b/build/agent-artifact-discovery-logs/xerces-xmlParserAPIs-2.6.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2719-34e5324b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 28s
+9 actionable tasks: 4 executed, 5 from cache
