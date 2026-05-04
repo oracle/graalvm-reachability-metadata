@@ -15,7 +15,20 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.named("nativeTest") {
+    // The shaded netty-tcnative OpenSSL path does not bind cleanly in this native-image setup.
+    // Force the JDK TLS provider so grpc-alts remains exercisable in the native test.
+    runtimeArgs.add("-Dio.grpc.netty.shaded.io.netty.handler.ssl.noOpenSsl=true")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Dio.grpc.netty.shaded.io.netty.handler.ssl.noOpenSsl=true")
+            buildArgs.add("--initialize-at-run-time=io.grpc.netty.shaded.io.netty.internal.tcnative")
+            buildArgs.add("--initialize-at-run-time=io.grpc.netty.shaded.io.netty.handler.ssl")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
