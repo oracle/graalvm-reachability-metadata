@@ -83,6 +83,18 @@ public class ArrowExceptionUtilsJvmTest {
     }
 
     @Test
+    fun `throwIfFatal works when used as a Throwable function reference`() {
+        val rejectFatal: (Throwable) -> Unit = Throwable::throwIfFatal
+        val nonFatal: IllegalArgumentException = IllegalArgumentException("recoverable")
+        val fatal: LinkageError = LinkageError("fatal")
+
+        assertThatCode { rejectFatal(nonFatal) }
+            .doesNotThrowAnyException()
+        assertThatThrownBy { rejectFatal(fatal) }
+            .isSameAs(fatal)
+    }
+
+    @Test
     fun `throwIfNotNull does nothing for null`() {
         val failure: Throwable? = null
 
