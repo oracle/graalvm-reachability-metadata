@@ -8,7 +8,7 @@ package org_osgi.osgi_R4_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Hashtable;
+import java.util.Properties;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
@@ -21,7 +21,7 @@ public class FrameworkUtilAnonymous1Test {
     @Test
     void createFilterLoadsVendorFrameworkUtilAndFindsCreateFilterMethod() throws Exception {
         Filter filter = FrameworkUtil.createFilter("(service=test)");
-        Hashtable<String, String> properties = new Hashtable<String, String>();
+        Properties properties = new Properties();
         properties.put("service", "test");
 
         assertThat(filter.toString()).isEqualTo("(service=test)");
