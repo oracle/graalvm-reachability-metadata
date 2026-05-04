@@ -12,6 +12,7 @@ import com.github.ajalt.mordant.terminal.StandardTerminalInterface
 import com.github.ajalt.mordant.terminal.TerminalInfo
 import com.github.ajalt.mordant.terminal.TerminalInterface
 import com.github.ajalt.mordant.terminal.TerminalInterfaceProvider
+import com.github.ajalt.mordant.terminal.terminalinterface.TerminalInterfacePosix
 import com.github.ajalt.mordant.terminal.terminalinterface.jna.TerminalInterfaceProviderJna
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -109,6 +110,35 @@ public class MordantJvmJnaJvmTest {
             assertThat(info.outputInteractive).isEqualTo(stdoutInteractive)
             assertThat(info.inputInteractive).isEqualTo(stdinInteractive)
             assertThat(info.interactive).isEqualTo(stdoutInteractive && stdinInteractive)
+        }
+    }
+
+    @Test
+    fun loadedProviderExposesPosixTerminalControlAttributesOnPosixSystems(): Unit {
+        val terminalInterface: TerminalInterface? = TerminalInterfaceProviderJna().load()
+        val osName: String = System.getProperty("os.name")
+
+        if (terminalInterface == null) {
+            assertThat(providerMayBeUnavailable()).isTrue()
+        } else if (osName.startsWith("Windows")) {
+            assertThat(terminalInterface).isNotInstanceOf(TerminalInterfacePosix::class.java)
+        } else {
+            assertThat(terminalInterface).isInstanceOf(TerminalInterfacePosix::class.java)
+            val posixTerminalInterface: TerminalInterfacePosix = terminalInterface as TerminalInterfacePosix
+
+            val constants: TerminalInterfacePosix.TermiosConstants = posixTerminalInterface.termiosConstants
+
+            assertThat(constants.VMIN).isGreaterThanOrEqualTo(0)
+            assertThat(constants.VTIME).isGreaterThanOrEqualTo(0)
+            assertThat(constants.VMIN).isNotEqualTo(constants.VTIME)
+            assertThat(constants.CS8.toInt()).isNotZero()
+            assertThat(constants.ECHO.toInt()).isNotZero()
+            assertThat(constants.ICANON.toInt()).isNotZero()
+
+            if (posixTerminalInterface.stdinInteractive()) {
+                val termios: TerminalInterfacePosix.Termios = posixTerminalInterface.getStdinTermios()
+                assertThat(termios.cc.size).isGreaterThan(maxOf(constants.VMIN, constants.VTIME))
+            }
         }
     }
 
