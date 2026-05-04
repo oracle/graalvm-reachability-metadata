@@ -22,6 +22,8 @@ import com.ongres.scram.common.gssapi.Gs2CbindFlag;
 import com.ongres.scram.common.message.ServerFinalMessage;
 import com.ongres.scram.common.stringprep.StringPreparation;
 import com.ongres.scram.common.stringprep.StringPreparations;
+import java.security.Provider;
+import java.security.Security;
 import java.util.Base64;
 import org.junit.jupiter.api.Test;
 
@@ -85,6 +87,40 @@ public class ClientTest {
             assertThat((int) nonce.charAt(i)).isBetween(33, 126);
             assertThat(nonce.charAt(i)).isNotEqualTo(',');
         }
+    }
+
+    @Test
+    void usesConfiguredSecureRandomAlgorithmProviderForGeneratedNonces() {
+        Provider selectedProvider = null;
+        Provider.Service selectedService = null;
+        for (Provider provider : Security.getProviders()) {
+            for (Provider.Service service : provider.getServices()) {
+                if ("SecureRandom".equals(service.getType())) {
+                    selectedProvider = provider;
+                    selectedService = service;
+                    if ("SHA1PRNG".equals(service.getAlgorithm())) {
+                        break;
+                    }
+                }
+            }
+            if (selectedService != null && "SHA1PRNG".equals(selectedService.getAlgorithm())) {
+                break;
+            }
+        }
+        assertThat(selectedProvider).as("a SecureRandom provider is available").isNotNull();
+        assertThat(selectedService).as("a SecureRandom algorithm is available").isNotNull();
+
+        ScramClient client = ScramClient.channelBinding(ScramClient.ChannelBinding.NO)
+                .stringPreparation(StringPreparations.NO_PREPARATION)
+                .selectClientMechanism(ScramMechanisms.SCRAM_SHA_1)
+                .secureRandomAlgorithmProvider(selectedService.getAlgorithm(), selectedProvider.getName())
+                .nonceLength(10)
+                .setup();
+
+        String message = client.scramSession("user").clientFirstMessage();
+
+        assertThat(message).startsWith("n,,n=user,r=");
+        assertThat(message.substring("n,,n=user,r=".length())).hasSize(10);
     }
 
     @Test
