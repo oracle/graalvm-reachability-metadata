@@ -1,0 +1,948 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df10c-37ac-7081-a4f1-62b863facbdb
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.cloud:google-cloud-bigquery:2.51.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.51.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/metadata/com.google.cloud/google-cloud-bigquery/index.json
+- Entry selector: "metadata-version" = "2.51.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.51.0
+- Entry metadata-version: 2.51.0
+- Entry test-version: 2.51.0
+- Entry tested-versions: [2.51.0]
+codex
+I’ll verify the artifact metadata and versioned URLs first, then update only the blank fields in the target `index.json`. Since the requested URLs are version-specific, I’m checking Maven/GitHub/docs rather than inferring them from memory.
+exec
+/usr/bin/bash -lc 'pwd && rg -n "metadata-version|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions" metadata/com.google.cloud/google-cloud-bigquery/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+4:    "metadata-version" : "2.51.0",
+5:    "tested-versions" : [
+13:    "metadata-version" : "2.50.1",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
+15:    "repository-url" : "https://github.com/googleapis/java-bigquery",
+16:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-tests.jar",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
+18:    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+19:    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.google.cloud/google-cloud-bigquery/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.51.0",
+    "tested-versions" : [
+      "2.51.0"
+    ],
+    "allowed-packages" : [
+      "com.google.cloud.bigquery"
+    ]
+  },
+  {
+    "metadata-version" : "2.50.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
+    "repository-url" : "https://github.com/googleapis/java-bigquery",
+    "test-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
+    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+    "tested-versions" : [
+      "2.50.1"
+    ],
+    "allowed-packages" : [
+      "com.google.cloud.bigquery"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central com.google.cloud google-cloud-bigquery 2.51.0 sources tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/
+web search: 
+web search: 
+web search: 
+web search: '2.51.0' in https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/
+web search: 
+web search: 
+web search: 
+web search: "google-cloud-bigquery-2.51.0-sources.jar"
+codex
+The existing previous entry already uses Maven Central templates for sources, tests, and javadocs, which is the preferred shape here if the `2.51.0` artifacts exist. I’m verifying those exact rendered URLs before copying the templates forward.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/2.51.0/google-cloud-bigquery-2.51.0-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/2.51.0/google-cloud-bigquery-2.51.0-tests.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+exec
+/usr/bin/bash -lc "curl -fsS https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/2.51.0/google-cloud-bigquery-2.51.0.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>google-cloud-bigquery</artifactId>
+  <version>2.51.0</version>
+  <name>BigQuery</name>
+  <description>BigQuery</description>
+  <url>https://github.com/googleapis/java-bigquery</url>
+  <organization>
+    <name>Google LLC</name>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>chingor</id>
+      <name>Jeff Ching</name>
+      <email>chingor@google.com</email>
+      <organization>Google</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
+    <connection>scm:git:git@github.com:googleapis/java-bigquery.git</connection>
+    <developerConnection>scm:git:git@github.com:googleapis/java-bigquery.git</developerConnection>
+    <url>https://github.com/googleapis/java-bigquery</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/googleapis/java-bigquery/issues</url>
+  </issueManagement>
+  <distributionManagement>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://google.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://google.oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-core</artifactId>
+      <version>2.57.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>gax</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auto.value</groupId>
+          <artifactId>auto-value-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-common-protos</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api.grpc</groupId>
+          <artifactId>proto-google-iam-v1</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.threeten</groupId>
+          <artifactId>threetenbp</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.api</groupId>
+          <artifactId>api-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-credentials</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.auth</groupId>
+          <artifactId>google-auth-library-oauth2-http</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.http-client</groupId>
+          <artifactId>google-http-client-gson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/2.51.0/google-cloud-bigquery-2.51.0-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 247ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 03:33:51 GMT
+content-type: application/java-archive
+content-length: 353490
+cf-ray: 9f6472413e57862a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "5ef4438aad021fa43021ffe89f169a9a"
+
+ succeeded in 276ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 03:33:51 GMT
+content-type: text/html
+cf-ray: 9f6472412b0fa285-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/google/cloud/google-cloud-bigquery/2.51.0/google-cloud-bigquery-2.51.0-tests.jar
+
+ succeeded in 393ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 03:33:51 GMT
+content-type: application/java-archive
+content-length: 1678241
+cf-ray: 9f647241686f03a9-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "598eaad2d7105d4aba0f14c1b23b4486"
+
+codex
+The Maven sources and javadocs for `2.51.0` resolve with HTTP 200, but the Maven tests jar does not exist for this version. I’m switching the test-suite candidate to the version tag in the canonical GitHub repository and verifying the tag path.
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/googleapis/java-bigquery/tree/v2.51.0 | sed -n '1,12p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/googleapis/java-bigquery/tree/v2.51.0/google-cloud-bigquery/src/test/java | sed -n '1,12p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/googleapis/java-bigquery/tree/v2.51.0/google-cloud-bigquery/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/googleapis/java-bigquery/tree/v2.51.0/google-cloud-bigquery/src/main/java | sed -n '1,12p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 519ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 03:33:58 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b2e11d2a4396c01a86d4519d4030fd49"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+ succeeded in 564ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 03:33:58 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"403fac73a0af29c973f369b9741f916b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+ succeeded in 584ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 03:33:58 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"900027570401d674cdd1ec482a42e76a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+ succeeded in 943ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 03:33:58 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1041558840c707abd81b41a56de42d80"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+codex
+I found a valid tagged GitHub test directory for `v2.51.0`, while the repository root comes directly from the published POM SCM metadata. I’m going to add the missing fields to the `2.51.0` entry and leave `language` absent because this is not a Kotlin, Groovy, or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/metadata/com.google.cloud/google-cloud-bigquery/index.json
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+web search: 
+web search: https://github.com/googleapis/java-bigquery/tree/v2.51.0/google-cloud-bigquery/src/test
+web search: 
+web search: repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/2.51.0/google-cloud-bigquery-2.51.0.pom
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/
+web search: 
+web search: 
+web search: 
+web search: https://mvnrepository.com/artifact/com.google.cloud/google-cloud-bigquery/2.51.0
+web search: 
+web search: https://github.com/googleapis/java-bigquery/tree/v2.51.0
+exec
+/usr/bin/bash -lc 'jq empty metadata/com.google.cloud/google-cloud-bigquery/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,32p' metadata/com.google.cloud/google-cloud-bigquery/index.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.51.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
+    "repository-url" : "https://github.com/googleapis/java-bigquery",
+    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
+    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+    "tested-versions" : [
+      "2.51.0"
+    ],
+    "allowed-packages" : [
+      "com.google.cloud.bigquery"
+    ]
+  },
+  {
+    "metadata-version" : "2.50.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
+    "repository-url" : "https://github.com/googleapis/java-bigquery",
+    "test-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
+    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+    "tested-versions" : [
+      "2.50.1"
+    ],
+    "allowed-packages" : [
+      "com.google.cloud.bigquery"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.google.cloud/google-cloud-bigquery/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+diff --git i/metadata/com.google.cloud/google-cloud-bigquery/index.json w/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577..2f7078ae39 100644
+--- i/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ w/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+codex
+The JSON is valid and the diff only adds the requested fields to the `2.51.0` entry. I’m running the repository metadata validation for the coordinate now to catch any schema or formatting issue.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.google.cloud:google-cloud-bigquery:2.51.0 --stacktrace' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+ exited 1 in 2716ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for com.google.cloud:google-cloud-bigquery:2.51.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/metadata/com.google.cloud/google-cloud-bigquery/2.51.0/
+
+> Task :checkMetadataFiles FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - com.google.cloud:google-cloud-bigquery:2.51.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/metadata/com.google.cloud/google-cloud-bigquery/2.51.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/build/reports/problems/problems-report.html
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - com.google.cloud:google-cloud-bigquery:2.51.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/metadata/com.google.cloud/google-cloud-bigquery/2.51.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED in 2s
+
+9 actionable tasks: 1 executed, 8 up-to-date
+
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+exec
+/usr/bin/bash -lc "curl -fsS https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/2.51.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+ succeeded in 276ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/cloud/google-cloud-bigquery/2.51.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/cloud/google-cloud-bigquery/2.51.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="google-cloud-bigquery-2.51.0-javadoc.jar" title="google-cloud-bigquery-2.51.0-javadoc.jar">google-cloud-bigquery-2.51.0-javadoc.jar</a>          2025-06-06 20:00   1678241      
+<a href="google-cloud-bigquery-2.51.0-javadoc.jar.asc" title="google-cloud-bigquery-2.51.0-javadoc.jar.asc">google-cloud-bigquery-2.51.0-javadoc.jar.asc</a>      2025-06-06 20:00       488      
+<a href="google-cloud-bigquery-2.51.0-javadoc.jar.md5" title="google-cloud-bigquery-2.51.0-javadoc.jar.md5">google-cloud-bigquery-2.51.0-javadoc.jar.md5</a>      2025-06-06 20:00        32      
+<a href="google-cloud-bigquery-2.51.0-javadoc.jar.sha1" title="google-cloud-bigquery-2.51.0-javadoc.jar.sha1">google-cloud-bigquery-2.51.0-javadoc.jar.sha1</a>     2025-06-06 20:00        40      
+<a href="google-cloud-bigquery-2.51.0-sources.jar" title="google-cloud-bigquery-2.51.0-sources.jar">google-cloud-bigquery-2.51.0-sources.jar</a>          2025-06-06 20:00    353490      
+<a href="google-cloud-bigquery-2.51.0-sources.jar.asc" title="google-cloud-bigquery-2.51.0-sources.jar.asc">google-cloud-bigquery-2.51.0-sources.jar.asc</a>      2025-06-06 20:00       488      
+<a href="google-cloud-bigquery-2.51.0-sources.jar.md5" title="google-cloud-bigquery-2.51.0-sources.jar.md5">google-cloud-bigquery-2.51.0-sources.jar.md5</a>      2025-06-06 20:00        32      
+<a href="google-cloud-bigquery-2.51.0-sources.jar.sha1" title="google-cloud-bigquery-2.51.0-sources.jar.sha1">google-cloud-bigquery-2.51.0-sources.jar.sha1</a>     2025-06-06 20:00        40      
+<a href="google-cloud-bigquery-2.51.0.jar" title="google-cloud-bigquery-2.51.0.jar">google-cloud-bigquery-2.51.0.jar</a>                  2025-06-06 20:00    773144      
+<a href="google-cloud-bigquery-2.51.0.jar.asc" title="google-cloud-bigquery-2.51.0.jar.asc">google-cloud-bigquery-2.51.0.jar.asc</a>              2025-06-06 20:00       488      
+<a href="google-cloud-bigquery-2.51.0.jar.md5" title="google-cloud-bigquery-2.51.0.jar.md5">google-cloud-bigquery-2.51.0.jar.md5</a>              2025-06-06 20:00        32      
+<a href="google-cloud-bigquery-2.51.0.jar.sha1" title="google-cloud-bigquery-2.51.0.jar.sha1">google-cloud-bigquery-2.51.0.jar.sha1</a>             2025-06-06 20:00        40      
+<a href="google-cloud-bigquery-2.51.0.pom" title="google-cloud-bigquery-2.51.0.pom">google-cloud-bigquery-2.51.0.pom</a>                  2025-06-06 20:00     79621      
+<a href="google-cloud-bigquery-2.51.0.pom.asc" title="google-cloud-bigquery-2.51.0.pom.asc">google-cloud-bigquery-2.51.0.pom.asc</a>              2025-06-06 20:00       488      
+<a href="google-cloud-bigquery-2.51.0.pom.md5" title="google-cloud-bigquery-2.51.0.pom.md5">google-cloud-bigquery-2.51.0.pom.md5</a>              2025-06-06 20:00        32      
+<a href="google-cloud-bigquery-2.51.0.pom.sha1" title="google-cloud-bigquery-2.51.0.pom.sha1">google-cloud-bigquery-2.51.0.pom.sha1</a>             2025-06-06 20:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: "Central Repository: com/google/cloud/google-cloud-bigquery/2.51.0"
+web search: 
+web search: site:github.com/googleapis/java-bigquery/tree/v2.51.0/google-cloud-bigquery/src/test google-cloud-bigquery src test v2.51.0
+exec
+/usr/bin/bash -lc "rg -n 'google-cloud-bigquery.*javadoc|cloud.google.com/java/docs/reference/google-cloud-bigquery|documentation-url.*javadoc.jar|test-code-url.*src/test' metadata/com.google.cloud -g index.json | head -60" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+metadata/com.google.cloud/google-cloud-bigquery/index.json:7:    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
+
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+exec
+/usr/bin/bash -lc "rg -n 'documentation-url\" : \"https://cloud.google.com/java/docs/reference|documentation-url\" : \"https://repo1.maven.org/maven2/com/google/cloud/.+javadoc.jar' metadata/com.google.cloud -g index.json | head -80" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+metadata/com.google.cloud/google-cloud-bigquery/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
+
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+exec
+/usr/bin/bash -lc "rg -n 'documentation-url\" : \"https://repo1.maven.org/.+javadoc.jar' metadata -g index.json | head -20" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-javadoc.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/com.google.cloud/google-cloud-bigquery/index.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30
+ succeeded in 0ms:
+ M metadata/com.google.cloud/google-cloud-bigquery/index.json
+
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+web search: 
+web search: Maven Central google-cloud-bigquery 2.51.0 sources javadoc
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/metadata/com.google.cloud/google-cloud-bigquery/index.json:1) for `metadata-version` `2.51.0`.
+
+Set:
+```json
+"source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
+"repository-url": "https://github.com/googleapis/java-bigquery",
+"test-code-url": "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
+"documentation-url": "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar"
+```
+
+I used Maven Central for the source and javadoc artifacts because `2.51.0` is published there, and the GitHub repo is the canonical Java BigQuery client repository. ([repo1.maven.org](https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/?utm_source=openai)) The Maven tests jar for `2.51.0` returned 404, so I used the tagged GitHub test suite path instead.
+
+`language` was left absent: this is a Java client library, not Kotlin, Groovy, Scala 2, or Scala 3.
+
+Verification:
+- `jq empty metadata/com.google.cloud/google-cloud-bigquery/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.google.cloud:google-cloud-bigquery:2.51.0 --stacktrace` failed because `metadata/com.google.cloud/google-cloud-bigquery/2.51.0/reachability-metadata.json` is missing, unrelated to this URL/description update.
+diff --git a/metadata/com.google.cloud/google-cloud-bigquery/index.json b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+index 53e9da5577348e185ef9ce19ac44ba8656722e3b..2f7078ae396e955d83f30ae9dd1c49f786507e3d
+--- a/metadata/com.google.cloud/google-cloud-bigquery/index.json
++++ b/metadata/com.google.cloud/google-cloud-bigquery/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.51.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
++    "repository-url" : "https://github.com/googleapis/java-bigquery",
++    "test-code-url" : "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
++    "description" : "The Google Cloud BigQuery Java client library provides JVM APIs for working with BigQuery datasets, tables, jobs, queries, and results. It wraps BigQuery service operations with Google Cloud authentication, transport, and data model integrations for Java applications.",
+     "tested-versions" : [
+       "2.51.0"
+     ],
+
+tokens used
+109,532
+Updated [index.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/metadata/com.google.cloud/google-cloud-bigquery/index.json:1) for `metadata-version` `2.51.0`.
+
+Set:
+```json
+"source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
+"repository-url": "https://github.com/googleapis/java-bigquery",
+"test-code-url": "https://github.com/googleapis/java-bigquery/tree/v$version$/google-cloud-bigquery/src/test",
+"documentation-url": "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar"
+```
+
+I used Maven Central for the source and javadoc artifacts because `2.51.0` is published there, and the GitHub repo is the canonical Java BigQuery client repository. ([repo1.maven.org](https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/?utm_source=openai)) The Maven tests jar for `2.51.0` returned 404, so I used the tagged GitHub test suite path instead.
+
+`language` was left absent: this is a Java client library, not Kotlin, Groovy, Scala 2, or Scala 3.
+
+Verification:
+- `jq empty metadata/com.google.cloud/google-cloud-bigquery/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.google.cloud:google-cloud-bigquery:2.51.0 --stacktrace` failed because `metadata/com.google.cloud/google-cloud-bigquery/2.51.0/reachability-metadata.json` is missing, unrelated to this URL/description update.
+Ran agent for com.google.cloud:google-cloud-bigquery:2.51.0 (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/build/agent-url-discovery-logs/com.google.cloud-google-cloud-bigquery-2.51.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5591-5b412d30/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 1 executed, 8 up-to-date
