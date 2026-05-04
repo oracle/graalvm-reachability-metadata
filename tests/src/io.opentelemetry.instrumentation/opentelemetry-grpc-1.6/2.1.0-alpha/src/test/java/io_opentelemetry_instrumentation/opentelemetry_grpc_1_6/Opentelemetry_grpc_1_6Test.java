@@ -48,6 +48,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -68,10 +70,20 @@ public class Opentelemetry_grpc_1_6Test {
             Metadata.ASCII_STRING_MARSHALLER);
     private static final String SERVICE_NAME = "test.EchoService";
     private static final String METHOD_NAME = "Echo";
+    private static final String STREAMING_METHOD_NAME = "Expand";
     private static final String FULL_METHOD_NAME = MethodDescriptor.generateFullMethodName(SERVICE_NAME, METHOD_NAME);
+    private static final String FULL_STREAMING_METHOD_NAME = MethodDescriptor.generateFullMethodName(
+            SERVICE_NAME,
+            STREAMING_METHOD_NAME);
     private static final MethodDescriptor<String, String> ECHO_METHOD = MethodDescriptor.<String, String>newBuilder()
             .setType(MethodDescriptor.MethodType.UNARY)
             .setFullMethodName(FULL_METHOD_NAME)
+            .setRequestMarshaller(new Utf8Marshaller())
+            .setResponseMarshaller(new Utf8Marshaller())
+            .build();
+    private static final MethodDescriptor<String, String> EXPAND_METHOD = MethodDescriptor.<String, String>newBuilder()
+            .setType(MethodDescriptor.MethodType.SERVER_STREAMING)
+            .setFullMethodName(FULL_STREAMING_METHOD_NAME)
             .setRequestMarshaller(new Utf8Marshaller())
             .setResponseMarshaller(new Utf8Marshaller())
             .build();
@@ -217,6 +229,38 @@ public class Opentelemetry_grpc_1_6Test {
         }
     }
 
+    @Test
+    void instrumentsServerStreamingCalls() throws Exception {
+        try (TestingOpenTelemetry testing = TestingOpenTelemetry.create()) {
+            GrpcTelemetry telemetry = GrpcTelemetry.create(testing.openTelemetry());
+            String serverName = "otel-grpc-streaming-" + UUID.randomUUID();
+            Server server = startServer(serverName, telemetry, serverStreamingService());
+            ManagedChannel channel = InProcessChannelBuilder.forName(serverName).directExecutor().build();
+            List<String> responses = new ArrayList<>();
+            try {
+                Iterator<String> responseIterator = ClientCalls.blockingServerStreamingCall(
+                        ClientInterceptors.intercept(channel, telemetry.newClientInterceptor()),
+                        EXPAND_METHOD,
+                        CallOptions.DEFAULT.withDeadlineAfter(5, TimeUnit.SECONDS),
+                        "stream");
+                while (responseIterator.hasNext()) {
+                    responses.add(responseIterator.next());
+                }
+            } finally {
+                shutdown(channel, server);
+            }
+
+            assertThat(responses).containsExactly("stream:0", "stream:1", "stream:2");
+            SpanData clientSpan = findSpan(testing.finishedSpans(), FULL_STREAMING_METHOD_NAME, SpanKind.CLIENT);
+            SpanData serverSpan = findSpan(testing.finishedSpans(), FULL_STREAMING_METHOD_NAME, SpanKind.SERVER);
+
+            assertThat(clientSpan.getStatus().getStatusCode()).isEqualTo(StatusCode.UNSET);
+            assertThat(serverSpan.getStatus().getStatusCode()).isEqualTo(StatusCode.UNSET);
+            assertStreamingGrpcAttributes(clientSpan);
+            assertStreamingGrpcAttributes(serverSpan);
+        }
+    }
+
     private static Server startServer(
             String serverName,
             GrpcTelemetry telemetry,
@@ -251,6 +295,20 @@ public class Opentelemetry_grpc_1_6Test {
         return ServerServiceDefinition.builder(SERVICE_NAME).addMethod(ECHO_METHOD, handler).build();
     }
 
+    private static ServerServiceDefinition serverStreamingService() {
+        ServerCallHandler<String, String> handler = ServerCalls.asyncServerStreamingCall(
+                new ServerCalls.ServerStreamingMethod<>() {
+                    @Override
+                    public void invoke(String request, StreamObserver<String> responseObserver) {
+                        responseObserver.onNext(request + ":0");
+                        responseObserver.onNext(request + ":1");
+                        responseObserver.onNext(request + ":2");
+                        responseObserver.onCompleted();
+                    }
+                });
+        return ServerServiceDefinition.builder(SERVICE_NAME).addMethod(EXPAND_METHOD, handler).build();
+    }
+
     private static void shutdown(ManagedChannel channel, Server server) throws InterruptedException {
         channel.shutdownNow();
         server.shutdownNow();
@@ -270,6 +328,12 @@ public class Opentelemetry_grpc_1_6Test {
         assertThat(span.getAttributes().get(RPC_SYSTEM)).isEqualTo("grpc");
         assertThat(span.getAttributes().get(RPC_SERVICE)).isEqualTo(SERVICE_NAME);
         assertThat(span.getAttributes().get(RPC_METHOD)).isEqualTo(METHOD_NAME);
+    }
+
+    private static void assertStreamingGrpcAttributes(SpanData span) {
+        assertThat(span.getAttributes().get(RPC_SYSTEM)).isEqualTo("grpc");
+        assertThat(span.getAttributes().get(RPC_SERVICE)).isEqualTo(SERVICE_NAME);
+        assertThat(span.getAttributes().get(RPC_METHOD)).isEqualTo(STREAMING_METHOD_NAME);
     }
 
     private static final class MethodAttributeExtractor implements AttributesExtractor<GrpcRequest, Status> {
