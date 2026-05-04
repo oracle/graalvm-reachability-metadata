@@ -305,7 +305,7 @@ public class Org_osgi_util_trackerTest {
     }
 
     private static Dictionary<String, Object> dictionary(Object... keyValues) {
-        Hashtable<String, Object> dictionary = new Hashtable<>();
+        Hashtable<String, Object> dictionary = (Hashtable<String, Object>) (Hashtable<?, ?>) new java.util.Properties();
         for (int i = 0; i < keyValues.length; i += 2) {
             dictionary.put((String) keyValues[i], keyValues[i + 1]);
         }
@@ -613,7 +613,7 @@ public class Org_osgi_util_trackerTest {
         }
 
         private Hashtable<String, Object> copyProperties(Dictionary<String, ?> properties) {
-            Hashtable<String, Object> copy = new Hashtable<>();
+            Hashtable<String, Object> copy = (Hashtable<String, Object>) (Hashtable<?, ?>) new java.util.Properties();
             if (properties != null) {
                 Enumeration<String> keys = properties.keys();
                 while (keys.hasMoreElements()) {
@@ -837,7 +837,7 @@ public class Org_osgi_util_trackerTest {
 
         @Override
         public Dictionary<String, String> getHeaders() {
-            return new Hashtable<>();
+            return (Dictionary<String, String>) (Dictionary<?, ?>) new java.util.Properties();
         }
 
         @Override
