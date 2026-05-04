@@ -1470,7 +1470,8 @@ class ProjectItemStatusTests(unittest.TestCase):
                 forge_metadata,
                 "get_issue_project_item_status",
                 return_value=("project-item", forge_metadata.STATUS_TODO),
-        ) as get_issue_project_item_status:
+        ) as get_issue_project_item_status, \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
             self.assertEqual(
                 forge_metadata.get_project_item_state(1412),
                 ("project-item", forge_metadata.STATUS_TODO),
@@ -1481,6 +1482,13 @@ class ProjectItemStatusTests(unittest.TestCase):
             forge_metadata.PROJECT_NUMBER,
             1412,
             forge_metadata.STATUS_FIELD_NAME,
+        )
+        self.assertIn(
+            (
+                "[project-item] Issue #1412 is linked to GitHub project item project-item "
+                f"in project {forge_metadata.PROJECT_NUMBER} with Status '{forge_metadata.STATUS_TODO}'"
+            ),
+            stdout.getvalue(),
         )
 
 

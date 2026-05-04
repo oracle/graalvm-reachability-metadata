@@ -1280,7 +1280,14 @@ def get_project_item_state(issue_number: int) -> tuple[str | None, str | None]:
     )
     if item_id:
         print()
-        log_stage("project-item", f"{item_id} Issue number: {issue_number}")
+        status_text = status if status is not None else "unknown"
+        log_stage(
+            "project-item",
+            (
+                f"Issue #{issue_number} is linked to GitHub project item {item_id} "
+                f"in project {PROJECT_NUMBER} with Status '{status_text}'"
+            ),
+        )
     return item_id, status
 
 
