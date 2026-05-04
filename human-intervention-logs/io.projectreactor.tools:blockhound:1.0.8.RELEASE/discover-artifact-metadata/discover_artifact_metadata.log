@@ -1,0 +1,1316 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df0ce-aa7b-7102-a85d-d18f69df40e0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.projectreactor.tools:blockhound:1.0.8.RELEASE
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.8.RELEASE" when "$version$" is replaced with "1.0.8.RELEASE".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+- Set "coordinates" to "io.projectreactor.tools:blockhound:1.0.8.RELEASE".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.8.RELEASE".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream repository/tag, then patch the JSON in place.
+web search: 
+web search: io.projectreactor.tools blockhound 1.0.8.RELEASE Maven sources tests documentation GitHub tag
+codex
+Maven Central has the artifact JAR, sources JAR, and javadoc JAR for `1.0.8.RELEASE`. I’m checking the repository conventions now so the URL fields match the metadata style used here.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+{
+  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' . --glob '*.json' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+./metadata/ru.vyarus/generics-resolver/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-sources.jar",
+./metadata/ru.vyarus/generics-resolver/index.json:7:    "test-code-url" : "https://github.com/xvik/generics-resolver/tree/$version$/src/test",
+./metadata/ru.vyarus/generics-resolver/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+./metadata/dev.zio/zio-config_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-config/tree/v$version$/core/shared/src/test",
+./metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-stacktracer_3/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:6:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+./metadata/dev.zio/zio-stacktracer_3/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+./metadata/dev.zio/zio-stacktracer_3/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:26:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+./metadata/dev.zio/zio-stacktracer_3/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:7:    "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+./metadata/dev.zio/zio-http_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-http/tree/v$version$/zio-http/jvm/src/test",
+./metadata/dev.zio/zio-http_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-internal-macros_3/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:6:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+./metadata/dev.zio/zio-internal-macros_3/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+./metadata/dev.zio/zio-internal-macros_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:25:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+./metadata/dev.zio/zio-internal-macros_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+./metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+./metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/$version$/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+./metadata/com.diffplug.durian/durian-swt.os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-javadoc.jar",
+./metadata/org.jline/jline-terminal-jni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+./metadata/org.jline/jline-terminal-jni/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+./metadata/org.jline/jline-terminal-jni/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-javadoc.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+./metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+./metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+./metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+./metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+./metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+./metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+./metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+./metadata/org.jline/jline-reader/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+./metadata/org.jline/jline-reader/index.json:8:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+./metadata/org.jline/jline-reader/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+./metadata/org.jline/jline-reader/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+./metadata/org.jline/jline-reader/index.json:22:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+./metadata/org.jline/jline-reader/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+./metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+./metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-$version$",
+./metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-javadoc.jar",
+./metadata/org.jline/jline-native/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-native/$version$/jline-native-$version$-sources.jar",
+./metadata/org.jline/jline-native/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/native/src/test/java",
+./metadata/org.jline/jline-native/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-native/$version$/jline-native-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+./metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+./metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+./metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.projectreactor.tools</groupId>
+  <artifactId>blockhound</artifactId>
+  <version>1.0.8.RELEASE</version>
+  <name>BlockHound Java Agent</name>
+  <description>Java agent to detect blocking calls from non-blocking threads.</description>
+  <url>https://github.com/reactor/BlockHound</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>simonbasle</id>
+      <name>Simon Baslé</name>
+      <email>sbasle@vmware.com</email>
+    </developer>
+    <developer>
+      <id>bsideup</id>
+      <name>Sergei Egorov</name>
+      <email>bsideup@gmail.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/reactor/BlockHound.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/reactor/BlockHound.git</developerConnection>
+    <url>https://github.com/reactor/BlockHound/</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc "find . -path './.git' -prune -o -name '*blockhound*' -print" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 100ms:
+web search: 
+web search: 
+web search: 
+web search: Maven Central io.projectreactor.tools blockhound 1.0.8.RELEASE sources javadoc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/reactor/BlockHound/git/trees/1.0.8.RELEASE?recursive=1 | rg '\"path\": .*test|\"path\": .*README|\"path\": .*docs|\"path\": .*src/main|\"path\": .*blockhound'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-sources.jar | sed -n '1,20p' && curl -I -fsSL https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/ | rg 'tests|test|sources|javadoc|jar'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 132ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 02:26:33 GMT
+content-type: application/java-archive
+content-length: 51581
+cf-ray: 9f640fb21fff8bbd-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 32933
+etag: "1f25251f840e31668e28dd1777c22b13"
+last-modified: Thu, 06 Apr 2023 11:52:10 GMT
+x-checksum-md5: 1f25251f840e31668e28dd1777c22b13
+x-checksum-sha1: e4cd56cd86eaa47a9d48a67375fedd9bf99f906d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 252ms:
+      "path": "README.md",
+      "path": "agent/src/main",
+      "path": "agent/src/main/java",
+      "path": "agent/src/main/java/reactor",
+      "path": "agent/src/main/java/reactor/blockhound",
+      "path": "agent/src/main/java/reactor/blockhound/AllowancesByteBuddyTransformer.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockHound.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockHoundRuntime.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockingCallsByteBuddyTransformer.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockingMethod.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockingOperationError.java",
+      "path": "agent/src/main/java/reactor/blockhound/InstrumentationUtils.java",
+      "path": "agent/src/main/java/reactor/blockhound/NativeWrappingClassFileTransformer.java",
+      "path": "agent/src/main/java/reactor/blockhound/TestThread.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration",
+      "path": "agent/src/main/java/reactor/blockhound/integration/BlockHoundIntegration.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration/LoggingIntegration.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration/ReactorIntegration.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration/RxJava2Integration.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration/StandardOutputIntegration.java",
+      "path": "benchmarks/src/jmh/java/reactor/blockhound",
+      "path": "benchmarks/src/jmh/java/reactor/blockhound/BlockHoundBenchmark.java",
+      "path": "docs",
+      "path": "docs/README.md",
+      "path": "docs/custom_integrations.md",
+      "path": "docs/customization.md",
+      "path": "docs/how_it_works.md",
+      "path": "docs/quick_start.md",
+      "path": "docs/supported_testing_frameworks.md",
+      "path": "docs/tips.md",
+      "path": "example/src/test",
+      "path": "example/src/test/java",
+      "path": "example/src/test/java/com",
+      "path": "example/src/test/java/com/example",
+      "path": "example/src/test/java/com/example/BlockingDisallowTest.java",
+      "path": "example/src/test/java/com/example/BuilderTest.java",
+      "path": "example/src/test/java/com/example/CustomBlockingMethodTest.java",
+      "path": "example/src/test/java/com/example/DynamicCurrentThreadTest.java",
+      "path": "example/src/test/java/com/example/DynamicThreadsTest.java",
+      "path": "example/src/test/java/com/example/FalseNegativesTest.java",
+      "path": "example/src/test/java/com/example/IntegrationOrderingTest.java",
+      "path": "example/src/test/java/com/example/JDKTest.java",
+      "path": "example/src/test/java/com/example/ReactorTest.java",
+      "path": "example/src/test/java/com/example/RxJavaTest.java",
+      "path": "example/src/test/java/com/example/StackTraceTest.java",
+      "path": "example/src/test/java/com/example/StandardOutputTest.java",
+      "path": "example/src/test/java/com/example/StaticInitTest.java",
+      "path": "example/src/test/resources",
+      "path": "example/src/test/resources/META-INF",
+      "path": "example/src/test/resources/META-INF/services",
+      "path": "example/src/test/resources/META-INF/services/reactor.blockhound.integration.BlockHoundIntegration",
+      "path": "junit-platform/src/main",
+      "path": "junit-platform/src/main/java",
+      "path": "junit-platform/src/main/java/reactor",
+      "path": "junit-platform/src/main/java/reactor/blockhound",
+      "path": "junit-platform/src/main/java/reactor/blockhound/junit",
+      "path": "junit-platform/src/main/java/reactor/blockhound/junit/platform",
+      "path": "junit-platform/src/main/java/reactor/blockhound/junit/platform/BlockHoundTestExecutionListener.java",
+      "path": "junit-platform/src/test",
+      "path": "junit-platform/src/test/java",
+      "path": "junit-platform/src/test/java/reactor",
+      "path": "junit-platform/src/test/java/reactor/blockhound",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit/platform",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit/platform/JUnitPlatformDynamicIntegrationTest.java",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit/platform/JUnitPlatformIntegrationTest.java",
+
+ succeeded in 212ms:
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar" title="blockhound-1.0.8.RELEASE-javadoc.jar">blockhound-1.0.8.RELEASE-javadoc.jar</a>              2023-04-06 11:52     51581      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc">blockhound-1.0.8.RELEASE-javadoc.jar.asc</a>          2023-04-06 11:52       821      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc.md5" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc.md5">blockhound-1.0.8.RELEASE-javadoc.jar.asc.md5</a>      2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha1" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha1">blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha1</a>     2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha256" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha256">blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha2...</a>  2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha512" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha512">blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha5...</a>  2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.md5" title="blockhound-1.0.8.RELEASE-javadoc.jar.md5">blockhound-1.0.8.RELEASE-javadoc.jar.md5</a>          2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.sha1" title="blockhound-1.0.8.RELEASE-javadoc.jar.sha1">blockhound-1.0.8.RELEASE-javadoc.jar.sha1</a>         2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.sha256" title="blockhound-1.0.8.RELEASE-javadoc.jar.sha256">blockhound-1.0.8.RELEASE-javadoc.jar.sha256</a>       2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.sha512" title="blockhound-1.0.8.RELEASE-javadoc.jar.sha512">blockhound-1.0.8.RELEASE-javadoc.jar.sha512</a>       2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE-sources.jar" title="blockhound-1.0.8.RELEASE-sources.jar">blockhound-1.0.8.RELEASE-sources.jar</a>              2023-04-06 11:52     22072      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc" title="blockhound-1.0.8.RELEASE-sources.jar.asc">blockhound-1.0.8.RELEASE-sources.jar.asc</a>          2023-04-06 11:52       821      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc.md5" title="blockhound-1.0.8.RELEASE-sources.jar.asc.md5">blockhound-1.0.8.RELEASE-sources.jar.asc.md5</a>      2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc.sha1" title="blockhound-1.0.8.RELEASE-sources.jar.asc.sha1">blockhound-1.0.8.RELEASE-sources.jar.asc.sha1</a>     2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc.sha256" title="blockhound-1.0.8.RELEASE-sources.jar.asc.sha256">blockhound-1.0.8.RELEASE-sources.jar.asc.sha2...</a>  2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc.sha512" title="blockhound-1.0.8.RELEASE-sources.jar.asc.sha512">blockhound-1.0.8.RELEASE-sources.jar.asc.sha5...</a>  2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.md5" title="blockhound-1.0.8.RELEASE-sources.jar.md5">blockhound-1.0.8.RELEASE-sources.jar.md5</a>          2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.sha1" title="blockhound-1.0.8.RELEASE-sources.jar.sha1">blockhound-1.0.8.RELEASE-sources.jar.sha1</a>         2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.sha256" title="blockhound-1.0.8.RELEASE-sources.jar.sha256">blockhound-1.0.8.RELEASE-sources.jar.sha256</a>       2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.sha512" title="blockhound-1.0.8.RELEASE-sources.jar.sha512">blockhound-1.0.8.RELEASE-sources.jar.sha512</a>       2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE.jar" title="blockhound-1.0.8.RELEASE.jar">blockhound-1.0.8.RELEASE.jar</a>                      2023-04-06 11:52   4529241      
+<a href="blockhound-1.0.8.RELEASE.jar.asc" title="blockhound-1.0.8.RELEASE.jar.asc">blockhound-1.0.8.RELEASE.jar.asc</a>                  2023-04-06 11:52       821      
+<a href="blockhound-1.0.8.RELEASE.jar.asc.md5" title="blockhound-1.0.8.RELEASE.jar.asc.md5">blockhound-1.0.8.RELEASE.jar.asc.md5</a>              2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE.jar.asc.sha1" title="blockhound-1.0.8.RELEASE.jar.asc.sha1">blockhound-1.0.8.RELEASE.jar.asc.sha1</a>             2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE.jar.asc.sha256" title="blockhound-1.0.8.RELEASE.jar.asc.sha256">blockhound-1.0.8.RELEASE.jar.asc.sha256</a>           2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE.jar.asc.sha512" title="blockhound-1.0.8.RELEASE.jar.asc.sha512">blockhound-1.0.8.RELEASE.jar.asc.sha512</a>           2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE.jar.md5" title="blockhound-1.0.8.RELEASE.jar.md5">blockhound-1.0.8.RELEASE.jar.md5</a>                  2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE.jar.sha1" title="blockhound-1.0.8.RELEASE.jar.sha1">blockhound-1.0.8.RELEASE.jar.sha1</a>                 2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE.jar.sha256" title="blockhound-1.0.8.RELEASE.jar.sha256">blockhound-1.0.8.RELEASE.jar.sha256</a>               2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE.jar.sha512" title="blockhound-1.0.8.RELEASE.jar.sha512">blockhound-1.0.8.RELEASE.jar.sha512</a>               2023-04-06 11:52       128      
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org io projectreactor tools blockhound 1.0.8.RELEASE pom
+web search: 
+web search: https://github.com/reactor/BlockHound/releases
+web search: 
+web search: '1.0.8.RELEASE' in https://github.com/reactor/BlockHound/releases
+web search: 
+web search: https://github.com/reactor/BlockHound/releases/tag/1.0.8.RELEASE
+web search: 
+web search: https://github.com/reactor/BlockHound/tree/1.0.8.RELEASE/docs
+codex
+The upstream tag contains `docs`, `agent`, `example`, and `junit-platform` modules at `1.0.8.RELEASE`; the published Maven directory has no test JAR, so I’ll use the tagged GitHub test tree rather than inventing a Maven test URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/settings.gradle' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/build.gradle | sed -n '1,260p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/agent/build.gradle | sed -n '1,260p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/example/build.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 175ms:
+subprojects {
+    apply from: "$rootDir/gradle/publishing.gradle"
+
+    group = "io.projectreactor.tools"
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(Test).all {
+        def javaMajorVersion = System.getProperty("java.version").split("\\.", 2)[0].toInteger()
+        if (javaMajorVersion >= 13) {
+            jvmArgs += [
+                    "-XX:+AllowRedefinitionToAddDeleteMethods"
+            ]
+        }
+    }
+
+
+    plugins.withType(SigningPlugin) {
+        //skipping if not .RELEASE. Note the task graph is still being evaluated here.
+        //This works because the version is only defined by CI scripts, and only the release one should use .RELEASE suffix
+        def shouldSign = version.toString().endsWith(".RELEASE")
+        project.signing {
+            required { shouldSign }
+
+            //skip the configuration entirely if !shouldSign. the task shouldn't even be available
+            if (shouldSign) {
+                def signingKey = System.getenv('GRADLE_SIGNING_KEY')
+                def signingPassword = System.getenv('GRADLE_SIGNING_PASSWORD')
+                useInMemoryPgpKeys(signingKey, signingPassword)
+
+                afterEvaluate {
+                    sign publishing.publications.mavenJava
+                }
+            }
+        }
+    }
+
+    plugins.withType(MavenPublishPlugin) {
+        project.publishing {
+            repositories {
+                maven {
+                    url System.getenv('GRADLE_PUBLISH_REPO_URL')
+                    credentials {
+                        username = System.getenv('GRADLE_PUBLISH_MAVEN_USER')
+                        password = System.getenv('GRADLE_PUBLISH_MAVEN_PASSWORD')
+                    }
+                }
+            }
+        }
+    }
+
+    tasks.withType(GenerateModuleMetadata) {
+        enabled = false
+    }
+}
+
+ succeeded in 188ms:
+rootProject.name = 'reactor-block-hound'
+
+
+include 'agent'
+include 'example'
+include 'junit-platform'
+include 'benchmarks'
+
+ succeeded in 194ms:
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "java"
+    id "maven-publish"
+    id "signing"
+    id "org.unbroken-dome.test-sets" version "4.0.0"
+    id 'me.champeau.gradle.japicmp' version '0.4.1' apply false
+    id 'de.undercouch.download' version '5.4.0' apply false    
+}
+
+import me.champeau.gradle.japicmp.JapicmpTask
+apply plugin: 'me.champeau.gradle.japicmp'
+apply plugin: 'de.undercouch.download'
+
+description = "BlockHound Java Agent"
+ext.detailedDescription = "Java agent to detect blocking calls from non-blocking threads."
+
+testSets {
+    jarFileTest
+}
+
+sourceCompatibility = targetCompatibility = 8
+
+shadowJar {
+    classifier = null
+
+    manifest {
+        attributes('Can-Retransform-Classes': 'true')
+        attributes('Can-Set-Native-Method-Prefix': 'true')
+        attributes('Can-Redefine-Classes': 'true')
+        attributes('Automatic-Module-Name': 'reactor.blockhound')
+        attributes('Premain-Class': 'reactor.blockhound.BlockHound')
+    }
+
+    exclude 'META-INF/versions/9/module-info.class'
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/licenses/'
+    exclude 'META-INF/maven/**'
+    exclude 'reactor/shaded/META-INF/**'
+
+    // TODO discuss with ByteBuddy folks how to shade it
+    exclude 'win32-x86*/**'
+}
+
+project.tasks.build.dependsOn(shadowJar)
+
+task relocateShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+    prefix = "reactor.blockhound.shaded"
+}
+
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
+
+project.tasks.jarFileTest.configure {
+    systemProperty("jarFile", shadowJar.outputs.files.singleFile)
+    dependsOn(shadowJar)
+}
+tasks.check.dependsOn tasks.jarFileTest
+
+dependencies {
+    compileOnly 'com.google.auto.service:auto-service-annotations:1.0.1'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0'
+
+    implementation 'net.bytebuddy:byte-buddy:1.14.4'    
+    implementation 'net.bytebuddy:byte-buddy-agent:1.14.4'
+
+    compileOnly 'io.projectreactor:reactor-core:3.2.5.RELEASE'
+    compileOnly 'io.reactivex.rxjava2:rxjava:2.2.18'
+
+    jarFileTestImplementation 'org.assertj:assertj-core:3.24.2'
+    jarFileTestImplementation 'junit:junit:4.13.2'
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier.set('javadoc')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) { publication ->
+            artifacts.removeAll { it.classifier == null }
+            artifact project.tasks.shadowJar
+            artifact sourcesJar
+            artifact javadocJar
+
+            artifactId 'blockhound'
+        }
+    }
+}
+
+task downloadBaseline(type: Download) {
+	onlyIf {
+		if (project.gradle.startParameter.isOffline()) {
+			println "Offline: skipping downloading of baseline and JAPICMP"
+			return false
+		}
+		else if ("$compatibleVersion" == "SKIP") {
+			println "SKIP: Instructed to skip the baseline comparison"
+			return false
+		}
+		else {
+			println "Will download and perform baseline comparison with ${compatibleVersion}"
+			return true
+		}
+	}
+
+	onlyIfNewer true
+	compress true
+	src "${repositories.mavenCentral().url}io/projectreactor/tools/blockhound/$compatibleVersion/blockhound-${compatibleVersion}.jar"
+	dest "${buildDir}/baselineLibs/blockhound-${compatibleVersion}.jar"
+}
+
+def japicmpReport = tasks.register('japicmpReport') {
+	onlyIf {
+		japicmp.state.failure != null
+	}
+	doLast {
+		def reportFile = file("${project.buildDir}/reports/japi.txt")
+		if (reportFile.exists()) {
+			println "\n **********************************"
+			println " * /!\\ API compatibility failures *"
+			println " **********************************"
+			println "Japicmp report was filtered and interpreted to find the following incompatibilities:"
+			reportFile.eachLine {
+				if (it.contains("*") && (!it.contains("***") || it.contains("****")))
+					println "source incompatible change: $it"
+				else if (it.contains("!"))
+					println "binary incompatible change: $it"
+			}
+		}
+		else println "No incompatible change to report"
+	}
+}
+
+task japicmp(type: JapicmpTask) {
+	finalizedBy(japicmpReport)
+	dependsOn(shadowJar)
+	onlyIf { "$compatibleVersion" != "SKIP" }
+
+	oldClasspath.from(files("${buildDir}/baselineLibs/blockhound-${compatibleVersion}.jar"))
+	newClasspath.from(files(jar.archiveFile))
+	// these onlyXxx parameters result in a report that is slightly too noisy, but better than
+	// onlyBinaryIncompatibleModified = true which masks source-incompatible-only changes
+	onlyBinaryIncompatibleModified = false
+	onlyModified = true
+	failOnModification = true
+	failOnSourceIncompatibility = true
+	txtOutputFile = file("${project.buildDir}/reports/japi.txt")
+	ignoreMissingClasses = true
+	includeSynthetic = true
+
+	compatibilityChangeExcludes = [ "METHOD_NEW_DEFAULT" ]
+
+	packageExcludes = [
+			// Always ignore shaded packages
+			'reactor.blockhound.shaded.*'
+	]
+
+	classExcludes = [
+			// Ignores this transformer which is used internally
+			'reactor.blockhound.AllowancesByteBuddyTransformer$AllowedArgument$Factory',
+			// Ignores this transformer which is used internally
+			'reactor.blockhound.BlockingCallsByteBuddyTransformer$ModifiersArgument$Factory'
+	]
+
+	methodExcludes = [
+	]
+}
+
+tasks.japicmp.dependsOn(downloadBaseline)
+
+tasks.check.dependsOn(japicmp)
+
+ succeeded in 171ms:
+plugins {
+    id "java"
+}
+
+repositories {
+    maven { url 'https://repo.spring.io/libs-milestone' }
+}
+
+test {
+    dependsOn(tasks.getByPath(":agent:shadowJar"))
+
+    sourceCompatibility = targetCompatibility = 10
+
+    // Creates a JVM per test because the agent can be installed only once,
+    // and we test different installations.
+    // This is not required in normal testing scenarios
+    forkEvery = 1
+    maxParallelForks = 1
+    jvmArgs += [
+            "-Xverify:all",
+            JavaVersion.current().isJava9Compatible()
+                    ? "-Xlog:redefine+class*=warning"
+                    : "-XX:TraceRedefineClasses=2"
+    ]
+}
+
+configurations {
+    reactor_3_3_x {
+        extendsFrom(testRuntimeOnly, testImplementation)
+    }
+}
+
+task testReactor3_3_x(type: Test) {
+    group = 'verification'
+
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.output.classesDirs + configurations.reactor_3_3_x
+
+    include 'com/example/ReactorTest**'
+}
+check.dependsOn(testReactor3_3_x)
+
+dependencies {
+    testImplementation project(path: ":agent", configuration: 'shadow')
+    testImplementation 'io.projectreactor:reactor-core:3.2.5.RELEASE'
+    testImplementation 'io.reactivex.rxjava2:rxjava:2.2.18'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+
+    reactor_3_3_x 'io.projectreactor:reactor-core:3.2.5.RELEASE'
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/reactor/BlockHound/git/trees/1.0.8.RELEASE?recursive=1 | rg 'jarFileTest|src/test|Test.java'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+      "path": "agent/src/jarFileTest",
+      "path": "agent/src/jarFileTest/java",
+      "path": "agent/src/jarFileTest/java/reactor",
+      "path": "agent/src/jarFileTest/java/reactor/blockhoud",
+      "path": "agent/src/jarFileTest/java/reactor/blockhoud/AbstractJarFileTest.java",
+      "path": "agent/src/jarFileTest/java/reactor/blockhoud/JarFileShadingTest.java",
+      "path": "example/src/test",
+      "path": "example/src/test/java",
+      "path": "example/src/test/java/com",
+      "path": "example/src/test/java/com/example",
+      "path": "example/src/test/java/com/example/BlockingDisallowTest.java",
+      "path": "example/src/test/java/com/example/BuilderTest.java",
+      "path": "example/src/test/java/com/example/CustomBlockingMethodTest.java",
+      "path": "example/src/test/java/com/example/DynamicCurrentThreadTest.java",
+      "path": "example/src/test/java/com/example/DynamicThreadsTest.java",
+      "path": "example/src/test/java/com/example/FalseNegativesTest.java",
+      "path": "example/src/test/java/com/example/IntegrationOrderingTest.java",
+      "path": "example/src/test/java/com/example/JDKTest.java",
+      "path": "example/src/test/java/com/example/ReactorTest.java",
+      "path": "example/src/test/java/com/example/RxJavaTest.java",
+      "path": "example/src/test/java/com/example/StackTraceTest.java",
+      "path": "example/src/test/java/com/example/StandardOutputTest.java",
+      "path": "example/src/test/java/com/example/StaticInitTest.java",
+      "path": "example/src/test/resources",
+      "path": "example/src/test/resources/META-INF",
+      "path": "example/src/test/resources/META-INF/services",
+      "path": "example/src/test/resources/META-INF/services/reactor.blockhound.integration.BlockHoundIntegration",
+      "path": "junit-platform/src/test",
+      "path": "junit-platform/src/test/java",
+      "path": "junit-platform/src/test/java/reactor",
+      "path": "junit-platform/src/test/java/reactor/blockhound",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit/platform",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit/platform/JUnitPlatformDynamicIntegrationTest.java",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit/platform/JUnitPlatformIntegrationTest.java",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/README.md | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/docs/README.md | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 182ms:
+# BlockHound
+
+[![Travis CI](https://travis-ci.org/reactor/BlockHound.svg?branch=master)](https://travis-ci.org/reactor/BlockHound)
+[![](https://img.shields.io/badge/dynamic/xml.svg?label=Release&color=green&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/)
+[![](https://img.shields.io/badge/dynamic/xml.svg?label=Milestone&color=blue&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo.spring.io%2Fmilestone%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo.spring.io/milestone/io/projectreactor/tools/blockhound/)
+[![](https://img.shields.io/badge/dynamic/xml.svg?label=Snapshot&color=orange&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo.spring.io%2Fsnapshot%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo.spring.io/snapshot/io/projectreactor/tools/blockhound/)
+[![Gitter](https://badges.gitter.im/reactor/BlockHound.svg)](https://gitter.im/reactor/BlockHound)
+
+Java agent to detect blocking calls from non-blocking threads.
+
+## How it works
+BlockHound will transparently instrument the JVM classes and intercept blocking calls (e.g. IO) if they are performed from threads marked as "non-blocking operations only" (ie. threads implementing Reactor's `NonBlocking` marker interface, like those started by `Schedulers.parallel()`). If and when this happens (but remember, this should never happen!:stuck_out_tongue_winking_eye:), an error will be thrown. Here is an example:
+```java
+// Example.java
+BlockHound.install();
+
+Mono.delay(Duration.ofSeconds(1))
+    .doOnNext(it -> {
+        try {
+            Thread.sleep(10);
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    })
+    .block();
+```
+
+Will result in:
+```
+reactor.blockhound.BlockingOperationError: Blocking call! java.lang.Thread.sleep
+	at java.base/java.lang.Thread.sleep(Native Method)
+	at com.example.Example.lambda$exampleTest$0(Example.java:16)
+```
+Note that it points to the exact place where the blocking call got triggered. In this example it was `Example.java:16`.
+
+## Getting it
+
+Download it from Maven Central repositories (stable releases only) or repo.spring.io:
+
+_Gradle_
+
+```groovy
+repositories {
+  mavenCentral()
+  // maven { url 'https://repo.spring.io/milestone' }
+  // maven { url 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+  testImplementation 'io.projectreactor.tools:blockhound:$LATEST_RELEASE'
+  // testImplementation 'io.projectreactor.tools:blockhound:$LATEST_MILESTONE'
+  // testImplementation 'io.projectreactor.tools:blockhound:$LATEST_SNAPSHOT'
+}
+```
+
+_Maven_
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>io.projectreactor.tools</groupId>
+    <artifactId>blockhound</artifactId>
+    <version>$LATEST_RELEASE</version>
+  </dependency>
+</dependencies>
+```
+
+Where:
+
+|||
+|-|-|
+|`$LATEST_RELEASE`|[![](https://img.shields.io/badge/dynamic/xml.svg?label=&color=green&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/)|
+|`$LATEST_MILESTONE`|[![](https://img.shields.io/badge/dynamic/xml.svg?label=&color=blue&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo.spring.io%2Fmilestone%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo.spring.io/milestone/io/projectreactor/tools/blockhound/)|
+|`$LATEST_SNAPSHOT`|[![](https://img.shields.io/badge/dynamic/xml.svg?label=&color=orange&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo.spring.io%2Fsnapshot%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo.spring.io/snapshot/io/projectreactor/tools/blockhound/)|
+
+## JDK13+ support
+
+for JDK 13+, it is no longer allowed redefining native methods. So for the moment, as a temporary work around, please use the
+`-XX:+AllowRedefinitionToAddDeleteMethods` jvm argument:
+
+_Maven_
+
+```xml
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <argLine>-XX:+AllowRedefinitionToAddDeleteMethods</argLine>
+                </configuration>
+    </plugin>
+```
+
+_Gradle_
+
+```groovy
+    tasks.withType(Test).all {
+        if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_13)) {
+            jvmArgs += [
+                "-XX:+AllowRedefinitionToAddDeleteMethods"
+            ]
+        }
+    }
+```
+
+## Built-in integrations
+Although BlockHound supports [the SPI mechanism to integrate with](https://github.com/reactor/BlockHound/blob/master/docs/custom_integrations.md), it comes with a few built-in integrations:
+1. [Project Reactor](https://projectreactor.io)  
+  Version 3.2.x is supported out of the box.  
+  Starting with `reactor-core` version 3.3.0, there is [a built-in integration in Reactor itself](https://github.com/reactor/reactor-core/blob/v3.3.0.RELEASE/reactor-core/src/main/java/reactor/core/scheduler/ReactorBlockHoundIntegration.java) that uses [the SPI](https://github.com/reactor/BlockHound/blob/master/docs/custom_integrations.md).
+2. [RxJava 2](https://github.com/ReactiveX/RxJava/) is supported.  
+    RxJava 3 and further versions of RxJava will require an SPI to be implemented, either by the framework or user. See [this PR to RxJava](https://github.com/ReactiveX/RxJava/pull/6692) with an example of the SPI's implementation.
+
+# Quick Start
+See [the docs](./docs/README.md).
+
+-------------------------------------
+_Licensed under [Apache Software License 2.0](www.apache.org/licenses/LICENSE-2.0)_
+
+_Sponsored by [Pivotal](https://pivotal.io)_
+
+ succeeded in 157ms:
+## Table of contents
+* [Quick Start](quick_start.md)
+* [Supported testing frameworks](supported_testing_frameworks.md)
+* [Customization](customization.md)
+* [How it works](how_it_works.md)
+* [Writing custom integrations](custom_integrations.md)
+* [Tips & Tricks](tips.md)
+
+exec
+/usr/bin/bash -lc "rg -n 'reactor|BlockHound|projectreactor|blockhound' metadata --glob 'index.json'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/$version$/reactor-core-$version$-sources.jar",
+metadata/io.projectreactor/reactor-core/index.json:6:    "repository-url" : "https://github.com/reactor/reactor-core",
+metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v$version$/reactor-core/src/test/java",
+metadata/io.projectreactor/reactor-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/$version$/reactor-core-$version$-docs.zip",
+metadata/io.projectreactor/reactor-core/index.json:77:      "reactor.adapter",
+metadata/io.projectreactor/reactor-core/index.json:78:      "reactor.core",
+metadata/io.projectreactor/reactor-core/index.json:79:      "reactor.util"
+metadata/org.apache.maven/maven-monitor/index.json:9:    "description" : "Maven Monitor provides Maven 2 event monitoring APIs for dispatching start, end, and error notifications during build execution. It lets Maven components register event monitors for reactor, project, phase, and mojo execution events without depending on a larger monitoring implementation.",
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"https://github.com/["'^"]+/tree/'"\\"'$version'"\\"'$"|"test-code-url" : "https://github.com/[''^"]+/tree/v'"\\"'$version'"\\"'$"|"test-code-url": "https://github.com/[''^"]+/tree/'"\\"'$version'"\\"'$"'"' metadata --glob 'index.json' | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE.jar -o /tmp/blockhound-1.0.8.RELEASE.jar && jar tf /tmp/blockhound-1.0.8.RELEASE.jar | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 5638ms:
+reactor/blockhound/BlockHound$Builder$1$4.class
+reactor/blockhound/BlockHound$Builder$1$11.class
+reactor/blockhound/BlockHound$Builder$1$17.class
+reactor/blockhound/BlockHound$Builder$1$15.class
+reactor/blockhound/AllowancesByteBuddyTransformer.class
+reactor/blockhound/BlockHound$Builder.class
+reactor/blockhound/BlockHoundRuntime.class
+reactor/blockhound/BlockHound$Builder$2$2.class
+reactor/blockhound/BlockHound$Builder$1$18.class
+reactor/blockhound/integration/StandardOutputIntegration$PrintStreamDelegate.class
+reactor/blockhound/integration/ReactorIntegration.class
+reactor/blockhound/integration/StandardOutputIntegration.class
+reactor/blockhound/integration/BlockHoundIntegration.class
+reactor/blockhound/integration/RxJava2Integration.class
+reactor/blockhound/integration/LoggingIntegration.class
+reactor/blockhound/BlockHound$Builder$1$6.class
+reactor/blockhound/BlockingMethod.class
+reactor/blockhound/TestThread.class
+reactor/blockhound/BlockHound$Builder$2$1.class
+reactor/blockhound/InstrumentationUtils.class
+
+web search: 
+web search: BlockHound Java agent to detect blocking calls from non-blocking threads GitHub README
+exec
+/usr/bin/bash -lc "sed -n '1,240p' build/agent-artifact-discovery-logs/io.projectreactor.tools-blockhound-1.0.8.RELEASE.log" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+==== [2026-05-04 04:26:08] io.projectreactor.tools:blockhound:1.0.8.RELEASE
+COMMAND: codex -a never exec -s danger-full-access Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.projectreactor.tools:blockhound:1.0.8.RELEASE
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.8.RELEASE" when "$version$" is replaced with "1.0.8.RELEASE".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+- Set "coordinates" to "io.projectreactor.tools:blockhound:1.0.8.RELEASE".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.8.RELEASE".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df0ce-aa7b-7102-a85d-d18f69df40e0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.projectreactor.tools:blockhound:1.0.8.RELEASE
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.8.RELEASE" when "$version$" is replaced with "1.0.8.RELEASE".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+- Set "coordinates" to "io.projectreactor.tools:blockhound:1.0.8.RELEASE".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.8.RELEASE".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream repository/tag, then patch the JSON in place.
+web search: 
+web search: io.projectreactor.tools blockhound 1.0.8.RELEASE Maven sources tests documentation GitHub tag
+codex
+Maven Central has the artifact JAR, sources JAR, and javadoc JAR for `1.0.8.RELEASE`. I’m checking the repository conventions now so the URL fields match the metadata style used here.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+{
+  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' . --glob '*.json' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+./metadata/ru.vyarus/generics-resolver/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-sources.jar",
+./metadata/ru.vyarus/generics-resolver/index.json:7:    "test-code-url" : "https://github.com/xvik/generics-resolver/tree/$version$/src/test",
+./metadata/ru.vyarus/generics-resolver/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+./metadata/dev.zio/zio-config_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-config/tree/v$version$/core/shared/src/test",
+./metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-stacktracer_3/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:6:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+./metadata/dev.zio/zio-stacktracer_3/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+./metadata/dev.zio/zio-stacktracer_3/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:26:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+./metadata/dev.zio/zio-stacktracer_3/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:7:    "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+./metadata/dev.zio/zio-http_3/index.json:7:    "test-code-url" : "https://github.com/zio/zio-http/tree/v$version$/zio-http/jvm/src/test",
+./metadata/dev.zio/zio-http_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-internal-macros_3/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:6:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+./metadata/dev.zio/zio-internal-macros_3/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+./metadata/dev.zio/zio-internal-macros_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:25:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+./metadata/dev.zio/zio-internal-macros_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+./metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+./metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/$version$/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+./metadata/com.diffplug.durian/durian-swt.os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-javadoc.jar",
+./metadata/org.jline/jline-terminal-jni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+./metadata/org.jline/jline-terminal-jni/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+./metadata/org.jline/jline-terminal-jni/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-javadoc.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+./metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+./metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+./metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+./metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+./metadata/org.jline/jline-console/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+./metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+./metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+./metadata/org.jline/jline-reader/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+./metadata/org.jline/jline-reader/index.json:8:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+./metadata/org.jline/jline-reader/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+./metadata/org.jline/jline-reader/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+./metadata/org.jline/jline-reader/index.json:22:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+./metadata/org.jline/jline-reader/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-javadoc.jar",
+./metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+./metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-$version$",
+./metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-javadoc.jar",
+./metadata/org.jline/jline-native/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-native/$version$/jline-native-$version$-sources.jar",
+./metadata/org.jline/jline-native/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/native/src/test/java",
+./metadata/org.jline/jline-native/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-native/$version$/jline-native-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+./metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+./metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+./metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.projectreactor.tools</groupId>
+  <artifactId>blockhound</artifactId>
+  <version>1.0.8.RELEASE</version>
+  <name>BlockHound Java Agent</name>
+  <description>Java agent to detect blocking calls from non-blocking threads.</description>
+  <url>https://github.com/reactor/BlockHound</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>simonbasle</id>
+      <name>Simon Baslé</name>
+      <email>sbasle@vmware.com</email>
+    </developer>
+    <developer>
+      <id>bsideup</id>
+
+codex
+I found the relevant evidence: the POM names `https://github.com/reactor/BlockHound`, the artifact publishes sources/javadocs but no tests on Maven, and the JAR contains JVM `.class` files. I’m going to write the metadata without a `language` or `not-for-native-image` field.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..71f45d3e24e5ed98bd807c87807e7482f110dce5
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/example/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a Java agent that instruments JVM classes to detect blocking calls made from threads intended for non-blocking work. It reports a BlockingOperationError at the offending call site and includes built-in integrations for Reactor and RxJava 2."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..71f45d3e24e5ed98bd807c87807e7482f110dce5
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/example/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a Java agent that instruments JVM classes to detect blocking calls made from threads intended for non-blocking work. It reports a BlockingOperationError at the offending call site and includes built-in integrations for Reactor and RxJava 2."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+{
+  "coordinates": "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
+  "repository-url": "https://github.com/reactor/BlockHound",
+  "test-code-url": "https://github.com/reactor/BlockHound/tree/$version$/example/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
+  "description": "BlockHound is a Java agent that instruments JVM classes to detect blocking calls made from threads intended for non-blocking work. It reports a BlockingOperationError at the offending call site and includes built-in integrations for Reactor and RxJava 2."
+}
+
+exec
+/usr/bin/bash -lc "for url in 'https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-sources.jar' 'https://github.com/reactor/BlockHound/tree/1.0.8.RELEASE/example/src/test' 'https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-javadoc.jar'; do curl -I -fsSL \""'$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+exec
+/usr/bin/bash -lc "python3 - <<'PY'
+import json
+from pathlib import Path
+p = Path('build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json')
+data = json.loads(p.read_text())
+desc = data['description']
+print('sentences=', sum(1 for s in desc.split('.') if s.strip()))
+print('has_language=', 'language' in data)
+print('has_not_for_native_image=', 'not-for-native-image' in data)
+PY" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 153ms:
+sentences= 2
+has_language= False
+has_not_for_native_image= False
+
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..71f45d3e24e5ed98bd807c87807e7482f110dce5
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/example/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a Java agent that instruments JVM classes to detect blocking calls made from threads intended for non-blocking work. It reports a BlockingOperationError at the offending call site and includes built-in integrations for Reactor and RxJava 2."
+ }
+
+ succeeded in 763ms:
+HTTP/2 200 
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..71f45d3e24e5ed98bd807c87807e7482f110dce5
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/example/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a Java agent that instruments JVM classes to detect blocking calls made from threads intended for non-blocking work. It reports a BlockingOperationError at the offending call site and includes built-in integrations for Reactor and RxJava 2."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json && git status --short -- build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..71f45d3e24e5ed98bd807c87807e7482f110dce5
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/example/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a Java agent that instruments JVM classes to detect blocking calls made from threads intended for non-blocking work. It reports a BlockingOperationError at the offending call site and includes built-in integrations for Reactor and RxJava 2."
+ }
+
+ succeeded in 228ms:
+web search: 
+web search: https://github.com/reactor/BlockHound/tree/1.0.8.RELEASE/example/src/test
+web search: 
+web search: repo.maven.apache.org maven2 io projectreactor tools blockhound 1.0.8.RELEASE sources javadoc
+web search: 
+web search: 'Java agent to detect blocking calls from non-blocking threads.' in https://github.com/reactor/BlockHound/blob/1.0.8.RELEASE/README.md
+codex
+Updated [io.projectreactor.tools-blockhound-1.0.8.RELEASE.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json) with the discovered repository, Maven sources/javadocs, tagged GitHub test suite, and two-sentence description. The upstream README supports the Java agent description and built-in Reactor/RxJava integration details. ([github.com](https://github.com/reactor/BlockHound/blob/1.0.8.RELEASE/README.md))
+
+Validation done: JSON parses with `jq`, the substituted source/test/documentation URLs all returned HTTP 200, and the description is exactly two sentences. I left `language` and `not-for-native-image` absent.
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..71f45d3e24e5ed98bd807c87807e7482f110dce5
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/example/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a Java agent that instruments JVM classes to detect blocking calls made from threads intended for non-blocking work. It reports a BlockingOperationError at the offending call site and includes built-in integrations for Reactor and RxJava 2."
+ }
+
+tokens used
+138,518
+Updated [io.projectreactor.tools-blockhound-1.0.8.RELEASE.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json) with the discovered repository, Maven sources/javadocs, tagged GitHub test suite, and two-sentence description. The upstream README supports the Java agent description and built-in Reactor/RxJava integration details. ([github.com](https://github.com/reactor/BlockHound/blob/1.0.8.RELEASE/README.md))
+
+Validation done: JSON parses with `jq`, the substituted source/test/documentation URLs all returned HTTP 200, and the description is exactly two sentences. I left `language` and `not-for-native-image` absent.
+Ran agent for io.projectreactor.tools:blockhound:1.0.8.RELEASE (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a/build/agent-artifact-discovery-logs/io.projectreactor.tools-blockhound-1.0.8.RELEASE.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-9075b16a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 9s
+9 actionable tasks: 4 executed, 5 from cache
