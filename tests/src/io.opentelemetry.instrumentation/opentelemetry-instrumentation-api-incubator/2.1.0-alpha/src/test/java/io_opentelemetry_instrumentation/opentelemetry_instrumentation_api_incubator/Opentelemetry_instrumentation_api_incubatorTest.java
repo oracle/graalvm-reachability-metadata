@@ -22,6 +22,7 @@ import io.opentelemetry.instrumentation.api.incubator.log.LoggingContextConstant
 import io.opentelemetry.instrumentation.api.incubator.semconv.code.CodeAttributesExtractor;
 import io.opentelemetry.instrumentation.api.incubator.semconv.db.DbClientAttributesExtractor;
 import io.opentelemetry.instrumentation.api.incubator.semconv.db.DbClientAttributesGetter;
+import io.opentelemetry.instrumentation.api.incubator.semconv.db.DbClientSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.incubator.semconv.db.DbConnectionPoolMetrics;
 import io.opentelemetry.instrumentation.api.incubator.semconv.db.RedisCommandSanitizer;
 import io.opentelemetry.instrumentation.api.incubator.semconv.http.HttpClientPeerServiceAttributesExtractor;
@@ -135,6 +136,23 @@ public class Opentelemetry_instrumentation_api_incubatorTest {
         assertThat(attributes.get(CODE_NAMESPACE))
                 .isEqualTo(Opentelemetry_instrumentation_api_incubatorTest.class.getName());
         assertThat(attributes.get(CODE_FUNCTION)).isEqualTo("handle");
+    }
+
+    @Test
+    void databaseSpanNameExtractorUsesOperationAndFallbackNames() {
+        DatabaseGetter getter = new DatabaseGetter();
+        DatabaseRequest request =
+                new DatabaseRequest(
+                        "postgresql",
+                        "app_user",
+                        "inventory",
+                        "postgresql://db.example:5432/inventory",
+                        "UPDATE products SET price = 19.99 WHERE sku = 'ABC-123'",
+                        "UPDATE");
+        DatabaseRequest fallbackRequest = new DatabaseRequest("postgresql", null, null, null, null, null);
+
+        assertThat(DbClientSpanNameExtractor.create(getter).extract(request)).isEqualTo("UPDATE inventory");
+        assertThat(DbClientSpanNameExtractor.create(getter).extract(fallbackRequest)).isEqualTo("DB Query");
     }
 
     @Test
