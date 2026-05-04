@@ -157,6 +157,26 @@ public class Kotlinx_serialization_json_okio_jvmTest {
     }
 
     @Test
+    fun autoDetectsSequenceFormatFromBufferedSource(): Unit {
+        val arrayWrappedSource: Buffer = Buffer().writeUtf8("[1, 2, 3]")
+        val whitespaceSeparatedSource: Buffer = Buffer().writeUtf8("5\n8 13")
+
+        val arrayWrapped: List<Int> = Json.decodeBufferedSourceToSequence(
+            arrayWrappedSource,
+            Int.serializer(),
+        ).toList()
+        val whitespaceSeparated: List<Int> = Json.decodeBufferedSourceToSequence(
+            whitespaceSeparatedSource,
+            Int.serializer(),
+        ).toList()
+
+        assertThat(arrayWrapped).containsExactly(1, 2, 3)
+        assertThat(whitespaceSeparated).containsExactly(5, 8, 13)
+        assertThat(arrayWrappedSource.exhausted()).isTrue()
+        assertThat(whitespaceSeparatedSource.exhausted()).isTrue()
+    }
+
+    @Test
     fun decodesJsonTreeFromOkioSource(): Unit {
         val source: Buffer = Buffer().writeUtf8(
             """
