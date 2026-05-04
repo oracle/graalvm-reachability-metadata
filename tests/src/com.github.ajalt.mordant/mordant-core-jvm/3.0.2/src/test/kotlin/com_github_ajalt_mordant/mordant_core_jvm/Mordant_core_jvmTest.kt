@@ -35,6 +35,7 @@ import com.github.ajalt.mordant.widgets.OrderedList
 import com.github.ajalt.mordant.widgets.Padding
 import com.github.ajalt.mordant.widgets.Panel
 import com.github.ajalt.mordant.widgets.ProgressBar
+import com.github.ajalt.mordant.widgets.SelectList
 import com.github.ajalt.mordant.widgets.Text
 import com.github.ajalt.mordant.widgets.UnorderedList
 import com.github.ajalt.mordant.widgets.Viewport
@@ -212,6 +213,37 @@ public class Mordant_core_jvmTest {
         assertThat(ColumnWidth.Fixed(8).width).isEqualTo(8)
         assertThat(ColumnWidth.Expand(1).expandWeight).isEqualTo(1.0f)
         assertThat(ColumnWidth.Auto.width).isNull()
+    }
+
+    @Test
+    fun selectListWidgetRendersCursorSelectionMarkersDescriptionsAndCaption() {
+        val (terminal, _) = terminal(width = 64)
+        val choices = SelectList(
+            listOf(
+                SelectList.Entry("Generate metadata", "Creates configuration", false),
+                SelectList.Entry("Run native image", "Verifies executable", true),
+                SelectList.Entry("Publish report", "Shares results", false),
+            ),
+            Text("Pick task"),
+            1,
+            false,
+            ">",
+            "[x]",
+            "[ ]",
+            Text("Use arrows to move"),
+            TextColors.green,
+            TextStyles.bold.style,
+            TextColors.gray,
+            TextColors.gray,
+        )
+
+        val rendered = terminal.render(choices)
+
+        assertThat(rendered).contains("Pick task", "Use arrows to move")
+        assertThat(rendered).contains("Generate metadata", "Creates configuration")
+        assertThat(rendered).contains("Run native image", "Verifies executable")
+        assertThat(rendered).contains("Publish report", "Shares results")
+        assertThat(rendered).contains(">", "[x]", "[ ]")
     }
 
     @Test
