@@ -20,6 +20,7 @@ import com.google.spanner.admin.database.v1.Backup;
 import com.google.spanner.admin.database.v1.Database;
 import com.google.spanner.admin.instance.v1.Instance;
 import com.google.spanner.admin.instance.v1.InstanceConfig;
+import com.google.spanner.executor.v1.AdaptMessageAction;
 import com.google.spanner.executor.v1.AdminAction;
 import com.google.spanner.executor.v1.AdminResult;
 import com.google.spanner.executor.v1.BatchDmlAction;
@@ -396,6 +397,35 @@ public class Proto_google_cloud_spanner_executor_v1Test {
         assertThat(heartbeatRecord.getRecordCase()).isEqualTo(ChangeStreamRecord.RecordCase.HEARTBEAT);
         assertThat(changeStreamQuery.hasEndTime()).isTrue();
         assertThat(changeStreamQuery.getReadOptionsList()).contains("heartbeat_milliseconds=1000");
+    }
+
+    @Test
+    void pgAdapterMessageActionsPreservePayloadAttachmentsAndExecutionMode() {
+        AdaptMessageAction adapterMessage = AdaptMessageAction.newBuilder()
+                .setDatabaseUri(DATABASE_PATH)
+                .setProtocol("postgres")
+                .setPayload(ByteString.copyFromUtf8("Parse/Bind/Execute payload"))
+                .putAttachments("statement-name", "find-singer")
+                .putAttachments("parameter-format", "text")
+                .setQuery("SELECT SingerId FROM Singers WHERE SingerId = $1")
+                .setPrepareThenExecute(true)
+                .build();
+        SpannerAction action = SpannerAction.newBuilder()
+                .setDatabasePath(DATABASE_PATH)
+                .setAdaptMessage(adapterMessage)
+                .build();
+
+        assertThat(adapterMessage.getDatabaseUri()).isEqualTo(DATABASE_PATH);
+        assertThat(adapterMessage.getProtocol()).isEqualTo("postgres");
+        assertThat(adapterMessage.getPayload().toStringUtf8()).contains("Parse/Bind/Execute");
+        assertThat(adapterMessage.getAttachmentsMap())
+                .containsEntry("statement-name", "find-singer")
+                .containsEntry("parameter-format", "text");
+        assertThat(adapterMessage.getQuery()).contains("SingerId");
+        assertThat(adapterMessage.getPrepareThenExecute()).isTrue();
+        assertThat(action.getActionCase()).isEqualTo(SpannerAction.ActionCase.ADAPT_MESSAGE);
+        assertThat(action.getAdaptMessage().getAttachmentsOrThrow("statement-name")).isEqualTo("find-singer");
+        assertThat(action.hasQuery()).isFalse();
     }
 
     @Test
