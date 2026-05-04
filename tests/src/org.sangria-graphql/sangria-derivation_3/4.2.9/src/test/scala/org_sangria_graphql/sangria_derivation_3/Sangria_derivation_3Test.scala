@@ -15,7 +15,7 @@ import sangria.marshalling.{CoercedScalaResultMarshaller, FromInput}
 import sangria.marshalling.queryAst.queryAstResultMarshaller
 import sangria.parser.QueryParser
 import sangria.renderer.SchemaFilter
-import sangria.schema.{Argument, EnumType, Field, InputObjectType, IntType, ListType, ObjectType, Schema, StringType, fields}
+import sangria.schema.{Argument, Context, EnumType, Field, InputObjectType, IntType, ListType, ObjectType, Schema, StringType, fields}
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContext}
@@ -43,6 +43,18 @@ class Sangria_derivation_3Test {
       genre: Option[Genre],
       ignored: String = "not exposed"
   )
+
+  private final class ViewerCatalog(private val viewerName: String):
+    @GraphQLField
+    def greeting(@GraphQLDefault("Welcome") salutation: String): String =
+      s"$salutation, $viewerName"
+
+    @GraphQLField
+    @GraphQLName("largeBookTitles")
+    def booksWithAtLeast(minimumPages: Int)(context: Context[ViewerCatalogContext, Unit]): List[String] =
+      context.ctx.availableBooks.filter(_.pages >= minimumPages).map(_.title).toList
+
+  private final case class ViewerCatalogContext(viewerCatalog: ViewerCatalog, availableBooks: Vector[Book])
 
   private given GenreType: EnumType[Genre] = deriveEnumType[Genre](
     EnumTypeName("BookGenre"),
@@ -125,6 +137,11 @@ class Sangria_derivation_3Test {
   )
 
   private lazy val CatalogSchema: Schema[Unit, Unit] = Schema(QueryType)
+
+  private lazy val ViewerCatalogQueryType: ObjectType[ViewerCatalogContext, Unit] =
+    deriveContextObjectType[ViewerCatalogContext, ViewerCatalog, Unit](_.viewerCatalog)
+
+  private lazy val ViewerCatalogSchema: Schema[ViewerCatalogContext, Unit] = Schema(ViewerCatalogQueryType)
 
   @Test
   def derivesObjectTypesWithRenamedReplacedAddedExcludedAndMethodFields(): Unit = {
@@ -239,6 +256,25 @@ class Sangria_derivation_3Test {
   }
 
   @Test
+  def derivesContextObjectTypesFromAUserContextValue(): Unit = {
+    val result: ObjectValue = executeViewerCatalog(
+      """
+        |{
+        |  greeting
+        |  customGreeting: greeting(salutation: "Hello")
+        |  largeBookTitles(minimumPages: 400)
+        |}
+        |""".stripMargin,
+      ViewerCatalogContext(new ViewerCatalog("Ada"), Catalog)
+    )
+
+    val data: ObjectValue = objectField(result, "data")
+    assertStringField(data, "greeting", "Welcome, Ada")
+    assertStringField(data, "customGreeting", "Hello, Ada")
+    assertEquals(Vector("Dune", "Children of Dune", "A People's History"), stringListField(data, "largeBookTitles"))
+  }
+
+  @Test
   def rendersDerivedSchemaMetadataForOutputAndInputTypes(): Unit = {
     val rendered: String = CatalogSchema.renderPretty(SchemaFilter.default)
 
@@ -299,6 +335,16 @@ class Sangria_derivation_3Test {
     }
   }
 
+  private def executeViewerCatalog(query: String, context: ViewerCatalogContext): ObjectValue = {
+    val document: Document = QueryParser.parse(query).get
+    val result: Value = Await.result(Executor.execute(ViewerCatalogSchema, document, userContext = context), 5.seconds)
+
+    result match {
+      case objectValue: ObjectValue => objectValue
+      case other => fail(s"Expected GraphQL execution result object, got $other")
+    }
+  }
+
   private def objectField(value: ObjectValue, fieldName: String): ObjectValue =
     value.fieldsByName(fieldName) match {
       case objectValue: ObjectValue => objectValue
@@ -313,6 +359,12 @@ class Sangria_derivation_3Test {
 
   private def assertStringField(value: ObjectValue, fieldName: String, expected: String): Unit =
     assertEquals(expected, stringField(value, fieldName))
+
+  private def stringListField(value: ObjectValue, fieldName: String): Vector[String] =
+    listField(value, fieldName).values.map {
+      case stringValue: StringValue => stringValue.value
+      case other => fail(s"Expected field '$fieldName' to contain string values, got $other")
+    }
 
   private def stringField(value: ObjectValue, fieldName: String): String =
     value.fieldsByName(fieldName) match {
