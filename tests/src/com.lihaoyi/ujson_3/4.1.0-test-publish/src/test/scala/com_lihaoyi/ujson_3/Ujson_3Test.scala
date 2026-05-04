@@ -132,6 +132,22 @@ class Ujson_3Test {
   }
 
   @Test
+  def preservesObjectFieldInsertionOrderWhenParsedBuiltAndRendered(): Unit = {
+    val parsed = ujson.read(ujson.Readable.fromString("""{"first":1,"second":2,"third":3}"""))
+    assertEquals(List("first", "second", "third"), parsed.obj.keys.toList)
+    assertFieldOrder(ujson.write(parsed), Seq("first", "second", "third"))
+
+    val built = ujson.Obj.from(Seq[(String, ujson.Value)](
+      "zeta" -> ujson.Num(26),
+      "alpha" -> ujson.Num(1),
+      "middle" -> ujson.Str("kept")
+    ))
+
+    assertEquals(List("zeta", "alpha", "middle"), built.obj.keys.toList)
+    assertFieldOrder(ujson.write(built), Seq("zeta", "alpha", "middle"))
+  }
+
+  @Test
   def supportsValueAccessorsSelectorsMutationAndDeepCopy(): Unit = {
     val original = ujson.read(
       """{"cart":{"items":[{"sku":"a","price":2.5},{"sku":"b","price":3.5}],"discount":0},"paid":false}"""
@@ -250,6 +266,13 @@ class Ujson_3Test {
     assertEquals("snowman ☃", value(strSelector("text")).str)
     assertFalse(value(strSelector("obj"))(strSelector("b")).bool)
     assertTrue(value(strSelector("obj"))(strSelector("a")).bool)
+  }
+
+  private def assertFieldOrder(json: String, fields: Seq[String]): Unit = {
+    val positions = fields.map { field => json.indexOf(s"\"$field\"") }
+
+    positions.foreach(position => assertTrue(position >= 0))
+    assertEquals(positions.sorted, positions)
   }
 
   private def strSelector(key: String): ujson.Value.Selector = ujson.Value.Selector.StringSelector(key)
