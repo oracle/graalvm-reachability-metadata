@@ -138,6 +138,66 @@ public class Runtime_jvmTest {
     }
 
     @Test
+    fun rawSqlQueryFactoriesExecuteAndListenWithoutGeneratedLabels(): Unit {
+        val executableSql = "SELECT id, name FROM users ORDER BY name"
+        val executableDriver: RecordingSqlDriver = RecordingSqlDriver(
+            records = listOf(
+                Record(1, "Ada", 12.5, active = true, payload = byteArrayOf(1)),
+                Record(2, "Grace", 42.0, active = false, payload = byteArrayOf(2)),
+            ),
+        )
+        val executableQuery = Query(
+            identifier = 21,
+            driver = executableDriver,
+            query = executableSql,
+        ) { cursor: SqlCursor ->
+            User(
+                id = cursor.getLong(0) ?: error("id was null"),
+                name = cursor.getString(1) ?: error("name was null"),
+            )
+        }
+
+        val rowCount: Int = executableQuery.execute { cursor: SqlCursor ->
+            var count = 0
+            while (cursor.next().value) {
+                count++
+            }
+            QueryResult.Value(count)
+        }.value
+
+        assertThat(executableQuery.toString()).isEqualTo("unknown:unknown")
+        assertThat(rowCount).isEqualTo(2)
+        assertThat(executableDriver.executedQueries).containsExactly(ExecutedQuery(21, executableSql, parameters = 0))
+
+        val listenableSql = "SELECT id, name FROM users WHERE active = 1"
+        val listenableDriver: RecordingSqlDriver = RecordingSqlDriver(
+            records = listOf(Record(3, "Katherine", 7.0, active = true, payload = byteArrayOf(3))),
+        )
+        val listenableQuery: Query<User> = Query(
+            identifier = 22,
+            queryKeys = arrayOf("users"),
+            driver = listenableDriver,
+            query = listenableSql,
+        ) { cursor: SqlCursor ->
+            User(cursor.getLong(0) ?: 0, cursor.getString(1) ?: "")
+        }
+        var notifications = 0
+        val listener = Query.Listener { notifications++ }
+
+        listenableQuery.addListener(listener)
+        listenableDriver.notifyListeners("users")
+        listenableQuery.removeListener(listener)
+        listenableDriver.notifyListeners("users")
+
+        assertThat(listenableQuery.toString()).isEqualTo("unknown:unknown")
+        assertThat(listenableQuery.executeAsOne()).isEqualTo(User(3, "Katherine"))
+        assertThat(notifications).isEqualTo(1)
+        assertThat(listenableDriver.addedListenerKeys).containsExactly(listOf("users"))
+        assertThat(listenableDriver.removedListenerKeys).containsExactly(listOf("users"))
+        assertThat(listenableDriver.executedQueries).containsExactly(ExecutedQuery(22, listenableSql, parameters = 0))
+    }
+
+    @Test
     fun sqlCursorAndPreparedStatementSupportAllPrimitiveColumnTypes(): Unit {
         val driver: RecordingSqlDriver = RecordingSqlDriver(
             records = listOf(Record(10, "Ada", 99.5, active = true, payload = byteArrayOf(9, 8, 7))),
