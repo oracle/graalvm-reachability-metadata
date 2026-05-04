@@ -8,6 +8,8 @@ package org_http4s.http4s_dsl_3
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
+import org.http4s.AuthedRequest
+import org.http4s.AuthedRoutes
 import org.http4s.HttpRoutes
 import org.http4s.Method
 import org.http4s.Request
@@ -146,7 +148,17 @@ class Http4s_dsl_3Test {
     assertEquals(Status.MethodNotAllowed, notAllowed.status)
   }
 
+  @Test
+  def authedRoutesExtractAuthenticatedContextWithDslAsMatcher(): Unit = {
+    val response: Response[IO] = runAuthed("test-user", Request[IO](Method.GET, uri"/profile"))
+    assertEquals(Status.Ok, response.status)
+    assertEquals("authenticated:test-user", bodyText(response))
+  }
+
   private def run(request: Request[IO]): Response[IO] = routes.orNotFound(request).unsafeRunSync()
+
+  private def runAuthed(user: String, request: Request[IO]): Response[IO] =
+    authedRoutes.run(AuthedRequest(user, request)).getOrElse(Response[IO](Status.NotFound)).unsafeRunSync()
 
   private def bodyText(response: Response[IO]): String = response.as[String].unsafeRunSync()
 }
@@ -161,6 +173,11 @@ object Http4s_dsl_3Test {
   private object AgeParam extends ValidatingQueryParamDecoderMatcher[Int]("age")
   private object ScoreParam extends OptionalValidatingQueryParamDecoderMatcher[Double]("score")
   private object BoardSquare extends MatrixVar[List]("square", List("x", "y"))
+
+  private val authedRoutes: AuthedRoutes[String, IO] = AuthedRoutes.of[String, IO] {
+    case GET -> Root / "profile" as user =>
+      Ok(s"authenticated:$user")
+  }
 
   private val routes: HttpRoutes[IO] = HttpRoutes.of[IO] {
     case GET -> Root / "users" / LongVar(userId) =>
