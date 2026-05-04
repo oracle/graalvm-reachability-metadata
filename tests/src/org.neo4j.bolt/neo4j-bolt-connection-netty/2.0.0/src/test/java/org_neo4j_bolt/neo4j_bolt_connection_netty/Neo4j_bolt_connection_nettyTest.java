@@ -57,6 +57,7 @@ import org.neo4j.bolt.connection.BoltConnection;
 import org.neo4j.bolt.connection.BoltConnectionState;
 import org.neo4j.bolt.connection.BoltProtocolVersion;
 import org.neo4j.bolt.connection.BoltServerAddress;
+import org.neo4j.bolt.connection.ClusterComposition;
 import org.neo4j.bolt.connection.DatabaseName;
 import org.neo4j.bolt.connection.DatabaseNameUtil;
 import org.neo4j.bolt.connection.DefaultDomainNameResolver;
@@ -72,6 +73,7 @@ import org.neo4j.bolt.connection.exception.BoltClientException;
 import org.neo4j.bolt.connection.netty.BootstrapFactory;
 import org.neo4j.bolt.connection.netty.NettyBoltConnectionProvider;
 import org.neo4j.bolt.connection.summary.CommitSummary;
+import org.neo4j.bolt.connection.summary.RouteSummary;
 import org.neo4j.bolt.connection.summary.RunSummary;
 import org.neo4j.bolt.connection.values.IsoDuration;
 import org.neo4j.bolt.connection.values.Node;
@@ -180,6 +182,38 @@ public class Neo4j_bolt_connection_nettyTest {
             assertThat(connection.state()).isEqualTo(BoltConnectionState.CLOSED);
             server.awaitHandled();
             assertThat(server.signatures()).contains(0x01, 0x6A, 0x10, 0x3F, 0x11, 0x12, 0x54, 0x6B);
+        }
+    }
+
+    @Test
+    void connectionRouteDiscoversClusterComposition() throws Exception {
+        try (BoltTestServer server = new BoltTestServer(BOLT_5_8);
+                TestProvider provider = new TestProvider()) {
+            BoltConnection connection = await(provider.connect(server.address()));
+            BasicResponseHandler handler = new BasicResponseHandler();
+
+            await(connection.route(DatabaseNameUtil.database("neo4j"), null, Set.of("bm-before-route"))
+                    .thenCompose(c -> c.flush(handler)));
+            BasicResponseHandler.Summaries summaries = await(handler.summaries());
+            RouteSummary routeSummary = summaries.routeSummary();
+            ClusterComposition clusterComposition = routeSummary.clusterComposition();
+
+            assertThat(clusterComposition.databaseName()).isEqualTo("neo4j");
+            assertThat(clusterComposition.hasWriters()).isTrue();
+            assertThat(clusterComposition.hasRoutersAndReaders()).isTrue();
+            assertThat(clusterComposition.expirationTimestamp()).isGreaterThan(System.currentTimeMillis());
+            assertThat(clusterComposition.readers())
+                    .containsExactly(new BoltServerAddress("reader.example.com", 9001));
+            assertThat(clusterComposition.writers())
+                    .containsExactly(new BoltServerAddress("writer.example.com", 9002));
+            assertThat(clusterComposition.routers())
+                    .containsExactlyInAnyOrder(
+                            new BoltServerAddress("router-a.example.com", 9003),
+                            new BoltServerAddress("router-b.example.com", 9004));
+
+            await(connection.close());
+            server.awaitHandled();
+            assertThat(server.signatures()).contains(0x66);
         }
     }
 
@@ -402,8 +436,27 @@ public class Neo4j_bolt_connection_nettyTest {
                 }
                 case 0x11 -> writeSuccess(output, Map.of("db", "neo4j"));
                 case 0x12 -> writeSuccess(output, Map.of("bookmark", "bm-after-commit"));
+                case 0x66 -> writeSuccess(output, Map.of("rt", routeTable()));
                 default -> writeSuccess(output, Map.of());
             }
+        }
+
+        private static Map<String, Object> routeTable() {
+            return Map.of(
+                    "ttl", 300L,
+                    "db", "neo4j",
+                    "servers", List.of(
+                            Map.of(
+                                    "role", "READ",
+                                    "addresses", List.of("reader.example.com:9001")),
+                            Map.of(
+                                    "role", "WRITE",
+                                    "addresses", List.of("writer.example.com:9002")),
+                            Map.of(
+                                    "role", "ROUTE",
+                                    "addresses", List.of(
+                                            "router-a.example.com:9003",
+                                            "router-b.example.com:9004"))));
         }
 
         private static byte[] readChunkedMessage(DataInputStream input) throws IOException {
