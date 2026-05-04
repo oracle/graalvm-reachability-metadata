@@ -6,6 +6,7 @@
  */
 package org_apache_lucene.lucene_core;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -75,8 +76,8 @@ public class LockStressTestTest {
         }
 
         @Override
-        protected Lock makeFSLock(FSDirectory dir, String lockName) {
-            return SimpleFSLockFactory.INSTANCE.makeLock(dir, lockName);
+        protected Lock obtainFSLock(FSDirectory dir, String lockName) throws IOException {
+            return SimpleFSLockFactory.INSTANCE.obtainLock(dir, lockName);
         }
     }
 
