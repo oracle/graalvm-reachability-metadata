@@ -10,6 +10,7 @@ import com.google.api.CustomHttpPattern;
 import com.google.api.Distribution;
 import com.google.api.Documentation;
 import com.google.api.Http;
+import com.google.api.HttpBody;
 import com.google.api.HttpRule;
 import com.google.api.LabelDescriptor;
 import com.google.api.LaunchStage;
@@ -131,6 +132,26 @@ public class Proto_google_common_protosTest {
         assertThat(bookResource.getStyleList()).containsExactly(ResourceDescriptor.Style.DECLARATIVE_FRIENDLY);
         assertThat(service.getMetrics(0).getMetadata().getSamplePeriod().getSeconds()).isEqualTo(60);
         assertThat(service.getMonitoredResources(0).getLabels(0)).isEqualTo(locationLabel);
+    }
+
+    @Test
+    void buildsHttpBodyForArbitraryBinaryPayloads() {
+        ByteString imageBytes = ByteString.copyFrom(new byte[] {(byte) 0x89, 0x50, 0x4E, 0x47});
+        Any checksumExtension = Any.newBuilder()
+                .setTypeUrl("type.googleapis.com/google.api.HttpBody.checksum")
+                .setValue(ByteString.copyFromUtf8("sha256:test-checksum"))
+                .build();
+        HttpBody httpBody = HttpBody.newBuilder()
+                .setContentType("image/png")
+                .setData(imageBytes)
+                .addExtensions(checksumExtension)
+                .build();
+
+        assertThat(httpBody.getContentType()).isEqualTo("image/png");
+        assertThat(httpBody.getData()).isEqualTo(imageBytes);
+        assertThat(httpBody.getExtensionsList()).containsExactly(checksumExtension);
+        assertThat(httpBody.toBuilder().setContentType("application/octet-stream").build().getData())
+                .isEqualTo(imageBytes);
     }
 
     @Test
