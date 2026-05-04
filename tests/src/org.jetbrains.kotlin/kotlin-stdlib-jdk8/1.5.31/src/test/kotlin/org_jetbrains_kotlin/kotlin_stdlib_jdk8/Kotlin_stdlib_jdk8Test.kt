@@ -102,6 +102,28 @@ public class Kotlin_stdlib_jdk8Test {
     }
 
     @Test
+    public fun jdk8MapExtensionsReturnDefaultsAndRemoveOnlyMatchingEntries() {
+        val countsByName: Map<String, Int> = mapOf("alpha" to 3, "beta" to 0)
+        val statesByTask: MutableMap<String, String> = linkedMapOf(
+            "compile" to "queued",
+            "test" to "running",
+        )
+
+        val existingZeroCount: Int = countsByName.getOrDefault("beta", -1)
+        val missingCount: Int = countsByName.getOrDefault("gamma", -1)
+        val mismatchedRemoval: Boolean = statesByTask.remove("compile", "running")
+        val matchedRemoval: Boolean = statesByTask.remove("compile", "queued")
+        val missingRemoval: Boolean = statesByTask.remove("package", "queued")
+
+        assertThat(existingZeroCount).isEqualTo(0)
+        assertThat(missingCount).isEqualTo(-1)
+        assertThat(mismatchedRemoval).isFalse()
+        assertThat(matchedRemoval).isTrue()
+        assertThat(missingRemoval).isFalse()
+        assertThat(statesByTask).containsOnlyKeys("test")
+    }
+
+    @Test
     public fun namedRegexGroupsAreAvailableThroughMatchGroupCollection() {
         val uriPattern: Regex = Regex("""(?<scheme>[a-z]+)://(?<host>[\w.-]+):(?<port>\d+)(?<query>\?.*)?""")
         val match: MatchResult = requireNotNull(uriPattern.matchEntire("https://graal.example:443"))
