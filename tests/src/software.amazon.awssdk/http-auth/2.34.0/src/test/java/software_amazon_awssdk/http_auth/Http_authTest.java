@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -76,6 +77,22 @@ public class Http_authTest {
         assertThat(signedRequest.payload()).containsSame(payload);
         assertThat(readUtf8(signedRequest.payload())).isEqualTo("sync-body");
         assertThat(request.firstMatchingHeader("Authorization")).contains("old value");
+    }
+
+    @Test
+    void bearerSignerReplacesAuthorizationHeaderCaseInsensitively() {
+        BearerHttpSigner signer = BearerHttpSigner.create();
+        TokenIdentity identity = TokenIdentity.create("case-token");
+        SdkHttpFullRequest request = httpRequest("/bearer-case-insensitive")
+                .toBuilder()
+                .putHeader("authorization", List.of("old value", "second old value"))
+                .build();
+
+        SignedRequest signedRequest = signer.sign(SignRequest.builder(identity)
+                .request(request)
+                .build());
+
+        assertThat(signedRequest.request().matchingHeaders("Authorization")).containsExactly("Bearer case-token");
     }
 
     @Test
