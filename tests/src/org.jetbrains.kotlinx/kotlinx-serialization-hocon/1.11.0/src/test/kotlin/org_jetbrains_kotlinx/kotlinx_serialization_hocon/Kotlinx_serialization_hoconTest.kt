@@ -11,6 +11,8 @@ package org_jetbrains_kotlinx.kotlinx_serialization_hocon
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigMemorySize
+import com.typesafe.config.ConfigObject
+import com.typesafe.config.ConfigValue
 import java.time.Duration
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer
@@ -188,6 +190,50 @@ public class Kotlinx_serialization_hoconTest {
         assertThat(actual.getString("notification.kind")).isEqualTo("email")
         assertThat(actual.getString("notification.address")).isEqualTo("ops@example.test")
         assertThat(actual.getString("notification.subject")).isEqualTo("Deploy complete")
+    }
+
+    @Test
+    fun supportsArrayPolymorphismWhenConfigured(): Unit {
+        val hocon: Hocon = Hocon {
+            serializersModule = notificationModule
+            useArrayPolymorphism = true
+            useConfigNamingConvention = true
+        }
+        val config: Config = ConfigFactory.parseString(
+            """
+            id = digest-9
+            notification = [
+              email,
+              {
+                address = "team@example.test"
+                subject = "Daily digest"
+              }
+            ]
+            """.trimIndent()
+        )
+
+        val decoded: NotificationEnvelope = hocon.decodeFromConfig(NotificationEnvelopeSerializer, config)
+
+        assertThat(decoded).isEqualTo(
+            NotificationEnvelope(
+                id = "digest-9",
+                notification = EmailNotification(address = "team@example.test", subject = "Daily digest")
+            )
+        )
+
+        val expected: NotificationEnvelope = NotificationEnvelope(
+            id = "sms-5",
+            notification = SmsNotification(phoneNumber = "+15550123", urgent = false)
+        )
+        val encoded: Config = hocon.encodeToConfig(NotificationEnvelopeSerializer, expected)
+        val notificationValues: List<ConfigValue> = encoded.getList("notification")
+        val payload: Config = (notificationValues[1] as ConfigObject).toConfig()
+
+        assertThat(notificationValues).hasSize(2)
+        assertThat(notificationValues[0].unwrapped()).isEqualTo("sms")
+        assertThat(payload.getString("phone-number")).isEqualTo("+15550123")
+        assertThat(payload.getBoolean("urgent")).isFalse()
+        assertThat(hocon.decodeFromConfig(NotificationEnvelopeSerializer, encoded)).isEqualTo(expected)
     }
 }
 
