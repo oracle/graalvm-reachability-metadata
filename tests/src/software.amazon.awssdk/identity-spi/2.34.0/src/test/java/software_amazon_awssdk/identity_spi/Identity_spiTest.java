@@ -35,6 +35,10 @@ public class Identity_spiTest {
             IdentityProperty.create(Identity_spiTest.class, "audience");
     private static final IdentityProperty<String> SUBJECT_PROPERTY =
             IdentityProperty.create(CustomIdentity.class, "subject");
+    private static final IdentityProperty<String> PRIMARY_SHARED_NAME_PROPERTY =
+            IdentityProperty.create(PrimaryPropertyNamespace.class, "sharedName");
+    private static final IdentityProperty<String> SECONDARY_SHARED_NAME_PROPERTY =
+            IdentityProperty.create(SecondaryPropertyNamespace.class, "sharedName");
 
     @Test
     void awsCredentialsFactoryAndBuilderExposeRequiredAndOptionalFields() {
@@ -257,6 +261,20 @@ public class Identity_spiTest {
     }
 
     @Test
+    void identityPropertiesWithSameNameInDifferentNamespacesDoNotCollide() {
+        ResolveIdentityRequest request = ResolveIdentityRequest.builder()
+                .putProperty(PRIMARY_SHARED_NAME_PROPERTY, "primary-value")
+                .putProperty(SECONDARY_SHARED_NAME_PROPERTY, "secondary-value")
+                .build();
+
+        assertThat(PRIMARY_SHARED_NAME_PROPERTY).isNotEqualTo(SECONDARY_SHARED_NAME_PROPERTY);
+        assertThat(PRIMARY_SHARED_NAME_PROPERTY.toString()).contains("PrimaryPropertyNamespace", "sharedName");
+        assertThat(SECONDARY_SHARED_NAME_PROPERTY.toString()).contains("SecondaryPropertyNamespace", "sharedName");
+        assertThat(request.property(PRIMARY_SHARED_NAME_PROPERTY)).isEqualTo("primary-value");
+        assertThat(request.property(SECONDARY_SHARED_NAME_PROPERTY)).isEqualTo("secondary-value");
+    }
+
+    @Test
     void identityProvidersRegistrySupportsApplicationDefinedIdentityTypes() throws Exception {
         CustomIdentityProvider provider = new CustomIdentityProvider();
         ResolveIdentityRequest request = ResolveIdentityRequest.builder()
@@ -422,5 +440,11 @@ public class Identity_spiTest {
     }
 
     private static final class UniquePropertyNamespace {
+    }
+
+    private static final class PrimaryPropertyNamespace {
+    }
+
+    private static final class SecondaryPropertyNamespace {
     }
 }
