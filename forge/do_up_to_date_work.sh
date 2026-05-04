@@ -31,6 +31,7 @@ MAX_PARALLELISM=4
 RUN_ONCE=0
 REQUEST_STOP=0
 CLEAR_STOP=0
+CLEAR_ISSUE_CACHES=0
 BRANCH_ARG_PROVIDED=0
 SLEEP_POLL_SECONDS="${FORGE_DO_WORK_SLEEP_POLL_SECONDS:-5}"
 
@@ -76,6 +77,9 @@ Options:
   --clear-stop, --resume
       Clear the matching global or branch-scoped stop marker so future do-work
       loops can run.
+  --clear-issue-caches
+      Delete local issue claim/search caches used by work-queue scanning and
+      exit.
   --branch BRANCH
       Branch to monitor on origin. Equivalent to the optional positional
       metadata-forge-branch argument.
@@ -134,6 +138,7 @@ Examples:
   $0 master
   $0 --javac-limit 3 --new-limit 1
   $0 --once --branch master
+  $0 --clear-issue-caches
   DO_WORK_SLEEP_SECONDS=60 $0 origin/main
 EOF
 }
@@ -446,6 +451,10 @@ while [[ "$#" -gt 0 ]]; do
             CLEAR_STOP=1
             shift
             ;;
+        --clear-issue-caches)
+            CLEAR_ISSUE_CACHES=1
+            shift
+            ;;
         --branch)
             require_option_value "$1" "${2:-}"
             BRANCH_ARG="$2"
@@ -555,6 +564,11 @@ if [[ "$MONITORED_BRANCH" == "" ]]; then
     echo "metadata-forge branch must not be empty." >&2
     usage >&2
     exit 1
+fi
+
+if [[ "$CLEAR_ISSUE_CACHES" == "1" ]]; then
+    "$PYTHON_BIN" "$SCRIPT_DIR/forge_metadata.py" --clear-issue-caches
+    exit 0
 fi
 
 require_stop_file

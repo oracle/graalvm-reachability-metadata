@@ -32,6 +32,7 @@ Common options:
 - `--stop`: ask all Forge `do-work` loops for the current user to exit by creating `~/.metadata-forge-stop`.
 - `--stop --branch BRANCH`: ask only loops monitoring `BRANCH` to exit, using a branch-scoped marker such as `~/.metadata-forge-stop.master`.
 - `--clear-stop`: remove the matching global or branch-scoped stop marker so future `do-work` loops can run.
+- `--clear-issue-caches`: delete local issue claim/search caches used by work-queue scanning and exit.
 
 Examples:
 
@@ -44,6 +45,7 @@ FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
 ./do-work.sh --stop --branch master
 ./do-work.sh --clear-stop
 ./do-work.sh --clear-stop --branch master
+./do-work.sh --clear-issue-caches
 ```
 
 The same limits can be controlled with environment variables such as

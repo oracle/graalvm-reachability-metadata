@@ -1160,6 +1160,32 @@ class IssueClaimCacheTests(unittest.TestCase):
                 forge_metadata.invalidate_issue_claim_cache_entry(1412, now=101.0)
                 self.assertEqual(forge_metadata.read_issue_claim_cache(now=101.0), {})
 
+    def test_clear_issue_caches_removes_claim_and_search_caches(self) -> None:
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+                forge_metadata.record_issue_claim_cache_observations(
+                    [
+                        forge_metadata.IssueClaimCacheObservation(
+                            issue_number=1412,
+                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+                            open_blockers=(99,),
+                        ),
+                    ],
+                    now=100.0,
+                )
+                forge_metadata._write_issue_search_cache_payload(
+                    forge_metadata._empty_issue_search_cache_payload(100.0),
+                    100.0,
+                )
+
+                self.assertTrue(os.path.exists(forge_metadata.get_issue_claim_cache_path()))
+                self.assertTrue(os.path.exists(forge_metadata.get_issue_search_cache_path()))
+
+                forge_metadata.clear_issue_caches()
+
+                self.assertFalse(os.path.exists(forge_metadata.get_issue_claim_cache_path()))
+                self.assertFalse(os.path.exists(forge_metadata.get_issue_search_cache_path()))
+
     def test_cached_own_assignment_is_not_returned_as_skip(self) -> None:
         issue = {
             "number": 1412,

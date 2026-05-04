@@ -1067,6 +1067,20 @@ def invalidate_issue_claim_cache_entry(issue_number: int, now: float | None = No
         _write_issue_claim_cache_entries(cache, now)
 
 
+def _remove_file_if_exists(path: str) -> bool:
+    try:
+        os.unlink(path)
+        return True
+    except FileNotFoundError:
+        return False
+
+
+def clear_issue_claim_cache() -> bool:
+    """Delete the shared local issue-claim cache file."""
+    with LocalIssueClaimCacheWriterLock():
+        return _remove_file_if_exists(get_issue_claim_cache_path())
+
+
 def is_issue_search_cache_enabled() -> bool:
     """Return True when the shared local issue-search cache is enabled."""
     return os.environ.get("FORGE_ISSUE_SEARCH_CACHE", "1") != "0"
@@ -1142,6 +1156,29 @@ def _write_issue_search_cache_payload(payload: dict, updated_at_epoch: float) ->
     finally:
         if os.path.exists(temp_path):
             os.unlink(temp_path)
+
+
+def clear_issue_search_cache() -> bool:
+    """Delete the shared local issue-search cache file."""
+    with LocalIssueSearchCacheWriterLock():
+        return _remove_file_if_exists(get_issue_search_cache_path())
+
+
+def clear_issue_caches() -> None:
+    """Delete local issue queue caches used by work-queue scanning."""
+    removed_claim_cache = clear_issue_claim_cache()
+    removed_search_cache = clear_issue_search_cache()
+    print()
+    log_stage(
+        "issue-cache",
+        f"Cleared issue claim cache at {get_issue_claim_cache_path()} "
+        f"({'removed' if removed_claim_cache else 'not present'})",
+    )
+    log_stage(
+        "issue-cache",
+        f"Cleared issue search cache at {get_issue_search_cache_path()} "
+        f"({'removed' if removed_search_cache else 'not present'})",
+    )
 
 
 def build_issue_search_cache_key(*parts: object) -> str:
@@ -5121,6 +5158,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         metavar="PATH",
         help="Resume a large-library series from a durable progress state JSON artifact.",
     )
+    mode.add_argument(
+        "--clear-issue-caches",
+        action="store_true",
+        help="Delete local issue claim/search caches used by work-queue scanning and exit.",
+    )
 
     parser.add_argument(
         "--limit", type=int, default=DEFAULT_MAX_ISSUES,
@@ -5270,6 +5312,9 @@ def main() -> None:
     args = parse_args()
 
     try:
+        if args.clear_issue_caches:
+            clear_issue_caches()
+            return
         if args.strategy_name:
             require_strategy_by_name(args.strategy_name)
         if args.review_pr is None and not args.run_work_queues:
