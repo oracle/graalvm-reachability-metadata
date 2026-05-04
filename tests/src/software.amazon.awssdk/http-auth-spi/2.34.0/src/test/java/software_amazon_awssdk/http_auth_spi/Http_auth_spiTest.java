@@ -153,6 +153,37 @@ public class Http_auth_spiTest {
     }
 
     @Test
+    void copyConsumerMutatesSignRequestWhilePreservingOriginal() {
+        AwsCredentialsIdentity identity = AwsCredentialsIdentity.create("access-key", "secret-key");
+        SdkHttpFullRequest originalRequest = httpRequest("/copy-source");
+        ContentStreamProvider payload = ContentStreamProvider.fromUtf8String("copy-body");
+        SignRequest<AwsCredentialsIdentity> signRequest = SignRequest.builder(identity)
+                .request(originalRequest)
+                .payload(payload)
+                .putProperty(SIGNER_NAME, "original")
+                .build();
+        SdkHttpFullRequest copiedRequest = originalRequest.toBuilder()
+                .encodedPath("/copy-target")
+                .putHeader("X-Copy", "applied")
+                .build();
+
+        SignRequest<AwsCredentialsIdentity> copied = signRequest.copy(builder -> builder
+                .request(copiedRequest)
+                .putProperty(SIGNER_NAME, "copied"));
+
+        assertThat(copied.identity()).isSameAs(identity);
+        assertThat(copied.request()).isSameAs(copiedRequest);
+        assertThat(copied.payload()).containsSame(payload);
+        assertThat(copied.property(SIGNER_NAME)).isEqualTo("copied");
+        assertThat(copied.request().firstMatchingHeader("X-Copy")).contains("applied");
+
+        assertThat(signRequest.request()).isSameAs(originalRequest);
+        assertThat(signRequest.payload()).containsSame(payload);
+        assertThat(signRequest.property(SIGNER_NAME)).isEqualTo("original");
+        assertThat(signRequest.request().firstMatchingHeader("X-Copy")).isEmpty();
+    }
+
+    @Test
     void signedRequestBuilderSupportsOptionalPayloadAndCopying() {
         SdkHttpFullRequest originalRequest = httpRequest("/unsigned");
         ContentStreamProvider payload = ContentStreamProvider.fromUtf8String("body");
