@@ -261,6 +261,38 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertEqual(run.call_count, 2)
         sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
 
+    def test_set_item_status_retries_transient_http_502(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr="non-200 OK status code: 502 Bad Gateway",
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="",
+            stderr="",
+        )
+
+        with patch.object(
+                forge_metadata,
+                "get_cached_field_info",
+                return_value=("project-id", "field-id", {forge_metadata.STATUS_IN_PROGRESS: "option-id"}),
+        ), \
+                patch.object(
+                    forge_metadata.subprocess,
+                    "run",
+                    side_effect=[failed_process, successful_process],
+                ) as run, \
+                patch.object(common_git.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            forge_metadata.set_item_status("item-id", forge_metadata.STATUS_IN_PROGRESS)
+
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+        self.assertIn("GitHub API transient failure", stderr.getvalue())
+
     def test_preflight_fallback_does_not_continue_after_rate_limit(self) -> None:
         issue = {"number": 1412, "labels": []}
 
@@ -1530,6 +1562,24 @@ class IssueClaimLockTests(unittest.TestCase):
 
         set_item_status.assert_called_once_with("item-1", forge_metadata.STATUS_TODO)
         clear_issue_assignees.assert_called_once_with(1412)
+
+    def test_revert_issue_claim_clears_assignees_after_status_update_error(self) -> None:
+        status_error = subprocess.CalledProcessError(
+            1,
+            ["gh", "project", "item-edit"],
+            output="",
+            stderr="non-200 OK status code: 502 Bad Gateway",
+        )
+
+        with patch.object(forge_metadata, "set_item_status", side_effect=status_error), \
+                patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees, \
+                patch.object(forge_metadata, "get_item_status", return_value=forge_metadata.STATUS_TODO), \
+                patch.object(forge_metadata, "get_issue_assignees", return_value=[]), \
+                patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            forge_metadata.revert_issue_claim("item-1", 1412, "test")
+
+        clear_issue_assignees.assert_called_once_with(1412)
+        self.assertIn("could not set project item", stderr.getvalue())
 
 
 class IssueSearchCacheTests(unittest.TestCase):

@@ -62,6 +62,7 @@ from git_scripts.common_git import (
     get_origin_owner,
     is_github_rate_limit_text,
     log_github_query,
+    run_github_command_with_retries,
     run_github_json_with_retries,
     run_github_with_retries,
 )
@@ -2157,7 +2158,7 @@ def get_cached_field_info() -> tuple[str, str, dict[str, str]]:
     return project_node_id, field_id, option_ids
 
 
-def set_item_status(item_id: str, status: str):
+def set_item_status(item_id: str, status: str) -> None:
     """
     Update the Status field of a project item to the given status option name.
     """
@@ -2165,12 +2166,15 @@ def set_item_status(item_id: str, status: str):
     log_stage("project-status", f"Setting project item {item_id} -> {status}")
     project_node_id, field_id, option_ids = get_cached_field_info()
     option_id = option_ids.get(status)
-    gh(
-        "project", "item-edit",
-        "--id", item_id,
-        "--project-id", project_node_id,
-        "--field-id", field_id,
-        "--single-select-option-id", option_id,
+    run_github_command_with_retries(
+        gh,
+        (
+            "project", "item-edit",
+            "--id", item_id,
+            "--project-id", project_node_id,
+            "--field-id", field_id,
+            "--single-select-option-id", option_id,
+        ),
     )
 
 
@@ -3861,17 +3865,37 @@ def run_claimed_issue(
 def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
     """Reset an issue claim back to Todo and clear all assignment, with verification."""
     print(f"\n[issue-revert] Reverting issue #{issue_number} claim because {reason}", file=sys.stderr)
+    revert_errors: list[Exception] = []
     print(f"[issue-revert] Reverting issue #{issue_number}: setting project item {item_id} -> {STATUS_TODO}", file=sys.stderr)
-    set_item_status(item_id, STATUS_TODO)
+    try:
+        set_item_status(item_id, STATUS_TODO)
+    except Exception as exc:
+        revert_errors.append(exc)
+        print(
+            f"ERROR: Issue #{issue_number} revert could not set project item {item_id} "
+            f"to {STATUS_TODO}: {format_github_exception_details(exc)}",
+            file=sys.stderr,
+        )
     print(f"[issue-revert] Reverting issue #{issue_number}: clearing all assignees", file=sys.stderr)
-    clear_issue_assignees(issue_number)
+    try:
+        clear_issue_assignees(issue_number)
+    except Exception as exc:
+        revert_errors.append(exc)
+        print(
+            f"ERROR: Issue #{issue_number} revert could not clear assignees: "
+            f"{format_github_exception_details(exc)}",
+            file=sys.stderr,
+        )
     verified_status = get_item_status(item_id)
     verified_assignees = get_issue_assignees(issue_number)
     if verified_status != STATUS_TODO or verified_assignees:
-        raise RuntimeError(
+        verification_error = RuntimeError(
             f"Issue #{issue_number} revert verification failed: "
             f"status={verified_status!r}, assignees={verified_assignees!r}"
         )
+        if revert_errors:
+            raise verification_error from revert_errors[0]
+        raise verification_error
     invalidate_issue_claim_cache_entry(issue_number)
     print(
         f"ERROR: Issue #{issue_number} failed due to {reason}; verified revert with "

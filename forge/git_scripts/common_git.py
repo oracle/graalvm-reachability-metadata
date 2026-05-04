@@ -325,14 +325,14 @@ def run_github_json_with_retries(
     raise RuntimeError("GitHub JSON command exhausted retries")
 
 
-def run_github_with_retries(
+def run_github_command_with_retries(
         gh_runner: Callable[..., subprocess.CompletedProcess],
         args: tuple[str, ...],
         *,
         quiet: bool = False,
         max_attempts: int = GITHUB_TRANSIENT_RETRY_ATTEMPTS,
 ) -> subprocess.CompletedProcess:
-    """Run a read-only gh command, retrying transient GitHub failures."""
+    """Run an idempotent gh command, retrying transient GitHub failures."""
     for attempt in range(1, max_attempts + 1):
         command_quiet = quiet or attempt < max_attempts
         try:
@@ -346,6 +346,22 @@ def run_github_with_retries(
             raise
 
     raise RuntimeError("GitHub command exhausted retries")
+
+
+def run_github_with_retries(
+        gh_runner: Callable[..., subprocess.CompletedProcess],
+        args: tuple[str, ...],
+        *,
+        quiet: bool = False,
+        max_attempts: int = GITHUB_TRANSIENT_RETRY_ATTEMPTS,
+) -> subprocess.CompletedProcess:
+    """Run a read-only gh command, retrying transient GitHub failures."""
+    return run_github_command_with_retries(
+        gh_runner,
+        args,
+        quiet=quiet,
+        max_attempts=max_attempts,
+    )
 
 
 def gh_json(*args: str) -> Any:
