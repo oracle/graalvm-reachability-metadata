@@ -1,0 +1,1147 @@
+Starting a Gradle Daemon, 8 busy and 4 incompatible and 131 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df409-c2e9-7130-bec1-98606c02900f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.collections:eclipse-collections:11.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "11.1.0" when "$version$" is replaced with "11.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+- Set "coordinates" to "org.eclipse.collections:eclipse-collections:11.1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "11.1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from the repo and Maven/GitHub before editing, since these fields need version-specific URLs and the Native Image applicability call needs evidence.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+{
+  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 0ms:
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:62:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-ee/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-ee/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-ee/src/test",
+metadata/org.eclipse.jetty/jetty-ee/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-$version$/activemq-client/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.eclipse\\.collections|eclipse-collections' . -g '*.json' -g '*.gradle' -g '*.xml' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.eclipse.collections eclipse-collections 11.1.0 sources javadoc tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/
+web search: 
+web search: https://github.com/eclipse-collections/eclipse-collections/releases
+codex
+The local file is just a stub. Maven Central has the main JAR plus sources and Javadocs for `11.1.0`, and the GitHub release/tag uses the plain `11.1.0` tag, so I’m checking the module layout for the test URL now.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2022 Goldman Sachs and others.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the Eclipse Public License v1.0
+  ~ and Eclipse Distribution License v. 1.0 which accompany this distribution.
+  ~ The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+  ~ and the Eclipse Distribution License is available at
+  ~ http://www.eclipse.org/org/documents/edl-v10.php.
+  -->
+
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <artifactId>eclipse-collections-parent</artifactId>
+        <groupId>org.eclipse.collections</groupId>
+        <version>11.1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>eclipse-collections</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Eclipse Collections Main Library</name>
+
+    <properties>
+        <sonar.jacoco.reportPaths>
+            ../unit-tests/target/jacoco.exec,../unit-tests-java8/target/jacoco.exec,../eclipse-collections-testutils/target/jacoco.exec,../serialization-tests/target/jacoco.exec
+        </sonar.jacoco.reportPaths>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.eclipse.collections</groupId>
+                <artifactId>eclipse-collections-code-generator-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate-services</goal>
+                        </goals>
+                        <id>generate-services</id>
+                    </execution>
+
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate-sources</goal>
+                        </goals>
+                        <id>generate-sources</id>
+                        <configuration>
+                            <templateDirectory>impl</templateDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <doctitle>Eclipse Collections - ${project.version}</doctitle>
+                    <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
+                    <show>public</show>
+                    <links>
+                        <link>https://docs.oracle.com/javase/8/docs/api/</link>
+                    </links>
+                    <destDir>${project.version}</destDir>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>clirr-maven-plugin</artifactId>
+                <configuration>
+                    <comparisonArtifacts>
+                        <comparisonArtifact>
+                            <groupId>org.eclipse.collections</groupId>
+                            <artifactId>eclipse-collections</artifactId>
+                            <version>${project.previous.version}</version>
+                        </comparisonArtifact>
+                    </comparisonArtifacts>
+                    <textOutputFile>${project.build.directory}/clirr.txt</textOutputFile>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-collections/eclipse-collections.git 'refs/tags/11.1.0*'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/eclipse-collections/src/test \\
+  https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/eclipse-collections/src/test/java \\
+  https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/unit-tests \\
+  https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-tests.jar; do \\
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 350ms:
+0015a8b9f74958dad91f036d00a9aada80489520	refs/tags/11.1.0
+fb6abf7fe655ff04acf616158bce49725f2df5ad	refs/tags/11.1.0^{}
+668494916455a891e4259525c70b0720ead25589	refs/tags/11.1.0.M1
+b2290ffad7feedfa6772e275368e79822d52a5a4	refs/tags/11.1.0.M1^{}
+374996c8427eef9c654240a67fe4193f0c9c1144	refs/tags/11.1.0.M2
+eb856973bfa9401ed4277ae0c7f1140857778731	refs/tags/11.1.0.M2^{}
+
+ succeeded in 2251ms:
+404 https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/eclipse-collections/src/test
+404 https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/eclipse-collections/src/test/java
+200 https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/unit-tests
+404 https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-tests.jar
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections-parent/11.1.0/eclipse-collections-parent-11.1.0.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2022 Goldman Sachs and others.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the Eclipse Public License v1.0
+  ~ and Eclipse Distribution License v. 1.0 which accompany this distribution.
+  ~ The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+  ~ and the Eclipse Distribution License is available at
+  ~ http://www.eclipse.org/org/documents/edl-v10.php.
+  -->
+
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.eclipse.collections</groupId>
+    <artifactId>eclipse-collections-parent</artifactId>
+    <version>11.1.0</version>
+
+    <packaging>pom</packaging>
+
+    <name>Eclipse Collections Parent Project</name>
+
+    <description>Eclipse Collections is a collections framework for Java. It has JDK-compatible List, Set and Map
+        implementations with a rich API and set of utility classes that work with any JDK compatible Collections,
+        Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk collection framework.
+    </description>
+
+    <url>https://github.com/eclipse/eclipse-collections</url>
+
+    <inceptionYear>2004</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License - v 1.0</name>
+            <url>https://www.eclipse.org/legal/epl-v10.html</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>Eclipse Distribution License - v 1.0</name>
+            <url>https://www.eclipse.org/licenses/edl-v10.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/eclipse/eclipse-collections</url>
+        <connection>scm:git:https://github.com/eclipse/eclipse-collections.git</connection>
+        <developerConnection>scm:git:https://github.com/eclipse/eclipse-collections.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/eclipse/eclipse-collections/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>GitHub Actions</system>
+        <url>https://github.com/eclipse/eclipse-collections/actions</url>
+    </ciManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>collections-dev</name>
+            <subscribe>https://dev.eclipse.org/mailman/listinfo/collections-dev</subscribe>
+            <unsubscribe>https://dev.eclipse.org/mailman/listinfo/collections-dev</unsubscribe>
+            <post>collections-dev@eclipse.org</post>
+            <archive>https://dev.eclipse.org/mhonarc/lists/collections-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <name>Craig P. Motlin</name>
+        </developer>
+
+        <developer>
+            <name>Donald Raab</name>
+        </developer>
+
+        <developer>
+            <name>Mohammad A. Rezaei</name>
+        </developer>
+
+        <developer>
+            <name>Hiroshi Ito</name>
+        </developer>
+
+        <developer>
+            <name>Nikhil J. Nanivadekar</name>
+        </developer>
+
+        <developer>
+            <name>Sirisha Pratha</name>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>eclipse-collections-code-generator</module>
+        <module>eclipse-collections-code-generator-maven-plugin</module>
+        <module>eclipse-collections-api</module>
+        <module>eclipse-collections</module>
+        <module>eclipse-collections-testutils</module>
+        <module>eclipse-collections-forkjoin</module>
+        <module>unit-tests</module>
+        <module>serialization-tests</module>
+        <module>jcstress-tests</module>
+        <module>junit-trait-runner</module>
+        <module>unit-tests-java8</module>
+        <module>test-coverage</module>
+        <module>p2-repository</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <slf4j.version>1.7.32</slf4j.version>
+        <clover.version>4.4.1</clover.version>
+        <scala.version>2.12.15</scala.version>
+        <guava.version>31.0.1-jre</guava.version>
+        <trove4j.version>3.0.3</trove4j.version>
+        <checkstyle.version>10.1</checkstyle.version>
+        <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
+        <jacoco.plugin.version>0.8.7</jacoco.plugin.version>
+        <junit.version>4.13.2</junit.version>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.fork>true</maven.compiler.fork>
+        <maven.compiler.meminitial>2048m</maven.compiler.meminitial>
+        <maven.compiler.maxmem>2048m</maven.compiler.maxmem>
+
+        <argLine></argLine>
+
+        <project.previous.version>11.0.0</project.previous.version>
+    </properties>
+
+    <pluginRepositories>
+
+        <pluginRepository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+            <name>Maven Plugin Repository</name>
+
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>repo.eclipse.org</id>
+            <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
+        </pluginRepository>
+
+    </pluginRepositories>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-nop</artifactId>
+                <version>${slf4j.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <defaultGoal>clean install checkstyle:check</defaultGoal>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>eu.stamp-project</groupId>
+                    <artifactId>pitmp-maven-plugin</artifactId>
+                    <version>1.3.7</version>
+                    <configuration>
+                        <verbose>false</verbose>
+                        <timestampedReports>false</timestampedReports>
+                        <targetModules>
+                            <param>unit-tests</param>
+                        </targetModules>
+                        <skippedModules>
+                            <param>eclipse-collections-code-generator</param>
+                            <param>eclipse-collections-code-generator-maven-plugin</param>
+                            <param>p2-feature</param>
+                            <param>p2-repository</param>
+                            <param>p2-repository</param>
+                        </skippedModules>
+                        <avoidCallsTo>
+                            <avoidCallsTo>java.util.logging</avoidCallsTo>
+                            <avoidCallsTo>org.apache.log4j</avoidCallsTo>
+                            <avoidCallsTo>org.slf4j</avoidCallsTo>
+                            <avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
+                        </avoidCallsTo>
+                        <maxMutationsPerClass>1</maxMutationsPerClass>
+                        <additionalClasspathElements>target/generated-sources/java/*</additionalClasspathElements>
+                        <excludedClasses>
+                            <param>org.eclipse.collections.impl.lazy.parallel*</param>
+                            <param>org.eclipse.collections.impl.parallel*</param>
+                            <param>org.eclipse.collections.impl.map.mutable.Concurrent*</param>
+                            <param>org.eclipse.collections.impl.collector.Collectors2</param>
+                            <param>java.util.stream.*</param>
+                            <param>org.eclipse.collections.impl.*Char*</param>
+                            <param>org.eclipse.collections.impl.*Float*</param>
+                            <param>org.eclipse.collections.impl.*Long*</param>
+                            <param>org.eclipse.collections.impl.*Double*</param>
+                            <param>org.eclipse.collections.impl.*Byte*</param>
+                            <param>org.eclipse.collections.impl.*Short*</param>
+                            <param>org.eclipse.collections.impl.*Iterable*</param>
+                            <param>org.eclipse.collections.impl.*Multimap*</param>
+                            <param>org.eclipse.collections.impl.*Composite*</param>
+                            <param>org.eclipse.collections.impl.*Interval*</param>
+                            <param>org.eclipse.collections.impl.*Adapter*</param>
+                            <param>org.eclipse.collections.impl.*Concurrent*</param>
+                            <param>org.eclipse.collections.impl.*Parallel*</param>
+                            <param>org.eclipse.collections.impl.*Synchronized*</param>
+                            <param>org.eclipse.collections.impl.*Unmodifiable*</param>
+                            <param>org.eclipse.collections.impl.*Immutable*</param>
+                            <param>org.eclipse.collections.impl.*MultiReader*</param>
+                            <param>org.eclipse.collections.impl.*FixedSize*</param>
+                            <param>org.eclipse.collections.impl.*Collectors*</param>
+                        </excludedClasses>
+                        <excludedTestClasses>
+                            <param>org.eclipse.collections.impl.lazy.parallel*</param>
+                            <param>org.eclipse.collections.impl.parallel*</param>
+                            <param>org.eclipse.collections.impl.*Char*</param>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-collections/eclipse-collections/contents?ref=11.1.0 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-javadoc.jar \\
+  https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/unit-tests/src/test/java \\
+  https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl; do \\
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 227ms:
+[
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "35a0daf9f2371d3a2d95080f072b5b32ff228a41",
+    "size": 456,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.gitattributes?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/.gitattributes",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/35a0daf9f2371d3a2d95080f072b5b32ff228a41",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.gitattributes?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/35a0daf9f2371d3a2d95080f072b5b32ff228a41",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "fd60f2f2ae4a0d560feb75f3c652cc4308bc1abc",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.github?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/.github",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/trees/fd60f2f2ae4a0d560feb75f3c652cc4308bc1abc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.github?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/trees/fd60f2f2ae4a0d560feb75f3c652cc4308bc1abc",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "8b44f8865dbe7112ee877052145ffc81aa5ed4de",
+    "size": 1564,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.gitignore?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/.gitignore",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/8b44f8865dbe7112ee877052145ffc81aa5ed4de",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.gitignore?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/8b44f8865dbe7112ee877052145ffc81aa5ed4de",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/.gitignore"
+    }
+  },
+  {
+    "name": ".idea",
+    "path": ".idea",
+    "sha": "73f241ca53b8d30db4d89eea49fab78f5e73b5eb",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.idea?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/.idea",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/trees/73f241ca53b8d30db4d89eea49fab78f5e73b5eb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.idea?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/trees/73f241ca53b8d30db4d89eea49fab78f5e73b5eb",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/.idea"
+    }
+  },
+  {
+    "name": ".mvn",
+    "path": ".mvn",
+    "sha": "ad85846c355c54c2942da32394540e97447beb73",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.mvn?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/.mvn",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/trees/ad85846c355c54c2942da32394540e97447beb73",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/.mvn?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/trees/ad85846c355c54c2942da32394540e97447beb73",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/.mvn"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "f0b07711bb75503e053617a3454767172f050a1b",
+    "size": 5325,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/CONTRIBUTING.md?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/f0b07711bb75503e053617a3454767172f050a1b",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/CONTRIBUTING.md?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/f0b07711bb75503e053617a3454767172f050a1b",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE-EDL-1.0.txt",
+    "path": "LICENSE-EDL-1.0.txt",
+    "sha": "4e492acbfa2054917ae22b35cf6c03e9b3feff76",
+    "size": 1561,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/LICENSE-EDL-1.0.txt?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/LICENSE-EDL-1.0.txt",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/4e492acbfa2054917ae22b35cf6c03e9b3feff76",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/LICENSE-EDL-1.0.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/LICENSE-EDL-1.0.txt?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/4e492acbfa2054917ae22b35cf6c03e9b3feff76",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/LICENSE-EDL-1.0.txt"
+    }
+  },
+  {
+    "name": "LICENSE-EPL-1.0.txt",
+    "path": "LICENSE-EPL-1.0.txt",
+    "sha": "79e486c3d2c20397a987cc8785b8e62b8bbcbb52",
+    "size": 11232,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/LICENSE-EPL-1.0.txt?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/LICENSE-EPL-1.0.txt",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/79e486c3d2c20397a987cc8785b8e62b8bbcbb52",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/LICENSE-EPL-1.0.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/LICENSE-EPL-1.0.txt?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/79e486c3d2c20397a987cc8785b8e62b8bbcbb52",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/LICENSE-EPL-1.0.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "64f6b96d2435e9ef6fd2a3a40462a6c0b44f9fe5",
+    "size": 11909,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/README.md?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/README.md",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/64f6b96d2435e9ef6fd2a3a40462a6c0b44f9fe5",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/README.md?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/64f6b96d2435e9ef6fd2a3a40462a6c0b44f9fe5",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/README.md"
+    }
+  },
+  {
+    "name": "README_EXAMPLES.md",
+    "path": "README_EXAMPLES.md",
+    "sha": "970b31259b10be1bae2eb9729d8fb83dea38ab80",
+    "size": 5719,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/README_EXAMPLES.md?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/README_EXAMPLES.md",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/970b31259b10be1bae2eb9729d8fb83dea38ab80",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/README_EXAMPLES.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/README_EXAMPLES.md?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/970b31259b10be1bae2eb9729d8fb83dea38ab80",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/README_EXAMPLES.md"
+    }
+  },
+  {
+    "name": "RELEASE_NOTE_DRAFT.md",
+    "path": "RELEASE_NOTE_DRAFT.md",
+    "sha": "612337297a83069df6e66f94fdf8fb9dffe74ff4",
+    "size": 6829,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/RELEASE_NOTE_DRAFT.md?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/RELEASE_NOTE_DRAFT.md",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/612337297a83069df6e66f94fdf8fb9dffe74ff4",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/RELEASE_NOTE_DRAFT.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/RELEASE_NOTE_DRAFT.md?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/612337297a83069df6e66f94fdf8fb9dffe74ff4",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/RELEASE_NOTE_DRAFT.md"
+    }
+  },
+  {
+    "name": "about.html",
+    "path": "about.html",
+    "sha": "3e1feeaa508217ed1bde174941eb8765480fa28e",
+    "size": 2182,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/about.html?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/about.html",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/3e1feeaa508217ed1bde174941eb8765480fa28e",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/about.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/about.html?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/3e1feeaa508217ed1bde174941eb8765480fa28e",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/about.html"
+    }
+  },
+  {
+    "name": "acceptance-tests",
+    "path": "acceptance-tests",
+    "sha": "74a333864b2ffeef689c1348d9cc3b2015469bb8",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/acceptance-tests?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/acceptance-tests",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/trees/74a333864b2ffeef689c1348d9cc3b2015469bb8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/acceptance-tests?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/trees/74a333864b2ffeef689c1348d9cc3b2015469bb8",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/acceptance-tests"
+    }
+  },
+  {
+    "name": "artwork",
+    "path": "artwork",
+    "sha": "85a2fbef0b8febcd1b75985a47080a8c2442d2a4",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/artwork?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/artwork",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/trees/85a2fbef0b8febcd1b75985a47080a8c2442d2a4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+
+ succeeded in 2942ms:
+200 https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-sources.jar
+200 https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-javadoc.jar
+200 https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/unit-tests/src/test/java
+200 https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl
+
+codex
+The artifact is a normal JVM `jar` with class files, sources and Javadocs published on Maven Central, so it should remain a Native Image metadata target. There is no Maven tests JAR for this artifact, so the tagged GitHub `unit-tests` tree is the best test-suite URL.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/eclipse/collections/eclipse-collections/11.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/eclipse/collections/eclipse-collections/11.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="eclipse-collections-11.1.0-javadoc.jar" title="eclipse-collections-11.1.0-javadoc.jar">eclipse-collections-11.1.0-javadoc.jar</a>            2022-07-05 15:07  14997402      
+<a href="eclipse-collections-11.1.0-javadoc.jar.asc" title="eclipse-collections-11.1.0-javadoc.jar.asc">eclipse-collections-11.1.0-javadoc.jar.asc</a>        2022-07-05 15:07       833      
+<a href="eclipse-collections-11.1.0-javadoc.jar.asc.asc" title="eclipse-collections-11.1.0-javadoc.jar.asc.asc">eclipse-collections-11.1.0-javadoc.jar.asc.as...</a>  2022-07-05 15:07       833      
+<a href="eclipse-collections-11.1.0-javadoc.jar.md5" title="eclipse-collections-11.1.0-javadoc.jar.md5">eclipse-collections-11.1.0-javadoc.jar.md5</a>        2022-07-05 15:07        32      
+<a href="eclipse-collections-11.1.0-javadoc.jar.sha1" title="eclipse-collections-11.1.0-javadoc.jar.sha1">eclipse-collections-11.1.0-javadoc.jar.sha1</a>       2022-07-05 15:07        40      
+<a href="eclipse-collections-11.1.0-sources.jar" title="eclipse-collections-11.1.0-sources.jar">eclipse-collections-11.1.0-sources.jar</a>            2022-07-05 15:07   4919996      
+<a href="eclipse-collections-11.1.0-sources.jar.asc" title="eclipse-collections-11.1.0-sources.jar.asc">eclipse-collections-11.1.0-sources.jar.asc</a>        2022-07-05 15:07       833      
+<a href="eclipse-collections-11.1.0-sources.jar.asc.asc" title="eclipse-collections-11.1.0-sources.jar.asc.asc">eclipse-collections-11.1.0-sources.jar.asc.as...</a>  2022-07-05 15:07       833      
+<a href="eclipse-collections-11.1.0-sources.jar.md5" title="eclipse-collections-11.1.0-sources.jar.md5">eclipse-collections-11.1.0-sources.jar.md5</a>        2022-07-05 15:07        32      
+<a href="eclipse-collections-11.1.0-sources.jar.sha1" title="eclipse-collections-11.1.0-sources.jar.sha1">eclipse-collections-11.1.0-sources.jar.sha1</a>       2022-07-05 15:07        40      
+<a href="eclipse-collections-11.1.0.jar" title="eclipse-collections-11.1.0.jar">eclipse-collections-11.1.0.jar</a>                    2022-07-05 15:07  10475509      
+<a href="eclipse-collections-11.1.0.jar.asc" title="eclipse-collections-11.1.0.jar.asc">eclipse-collections-11.1.0.jar.asc</a>                2022-07-05 15:07       833      
+<a href="eclipse-collections-11.1.0.jar.asc.asc" title="eclipse-collections-11.1.0.jar.asc.asc">eclipse-collections-11.1.0.jar.asc.asc</a>            2022-07-05 15:07       833      
+<a href="eclipse-collections-11.1.0.jar.md5" title="eclipse-collections-11.1.0.jar.md5">eclipse-collections-11.1.0.jar.md5</a>                2022-07-05 15:07        32      
+<a href="eclipse-collections-11.1.0.jar.sha1" title="eclipse-collections-11.1.0.jar.sha1">eclipse-collections-11.1.0.jar.sha1</a>               2022-07-05 15:07        40      
+<a href="eclipse-collections-11.1.0.pom" title="eclipse-collections-11.1.0.pom">eclipse-collections-11.1.0.pom</a>                    2022-07-05 15:07      5143      
+<a href="eclipse-collections-11.1.0.pom.asc" title="eclipse-collections-11.1.0.pom.asc">eclipse-collections-11.1.0.pom.asc</a>                2022-07-05 15:07       833      
+<a href="eclipse-collections-11.1.0.pom.asc.asc" title="eclipse-collections-11.1.0.pom.asc.asc">eclipse-collections-11.1.0.pom.asc.asc</a>            2022-07-05 15:07       833      
+<a href="eclipse-collections-11.1.0.pom.md5" title="eclipse-collections-11.1.0.pom.md5">eclipse-collections-11.1.0.pom.md5</a>                2022-07-05 15:07        32      
+<a href="eclipse-collections-11.1.0.pom.sha1" title="eclipse-collections-11.1.0.pom.sha1">eclipse-collections-11.1.0.pom.sha1</a>               2022-07-05 15:07        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -L -s -o /dev/null -w '%{url_effective} %{http_code}\\n' https://github.com/eclipse/eclipse-collections" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl?ref=11.1.0 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 392ms:
+[
+  {
+    "name": "AbstractRichIterableTestCase.java",
+    "path": "unit-tests/src/test/java/org/eclipse/collections/impl/AbstractRichIterableTestCase.java",
+    "sha": "389cfa4d779935564f1e84086cffec9fd97322dd",
+    "size": 91185,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/AbstractRichIterableTestCase.java?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/AbstractRichIterableTestCase.java",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/389cfa4d779935564f1e84086cffec9fd97322dd",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/AbstractRichIterableTestCase.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/AbstractRichIterableTestCase.java?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/389cfa4d779935564f1e84086cffec9fd97322dd",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/AbstractRichIterableTestCase.java"
+    }
+  },
+  {
+    "name": "AnagramTest.java",
+    "path": "unit-tests/src/test/java/org/eclipse/collections/impl/AnagramTest.java",
+    "sha": "ee61da7581adbd9b12b855246d53ce7f7e4e8d94",
+    "size": 7301,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/AnagramTest.java?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/AnagramTest.java",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/ee61da7581adbd9b12b855246d53ce7f7e4e8d94",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/AnagramTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/AnagramTest.java?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/ee61da7581adbd9b12b855246d53ce7f7e4e8d94",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/AnagramTest.java"
+    }
+  },
+  {
+    "name": "CounterTest.java",
+    "path": "unit-tests/src/test/java/org/eclipse/collections/impl/CounterTest.java",
+    "sha": "3dd0c52102f8cc34b07fe8922f05cb6e6e9cb5bb",
+    "size": 1934,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/CounterTest.java?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/CounterTest.java",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/3dd0c52102f8cc34b07fe8922f05cb6e6e9cb5bb",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/CounterTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/CounterTest.java?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/3dd0c52102f8cc34b07fe8922f05cb6e6e9cb5bb",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/CounterTest.java"
+    }
+  },
+  {
+    "name": "EmptyIteratorTest.java",
+    "path": "unit-tests/src/test/java/org/eclipse/collections/impl/EmptyIteratorTest.java",
+    "sha": "55bedd766d135936316d322e99f221f914f364a3",
+    "size": 1606,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/EmptyIteratorTest.java?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/EmptyIteratorTest.java",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/55bedd766d135936316d322e99f221f914f364a3",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/EmptyIteratorTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/EmptyIteratorTest.java?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/55bedd766d135936316d322e99f221f914f364a3",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/EmptyIteratorTest.java"
+    }
+  },
+  {
+    "name": "IntegerWithCast.java",
+    "path": "unit-tests/src/test/java/org/eclipse/collections/impl/IntegerWithCast.java",
+    "sha": "47a02933ecdf5865dd6a3b67e21217932b9fa9bb",
+    "size": 1021,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/IntegerWithCast.java?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/IntegerWithCast.java",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/47a02933ecdf5865dd6a3b67e21217932b9fa9bb",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/IntegerWithCast.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/IntegerWithCast.java?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/47a02933ecdf5865dd6a3b67e21217932b9fa9bb",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/IntegerWithCast.java"
+    }
+  },
+  {
+    "name": "NonInstantiableTest.java",
+    "path": "unit-tests/src/test/java/org/eclipse/collections/impl/NonInstantiableTest.java",
+    "sha": "abb76d8e13d50ae19ba295568f4da4ccda87122b",
+    "size": 4655,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/NonInstantiableTest.java?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/NonInstantiableTest.java",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/abb76d8e13d50ae19ba295568f4da4ccda87122b",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/NonInstantiableTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/NonInstantiableTest.java?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/abb76d8e13d50ae19ba295568f4da4ccda87122b",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/NonInstantiableTest.java"
+    }
+  },
+  {
+    "name": "PersonAndPetKataTest.java",
+    "path": "unit-tests/src/test/java/org/eclipse/collections/impl/PersonAndPetKataTest.java",
+    "sha": "0a36236ebcda5b93c8f5d7468f37bf52f7598415",
+    "size": 28517,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/PersonAndPetKataTest.java?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/PersonAndPetKataTest.java",
+    "git_url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/0a36236ebcda5b93c8f5d7468f37bf52f7598415",
+    "download_url": "https://raw.githubusercontent.com/eclipse-collections/eclipse-collections/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/PersonAndPetKataTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/PersonAndPetKataTest.java?ref=11.1.0",
+      "git": "https://api.github.com/repos/eclipse-collections/eclipse-collections/git/blobs/0a36236ebcda5b93c8f5d7468f37bf52f7598415",
+      "html": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/PersonAndPetKataTest.java"
+    }
+  },
+  {
+    "name": "SpreadFunctionsTest.java",
+    "path": "unit-tests/src/test/java/org/eclipse/collections/impl/SpreadFunctionsTest.java",
+    "sha": "1105555de086e6e3c1760c8df02f4a747d75ba19",
+    "size": 2879,
+    "url": "https://api.github.com/repos/eclipse-collections/eclipse-collections/contents/unit-tests/src/test/java/org/eclipse/collections/impl/SpreadFunctionsTest.java?ref=11.1.0",
+    "html_url": "https://github.com/eclipse-collections/eclipse-collections/blob/11.1.0/unit-tests/src/test/java/org/eclipse/collections/impl/SpreadFunctionsTest.java",
+
+ succeeded in 996ms:
+https://github.com/eclipse-collections/eclipse-collections 200
+
+codex
+I’m going to populate the JSON with Maven Central source/Javadoc artifacts, the tagged GitHub test tree, and no language or not-for-native-image fields because this is a Java JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+diff --git a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+index 67a996eafb8937025ce01b5cd491dc98d1e857bb..338b2c12e754a1506a1de03af58132f9120e77dc
+--- a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0"
++  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0",
++  "repository-url" : "https://github.com/eclipse-collections/eclipse-collections",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-collections/eclipse-collections/tree/$version$/unit-tests/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-javadoc.jar",
++  "description" : "Eclipse Collections is a Java collections framework with JDK-compatible List, Set, and Map implementations. It adds rich APIs and utilities for collections, primitive collections, bags, multimaps, bi-maps, arrays, maps, and strings."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+index 67a996eafb8937025ce01b5cd491dc98d1e857bb..338b2c12e754a1506a1de03af58132f9120e77dc
+--- a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0"
++  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0",
++  "repository-url" : "https://github.com/eclipse-collections/eclipse-collections",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-collections/eclipse-collections/tree/$version$/unit-tests/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-javadoc.jar",
++  "description" : "Eclipse Collections is a Java collections framework with JDK-compatible List, Set, and Map implementations. It adds rich APIs and utilities for collections, primitive collections, bags, multimaps, bi-maps, arrays, maps, and strings."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+ succeeded in 0ms:
+{
+  "coordinates": "org.eclipse.collections:eclipse-collections:11.1.0",
+  "repository-url": "https://github.com/eclipse-collections/eclipse-collections",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-sources.jar",
+  "test-code-url": "https://github.com/eclipse-collections/eclipse-collections/tree/$version$/unit-tests/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-javadoc.jar",
+  "description": "Eclipse Collections is a Java collections framework with JDK-compatible List, Set, and Map implementations. It adds rich APIs and utilities for collections, primitive collections, bags, multimaps, bi-maps, arrays, maps, and strings."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-sources.jar \\
+  https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/unit-tests/src/test/java \\
+  https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-javadoc.jar; do \\
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9
+diff --git a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+index 67a996eafb8937025ce01b5cd491dc98d1e857bb..338b2c12e754a1506a1de03af58132f9120e77dc
+--- a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0"
++  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0",
++  "repository-url" : "https://github.com/eclipse-collections/eclipse-collections",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-collections/eclipse-collections/tree/$version$/unit-tests/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-javadoc.jar",
++  "description" : "Eclipse Collections is a Java collections framework with JDK-compatible List, Set, and Map implementations. It adds rich APIs and utilities for collections, primitive collections, bags, multimaps, bi-maps, arrays, maps, and strings."
+ }
+
+ succeeded in 1648ms:
+200 https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-sources.jar
+200 https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/unit-tests/src/test/java
+200 https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/eclipse-collections-11.1.0-javadoc.jar
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+index 67a996eafb8937025ce01b5cd491dc98d1e857bb..338b2c12e754a1506a1de03af58132f9120e77dc
+--- a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0"
++  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0",
++  "repository-url" : "https://github.com/eclipse-collections/eclipse-collections",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-collections/eclipse-collections/tree/$version$/unit-tests/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-javadoc.jar",
++  "description" : "Eclipse Collections is a Java collections framework with JDK-compatible List, Set, and Map implementations. It adds rich APIs and utilities for collections, primitive collections, bags, multimaps, bi-maps, arrays, maps, and strings."
+ }
+
+web search: 
+web search: https://github.com/eclipse-collections/eclipse-collections/tree/11.1.0/unit-tests/src/test/java
+web search: 
+web search: repo.maven.apache.org org/eclipse/collections/eclipse-collections/11.1.0 eclipse-collections-11.1.0-sources.jar javadoc.jar
+codex
+Updated [org.eclipse.collections-eclipse-collections-11.1.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json:1).
+
+I used Maven Central for the source and Javadoc artifacts, and the tagged GitHub `unit-tests/src/test/java` tree for tests since no Maven tests JAR is published. Maven Central shows this is a JVM `jar`, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/?utm_source=openai))
+
+Validation: `jq` passed, and the three `$version$ -> 11.1.0` URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+index 67a996eafb8937025ce01b5cd491dc98d1e857bb..338b2c12e754a1506a1de03af58132f9120e77dc
+--- a/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0"
++  "coordinates" : "org.eclipse.collections:eclipse-collections:11.1.0",
++  "repository-url" : "https://github.com/eclipse-collections/eclipse-collections",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-collections/eclipse-collections/tree/$version$/unit-tests/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/collections/eclipse-collections/$version$/eclipse-collections-$version$-javadoc.jar",
++  "description" : "Eclipse Collections is a Java collections framework with JDK-compatible List, Set, and Map implementations. It adds rich APIs and utilities for collections, primitive collections, bags, multimaps, bi-maps, arrays, maps, and strings."
+ }
+
+tokens used
+69,564
+Updated [org.eclipse.collections-eclipse-collections-11.1.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9/build/discovered-artifact-metadata/org.eclipse.collections-eclipse-collections-11.1.0.json:1).
+
+I used Maven Central for the source and Javadoc artifacts, and the tagged GitHub `unit-tests/src/test/java` tree for tests since no Maven tests JAR is published. Maven Central shows this is a JVM `jar`, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections/11.1.0/?utm_source=openai))
+
+Validation: `jq` passed, and the three `$version$ -> 11.1.0` URLs returned HTTP 200.
+Ran agent for org.eclipse.collections:eclipse-collections:11.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9/build/agent-artifact-discovery-logs/org.eclipse.collections-eclipse-collections-11.1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4699-358668e9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 39s
+9 actionable tasks: 4 executed, 5 from cache
