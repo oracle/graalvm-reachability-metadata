@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 
 import java.nio.{ByteBuffer, ByteOrder}
 import java.util.UUID
+import scala.collection.immutable.SeqMap
 import scala.concurrent.duration.*
 import scala.util.{Failure, Success}
 
@@ -222,6 +223,20 @@ class Boopickle_3Test {
     assertEquals("bad argument", builtIn.getMessage)
     assertTrue(custom.isInstanceOf[DomainFailure])
     assertEquals("domain rejected", custom.getMessage)
+  }
+
+  @Test
+  def roundTripsSeqMapWhilePreservingIterationOrder(): Unit = {
+    val routingTable: SeqMap[String, Int] = SeqMap(
+      "first" -> 10,
+      "second" -> 20,
+      "third" -> 30
+    )
+
+    val decoded: SeqMap[String, Int] = roundTrip(routingTable)
+
+    assertEquals(routingTable, decoded)
+    assertEquals(routingTable.keys.toVector, decoded.keys.toVector)
   }
 
   private def roundTrip[A](value: A)(using pickler: Pickler[A]): A = {
