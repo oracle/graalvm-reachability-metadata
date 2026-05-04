@@ -12,6 +12,12 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
 import java.util.concurrent.CancellationException
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.startCoroutine
+import kotlin.coroutines.suspendCoroutine
 
 public class Arrow_autoclose_jvmTest {
     @Test
@@ -237,6 +243,44 @@ public class Arrow_autoclose_jvmTest {
         }.isSameAs(cancellation)
 
         assertThat(observedFailure).isSameAs(cancellation)
+    }
+
+    @Test
+    fun autoCloseScopeCanBeUsedAcrossSuspendCalls(): Unit {
+        val events: MutableList<String> = mutableListOf()
+        var completed: String? = null
+        var failed: Throwable? = null
+
+        suspend { useAutoCloseScopeAcrossSuspendCall(events) }
+            .startCoroutine(
+                object : Continuation<String> {
+                    override val context: CoroutineContext = EmptyCoroutineContext
+
+                    override fun resumeWith(result: Result<String>): Unit {
+                        result.fold(
+                            onSuccess = { completed = it },
+                            onFailure = { failed = it },
+                        )
+                    }
+                },
+            )
+
+        assertThat(failed).isNull()
+        assertThat(completed).isEqualTo("completed")
+        assertThat(events).containsExactly("before-suspend", "suspended", "after-suspend", "close:true")
+    }
+
+    private suspend fun useAutoCloseScopeAcrossSuspendCall(events: MutableList<String>): String = autoCloseScope {
+        onClose { failure -> events += "close:${failure == null}" }
+        events += "before-suspend"
+        suspendOnce(events)
+        events += "after-suspend"
+        "completed"
+    }
+
+    private suspend fun suspendOnce(events: MutableList<String>): Unit = suspendCoroutine { continuation ->
+        events += "suspended"
+        continuation.resume(Unit)
     }
 
     private data class ManagedResource(val name: String)
