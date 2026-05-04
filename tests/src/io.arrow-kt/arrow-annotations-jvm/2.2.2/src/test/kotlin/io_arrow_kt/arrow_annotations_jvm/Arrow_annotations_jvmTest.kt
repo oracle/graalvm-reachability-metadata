@@ -74,6 +74,21 @@ public class ArrowAnnotationsJvmTest {
     }
 
     @Test
+    fun annotationInstancesCanBeUsedAsHashBasedLookupKeys() {
+        val generatedDeclarationKinds: Map<Any, String> = mapOf(
+            synthetic() to "synthetic declaration",
+            optics.copy() to "copy optics declaration",
+            optics(arrayOf(OpticsTarget.LENS, OpticsTarget.OPTIONAL)) to "focused optics declaration",
+        )
+
+        assertThat(generatedDeclarationKinds[synthetic()]).isEqualTo("synthetic declaration")
+        assertThat(generatedDeclarationKinds[optics.copy()]).isEqualTo("copy optics declaration")
+        assertThat(generatedDeclarationKinds[optics(arrayOf(OpticsTarget.LENS, OpticsTarget.OPTIONAL))])
+            .isEqualTo("focused optics declaration")
+        assertThat(generatedDeclarationKinds[optics(arrayOf(OpticsTarget.LENS))]).isNull()
+    }
+
+    @Test
     fun markerAnnotationInstancesHaveStableValueSemantics() {
         val syntheticMarker: synthetic = synthetic()
         val anotherSyntheticMarker: synthetic = synthetic()
