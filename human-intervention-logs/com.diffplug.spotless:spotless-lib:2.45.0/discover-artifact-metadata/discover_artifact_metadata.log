@@ -1,0 +1,1079 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df45e-1716-7b72-bab7-24d0998fb1d9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.diffplug.spotless:spotless-lib:2.45.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.45.0" when "$version$" is replaced with "2.45.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+- Set "coordinates" to "com.diffplug.spotless:spotless-lib:2.45.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.45.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact details against Maven/repository sources, then update the JSON in place with version-tokenized URLs and the applicability fields only if the evidence is clear.
+exec
+/usr/bin/bash -lc "pwd && ls -la build/discovered-artifact-metadata && sed -n '1,200p' build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+total 12
+drwxrwxr-x 2 vjovanov vjovanov 4096 May  4 21:01 .
+drwxrwxr-x 4 vjovanov vjovanov 4096 May  4 21:01 ..
+-rw-rw-r-- 1 vjovanov vjovanov   66 May  4 21:01 com.diffplug.spotless-spotless-lib-2.45.0.json
+{
+  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "spotless-lib|com.diffplug.spotless" metadata tests build/discovered-artifact-metadata 2>/dev/null' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json:2:  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0"
+
+web search: 
+web search: com.diffplug.spotless spotless-lib 2.45.0 Maven source jar
+web search: 
+web search: https://github.com/diffplug/spotless/tree/maven/2.45.0
+web search: 
+web search: repo.maven.apache.org com/diffplug/spotless/spotless-lib/2.45.0 spotless-lib-2.45.0.pom
+web search: 
+web search: https://github.com/diffplug/spotless/tree/lib/2.45.0
+codex
+I found the project is `diffplug/spotless` and the library tag appears to be `lib/2.45.0`, not the Maven-plugin tag. I’m checking the Maven artifact contents now so the source/test URLs prefer published artifacts only if they actually exist.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/2.45.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/2.45.0/spotless-lib-2.45.0.module | sed -n '1,260p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.diffplug.spotless",
+    "module": "spotless-lib",
+    "version": "2.45.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.5"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "spotless-lib-2.45.0.jar",
+          "url": "spotless-lib-2.45.0.jar",
+          "size": 485423,
+          "sha512": "64a74d22bc02f2a88f81bb93eff6b316db693f42bf64f09d105eef4e29382a7149ccb7fee5be37eb05f19dbd52fe278a9d565ef0381062ff453ada794a1c71e9",
+          "sha256": "b25969972e1d980280ca2ae529197ed9b3160aae48b506cf1935f01bd1318667",
+          "sha1": "f9cecbff339dd2bc147b9f49e4ebf290d1dbfae1",
+          "md5": "3198d8dc518ceb44ae6f7d2cb5e00811"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spotless-lib-2.45.0.jar",
+          "url": "spotless-lib-2.45.0.jar",
+          "size": 485423,
+          "sha512": "64a74d22bc02f2a88f81bb93eff6b316db693f42bf64f09d105eef4e29382a7149ccb7fee5be37eb05f19dbd52fe278a9d565ef0381062ff453ada794a1c71e9",
+          "sha256": "b25969972e1d980280ca2ae529197ed9b3160aae48b506cf1935f01bd1318667",
+          "sha1": "f9cecbff339dd2bc147b9f49e4ebf290d1dbfae1",
+          "md5": "3198d8dc518ceb44ae6f7d2cb5e00811"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spotless-lib-2.45.0-javadoc.jar",
+          "url": "spotless-lib-2.45.0-javadoc.jar",
+          "size": 776812,
+          "sha512": "b07fb052193b6df2d1a85e08a4179fc43efb52fa3f6d6cd4f74a2445a05df2fddacad7b47652029651920e7468ffa6b816ba1a324d2720c68df58252befa69cb",
+          "sha256": "25d373760d78285f45c2d683c0c5df288325a856935b43ffc274b850db28cc79",
+          "sha1": "89597766e52484dc19c546a1706062673dfc0911",
+          "md5": "8d718322320947004239f281dc74335d"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spotless-lib-2.45.0-sources.jar",
+          "url": "spotless-lib-2.45.0-sources.jar",
+          "size": 229073,
+          "sha512": "56b2a36f1e97e24c80321fcc5ef38f4e8351f4c7f3cf1c40076eafd955fecc6a52d3a6f345d6e6f703ffb44a0bf9cacbcf5794be4345ee9fb33db6101f3f01ad",
+          "sha256": "b097fff72ad5be3108478d944c147f4913ac20f033cbc6d14f7b0386a220fbab",
+          "sha1": "3ead4e3b89ad7d707dc07a11f303e375ea9868e2",
+          "md5": "d1a14ac9f1765bd976c2006906a4c4b5"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/2.45.0/spotless-lib-2.45.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.diffplug.spotless</groupId>
+  <artifactId>spotless-lib</artifactId>
+  <version>2.45.0</version>
+  <name>spotless-lib</name>
+  <description>Spotless - keep your code spotless with Gradle</description>
+  <url>https://github.com/diffplug/spotless</url>
+  <scm>
+    <url>https://github.com/diffplug/spotless</url>
+    <connection>scm:git:https://github.com/diffplug/spotless.git</connection>
+    <developerConnection>scm:git:ssh:git@github.com/diffplug/spotless.git</developerConnection>
+  </scm>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>nedtwigg</id>
+      <name>Ned Twigg</name>
+      <email>ned.twigg@diffplug.com</email>
+    </developer>
+  </developers>
+</project>
+
+ succeeded in 207ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/diffplug/spotless/spotless-lib/2.45.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/diffplug/spotless/spotless-lib/2.45.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spotless-lib-2.45.0-javadoc.jar" title="spotless-lib-2.45.0-javadoc.jar">spotless-lib-2.45.0-javadoc.jar</a>                   2024-01-23 07:02    776812      
+<a href="spotless-lib-2.45.0-javadoc.jar.asc" title="spotless-lib-2.45.0-javadoc.jar.asc">spotless-lib-2.45.0-javadoc.jar.asc</a>               2024-01-23 07:02       650      
+<a href="spotless-lib-2.45.0-javadoc.jar.asc.md5" title="spotless-lib-2.45.0-javadoc.jar.asc.md5">spotless-lib-2.45.0-javadoc.jar.asc.md5</a>           2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0-javadoc.jar.asc.sha1" title="spotless-lib-2.45.0-javadoc.jar.asc.sha1">spotless-lib-2.45.0-javadoc.jar.asc.sha1</a>          2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0-javadoc.jar.asc.sha256" title="spotless-lib-2.45.0-javadoc.jar.asc.sha256">spotless-lib-2.45.0-javadoc.jar.asc.sha256</a>        2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0-javadoc.jar.asc.sha512" title="spotless-lib-2.45.0-javadoc.jar.asc.sha512">spotless-lib-2.45.0-javadoc.jar.asc.sha512</a>        2024-01-23 07:02       128      
+<a href="spotless-lib-2.45.0-javadoc.jar.md5" title="spotless-lib-2.45.0-javadoc.jar.md5">spotless-lib-2.45.0-javadoc.jar.md5</a>               2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0-javadoc.jar.sha1" title="spotless-lib-2.45.0-javadoc.jar.sha1">spotless-lib-2.45.0-javadoc.jar.sha1</a>              2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0-javadoc.jar.sha256" title="spotless-lib-2.45.0-javadoc.jar.sha256">spotless-lib-2.45.0-javadoc.jar.sha256</a>            2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0-javadoc.jar.sha512" title="spotless-lib-2.45.0-javadoc.jar.sha512">spotless-lib-2.45.0-javadoc.jar.sha512</a>            2024-01-23 07:02       128      
+<a href="spotless-lib-2.45.0-sources.jar" title="spotless-lib-2.45.0-sources.jar">spotless-lib-2.45.0-sources.jar</a>                   2024-01-23 07:02    229073      
+<a href="spotless-lib-2.45.0-sources.jar.asc" title="spotless-lib-2.45.0-sources.jar.asc">spotless-lib-2.45.0-sources.jar.asc</a>               2024-01-23 07:02       650      
+<a href="spotless-lib-2.45.0-sources.jar.asc.md5" title="spotless-lib-2.45.0-sources.jar.asc.md5">spotless-lib-2.45.0-sources.jar.asc.md5</a>           2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0-sources.jar.asc.sha1" title="spotless-lib-2.45.0-sources.jar.asc.sha1">spotless-lib-2.45.0-sources.jar.asc.sha1</a>          2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0-sources.jar.asc.sha256" title="spotless-lib-2.45.0-sources.jar.asc.sha256">spotless-lib-2.45.0-sources.jar.asc.sha256</a>        2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0-sources.jar.asc.sha512" title="spotless-lib-2.45.0-sources.jar.asc.sha512">spotless-lib-2.45.0-sources.jar.asc.sha512</a>        2024-01-23 07:02       128      
+<a href="spotless-lib-2.45.0-sources.jar.md5" title="spotless-lib-2.45.0-sources.jar.md5">spotless-lib-2.45.0-sources.jar.md5</a>               2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0-sources.jar.sha1" title="spotless-lib-2.45.0-sources.jar.sha1">spotless-lib-2.45.0-sources.jar.sha1</a>              2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0-sources.jar.sha256" title="spotless-lib-2.45.0-sources.jar.sha256">spotless-lib-2.45.0-sources.jar.sha256</a>            2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0-sources.jar.sha512" title="spotless-lib-2.45.0-sources.jar.sha512">spotless-lib-2.45.0-sources.jar.sha512</a>            2024-01-23 07:02       128      
+<a href="spotless-lib-2.45.0.jar" title="spotless-lib-2.45.0.jar">spotless-lib-2.45.0.jar</a>                           2024-01-23 07:02    485423      
+<a href="spotless-lib-2.45.0.jar.asc" title="spotless-lib-2.45.0.jar.asc">spotless-lib-2.45.0.jar.asc</a>                       2024-01-23 07:02       650      
+<a href="spotless-lib-2.45.0.jar.asc.md5" title="spotless-lib-2.45.0.jar.asc.md5">spotless-lib-2.45.0.jar.asc.md5</a>                   2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0.jar.asc.sha1" title="spotless-lib-2.45.0.jar.asc.sha1">spotless-lib-2.45.0.jar.asc.sha1</a>                  2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0.jar.asc.sha256" title="spotless-lib-2.45.0.jar.asc.sha256">spotless-lib-2.45.0.jar.asc.sha256</a>                2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0.jar.asc.sha512" title="spotless-lib-2.45.0.jar.asc.sha512">spotless-lib-2.45.0.jar.asc.sha512</a>                2024-01-23 07:02       128      
+<a href="spotless-lib-2.45.0.jar.md5" title="spotless-lib-2.45.0.jar.md5">spotless-lib-2.45.0.jar.md5</a>                       2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0.jar.sha1" title="spotless-lib-2.45.0.jar.sha1">spotless-lib-2.45.0.jar.sha1</a>                      2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0.jar.sha256" title="spotless-lib-2.45.0.jar.sha256">spotless-lib-2.45.0.jar.sha256</a>                    2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0.jar.sha512" title="spotless-lib-2.45.0.jar.sha512">spotless-lib-2.45.0.jar.sha512</a>                    2024-01-23 07:02       128      
+<a href="spotless-lib-2.45.0.module" title="spotless-lib-2.45.0.module">spotless-lib-2.45.0.module</a>                        2024-01-23 07:02      3500      
+<a href="spotless-lib-2.45.0.module.asc" title="spotless-lib-2.45.0.module.asc">spotless-lib-2.45.0.module.asc</a>                    2024-01-23 07:02       650      
+<a href="spotless-lib-2.45.0.module.asc.md5" title="spotless-lib-2.45.0.module.asc.md5">spotless-lib-2.45.0.module.asc.md5</a>                2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0.module.asc.sha1" title="spotless-lib-2.45.0.module.asc.sha1">spotless-lib-2.45.0.module.asc.sha1</a>               2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0.module.asc.sha256" title="spotless-lib-2.45.0.module.asc.sha256">spotless-lib-2.45.0.module.asc.sha256</a>             2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0.module.asc.sha512" title="spotless-lib-2.45.0.module.asc.sha512">spotless-lib-2.45.0.module.asc.sha512</a>             2024-01-23 07:02       128      
+<a href="spotless-lib-2.45.0.module.md5" title="spotless-lib-2.45.0.module.md5">spotless-lib-2.45.0.module.md5</a>                    2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0.module.sha1" title="spotless-lib-2.45.0.module.sha1">spotless-lib-2.45.0.module.sha1</a>                   2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0.module.sha256" title="spotless-lib-2.45.0.module.sha256">spotless-lib-2.45.0.module.sha256</a>                 2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0.module.sha512" title="spotless-lib-2.45.0.module.sha512">spotless-lib-2.45.0.module.sha512</a>                 2024-01-23 07:02       128      
+<a href="spotless-lib-2.45.0.pom" title="spotless-lib-2.45.0.pom">spotless-lib-2.45.0.pom</a>                           2024-01-23 07:02      1540      
+<a href="spotless-lib-2.45.0.pom.asc" title="spotless-lib-2.45.0.pom.asc">spotless-lib-2.45.0.pom.asc</a>                       2024-01-23 07:02       650      
+<a href="spotless-lib-2.45.0.pom.asc.md5" title="spotless-lib-2.45.0.pom.asc.md5">spotless-lib-2.45.0.pom.asc.md5</a>                   2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0.pom.asc.sha1" title="spotless-lib-2.45.0.pom.asc.sha1">spotless-lib-2.45.0.pom.asc.sha1</a>                  2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0.pom.asc.sha256" title="spotless-lib-2.45.0.pom.asc.sha256">spotless-lib-2.45.0.pom.asc.sha256</a>                2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0.pom.asc.sha512" title="spotless-lib-2.45.0.pom.asc.sha512">spotless-lib-2.45.0.pom.asc.sha512</a>                2024-01-23 07:02       128      
+<a href="spotless-lib-2.45.0.pom.md5" title="spotless-lib-2.45.0.pom.md5">spotless-lib-2.45.0.pom.md5</a>                       2024-01-23 07:02        32      
+<a href="spotless-lib-2.45.0.pom.sha1" title="spotless-lib-2.45.0.pom.sha1">spotless-lib-2.45.0.pom.sha1</a>                      2024-01-23 07:02        40      
+<a href="spotless-lib-2.45.0.pom.sha256" title="spotless-lib-2.45.0.pom.sha256">spotless-lib-2.45.0.pom.sha256</a>                    2024-01-23 07:02        64      
+<a href="spotless-lib-2.45.0.pom.sha512" title="spotless-lib-2.45.0.pom.sha512">spotless-lib-2.45.0.pom.sha512</a>                    2024-01-23 07:02       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 0ms:
+{
+  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 0ms:
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/parameter-names/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/expression/src/test/java",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/paranamer/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:32:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/paranamer/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/cpu/src/test/java/io/smallrye/common/cpu",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:39:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:41:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:42:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/$version$/JavaEWAH-$version$-sources.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:7:    "test-code-url" : "https://github.com/lemire/javaewah/tree/JavaEWAH-$version$/src/test",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/$version$/JavaEWAH-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-$version$/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-javadoc.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-sources.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-tests.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:8:    "documentation-url" : "https://github.com/qos-ch/cal10n/blob/v$version$/cal10n-site/src/site/pages/documentation.html",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-ast_3/$version$/sangria-ast_3-$version$-sources.jar",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:7:    "test-code-url" : "N/A",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-ast_3/$version$/sangria-ast_3-$version$-javadoc.jar",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/diffplug/spotless.git 'refs/tags/*2.45.0*'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/2.45.0/spotless-lib-2.45.0-sources.jar -o "$tmp/sources.jar" && jar tf "$tmp/sources.jar" | sed -n '"'1,140p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/2.45.0/spotless-lib-2.45.0.jar -o "$tmp/lib.jar" && jar tf "$tmp/lib.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 188ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/diffplug/
+com/diffplug/spotless/
+com/diffplug/spotless/npm/
+com/diffplug/spotless/npm/common-serve.js
+com/diffplug/spotless/npm/eslint-package.json
+com/diffplug/spotless/npm/eslint-serve.js
+com/diffplug/spotless/npm/prettier-package.json
+com/diffplug/spotless/npm/prettier-serve.js
+com/diffplug/spotless/npm/tsfmt-package.json
+com/diffplug/spotless/npm/tsfmt-serve.js
+com/diffplug/spotless/DelegateFormatterStep.java
+com/diffplug/spotless/EncodingErrorMsg.java
+com/diffplug/spotless/FeatureClassLoader.java
+com/diffplug/spotless/FileSignature.java
+com/diffplug/spotless/FilterByContentPatternFormatterStep.java
+com/diffplug/spotless/FilterByFileFormatterStep.java
+com/diffplug/spotless/ForeignExe.java
+com/diffplug/spotless/FormatExceptionPolicy.java
+com/diffplug/spotless/FormatExceptionPolicyLegacy.java
+com/diffplug/spotless/FormatExceptionPolicyStrict.java
+com/diffplug/spotless/Formatter.java
+com/diffplug/spotless/FormatterFunc.java
+com/diffplug/spotless/FormatterProperties.java
+com/diffplug/spotless/FormatterStep.java
+com/diffplug/spotless/FormatterStepImpl.java
+com/diffplug/spotless/JarState.java
+com/diffplug/spotless/Jvm.java
+com/diffplug/spotless/LazyArgLogger.java
+com/diffplug/spotless/LazyForwardingEquality.java
+com/diffplug/spotless/LibPreconditions.java
+com/diffplug/spotless/LineEnding.java
+com/diffplug/spotless/MoreIterables.java
+com/diffplug/spotless/NoLambda.java
+com/diffplug/spotless/OnMatch.java
+com/diffplug/spotless/PaddedCell.java
+com/diffplug/spotless/ProcessRunner.java
+com/diffplug/spotless/Provisioner.java
+com/diffplug/spotless/RingBufferByteArrayOutputStream.java
+com/diffplug/spotless/SerializableFileFilter.java
+com/diffplug/spotless/SerializableFileFilterImpl.java
+com/diffplug/spotless/SpotlessCache.java
+com/diffplug/spotless/ThrowingEx.java
+com/diffplug/spotless/package-info.java
+com/diffplug/spotless/annotations/
+com/diffplug/spotless/annotations/Internal.java
+com/diffplug/spotless/annotations/ReturnValuesAreNonnullByDefault.java
+com/diffplug/spotless/antlr4/
+com/diffplug/spotless/antlr4/Antlr4Defaults.java
+com/diffplug/spotless/antlr4/Antlr4FormatterStep.java
+com/diffplug/spotless/cpp/
+com/diffplug/spotless/cpp/ClangFormatStep.java
+com/diffplug/spotless/cpp/CppDefaults.java
+com/diffplug/spotless/cpp/package-info.java
+com/diffplug/spotless/generic/
+com/diffplug/spotless/generic/EndWithNewlineStep.java
+com/diffplug/spotless/generic/IndentStep.java
+com/diffplug/spotless/generic/Jsr223Step.java
+com/diffplug/spotless/generic/LicenseHeaderStep.java
+com/diffplug/spotless/generic/NativeCmdStep.java
+com/diffplug/spotless/generic/PipeStepPair.java
+com/diffplug/spotless/generic/ReplaceRegexStep.java
+com/diffplug/spotless/generic/ReplaceStep.java
+com/diffplug/spotless/generic/TrimTrailingWhitespaceStep.java
+com/diffplug/spotless/generic/package-info.java
+com/diffplug/spotless/gherkin/
+com/diffplug/spotless/gherkin/GherkinUtilsConfig.java
+com/diffplug/spotless/gherkin/GherkinUtilsStep.java
+com/diffplug/spotless/go/
+com/diffplug/spotless/go/GofmtFormatStep.java
+com/diffplug/spotless/groovy/
+com/diffplug/spotless/groovy/RemoveSemicolonsStep.java
+com/diffplug/spotless/java/
+com/diffplug/spotless/java/CleanthatJavaStep.java
+com/diffplug/spotless/java/FormatAnnotationsStep.java
+com/diffplug/spotless/java/GoogleJavaFormatStep.java
+com/diffplug/spotless/java/ImportOrderStep.java
+com/diffplug/spotless/java/ImportSorter.java
+com/diffplug/spotless/java/ImportSorterImpl.java
+com/diffplug/spotless/java/LibJavaPreconditions.java
+com/diffplug/spotless/java/ModuleHelper.java
+com/diffplug/spotless/java/PalantirJavaFormatStep.java
+com/diffplug/spotless/java/RemoveUnusedImportsStep.java
+com/diffplug/spotless/java/package-info.java
+com/diffplug/spotless/json/
+com/diffplug/spotless/json/JacksonConfig.java
+com/diffplug/spotless/json/JacksonJsonConfig.java
+com/diffplug/spotless/json/JacksonJsonStep.java
+com/diffplug/spotless/json/JsonPatchStep.java
+com/diffplug/spotless/json/JsonSimpleStep.java
+com/diffplug/spotless/json/package-info.java
+com/diffplug/spotless/json/gson/
+com/diffplug/spotless/json/gson/GsonConfig.java
+com/diffplug/spotless/json/gson/GsonStep.java
+com/diffplug/spotless/kotlin/
+com/diffplug/spotless/kotlin/BadSemver.java
+com/diffplug/spotless/kotlin/DiktatStep.java
+com/diffplug/spotless/kotlin/KotlinConstants.java
+com/diffplug/spotless/kotlin/KtLintStep.java
+com/diffplug/spotless/kotlin/KtfmtStep.java
+com/diffplug/spotless/kotlin/package-info.java
+com/diffplug/spotless/markdown/
+com/diffplug/spotless/markdown/FlexmarkStep.java
+com/diffplug/spotless/markdown/FreshMarkStep.java
+com/diffplug/spotless/markdown/LibMarkdownPreconditions.java
+com/diffplug/spotless/markdown/package-info.java
+com/diffplug/spotless/npm/BaseNpmRestService.java
+com/diffplug/spotless/npm/BlacklistedOptionException.java
+com/diffplug/spotless/npm/EslintConfig.java
+com/diffplug/spotless/npm/EslintFormatterStep.java
+com/diffplug/spotless/npm/EslintRestService.java
+com/diffplug/spotless/npm/EslintTypescriptConfig.java
+com/diffplug/spotless/npm/FileFinder.java
+com/diffplug/spotless/npm/JsonEscaper.java
+com/diffplug/spotless/npm/JsonRawValue.java
+com/diffplug/spotless/npm/JsonWriter.java
+com/diffplug/spotless/npm/ListableAdapter.java
+com/diffplug/spotless/npm/NodeApp.java
+com/diffplug/spotless/npm/NodeExecutableResolver.java
+com/diffplug/spotless/npm/NodeModulesCachingNpmProcessFactory.java
+com/diffplug/spotless/npm/NodeServeApp.java
+com/diffplug/spotless/npm/NodeServerLayout.java
+com/diffplug/spotless/npm/NpmConfig.java
+com/diffplug/spotless/npm/NpmExecutableResolver.java
+com/diffplug/spotless/npm/NpmFormatterStepLocations.java
+com/diffplug/spotless/npm/NpmFormatterStepStateBase.java
+com/diffplug/spotless/npm/NpmLongRunningProcess.java
+com/diffplug/spotless/npm/NpmPathResolver.java
+com/diffplug/spotless/npm/NpmProcess.java
+com/diffplug/spotless/npm/NpmProcessException.java
+com/diffplug/spotless/npm/NpmProcessFactory.java
+com/diffplug/spotless/npm/NpmResourceHelper.java
+com/diffplug/spotless/npm/NpmrcResolver.java
+com/diffplug/spotless/npm/PlatformInfo.java
+com/diffplug/spotless/npm/PrettierConfig.java
+com/diffplug/spotless/npm/PrettierFormatterStep.java
+com/diffplug/spotless/npm/PrettierMissingParserException.java
+com/diffplug/spotless/npm/PrettierRestService.java
+
+ succeeded in 146ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/diffplug/
+com/diffplug/spotless/
+com/diffplug/spotless/DelegateFormatterStep.class
+com/diffplug/spotless/EncodingErrorMsg.class
+com/diffplug/spotless/FeatureClassLoader.class
+com/diffplug/spotless/FileSignature$Cache.class
+com/diffplug/spotless/FileSignature$Sig.class
+com/diffplug/spotless/FileSignature.class
+com/diffplug/spotless/FilterByContentPatternFormatterStep.class
+com/diffplug/spotless/FilterByFileFormatterStep.class
+com/diffplug/spotless/ForeignExe.class
+com/diffplug/spotless/FormatExceptionPolicy.class
+com/diffplug/spotless/FormatExceptionPolicyLegacy.class
+com/diffplug/spotless/FormatExceptionPolicyStrict.class
+com/diffplug/spotless/Formatter$Builder.class
+com/diffplug/spotless/Formatter.class
+com/diffplug/spotless/FormatterFunc$Closeable$1.class
+com/diffplug/spotless/FormatterFunc$Closeable$2.class
+com/diffplug/spotless/FormatterFunc$Closeable$3.class
+com/diffplug/spotless/FormatterFunc$Closeable$ResourceFunc.class
+com/diffplug/spotless/FormatterFunc$Closeable$ResourceFuncNeedsFile.class
+com/diffplug/spotless/FormatterFunc$Closeable.class
+com/diffplug/spotless/FormatterFunc$NeedsFile.class
+com/diffplug/spotless/FormatterFunc.class
+com/diffplug/spotless/FormatterProperties$FileParser$1.class
+com/diffplug/spotless/FormatterProperties$FileParser$2.class
+com/diffplug/spotless/FormatterProperties$FileParser.class
+com/diffplug/spotless/FormatterProperties$XmlParser$1.class
+com/diffplug/spotless/FormatterProperties$XmlParser$2.class
+com/diffplug/spotless/FormatterProperties$XmlParser.class
+com/diffplug/spotless/FormatterProperties.class
+com/diffplug/spotless/FormatterStep$Strict.class
+com/diffplug/spotless/FormatterStep.class
+com/diffplug/spotless/FormatterStepImpl$NeverUpToDate.class
+com/diffplug/spotless/FormatterStepImpl$Standard.class
+com/diffplug/spotless/FormatterStepImpl.class
+com/diffplug/spotless/JarState.class
+com/diffplug/spotless/Jvm$Support$1.class
+com/diffplug/spotless/Jvm$Support$SemanticVersionComparator.class
+com/diffplug/spotless/Jvm$Support.class
+com/diffplug/spotless/Jvm.class
+com/diffplug/spotless/LazyArgLogger.class
+com/diffplug/spotless/LazyForwardingEquality.class
+com/diffplug/spotless/LibPreconditions.class
+com/diffplug/spotless/LineEnding$1.class
+com/diffplug/spotless/LineEnding$2.class
+com/diffplug/spotless/LineEnding$3.class
+com/diffplug/spotless/LineEnding$ConstantLineEndingPolicy.class
+com/diffplug/spotless/LineEnding$Policy.class
+com/diffplug/spotless/LineEnding.class
+com/diffplug/spotless/MoreIterables.class
+com/diffplug/spotless/NoLambda$EqualityBasedOnSerialization.class
+com/diffplug/spotless/NoLambda.class
+com/diffplug/spotless/OnMatch.class
+com/diffplug/spotless/PaddedCell$1.class
+com/diffplug/spotless/PaddedCell$DirtyState.class
+com/diffplug/spotless/PaddedCell$Type.class
+com/diffplug/spotless/PaddedCell.class
+com/diffplug/spotless/ProcessRunner$LongRunningProcess.class
+com/diffplug/spotless/ProcessRunner$Result.class
+com/diffplug/spotless/ProcessRunner.class
+com/diffplug/spotless/Provisioner.class
+com/diffplug/spotless/RingBufferByteArrayOutputStream.class
+com/diffplug/spotless/SerializableFileFilter.class
+com/diffplug/spotless/SerializableFileFilterImpl$SkipFilesNamed.class
+com/diffplug/spotless/SerializableFileFilterImpl.class
+com/diffplug/spotless/SpotlessCache$SerializedKey.class
+com/diffplug/spotless/SpotlessCache.class
+com/diffplug/spotless/ThrowingEx$BiFunction.class
+com/diffplug/spotless/ThrowingEx$Function.class
+com/diffplug/spotless/ThrowingEx$Runnable.class
+com/diffplug/spotless/ThrowingEx$Supplier.class
+com/diffplug/spotless/ThrowingEx$WrappedAsRuntimeException.class
+com/diffplug/spotless/ThrowingEx.class
+com/diffplug/spotless/package-info.class
+com/diffplug/spotless/annotations/
+com/diffplug/spotless/annotations/Internal.class
+
+ succeeded in 409ms:
+644150511ab4053c311316ab73e67bfc212e878d	refs/tags/lib/2.45.0
+52654ef8c4a6191d983b10a2370d53b1ca023f7d	refs/tags/lib/2.45.0^{}
+3724eef2e50c2818f36da53ac9faf9db57e7f580	refs/tags/maven/2.45.0
+9b004d2533309c879376f5e03d5edf2030ee35a2	refs/tags/maven/2.45.0^{}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/diffplug/spotless/contents?ref=lib/2.45.0 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); git clone --depth 1 --branch lib/2.45.0 --filter=blob:none --sparse https://github.com/diffplug/spotless.git "$tmp/spotless" >/dev/null 2>&1 && cd "$tmp/spotless" && git sparse-checkout set lib testlib && find . -maxdepth 4 -type d '"\\( -path '*/src/test*' -o -path '*/test' -o -path '*/tests' \\) | sort | sed -n '1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 185ms:
+[
+  {
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "sha": "9fe2fbc6c6386baa3b7c6a0e93fa91827f1c1d8f",
+    "size": 941,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/.editorconfig?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/.editorconfig",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/9fe2fbc6c6386baa3b7c6a0e93fa91827f1c1d8f",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/.editorconfig",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/.editorconfig?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/9fe2fbc6c6386baa3b7c6a0e93fa91827f1c1d8f",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/.editorconfig"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "dc4cb6b0bd591771234ac587d78dc54f8fde91d8",
+    "size": 55,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/.gitattributes?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/.gitattributes",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/dc4cb6b0bd591771234ac587d78dc54f8fde91d8",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/.gitattributes?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/dc4cb6b0bd591771234ac587d78dc54f8fde91d8",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "da4ea7e688fd9fcbe412526c81b74e9ec1743262",
+    "size": 0,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/.github?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/tree/lib/2.45.0/.github",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/trees/da4ea7e688fd9fcbe412526c81b74e9ec1743262",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/.github?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/trees/da4ea7e688fd9fcbe412526c81b74e9ec1743262",
+      "html": "https://github.com/diffplug/spotless/tree/lib/2.45.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "ab04bc7021b5c89719ff4d4fecd2f410475add41",
+    "size": 1788,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/.gitignore?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/.gitignore",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/ab04bc7021b5c89719ff4d4fecd2f410475add41",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/.gitignore?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/ab04bc7021b5c89719ff4d4fecd2f410475add41",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/.gitignore"
+    }
+  },
+  {
+    "name": "CHANGES.md",
+    "path": "CHANGES.md",
+    "sha": "adf6d109e7bea1ca53ccfe54ae87b13e2a981d7d",
+    "size": 66611,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/CHANGES.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/CHANGES.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/adf6d109e7bea1ca53ccfe54ae87b13e2a981d7d",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/CHANGES.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/CHANGES.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/adf6d109e7bea1ca53ccfe54ae87b13e2a981d7d",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/CHANGES.md"
+    }
+  },
+  {
+    "name": "CODE_OF_CONDUCT.md",
+    "path": "CODE_OF_CONDUCT.md",
+    "sha": "d35de1a7caf026e715e08a235437a5dcd53385bd",
+    "size": 3222,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/CODE_OF_CONDUCT.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/CODE_OF_CONDUCT.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/d35de1a7caf026e715e08a235437a5dcd53385bd",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/CODE_OF_CONDUCT.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/CODE_OF_CONDUCT.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/d35de1a7caf026e715e08a235437a5dcd53385bd",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/CODE_OF_CONDUCT.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "5fce5a946039c455cf639c33afd0f176283efe63",
+    "size": 12699,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/CONTRIBUTING.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/5fce5a946039c455cf639c33afd0f176283efe63",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/CONTRIBUTING.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/5fce5a946039c455cf639c33afd0f176283efe63",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "ECLIPSE_SCREENSHOTS.md",
+    "path": "ECLIPSE_SCREENSHOTS.md",
+    "sha": "345ae44494750cb58dbe6dbaf80c487ec1df7591",
+    "size": 631,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/ECLIPSE_SCREENSHOTS.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/ECLIPSE_SCREENSHOTS.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/345ae44494750cb58dbe6dbaf80c487ec1df7591",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/ECLIPSE_SCREENSHOTS.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/ECLIPSE_SCREENSHOTS.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/345ae44494750cb58dbe6dbaf80c487ec1df7591",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/ECLIPSE_SCREENSHOTS.md"
+    }
+  },
+  {
+    "name": "ISSUE_TEMPLATE.md",
+    "path": "ISSUE_TEMPLATE.md",
+    "sha": "76d0ce19abbb87812b48fe92c6982601f85f7b2a",
+    "size": 502,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/ISSUE_TEMPLATE.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/ISSUE_TEMPLATE.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/76d0ce19abbb87812b48fe92c6982601f85f7b2a",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/ISSUE_TEMPLATE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/ISSUE_TEMPLATE.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/76d0ce19abbb87812b48fe92c6982601f85f7b2a",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/ISSUE_TEMPLATE.md"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "0c99062826465d42a145f301471fe779c1acb411",
+    "size": 10295,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/LICENSE.txt?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/0c99062826465d42a145f301471fe779c1acb411",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/LICENSE.txt?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/0c99062826465d42a145f301471fe779c1acb411",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/LICENSE.txt"
+    }
+  },
+  {
+    "name": "PADDEDCELL.md",
+    "path": "PADDEDCELL.md",
+    "sha": "233657d491dc79f8cc8acfa120913104c8e2d8c5",
+    "size": 2782,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/PADDEDCELL.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/PADDEDCELL.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/233657d491dc79f8cc8acfa120913104c8e2d8c5",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/PADDEDCELL.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/PADDEDCELL.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/233657d491dc79f8cc8acfa120913104c8e2d8c5",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/PADDEDCELL.md"
+    }
+  },
+  {
+    "name": "PULL_REQUEST_TEMPLATE.md",
+    "path": "PULL_REQUEST_TEMPLATE.md",
+    "sha": "bb9ef60188935408366a013a883822338be161de",
+    "size": 1627,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/PULL_REQUEST_TEMPLATE.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/PULL_REQUEST_TEMPLATE.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/bb9ef60188935408366a013a883822338be161de",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/PULL_REQUEST_TEMPLATE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/PULL_REQUEST_TEMPLATE.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/bb9ef60188935408366a013a883822338be161de",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/PULL_REQUEST_TEMPLATE.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "3c5d13b179f6cf3d35a4c5e3f7d4f2233b70f6f7",
+    "size": 27914,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/README.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/README.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/3c5d13b179f6cf3d35a4c5e3f7d4f2233b70f6f7",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/README.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/3c5d13b179f6cf3d35a4c5e3f7d4f2233b70f6f7",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/README.md"
+    }
+  },
+  {
+    "name": "RELEASE_CHECKLIST.md",
+    "path": "RELEASE_CHECKLIST.md",
+    "sha": "8eb126f4c7f268c609904305bc3e1e2f26973dac",
+    "size": 1111,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/RELEASE_CHECKLIST.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/RELEASE_CHECKLIST.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/8eb126f4c7f268c609904305bc3e1e2f26973dac",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/RELEASE_CHECKLIST.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/RELEASE_CHECKLIST.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/8eb126f4c7f268c609904305bc3e1e2f26973dac",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/RELEASE_CHECKLIST.md"
+    }
+  },
+  {
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "sha": "56294d0a5104d74acfb9da887789f88b8b0ee74a",
+    "size": 81,
+    "url": "https://api.github.com/repos/diffplug/spotless/contents/SECURITY.md?ref=lib/2.45.0",
+    "html_url": "https://github.com/diffplug/spotless/blob/lib/2.45.0/SECURITY.md",
+    "git_url": "https://api.github.com/repos/diffplug/spotless/git/blobs/56294d0a5104d74acfb9da887789f88b8b0ee74a",
+    "download_url": "https://raw.githubusercontent.com/diffplug/spotless/lib/2.45.0/SECURITY.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/diffplug/spotless/contents/SECURITY.md?ref=lib/2.45.0",
+      "git": "https://api.github.com/repos/diffplug/spotless/git/blobs/56294d0a5104d74acfb9da887789f88b8b0ee74a",
+      "html": "https://github.com/diffplug/spotless/blob/lib/2.45.0/SECURITY.md"
+    }
+
+ succeeded in 1568ms:
+./lib/src/test
+./lib/src/test/java
+./lib/src/testCompatCleanthat2Dot1
+./lib/src/testCompatCleanthat2Dot1/java
+./lib/src/testCompatKtLint0Dot48Dot0
+./lib/src/testCompatKtLint0Dot48Dot0/java
+./lib/src/testCompatKtLint0Dot48Dot0/resources
+./lib/src/testCompatKtLint0Dot49Dot0
+./lib/src/testCompatKtLint0Dot49Dot0/java
+./lib/src/testCompatKtLint0Dot49Dot0/resources
+./lib/src/testCompatKtLint0Dot50Dot0
+./lib/src/testCompatKtLint0Dot50Dot0/java
+./lib/src/testCompatKtLint0Dot50Dot0/resources
+./lib/src/testCompatKtLint1Dot0Dot0
+./lib/src/testCompatKtLint1Dot0Dot0/java
+./lib/src/testCompatKtLint1Dot0Dot0/resources
+./testlib/src/test
+./testlib/src/test/java
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/2.45.0/spotless-lib-2.45.0-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/2.45.0/spotless-lib-2.45.0-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+exec
+/usr/bin/bash -lc "curl -fsSI -L https://github.com/diffplug/spotless/tree/lib/2.45.0/lib/src/test | sed -n '1,40p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 518ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 19:02:41 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b1b77ae72463089f5f5c1425561da261"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=%2Bll8%2Bc9DiuGRYkOS2cpC%2BnbQQZGOOLOM7%2FrDOUYq0%2BizCE49JckPaeFILeNjaHLGfCckFYuWGGUdb6N78Gv%2BmpF8yBOb9wgkdNQjDRRKEOJr9Y0w9ifVgNsVr9gsuLSV%2FWg%2BMJimdoU1Ada2BG0g8I7YLAWL1ZOlFMGvCAFQkSElkqM3eYzG3OGUUlwV0Ah7Brb3hyjJfzY9Ilj%2Bgz0RBGyFb3nqruEu6LqzWW50kt4FzHFyZ8utiY1IJ2F7xlVE%2BhnXvpgrCUU2OPv6%2FYVpdQ%3D%3D--leJ3jeq7n7W0EIDr--J4t35hsQgPlq7l6uKpxFKg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.559016801.1777921361; expires=Tue, 04 May 2027 19:02:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 19:02:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5106:1385A6:24D87BD:1BAC0C0:69F8ED51
+
+
+ succeeded in 5025ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 19:02:46 GMT
+content-type: application/java-archive
+content-length: 229073
+cf-ray: 9f69c2fb5ff57a85-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 879934
+etag: "d1a14ac9f1765bd976c2006906a4c4b5"
+last-modified: Tue, 23 Jan 2024 07:02:17 GMT
+x-checksum-md5: d1a14ac9f1765bd976c2006906a4c4b5
+x-checksum-sha1: 3ead4e3b89ad7d707dc07a11f303e375ea9868e2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 5031ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 19:02:46 GMT
+content-type: application/java-archive
+content-length: 776812
+cf-ray: 9f69c2fb5bfedc8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 804941
+etag: "8d718322320947004239f281dc74335d"
+last-modified: Tue, 23 Jan 2024 07:02:17 GMT
+x-checksum-md5: 8d718322320947004239f281dc74335d
+x-checksum-sha1: 89597766e52484dc19c546a1706062673dfc0911
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The artifact publishes JVM `jar`, `sources.jar`, and `javadoc.jar` variants, and the main JAR contains `.class` files, so I’m leaving the Native Image exclusion fields absent. I’m going to write Maven URLs for sources/docs and the GitHub `lib/2.45.0` tag for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+diff --git a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+index 13d6f66be98850f86e349808b7488f11253e4bd1..ca8513e1c5469b732649ec25c3b212d966f5c61a
+--- a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0"
++  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0",
++  "repository-url" : "https://github.com/diffplug/spotless",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/diffplug/spotless/tree/lib/$version$/lib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-javadoc.jar",
++  "description" : "Spotless Lib is the core Java library behind Spotless that composes formatter steps for code and text formatting. It provides reusable APIs and integrations for applying formatters such as Java, Kotlin, Groovy, JSON, Markdown, npm-based tools, and whitespace or license-header cleanup."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+index 13d6f66be98850f86e349808b7488f11253e4bd1..ca8513e1c5469b732649ec25c3b212d966f5c61a
+--- a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0"
++  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0",
++  "repository-url" : "https://github.com/diffplug/spotless",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/diffplug/spotless/tree/lib/$version$/lib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-javadoc.jar",
++  "description" : "Spotless Lib is the core Java library behind Spotless that composes formatter steps for code and text formatting. It provides reusable APIs and integrations for applying formatters such as Java, Kotlin, Groovy, JSON, Markdown, npm-based tools, and whitespace or license-header cleanup."
+ }
+
+web search: 
+web search: https://github.com/diffplug/spotless/tree/lib/2.45.0/lib/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/2.45.0/spotless-lib-2.45.0-sources.jar
+web search: 
+web search: https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-lib/2.45.0
+web search: 
+web search: https://repo1.maven.org/maven2/com/diffplug/spotless/spotless-lib/2.45.0/
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 0ms:
+{
+  "coordinates": "com.diffplug.spotless:spotless-lib:2.45.0",
+  "repository-url": "https://github.com/diffplug/spotless",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-sources.jar",
+  "test-code-url": "https://github.com/diffplug/spotless/tree/lib/$version$/lib/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-javadoc.jar",
+  "description": "Spotless Lib is the core Java library behind Spotless that composes formatter steps for code and text formatting. It provides reusable APIs and integrations for applying formatters such as Java, Kotlin, Groovy, JSON, Markdown, npm-based tools, and whitespace or license-header cleanup."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+index 13d6f66be98850f86e349808b7488f11253e4bd1..ca8513e1c5469b732649ec25c3b212d966f5c61a
+--- a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0"
++  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0",
++  "repository-url" : "https://github.com/diffplug/spotless",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/diffplug/spotless/tree/lib/$version$/lib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-javadoc.jar",
++  "description" : "Spotless Lib is the core Java library behind Spotless that composes formatter steps for code and text formatting. It provides reusable APIs and integrations for applying formatters such as Java, Kotlin, Groovy, JSON, Markdown, npm-based tools, and whitespace or license-header cleanup."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 0ms:
+{
+  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0",
+  "repository-url" : "https://github.com/diffplug/spotless",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-sources.jar",
+  "test-code-url" : "https://github.com/diffplug/spotless/tree/lib/$version$/lib/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-javadoc.jar",
+  "description" : "Spotless Lib is the core Java library behind Spotless that composes formatter steps for code and text formatting. It provides reusable APIs and integrations for applying formatters such as Java, Kotlin, Groovy, JSON, Markdown, npm-based tools, and whitespace or license-header cleanup."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3825-4a0221e7
+ succeeded in 200ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+index 13d6f66be98850f86e349808b7488f11253e4bd1..ca8513e1c5469b732649ec25c3b212d966f5c61a
+--- a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-lib-2.45.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0"
++  "coordinates" : "com.diffplug.spotless:spotless-lib:2.45.0",
++  "repository-url" : "https://github.com/diffplug/spotless",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-sources.jar",
++  "test-code-url" : "https://github.com/diffplug/spotless/tree/lib/$version$/lib/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-lib/$version$/spotless-lib-$version$-javadoc.jar",
++  "description" : "Spotless Lib is the core Java library behind Spotless that composes formatter steps for code and text formatting. It provides reusable APIs and integrations for applying formatters such as Java, Kotlin, Groovy, JSON, Markdown, npm-based tools, and whitespace or license-header cleanup."
+ }
+
+web search: 
+web search: Maven Central com.diffplug.spotless spotless-lib 2.45.0 sources javadoc
+web search: 
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
