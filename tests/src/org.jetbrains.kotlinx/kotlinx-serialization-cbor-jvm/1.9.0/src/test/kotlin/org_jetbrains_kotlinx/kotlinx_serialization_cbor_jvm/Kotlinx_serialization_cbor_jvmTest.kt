@@ -8,6 +8,7 @@
 
 package org_jetbrains_kotlinx.kotlinx_serialization_cbor_jvm
 
+import kotlinx.serialization.ContextualSerializer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ByteArraySerializer
@@ -25,6 +26,8 @@ import kotlinx.serialization.cbor.CborTag
 import kotlinx.serialization.cbor.KeyTags
 import kotlinx.serialization.cbor.ObjectTags
 import kotlinx.serialization.cbor.ValueTags
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
@@ -33,6 +36,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
+import kotlinx.serialization.modules.SerializersModule
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Assertions.assertArrayEquals
@@ -159,6 +163,24 @@ public class Kotlinx_serialization_cbor_jvmTest {
         val encoded: ByteArray = cbor.encodeToByteArray(CborAwareValueSerializer, value)
 
         assertThat(cbor.decodeFromByteArray(CborAwareValueSerializer, encoded)).isEqualTo(value)
+    }
+
+    @Test
+    fun serializersModuleProvidesContextualSerializersForCborEncoding(): Unit {
+        val cbor: Cbor = Cbor {
+            serializersModule = SerializersModule {
+                contextual(TemperatureReading::class, TemperatureReadingAsTextSerializer)
+            }
+            useDefiniteLengthEncoding = true
+        }
+        val report: WeatherReport = WeatherReport(station = "north", temperature = TemperatureReading(21))
+
+        val encoded: ByteArray = cbor.encodeToByteArray(WeatherReportSerializer, report)
+
+        assertThat(encoded.toHex()).isEqualTo(
+            "a26773746174696f6e656e6f7274686b74656d706572617475726563323143"
+        )
+        assertThat(cbor.decodeFromByteArray(WeatherReportSerializer, encoded)).isEqualTo(report)
     }
 }
 
@@ -302,6 +324,61 @@ private object TaggedResourceSerializer : KSerializer<TaggedResource> {
             uri = requireNotNull(uri) { "uri is required" },
             identifier = requireNotNull(identifier) { "identifier is required" }
         )
+    }
+}
+
+private data class WeatherReport(
+    val station: String,
+    val temperature: TemperatureReading
+)
+
+private data class TemperatureReading(val celsius: Int)
+
+private object WeatherReportSerializer : KSerializer<WeatherReport> {
+    private val temperatureSerializer: KSerializer<TemperatureReading> = ContextualSerializer(TemperatureReading::class)
+
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("tests.WeatherReport") {
+        element<String>("station")
+        element("temperature", temperatureSerializer.descriptor)
+    }
+
+    override fun serialize(encoder: Encoder, value: WeatherReport): Unit = encoder.encodeStructure(descriptor) {
+        encodeStringElement(descriptor, 0, value.station)
+        encodeSerializableElement(descriptor, 1, temperatureSerializer, value.temperature)
+    }
+
+    override fun deserialize(decoder: Decoder): WeatherReport = decoder.decodeStructure(descriptor) {
+        var station: String? = null
+        var temperature: TemperatureReading? = null
+        while (true) {
+            when (val index: Int = decodeElementIndex(descriptor)) {
+                0 -> station = decodeStringElement(descriptor, 0)
+                1 -> temperature = decodeSerializableElement(descriptor, 1, temperatureSerializer)
+                CompositeDecoder.DECODE_DONE -> break
+                else -> error("Unexpected element index $index")
+            }
+        }
+        WeatherReport(
+            station = requireNotNull(station) { "station is required" },
+            temperature = requireNotNull(temperature) { "temperature is required" }
+        )
+    }
+}
+
+private object TemperatureReadingAsTextSerializer : KSerializer<TemperatureReading> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(
+        "tests.TemperatureReadingAsText",
+        PrimitiveKind.STRING
+    )
+
+    override fun serialize(encoder: Encoder, value: TemperatureReading): Unit {
+        encoder.encodeString("${value.celsius}C")
+    }
+
+    override fun deserialize(decoder: Decoder): TemperatureReading {
+        val text: String = decoder.decodeString()
+        require(text.endsWith('C')) { "temperature must end with C" }
+        return TemperatureReading(text.dropLast(1).toInt())
     }
 }
 
