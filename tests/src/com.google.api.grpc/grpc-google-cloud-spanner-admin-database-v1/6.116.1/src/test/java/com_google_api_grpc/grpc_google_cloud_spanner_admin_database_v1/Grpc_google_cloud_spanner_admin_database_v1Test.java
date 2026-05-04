@@ -7,6 +7,7 @@
 package com_google_api_grpc.grpc_google_cloud_spanner_admin_database_v1;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.iam.v1.GetIamPolicyRequest;
@@ -64,6 +65,8 @@ import io.grpc.MethodDescriptor;
 import io.grpc.Server;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.ServiceDescriptor;
+import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.protobuf.ProtoFileDescriptorSupplier;
@@ -397,6 +400,18 @@ public class Grpc_google_cloud_spanner_admin_database_v1Test {
         }
     }
 
+    @Test
+    void defaultAsyncServiceMethodsReturnUnimplementedStatus() throws Exception {
+        try (GrpcFixture fixture = GrpcFixture.start(new DefaultDatabaseAdminService())) {
+            DatabaseAdminGrpc.DatabaseAdminBlockingStub stub =
+                    DatabaseAdminGrpc.newBlockingStub(fixture.channel).withDeadlineAfter(5, TimeUnit.SECONDS);
+
+            assertThatThrownBy(() -> stub.getDatabase(GetDatabaseRequest.newBuilder().setName(DATABASE).build()))
+                    .isInstanceOfSatisfying(StatusRuntimeException.class,
+                            exception -> assertThat(exception.getStatus().getCode()).isEqualTo(Code.UNIMPLEMENTED));
+        }
+    }
+
     private static List<String> expectedFullMethodNames() {
         return List.of(
                 fullMethodName("ListDatabases"),
@@ -577,6 +592,17 @@ public class Grpc_google_cloud_spanner_admin_database_v1Test {
             return new GrpcFixture(server, channel);
         }
 
+        static GrpcFixture start(DatabaseAdminGrpc.AsyncService service) throws Exception {
+            String serverName = InProcessServerBuilder.generateName();
+            Server server = InProcessServerBuilder.forName(serverName)
+                    .directExecutor()
+                    .addService(DatabaseAdminGrpc.bindService(service))
+                    .build()
+                    .start();
+            ManagedChannel channel = InProcessChannelBuilder.forName(serverName).directExecutor().build();
+            return new GrpcFixture(server, channel);
+        }
+
         @Override
         public void close() throws Exception {
             channel.shutdownNow();
@@ -611,6 +637,9 @@ public class Grpc_google_cloud_spanner_admin_database_v1Test {
             assertThat(completed.await(5, TimeUnit.SECONDS)).isTrue();
             return value;
         }
+    }
+
+    private static final class DefaultDatabaseAdminService implements DatabaseAdminGrpc.AsyncService {
     }
 
     private static final class FakeDatabaseAdminService extends DatabaseAdminGrpc.DatabaseAdminImplBase {
