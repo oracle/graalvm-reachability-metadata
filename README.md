@@ -11,20 +11,10 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 
 ---
 
-## Get Support
-
 <p align="center">
   <strong>Choose the fastest path to the right ticket.</strong><br>
   <sub>These GitHub buttons route to the issue template our automation expects.</sub>
 </p>
-
-### 🔎 Check if Your Library or Framework Is Supported
-
-To quickly check whether reachability metadata exists for a specific library, run this command directly from your terminal:
-
-```bash
-curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "<groupId>:<artifactId>:<version>"
-```
 
 <p align="center">
   <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library.svg" width="600"></a>
@@ -35,6 +25,14 @@ curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata
 <p align="center">
   <a href="docs/CONTRIBUTING.md"><img alt="Open contribution instructions" src="docs/assets/readme/button-contribute-fix.svg" width="600"></a>
 </p>
+
+### 🔎 Check if Your Library or Framework Is Supported
+
+To quickly check whether reachability metadata exists for a specific library, run this command directly from your terminal:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "<groupId>:<artifactId>:<version>"
+```
 
 ---
 
