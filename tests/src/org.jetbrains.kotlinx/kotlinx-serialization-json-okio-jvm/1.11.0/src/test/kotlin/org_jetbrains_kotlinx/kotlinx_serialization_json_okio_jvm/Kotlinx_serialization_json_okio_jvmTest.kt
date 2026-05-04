@@ -111,6 +111,21 @@ public class Kotlinx_serialization_json_okio_jvmTest {
     }
 
     @Test
+    fun usesReifiedBufferedSinkAndSourceOverloadsForBuiltInTypes(): Unit {
+        val input: Map<String, List<Int>> = linkedMapOf(
+            "fibonacci" to listOf(1, 1, 2, 3, 5),
+            "primes" to listOf(2, 3, 5, 7),
+        )
+        val buffer: Buffer = Buffer()
+
+        Json.encodeToBufferedSink(input, buffer)
+        val decoded: Map<String, List<Int>> = Json.decodeFromBufferedSource(buffer)
+
+        assertThat(decoded).isEqualTo(input)
+        assertThat(buffer.exhausted()).isTrue()
+    }
+
+    @Test
     fun decodesArrayWrappedSequenceFromBufferedSource(): Unit {
         val source: Buffer = Buffer().writeUtf8(
             """
