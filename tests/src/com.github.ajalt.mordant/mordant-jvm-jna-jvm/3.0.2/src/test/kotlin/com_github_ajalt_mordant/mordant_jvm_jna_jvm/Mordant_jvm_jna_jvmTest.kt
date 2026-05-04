@@ -8,6 +8,7 @@ package com_github_ajalt_mordant.mordant_jvm_jna_jvm
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.Size
+import com.github.ajalt.mordant.terminal.StandardTerminalInterface
 import com.github.ajalt.mordant.terminal.TerminalInfo
 import com.github.ajalt.mordant.terminal.TerminalInterface
 import com.github.ajalt.mordant.terminal.TerminalInterfaceProvider
@@ -83,6 +84,31 @@ public class MordantJvmJnaJvmTest {
                 assertThat(size.height).isPositive()
             }
             assertThat(terminalInterface.shouldAutoUpdateSize()).isIn(true, false)
+        }
+    }
+
+    @Test
+    fun loadedProviderUsesNativeInteractivityDetectionWhenNoOverridesAreProvided(): Unit {
+        val terminalInterface: TerminalInterface? = TerminalInterfaceProviderJna().load()
+
+        if (terminalInterface == null) {
+            assertThat(providerMayBeUnavailable()).isTrue()
+        } else {
+            assertThat(terminalInterface).isInstanceOf(StandardTerminalInterface::class.java)
+            val standardTerminalInterface: StandardTerminalInterface = terminalInterface as StandardTerminalInterface
+
+            val stdoutInteractive: Boolean = standardTerminalInterface.stdoutInteractive()
+            val stdinInteractive: Boolean = standardTerminalInterface.stdinInteractive()
+            val info: TerminalInfo = standardTerminalInterface.info(
+                ansiLevel = null,
+                hyperlinks = null,
+                outputInteractive = null,
+                inputInteractive = null,
+            )
+
+            assertThat(info.outputInteractive).isEqualTo(stdoutInteractive)
+            assertThat(info.inputInteractive).isEqualTo(stdinInteractive)
+            assertThat(info.interactive).isEqualTo(stdoutInteractive && stdinInteractive)
         }
     }
 
