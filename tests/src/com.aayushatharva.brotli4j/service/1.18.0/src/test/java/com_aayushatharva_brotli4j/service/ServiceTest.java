@@ -83,6 +83,20 @@ public class ServiceTest {
         assertThat(providerTypes).containsExactly(DiscoverableBrotliNativeProvider.class);
     }
 
+    @Test
+    void providerImplementationsCanBeInstantiatedFromServiceConfiguration() {
+        ServiceConfigurationClassLoader classLoader = new ServiceConfigurationClassLoader(
+                ServiceTest.class.getClassLoader(), LoadableBrotliNativeProvider.class.getName());
+        ServiceLoader<BrotliNativeProvider> providers = ServiceLoader.load(BrotliNativeProvider.class, classLoader);
+
+        List<String> platformNames = providers.stream()
+                .map(ServiceLoader.Provider::get)
+                .map(BrotliNativeProvider::platformName)
+                .collect(Collectors.toList());
+
+        assertThat(platformNames).containsExactly("loaded-test-platform");
+    }
+
     private static String readPlatformName(BrotliNativeProvider provider) {
         return provider.platformName();
     }
@@ -104,6 +118,13 @@ public class ServiceTest {
         @Override
         public String platformName() {
             return "test-platform";
+        }
+    }
+
+    public static final class LoadableBrotliNativeProvider implements BrotliNativeProvider {
+        @Override
+        public String platformName() {
+            return "loaded-test-platform";
         }
     }
 
