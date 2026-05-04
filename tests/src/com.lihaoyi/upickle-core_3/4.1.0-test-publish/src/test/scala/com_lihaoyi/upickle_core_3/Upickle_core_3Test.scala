@@ -15,6 +15,7 @@ import upickle.core.ByteBuilder
 import upickle.core.ByteOps
 import upickle.core.CharBuilder
 import upickle.core.CharOps
+import upickle.core.LinkedHashMap as UpickleLinkedHashMap
 import upickle.core.ObjVisitor
 import upickle.core.ParseUtils
 import upickle.core.RenderUtils
@@ -189,6 +190,26 @@ class Upickle_core_3Test {
     assertThat(CharOps.lessThan('a', 'b')).isTrue()
     assertThat(CharOps.within('a', 'm', 'z')).isTrue()
     assertThat(CharOps.newString(chars, 2, 3)).isEqualTo("wxy")
+  }
+
+  @Test
+  def linkedHashMapPreservesInsertionOrderAcrossMutations(): Unit = {
+    val map: UpickleLinkedHashMap[String, Int] = UpickleLinkedHashMap()
+    map.update("first", 1)
+    map.update("second", 2)
+    map.update("third", 3)
+
+    map.update("second", 20)
+
+    assertThat(map.keysIterator.toSeq.asJava).containsExactly("first", "second", "third")
+    assertThat(map("second")).isEqualTo(20)
+
+    val removed: Option[Int] = map.remove("first")
+    map.update("fourth", 4)
+
+    assertThat(removed).isEqualTo(Some(1))
+    assertThat(map.iterator.map { case (key, value) => s"$key=$value" }.toSeq.asJava)
+      .containsExactly("second=20", "third=3", "fourth=4")
   }
 
   private object RenderingVisitor extends Visitor[String, String] {
