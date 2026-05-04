@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions.{assertEquals, assertFalse, assertTrue, 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
 import sangria.ast.{BooleanValue, Document, EnumTypeDefinition, EnumValue as AstEnumValue, ListValue, ObjectTypeDefinition, ObjectValue, StringValue, Value}
-import sangria.execution.{Executor, ValidationError}
+import sangria.execution.{Executor, MaxQueryDepthReachedError, QueryReducer, QueryReducingError, ValidationError}
 import sangria.marshalling.{InputUnmarshaller, ScalaInput}
 import sangria.marshalling.queryAst.queryAstResultMarshaller
 import sangria.renderer.SchemaFilter
@@ -317,6 +317,45 @@ class Sangria_core_3Test {
 
     assertEquals(Right("abc"), StringType.coerceInput(StringValue("abc")))
     assertTrue(IntType.coerceInput(StringValue("not an int")).isLeft)
+  }
+
+  @Test
+  def rejectsQueriesThatExceedConfiguredMaximumDepth(): Unit = {
+    val error: QueryReducingError = org.junit.jupiter.api.Assertions.assertThrows(
+      classOf[QueryReducingError],
+      new Executable {
+        override def execute(): Unit = {
+          Await.result(
+            Executor.execute(
+              CharacterSchema,
+              parse(
+                """
+                  |{
+                  |  hero {
+                  |    ... on Human {
+                  |      id
+                  |    }
+                  |    ... on Droid {
+                  |      id
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin
+              ),
+              variables = InputUnmarshaller.emptyMapVars,
+              queryReducers = QueryReducer.rejectMaxDepth[Unit](1) :: Nil
+            ),
+            5.seconds
+          )
+        }
+      }
+    )
+
+    assertTrue(error.beforeExecution)
+    error.cause match {
+      case maxDepthError: MaxQueryDepthReachedError => assertEquals(1, maxDepthError.maxDepth)
+      case other => fail(s"Expected max-depth rejection, got $other")
+    }
   }
 
   private def heroFor(episode: Episode): SearchResult =
