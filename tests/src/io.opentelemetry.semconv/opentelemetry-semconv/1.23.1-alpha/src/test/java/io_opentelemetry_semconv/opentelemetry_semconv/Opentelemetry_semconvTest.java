@@ -155,6 +155,33 @@ public class Opentelemetry_semconvTest {
     }
 
     @Test
+    void graphqlAttributesCanDescribeOperation() {
+        String document = "query Order($id: ID!) { order(id: $id) { id total } }";
+
+        Attributes graphqlAttributes = Attributes.builder()
+                .put(SemanticAttributes.GRAPHQL_DOCUMENT, document)
+                .put(SemanticAttributes.GRAPHQL_OPERATION_NAME, "Order")
+                .put(SemanticAttributes.GRAPHQL_OPERATION_TYPE, SemanticAttributes.GraphqlOperationTypeValues.QUERY)
+                .build();
+
+        assertKey(SemanticAttributes.GRAPHQL_DOCUMENT, "graphql.document", AttributeType.STRING);
+        assertKey(SemanticAttributes.GRAPHQL_OPERATION_NAME, "graphql.operation.name", AttributeType.STRING);
+        assertKey(SemanticAttributes.GRAPHQL_OPERATION_TYPE, "graphql.operation.type", AttributeType.STRING);
+
+        assertThat(SemanticAttributes.GraphqlOperationTypeValues.QUERY).isEqualTo("query");
+        assertThat(SemanticAttributes.GraphqlOperationTypeValues.MUTATION).isEqualTo("mutation");
+        assertThat(SemanticAttributes.GraphqlOperationTypeValues.SUBSCRIPTION).isEqualTo("subscription");
+        assertThat(graphqlAttributes.get(SemanticAttributes.GRAPHQL_DOCUMENT)).isEqualTo(document);
+        assertThat(graphqlAttributes.get(SemanticAttributes.GRAPHQL_OPERATION_NAME)).isEqualTo("Order");
+        assertThat(graphqlAttributes.get(SemanticAttributes.GRAPHQL_OPERATION_TYPE)).isEqualTo("query");
+        assertThat(graphqlAttributes.asMap())
+                .containsOnlyKeys(
+                        SemanticAttributes.GRAPHQL_DOCUMENT,
+                        SemanticAttributes.GRAPHQL_OPERATION_NAME,
+                        SemanticAttributes.GRAPHQL_OPERATION_TYPE);
+    }
+
+    @Test
     void resourceAttributesCanDescribeRuntimeAndDeployment() {
         List<String> commandArgs = List.of("--server.port=8080", "--profile=test");
         List<String> hostAddresses = List.of("192.0.2.10", "2001:db8::10");
