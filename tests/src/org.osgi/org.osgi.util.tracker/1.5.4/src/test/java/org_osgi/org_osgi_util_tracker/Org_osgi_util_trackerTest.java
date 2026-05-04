@@ -142,6 +142,34 @@ public class Org_osgi_util_trackerTest {
     }
 
     @Test
+    void serviceTrackerRemovesServiceWhenPropertiesNoLongerMatchFilter() throws Exception {
+        FakeBundleContext context = new FakeBundleContext();
+        RecordingServiceCustomizer customizer = new RecordingServiceCustomizer(context);
+        ServiceRegistration<Greeting> registration = context.registerService(Greeting.class, () -> "tracked",
+                dictionary("category", "tracked"));
+        ServiceReference<Greeting> reference = registration.getReference();
+        ServiceTracker<Greeting, String> tracker = new ServiceTracker<>(context,
+                context.createFilter("(category=tracked)"), customizer);
+
+        tracker.open();
+        try {
+            assertThat(tracker.getService(reference)).isEqualTo("custom:tracked");
+            assertThat(tracker.size()).isOne();
+            assertThat(customizer.events).containsExactly("adding:tracked");
+
+            registration.setProperties(dictionary("category", "ignored"));
+
+            assertThat(tracker.isEmpty()).isTrue();
+            assertThat(tracker.getService(reference)).isNull();
+            assertThat(tracker.getServiceReferences()).isNull();
+            assertThat(tracker.getTrackingCount()).isEqualTo(2);
+            assertThat(customizer.events).containsExactly("adding:tracked", "removed:tracked");
+        } finally {
+            tracker.close();
+        }
+    }
+
+    @Test
     void serviceTrackerCanTrackAllServicesAndSingleReferences() throws Exception {
         FakeBundleContext context = new FakeBundleContext();
         ServiceRegistration<Greeting> registration = context.registerService(Greeting.class, () -> "all",
@@ -559,6 +587,10 @@ public class Org_osgi_util_trackerTest {
         }
 
         private void updateProperties(FakeServiceReference<?> reference, Dictionary<String, ?> properties) {
+            Map<ServiceListenerRegistration, Boolean> previousMatches = new LinkedHashMap<>();
+            for (ServiceListenerRegistration registration : serviceListeners) {
+                previousMatches.put(registration, registration.filter.match(reference));
+            }
             String[] objectClasses = (String[]) reference.getProperty(Constants.OBJECTCLASS);
             Long serviceId = (Long) reference.getProperty(Constants.SERVICE_ID);
             Hashtable<String, Object> copied = copyProperties(properties);
@@ -566,7 +598,19 @@ public class Org_osgi_util_trackerTest {
             copied.put(Constants.SERVICE_ID, serviceId);
             copied.putIfAbsent(Constants.SERVICE_RANKING, 0);
             reference.properties = copied;
-            fireServiceEvent(ServiceEvent.MODIFIED, reference);
+            fireModifiedServiceEvents(reference, previousMatches);
+        }
+
+        private void fireModifiedServiceEvents(ServiceReference<?> reference,
+                Map<ServiceListenerRegistration, Boolean> previousMatches) {
+            for (ServiceListenerRegistration registration : List.copyOf(serviceListeners)) {
+                boolean matches = registration.filter.match(reference);
+                if (matches) {
+                    registration.listener.serviceChanged(new ServiceEvent(ServiceEvent.MODIFIED, reference));
+                } else if (Boolean.TRUE.equals(previousMatches.get(registration))) {
+                    registration.listener.serviceChanged(new ServiceEvent(ServiceEvent.MODIFIED_ENDMATCH, reference));
+                }
+            }
         }
 
         private void unregister(FakeServiceReference<?> reference) {
