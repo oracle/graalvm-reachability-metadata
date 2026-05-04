@@ -193,6 +193,37 @@ public class Shrinkwrap_spiTest {
     }
 
     @Test
+    void memoryMapArchiveSelectivelyMergesContentUnderTargetPath() throws IOException {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        try {
+            Configuration configuration = configuration(new StubExtensionLoader(), executorService);
+            InMemoryMemoryMapArchive source = new InMemoryMemoryMapArchive("source", configuration, ArchiveFormat.ZIP);
+            InMemoryMemoryMapArchive target = new InMemoryMemoryMapArchive("target", configuration, ArchiveFormat.ZIP);
+            ArchivePath stagingPath = path("/staging");
+            ArchivePath mergedPath = path("/merged");
+            ArchivePath keepPath = path("/assets/keep.txt");
+            ArchivePath skipPath = path("/assets/skip.txt");
+            ArchivePath readmePath = path("/docs/readme.txt");
+
+            source.add(new TestAsset("keep"), keepPath)
+                    .add(new TestAsset("skip"), skipPath)
+                    .add(new TestAsset("readme"), readmePath);
+            target.addAsDirectories(stagingPath, mergedPath);
+            target.merge(source, mergedPath, path -> !path.get().endsWith("skip.txt"));
+
+            assertThat(target.contains(stagingPath)).isTrue();
+            assertThat(target.contains(mergedPath)).isTrue();
+            assertThat(target.contains("/merged/assets/keep.txt")).isTrue();
+            assertThat(target.contains("/merged/docs/readme.txt")).isTrue();
+            assertThat(target.contains("/merged/assets/skip.txt")).isFalse();
+            assertThat(readAsset(target.get("/merged/assets/keep.txt").getAsset())).isEqualTo("keep");
+            assertThat(readAsset(target.get("/merged/docs/readme.txt").getAsset())).isEqualTo("readme");
+        } finally {
+            executorService.shutdownNow();
+        }
+    }
+
+    @Test
     void memoryMapArchiveResolvesNestedArchivesByTypeAndArchiveFormat() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
