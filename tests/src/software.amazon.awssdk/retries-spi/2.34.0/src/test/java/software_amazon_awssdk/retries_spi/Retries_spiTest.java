@@ -231,6 +231,21 @@ public class Retries_spiTest {
     }
 
     @Test
+    void backoffStrategiesExposeReadableDescriptions() {
+        assertThat(BackoffStrategy.retryImmediately().toString()).isEqualTo("(Immediately)");
+        assertThat(BackoffStrategy.fixedDelayWithoutJitter(HUNDRED_MILLIS).toString())
+                .contains("FixedDelayWithoutJitter", "delay", "PT0.1S");
+        assertThat(BackoffStrategy.fixedDelay(HUNDRED_MILLIS).toString())
+                .contains("FixedDelayWithJitter", "delay", "PT0.1S");
+        assertThat(BackoffStrategy.exponentialDelayWithoutJitter(HUNDRED_MILLIS, ONE_SECOND).toString())
+                .contains("ExponentialDelayWithoutJitter", "baseDelay", "PT0.1S", "maxDelay", "PT1S");
+        assertThat(BackoffStrategy.exponentialDelay(HUNDRED_MILLIS, ONE_SECOND).toString())
+                .contains("ExponentialDelayWithJitter", "baseDelay", "PT0.1S", "maxDelay", "PT1S");
+        assertThat(BackoffStrategy.exponentialDelayHalfJitter(HUNDRED_MILLIS, ONE_SECOND).toString())
+                .contains("ExponentialDelayWithHalfJitter", "baseDelay", "PT0.1S", "maxDelay", "PT1S");
+    }
+
+    @Test
     void retryStrategyCanCoordinateTokenLifecycleThroughTheSpiRequests() {
         TestRetryStrategy strategy = new TestRetryStrategyBuilder()
                 .maxAttempts(4)
@@ -277,12 +292,19 @@ public class Retries_spiTest {
         IllegalStateException outer = new IllegalStateException("outer", middle);
 
         builder.retryOnExceptionOrCause(IllegalArgumentException.class);
+        assertThat(builder.shouldRetry(new IllegalArgumentException("direct"))).isTrue();
         assertThat(builder.shouldRetry(outer)).isFalse();
         assertThat(builder.shouldRetry(new RuntimeException(
                 "outer", new IllegalArgumentException("direct cause")))).isTrue();
+        assertThat(builder.shouldRetry(new RuntimeException(
+                "outer", new NumberFormatException("different direct cause")))).isFalse();
 
-        builder.retryOnExceptionOrCauseInstanceOf(RuntimeException.class);
-        assertThat(builder.shouldRetry(outer)).isTrue();
+        builder.retryOnExceptionOrCauseInstanceOf(IllegalArgumentException.class);
+        assertThat(builder.shouldRetry(new NumberFormatException("direct subclass"))).isTrue();
+        assertThat(builder.shouldRetry(new RuntimeException(
+                "outer", new NumberFormatException("subclass direct cause")))).isTrue();
+        assertThat(builder.shouldRetry(new RuntimeException(
+                "outer", new IllegalStateException("different direct cause")))).isFalse();
 
         builder.retryOnRootCause(IllegalArgumentException.class);
         assertThat(builder.shouldRetry(outer)).isTrue();
