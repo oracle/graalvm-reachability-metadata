@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.Attributes;
 import io.grpc.CallCredentials;
+import io.grpc.CallOptions;
 import io.grpc.ChannelCredentials;
 import io.grpc.CompositeChannelCredentials;
 import io.grpc.ManagedChannel;
@@ -19,6 +20,7 @@ import io.grpc.MethodDescriptor;
 import io.grpc.Server;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
+import io.grpc.SecurityLevel;
 import io.grpc.ServerCredentials;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerServiceDefinition;
@@ -34,6 +36,7 @@ import io.grpc.alts.ComputeEngineChannelBuilder;
 import io.grpc.alts.ComputeEngineChannelCredentials;
 import io.grpc.alts.GoogleDefaultChannelBuilder;
 import io.grpc.alts.GoogleDefaultChannelCredentials;
+import io.grpc.alts.InternalCheckGcpEnvironment;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -122,6 +125,29 @@ public class Grpc_altsTest {
     }
 
     @Test
+    void computeEngineCredentialsExposeEnvironmentAwareCallCredentials() {
+        boolean runningOnGcp = InternalCheckGcpEnvironment.isOnGcp();
+        ChannelCredentials computeEngineCredentials = ComputeEngineChannelCredentials.create();
+
+        assertThat(InternalCheckGcpEnvironment.isOnGcp()).isEqualTo(runningOnGcp);
+        assertThat(computeEngineCredentials).isInstanceOf(CompositeChannelCredentials.class);
+
+        if (!runningOnGcp) {
+            CompositeChannelCredentials compositeCredentials = (CompositeChannelCredentials) computeEngineCredentials;
+            CapturingMetadataApplier applier = new CapturingMetadataApplier();
+
+            compositeCredentials.getCallCredentials()
+                    .applyRequestMetadata(new TestRequestInfo(), Runnable::run, applier);
+
+            assertThat(applier.getHeaders()).isNull();
+            assertThat(applier.getFailure()).isNotNull();
+            assertThat(applier.getFailure().getCode()).isEqualTo(Status.Code.INTERNAL);
+            assertThat(applier.getFailure().getDescription())
+                    .contains("Compute Engine Credentials can only be used on Google Cloud Platform");
+        }
+    }
+
+    @Test
     void channelBuildersCreateClosableManagedChannels() throws InterruptedException {
         ManagedChannel altsChannel = AltsChannelBuilder.forAddress("localhost", 443)
                 .addTargetServiceAccount(LOCAL_SERVICE_ACCOUNT)
@@ -184,6 +210,56 @@ public class Grpc_altsTest {
         @Override
         public void applyRequestMetadata(RequestInfo requestInfo, Executor appExecutor, MetadataApplier applier) {
             appExecutor.execute(() -> applier.apply(new Metadata()));
+        }
+    }
+
+    private static final class TestRequestInfo extends CallCredentials.RequestInfo {
+        @Override
+        public MethodDescriptor<?, ?> getMethodDescriptor() {
+            return TEST_METHOD;
+        }
+
+        @Override
+        public CallOptions getCallOptions() {
+            return CallOptions.DEFAULT;
+        }
+
+        @Override
+        public SecurityLevel getSecurityLevel() {
+            return SecurityLevel.PRIVACY_AND_INTEGRITY;
+        }
+
+        @Override
+        public String getAuthority() {
+            return "localhost";
+        }
+
+        @Override
+        public Attributes getTransportAttrs() {
+            return Attributes.EMPTY;
+        }
+    }
+
+    private static final class CapturingMetadataApplier extends CallCredentials.MetadataApplier {
+        private Metadata headers;
+        private Status failure;
+
+        @Override
+        public void apply(Metadata headers) {
+            this.headers = headers;
+        }
+
+        @Override
+        public void fail(Status status) {
+            this.failure = status;
+        }
+
+        private Metadata getHeaders() {
+            return headers;
+        }
+
+        private Status getFailure() {
+            return failure;
         }
     }
 
