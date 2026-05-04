@@ -178,6 +178,26 @@ public class Jwks_rsaTest {
     }
 
     @Test
+    void urlProviderStringDomainFetchesWellKnownJwksEndpoint() throws Exception {
+        RSAPublicKey publicKey = (RSAPublicKey) generateRsaKeyPair().getPublic();
+        AtomicReference<URI> requestedUri = new AtomicReference<>();
+        try (LocalJwksServer server = new LocalJwksServer(exchange -> {
+            requestedUri.set(exchange.getRequestURI());
+            sendJson(exchange, jwksJson(rsaJwkJson("domain-key", publicKey)));
+        })) {
+            String domain = "http://%s:%d"
+                    .formatted(server.address().getHostString(), server.address().getPort());
+
+            Jwk key = new UrlJwkProvider(domain).get("domain-key");
+
+            assertThat(key.getId()).isEqualTo("domain-key");
+            assertThat(key.getPublicKey().getEncoded()).isEqualTo(publicKey.getEncoded());
+            assertThat(requestedUri.get().getPath()).isEqualTo("/.well-known/jwks.json");
+            assertThat(server.requests()).isEqualTo(1);
+        }
+    }
+
+    @Test
     void urlProviderRefreshesWhenKeyIsMissingFromCachedSet() throws Exception {
         RSAPublicKey firstKey = (RSAPublicKey) generateRsaKeyPair().getPublic();
         RSAPublicKey secondKey = (RSAPublicKey) generateRsaKeyPair().getPublic();
