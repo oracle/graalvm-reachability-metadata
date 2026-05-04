@@ -182,6 +182,44 @@ public class Kotlinx_serialization_cbor_jvmTest {
         )
         assertThat(cbor.decodeFromByteArray(WeatherReportSerializer, encoded)).isEqualTo(report)
     }
+
+    @Test
+    fun encodeDefaultsControlsWhetherDefaultPropertiesAreWritten(): Unit {
+        val compactCbor: Cbor = Cbor {
+            encodeDefaults = false
+            useDefiniteLengthEncoding = true
+        }
+        val explicitDefaultsCbor: Cbor = Cbor {
+            encodeDefaults = true
+            useDefiniteLengthEncoding = true
+        }
+        val defaultConfig: DeviceConfig = DeviceConfig(name = "sensor")
+        val customizedConfig: DeviceConfig = DeviceConfig(name = "sensor", sampleRate = 120, enabled = false)
+
+        val compactDefaultEncoded: ByteArray = compactCbor.encodeToByteArray(DeviceConfigSerializer, defaultConfig)
+        val explicitDefaultEncoded: ByteArray = explicitDefaultsCbor.encodeToByteArray(
+            DeviceConfigSerializer,
+            defaultConfig
+        )
+        val compactCustomizedEncoded: ByteArray = compactCbor.encodeToByteArray(
+            DeviceConfigSerializer,
+            customizedConfig
+        )
+
+        assertThat(compactDefaultEncoded.toHex()).isEqualTo("a1646e616d656673656e736f72")
+        assertThat(explicitDefaultEncoded.toHex()).isEqualTo(
+            "a3646e616d656673656e736f726a73616d706c6552617465183c67656e61626c6564f5"
+        )
+        assertThat(compactCustomizedEncoded.toHex()).isEqualTo(
+            "a3646e616d656673656e736f726a73616d706c6552617465187867656e61626c6564f4"
+        )
+        assertThat(compactCbor.decodeFromByteArray(DeviceConfigSerializer, compactDefaultEncoded))
+            .isEqualTo(defaultConfig)
+        assertThat(explicitDefaultsCbor.decodeFromByteArray(DeviceConfigSerializer, explicitDefaultEncoded))
+            .isEqualTo(defaultConfig)
+        assertThat(compactCbor.decodeFromByteArray(DeviceConfigSerializer, compactCustomizedEncoded))
+            .isEqualTo(customizedConfig)
+    }
 }
 
 private data class Person(
@@ -323,6 +361,53 @@ private object TaggedResourceSerializer : KSerializer<TaggedResource> {
         TaggedResource(
             uri = requireNotNull(uri) { "uri is required" },
             identifier = requireNotNull(identifier) { "identifier is required" }
+        )
+    }
+}
+
+private const val DEFAULT_SAMPLE_RATE: Int = 60
+private const val DEFAULT_DEVICE_ENABLED: Boolean = true
+
+private data class DeviceConfig(
+    val name: String,
+    val sampleRate: Int = DEFAULT_SAMPLE_RATE,
+    val enabled: Boolean = DEFAULT_DEVICE_ENABLED
+)
+
+private object DeviceConfigSerializer : KSerializer<DeviceConfig> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("tests.DeviceConfig") {
+        element<String>("name")
+        element<Int>("sampleRate")
+        element<Boolean>("enabled")
+    }
+
+    override fun serialize(encoder: Encoder, value: DeviceConfig): Unit = encoder.encodeStructure(descriptor) {
+        encodeStringElement(descriptor, 0, value.name)
+        if (value.sampleRate != DEFAULT_SAMPLE_RATE || shouldEncodeElementDefault(descriptor, 1)) {
+            encodeIntElement(descriptor, 1, value.sampleRate)
+        }
+        if (value.enabled != DEFAULT_DEVICE_ENABLED || shouldEncodeElementDefault(descriptor, 2)) {
+            encodeBooleanElement(descriptor, 2, value.enabled)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): DeviceConfig = decoder.decodeStructure(descriptor) {
+        var name: String? = null
+        var sampleRate: Int = DEFAULT_SAMPLE_RATE
+        var enabled: Boolean = DEFAULT_DEVICE_ENABLED
+        while (true) {
+            when (val index: Int = decodeElementIndex(descriptor)) {
+                0 -> name = decodeStringElement(descriptor, 0)
+                1 -> sampleRate = decodeIntElement(descriptor, 1)
+                2 -> enabled = decodeBooleanElement(descriptor, 2)
+                CompositeDecoder.DECODE_DONE -> break
+                else -> error("Unexpected element index $index")
+            }
+        }
+        DeviceConfig(
+            name = requireNotNull(name) { "name is required" },
+            sampleRate = sampleRate,
+            enabled = enabled
         )
     }
 }
