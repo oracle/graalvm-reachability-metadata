@@ -15,21 +15,28 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.Value;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
+import com.google.spanner.v1.BatchCreateSessionsRequest;
+import com.google.spanner.v1.BatchCreateSessionsResponse;
 import com.google.spanner.v1.BatchWriteRequest;
 import com.google.spanner.v1.BatchWriteResponse;
 import com.google.spanner.v1.CacheUpdate;
 import com.google.spanner.v1.ChangeStreamRecord;
 import com.google.spanner.v1.CommitRequest;
 import com.google.spanner.v1.CommitResponse;
+import com.google.spanner.v1.CreateSessionRequest;
 import com.google.spanner.v1.DatabaseName;
+import com.google.spanner.v1.DeleteSessionRequest;
 import com.google.spanner.v1.DirectedReadOptions;
 import com.google.spanner.v1.ExecuteBatchDmlRequest;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.ExecuteSqlRequest;
+import com.google.spanner.v1.GetSessionRequest;
 import com.google.spanner.v1.Group;
 import com.google.spanner.v1.KeyRange;
 import com.google.spanner.v1.KeyRecipe;
 import com.google.spanner.v1.KeySet;
+import com.google.spanner.v1.ListSessionsRequest;
+import com.google.spanner.v1.ListSessionsResponse;
 import com.google.spanner.v1.MultiplexedSessionPrecommitToken;
 import com.google.spanner.v1.Mutation;
 import com.google.spanner.v1.PartialResultSet;
@@ -90,6 +97,61 @@ public class Proto_google_cloud_spanner_v1Test {
         assertThat(SessionName.parse(sessionName.toString()).getSession()).isEqualTo(SESSION);
         assertThat(SessionName.toStringList(List.of(sessionName))).containsExactly(sessionName.toString());
         assertThat(SessionName.parseList(List.of(sessionName.toString()))).containsExactly(sessionName);
+    }
+
+    @Test
+    void sessionManagementRequestsCarryLifecycleInputsAndPagedResults() {
+        String database = DatabaseName.format(PROJECT, INSTANCE, DATABASE);
+        Session firstSession = Session.newBuilder()
+                .setName(SessionName.format(PROJECT, INSTANCE, DATABASE, "session-one"))
+                .putLabels("env", "test")
+                .build();
+        Session secondSession = Session.newBuilder()
+                .setName(SessionName.format(PROJECT, INSTANCE, DATABASE, "session-two"))
+                .putLabels("env", "test")
+                .build();
+        CreateSessionRequest createRequest = CreateSessionRequest.newBuilder()
+                .setDatabase(database)
+                .setSession(firstSession)
+                .build();
+        BatchCreateSessionsRequest batchCreateRequest = BatchCreateSessionsRequest.newBuilder()
+                .setDatabase(database)
+                .setSessionTemplate(firstSession)
+                .setSessionCount(2)
+                .build();
+        BatchCreateSessionsResponse batchCreateResponse = BatchCreateSessionsResponse.newBuilder()
+                .addSession(firstSession)
+                .addSession(secondSession)
+                .build();
+        ListSessionsRequest listRequest = ListSessionsRequest.newBuilder()
+                .setDatabase(database)
+                .setPageSize(2)
+                .setPageToken("next-page")
+                .setFilter("labels.env:test")
+                .build();
+        ListSessionsResponse listResponse = ListSessionsResponse.newBuilder()
+                .addSessions(firstSession)
+                .addSessions(secondSession)
+                .setNextPageToken("final-page")
+                .build();
+        GetSessionRequest getRequest = GetSessionRequest.newBuilder().setName(firstSession.getName()).build();
+        DeleteSessionRequest deleteRequest = DeleteSessionRequest.newBuilder().setName(firstSession.getName()).build();
+
+        assertThat(createRequest.getDatabase()).isEqualTo(database);
+        assertThat(createRequest.getSession().getLabelsMap()).containsEntry("env", "test");
+        assertThat(batchCreateRequest.getSessionTemplate().getName()).isEqualTo(firstSession.getName());
+        assertThat(batchCreateRequest.getSessionCount()).isEqualTo(2);
+        assertThat(batchCreateResponse.getSessionList())
+                .extracting(Session::getName)
+                .containsExactly(firstSession.getName(), secondSession.getName());
+        assertThat(listRequest.getFilter()).isEqualTo("labels.env:test");
+        assertThat(listRequest.getPageSize()).isEqualTo(2);
+        assertThat(listResponse.getSessionsList())
+                .extracting(Session::getName)
+                .containsExactly(firstSession.getName(), secondSession.getName());
+        assertThat(listResponse.getNextPageToken()).isEqualTo("final-page");
+        assertThat(getRequest.getName()).isEqualTo(firstSession.getName());
+        assertThat(deleteRequest.getName()).isEqualTo(firstSession.getName());
     }
 
     @Test
