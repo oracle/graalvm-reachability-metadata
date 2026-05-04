@@ -20,15 +20,20 @@ import nl.adaptivity.xmlutil.dom2.Node
 import nl.adaptivity.xmlutil.dom2.NodeType
 import nl.adaptivity.xmlutil.dom2.attributes
 import nl.adaptivity.xmlutil.dom2.childNodes
+import nl.adaptivity.xmlutil.dom2.data
 import nl.adaptivity.xmlutil.dom2.documentElement
 import nl.adaptivity.xmlutil.dom2.length
 import nl.adaptivity.xmlutil.dom2.name
 import nl.adaptivity.xmlutil.dom2.namespaceURI
+import nl.adaptivity.xmlutil.dom2.nextSibling
 import nl.adaptivity.xmlutil.dom2.nodeName
 import nl.adaptivity.xmlutil.dom2.ownerElement
 import nl.adaptivity.xmlutil.dom2.parentNode
 import nl.adaptivity.xmlutil.dom2.prefix
 import nl.adaptivity.xmlutil.dom2.previousSibling
+import nl.adaptivity.xmlutil.dom2.publicId
+import nl.adaptivity.xmlutil.dom2.systemId
+import nl.adaptivity.xmlutil.dom2.target
 import nl.adaptivity.xmlutil.dom2.textContent
 import nl.adaptivity.xmlutil.dom2.value
 import nl.adaptivity.xmlutil.elementToFragment
@@ -416,6 +421,64 @@ public class CoreJvmcommonTest {
             assertThat(reader.nextTag()).isEqualTo(EventType.END_ELEMENT)
             assertThat(reader.localName).isEqualTo("lines")
         }
+    }
+
+    @Test
+    fun genericDomSupportsDocumentTypeFragmentsAndProcessingInstructions(): Unit {
+        val implementation = xmlStreaming.genericDomImplementation
+        val documentType = implementation.createDocumentType(
+            "s:store",
+            "-//xmlutil//Store Catalog//EN",
+            "store-catalog.dtd",
+        )
+        val document = implementation.createDocument(STORE_NS, "s:store", null)
+        val root = requireNotNull(document.documentElement)
+
+        assertThat(documentType.name).isEqualTo("s:store")
+        assertThat(documentType.publicId).isEqualTo("-//xmlutil//Store Catalog//EN")
+        assertThat(documentType.systemId).isEqualTo("store-catalog.dtd")
+
+        val instruction = document.createProcessingInstruction("review", "status=\"draft\"")
+        instruction.data = "status=\"published\""
+        root.appendChild(instruction)
+
+        val fragment = document.createDocumentFragment()
+        val paperback = document.createElementNS(STORE_NS, "s:item")
+        paperback.setAttribute("sku", "frag-1")
+        paperback.appendChild(document.createTextNode("Paperback"))
+        val hardback = document.createElementNS(STORE_NS, "s:item")
+        hardback.setAttribute("sku", "frag-2")
+        hardback.appendChild(document.createTextNode("Hardback"))
+        fragment.appendChild(paperback)
+        fragment.appendChild(hardback)
+
+        val appendedFragment = root.appendChild(fragment)
+        assertThat(appendedFragment.nodetype).isEqualTo(NodeType.DOCUMENT_FRAGMENT_NODE)
+        assertThat(fragment.childNodes.length).isEqualTo(0)
+        assertThat(root.childNodes.toList().map { it.nodeName })
+            .containsExactly("review", "s:item", "s:item")
+        assertThat(instruction.target).isEqualTo("review")
+        assertThat(instruction.data).isEqualTo("status=\"published\"")
+        assertThat(requireNotNull(instruction.nextSibling).nodeName).isEqualTo("s:item")
+        assertThat(requireNotNull(hardback.previousSibling).textContent).isEqualTo("Paperback")
+
+        val itemText: MutableList<String> = mutableListOf()
+        var sawProcessingInstruction: Boolean = false
+        xmlStreaming.newReader(document).use { reader: XmlReader ->
+            while (reader.hasNext()) {
+                when (reader.next()) {
+                    EventType.PROCESSING_INSTRUCTION -> sawProcessingInstruction = reader.piTarget == "review" &&
+                        reader.piData == "status=\"published\""
+                    EventType.START_ELEMENT -> if (reader.localName == "item") {
+                        itemText += reader.readSimpleElement()
+                    }
+                    else -> Unit
+                }
+            }
+        }
+
+        assertThat(sawProcessingInstruction).isTrue()
+        assertThat(itemText).containsExactly("Paperback", "Hardback")
     }
 
     private fun buildXml(block: (XmlWriter) -> Unit): String {
