@@ -63,6 +63,18 @@ public class ArrowAnnotationsJvmTest {
         assertThat(sample.mutableValue).isEqualTo("updated")
         assertThat(transformed).isEqualTo("value:updated")
     }
+
+    @Test
+    fun syntheticAnnotationSupportsAnnotationClassesAndTypeParametersInGenericApis() {
+        val numbers: SyntheticTypedBox<List<Int>> = SyntheticTypedBox(listOf(1, 2, 3))
+
+        val doubled: SyntheticTypedBox<String> = numbers.map { values: List<Int> ->
+            values.joinToString(prefix = "doubled=") { value: Int -> (value * 2).toString() }
+        }
+
+        assertThat(numbers.value).containsExactly(1, 2, 3)
+        assertThat(doubled.value).isEqualTo("doubled=2, 4, 6")
+    }
 }
 
 @optics(targets = [OpticsTarget.LENS, OpticsTarget.PRISM, OpticsTarget.OPTIONAL, OpticsTarget.DSL])
@@ -102,3 +114,15 @@ private class SyntheticAnnotatedSample @synthetic constructor(
 
 @synthetic
 private typealias SyntheticString = String
+
+@synthetic
+private annotation class SyntheticDomainAnnotation(val name: String)
+
+@SyntheticDomainAnnotation("box")
+private data class SyntheticTypedBox<@synthetic T : Any>(
+    val value: T,
+) {
+    fun <@synthetic R : Any> map(
+        transform: (T) -> R,
+    ): SyntheticTypedBox<R> = SyntheticTypedBox(transform(value))
+}
