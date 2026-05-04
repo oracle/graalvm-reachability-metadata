@@ -129,6 +129,22 @@ public class Arrow_exception_utils_jvmTest {
         assertThat(primary.suppressed).isEmpty()
     }
 
+    @Test
+    fun mergeSuppressedAccumulatesSuppressedThrowablesInMergeOrder() {
+        val primary = IllegalStateException("primary")
+        val first = IOException("first")
+        val second = IllegalArgumentException("second")
+
+        val firstResult = primary.mergeSuppressed(first)
+        val secondResult = primary.mergeSuppressed(second)
+
+        assertThat(firstResult).isSameAs(primary)
+        assertThat(secondResult).isSameAs(primary)
+        assertThat(primary.suppressed).containsExactly(first, second)
+        assertThat(first.suppressed).isEmpty()
+        assertThat(second.suppressed).isEmpty()
+    }
+
     private fun assertRethrowsSameThrowable(expected: Throwable, block: () -> Unit) {
         val thrown = catchThrowable { block() }
 
