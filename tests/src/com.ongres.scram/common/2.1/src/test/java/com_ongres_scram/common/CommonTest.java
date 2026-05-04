@@ -24,6 +24,7 @@ import com.ongres.scram.common.message.ClientFinalMessage;
 import com.ongres.scram.common.message.ClientFirstMessage;
 import com.ongres.scram.common.message.ServerFinalMessage;
 import com.ongres.scram.common.message.ServerFirstMessage;
+import com.ongres.scram.common.stringprep.StringPreparation;
 import com.ongres.scram.common.stringprep.StringPreparations;
 import com.ongres.scram.common.util.CryptoUtil;
 import java.nio.charset.StandardCharsets;
@@ -126,6 +127,23 @@ public class CommonTest {
         assertThat(ScramMechanisms.SCRAM_SHA_256.saltedPassword(StringPreparations.NO_PREPARATION,
                 "password", salt, 4096))
                 .isEqualTo(Base64.getDecoder().decode("FGgSaancNV2YcsRMPqKQo2n4BLT9Ky9xx747ItvVuJg="));
+    }
+
+    @Test
+    void appliesCustomStringPreparationWhenDerivingKeys() {
+        byte[] salt = "pepper".getBytes(StandardCharsets.UTF_8);
+        StringPreparation customPreparation = value -> "prepared-" + value;
+        byte[] preparedSaltedPassword = ScramFunctions.saltedPassword(ScramMechanisms.SCRAM_SHA_256,
+                StringPreparations.NO_PREPARATION, "prepared-secret", salt, 4096);
+
+        assertThat(ScramFunctions.saltedPassword(ScramMechanisms.SCRAM_SHA_256, customPreparation,
+                "secret", salt, 4096)).isEqualTo(preparedSaltedPassword);
+        assertThat(ScramFunctions.clientKey(ScramMechanisms.SCRAM_SHA_256, customPreparation,
+                "secret", salt, 4096))
+                .isEqualTo(ScramFunctions.clientKey(ScramMechanisms.SCRAM_SHA_256, preparedSaltedPassword));
+        assertThat(ScramFunctions.serverKey(ScramMechanisms.SCRAM_SHA_256, customPreparation,
+                "secret", salt, 4096))
+                .isEqualTo(ScramFunctions.serverKey(ScramMechanisms.SCRAM_SHA_256, preparedSaltedPassword));
     }
 
     @Test
