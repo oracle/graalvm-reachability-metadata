@@ -105,6 +105,15 @@ public class SaslprepTest {
     }
 
     @Test
+    void appliesBidirectionalRuleAfterCompatibilityNormalization() {
+        assertThat(SaslPrep.saslPrep("\u0627\uFF11\u0628", true)).isEqualTo("\u06271\u0628");
+
+        assertThatThrownBy(() -> SaslPrep.saslPrep("\u0627\uFF21\u0628", true))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("RandALCat and LCat");
+    }
+
+    @Test
     void rejectsNullInput() {
         assertThatNullPointerException().isThrownBy(() -> SaslPrep.saslPrep(null, true));
     }
