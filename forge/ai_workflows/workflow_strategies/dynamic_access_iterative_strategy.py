@@ -38,6 +38,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
     """Iterative add-new-library workflow guided by dynamic-access coverage."""
 
     PROGRESS_DIVIDER = "=" * 83
+    PROMPT_KEY = "dynamic-access-iteration"
 
     REQUIRED_PROMPTS = ["dynamic-access-iteration"]
     REQUIRED_PARAMS = [
@@ -202,13 +203,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     )
                 )
                 delta = compute_class_delta(previous_report, current_report, class_name)
-                dynamic_prompt = self._render_prompt(
-                    "dynamic-access-iteration",
-                    active_class_name=class_name,
-                    active_class_source_file=active_class.resolved_source_file or active_class.source_file or "N/A",
-                    dynamic_access_progress=self._format_progress(delta, class_attempts),
-                    uncovered_dynamic_access_calls=format_call_sites(active_class.uncovered_call_sites),
-                )
+                dynamic_prompt = self._render_dynamic_access_prompt(active_class, delta, class_attempts)
                 self._print_dynamic_access_detail("agent: running dynamic-access prompt", indent_level=2)
                 agent.send_prompt(dynamic_prompt)
                 self._print_dynamic_access_detail("agent: complete", indent_level=2)
@@ -620,6 +615,19 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
     @staticmethod
     def _uncovered_call_count(current_report: DynamicAccessCoverageReport) -> int:
         return max(current_report.total_calls - current_report.covered_calls, 0)
+
+    def _render_dynamic_access_prompt(self, active_class, delta, class_attempts: int) -> str:
+        return self._render_prompt(
+            self.PROMPT_KEY,
+            active_class_name=active_class.class_name,
+            active_class_source_file=active_class.resolved_source_file or active_class.source_file or "N/A",
+            dynamic_access_progress=self._format_progress(delta, class_attempts),
+            uncovered_dynamic_access_calls=format_call_sites(active_class.uncovered_call_sites),
+            **self._dynamic_access_prompt_extras(active_class),
+        )
+
+    def _dynamic_access_prompt_extras(self, active_class) -> dict:
+        return {}
 
     def _library_test_change_signature(self) -> str:
         """Capture tracked and untracked changes under the generated library test tree."""

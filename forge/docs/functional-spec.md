@@ -46,11 +46,12 @@ supporting tests for the reachability repo.
 | **Metrics root** | Directory that stores per-run results validated against [schemas/](../schemas/). By default, this is the run worktree's `forge/` directory. |
 | **Coordinate** | Maven coordinate of the target library, formatted `group:artifact:version`. |
 | **Agent** | LLM-driven code editor (Aider, Codex, or Pi) registered through [ai_workflows/agents/](../ai_workflows/agents/). Each implements `send_prompt`, `run_test_command`, `clear_context`. |
-| **Workflow strategy** | A registered control loop in [ai_workflows/workflow_strategies/](../ai_workflows/workflow_strategies/) (e.g. `basic_iterative`, `dynamic_access_iterative`). |
+| **Workflow strategy** | A registered control loop in [ai_workflows/workflow_strategies/](../ai_workflows/workflow_strategies/) (e.g. `basic_iterative`, `dynamic_access_iterative`, `pgo_profile_driven_exploration`). |
 | **Predefined strategy** | Named, fully parameterized combination of agent + workflow strategy + prompts + parameters in [strategies/predefined_strategies.json](../strategies/predefined_strategies.json). Selected via `--strategy-name`. |
 | **Post-generation intervention** | Recovery step a strategy invokes when the post-iteration `./gradlew test` still fails. Pluggable via the `PostGenerationIntervention` registry. Configured per predefined strategy (`post-generation-intervention.name`). Concrete implementations: `noop`, `codex_then_pi` (default), `native_trace_collect`. See [workflow-strategies.md §5](workflow-strategies.md#5-post-generation-interventions). |
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
+| **PGO near-call report** | Diagnostic artifacts written by `generatePgoDynamicAccessNearCallReport` to `tests/src/<group>/<artifact>/<version>/build/reports/pgo-near-call/`, combining call-tree CSVs and high-frequency PGO samples so Forge can prompt the agent with the closest sampled path to an uncovered dynamic-access call. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
 
 ## 4. Configuration Contracts

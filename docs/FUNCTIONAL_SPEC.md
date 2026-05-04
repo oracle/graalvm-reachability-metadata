@@ -52,9 +52,9 @@ A Gradle-based TCK that, given a library coordinate `group:artifact:version`, ru
 - Validation of `index.json` schema and `metadata-version`/`tested-versions` integrity.
 - Validation that every metadata entry uses `typeReachable` and stays inside `allowed-packages`.
 - Compilation, JVM-mode tests (`javaTest`), and native-image tests (`nativeTest`).
-- Coverage collection (JaCoCo) and dynamic-access reporting per coordinate.
+- Coverage collection (JaCoCo), dynamic-access reporting, and PGO near-call diagnostics per coordinate.
 
-The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `group:artifact`, `group:artifact:version`, or shard `k/n`. It also exposes authoring helpers (`generateMetadata`, `splitTestOnlyMetadata`, `fixTestNativeImageRun`, `addTestedVersion`, `fetchExistingLibrariesWithNewerVersions`), reporting tasks (`jacocoTestReport`, `generateDynamicAccessCoverageReport`, `generateLibraryStats`, `analyzeExternalLibraryDynamicAccess`), and the `package` release task. The full task reference lives in [DEVELOPING.md](DEVELOPING.md).
+The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `group:artifact`, `group:artifact:version`, or shard `k/n`. It also exposes authoring helpers (`generateMetadata`, `splitTestOnlyMetadata`, `fixTestNativeImageRun`, `addTestedVersion`, `fetchExistingLibrariesWithNewerVersions`), reporting tasks (`jacocoTestReport`, `generateDynamicAccessCoverageReport`, `generatePgoDynamicAccessNearCallReport`, `generateLibraryStats`, `analyzeExternalLibraryDynamicAccess`), and the `package` release task. The full task reference lives in [DEVELOPING.md](DEVELOPING.md).
 
 ### 4.3 Continuous integration
 

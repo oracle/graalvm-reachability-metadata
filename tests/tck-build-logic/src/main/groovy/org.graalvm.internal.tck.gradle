@@ -5,6 +5,7 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 import groovy.json.JsonSlurper
+import org.gradle.api.GradleException
 import org.graalvm.internal.tck.utils.DynamicAccessUtils
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
@@ -38,10 +39,14 @@ tasks.withType(org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask).configu
             boolean propertyEnabled = providers.gradleProperty('tck.generateDynamicAccessReport')
                     .map { value -> value.toBoolean() }
                     .getOrElse(false)
+            boolean pgoPropertyEnabled = providers.gradleProperty('tck.generatePgoDynamicAccessNearCallReport')
+                    .map { value -> value.toBoolean() }
+                    .getOrElse(false)
             boolean taskRequested = gradle.startParameter.taskNames.any { taskName ->
-                taskName == "generateDynamicAccessReport" || taskName.endsWith(":generateDynamicAccessReport")
+                taskName == "generateDynamicAccessReport" || taskName.endsWith(":generateDynamicAccessReport") ||
+                        taskName == "generatePgoDynamicAccessNearCallReport" || taskName.endsWith(":generatePgoDynamicAccessNearCallReport")
             }
-            propertyEnabled || taskRequested
+            propertyEnabled || pgoPropertyEnabled || taskRequested
         }
     }
 }
@@ -143,6 +148,12 @@ boolean generateDynamicAccessReportTaskRequested = gradle.startParameter.taskNam
     taskName == "generateDynamicAccessReport" || taskName.endsWith(":generateDynamicAccessReport")
 }
 boolean generateDynamicAccessReport = generateDynamicAccessReportVal.toBoolean() || generateDynamicAccessReportTaskRequested
+String generatePgoNearCallReportVal = providers.gradleProperty('tck.generatePgoDynamicAccessNearCallReport').getOrElse("false")
+boolean generatePgoNearCallReportTaskRequested = gradle.startParameter.taskNames.any { taskName ->
+    taskName == "generatePgoDynamicAccessNearCallReport" || taskName.endsWith(":generatePgoDynamicAccessNearCallReport")
+}
+boolean generatePgoNearCallReport = generatePgoNearCallReportVal.toBoolean() || generatePgoNearCallReportTaskRequested
+String pgoSamplingPeriodMicros = providers.gradleProperty("pgoSamplingPeriodMicros").getOrElse("100")
 
 Closure<Boolean> isTaskRequested = { String taskName ->
     gradle.startParameter.taskNames.any { String requestedTaskName ->
@@ -307,6 +318,8 @@ tasks.register("listLibraryJars") { task ->
 }
 
 Provider<Directory> dynamicAccessOutputDir = layout.buildDirectory.dir("native/nativeTestCompile/dynamic-access")
+Provider<Directory> pgoNearCallOutputDir = layout.buildDirectory.dir("reports/pgo-near-call")
+Provider<RegularFile> pgoNearCallProfileFile = layout.buildDirectory.file("native/nativeTestCompile/pgo-near-call.iprof")
 
 tasks.register("generateDynamicAccessReport") { task ->
     task.setDescription("Builds native tests with dynamic-access tracking and reuses Gradle up-to-date checks when inputs and classpath are unchanged")
@@ -329,6 +342,54 @@ tasks.register("generateDynamicAccessReport") { task ->
     task.inputs.property("nativeImageArgs", providers.provider { nativeImageArgs })
     task.outputs.dir(dynamicAccessOutputDir)
             .withPropertyName("dynamicAccessOutputDir")
+}
+
+tasks.register("generatePgoDynamicAccessNearCallReport", Copy) { Copy task ->
+    task.setDescription("Builds and runs native tests with PGO sampling and dynamic-access tracking for near-call diagnostics")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.dependsOn(tasks.named("nativeTest"))
+    task.inputs.property("pgoSamplingPeriodMicros", pgoSamplingPeriodMicros)
+    task.outputs.upToDateWhen { false }
+    task.from(layout.buildDirectory.dir("native/nativeTestCompile/reports")) {
+        into("reports")
+        include("call_tree_*.csv")
+    }
+    task.from(dynamicAccessOutputDir) {
+        into("dynamic-access")
+        include("**/*.json")
+    }
+    task.from(pgoNearCallProfileFile) {
+        into(".")
+        rename { "native-test.iprof" }
+    }
+    task.into(pgoNearCallOutputDir)
+    task.doFirst {
+        delete(pgoNearCallOutputDir)
+        File reportsDir = layout.buildDirectory.dir("native/nativeTestCompile/reports").get().asFile
+        ["call_tree_methods.csv", "call_tree_invokes.csv", "call_tree_targets.csv"].each { String fileName ->
+            File reportFile = new File(reportsDir, fileName)
+            if (!reportFile.isFile()) {
+                throw new GradleException("Required PGO near-call artifact is missing: ${reportFile.absolutePath}")
+            }
+        }
+        File profileFile = pgoNearCallProfileFile.get().asFile
+        if (!profileFile.isFile()) {
+            throw new GradleException("Required PGO near-call artifact is missing: ${profileFile.absolutePath}")
+        }
+        File dynamicAccessDir = dynamicAccessOutputDir.get().asFile
+        if (!dynamicAccessDir.isDirectory()) {
+            throw new GradleException("Required PGO near-call dynamic-access directory is missing: ${dynamicAccessDir.absolutePath}")
+        }
+        def dynamicAccessJsonFiles = fileTree(dynamicAccessDir) {
+            include("**/*.json")
+        }
+        if (dynamicAccessJsonFiles.files.isEmpty()) {
+            throw new GradleException("Required PGO near-call dynamic-access JSON files are missing under: ${dynamicAccessDir.absolutePath}")
+        }
+    }
+    task.doLast {
+        println "PGO near-call report artifacts written to ${pgoNearCallOutputDir.get().asFile.absolutePath}"
+    }
 }
 
 Provider<List<String>> nativeTraceBuildArgs = providers.provider {
@@ -488,6 +549,11 @@ tasks.named('test') {
 
 tasks.named("nativeTest", NativeRunTask).configure { NativeRunTask task ->
     task.runtimeArgs.addAll(junitTimeoutRuntimeArgs)
+    if (generatePgoNearCallReport) {
+        task.runtimeArgs.add(providers.provider {
+            "-XX:ProfilesDumpFile=${pgoNearCallProfileFile.get().asFile.absolutePath}".toString()
+        })
+    }
 }
 
  // Configure JaCoCo report to analyze only the effective classes of the target library (handles multi-release JARs)
@@ -570,10 +636,17 @@ graalvmNative {
             }
             buildArgs.addAll(nativeImageArgs)
             buildArgs.addAll(nativeTraceBuildArgs)
-            if (generateDynamicAccessReport) {
+            if (generateDynamicAccessReport || generatePgoNearCallReport) {
                 buildArgs.addAll(providers.provider {
                     DynamicAccessUtils.buildArgsForClasspathEntries(resolveTestedLibraryJars())
                 })
+            }
+            if (generatePgoNearCallReport) {
+                buildArgs.add("--pgo-sampling")
+                buildArgs.add("-H:+UnlockExperimentalVMOptions")
+                buildArgs.add("-H:PGOSamplingPeriodMicros=${pgoSamplingPeriodMicros}")
+                buildArgs.add("-H:PrintAnalysisCallTreeType=CSV")
+                buildArgs.add("-H:-UnlockExperimentalVMOptions")
             }
         }
     }

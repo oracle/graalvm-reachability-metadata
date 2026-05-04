@@ -135,6 +135,7 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 ./gradlew nativeTestCompile -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew generatePgoDynamicAccessNearCallReport -Pcoordinates=[group:artifact:version|k/n|all] -PpgoSamplingPeriodMicros=100
 ./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]
 ./gradlew validateLibraryStats
 ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
@@ -315,6 +316,9 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
 - List resolved tested-library jars: `./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]`
 - Generate dynamic access report: `./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]`
+- Generate PGO near-call dynamic access diagnostics: `./gradlew generatePgoDynamicAccessNearCallReport -Pcoordinates=[group:artifact:version|k/n|all] -PpgoSamplingPeriodMicros=100`
+  Output: `tests/src/<group>/<artifact>/<tested-version>/build/reports/pgo-near-call/`
+  Artifacts include Native Image call-tree CSVs, dynamic-access JSON, and `native-test.iprof`.
 - Generate dynamic access coverage report: `./gradlew generateDynamicAccessCoverageReport -Pcoordinates=[group:artifact:version|k/n|all]`
   Output: `metadata/<group>/<artifact>/<version>/test/build/reports/dynamic-access/dynamic-access-coverage.json`
   JSON top-level fields: `coordinate`, `hasDynamicAccess`, `totals`, `classes`

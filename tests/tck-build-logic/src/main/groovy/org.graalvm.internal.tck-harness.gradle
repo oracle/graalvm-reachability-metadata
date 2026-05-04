@@ -34,6 +34,7 @@ import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.harness.tasks.ListLibraryJarsInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessReportInvocationTask
+import org.graalvm.internal.tck.harness.tasks.GeneratePgoDynamicAccessNearCallReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessCoverageReportTask
 import org.graalvm.internal.tck.harness.tasks.DiscoverArtifactMetadata
 import org.graalvm.internal.tck.harness.tasks.PopulateArtifactURLs
@@ -52,7 +53,7 @@ import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
-if (!gradle.startParameter.taskNames.any { it in ["listLibraryJars", "generateDynamicAccessReport"] }) {
+if (!gradle.startParameter.taskNames.any { it in ["listLibraryJars", "generateDynamicAccessReport", "generatePgoDynamicAccessNearCallReport"] }) {
     logger.lifecycle("GraalVM Reachability Metadata TCK")
     logger.lifecycle("---------------------------------")
 }
@@ -312,6 +313,11 @@ tasks.register("generateDynamicAccessReport", GenerateDynamicAccessReportInvocat
 
 tasks.register("generateDynamicAccessCoverageReport", GenerateDynamicAccessCoverageReportTask.class) { task ->
     task.setDescription("Generates a per-class dynamic-access coverage report for matching coordinates")
+    task.setGroup(METADATA_GROUP)
+}
+
+tasks.register("generatePgoDynamicAccessNearCallReport", GeneratePgoDynamicAccessNearCallReportInvocationTask.class) { task ->
+    task.setDescription("Builds native tests with PGO sampling and writes dynamic-access near-call diagnostic artifacts")
     task.setGroup(METADATA_GROUP)
 }
 

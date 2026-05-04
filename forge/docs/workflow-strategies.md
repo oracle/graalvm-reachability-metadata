@@ -28,6 +28,7 @@ flowchart TB
     subgraph Concrete["Concrete Strategies"]
         Basic["basic_iterative<br/>(scaffold → test → fix loop)"]
         Dyn["dynamic_access_iterative<br/>(per-class DA coverage)"]
+        PGO["pgo_profile_driven_exploration<br/>(DA coverage + PGO near-call paths)"]
         Opt["optimistic_dynamic_access<br/>(full DA report each turn)"]
         Inc["increase_dynamic_access_coverage<br/>(composite)"]
         JFix["java_fix_iterative<br/>↳ javac_iterative<br/>↳ java_run_iterative"]
@@ -37,6 +38,7 @@ flowchart TB
         Predef[("predefined_strategies.json<br/>agent + model + prompts + params")]
         Templates[("prompt_templates/")]
         DAReport[("dynamic-access-coverage.json")]
+        PGOReport[("pgo-near-call artifacts<br/>call_tree_*.csv + native-test.iprof")]
         SrcCtx["source_context files<br/>(main / tests / docs)"]
     end
 
@@ -71,7 +73,9 @@ flowchart TB
     Predef --> Concrete
     Templates --> Concrete
     DAReport --> Dyn
+    DAReport --> PGO
     DAReport --> Opt
+    PGOReport --> PGO
     SrcCtx --> Concrete
 
     Concrete --> Agent
@@ -86,6 +90,7 @@ flowchart TB
     Inc -->|delegates primary| Opt
     Inc -->|coverage phase| Dyn
     Dyn -->|fallback when no DA report| Basic
+    PGO -->|inherits DA loop and fallback| Dyn
     Opt -->|fallback when no DA report| Basic
 
     Concrete --> Status
@@ -188,7 +193,26 @@ All concrete strategies expect `library` (coordinates),
 - **Composition**: same DA-missing fallback to `basic_iterative` as above.
 - **Returns**: `(status, prompt_iterations, successful_iterations)`.
 
-### 3.4 `increase_dynamic_access_coverage` (composite)
+### 3.4 `pgo_profile_driven_exploration`
+
+[`pgo_profile_driven_exploration_strategy.py`](../ai_workflows/workflow_strategies/pgo_profile_driven_exploration_strategy.py)
+
+- **Required prompts**: `pgo-profile-driven-exploration`.
+- **Required params**: `max-iterations`, `max-class-test-iterations`.
+- **Loop**: inherits the per-class dynamic-access loop. Before each prompt it
+  runs `generatePgoDynamicAccessNearCallReport` with
+  `-PpgoSamplingPeriodMicros` (default strategy value: `100`), parses the
+  generated `call_tree_*.csv` and `native-test.iprof`, and adds guidance that
+  compares the closest sampled runtime path with the static path to the
+  uncovered dynamic-access call. The prompt asks the agent to keep the shared
+  prefix but take the missing static edge instead of the branch currently
+  exercised by tests.
+- **Artifacts**: each subproject writes
+  `build/reports/pgo-near-call/{reports,dynamic-access,native-test.iprof}`.
+- **Returns**: same as `dynamic_access_iterative`,
+  `(status, global_iterations, 1)`.
+
+### 3.5 `increase_dynamic_access_coverage` (composite)
 
 [`increase_dynamic_access_coverage_strategy.py`](../ai_workflows/workflow_strategies/increase_dynamic_access_coverage_strategy.py)
 
@@ -203,7 +227,7 @@ All concrete strategies expect `library` (coordinates),
 - **Intervention**: inherits the primary's `post_generation_intervention` if
   it set one.
 
-### 3.5 `javac_iterative` / `java_run_iterative`
+### 3.6 `javac_iterative` / `java_run_iterative`
 
 [`java_fix_iterative_strategy.py`](../ai_workflows/workflow_strategies/java_fix_iterative_strategy.py)
 
@@ -232,6 +256,7 @@ of these bundles. Examples grouped by underlying workflow strategy:
 | --- | --- |
 | `basic_iterative` | `basic_iterative_pi_gpt-5.4`, `codex_iterative_codex_gpt-5.4` |
 | `dynamic_access_iterative` | `dynamic_access_main_sources_*`, `dynamic_access_test_sources_*`, `dynamic_access_documentation_sources_*`, `dynamic_access_main_sources_with_tests_*`, `dynamic_access_main_sources_with_documentation_*`, `dynamic_access_main_sources_with_tests_and_documentation_*`, `dynamic_access_test_sources_with_documentation_*` (each with `pi`/`codex` agent and a model suffix) |
+| `pgo_profile_driven_exploration` | `pgo_profile_driven_exploration_main_sources_pi_gpt-5.5` |
 | `optimistic_dynamic_access` | (selected internally as the primary in composite entries) |
 | `increase_dynamic_access_coverage` | `javac_iterative_with_coverage_sources_pi_gpt-5.4`, `javac_iterative_with_coverage_sources_pi_gpt-5.5`, `java_run_iterative_with_coverage_sources_pi_gpt-5.5`, `optimistic_dynamic_access_iterative_pi_gpt-5.4` |
 | `javac_iterative` | `javac_iterative_sources_pi_gpt-5.4` |

@@ -1,0 +1,175 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+import csv
+import json
+import os
+import tempfile
+import unittest
+
+from utility_scripts.dynamic_access_report import DynamicAccessCallSite
+from utility_scripts.pgo_near_call_report import (
+    build_pgo_near_call_records,
+    format_pgo_near_call_guidance,
+)
+
+
+class PgoNearCallReportTests(unittest.TestCase):
+    def test_build_records_maps_sampled_prefix_to_static_dynamic_access_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(tmpdir)
+            records = build_pgo_near_call_records(tmpdir, [self._call_site()])
+
+        self.assertEqual(len(records), 1)
+        record = records[0]
+        self.assertEqual(record.prefix_length, 2)
+        self.assertEqual(record.depth_remaining, 2)
+        self.assertEqual(record.sample_count, 7)
+
+    def test_format_guidance_names_divergence_and_required_next_method(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(tmpdir)
+            guidance = format_pgo_near_call_guidance(tmpdir, [self._call_site()])
+
+        self.assertIn("Target uncovered dynamic-access call:", guidance)
+        self.assertIn("Current tests then execute: example.Other.covered():void", guidance)
+        self.assertIn("Tests need to drive: example.TargetHolder.call():void @invoke-bci=20", guidance)
+        self.assertIn("Static steps still missing: 2", guidance)
+
+    def test_matching_uses_tracked_api_parameters_to_disambiguate_overloads(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(
+                tmpdir,
+                extra_methods=[
+                    ["6", "java.lang.Class", "forName", "java.lang.String boolean java.lang.ClassLoader", "java.lang.Class", "false"],
+                ],
+                target_invokes=[
+                    ["14", "3", "29", "true"],
+                    ["15", "3", "30", "true"],
+                ],
+                target_targets=[
+                    ["14", "6"],
+                    ["15", "5"],
+                ],
+            )
+            records = build_pgo_near_call_records(tmpdir, [self._call_site()])
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0].static_path_edges[-1]["bci"], "30")
+
+    def test_matching_returns_all_identical_call_site_edges(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(
+                tmpdir,
+                target_invokes=[
+                    ["14", "3", "29", "true"],
+                    ["15", "3", "30", "true"],
+                ],
+                target_targets=[
+                    ["14", "5"],
+                    ["15", "5"],
+                ],
+            )
+            records = build_pgo_near_call_records(tmpdir, [self._call_site()])
+            guidance = format_pgo_near_call_guidance(tmpdir, [self._call_site()])
+
+        self.assertEqual({record.static_path_edges[-1]["bci"] for record in records}, {"29", "30"})
+        self.assertIn("Other matching static call-tree edges for this call site:", guidance)
+
+    def test_matching_accepts_simple_tracked_api_parameter_names(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            self._write_report_fixture(tmpdir)
+            records = build_pgo_near_call_records(
+                tmpdir,
+                [self._call_site(tracked_api="java.lang.Class#forName(String)")],
+            )
+
+        self.assertEqual(len(records), 1)
+
+    @staticmethod
+    def _call_site(tracked_api: str = "java.lang.Class#forName(java.lang.String)") -> DynamicAccessCallSite:
+        return DynamicAccessCallSite(
+            metadata_type="reflection",
+            tracked_api=tracked_api,
+            frame="example.TargetHolder.call(TargetHolder.java:42)",
+            line=42,
+            covered=False,
+        )
+
+    def _write_report_fixture(
+            self,
+            report_dir: str,
+            extra_methods: list[list[str]] | None = None,
+            target_invokes: list[list[str]] | None = None,
+            target_targets: list[list[str]] | None = None,
+    ) -> None:
+        reports_dir = os.path.join(report_dir, "reports")
+        os.makedirs(reports_dir)
+        self._write_csv(
+            os.path.join(reports_dir, "call_tree_methods.csv"),
+            ["Id", "Type", "Name", "Parameters", "Return", "IsEntryPoint"],
+            [
+                ["1", "example.Test", "main", "empty", "void", "true"],
+                ["2", "example.Router", "route", "empty", "void", "false"],
+                ["3", "example.TargetHolder", "call", "empty", "void", "false"],
+                ["4", "example.Other", "covered", "empty", "void", "false"],
+                ["5", "java.lang.Class", "forName", "java.lang.String", "java.lang.Class", "false"],
+            ] + (extra_methods or []),
+        )
+        target_invokes = target_invokes or [["14", "3", "30", "true"]]
+        target_targets = target_targets or [["14", "5"]]
+        self._write_csv(
+            os.path.join(reports_dir, "call_tree_invokes.csv"),
+            ["Id", "MethodId", "BytecodeIndexes", "IsDirect"],
+            [
+                ["11", "1", "10", "true"],
+                ["12", "2", "20", "true"],
+                ["13", "2", "21", "true"],
+            ] + target_invokes,
+        )
+        self._write_csv(
+            os.path.join(reports_dir, "call_tree_targets.csv"),
+            ["InvokeId", "TargetId"],
+            [
+                ["11", "2"],
+                ["12", "3"],
+                ["13", "4"],
+            ] + target_targets,
+        )
+        with open(os.path.join(report_dir, "native-test.iprof"), "w", encoding="utf-8") as iprof_file:
+            json.dump(
+                {
+                    "types": [
+                        {"id": 1, "name": "example.Test"},
+                        {"id": 2, "name": "void"},
+                        {"id": 3, "name": "example.Router"},
+                        {"id": 4, "name": "example.TargetHolder"},
+                        {"id": 5, "name": "example.Other"},
+                    ],
+                    "methods": [
+                        {"id": 101, "name": "main", "signature": [1, 2]},
+                        {"id": 102, "name": "route", "signature": [3, 2]},
+                        {"id": 104, "name": "covered", "signature": [5, 2]},
+                    ],
+                    "samplingProfiles": [
+                        {
+                            "ctx": "104:21<102:20<101:10",
+                            "records": [7],
+                        }
+                    ],
+                },
+                iprof_file,
+            )
+
+    @staticmethod
+    def _write_csv(path: str, fieldnames: list[str], rows: list[list[str]]) -> None:
+        with open(path, "w", encoding="utf-8", newline="") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(fieldnames)
+            writer.writerows(rows)
+
+
+if __name__ == "__main__":
+    unittest.main()
