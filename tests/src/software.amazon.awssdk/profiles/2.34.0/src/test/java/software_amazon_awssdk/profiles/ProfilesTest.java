@@ -357,6 +357,46 @@ public class ProfilesTest {
     }
 
     @Test
+    void aggregatorMergesConfigurationSectionsAndKeepsEarlierFilesHigherPrecedence() {
+        ProfileFile first = configurationFile("""
+                [sso-session admin]
+                sso_region = us-east-1
+
+                [services local]
+                s3 =
+                  endpoint_url = http://localhost:4566
+                """);
+        ProfileFile second = configurationFile("""
+                [sso-session admin]
+                sso_region = eu-west-1
+                sso_registration_scopes = sso:account:access
+
+                [services local]
+                s3 =
+                  endpoint_url = http://secondary.example.test
+                  use_dualstack_endpoint = true
+                dynamodb =
+                  endpoint_url = http://localhost:8000
+                """);
+
+        ProfileFile aggregate = ProfileFile.aggregator()
+                                           .addFile(first)
+                                           .addFile(second)
+                                           .build();
+
+        Profile ssoSession = aggregate.getSection("sso-session", "admin").orElseThrow();
+        assertThat(ssoSession.properties())
+                .containsEntry(ProfileProperty.SSO_REGION, "us-east-1")
+                .containsEntry("sso_registration_scopes", "sso:account:access");
+
+        Profile services = aggregate.getSection("services", "local").orElseThrow();
+        assertThat(services.properties())
+                .containsEntry("s3.endpoint_url", "http://localhost:4566")
+                .containsEntry("s3.use_dualstack_endpoint", "true")
+                .containsEntry("dynamodb.endpoint_url", "http://localhost:8000");
+    }
+
+    @Test
     void profileFileSuppliersCanReturnFixedAndAggregatedViews() {
         ProfileFile first = credentialsFile("""
                 [default]
