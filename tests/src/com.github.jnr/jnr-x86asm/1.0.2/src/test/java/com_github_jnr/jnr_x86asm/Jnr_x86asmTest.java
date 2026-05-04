@@ -37,7 +37,10 @@ import static jnr.x86asm.Asm.rax;
 import static jnr.x86asm.Asm.rcx;
 import static jnr.x86asm.Asm.rdx;
 import static jnr.x86asm.Asm.rsp;
+import static jnr.x86asm.Asm.xmm0;
+import static jnr.x86asm.Asm.xmm1;
 import static jnr.x86asm.Asm.xmm2;
+import static jnr.x86asm.Asm.xmmword_ptr;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -92,6 +95,24 @@ public class Jnr_x86asmTest {
                 0x58,
                 0x03, 0xC3,
                 0x2D, 0x01, 0x00, 0x00, 0x00,
+                0xC3);
+    }
+
+    @Test
+    void emitsPackedSseVectorInstructions() {
+        Assembler assembler = new Assembler(X86_64);
+
+        assembler.movaps(xmm1, xmmword_ptr(rax, 32L));
+        assembler.addps(xmm1, xmm0);
+        assembler.pxor(xmm0, xmm0);
+        assembler.movaps(xmmword_ptr(rax, 32L), xmm1);
+        assembler.ret();
+
+        assertThat(unsignedBytes(assembler)).containsExactly(
+                0x0F, 0x28, 0x48, 0x20,
+                0x0F, 0x58, 0xC8,
+                0x66, 0x0F, 0xEF, 0xC0,
+                0x0F, 0x29, 0x48, 0x20,
                 0xC3);
     }
 
