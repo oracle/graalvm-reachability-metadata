@@ -1,0 +1,1015 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df544-524d-7973-b111-933d0a72e07c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.grpc:grpc-auth:1.68.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.68.0" when "$version$" is replaced with "1.68.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+- Set "coordinates" to "io.grpc:grpc-auth:1.68.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.68.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact from Maven and the upstream repo/tag, then patch the JSON directly with the most specific URLs that exist.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | head -20 && if [ -f build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json ]; then sed -n '1,200p' build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json; fi" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+{
+  "coordinates" : "io.grpc:grpc-auth:1.68.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+web search: 
+web search: Maven Central io.grpc grpc-auth 1.68.0 sources jar tests jar javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/io.grpc/grpc-auth
+web search: 
+web search: repo.maven.apache.org maven2 io/grpc/grpc-auth/1.68.0 grpc-auth-1.68.0-sources.jar
+codex
+Maven Central confirms the POM points at `grpc/grpc-java`; I’m checking whether Central publishes usable source, test, and javadoc artifacts for the exact 1.68.0 coordinate before falling back to GitHub tag URLs.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/1.68.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/grpc/grpc-auth/1.68.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/grpc/grpc-auth/1.68.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="grpc-auth-1.68.0-javadoc.jar" title="grpc-auth-1.68.0-javadoc.jar">grpc-auth-1.68.0-javadoc.jar</a>                      2024-09-19 14:56    315102      
+<a href="grpc-auth-1.68.0-javadoc.jar.asc" title="grpc-auth-1.68.0-javadoc.jar.asc">grpc-auth-1.68.0-javadoc.jar.asc</a>                  2024-09-19 14:56       659      
+<a href="grpc-auth-1.68.0-javadoc.jar.md5" title="grpc-auth-1.68.0-javadoc.jar.md5">grpc-auth-1.68.0-javadoc.jar.md5</a>                  2024-09-19 14:56        32      
+<a href="grpc-auth-1.68.0-javadoc.jar.sha1" title="grpc-auth-1.68.0-javadoc.jar.sha1">grpc-auth-1.68.0-javadoc.jar.sha1</a>                 2024-09-19 14:56        40      
+<a href="grpc-auth-1.68.0-javadoc.jar.sha256" title="grpc-auth-1.68.0-javadoc.jar.sha256">grpc-auth-1.68.0-javadoc.jar.sha256</a>               2024-09-19 14:56        64      
+<a href="grpc-auth-1.68.0-javadoc.jar.sha512" title="grpc-auth-1.68.0-javadoc.jar.sha512">grpc-auth-1.68.0-javadoc.jar.sha512</a>               2024-09-19 14:56       128      
+<a href="grpc-auth-1.68.0-sources.jar" title="grpc-auth-1.68.0-sources.jar">grpc-auth-1.68.0-sources.jar</a>                      2024-09-19 14:56      8687      
+<a href="grpc-auth-1.68.0-sources.jar.asc" title="grpc-auth-1.68.0-sources.jar.asc">grpc-auth-1.68.0-sources.jar.asc</a>                  2024-09-19 14:56       659      
+<a href="grpc-auth-1.68.0-sources.jar.md5" title="grpc-auth-1.68.0-sources.jar.md5">grpc-auth-1.68.0-sources.jar.md5</a>                  2024-09-19 14:56        32      
+<a href="grpc-auth-1.68.0-sources.jar.sha1" title="grpc-auth-1.68.0-sources.jar.sha1">grpc-auth-1.68.0-sources.jar.sha1</a>                 2024-09-19 14:56        40      
+<a href="grpc-auth-1.68.0-sources.jar.sha256" title="grpc-auth-1.68.0-sources.jar.sha256">grpc-auth-1.68.0-sources.jar.sha256</a>               2024-09-19 14:56        64      
+<a href="grpc-auth-1.68.0-sources.jar.sha512" title="grpc-auth-1.68.0-sources.jar.sha512">grpc-auth-1.68.0-sources.jar.sha512</a>               2024-09-19 14:56       128      
+<a href="grpc-auth-1.68.0.jar" title="grpc-auth-1.68.0.jar">grpc-auth-1.68.0.jar</a>                              2024-09-19 14:56     14758      
+<a href="grpc-auth-1.68.0.jar.asc" title="grpc-auth-1.68.0.jar.asc">grpc-auth-1.68.0.jar.asc</a>                          2024-09-19 14:56       659      
+<a href="grpc-auth-1.68.0.jar.md5" title="grpc-auth-1.68.0.jar.md5">grpc-auth-1.68.0.jar.md5</a>                          2024-09-19 14:56        32      
+<a href="grpc-auth-1.68.0.jar.sha1" title="grpc-auth-1.68.0.jar.sha1">grpc-auth-1.68.0.jar.sha1</a>                         2024-09-19 14:56        40      
+<a href="grpc-auth-1.68.0.jar.sha256" title="grpc-auth-1.68.0.jar.sha256">grpc-auth-1.68.0.jar.sha256</a>                       2024-09-19 14:56        64      
+<a href="grpc-auth-1.68.0.jar.sha512" title="grpc-auth-1.68.0.jar.sha512">grpc-auth-1.68.0.jar.sha512</a>                       2024-09-19 14:56       128      
+<a href="grpc-auth-1.68.0.pom" title="grpc-auth-1.68.0.pom">grpc-auth-1.68.0.pom</a>                              2024-09-19 14:56      1790      
+<a href="grpc-auth-1.68.0.pom.asc" title="grpc-auth-1.68.0.pom.asc">grpc-auth-1.68.0.pom.asc</a>                          2024-09-19 14:56       659      
+<a href="grpc-auth-1.68.0.pom.md5" title="grpc-auth-1.68.0.pom.md5">grpc-auth-1.68.0.pom.md5</a>                          2024-09-19 14:56        32      
+<a href="grpc-auth-1.68.0.pom.sha1" title="grpc-auth-1.68.0.pom.sha1">grpc-auth-1.68.0.pom.sha1</a>                         2024-09-19 14:56        40      
+<a href="grpc-auth-1.68.0.pom.sha256" title="grpc-auth-1.68.0.pom.sha256">grpc-auth-1.68.0.pom.sha256</a>                       2024-09-19 14:56        64      
+<a href="grpc-auth-1.68.0.pom.sha512" title="grpc-auth-1.68.0.pom.sha512">grpc-auth-1.68.0.pom.sha512</a>                       2024-09-19 14:56       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/1.68.0/grpc-auth-1.68.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.grpc</groupId>
+  <artifactId>grpc-auth</artifactId>
+  <version>1.68.0</version>
+  <name>io.grpc:grpc-auth</name>
+  <description>gRPC: Auth</description>
+  <url>https://github.com/grpc/grpc-java</url>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>https://opensource.org/licenses/Apache-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>grpc.io</id>
+      <name>gRPC Contributors</name>
+      <email>grpc-io@googlegroups.com</email>
+      <url>https://grpc.io/</url>
+      <organization>gRPC Authors</organization>
+      <organizationUrl>https://www.google.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/grpc/grpc-java.git</connection>
+    <developerConnection>scm:git:git@github.com:grpc/grpc-java.git</developerConnection>
+    <url>https://github.com/grpc/grpc-java</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-api</artifactId>
+      <version>1.68.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-credentials</artifactId>
+      <version>1.23.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.2.1-android</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/grpc/grpc-java/v1.68.0/auth/build.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/grpc/grpc-java/contents/auth/src?ref=v1.68.0 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 177ms:
+plugins {
+    id "java-library"
+    id "maven-publish"
+
+    id "me.champeau.gradle.japicmp"
+    id "ru.vyarus.animalsniffer"
+}
+
+description = "gRPC: Auth"
+
+tasks.named("jar").configure {
+    manifest {
+        attributes('Automatic-Module-Name': 'io.grpc.auth')
+    }
+}
+
+dependencies {
+    api project(':grpc-api'),
+            libraries.google.auth.credentials
+    implementation libraries.guava
+    testImplementation project(':grpc-testing'),
+            project(':grpc-core'),
+            project(":grpc-context"), // Override google-auth dependency with our newer version
+            libraries.google.auth.oauth2Http
+    signature libraries.signature.java
+    signature libraries.signature.android
+}
+
+ succeeded in 173ms:
+[
+  {
+    "name": "main",
+    "path": "auth/src/main",
+    "sha": "6e0976f2d08a8a668156fda5235da337dc4f0d4a",
+    "size": 0,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/auth/src/main?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/tree/v1.68.0/auth/src/main",
+    "git_url": "https://api.github.com/repos/grpc/grpc-java/git/trees/6e0976f2d08a8a668156fda5235da337dc4f0d4a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/grpc/grpc-java/contents/auth/src/main?ref=v1.68.0",
+      "git": "https://api.github.com/repos/grpc/grpc-java/git/trees/6e0976f2d08a8a668156fda5235da337dc4f0d4a",
+      "html": "https://github.com/grpc/grpc-java/tree/v1.68.0/auth/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "auth/src/test",
+    "sha": "52cd5631458303de9eeb7d287295f49cffdac2ba",
+    "size": 0,
+    "url": "https://api.github.com/repos/grpc/grpc-java/contents/auth/src/test?ref=v1.68.0",
+    "html_url": "https://github.com/grpc/grpc-java/tree/v1.68.0/auth/src/test",
+    "git_url": "https://api.github.com/repos/grpc/grpc-java/git/trees/52cd5631458303de9eeb7d287295f49cffdac2ba",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/grpc/grpc-java/contents/auth/src/test?ref=v1.68.0",
+      "git": "https://api.github.com/repos/grpc/grpc-java/git/trees/52cd5631458303de9eeb7d287295f49cffdac2ba",
+      "html": "https://github.com/grpc/grpc-java/tree/v1.68.0/auth/src/test"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'grpc-auth|io.grpc' -S . | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+./COVERAGE.md:166:| [`io.grpc:grpc-context`](https://github.com/grpc/grpc-java) | 1.27.2<br>– 1.81.0 | 100% (0/0 calls) | <details><summary>Show</summary> grpc-context provides gRPC Java's context propagation API for carrying scoped values, deadlines, and cancellation state across API boundaries and threads. It lets applications bind request-scoped state to the current execution and propagate that state through asynchronous work.</details> |
+./COVERAGE.md:167:| [`io.grpc:grpc-core`](https://github.com/grpc/grpc-java) | 1.69.0<br>– 1.81.0 | 100% (0/0 calls) | <details><summary>Show</summary> Core runtime classes for gRPC Java, including channels, calls, name resolution, load balancing, deadlines, and transport abstractions. It provides the foundational client and server behavior that higher-level gRPC Java transports and stubs build on.</details> |
+./COVERAGE.md:168:| [`io.grpc:grpc-netty`](https://github.com/grpc/grpc-java) | 1.51.0<br>– 1.81.0 | 100% (0/0 calls) | <details><summary>Show</summary> grpc-netty is gRPC Java's main Netty-based transport implementation for both clients and servers. It provides HTTP/2 networking integration on top of Netty for gRPC communication.</details> |
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:13:import io.grpc.Metadata;
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:14:import io.grpc.Status.Code;
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:15:import io.grpc.StatusException;
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:16:import io.grpc.StatusRuntimeException;
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:67:            io.grpc.Status grpcStatus = io.grpc.Status.fromCode(mapping.getKey());
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:84:            io.grpc.Status convertedStatus = StatusConverter.toGrpcStatus(opencensusStatus);
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:98:            io.grpc.Status grpcStatus = io.grpc.Status.fromCode(mapping.getKey())
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:115:            io.grpc.Status convertedStatus = StatusConverter.toGrpcStatus(opencensusStatus);
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:126:                io.grpc.Status.UNAVAILABLE.withDescription(""));
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:127:        io.grpc.Status fromOpenCensus = StatusConverter.toGrpcStatus(
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:140:            io.grpc.Status grpcStatus = io.grpc.Status.fromCode(mapping.getKey()).withDescription(description);
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:142:            io.grpc.Status roundTrippedStatus = StatusConverter.toGrpcStatus(
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:168:        StatusRuntimeException exception = io.grpc.Status.PERMISSION_DENIED
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:173:                io.grpc.Status.fromThrowable(exception));
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:186:        io.grpc.Status recoveredStatus = io.grpc.Status.fromThrowable(exception);
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:204:        io.grpc.Status recoveredStatus = io.grpc.Status.fromThrowable(exception);
+./tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/src/test/java/io_opencensus/opencensus_contrib_grpc_util/Opencensus_contrib_grpc_utilTest.java:205:        Metadata recoveredTrailers = io.grpc.Status.trailersFromThrowable(exception);
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:684:                'io.grpc:grpc-core',
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:33:import io.grpc.CallOptions;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:34:import io.grpc.Channel;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:35:import io.grpc.ClientCall;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:36:import io.grpc.Metadata;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:37:import io.grpc.MethodDescriptor;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:38:import io.grpc.ServerCall;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:39:import io.grpc.ServerCallHandler;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:40:import io.grpc.ServerMethodDefinition;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:41:import io.grpc.ServerServiceDefinition;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:42:import io.grpc.ServiceDescriptor;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:43:import io.grpc.Status;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:44:import io.grpc.protobuf.ProtoMethodDescriptorSupplier;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:45:import io.grpc.protobuf.ProtoServiceDescriptorSupplier;
+./tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/src/test/java/com_google_api_grpc/grpc_google_common_protos/Grpc_google_common_protosTest.java:46:import io.grpc.stub.StreamObserver;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/build.gradle:15:    testImplementation 'io.grpc:grpc-inprocess:1.80.0'
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:45:import io.grpc.ManagedChannel;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:46:import io.grpc.MethodDescriptor;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:47:import io.grpc.Server;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:48:import io.grpc.ServerServiceDefinition;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:49:import io.grpc.ServiceDescriptor;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:50:import io.grpc.Status.Code;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:51:import io.grpc.StatusRuntimeException;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:52:import io.grpc.inprocess.InProcessChannelBuilder;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:53:import io.grpc.inprocess.InProcessServerBuilder;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:54:import io.grpc.stub.BlockingClientCall;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_v1/Grpc_google_cloud_spanner_v1Test.java:55:import io.grpc.stub.StreamObserver;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/build.gradle:15:    testImplementation 'io.grpc:grpc-inprocess:1.80.0'
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:63:import io.grpc.ManagedChannel;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:64:import io.grpc.MethodDescriptor;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:65:import io.grpc.Server;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:66:import io.grpc.ServerServiceDefinition;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:67:import io.grpc.ServiceDescriptor;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:68:import io.grpc.Status.Code;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:69:import io.grpc.StatusRuntimeException;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:70:import io.grpc.inprocess.InProcessChannelBuilder;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:71:import io.grpc.inprocess.InProcessServerBuilder;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:72:import io.grpc.protobuf.ProtoFileDescriptorSupplier;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:73:import io.grpc.protobuf.ProtoMethodDescriptorSupplier;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:74:import io.grpc.protobuf.ProtoServiceDescriptorSupplier;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_database_v1/Grpc_google_cloud_spanner_admin_database_v1Test.java:75:import io.grpc.stub.StreamObserver;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:49:import io.grpc.CallOptions;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:50:import io.grpc.Channel;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:51:import io.grpc.ClientCall;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:52:import io.grpc.Metadata;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:53:import io.grpc.MethodDescriptor;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:54:import io.grpc.ServerCall;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:55:import io.grpc.ServerMethodDefinition;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:56:import io.grpc.ServerServiceDefinition;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:57:import io.grpc.ServiceDescriptor;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:58:import io.grpc.Status;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:59:import io.grpc.StatusException;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:60:import io.grpc.protobuf.ProtoMethodDescriptorSupplier;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:61:import io.grpc.protobuf.ProtoServiceDescriptorSupplier;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_admin_instance_v1/Grpc_google_cloud_spanner_admin_instance_v1Test.java:62:import io.grpc.stub.StreamObserver;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_executor_v1/Grpc_google_cloud_spanner_executor_v1Test.java:23:import io.grpc.CallOptions;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_executor_v1/Grpc_google_cloud_spanner_executor_v1Test.java:24:import io.grpc.Channel;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_executor_v1/Grpc_google_cloud_spanner_executor_v1Test.java:25:import io.grpc.ClientCall;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_executor_v1/Grpc_google_cloud_spanner_executor_v1Test.java:26:import io.grpc.Metadata;
+./tests/src/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/6.116.1/src/test/java/com_google_api_grpc/grpc_google_cloud_spanner_executor_v1/Grpc_google_cloud_spanner_executor_v1Test.java:27:import io.grpc.MethodDescriptor;
+
+exec
+/usr/bin/bash -lc 'find metadata -maxdepth 4 -type f | head -60' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-server/11.0.24/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+metadata/org.eclipse.jetty/jetty-ee/index.json
+metadata/org.eclipse.jetty/jetty-ee/12.0.10/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/index.json
+metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/index.json
+metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util/index.json
+metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/index.json
+metadata/org.eclipse.jetty/jetty-http/9.4.1.v20170120/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/9.4.0.M0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/index.json
+metadata/org.eclipse.jetty/jetty-io/9.4.0.RC0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/9.4.0.M0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-session/index.json
+metadata/org.eclipse.jetty/jetty-session/12.0.10/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+metadata/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/10.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+metadata/org.awaitility/awaitility/index.json
+metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+metadata/org.junit.jupiter/junit-jupiter-params/index.json
+metadata/org.junit.jupiter/junit-jupiter-params/5.9.2/reachability-metadata.json
+metadata/org.apache.thrift/libthrift/0.17.0/reachability-metadata.json
+metadata/org.apache.thrift/libthrift/index.json
+metadata/org.apache.thrift/libthrift/0.13.0/reachability-metadata.json
+metadata/jakarta.authentication/jakarta.authentication-api/index.json
+metadata/jakarta.authentication/jakarta.authentication-api/3.0.0/reachability-metadata.json
+metadata/org.springframework/spring-jcl/index.json
+metadata/org.springframework/spring-jcl/5.3.15/reachability-metadata.json
+metadata/org.springframework/spring-aspects/5.3.31/reachability-metadata.json
+metadata/org.springframework/spring-aspects/index.json
+metadata/org.springframework/spring-instrument/5.3.31/reachability-metadata.json
+metadata/org.springframework/spring-instrument/index.json
+metadata/com.rabbitmq/amqp-client/5.12.0/reachability-metadata.json
+metadata/com.rabbitmq/amqp-client/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.18.1/reachability-metadata.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/reachability-metadata.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.14.3/reachability-metadata.json
+metadata/net.postgis/postgis-jdbc/index.json
+metadata/net.postgis/postgis-jdbc/2.5.0/reachability-metadata.json
+metadata/net.postgis/postgis-geometry/index.json
+metadata/net.postgis/postgis-geometry/2.5.0/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|not-for-native-image|language' . --glob '*.json' | head -120" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+./metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+./metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+./metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+./metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+./metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+./metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+./metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+./metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+./metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+./metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+./metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+./metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+./metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+./metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+./metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+./metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+./metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+./metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+./metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+./metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+./metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+./metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+./metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+./metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+./metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+./metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:23:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/io.grpc/grpc-context/index.json 2>/dev/null || true; sed -n '1,120p' metadata/io.grpc/grpc-core/index.json 2>/dev/null || true; sed -n '1,120p' metadata/io.grpc/grpc-netty/index.json 2>/dev/null || true" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.57.0",
+    "source-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/context/java",
+    "repository-url" : "https://github.com/grpc/grpc-java",
+    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/test/java/io/grpc",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-api/$version$/grpc-api-$version$-javadoc.jar",
+    "description" : "grpc-context provides gRPC Java's context propagation API for carrying scoped values, deadlines, and cancellation state across API boundaries and threads. It lets applications bind request-scoped state to the current execution and propagate that state through asynchronous work.",
+    "tested-versions" : [
+      "1.57.0",
+      "1.57.1",
+      "1.57.2",
+      "1.58.0",
+      "1.58.1",
+      "1.59.0",
+      "1.59.1",
+      "1.60.0",
+      "1.60.1",
+      "1.60.2",
+      "1.61.0",
+      "1.61.1",
+      "1.62.2",
+      "1.63.0",
+      "1.63.1",
+      "1.63.2",
+      "1.64.0",
+      "1.64.1",
+      "1.64.2",
+      "1.65.0",
+      "1.65.1",
+      "1.66.0",
+      "1.67.1",
+      "1.68.0",
+      "1.68.1",
+      "1.68.2",
+      "1.68.3",
+      "1.69.0",
+      "1.69.1",
+      "1.70.0",
+      "1.71.0",
+      "1.72.0",
+      "1.73.0",
+      "1.74.0",
+      "1.75.0",
+      "1.76.0",
+      "1.76.1",
+      "1.76.2",
+      "1.76.3",
+      "1.77.0",
+      "1.77.1",
+      "1.78.0",
+      "1.79.0",
+      "1.80.0",
+      "1.81.0"
+    ],
+    "allowed-packages" : [
+      "io.grpc"
+    ]
+  },
+  {
+    "metadata-version" : "1.27.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/$version$/grpc-context-$version$-sources.jar",
+    "repository-url" : "https://github.com/grpc/grpc-java",
+    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/context/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/$version$/grpc-context-$version$-javadoc.jar",
+    "description" : "grpc-context provides gRPC's context propagation API for carrying scoped values and cancellation state across API boundaries and threads. It lets applications associate request-scoped data with the current execution and propagate that state through asynchronous work.",
+    "tested-versions" : [
+      "1.27.2",
+      "1.28.0",
+      "1.28.1",
+      "1.29.0",
+      "1.30.0",
+      "1.30.1",
+      "1.30.2",
+      "1.31.0",
+      "1.31.1",
+      "1.31.2",
+      "1.32.1",
+      "1.32.2",
+      "1.32.3",
+      "1.33.0",
+      "1.33.1",
+      "1.34.0",
+      "1.34.1",
+      "1.35.0",
+      "1.35.1",
+      "1.36.0",
+      "1.36.1",
+      "1.36.2",
+      "1.36.3",
+      "1.37.0",
+      "1.37.1",
+      "1.38.0",
+      "1.38.1",
+      "1.39.0",
+      "1.40.0",
+      "1.40.1",
+      "1.40.2",
+      "1.41.0",
+      "1.41.1",
+      "1.41.2",
+      "1.41.3",
+      "1.42.0",
+      "1.42.1",
+      "1.42.2",
+      "1.42.3",
+      "1.43.0",
+      "1.43.1",
+      "1.43.2",
+      "1.43.3",
+      "1.44.0",
+      "1.44.1",
+      "1.44.2",
+      "1.45.0",
+      "1.45.1",
+      "1.45.2",
+      "1.45.3",
+      "1.45.4",
+      "1.46.0",
+[
+  {
+    "latest" : true,
+    "override" : true,
+    "metadata-version" : "1.69.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/$version$/grpc-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/grpc/grpc-java",
+    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/core/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/$version$/grpc-core-$version$-javadoc.jar",
+    "description" : "Core runtime classes for gRPC Java, including channels, calls, name resolution, load balancing, deadlines, and transport abstractions. It provides the foundational client and server behavior that higher-level gRPC Java transports and stubs build on.",
+    "tested-versions" : [
+      "1.69.0",
+      "1.69.1",
+      "1.70.0",
+      "1.71.0",
+      "1.72.0",
+      "1.73.0",
+      "1.74.0",
+      "1.75.0",
+      "1.76.0",
+      "1.76.1",
+      "1.76.2",
+      "1.77.0",
+      "1.77.1",
+      "1.78.0",
+      "1.79.0",
+      "1.80.0",
+      "1.81.0"
+    ],
+    "allowed-packages" : [
+      "io.grpc"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "override" : true,
+    "metadata-version" : "1.51.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/$version$/grpc-netty-$version$-sources.jar",
+    "repository-url" : "https://github.com/grpc/grpc-java",
+    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/netty/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/$version$/grpc-netty-$version$-javadoc.jar",
+    "description" : "grpc-netty is gRPC Java's main Netty-based transport implementation for both clients and servers. It provides HTTP/2 networking integration on top of Netty for gRPC communication.",
+    "tested-versions" : [
+      "1.51.0",
+      "1.51.1",
+      "1.51.3",
+      "1.52.0",
+      "1.52.1",
+      "1.53.0",
+      "1.54.0",
+      "1.54.1",
+      "1.54.2",
+      "1.55.1",
+      "1.55.3",
+      "1.56.0",
+      "1.56.1",
+      "1.57.0",
+      "1.57.1",
+      "1.57.2",
+      "1.58.0",
+      "1.58.1",
+      "1.59.0",
+      "1.59.1",
+      "1.60.0",
+      "1.60.1",
+      "1.60.2",
+      "1.61.0",
+      "1.61.1",
+      "1.62.2",
+      "1.63.0",
+      "1.63.1",
+      "1.63.2",
+      "1.64.0",
+      "1.64.1",
+      "1.64.2",
+      "1.65.0",
+      "1.65.1",
+      "1.66.0",
+      "1.67.1",
+      "1.68.0",
+      "1.68.1",
+      "1.68.2",
+      "1.68.3",
+      "1.69.0",
+      "1.69.1",
+      "1.70.0",
+      "1.71.0",
+      "1.72.0",
+      "1.73.0",
+      "1.74.0",
+      "1.75.0",
+      "1.76.0",
+      "1.76.1",
+      "1.76.2",
+      "1.77.0",
+      "1.77.1",
+      "1.78.0",
+      "1.79.0",
+      "1.80.0",
+      "1.81.0"
+    ],
+    "allowed-packages" : [
+      "io.grpc"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/1.68.0/grpc-auth-1.68.0-tests.jar || true; curl -fsSL -I https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/1.68.0/grpc-auth-1.68.0-test.jar || true' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/1.68.0/grpc-auth-1.68.0.jar -o "$tmp/grpc-auth.jar"; jar tf "$tmp/grpc-auth.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/grpc/
+io/grpc/auth/
+io/grpc/auth/MoreCallCredentials.class
+io/grpc/auth/GoogleAuthLibraryCallCredentials$JwtHelper.class
+io/grpc/auth/GoogleAuthLibraryCallCredentials$MethodPair.class
+io/grpc/auth/GoogleAuthLibraryCallCredentials.class
+io/grpc/auth/GoogleAuthLibraryCallCredentials$1.class
+io/grpc/auth/ClientAuthInterceptor.class
+io/grpc/auth/ClientAuthInterceptor$1.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/grpc/grpc-java/git/ref/tags/v1.68.0 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 201ms:
+{
+  "ref": "refs/tags/v1.68.0",
+  "node_id": "MDM6UmVmMjc3Mjk5MjY6cmVmcy90YWdzL3YxLjY4LjA=",
+  "url": "https://api.github.com/repos/grpc/grpc-java/git/refs/tags/v1.68.0",
+  "object": {
+    "sha": "d33fba366d6feeacf27b377a1d70ee7c8703a23d",
+    "type": "tag",
+    "url": "https://api.github.com/repos/grpc/grpc-java/git/tags/d33fba366d6feeacf27b377a1d70ee7c8703a23d"
+  }
+}
+
+ succeeded in 561ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 23:13:39 GMT
+content-type: text/html
+cf-ray: 9f6b327c7d0ebc0e-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/grpc/grpc-auth/1.68.0/grpc-auth-1.68.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 23:13:39 GMT
+content-type: text/html
+cf-ray: 9f6b327e3a722680-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/grpc/grpc-auth/1.68.0/grpc-auth-1.68.0-test.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: io.grpc grpc-auth 1.68.0 Maven Central grpc-auth-1.68.0-sources.jar javadoc
+web search: 
+web search: https://github.com/grpc/grpc-java/tree/v1.68.0/auth/src/test
+web search: 
+web search: "grpc-auth-1.68.0-sources.jar" "grpc-auth-1.68.0-javadoc.jar"
+codex
+The artifact is a normal JVM JAR with `.class` files and a Java Gradle module, so I’m leaving `language` and `not-for-native-image` out. Central has source and javadoc JARs, while no `tests` or `test` classifier exists, so the test URL will use the `v$version$` GitHub tag path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+index 52b20e04be9cf396ec0bdf11a7618daf9a2e7251..f5dcb8f653432976c11cbefa300e2aa36f46049a
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-auth:1.68.0"
++  "coordinates" : "io.grpc:grpc-auth:1.68.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/auth/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-javadoc.jar",
++  "description" : "grpc-auth provides gRPC Java call credential adapters and interceptors for attaching authentication credentials to client RPCs. It integrates Google Auth Library credentials with gRPC so applications can propagate OAuth2 or JWT-based authorization metadata during calls."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+index 52b20e04be9cf396ec0bdf11a7618daf9a2e7251..f5dcb8f653432976c11cbefa300e2aa36f46049a
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-auth:1.68.0"
++  "coordinates" : "io.grpc:grpc-auth:1.68.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/auth/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-javadoc.jar",
++  "description" : "grpc-auth provides gRPC Java call credential adapters and interceptors for attaching authentication credentials to client RPCs. It integrates Google Auth Library credentials with gRPC so applications can propagate OAuth2 or JWT-based authorization metadata during calls."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+{
+  "coordinates": "io.grpc:grpc-auth:1.68.0",
+  "repository-url": "https://github.com/grpc/grpc-java",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-sources.jar",
+  "test-code-url": "https://github.com/grpc/grpc-java/tree/v$version$/auth/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-javadoc.jar",
+  "description": "grpc-auth provides gRPC Java call credential adapters and interceptors for attaching authentication credentials to client RPCs. It integrates Google Auth Library credentials with gRPC so applications can propagate OAuth2 or JWT-based authorization metadata during calls."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/1.68.0/grpc-auth-1.68.0-sources.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:14:06 GMT
+content-type: application/java-archive
+content-length: 8687
+cf-ray: 9f6b33270b352830-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1606461
+etag: "43f61b980c44f9366f6748c64b77fce1"
+last-modified: Thu, 19 Sep 2024 14:56:13 GMT
+x-checksum-md5: 43f61b980c44f9366f6748c64b77fce1
+x-checksum-sha1: 1bf34e61e8cf8b188cb21f0aed533a8c3b2c0be0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/1.68.0/grpc-auth-1.68.0-javadoc.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:14:06 GMT
+content-type: application/java-archive
+content-length: 315102
+cf-ray: 9f6b33270f46039d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 118387
+etag: "6475cfd905de7c41a4029c6bc18b3bd1"
+last-modified: Thu, 19 Sep 2024 14:56:09 GMT
+x-checksum-md5: 6475cfd905de7c41a4029c6bc18b3bd1
+x-checksum-sha1: c846602d7c3f8e55e4fd37f3d19a017b9cd29e11
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/grpc/grpc-java/tree/v1.68.0/auth/src/test' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+index 52b20e04be9cf396ec0bdf11a7618daf9a2e7251..f5dcb8f653432976c11cbefa300e2aa36f46049a
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-auth:1.68.0"
++  "coordinates" : "io.grpc:grpc-auth:1.68.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/auth/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-javadoc.jar",
++  "description" : "grpc-auth provides gRPC Java call credential adapters and interceptors for attaching authentication credentials to client RPCs. It integrates Google Auth Library credentials with gRPC so applications can propagate OAuth2 or JWT-based authorization metadata during calls."
+ }
+
+ succeeded in 646ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:14:07 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"cb8f9c905cc46be532ec31778fca675a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=8yGqlRjHcKFZi%2FX55o4IhlreiCbkttofbxXHOyRR5uYUyEIc9cuYi%2Bt%2FJhUTHC4Iar6NoXEqtbi12FFfcFEJRZv0EXJk58Yf3o6VOANOHtABQMWD%2FlXVF9eiGh0ACO11NASv%2FJCwXBRumwMunur5v7MpKE96Be52nzDxxsFqhO5uVSPnQ0l0EJpLHZDIMjZR6y2Z0YTwUrYed6eLAqqm90iSoVCPJRbsbZSW11iYxJY%2BfATIv20ou0jLqFf243LDD%2FgMZsD%2BvJRNMrZP%2FCJ%2BCQ%3D%3D--AOGeUhEbg0X5Bk7I--8tsP8%2FshUBcIhariAxZMWQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.243943603.1777936446; expires=Tue, 04 May 2027 23:14:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 23:14:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5106:1385A6:4B95EDD:39C4515:69F9283E
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+index 52b20e04be9cf396ec0bdf11a7618daf9a2e7251..f5dcb8f653432976c11cbefa300e2aa36f46049a
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-auth:1.68.0"
++  "coordinates" : "io.grpc:grpc-auth:1.68.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/auth/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-javadoc.jar",
++  "description" : "grpc-auth provides gRPC Java call credential adapters and interceptors for attaching authentication credentials to client RPCs. It integrates Google Auth Library credentials with gRPC so applications can propagate OAuth2 or JWT-based authorization metadata during calls."
+ }
+
+web search: 
+web search: site:github.com/grpc/grpc-java/tree/v1.68.0/auth/src/test grpc-java auth src test
+web search: 
+web search: 
+web search: 
+web search: central sonatype io.grpc grpc-auth 1.68.0
+web search: 
+web search: 
+web search: 
+web search: https://mvnrepository.com/artifact/io.grpc/grpc-auth
+codex
+Updated [io.grpc-grpc-auth-1.68.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json).
+
+I set the repository, source, test, documentation, and two-sentence description fields. I left `language` absent and did not set `not-for-native-image` because `grpc-auth` is a JVM Java artifact from `grpc-java`, with class files present. Verified JSON with `jq` and confirmed the source, javadoc, and tagged test URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+index 52b20e04be9cf396ec0bdf11a7618daf9a2e7251..f5dcb8f653432976c11cbefa300e2aa36f46049a
+--- a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
++++ b/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.grpc:grpc-auth:1.68.0"
++  "coordinates" : "io.grpc:grpc-auth:1.68.0",
++  "repository-url" : "https://github.com/grpc/grpc-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-sources.jar",
++  "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/auth/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-auth/$version$/grpc-auth-$version$-javadoc.jar",
++  "description" : "grpc-auth provides gRPC Java call credential adapters and interceptors for attaching authentication credentials to client RPCs. It integrates Google Auth Library credentials with gRPC so applications can propagate OAuth2 or JWT-based authorization metadata during calls."
+ }
+
+tokens used
+85,785
+Updated [io.grpc-grpc-auth-1.68.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a/build/discovered-artifact-metadata/io.grpc-grpc-auth-1.68.0.json).
+
+I set the repository, source, test, documentation, and two-sentence description fields. I left `language` absent and did not set `not-for-native-image` because `grpc-auth` is a JVM Java artifact from `grpc-java`, with class files present. Verified JSON with `jq` and confirmed the source, javadoc, and tagged test URLs return HTTP 200.
+Ran agent for io.grpc:grpc-auth:1.68.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a/build/agent-artifact-discovery-logs/io.grpc-grpc-auth-1.68.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4697-df45785a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 28s
+9 actionable tasks: 4 executed, 5 from cache
