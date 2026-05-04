@@ -304,7 +304,7 @@ class ReadmeBadgeSummarySupportTests {
         assertThat(svg).contains("Tested library versions recorded across metadata indexes");
         assertThat(svg).contains("Tested Lines of Code");
         assertThat(svg).contains("Covered lines reported across library coverage stats");
-        assertThat(svg).contains("Updated 2026-04-07 | Generated 2026-04-07T12:34:56Z");
+        assertThat(svg).contains("Updated 2026-04-07 12:34 UTC");
         assertThat(svg).contains("35.8%");
         assertThat(svg).contains("text-anchor=\"start\">Apr 5</text>");
         assertThat(svg).contains("text-anchor=\"middle\">Apr 6</text>");

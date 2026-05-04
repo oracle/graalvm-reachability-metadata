@@ -533,12 +533,6 @@ public final class ReadmeBadgeSummarySupport {
                 )
         );
 
-        LocalDate latestDate = panels.stream()
-                .flatMap(panel -> panel.points().stream())
-                .map(MetricPoint::date)
-                .max(LocalDate::compareTo)
-                .orElse(LocalDate.now(ZoneOffset.UTC));
-
         StringBuilder svg = new StringBuilder();
         svg.append("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 ")
                 .append(DASHBOARD_WIDTH)
@@ -588,8 +582,6 @@ public final class ReadmeBadgeSummarySupport {
                 .append("\" y=\"92\" fill=\"")
                 .append(theme.mutedText())
                 .append("\" font-size=\"17\">Updated ")
-                .append(escapeXml(latestDate.toString()))
-                .append(" | Generated ")
                 .append(escapeXml(formatGeneratedAt(generatedAt)))
                 .append("</text>\n");
         for (int index = 0; index < panels.size(); index++) {
@@ -1110,8 +1102,11 @@ public final class ReadmeBadgeSummarySupport {
         return value.setScale(1, RoundingMode.HALF_UP).toPlainString() + "%";
     }
 
+    private static final DateTimeFormatter GENERATED_AT_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'", Locale.ROOT).withZone(ZoneOffset.UTC);
+
     private static String formatGeneratedAt(Instant generatedAt) {
-        return DateTimeFormatter.ISO_INSTANT.format(generatedAt.truncatedTo(ChronoUnit.SECONDS));
+        return GENERATED_AT_FORMATTER.format(generatedAt.truncatedTo(ChronoUnit.MINUTES));
     }
 
     public record ReadmeBadgeSummary(
