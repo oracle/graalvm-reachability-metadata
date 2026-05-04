@@ -65,8 +65,12 @@ public class JuniversalchardetTest {
         UniversalDetector detector = new UniversalDetector(initialListener);
         byte[] utf8 = (
                 "GraalVM native images exercise the same detector API. "
-                        + "Zażółć gęślą jaźń. Привет мир. こんにちは世界。 "
-                        + "Zażółć gęślą jaźń. Привет мир. こんにちは世界。")
+                        + "Za\u017c\u00f3\u0142\u0107 g\u0119\u015bl\u0105 ja\u017a\u0144. "
+                        + "\u041f\u0440\u0438\u0432\u0435\u0442 \u043c\u0438\u0440. "
+                        + "\u3053\u3093\u306b\u3061\u306f\u4e16\u754c\u3002 "
+                        + "Za\u017c\u00f3\u0142\u0107 g\u0119\u015bl\u0105 ja\u017a\u0144. "
+                        + "\u041f\u0440\u0438\u0432\u0435\u0442 \u043c\u0438\u0440. "
+                        + "\u3053\u3093\u306b\u3061\u306f\u4e16\u754c\u3002")
                 .getBytes(StandardCharsets.UTF_8);
 
         assertThat(detector.getListener()).isSameAs(initialListener);
