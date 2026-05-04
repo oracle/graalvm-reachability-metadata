@@ -131,6 +131,28 @@ class MetadataGenerationUtilsTests {
                 .containsEntry("tested-versions", List.of("2.0.0", "2.1.0"));
     }
 
+    @Test
+    void metadataCollectionEnvironmentUsesGraalVmHomeAndRemovesGradleJavaHomeOverrides() {
+        Map<String, String> env = MetadataGenerationUtils.metadataCollectionEnvironment(
+                Map.of(
+                        "GRAALVM_HOME", "/graalvm",
+                        "JAVA_HOME", "/other-jdk",
+                        "GRADLE_OPTS", "-Xmx2g -Dorg.gradle.java.home=/wrong/jdk",
+                        "JAVA_OPTS", "-Dorg.gradle.java.home=/another/wrong/jdk",
+                        "UNCHANGED", "value"
+                ),
+                Map.of("GVM_TCK_LV", "25")
+        );
+
+        assertThat(env)
+                .containsEntry("GRAALVM_HOME", "/graalvm")
+                .containsEntry("JAVA_HOME", "/graalvm")
+                .containsEntry("GVM_TCK_LV", "25")
+                .containsEntry("GRADLE_OPTS", "-Xmx2g")
+                .containsEntry("JAVA_OPTS", "")
+                .containsEntry("UNCHANGED", "value");
+    }
+
     private Project createProject() {
         return ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())

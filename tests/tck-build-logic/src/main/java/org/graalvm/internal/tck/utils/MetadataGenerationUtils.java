@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -189,12 +190,13 @@ public final class MetadataGenerationUtils {
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+        Map<String, String> env = metadataCollectionEnvironment(System.getenv(), Map.of());
 
         GeneralUtils.printInfo("Generating metadata");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), "Cannot generate metadata", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), env, "Cannot generate metadata", testsDirectory);
 
         GeneralUtils.printInfo("Performing metadata copy");
-        GeneralUtils.invokeCommand(execOps, gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
     }
 
     /**
@@ -203,14 +205,28 @@ public final class MetadataGenerationUtils {
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, String gvmTckLv) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
-
-        Map<String, String> env = Map.of("GVM_TCK_LV", gvmTckLv);
+        Map<String, String> env = metadataCollectionEnvironment(System.getenv(), Map.of("GVM_TCK_LV", gvmTckLv));
 
         GeneralUtils.printInfo("Generating metadata");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), env, "Cannot generate metadata", testsDirectory);
 
         GeneralUtils.printInfo("Performing metadata copy");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+    }
+
+    static Map<String, String> metadataCollectionEnvironment(Map<String, String> baseEnv, Map<String, String> extraEnv) {
+        Map<String, String> env = new LinkedHashMap<>(baseEnv);
+        env.putAll(extraEnv);
+
+        String graalVmHome = firstNonBlank(env.get("GRAALVM_HOME"), env.get("JAVA_HOME"));
+        if (graalVmHome != null) {
+            env.put("GRAALVM_HOME", graalVmHome);
+            env.put("JAVA_HOME", graalVmHome);
+        }
+
+        removeGradleJavaHomeOverride(env, "GRADLE_OPTS");
+        removeGradleJavaHomeOverride(env, "JAVA_OPTS");
+        return env;
     }
 
     /**
@@ -441,6 +457,26 @@ public final class MetadataGenerationUtils {
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    private static String firstNonBlank(String... values) {
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    private static void removeGradleJavaHomeOverride(Map<String, String> env, String variableName) {
+        String value = env.get(variableName);
+        if (value == null || value.isBlank() || !value.contains("-Dorg.gradle.java.home=")) {
+            return;
+        }
+        String filteredValue = value.replaceAll("(^|\\s+)-Dorg\\.gradle\\.java\\.home=\\S+", " ")
+                .trim()
+                .replaceAll("\\s+", " ");
+        env.put(variableName, filteredValue);
     }
 
     private static MetadataVersionsIndexEntry copyWithTestedVersions(MetadataVersionsIndexEntry entry, List<String> testedVersions) {
