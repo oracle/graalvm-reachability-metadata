@@ -7,13 +7,24 @@
 package org_joda.joda_convert;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 
 import org.joda.convert.StringConvert;
 import org.junit.jupiter.api.Test;
 
 public class TypesTest {
+    @Test
+    public void createsArrayClassForComponentType() throws Exception {
+        Method getArrayClass = Class.forName("org.joda.convert.Types")
+                .getDeclaredMethod("getArrayClass", Class.class);
+        getArrayClass.setAccessible(true);
+
+        assertSame(String[].class, getArrayClass.invoke(null, String.class));
+    }
+
     @Test
     public void formatsParsedParameterizedTypes() {
         StringConvert convert = StringConvert.create();

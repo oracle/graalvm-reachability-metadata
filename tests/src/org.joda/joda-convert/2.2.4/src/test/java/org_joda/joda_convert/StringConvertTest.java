@@ -10,10 +10,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.File;
+import java.lang.module.Configuration;
+import java.lang.module.ModuleFinder;
+import java.lang.reflect.Type;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.Set;
 
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.joda.convert.RenameHandler;
 import org.joda.convert.StringConvert;
 import org.junit.jupiter.api.Test;
@@ -62,6 +70,58 @@ public class StringConvertTest {
         } finally {
             thread.setContextClassLoader(originalLoader);
         }
+    }
+
+    @Test
+    public void registersGuavaConverterWhenLoadedAsNamedModules() throws Exception {
+        try {
+            assertEquals("java.lang.String", convertGuavaTypeTokenInNamedModuleLayer());
+        } catch (Error error) {
+            if (NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return;
+            }
+            throw error;
+        }
+    }
+
+    private static String convertGuavaTypeTokenInNamedModuleLayer() throws Exception {
+        Path jodaConvertJar = jarPath(StringConvert.class);
+        Class<?> classPathTypeTokenClass = Class.forName("com.google.common.reflect.TypeToken");
+        Path guavaJar = jarPath(classPathTypeTokenClass);
+        ModuleFinder finder = ModuleFinder.of(jodaConvertJar, guavaJar);
+        String jodaConvertModuleName = moduleName(finder, "org.joda.convert");
+        String guavaModuleName = moduleName(finder, "com.google.common.reflect");
+        Configuration configuration = ModuleLayer.boot().configuration()
+                .resolve(finder, ModuleFinder.of(), Set.of(jodaConvertModuleName, guavaModuleName));
+        ModuleLayer layer = ModuleLayer.boot()
+                .defineModulesWithOneLoader(configuration, ClassLoader.getPlatformClassLoader());
+        ClassLoader loader = layer.findLoader(jodaConvertModuleName);
+        Thread thread = Thread.currentThread();
+        ClassLoader originalLoader = thread.getContextClassLoader();
+        try {
+            thread.setContextClassLoader(loader);
+            Class<?> stringConvertType = Class.forName("org.joda.convert.StringConvert", true, loader);
+            Object convert = stringConvertType.getConstructor().newInstance();
+            Class<?> typeTokenClass = Class.forName("com.google.common.reflect.TypeToken", true, loader);
+            Object token = typeTokenClass.getMethod("of", Type.class).invoke(null, String.class);
+            return (String) stringConvertType.getMethod("convertToString", Class.class, Object.class)
+                    .invoke(convert, typeTokenClass, token);
+        } finally {
+            thread.setContextClassLoader(originalLoader);
+        }
+    }
+
+    private static Path jarPath(Class<?> type) throws URISyntaxException {
+        return Paths.get(type.getProtectionDomain().getCodeSource().getLocation().toURI());
+    }
+
+    private static String moduleName(ModuleFinder finder, String packageName) {
+        return finder.findAll().stream()
+                .filter(reference -> reference.descriptor().packages().contains(packageName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No module contains package " + packageName))
+                .descriptor()
+                .name();
     }
 
     public static final class MethodValue {
