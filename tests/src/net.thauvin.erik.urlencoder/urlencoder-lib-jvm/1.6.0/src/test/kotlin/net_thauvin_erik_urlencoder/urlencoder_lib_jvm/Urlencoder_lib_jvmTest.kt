@@ -51,6 +51,15 @@ public class Urlencoder_lib_jvmTest {
     }
 
     @Test
+    fun encodesLiteralPercentSignsInsteadOfPreservingEscapeSequences(): Unit {
+        val source: String = "already%20encoded%GG literal%"
+        val encoded: String = UrlEncoderUtil.encode(source)
+
+        assertThat(encoded).isEqualTo("already%2520encoded%25GG%20literal%25")
+        assertThat(UrlEncoderUtil.decode(encoded)).isEqualTo(source)
+    }
+
+    @Test
     fun returnsEmptyAndAlreadySafeInputsUnchanged(): Unit {
         val empty: String = ""
         val safe: String = "Alpha-09._beta"
