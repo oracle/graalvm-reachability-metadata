@@ -8,7 +8,10 @@ package com_lihaoyi.upickle_core_3
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import upickle.core.Abort
+import upickle.core.AbortException
 import upickle.core.ArrVisitor
 import upickle.core.BufferedValue
 import upickle.core.ByteBuilder
@@ -20,6 +23,7 @@ import upickle.core.ObjVisitor
 import upickle.core.ParseUtils
 import upickle.core.RenderUtils
 import upickle.core.StringVisitor
+import upickle.core.TraceVisitor
 import upickle.core.Visitor
 
 import java.io.ByteArrayOutputStream
@@ -210,6 +214,84 @@ class Upickle_core_3Test {
     assertThat(removed).isEqualTo(Some(1))
     assertThat(map.iterator.map { case (key, value) => s"$key=$value" }.toSeq.asJava)
       .containsExactly("second=20", "third=3", "fourth=4")
+  }
+
+  @Test
+  def traceVisitorReportsNestedPathForVisitorFailures(): Unit = {
+    val input: BufferedValue = BufferedValue.Obj(
+      ArrayBuffer(
+        BufferedValue.Str("items", 1) -> BufferedValue.Arr(
+          ArrayBuffer(
+            BufferedValue.Str("ok", 2),
+            BufferedValue.Int32(99, 3)
+          ),
+          4
+        )
+      ),
+      jsonableKeys = true,
+      index = 0
+    )
+
+    val thrown: TraceVisitor.TraceException = assertThrows(
+      classOf[TraceVisitor.TraceException],
+      () => TraceVisitor.withTrace[Unit, Unit](true, RejectingIntVisitor) { (visitor: Visitor[Unit, Unit]) =>
+        BufferedValue.transform(input, visitor)
+      }
+    )
+
+    assertThat(thrown.jsonPath).isEqualTo("$['items'][1]")
+    assertThat(thrown.getMessage).isEqualTo("$['items'][1]")
+    assertThat(thrown.getCause).isInstanceOf(classOf[AbortException])
+  }
+
+  private object RejectingIntVisitor extends Visitor[Unit, Unit] {
+    override def visitArray(length: Int, index: Int): ArrVisitor[Unit, Unit] = new ArrVisitor[Unit, Unit] {
+      override def subVisitor: Visitor[?, ?] = RejectingIntVisitor
+
+      override def visitValue(value: Unit, index: Int): Unit = ()
+
+      override def visitEnd(index: Int): Unit = ()
+    }
+
+    override def visitObject(length: Int, jsonableKeys: Boolean, index: Int): ObjVisitor[Unit, Unit] = new ObjVisitor[Unit, Unit] {
+      override def visitKey(index: Int): Visitor[?, ?] = StringVisitor
+
+      override def visitKeyValue(value: Any): Unit = ()
+
+      override def subVisitor: Visitor[?, ?] = RejectingIntVisitor
+
+      override def visitValue(value: Unit, index: Int): Unit = ()
+
+      override def visitEnd(index: Int): Unit = ()
+    }
+
+    override def visitNull(index: Int): Unit = ()
+
+    override def visitFalse(index: Int): Unit = ()
+
+    override def visitTrue(index: Int): Unit = ()
+
+    override def visitFloat64StringParts(value: CharSequence, decIndex: Int, expIndex: Int, index: Int): Unit = ()
+
+    override def visitFloat64(value: Double, index: Int): Unit = ()
+
+    override def visitFloat32(value: Float, index: Int): Unit = ()
+
+    override def visitInt32(value: Int, index: Int): Unit = throw Abort("integers are rejected")
+
+    override def visitInt64(value: Long, index: Int): Unit = ()
+
+    override def visitUInt64(value: Long, index: Int): Unit = ()
+
+    override def visitFloat64String(value: String, index: Int): Unit = ()
+
+    override def visitString(value: CharSequence, index: Int): Unit = ()
+
+    override def visitChar(value: Char, index: Int): Unit = ()
+
+    override def visitBinary(bytes: Array[Byte], offset: Int, len: Int, index: Int): Unit = ()
+
+    override def visitExt(tag: Byte, bytes: Array[Byte], offset: Int, len: Int, index: Int): Unit = ()
   }
 
   private object RenderingVisitor extends Visitor[String, String] {
