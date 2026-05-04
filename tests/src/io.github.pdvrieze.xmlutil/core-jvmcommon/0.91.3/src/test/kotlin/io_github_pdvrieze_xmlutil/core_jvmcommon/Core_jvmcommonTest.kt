@@ -7,10 +7,15 @@
 package io_github_pdvrieze_xmlutil.core_jvmcommon
 
 import nl.adaptivity.xmlutil.EventType
+import nl.adaptivity.xmlutil.ExperimentalXmlUtilApi
 import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.XmlEvent
 import nl.adaptivity.xmlutil.XmlReader
 import nl.adaptivity.xmlutil.XmlWriter
+import nl.adaptivity.xmlutil.dom2.CharacterData
+import nl.adaptivity.xmlutil.dom2.Element
+import nl.adaptivity.xmlutil.dom2.Node
+import nl.adaptivity.xmlutil.dom2.NodeType
 import nl.adaptivity.xmlutil.dom2.childNodes
 import nl.adaptivity.xmlutil.dom2.documentElement
 import nl.adaptivity.xmlutil.dom2.length
@@ -178,6 +183,43 @@ public class CoreJvmcommonTest {
             .contains("Coffee")
             .contains("Green")
             .contains("Black")
+    }
+
+    @OptIn(ExperimentalXmlUtilApi::class)
+    @Test
+    fun domWriterAppendsStructuredContentToExistingElement(): Unit {
+        val document = xmlStreaming.genericDomImplementation.createDocument(STORE_NS, "s:store", null)
+        val root = requireNotNull(document.documentElement)
+
+        xmlStreaming.newWriter(root).use { writer: XmlWriter ->
+            writer.startTag(BOOK_NS, "book", "bk")
+            writer.namespaceAttr("bk", BOOK_NS)
+            writer.attribute("", "id", "", "dom-1")
+            writer.text("DOM ")
+            writer.cdsect("content & details")
+            writer.comment("available")
+            writer.endTag(BOOK_NS, "book", "bk")
+        }
+
+        val book = root.getElementsByTagNameNS(BOOK_NS, "book")
+            .single() as Element
+        val childNodes: List<Node> = book.childNodes.toList()
+
+        assertThat(book.namespaceURI).isEqualTo(BOOK_NS)
+        assertThat(book.prefix).isEqualTo("bk")
+        assertThat(book.getAttribute("id")).isEqualTo("dom-1")
+        assertThat(book.getAttribute("xmlns:bk")).isEqualTo(BOOK_NS)
+        assertThat(book.textContent).isEqualTo("DOM content & details")
+        assertThat(requireNotNull(book.parentNode).nodeName).isEqualTo("s:store")
+        assertThat(childNodes.map { it.nodetype }).containsExactly(
+            NodeType.TEXT_NODE,
+            NodeType.CDATA_SECTION_NODE,
+            NodeType.COMMENT_NODE,
+        )
+        val characterData: List<String> = childNodes.map { node: Node ->
+            (node as CharacterData).getData()
+        }
+        assertThat(characterData).containsExactly("DOM ", "content & details", "available")
     }
 
     @Test
