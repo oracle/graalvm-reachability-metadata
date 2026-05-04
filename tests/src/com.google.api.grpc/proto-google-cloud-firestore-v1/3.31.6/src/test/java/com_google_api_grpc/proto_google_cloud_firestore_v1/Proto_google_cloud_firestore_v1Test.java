@@ -20,6 +20,8 @@ import com.google.firestore.v1.DocumentMask;
 import com.google.firestore.v1.DocumentPathName;
 import com.google.firestore.v1.DocumentRootName;
 import com.google.firestore.v1.DocumentTransform;
+import com.google.firestore.v1.ExecutionStats;
+import com.google.firestore.v1.ExplainMetrics;
 import com.google.firestore.v1.ExplainOptions;
 import com.google.firestore.v1.GetDocumentRequest;
 import com.google.firestore.v1.ListDocumentsRequest;
@@ -28,10 +30,12 @@ import com.google.firestore.v1.ListenResponse;
 import com.google.firestore.v1.MapValue;
 import com.google.firestore.v1.PartitionQueryRequest;
 import com.google.firestore.v1.PartitionQueryResponse;
+import com.google.firestore.v1.PlanSummary;
 import com.google.firestore.v1.Precondition;
 import com.google.firestore.v1.RunAggregationQueryRequest;
 import com.google.firestore.v1.RunAggregationQueryResponse;
 import com.google.firestore.v1.RunQueryRequest;
+import com.google.firestore.v1.RunQueryResponse;
 import com.google.firestore.v1.StructuredAggregationQuery;
 import com.google.firestore.v1.StructuredQuery;
 import com.google.firestore.v1.Target;
@@ -41,8 +45,10 @@ import com.google.firestore.v1.Value;
 import com.google.firestore.v1.Write;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.DoubleValue;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.NullValue;
+import com.google.protobuf.Struct;
 import com.google.protobuf.Timestamp;
 import com.google.type.LatLng;
 import java.util.List;
@@ -198,6 +204,59 @@ public class Proto_google_cloud_firestore_v1Test {
         assertThat(query.getEndAt().getBefore()).isFalse();
         assertThat(query.getFindNearest().getQueryVector().getArrayValue().getValuesCount()).isEqualTo(2);
         assertThat(query.getFindNearest().getDistanceThreshold().getValue()).isEqualTo(0.75D);
+    }
+
+    @Test
+    void queryExplainMetricsExposePlanSummaryAndExecutionStats() {
+        Struct indexUsed = Struct.newBuilder()
+                .putFields("query_scope", com.google.protobuf.Value.newBuilder().setStringValue("Collection").build())
+                .putFields("properties", com.google.protobuf.Value.newBuilder()
+                        .setStringValue("(age DESC, __name__ ASC)")
+                        .build())
+                .build();
+        Struct debugStats = Struct.newBuilder()
+                .putFields("index_entries_scanned", com.google.protobuf.Value.newBuilder().setNumberValue(5D).build())
+                .putFields("documents_scanned", com.google.protobuf.Value.newBuilder().setNumberValue(2D).build())
+                .build();
+        ExecutionStats executionStats = ExecutionStats.newBuilder()
+                .setResultsReturned(2L)
+                .setExecutionDuration(Duration.newBuilder().setNanos(12_000_000))
+                .setReadOperations(3L)
+                .setDebugStats(debugStats)
+                .build();
+        ExplainMetrics explainMetrics = ExplainMetrics.newBuilder()
+                .setPlanSummary(PlanSummary.newBuilder().addIndexesUsed(indexUsed))
+                .setExecutionStats(executionStats)
+                .build();
+        RunQueryResponse response = RunQueryResponse.newBuilder()
+                .setDocument(Document.newBuilder()
+                        .setName(DOCUMENT_NAME)
+                        .putFields("name", Value.newBuilder().setStringValue("Alice").build()))
+                .setReadTime(timestamp(45))
+                .setSkippedResults(1)
+                .setExplainMetrics(explainMetrics)
+                .build();
+        RunQueryResponse doneResponse = response.toBuilder()
+                .clearDocument()
+                .setDone(true)
+                .build();
+
+        assertThat(response.hasExplainMetrics()).isTrue();
+        assertThat(response.getExplainMetrics().getPlanSummary().getIndexesUsed(0).getFieldsOrThrow("query_scope")
+                .getStringValue()).isEqualTo("Collection");
+        assertThat(response.getExplainMetrics().getExecutionStats().getResultsReturned()).isEqualTo(2L);
+        assertThat(response.getExplainMetrics().getExecutionStats().getExecutionDuration().getNanos())
+                .isEqualTo(12_000_000);
+        assertThat(response.getExplainMetrics().getExecutionStats().getReadOperations()).isEqualTo(3L);
+        assertThat(response.getExplainMetrics().getExecutionStats().getDebugStats()
+                .getFieldsOrThrow("index_entries_scanned").getNumberValue()).isEqualTo(5D);
+        assertThat(response.getDocument().getFieldsOrThrow("name").getStringValue()).isEqualTo("Alice");
+        assertThat(response.getSkippedResults()).isEqualTo(1);
+        assertThat(doneResponse.getContinuationSelectorCase())
+                .isEqualTo(RunQueryResponse.ContinuationSelectorCase.DONE);
+        assertThat(doneResponse.getDone()).isTrue();
+        assertThat(doneResponse.hasDocument()).isFalse();
+        assertThat(doneResponse.hasExplainMetrics()).isTrue();
     }
 
     @Test
