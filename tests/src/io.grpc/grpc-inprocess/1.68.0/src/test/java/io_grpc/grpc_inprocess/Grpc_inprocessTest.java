@@ -36,6 +36,7 @@ import io.grpc.Status;
 import io.grpc.inprocess.AnonymousInProcessSocketAddress;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import io.grpc.inprocess.InProcessSocketAddress;
 
 public class Grpc_inprocessTest {
     private static final String SERVICE_NAME = "reachability.InProcessService";
@@ -89,6 +90,34 @@ public class Grpc_inprocessTest {
             assertThat(response.messages()).containsExactly("unary:native-image:request-123");
             assertThat(response.trailers().get(TRAILER_KEY)).isEqualTo("unary-complete");
             assertThat(observedRequestId).hasValue("request-123");
+        } finally {
+            shutdown(channel, server);
+        }
+    }
+
+    @Test
+    void namedSocketAddressConnectsUsingEquivalentAddress() throws Exception {
+        InProcessSocketAddress listenAddress = new InProcessSocketAddress(
+                "reachability-" + InProcessServerBuilder.generateName());
+        InProcessSocketAddress dialAddress = new InProcessSocketAddress(listenAddress.getName());
+        Server server = InProcessServerBuilder.forAddress(listenAddress)
+                .directExecutor()
+                .addService(ServerServiceDefinition.builder(SERVICE_NAME)
+                        .addMethod(UNARY_METHOD, echoHandler())
+                        .build())
+                .build()
+                .start();
+        ManagedChannel channel = InProcessChannelBuilder.forAddress(dialAddress)
+                .directExecutor()
+                .build();
+        try {
+            RecordedCall<String> response = invoke(channel, UNARY_METHOD, List.of("named-address"), 1);
+
+            assertThat(dialAddress).isEqualTo(listenAddress);
+            assertThat(dialAddress.hashCode()).isEqualTo(listenAddress.hashCode());
+            assertThat(dialAddress.toString()).isEqualTo(listenAddress.getName());
+            assertThat(response.awaitStatus().getCode()).isEqualTo(Status.Code.OK);
+            assertThat(response.messages()).containsExactly("address:named-address");
         } finally {
             shutdown(channel, server);
         }
@@ -192,6 +221,27 @@ public class Grpc_inprocessTest {
                     }
                 };
             }
+        };
+    }
+
+    private static ServerCallHandler<String, String> echoHandler() {
+        return (call, headers) -> {
+            call.sendHeaders(new Metadata());
+            call.request(1);
+            return new ServerCall.Listener<>() {
+                private String request;
+
+                @Override
+                public void onMessage(String message) {
+                    request = message;
+                }
+
+                @Override
+                public void onHalfClose() {
+                    call.sendMessage("address:" + request);
+                    call.close(Status.OK, new Metadata());
+                }
+            };
         };
     }
 
