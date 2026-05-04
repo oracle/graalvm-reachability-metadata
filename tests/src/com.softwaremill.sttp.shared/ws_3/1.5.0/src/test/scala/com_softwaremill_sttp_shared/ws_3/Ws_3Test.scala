@@ -251,6 +251,25 @@ class Ws_3Test {
   }
 
   @Test
+  def receiveDataFrameContinuesWhenAutomaticPongCannotBeSent(): Unit = {
+    var observedPongPayload: Option[Array[Byte]] = None
+    val webSocket: WebSocket[Try] = WebSocketStub
+      .initialReceive(List(Ping(Array[Byte](5, 6)), Text("after-ping", finalFragment = true, None)))
+      .thenRespondWith {
+        case Pong(payload) =>
+          observedPongPayload = Some(payload.clone())
+          throw new IllegalStateException("pong unavailable")
+        case frame => List(Success(frame))
+      }
+      .build(TryMonad)
+
+    assertEquals(Success(Text("after-ping", finalFragment = true, None)), webSocket.receiveDataFrame())
+    assertTrue(observedPongPayload.isDefined)
+    assertArrayEquals(Array[Byte](5, 6), observedPongPayload.get)
+    assertEquals(Success(true), webSocket.isOpen())
+  }
+
+  @Test
   def receiveTextFrameAndBinaryFrameSkipOtherDataFrameTypes(): Unit = {
     val textSocket: WebSocket[Try] = WebSocketStub
       .initialReceive(List(Binary(Array[Byte](1), finalFragment = true, None), Text("selected", finalFragment = true, None)))
