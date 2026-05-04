@@ -10,7 +10,7 @@ This repository contains [reachability metadata](https://www.graalvm.org/latest/
 The [GraalVM Gradle Plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html) and [GraalVM Maven Plugin](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html) automatically use the [reachability metadata](https://www.graalvm.org/latest/reference-manual/native-image/metadata/) from this repository, so most projects do not need to configure it directly.
 
 > [!TIP]
-> **Missing metadata for a library you depend on?** Run the Native Build Tools task in your project to detect the gap and automatically open an issue here.
+> **Missing metadata for a library you depend on?** Run the [Native Build Tools](https://graalvm.github.io/native-build-tools/latest/) task in your project to detect the gap and automatically open an issue here.
 >
 > **Gradle**
 >
