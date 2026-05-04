@@ -1,0 +1,2272 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df2fc-b673-7330-9ed6-52e3b2358ae9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.cloud:grpc-gcp:1.10.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.10.0" when "$version$" is replaced with "1.10.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+- Set "coordinates" to "com.google.cloud:grpc-gcp:1.10.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.10.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the current metadata file and nearby entries first, then verify the artifact’s Maven/GitHub coordinates and tags before editing the JSON.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+-rw-rw-r-- 1 vjovanov vjovanov 57 May  4 14:35 build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'grpc-gcp|com.google.cloud' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json:2:  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:5:        "typeReached": "com.google.cloud.bigquery.storage.v1.TableProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:11:        "typeReached": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:13:      "type": "com.google.cloud.bigquery.storage.v1.ArrowSchema"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:17:        "typeReached": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:19:      "type": "com.google.cloud.bigquery.storage.v1.AvroSchema"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:23:        "typeReached": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:25:      "type": "com.google.cloud.bigquery.storage.v1.DataFormat"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:29:        "typeReached": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:31:      "type": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:35:        "typeReached": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:37:      "type": "com.google.cloud.bigquery.storage.v1.ReadSession$Builder"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:41:        "typeReached": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:43:      "type": "com.google.cloud.bigquery.storage.v1.ReadSession$TableModifiers"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:47:        "typeReached": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:49:      "type": "com.google.cloud.bigquery.storage.v1.ReadSession$TableReadOptions"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:53:        "typeReached": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:55:      "type": "com.google.cloud.bigquery.storage.v1.ReadStream"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:59:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:65:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:91:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:98:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:105:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:112:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:119:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:126:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:133:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:140:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:147:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:154:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:161:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:168:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:175:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:182:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:189:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:196:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:203:        "typeReached": "com.google.cloud.bigquery.storage.v1.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:210:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:217:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:224:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:231:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:238:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:245:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:252:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:259:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:266:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:273:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:280:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:287:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:294:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:301:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:308:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:315:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:322:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:329:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:336:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:343:        "typeReached": "com.google.cloud.bigquery.storage.v1.AnnotationsProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:350:        "typeReached": "com.google.cloud.bigquery.storage.v1.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:356:        "typeReached": "com.google.cloud.bigquery.storage.v1.CreateReadSessionRequest"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:367:        "typeReached": "com.google.cloud.bigquery.storage.v1.ArrowSchema"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:373:        "typeReached": "com.google.cloud.bigquery.storage.v1.ArrowSchema"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/reachability-metadata.json:379:        "typeReached": "com.google.cloud.bigquery.storage.v1.CreateReadSessionRequest"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:29:      "com.google.cloud.bigquery.storage.v1",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:5:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.TableProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:19:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.TableProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:21:      "type": "com.google.cloud.bigquery.storage.v1beta2.TableFieldSchema$Mode",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:33:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.TableProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:35:      "type": "com.google.cloud.bigquery.storage.v1beta2.TableFieldSchema$Type",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:47:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.TableProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:49:      "type": "com.google.cloud.bigquery.storage.v1beta2.ArrowSerializationOptions$Format",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:61:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:63:      "type": "com.google.cloud.bigquery.storage.v1beta2.StorageError$StorageErrorCode",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:75:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.WriteStream"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:77:      "type": "com.google.cloud.bigquery.storage.v1beta2.WriteStream$Type",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:89:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:91:      "type": "com.google.cloud.bigquery.storage.v1beta2.ArrowSchema",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:96:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:98:      "type": "com.google.cloud.bigquery.storage.v1beta2.AvroSchema",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:103:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:105:      "type": "com.google.cloud.bigquery.storage.v1beta2.ReadSession",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:110:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:112:      "type": "com.google.cloud.bigquery.storage.v1beta2.DataFormat",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:124:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:126:      "type": "com.google.cloud.bigquery.storage.v1beta2.ReadSession$Builder",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:131:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:133:      "type": "com.google.cloud.bigquery.storage.v1beta2.ReadSession$TableModifiers",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:138:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:140:      "type": "com.google.cloud.bigquery.storage.v1beta2.ReadSession$TableReadOptions",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:145:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:147:      "type": "com.google.cloud.bigquery.storage.v1beta2.ReadStream",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:152:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:172:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:179:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:186:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:193:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:200:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:207:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:214:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:221:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:228:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:235:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:242:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:249:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:256:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:263:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:270:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:277:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:284:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StorageProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:291:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:298:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:305:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:319:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:326:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:333:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:340:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:354:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:361:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:368:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:375:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:389:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:396:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:403:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:410:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:417:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:424:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:431:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:438:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:445:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:452:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:459:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:466:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:473:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:480:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:487:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/reachability-metadata.json:494:        "typeReached": "com.google.cloud.bigquery.storage.v1beta2.StreamProto"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:14:      "com.google.cloud.bigquery.storage.v1beta2"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:5:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:19:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:26:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:33:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:35:      "type": "com.google.cloud.bigquery.storage.v1beta1.AvroProto$AvroSchema",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:40:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:42:      "type": "com.google.cloud.bigquery.storage.v1beta1.AvroProto$AvroSchema$Builder",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:47:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:49:      "type": "com.google.cloud.bigquery.storage.v1beta1.ArrowProto$ArrowSchema",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:54:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:56:      "type": "com.google.cloud.bigquery.storage.v1beta1.ArrowProto$ArrowSchema$Builder",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:61:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:63:      "type": "com.google.cloud.bigquery.storage.v1beta1.Storage$Stream",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:68:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:70:      "type": "com.google.cloud.bigquery.storage.v1beta1.Storage$Stream$Builder",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:75:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:77:      "type": "com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto$TableReference",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:82:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:84:      "type": "com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto$TableReference$Builder",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:89:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:91:      "type": "com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto$TableModifiers",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:96:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:98:      "type": "com.google.cloud.bigquery.storage.v1beta1.TableReferenceProto$TableModifiers$Builder",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:103:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:105:      "type": "com.google.cloud.bigquery.storage.v1beta1.Storage$ShardingStrategy",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:117:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:119:      "type": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:124:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:126:      "type": "com.google.cloud.bigquery.storage.v1beta1.Storage$ReadSession$Builder",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:131:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:138:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:145:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:152:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:159:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:166:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:173:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:180:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:187:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:194:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:201:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:208:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:215:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:222:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:229:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:236:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/reachability-metadata.json:243:        "typeReached": "com.google.cloud.bigquery.storage.v1beta1.Storage"
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:14:      "com.google.cloud.bigquery.storage.v1beta1"
+metadata/com.google.cloud/google-cloud-bigquery/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-sources.jar",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-javadoc.jar",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:14:      "com.google.cloud.bigquery"
+metadata/com.google.cloud/google-cloud-core-grpc/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-core-grpc/$version$/google-cloud-core-grpc-$version$-sources.jar",
+metadata/com.google.cloud/google-cloud-core-grpc/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-core-grpc/$version$/google-cloud-core-grpc-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-core-grpc/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-core-grpc/$version$/google-cloud-core-grpc-$version$-javadoc.jar",
+metadata/com.google.cloud/google-cloud-core-grpc/index.json:14:      "com.google.cloud.grpc"
+metadata/com.google.cloud/google-cloud-core/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-core/$version$/google-cloud-core-$version$-sources.jar",
+metadata/com.google.cloud/google-cloud-core/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-core/$version$/google-cloud-core-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-core/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-core/$version$/google-cloud-core-$version$-javadoc.jar",
+metadata/com.google.cloud/google-cloud-core/index.json:13:      "com.google.cloud"
+metadata/com.google.cloud/google-cloud-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-core/$version$/google-cloud-core-$version$-sources.jar",
+metadata/com.google.cloud/google-cloud-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-core/$version$/google-cloud-core-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-core/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-core/$version$/google-cloud-core-$version$-javadoc.jar",
+metadata/com.google.cloud/google-cloud-core/index.json:28:      "com.google.cloud"
+metadata/com.google.cloud.tools/jib-build-plan/index.json:4:    "allowed-packages": [ "com.google.cloud.tools" ],
+metadata/com.google.cloud.tools/jib-build-plan/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/tools/jib-build-plan/$version$/jib-build-plan-$version$-sources.jar",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/$version$",
+
+web search: 
+web search: Maven Central com.google.cloud grpc-gcp 1.10.0 pom scm url
+codex
+The local file is just a stub. I found the artifact on Maven Central and a GitHub project hint, so I’m checking the actual POM and Maven artifacts next to avoid guessing the tag or test artifact availability.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0.pom' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>grpc-gcp</artifactId>
+  <version>1.10.0</version>
+  <name>gRPC extension library for Google Cloud Platform</name>
+  <description>GRPC-GCP-Extension Java</description>
+  <url>https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/master/grpc-gcp</url>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>https://opensource.org/licenses/Apache-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>grpc.io</id>
+      <name>gRPC Contributors</name>
+      <email>grpc-io@googlegroups.com</email>
+      <url>https://grpc.io/</url>
+      <organization>gRPC Authors</organization>
+      <organizationUrl>https://www.google.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/GoogleCloudPlatform/grpc-gcp-java.git</connection>
+    <url>https://github.com/GoogleCloudPlatform/grpc-gcp-java</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>3.25.5</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>3.25.5</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+      <version>1.69.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>1.69.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>1.69.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-api</artifactId>
+      <version>0.28.3</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+      <version>1.46.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>api-common</artifactId>
+      <version>2.1.5</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value-annotations</artifactId>
+      <version>1.11.0</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/google/cloud/grpc-gcp/1.10.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 220ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/cloud/grpc-gcp/1.10.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/cloud/grpc-gcp/1.10.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="grpc-gcp-1.10.0-javadoc.jar" title="grpc-gcp-1.10.0-javadoc.jar">grpc-gcp-1.10.0-javadoc.jar</a>                       2026-04-13 16:39    263505      
+<a href="grpc-gcp-1.10.0-javadoc.jar.asc" title="grpc-gcp-1.10.0-javadoc.jar.asc">grpc-gcp-1.10.0-javadoc.jar.asc</a>                   2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0-javadoc.jar.md5" title="grpc-gcp-1.10.0-javadoc.jar.md5">grpc-gcp-1.10.0-javadoc.jar.md5</a>                   2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0-javadoc.jar.sha1" title="grpc-gcp-1.10.0-javadoc.jar.sha1">grpc-gcp-1.10.0-javadoc.jar.sha1</a>                  2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0-javadoc.jar.sha256" title="grpc-gcp-1.10.0-javadoc.jar.sha256">grpc-gcp-1.10.0-javadoc.jar.sha256</a>                2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0-javadoc.jar.sha512" title="grpc-gcp-1.10.0-javadoc.jar.sha512">grpc-gcp-1.10.0-javadoc.jar.sha512</a>                2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0-sources.jar" title="grpc-gcp-1.10.0-sources.jar">grpc-gcp-1.10.0-sources.jar</a>                       2026-04-13 16:39     78034      
+<a href="grpc-gcp-1.10.0-sources.jar.asc" title="grpc-gcp-1.10.0-sources.jar.asc">grpc-gcp-1.10.0-sources.jar.asc</a>                   2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0-sources.jar.md5" title="grpc-gcp-1.10.0-sources.jar.md5">grpc-gcp-1.10.0-sources.jar.md5</a>                   2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0-sources.jar.sha1" title="grpc-gcp-1.10.0-sources.jar.sha1">grpc-gcp-1.10.0-sources.jar.sha1</a>                  2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0-sources.jar.sha256" title="grpc-gcp-1.10.0-sources.jar.sha256">grpc-gcp-1.10.0-sources.jar.sha256</a>                2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0-sources.jar.sha512" title="grpc-gcp-1.10.0-sources.jar.sha512">grpc-gcp-1.10.0-sources.jar.sha512</a>                2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0.jar" title="grpc-gcp-1.10.0.jar">grpc-gcp-1.10.0.jar</a>                               2026-04-13 16:39    165918      
+<a href="grpc-gcp-1.10.0.jar.asc" title="grpc-gcp-1.10.0.jar.asc">grpc-gcp-1.10.0.jar.asc</a>                           2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0.jar.md5" title="grpc-gcp-1.10.0.jar.md5">grpc-gcp-1.10.0.jar.md5</a>                           2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0.jar.sha1" title="grpc-gcp-1.10.0.jar.sha1">grpc-gcp-1.10.0.jar.sha1</a>                          2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0.jar.sha256" title="grpc-gcp-1.10.0.jar.sha256">grpc-gcp-1.10.0.jar.sha256</a>                        2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0.jar.sha512" title="grpc-gcp-1.10.0.jar.sha512">grpc-gcp-1.10.0.jar.sha512</a>                        2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0.module" title="grpc-gcp-1.10.0.module">grpc-gcp-1.10.0.module</a>                            2026-04-13 16:39      3398      
+<a href="grpc-gcp-1.10.0.module.asc" title="grpc-gcp-1.10.0.module.asc">grpc-gcp-1.10.0.module.asc</a>                        2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0.module.md5" title="grpc-gcp-1.10.0.module.md5">grpc-gcp-1.10.0.module.md5</a>                        2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0.module.sha1" title="grpc-gcp-1.10.0.module.sha1">grpc-gcp-1.10.0.module.sha1</a>                       2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0.module.sha256" title="grpc-gcp-1.10.0.module.sha256">grpc-gcp-1.10.0.module.sha256</a>                     2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0.module.sha512" title="grpc-gcp-1.10.0.module.sha512">grpc-gcp-1.10.0.module.sha512</a>                     2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0.pom" title="grpc-gcp-1.10.0.pom">grpc-gcp-1.10.0.pom</a>                               2026-04-13 16:39      3277      
+<a href="grpc-gcp-1.10.0.pom.asc" title="grpc-gcp-1.10.0.pom.asc">grpc-gcp-1.10.0.pom.asc</a>                           2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0.pom.md5" title="grpc-gcp-1.10.0.pom.md5">grpc-gcp-1.10.0.pom.md5</a>                           2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0.pom.sha1" title="grpc-gcp-1.10.0.pom.sha1">grpc-gcp-1.10.0.pom.sha1</a>                          2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0.pom.sha256" title="grpc-gcp-1.10.0.pom.sha256">grpc-gcp-1.10.0.pom.sha256</a>                        2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0.pom.sha512" title="grpc-gcp-1.10.0.pom.sha512">grpc-gcp-1.10.0.pom.sha512</a>                        2026-04-13 16:39       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 298ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/cloud/grpc-gcp/1.10.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/cloud/grpc-gcp/1.10.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="grpc-gcp-1.10.0-javadoc.jar" title="grpc-gcp-1.10.0-javadoc.jar">grpc-gcp-1.10.0-javadoc.jar</a>                       2026-04-13 16:39    263505      
+<a href="grpc-gcp-1.10.0-javadoc.jar.asc" title="grpc-gcp-1.10.0-javadoc.jar.asc">grpc-gcp-1.10.0-javadoc.jar.asc</a>                   2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0-javadoc.jar.md5" title="grpc-gcp-1.10.0-javadoc.jar.md5">grpc-gcp-1.10.0-javadoc.jar.md5</a>                   2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0-javadoc.jar.sha1" title="grpc-gcp-1.10.0-javadoc.jar.sha1">grpc-gcp-1.10.0-javadoc.jar.sha1</a>                  2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0-javadoc.jar.sha256" title="grpc-gcp-1.10.0-javadoc.jar.sha256">grpc-gcp-1.10.0-javadoc.jar.sha256</a>                2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0-javadoc.jar.sha512" title="grpc-gcp-1.10.0-javadoc.jar.sha512">grpc-gcp-1.10.0-javadoc.jar.sha512</a>                2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0-sources.jar" title="grpc-gcp-1.10.0-sources.jar">grpc-gcp-1.10.0-sources.jar</a>                       2026-04-13 16:39     78034      
+<a href="grpc-gcp-1.10.0-sources.jar.asc" title="grpc-gcp-1.10.0-sources.jar.asc">grpc-gcp-1.10.0-sources.jar.asc</a>                   2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0-sources.jar.md5" title="grpc-gcp-1.10.0-sources.jar.md5">grpc-gcp-1.10.0-sources.jar.md5</a>                   2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0-sources.jar.sha1" title="grpc-gcp-1.10.0-sources.jar.sha1">grpc-gcp-1.10.0-sources.jar.sha1</a>                  2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0-sources.jar.sha256" title="grpc-gcp-1.10.0-sources.jar.sha256">grpc-gcp-1.10.0-sources.jar.sha256</a>                2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0-sources.jar.sha512" title="grpc-gcp-1.10.0-sources.jar.sha512">grpc-gcp-1.10.0-sources.jar.sha512</a>                2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0.jar" title="grpc-gcp-1.10.0.jar">grpc-gcp-1.10.0.jar</a>                               2026-04-13 16:39    165918      
+<a href="grpc-gcp-1.10.0.jar.asc" title="grpc-gcp-1.10.0.jar.asc">grpc-gcp-1.10.0.jar.asc</a>                           2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0.jar.md5" title="grpc-gcp-1.10.0.jar.md5">grpc-gcp-1.10.0.jar.md5</a>                           2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0.jar.sha1" title="grpc-gcp-1.10.0.jar.sha1">grpc-gcp-1.10.0.jar.sha1</a>                          2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0.jar.sha256" title="grpc-gcp-1.10.0.jar.sha256">grpc-gcp-1.10.0.jar.sha256</a>                        2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0.jar.sha512" title="grpc-gcp-1.10.0.jar.sha512">grpc-gcp-1.10.0.jar.sha512</a>                        2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0.module" title="grpc-gcp-1.10.0.module">grpc-gcp-1.10.0.module</a>                            2026-04-13 16:39      3398      
+<a href="grpc-gcp-1.10.0.module.asc" title="grpc-gcp-1.10.0.module.asc">grpc-gcp-1.10.0.module.asc</a>                        2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0.module.md5" title="grpc-gcp-1.10.0.module.md5">grpc-gcp-1.10.0.module.md5</a>                        2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0.module.sha1" title="grpc-gcp-1.10.0.module.sha1">grpc-gcp-1.10.0.module.sha1</a>                       2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0.module.sha256" title="grpc-gcp-1.10.0.module.sha256">grpc-gcp-1.10.0.module.sha256</a>                     2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0.module.sha512" title="grpc-gcp-1.10.0.module.sha512">grpc-gcp-1.10.0.module.sha512</a>                     2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0.pom" title="grpc-gcp-1.10.0.pom">grpc-gcp-1.10.0.pom</a>                               2026-04-13 16:39      3277      
+<a href="grpc-gcp-1.10.0.pom.asc" title="grpc-gcp-1.10.0.pom.asc">grpc-gcp-1.10.0.pom.asc</a>                           2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0.pom.md5" title="grpc-gcp-1.10.0.pom.md5">grpc-gcp-1.10.0.pom.md5</a>                           2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0.pom.sha1" title="grpc-gcp-1.10.0.pom.sha1">grpc-gcp-1.10.0.pom.sha1</a>                          2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0.pom.sha256" title="grpc-gcp-1.10.0.pom.sha256">grpc-gcp-1.10.0.pom.sha256</a>                        2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0.pom.sha512" title="grpc-gcp-1.10.0.pom.sha512">grpc-gcp-1.10.0.pom.sha512</a>                        2026-04-13 16:39       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: Maven Central com.google.cloud grpc-gcp 1.10.0 POM scm url
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tags?per_page=100' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases?per_page=30' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/v1.10.0/grpc-gcp | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 216ms:
+[
+  {
+    "name": "v1.9.2",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.9.2",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.9.2",
+    "commit": {
+      "sha": "167b56979baba1395b19fd1ff0210a8923ddb708",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/167b56979baba1395b19fd1ff0210a8923ddb708"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS45LjI="
+  },
+  {
+    "name": "v1.9.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.9.1",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.9.1",
+    "commit": {
+      "sha": "a2948083098ebfd2355fd21521659bdcc4f7df3a",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/a2948083098ebfd2355fd21521659bdcc4f7df3a"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS45LjE="
+  },
+  {
+    "name": "v1.9.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.9.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.9.0",
+    "commit": {
+      "sha": "3d4e5cc883c0ec53780f9c230edafa733a026f87",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/3d4e5cc883c0ec53780f9c230edafa733a026f87"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS45LjA="
+  },
+  {
+    "name": "v1.8.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.8.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.8.0",
+    "commit": {
+      "sha": "f11bf09bf4e7d1e13aab5a4cdf20e54a3ead06ec",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/f11bf09bf4e7d1e13aab5a4cdf20e54a3ead06ec"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS44LjA="
+  },
+  {
+    "name": "v1.7.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.7.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.7.0",
+    "commit": {
+      "sha": "c9751f89d57fe5c5890ff0887b22f73a23c689f2",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/c9751f89d57fe5c5890ff0887b22f73a23c689f2"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS43LjA="
+  },
+  {
+    "name": "v1.6.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.6.1",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.6.1",
+    "commit": {
+      "sha": "96eb1cd439db57f6e042c2c04916859ac00585bf",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/96eb1cd439db57f6e042c2c04916859ac00585bf"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS42LjE="
+  },
+  {
+    "name": "v1.6.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.6.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.6.0",
+    "commit": {
+      "sha": "e96ce9fa90135479165d376eea55d86493559218",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/e96ce9fa90135479165d376eea55d86493559218"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS42LjA="
+  },
+  {
+    "name": "v1.5.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.5.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.5.0",
+    "commit": {
+      "sha": "cbaf61b05088304ea90bdffa8093b76fa9453aeb",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/cbaf61b05088304ea90bdffa8093b76fa9453aeb"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS41LjA="
+  },
+  {
+    "name": "v1.4.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.4.1",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.4.1",
+    "commit": {
+      "sha": "58422f3bb1cb39528ce479c4665ebe54065c786b",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/58422f3bb1cb39528ce479c4665ebe54065c786b"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS40LjE="
+  },
+  {
+    "name": "v1.4.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.4.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.4.0",
+    "commit": {
+      "sha": "bc4316bdfeefebdbeccd2342ad945a6059979580",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/bc4316bdfeefebdbeccd2342ad945a6059979580"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS40LjA="
+  },
+  {
+    "name": "v1.3.2",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.3.2",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.3.2",
+    "commit": {
+      "sha": "0388f597bbf03753a4f24b0f7ce278ac283ac0ee",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/0388f597bbf03753a4f24b0f7ce278ac283ac0ee"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS4zLjI="
+  },
+  {
+    "name": "v1.3.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.3.1",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.3.1",
+    "commit": {
+      "sha": "dd51ed1fb5cfa64a01501918128e211d5ddca5ae",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/dd51ed1fb5cfa64a01501918128e211d5ddca5ae"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS4zLjE="
+  },
+  {
+    "name": "v1.3.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.3.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.3.0",
+    "commit": {
+      "sha": "107524200a56527ee8b8b47668be17358261b397",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/107524200a56527ee8b8b47668be17358261b397"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS4zLjA="
+  },
+  {
+    "name": "v1.2.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.2.1",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.2.1",
+    "commit": {
+      "sha": "ecca519ed78c6742e78f1a5bf628256ed1ec235f",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/ecca519ed78c6742e78f1a5bf628256ed1ec235f"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS4yLjE="
+  },
+  {
+    "name": "v1.2.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.2.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.2.0",
+    "commit": {
+      "sha": "bcde681cc425bdd19693b5b1739ae22307d152d5",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/bcde681cc425bdd19693b5b1739ae22307d152d5"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS4yLjA="
+  },
+  {
+    "name": "v1.1.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.1.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.1.0",
+    "commit": {
+      "sha": "32a581277d1a2c06defb519aa6fbee9c0ec2f904",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/32a581277d1a2c06defb519aa6fbee9c0ec2f904"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS4xLjA="
+  },
+  {
+    "name": "v1.0.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/v1.0.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/v1.0.0",
+    "commit": {
+      "sha": "5e49b07c2268be5ee147dca03e8c276d0e9fcb40",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/5e49b07c2268be5ee147dca03e8c276d0e9fcb40"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy92MS4wLjA="
+  },
+  {
+    "name": "1.10.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/refs/tags/1.10.0",
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/refs/tags/1.10.0",
+    "commit": {
+      "sha": "2a0d6e0de43f1150350a0e3b14c12b797449b0cd",
+      "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/commits/2a0d6e0de43f1150350a0e3b14c12b797449b0cd"
+    },
+    "node_id": "MDM6UmVmMTE0MTU2NTA4OnJlZnMvdGFncy8xLjEwLjA="
+  }
+]
+
+ succeeded in 301ms:
+[
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/308479379",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/308479379/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/308479379/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/1.10.0",
+    "id": 308479379,
+    "author": {
+      "login": "rahul2393",
+      "id": 18293335,
+      "node_id": "MDQ6VXNlcjE4MjkzMzM1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18293335?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/rahul2393",
+      "html_url": "https://github.com/rahul2393",
+      "followers_url": "https://api.github.com/users/rahul2393/followers",
+      "following_url": "https://api.github.com/users/rahul2393/following{/other_user}",
+      "gists_url": "https://api.github.com/users/rahul2393/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/rahul2393/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/rahul2393/subscriptions",
+      "organizations_url": "https://api.github.com/users/rahul2393/orgs",
+      "repos_url": "https://api.github.com/users/rahul2393/repos",
+      "events_url": "https://api.github.com/users/rahul2393/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/rahul2393/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4SYwWT",
+    "tag_name": "1.10.0",
+    "target_commitish": "master",
+    "name": "",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2026-04-10T12:13:49Z",
+    "updated_at": "2026-04-13T17:50:04Z",
+    "published_at": "2026-04-13T17:50:04Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/1.10.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/1.10.0",
+    "body": "* Use power-of-two random choices for channel selection to avoid thundering herd\r\nFull Changelog: https://github.com/GoogleCloudPlatform/grpc-gcp-java/compare/v1.9.2...v1.10.0"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/299620171",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/299620171/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/299620171/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.9.2",
+    "id": 299620171,
+    "author": {
+      "login": "rahul2393",
+      "id": 18293335,
+      "node_id": "MDQ6VXNlcjE4MjkzMzM1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18293335?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/rahul2393",
+      "html_url": "https://github.com/rahul2393",
+      "followers_url": "https://api.github.com/users/rahul2393/followers",
+      "following_url": "https://api.github.com/users/rahul2393/following{/other_user}",
+      "gists_url": "https://api.github.com/users/rahul2393/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/rahul2393/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/rahul2393/subscriptions",
+      "organizations_url": "https://api.github.com/users/rahul2393/orgs",
+      "repos_url": "https://api.github.com/users/rahul2393/repos",
+      "events_url": "https://api.github.com/users/rahul2393/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/rahul2393/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4R29dL",
+    "tag_name": "v1.9.2",
+    "target_commitish": "master",
+    "name": "v1.9.2",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2026-03-20T21:42:33Z",
+    "updated_at": "2026-03-20T22:17:45Z",
+    "published_at": "2026-03-20T22:17:45Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.9.2",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.9.2",
+    "body": "* Use daemon threads for grpc-gcp background executors by default\r\n* Support of Unbind manual affinity keys after terminal calls\r\n\r\nFull Changelog: https://github.com/GoogleCloudPlatform/grpc-gcp-java/compare/v1.9.1...v1.9.2"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/273039221",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/273039221/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/273039221/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.9.1",
+    "id": 273039221,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4QRj91",
+    "tag_name": "v1.9.1",
+    "target_commitish": "master",
+    "name": "v1.9.1",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2025-12-28T03:29:19Z",
+    "updated_at": "2025-12-28T03:43:08Z",
+    "published_at": "2025-12-28T03:43:08Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.9.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.9.1",
+    "body": "## What's Changed\r\n* fix: race for metrics values. Plus fix log metrics when reported via otel callbacks by @nimf in https://github.com/GoogleCloudPlatform/grpc-gcp-java/pull/228\r\n\r\n**Full Changelog**: https://github.com/GoogleCloudPlatform/grpc-gcp-java/compare/v1.9.0...v1.9.1",
+    "mentions_count": 1
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/270643886",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/270643886/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/270643886/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.9.0",
+    "id": 270643886,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4QIbKu",
+    "tag_name": "v1.9.0",
+    "target_commitish": "master",
+    "name": "v1.9.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2025-12-16T07:28:47Z",
+    "updated_at": "2025-12-16T07:37:45Z",
+    "published_at": "2025-12-16T07:37:45Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.9.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.9.0",
+    "body": "## What's Changed\r\n\r\n* feat: set channelID in call options for downstream interceptor to get real channelID by @rahul2393 in https://github.com/GoogleCloudPlatform/grpc-gcp-java/pull/225\r\n\r\n\r\n**Full Changelog**: https://github.com/GoogleCloudPlatform/grpc-gcp-java/compare/v1.8.0...v1.9.0",
+    "mentions_count": 1
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/270053270",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/270053270/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/270053270/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.8.0",
+    "id": 270053270,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4QGK-W",
+    "tag_name": "v1.8.0",
+    "target_commitish": "master",
+    "name": "v1.8.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2025-12-13T00:59:37Z",
+    "updated_at": "2025-12-13T01:32:17Z",
+    "published_at": "2025-12-13T01:32:17Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.8.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.8.0",
+    "body": "## What's Changed\r\n* feat: End to end fallback by @nimf in https://github.com/GoogleCloudPlatform/grpc-gcp-java/pull/221\r\n* feat: migrate opencensus metrics to opentelemetry by @rahul2393 in https://github.com/GoogleCloudPlatform/grpc-gcp-java/pull/222\r\n\r\n## New Contributors\r\n* @rahul2393 made their first contribution in https://github.com/GoogleCloudPlatform/grpc-gcp-java/pull/222\r\n\r\n**Full Changelog**: https://github.com/GoogleCloudPlatform/grpc-gcp-java/compare/v1.7.0...v1.8.0",
+    "mentions_count": 2
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/249506214",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/249506214/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/249506214/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.7.0",
+    "id": 249506214,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4O3ymm",
+    "tag_name": "v1.7.0",
+    "target_commitish": "master",
+    "name": "v1.7.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2025-09-23T22:31:12Z",
+    "updated_at": "2025-09-23T22:52:36Z",
+    "published_at": "2025-09-23T22:52:36Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.7.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.7.0",
+    "body": "### Features\r\n\r\n* Dynamic channel pool scaling (#194)"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/184241861",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/184241861/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/184241861/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.6.1",
+    "id": 184241861,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4K-07F",
+    "tag_name": "v1.6.1",
+    "target_commitish": "96eb1cd439db57f6e042c2c04916859ac00585bf",
+    "name": "v1.6.1",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2024-06-18T05:58:00Z",
+    "updated_at": "2024-11-07T21:07:43Z",
+    "published_at": "2024-11-07T21:07:43Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.6.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.6.1",
+    "body": "## What's Changed\r\n* Log manual affinity and disabling affinity by @nimf in https://github.com/GoogleCloudPlatform/grpc-gcp-java/pull/177\r\n\r\n\r\n**Full Changelog**: https://github.com/GoogleCloudPlatform/grpc-gcp-java/compare/v1.6.0...v1.6.1",
+    "mentions_count": 1
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/155997514",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/155997514/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/155997514/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.6.0",
+    "id": 155997514,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4JTFVK",
+    "tag_name": "v1.6.0",
+    "target_commitish": "master",
+    "name": "1.6.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2024-05-16T03:31:23Z",
+    "updated_at": "2024-05-16T03:33:12Z",
+    "published_at": "2024-05-16T03:33:12Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.6.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.6.0",
+    "body": "### Features\r\n\r\n* Affinity keys cleanup. Allow setting keys lifetime (#174)\r\n* Manual affinity via call options or context (#175)"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/128638219",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/128638219/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/128638219/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.5.0",
+    "id": 128638219,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4Hqt0L",
+    "tag_name": "v1.5.0",
+    "target_commitish": "master",
+    "name": "1.5.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2023-11-09T01:29:59Z",
+    "updated_at": "2023-11-09T01:30:52Z",
+    "published_at": "2023-11-09T01:30:52Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.5.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.5.0",
+    "body": "### Features\r\n\r\n* Add disable affinity feature (#167)"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/128635517",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/128635517/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/128635517/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.4.1",
+    "id": 128635517,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4HqtJ9",
+    "tag_name": "v1.4.1",
+    "target_commitish": "master",
+    "name": "1.4.1",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2023-01-30T19:05:30Z",
+    "updated_at": "2023-11-09T00:50:22Z",
+    "published_at": "2023-11-09T00:50:22Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.4.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.4.1",
+    "body": "### Fixes\r\n\r\n- Support common labels for multi-endpoint metrics (#160)"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/128635020",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/128635020/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/128635020/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.4.0",
+    "id": 128635020,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4HqtCM",
+    "tag_name": "v1.4.0",
+    "target_commitish": "master",
+    "name": "1.4.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2023-01-28T05:13:11Z",
+    "updated_at": "2023-11-09T00:43:27Z",
+    "published_at": "2023-11-09T00:43:27Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.4.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.4.0",
+    "body": "### Features\r\n\r\n- MultiEndpoint metrics (#158)"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/84878481",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/84878481/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/84878481/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.3.2",
+    "id": 84878481,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4FDySR",
+    "tag_name": "v1.3.2",
+    "target_commitish": "master",
+    "name": "1.3.2",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2022-12-03T05:10:31Z",
+    "updated_at": "2022-12-03T05:11:50Z",
+    "published_at": "2022-12-03T05:11:50Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.3.2",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.3.2",
+    "body": "### Fixes\r\n\r\n* Fix race condition when running and adding state change callbacks. (#155)\r\n"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/80860777",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/80860777/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/80860777/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.3.1",
+    "id": 80860777,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4E0dZp",
+    "tag_name": "v1.3.1",
+    "target_commitish": "master",
+    "name": "1.3.1",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2022-10-25T00:37:03Z",
+    "updated_at": "2022-10-25T00:41:34Z",
+    "published_at": "2022-10-25T00:41:34Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.3.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.3.1",
+    "body": ""
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/79671404",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/79671404/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/79671404/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.3.0",
+    "id": 79671404,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4Ev7Bs",
+    "tag_name": "v1.3.0",
+    "target_commitish": "master",
+    "name": "1.3.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2022-10-12T16:55:48Z",
+    "updated_at": "2022-10-12T16:56:52Z",
+    "published_at": "2022-10-12T16:56:52Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.3.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.3.0",
+    "body": "### Features\r\n\r\n* Add switching delay to GcpMultiEndpointChannel. (#145)\r\n* Look for a multi-endpoint specified in gRPC context. (#149)"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/72218459",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/72218459/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/72218459/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.2.1",
+    "id": 72218459,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4ETfdb",
+    "tag_name": "v1.2.1",
+    "target_commitish": "master",
+    "name": "1.2.1",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2022-07-18T12:06:38Z",
+    "updated_at": "2022-07-18T12:08:16Z",
+    "published_at": "2022-07-18T12:08:16Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.2.1",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.2.1",
+    "body": "### Dependencies\r\n\r\n- protobuf 3.12.0 -> 3.20.1"
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/72189036",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/72189036/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/72189036/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.2.0",
+    "id": 72189036,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "RE_kwDOBs3j3M4ETYRs",
+    "tag_name": "v1.2.0",
+    "target_commitish": "master",
+    "name": "1.2.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2022-07-18T02:31:27Z",
+    "updated_at": "2022-07-18T03:59:49Z",
+    "published_at": "2022-07-18T03:59:49Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.2.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.2.0",
+    "body": "### Features\r\n\r\n* multi-endpoint (#135).\r\n* round-robin for bind calls (#127).\r\n* minSize of the channel pool (#134).\r\n* detailed logs (#133).\r\n* log metrics (#131).\r\n* map a key to current channel when bound call arrives but no mapping for the\r\nkey exists (#132).\r\n* consolidate channel pool config in the GcpChannelPoolOptions (#109)."
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/46495415",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/46495415/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/46495415/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.1.0",
+    "id": 46495415,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "MDc6UmVsZWFzZTQ2NDk1NDE1",
+    "tag_name": "v1.1.0",
+    "target_commitish": "master",
+    "name": "1.1.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2021-07-20T17:27:46Z",
+    "updated_at": "2021-07-20T19:09:17Z",
+    "published_at": "2021-07-20T19:09:17Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.1.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.1.0",
+    "body": "### Features\r\n\r\n* improve bind/unbind logic.\r\n* improve getChannelRef performance for calls without channel affinity.\r\n* more accurate affinity counts.\r\n* allow to rebind a key to another channel and adjust affinity counts accordingly."
+  },
+  {
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/44514127",
+    "assets_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/44514127/assets",
+    "upload_url": "https://uploads.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/releases/44514127/assets{?name,label}",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/releases/tag/v1.0.0",
+    "id": 44514127,
+    "author": {
+      "login": "nimf",
+      "id": 88444,
+      "node_id": "MDQ6VXNlcjg4NDQ0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88444?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nimf",
+      "html_url": "https://github.com/nimf",
+      "followers_url": "https://api.github.com/users/nimf/followers",
+      "following_url": "https://api.github.com/users/nimf/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nimf/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nimf/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nimf/subscriptions",
+      "organizations_url": "https://api.github.com/users/nimf/orgs",
+      "repos_url": "https://api.github.com/users/nimf/repos",
+      "events_url": "https://api.github.com/users/nimf/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nimf/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "node_id": "MDc6UmVsZWFzZTQ0NTE0MTI3",
+    "tag_name": "v1.0.0",
+    "target_commitish": "master",
+    "name": "1.0.0",
+    "draft": false,
+    "immutable": false,
+    "prerelease": false,
+    "created_at": "2021-06-12T06:03:09Z",
+    "updated_at": "2021-06-12T06:05:03Z",
+    "published_at": "2021-06-12T06:05:03Z",
+    "assets": [
+
+    ],
+    "tarball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/tarball/v1.0.0",
+    "zipball_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/zipball/v1.0.0",
+    "body": "### Features\r\n\r\n* gRPC channel pool with configurable channel affinity.\r\n* provide a channel with minimum active streams for a new call.\r\n* an optional fallback from non-ready channel to a ready channel.\r\n* an option to detect unresponsive channels."
+  }
+]
+
+ succeeded in 448ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 12:36:09 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=CM02xIVnApv7jJ6yHD9pDlYEUJHbZUuRkClo3O3eoakLhUeDUmdVdh57CrSMTb%2BYDir%2FEdQBG%2Bk8aA4YYMvoTu0GGnM1mWaQPWF7I3WysviwCXMVfM7u7ROfVJ27Rb9WpKgDk5wbPGUqLiX3TDeUpRuOWXvRSVzoSyLo%2BCiIGNYqbIRotLOQ%2Fq15WEkbm6AgeLN9IkFvRJwQLJIhcZE95yM01n3%2Bdfr3fe0IctdHfQEfeaKgglFlduvPbn%2BbyKdpn763tumk7oOe4PvcB8e%2BLw%3D%3D--nO9CuaTc5VQlBVIb--4oIrvFvNf%2BGm0griiRAhug%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.835804529.1777898169; expires=Tue, 04 May 2027 12:36:09 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 12:36:09 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5128:22BF3A:6CBFD2:573867:69F892B9
+
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp | sed -n '1,20p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp?ref=1.10.0' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/GoogleCloudPlatform/grpc-gcp-java/1.10.0/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 167ms:
+[
+  {
+    "name": "CHANGELOG.md",
+    "path": "grpc-gcp/CHANGELOG.md",
+    "sha": "4e6a646580468665df86563813f85b4f16da005f",
+    "size": 2407,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/CHANGELOG.md?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/CHANGELOG.md",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/4e6a646580468665df86563813f85b4f16da005f",
+    "download_url": "https://raw.githubusercontent.com/GoogleCloudPlatform/grpc-gcp-java/1.10.0/grpc-gcp/CHANGELOG.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/CHANGELOG.md?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/4e6a646580468665df86563813f85b4f16da005f",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/CHANGELOG.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "grpc-gcp/README.md",
+    "sha": "5187cd23e01455c3225ddd9536e9d2dbb2fde4c2",
+    "size": 2158,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/README.md?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/README.md",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/5187cd23e01455c3225ddd9536e9d2dbb2fde4c2",
+    "download_url": "https://raw.githubusercontent.com/GoogleCloudPlatform/grpc-gcp-java/1.10.0/grpc-gcp/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/README.md?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/5187cd23e01455c3225ddd9536e9d2dbb2fde4c2",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/README.md"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "grpc-gcp/build.gradle",
+    "sha": "3dc8caddbe120d61d3840bef756de2af3eebf344",
+    "size": 6043,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/build.gradle?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/build.gradle",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/3dc8caddbe120d61d3840bef756de2af3eebf344",
+    "download_url": "https://raw.githubusercontent.com/GoogleCloudPlatform/grpc-gcp-java/1.10.0/grpc-gcp/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/build.gradle?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/3dc8caddbe120d61d3840bef756de2af3eebf344",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/build.gradle"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "grpc-gcp/gradle.properties",
+    "sha": "4257286d12748023c0e8e1622d14d75fcb863fc6",
+    "size": 356,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/gradle.properties?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/gradle.properties",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/4257286d12748023c0e8e1622d14d75fcb863fc6",
+    "download_url": "https://raw.githubusercontent.com/GoogleCloudPlatform/grpc-gcp-java/1.10.0/grpc-gcp/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/gradle.properties?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/4257286d12748023c0e8e1622d14d75fcb863fc6",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/gradle.properties"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "grpc-gcp/gradle",
+    "sha": "18b510c291883fb9add5a143c36c818e655122d4",
+    "size": 0,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/gradle?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/gradle",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/trees/18b510c291883fb9add5a143c36c818e655122d4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/gradle?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/trees/18b510c291883fb9add5a143c36c818e655122d4",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "grpc-gcp/gradlew",
+    "sha": "1aa94a4269074199e6ed2c37e8db3e0826030965",
+    "size": 8692,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/gradlew?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/gradlew",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/1aa94a4269074199e6ed2c37e8db3e0826030965",
+    "download_url": "https://raw.githubusercontent.com/GoogleCloudPlatform/grpc-gcp-java/1.10.0/grpc-gcp/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/gradlew?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/1aa94a4269074199e6ed2c37e8db3e0826030965",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "grpc-gcp/gradlew.bat",
+    "sha": "6689b85beecde676054c39c2408085f41e6be6dc",
+    "size": 2868,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/gradlew.bat?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/gradlew.bat",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/6689b85beecde676054c39c2408085f41e6be6dc",
+    "download_url": "https://raw.githubusercontent.com/GoogleCloudPlatform/grpc-gcp-java/1.10.0/grpc-gcp/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/gradlew.bat?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/blobs/6689b85beecde676054c39c2408085f41e6be6dc",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/blob/1.10.0/grpc-gcp/gradlew.bat"
+    }
+  },
+  {
+    "name": "src",
+    "path": "grpc-gcp/src",
+    "sha": "d69b22d483ffb4cdd6431b7a1fa00fa1acf5adfd",
+    "size": 0,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/src?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/trees/d69b22d483ffb4cdd6431b7a1fa00fa1acf5adfd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/src?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/trees/d69b22d483ffb4cdd6431b7a1fa00fa1acf5adfd",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src"
+    }
+  }
+]
+
+ succeeded in 177ms:
+# gRPC for GCP extensions
+
+Copyright 2019
+[The gRPC Authors](https://github.com/grpc/grpc/blob/master/AUTHORS)
+
+## About This Repository
+
+This repo is created to support GCP specific extensions for gRPC. To use the extension features, please refer to [grpc-gcp](grpc-gcp).
+
+This repo also contains supporting infrastructures such as end2end tests and benchmarks for accessing cloud APIs with gRPC client libraries.
+
+ succeeded in 527ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 12:36:14 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ce2ba805d131431350e4c3a1bbc7552b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=GMJGadcNHS4y0E7nITNHcqY09L0TR5YzCCf58xMp2l6wtdAbTWB2HhLxMZZpXiw6Dnv9iFhw3JIW%2BFAJoqx%2FxKh0UkWnro1ZisaJYpdhKADPtK3wtuOcIuFzHpPZRE%2FwSV60kOFa4lHUeF38vC1g1jYzO1RkqEHI8I%2B959gz%2FU4Ue%2FDsnZeA5zQ6EQGnDI1pZ6ZqD3CJKqcv4lW1ubO8ZQqid0KiKRVA1faCyRKeGz9jJVhU%2BsxqsvQx8sVMgIa58%2FHkHOImoOo57lvgtlCEzQ%3D%3D--91AszWq0LnkFJ2ZA--%2FqfUwkMrX3a51gSGgCCjEQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1352599988.1777898174; expires=Tue, 04 May 2027 12:36:14 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 12:36:14 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5122:128124:6BDAC4:5655E2:69F892BE
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/GoogleCloudPlatform/grpc-gcp-java/1.10.0/grpc-gcp/README.md | sed -n '1,260p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/src?ref=1.10.0' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0.module' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.google.cloud",
+    "module": "grpc-gcp",
+    "version": "1.10.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.2.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "grpc-gcp-1.10.0.jar",
+          "url": "grpc-gcp-1.10.0.jar",
+          "size": 165918,
+          "sha512": "f393d446aa4c41ad350735a92de27a2c3aef78b3546c59126146bb6f292fb9cc1ffacf9a1c40473ab8ab2ca284d4064fa104caeab810cac66230ae68d8a86d1b",
+          "sha256": "5828f8b29c056809ac7d883c38396b6c48681a7c17251c9dd9655c5626a407d1",
+          "sha1": "73f8afea5dcaa06cc95fff30a80f0a7a0e08dbdd",
+          "md5": "372c545fa7695eb38140f645fbf23ad6"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.google.protobuf",
+          "module": "protobuf-java",
+          "version": {
+            "requires": "3.25.5"
+          }
+        },
+        {
+          "group": "com.google.protobuf",
+          "module": "protobuf-java-util",
+          "version": {
+            "requires": "3.25.5"
+          }
+        },
+        {
+          "group": "io.grpc",
+          "module": "grpc-netty-shaded",
+          "version": {
+            "requires": "1.69.0"
+          }
+        },
+        {
+          "group": "io.grpc",
+          "module": "grpc-protobuf",
+          "version": {
+            "requires": "1.69.0"
+          }
+        },
+        {
+          "group": "io.grpc",
+          "module": "grpc-stub",
+          "version": {
+            "requires": "1.69.0"
+          }
+        },
+        {
+          "group": "io.opencensus",
+          "module": "opencensus-api",
+          "version": {
+            "requires": "0.28.3"
+          }
+        },
+        {
+          "group": "io.opentelemetry",
+          "module": "opentelemetry-api",
+          "version": {
+            "requires": "1.46.0"
+          }
+        },
+        {
+          "group": "com.google.api",
+          "module": "api-common",
+          "version": {
+            "requires": "2.1.5"
+          }
+        },
+        {
+          "group": "com.google.auto.value",
+          "module": "auto-value-annotations",
+          "version": {
+            "requires": "1.11.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "grpc-gcp-1.10.0.jar",
+          "url": "grpc-gcp-1.10.0.jar",
+          "size": 165918,
+          "sha512": "f393d446aa4c41ad350735a92de27a2c3aef78b3546c59126146bb6f292fb9cc1ffacf9a1c40473ab8ab2ca284d4064fa104caeab810cac66230ae68d8a86d1b",
+          "sha256": "5828f8b29c056809ac7d883c38396b6c48681a7c17251c9dd9655c5626a407d1",
+          "sha1": "73f8afea5dcaa06cc95fff30a80f0a7a0e08dbdd",
+          "md5": "372c545fa7695eb38140f645fbf23ad6"
+        }
+      ]
+    }
+  ]
+}
+
+ succeeded in 177ms:
+# gRPC-GCP for Java
+
+grpc-gcp provides gRPC support for Google Cloud Clients.
+
+## Usage
+
+Use Spanner API as an example.
+
+First, Create a json file defining API configuration, with ChannelPoolConfig and MethodConfig.
+
+```json
+{
+  "channelPool": {
+    "maxSize": 3,
+    "maxConcurrentStreamsLowWatermark": 0
+  },
+  "method": [
+    {
+      "name": [ "google.spanner.v1.Spanner/CreateSession" ],
+      "affinity": {
+        "command": "BIND",
+        "affinityKey": "name"
+      }
+    },
+    {
+      "name": [ "google.spanner.v1.Spanner/GetSession" ],
+      "affinity": {
+        "command": "BOUND",
+        "affinityKey": "name"
+      }
+    },
+    {
+      "name": [ "google.spanner.v1.Spanner/DeleteSession" ],
+      "affinity": {
+        "command": "UNBIND",
+        "affinityKey": "name"
+      }
+    }
+  ]
+}
+```
+
+Initialize `GcpManagedChannel` based on this API config file.
+
+```java
+String API_CONFIG_FILE = "api_config_file.json"
+String SPANNER_TARGET = "spanner.googleapis.com";
+...
+
+ManagedChannelBuilder delegateChannelBuilder = ManagedChannelBuilder.forAddress(SPANNER_TARGET, 443);
+GcpManagedChannelBuilder gcpBuilder = 
+  GcpManagedChannelBuilder.forDelegateBuilder(delegateChannelBuilder)
+                          .withApiConfigJsonFile(jsonApiConfig);
+ManagedChannel gcpChannel = gcpBuilder.build();
+```
+
+Create Cloud API stub using `GcpManagedChannel`.
+
+```java
+GoogleCredentials creds = getCreds();
+SpannerBlockingStub stub =
+    SpannerGrpc.newBlockingStub(gcpChannel)
+               .withCallCredentials(MoreCallCredentials.from(creds));
+```
+
+## Build from source
+
+Download source.
+
+```sh
+git clone https://github.com/GoogleCloudPlatform/grpc-gcp-java.git && cd grpc-gcp-java/grpc-gcp
+```
+
+Build project with unit tests.
+
+```sh
+./gradlew build
+```
+
+## Test
+
+Setup credentials. See [Getting Started With Authentication](https://cloud.google.com/docs/authentication/getting-started) for more details.
+
+```sh
+export GOOGLE_APPLICATION_CREDENTIALS=path/to/key.json
+```
+
+```sh
+export GCP_PROJECT_ID=project_id
+```
+
+Run unit tests and integration tests:
+
+```sh
+./gradlew allTests
+```
+
+## Code Format
+
+Run google-java-format
+
+```sh
+./gradlew goJF
+```
+
+ succeeded in 178ms:
+[
+  {
+    "name": "main",
+    "path": "grpc-gcp/src/main",
+    "sha": "6bca0625e1328d145fa18b2a02320e4b04d22f1e",
+    "size": 0,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/src/main?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/main",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/trees/6bca0625e1328d145fa18b2a02320e4b04d22f1e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/src/main?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/trees/6bca0625e1328d145fa18b2a02320e4b04d22f1e",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "grpc-gcp/src/test",
+    "sha": "3c24eb631c76e005de9f7da0e1e35181b46b6180",
+    "size": 0,
+    "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/src/test?ref=1.10.0",
+    "html_url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test",
+    "git_url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/trees/3c24eb631c76e005de9f7da0e1e35181b46b6180",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/contents/grpc-gcp/src/test?ref=1.10.0",
+      "git": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-java/git/trees/3c24eb631c76e005de9f7da0e1e35181b46b6180",
+      "html": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test"
+    }
+  }
+]
+
+codex
+The Maven directory has sources and javadocs but no tests JAR, while the GitHub tag for this exact release is `1.10.0` without a `v` prefix. I’m using Maven URLs where the artifacts exist and the tagged GitHub test directory for the test suite.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r -n1 sh -c 'echo \""'$1"; sed -n "1,80p" "$1"'"' sh" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+{
+  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0"
+}
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d) && curl -fsSL -o "$tmp/grpc-gcp-1.10.0.jar" https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0.jar && jar tf "$tmp/grpc-gcp-1.10.0.jar" | sed -n '"'1,80p' && rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/maven-metadata.xml 2>/dev/null || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 161ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/google/
+com/google/cloud/
+com/google/cloud/grpc/
+com/google/cloud/grpc/GcpClientCall$1.class
+com/google/cloud/grpc/GcpClientCall$SimpleGcpClientCall$1.class
+com/google/cloud/grpc/GcpClientCall$SimpleGcpClientCall.class
+com/google/cloud/grpc/GcpClientCall.class
+com/google/cloud/grpc/GcpManagedChannel$1.class
+com/google/cloud/grpc/GcpManagedChannel$ChannelRef.class
+com/google/cloud/grpc/GcpManagedChannel$ChannelStateMonitor.class
+com/google/cloud/grpc/GcpManagedChannel.class
+com/google/cloud/grpc/GcpManagedChannelBuilder.class
+com/google/cloud/grpc/GcpManagedChannelOptions$Builder.class
+com/google/cloud/grpc/GcpManagedChannelOptions$ChannelPickStrategy.class
+com/google/cloud/grpc/GcpManagedChannelOptions$GcpChannelPoolOptions$Builder.class
+com/google/cloud/grpc/GcpManagedChannelOptions$GcpChannelPoolOptions.class
+com/google/cloud/grpc/GcpManagedChannelOptions$GcpMetricsOptions$Builder.class
+com/google/cloud/grpc/GcpManagedChannelOptions$GcpMetricsOptions.class
+com/google/cloud/grpc/GcpManagedChannelOptions$GcpResiliencyOptions$Builder.class
+com/google/cloud/grpc/GcpManagedChannelOptions$GcpResiliencyOptions.class
+com/google/cloud/grpc/GcpManagedChannelOptions.class
+com/google/cloud/grpc/GcpMetricsConstants.class
+com/google/cloud/grpc/GcpMultiEndpointChannel$1.class
+com/google/cloud/grpc/GcpMultiEndpointChannel$CurrentEndpointWatcher.class
+com/google/cloud/grpc/GcpMultiEndpointChannel$EndpointStateMonitor.class
+com/google/cloud/grpc/GcpMultiEndpointChannel.class
+com/google/cloud/grpc/GcpMultiEndpointOptions$Builder.class
+com/google/cloud/grpc/GcpMultiEndpointOptions.class
+com/google/cloud/grpc/GcpThreadFactory.class
+com/google/cloud/grpc/GrpcGcpUtil.class
+com/google/cloud/grpc/fallback/
+com/google/cloud/grpc/fallback/AutoValue_OpenTelemetryMetricsResource$1.class
+com/google/cloud/grpc/fallback/AutoValue_OpenTelemetryMetricsResource$Builder.class
+com/google/cloud/grpc/fallback/AutoValue_OpenTelemetryMetricsResource.class
+com/google/cloud/grpc/fallback/GcpFallbackChannel.class
+com/google/cloud/grpc/fallback/GcpFallbackChannelOptions$Builder.class
+com/google/cloud/grpc/fallback/GcpFallbackChannelOptions.class
+com/google/cloud/grpc/fallback/GcpFallbackOpenTelemetry$1.class
+com/google/cloud/grpc/fallback/GcpFallbackOpenTelemetry$Builder.class
+com/google/cloud/grpc/fallback/GcpFallbackOpenTelemetry.class
+com/google/cloud/grpc/fallback/MonitoringInterceptor$MonitoredClientCall$1.class
+com/google/cloud/grpc/fallback/MonitoringInterceptor$MonitoredClientCall.class
+com/google/cloud/grpc/fallback/MonitoringInterceptor.class
+com/google/cloud/grpc/fallback/OpenTelemetryMetricsModule.class
+com/google/cloud/grpc/fallback/OpenTelemetryMetricsResource$Builder.class
+com/google/cloud/grpc/fallback/OpenTelemetryMetricsResource.class
+com/google/cloud/grpc/multiendpoint/
+com/google/cloud/grpc/multiendpoint/Endpoint$EndpointState.class
+com/google/cloud/grpc/multiendpoint/Endpoint.class
+com/google/cloud/grpc/multiendpoint/MultiEndpoint$1.class
+com/google/cloud/grpc/multiendpoint/MultiEndpoint$Builder.class
+com/google/cloud/grpc/multiendpoint/MultiEndpoint.class
+com/google/cloud/grpc/proto/
+com/google/cloud/grpc/proto/AffinityConfig$1.class
+com/google/cloud/grpc/proto/AffinityConfig$Builder.class
+com/google/cloud/grpc/proto/AffinityConfig$Command$1.class
+com/google/cloud/grpc/proto/AffinityConfig$Command.class
+com/google/cloud/grpc/proto/AffinityConfig.class
+com/google/cloud/grpc/proto/AffinityConfigOrBuilder.class
+com/google/cloud/grpc/proto/ApiConfig$1.class
+com/google/cloud/grpc/proto/ApiConfig$Builder.class
+com/google/cloud/grpc/proto/ApiConfig.class
+com/google/cloud/grpc/proto/ApiConfigOrBuilder.class
+com/google/cloud/grpc/proto/ChannelPoolConfig$1.class
+com/google/cloud/grpc/proto/ChannelPoolConfig$Builder.class
+com/google/cloud/grpc/proto/ChannelPoolConfig.class
+com/google/cloud/grpc/proto/ChannelPoolConfigOrBuilder.class
+com/google/cloud/grpc/proto/GcpExtensionProto.class
+com/google/cloud/grpc/proto/MethodConfig$1.class
+com/google/cloud/grpc/proto/MethodConfig$Builder.class
+com/google/cloud/grpc/proto/MethodConfig.class
+com/google/cloud/grpc/proto/MethodConfigOrBuilder.class
+google/
+google/grpc/
+google/grpc/gcp/
+google/grpc/gcp/proto/
+google/grpc/gcp/proto/grpc_gcp.proto
+
+ succeeded in 294ms:
+web search: 
+web search: site:central.sonatype.com artifact com.google.cloud grpc-gcp 1.10.0
+web search: 
+web search: https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp
+web search: 
+web search: "grpc-gcp-1.10.0-sources.jar" "grpc-gcp-1.10.0-javadoc.jar" "repo.maven.apache.org"
+web search: 
+web search: "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/"
+web search: 
+web search: central.sonatype.com artifact com.google.cloud grpc-gcp 1.10.0
+codex
+I’m going to replace the stub with the resolved metadata now: Maven Central sources/javadocs, GitHub tagged tests, the repository root from the POM SCM, and no language or not-for-native-image markers because the artifact is a normal JVM JAR with `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+index 356bc56f9bebca826f73bf94df9e0b79c0eb8623..6ee1634924d9c09d61f7931a60c6831165269fb2
+--- a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0"
++  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
++  "description" : "grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+index 356bc56f9bebca826f73bf94df9e0b79c0eb8623..6ee1634924d9c09d61f7931a60c6831165269fb2
+--- a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0"
++  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
++  "description" : "grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls."
+ }
+
+codex
+The JSON is edited. I’m doing a quick parse check and HEAD checks for the resolved 1.10.0 URLs so the file does not carry a dead link.
+exec
+/usr/bin/bash -lc 'python -m json.tool build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+{
+    "coordinates": "com.google.cloud:grpc-gcp:1.10.0",
+    "repository-url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
+    "source-code-url": "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
+    "test-code-url": "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
+    "description": "grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 12:36:57 GMT
+content-type: application/java-archive
+content-length: 78034
+cf-ray: 9f678dd55b5e985f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 237982
+etag: "712abc39486613d2236e7827ec2c3686"
+last-modified: Mon, 13 Apr 2026 16:39:38 GMT
+x-checksum-md5: 712abc39486613d2236e7827ec2c3686
+x-checksum-sha1: 283ffdd8d1c13157838e0fadcbe18bee40eac739
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 335ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 12:36:58 GMT
+content-type: application/java-archive
+content-length: 263505
+cf-ray: 9f678dd56a701e6d-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "b11a642965c04ed2aaf64f60ba9bf77b"
+last-modified: Mon, 13 Apr 2026 16:39:38 GMT
+x-checksum-md5: b11a642965c04ed2aaf64f60ba9bf77b
+x-checksum-sha1: 12bef94ad646e5e4a155ca2e5859b800c19dae32
+server: cloudflare
+
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+index 356bc56f9bebca826f73bf94df9e0b79c0eb8623..6ee1634924d9c09d61f7931a60c6831165269fb2
+--- a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0"
++  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
++  "description" : "grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls."
+ }
+
+ succeeded in 615ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 12:36:58 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c79e0f389380aef7c0f1216af762f1df"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+index 356bc56f9bebca826f73bf94df9e0b79c0eb8623..6ee1634924d9c09d61f7931a60c6831165269fb2
+--- a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0"
++  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
++  "description" : "grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls."
+ }
+
+ succeeded in 153ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0",
+  "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
+  "test-code-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
+  "description" : "grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls."
+}
+
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+index 356bc56f9bebca826f73bf94df9e0b79c0eb8623..6ee1634924d9c09d61f7931a60c6831165269fb2
+--- a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0"
++  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
++  "description" : "grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls."
+ }
+
+web search: 
+web search: GoogleCloudPlatform grpc-gcp-java 1.10.0 grpc-gcp README
+web search: 
+web search: https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp
+web search: 
+web search: 'src/test' in https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp
+codex
+Updated [com.google.cloud-grpc-gcp-1.10.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json:1).
+
+I used Maven Central-style sources and javadocs, and the tagged GitHub `1.10.0` test directory because no Maven tests JAR is published for this artifact. The library is a normal Java/JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. The description is based on the project README and artifact metadata. ([mvnrepository.com](https://mvnrepository.com/artifact/com.google.cloud/grpc-gcp))
+
+Validated:
+`python -m json.tool`
+HEAD checks for substituted source, javadoc, and test URLs all returned `200`.
+diff --git a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+index 356bc56f9bebca826f73bf94df9e0b79c0eb8623..6ee1634924d9c09d61f7931a60c6831165269fb2
+--- a/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
++++ b/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0"
++  "coordinates" : "com.google.cloud:grpc-gcp:1.10.0",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
++  "description" : "grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls."
+ }
+
+tokens used
+113,916
+Updated [com.google.cloud-grpc-gcp-1.10.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/build/discovered-artifact-metadata/com.google.cloud-grpc-gcp-1.10.0.json:1).
+
+I used Maven Central-style sources and javadocs, and the tagged GitHub `1.10.0` test directory because no Maven tests JAR is published for this artifact. The library is a normal Java/JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. The description is based on the project README and artifact metadata. ([mvnrepository.com](https://mvnrepository.com/artifact/com.google.cloud/grpc-gcp))
+
+Validated:
+`python -m json.tool`
+HEAD checks for substituted source, javadoc, and test URLs all returned `200`.
+Ran agent for com.google.cloud:grpc-gcp:1.10.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/build/agent-artifact-discovery-logs/com.google.cloud-grpc-gcp-1.10.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 40s
+9 actionable tasks: 4 executed, 5 from cache

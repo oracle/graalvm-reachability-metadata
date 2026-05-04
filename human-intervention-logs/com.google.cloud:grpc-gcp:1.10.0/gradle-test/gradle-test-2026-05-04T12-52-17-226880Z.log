@@ -1,0 +1,128 @@
+Starting a Gradle Daemon, 10 busy and 6 incompatible and 204 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.google.cloud:grpc-gcp:1.10.0
+Command: `/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 11 busy and 6 incompatible and 203 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+> Task :compileTestJava
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/tests/src/com.google.cloud/grpc-gcp/1.10.0/src/test/java/com_google_cloud/grpc_gcp/Grpc_gcpTest.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/home/vjovanov/.m2/repository/com/google/protobuf/protobuf-java/3.25.5/protobuf-java-3.25.5.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by io.grpc.netty.shaded.io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/home/vjovanov/.gradle/caches/modules-2/files-2.1/io.grpc/grpc-netty-shaded/1.69.0/99aa9789172695a4b09fe2af5f5bd0ab1be4ae85/grpc-netty-shaded-1.69.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+
+> Task :test
+
+7 tests completed, 1 failed
+
+Grpc_gcpTest > multiEndpointChannelRoutesCallsUsingDefaultCallOptionAndContextSelections() FAILED
+    java.lang.UnsupportedOperationException: Not implemented
+        at io.grpc.ManagedChannel.notifyWhenStateChanged(ManagedChannel.java:110)
+        at com.google.cloud.grpc.GcpManagedChannel$ChannelStateMonitor.run(GcpManagedChannel.java:1518)
+        at com.google.cloud.grpc.GcpManagedChannel$ChannelStateMonitor.<init>(GcpManagedChannel.java:1451)
+        at com.google.cloud.grpc.GcpManagedChannel$ChannelStateMonitor.<init>(GcpManagedChannel.java:1441)
+        at com.google.cloud.grpc.GcpManagedChannel$ChannelRef.<init>(GcpManagedChannel.java:2327)
+        at com.google.cloud.grpc.GcpManagedChannel$ChannelRef.<init>(GcpManagedChannel.java:2319)
+        at com.google.cloud.grpc.GcpManagedChannel.createNewChannel(GcpManagedChannel.java:1697)
+        at com.google.cloud.grpc.GcpManagedChannel.initChannels(GcpManagedChannel.java:410)
+        at com.google.cloud.grpc.GcpManagedChannel.<init>(GcpManagedChannel.java:284)
+        at com.google.cloud.grpc.GcpMultiEndpointChannel.lambda$setMultiEndpoints$1(GcpMultiEndpointChannel.java:493)
+        at java.base/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1724)
+        at com.google.cloud.grpc.GcpMultiEndpointChannel.lambda$setMultiEndpoints$2(GcpMultiEndpointChannel.java:473)
+        at java.base/java.util.ImmutableCollections$List12.forEach(ImmutableCollections.java:681)
+        at com.google.cloud.grpc.GcpMultiEndpointChannel.lambda$setMultiEndpoints$3(GcpMultiEndpointChannel.java:470)
+        at java.base/java.util.ImmutableCollections$List12.forEach(ImmutableCollections.java:681)
+        at com.google.cloud.grpc.GcpMultiEndpointChannel.setMultiEndpoints(GcpMultiEndpointChannel.java:465)
+        at com.google.cloud.grpc.GcpMultiEndpointChannel.<init>(GcpMultiEndpointChannel.java:189)
+        at com_google_cloud.grpc_gcp.Grpc_gcpTest.multiEndpointChannelRoutesCallsUsingDefaultCallOptionAndContextSelections(Grpc_gcpTest.java:306)
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/tests/src/com.google.cloud/grpc-gcp/1.10.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 19s
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/tests/src/com.google.cloud/grpc-gcp/1.10.0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.google.cloud:grpc-gcp:1.10.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 32s
+9 actionable tasks: 1 executed, 8 up-to-date

@@ -1,0 +1,386 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df2fe-9776-7100-8b9a-620c1a3b2f7a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.cloud:grpc-gcp:1.10.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.10.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/metadata/com.google.cloud/grpc-gcp/index.json
+- Entry selector: "metadata-version" = "1.10.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar
+- repository-url: https://github.com/GoogleCloudPlatform/grpc-gcp-java
+- test-code-url: https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar
+- description: grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.10.0
+- Entry metadata-version: 1.10.0
+- Entry test-version: 1.10.0
+- Entry tested-versions: [1.10.0]
+codex
+I’ll verify the artifact URLs against Maven and the tagged repository paths, then only patch missing or stale fields in the selected JSON entry. After that I’ll validate the JSON formatting.
+web search: 
+web search: com.google.cloud grpc-gcp 1.10.0 Maven grpc-gcp sources javadoc
+codex
+The current entry already has non-blank URL and description values, so the main question is whether any of those are stale templates and whether `language` should be added. I’m checking the rendered `1.10.0` Maven artifacts and the GitHub tag path before deciding whether any patch is warranted.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.google.cloud/grpc-gcp/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.10.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-sources.jar",
+    "repository-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java",
+    "test-code-url" : "https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/$version$/grpc-gcp/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/$version$/grpc-gcp-$version$-javadoc.jar",
+    "description" : "grpc-gcp provides Java extensions for using gRPC with Google Cloud clients. It supplies a GCP managed channel layer with channel pooling, affinity configuration, multi-endpoint support, fallback handling, and metrics-related integration for Cloud API calls.",
+    "tested-versions" : [
+      "1.10.0"
+    ],
+    "allowed-packages" : [
+      "com.google.cloud.grpc"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-sources.jar" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-sources.jar
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-javadoc.jar" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-javadoc.jar
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 410ms:
+200 https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test
+
+web search: 
+web search: 
+web search: 
+web search: https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test
+web search: 
+web search: site:repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0 grpc-gcp-1.10.0-sources.jar
+codex
+The rendered Maven source and Javadoc templates return `200`, and the GitHub `1.10.0` tag’s `grpc-gcp/src/test` path also returns `200`. I’m checking whether Maven publishes a test artifact before keeping the GitHub test-suite URL.
+exec
+/usr/bin/bash -lc "curl -s https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/ | sed -n '1,180p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/cloud/grpc-gcp/1.10.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/cloud/grpc-gcp/1.10.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="grpc-gcp-1.10.0-javadoc.jar" title="grpc-gcp-1.10.0-javadoc.jar">grpc-gcp-1.10.0-javadoc.jar</a>                       2026-04-13 16:39    263505      
+<a href="grpc-gcp-1.10.0-javadoc.jar.asc" title="grpc-gcp-1.10.0-javadoc.jar.asc">grpc-gcp-1.10.0-javadoc.jar.asc</a>                   2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0-javadoc.jar.md5" title="grpc-gcp-1.10.0-javadoc.jar.md5">grpc-gcp-1.10.0-javadoc.jar.md5</a>                   2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0-javadoc.jar.sha1" title="grpc-gcp-1.10.0-javadoc.jar.sha1">grpc-gcp-1.10.0-javadoc.jar.sha1</a>                  2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0-javadoc.jar.sha256" title="grpc-gcp-1.10.0-javadoc.jar.sha256">grpc-gcp-1.10.0-javadoc.jar.sha256</a>                2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0-javadoc.jar.sha512" title="grpc-gcp-1.10.0-javadoc.jar.sha512">grpc-gcp-1.10.0-javadoc.jar.sha512</a>                2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0-sources.jar" title="grpc-gcp-1.10.0-sources.jar">grpc-gcp-1.10.0-sources.jar</a>                       2026-04-13 16:39     78034      
+<a href="grpc-gcp-1.10.0-sources.jar.asc" title="grpc-gcp-1.10.0-sources.jar.asc">grpc-gcp-1.10.0-sources.jar.asc</a>                   2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0-sources.jar.md5" title="grpc-gcp-1.10.0-sources.jar.md5">grpc-gcp-1.10.0-sources.jar.md5</a>                   2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0-sources.jar.sha1" title="grpc-gcp-1.10.0-sources.jar.sha1">grpc-gcp-1.10.0-sources.jar.sha1</a>                  2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0-sources.jar.sha256" title="grpc-gcp-1.10.0-sources.jar.sha256">grpc-gcp-1.10.0-sources.jar.sha256</a>                2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0-sources.jar.sha512" title="grpc-gcp-1.10.0-sources.jar.sha512">grpc-gcp-1.10.0-sources.jar.sha512</a>                2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0.jar" title="grpc-gcp-1.10.0.jar">grpc-gcp-1.10.0.jar</a>                               2026-04-13 16:39    165918      
+<a href="grpc-gcp-1.10.0.jar.asc" title="grpc-gcp-1.10.0.jar.asc">grpc-gcp-1.10.0.jar.asc</a>                           2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0.jar.md5" title="grpc-gcp-1.10.0.jar.md5">grpc-gcp-1.10.0.jar.md5</a>                           2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0.jar.sha1" title="grpc-gcp-1.10.0.jar.sha1">grpc-gcp-1.10.0.jar.sha1</a>                          2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0.jar.sha256" title="grpc-gcp-1.10.0.jar.sha256">grpc-gcp-1.10.0.jar.sha256</a>                        2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0.jar.sha512" title="grpc-gcp-1.10.0.jar.sha512">grpc-gcp-1.10.0.jar.sha512</a>                        2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0.module" title="grpc-gcp-1.10.0.module">grpc-gcp-1.10.0.module</a>                            2026-04-13 16:39      3398      
+<a href="grpc-gcp-1.10.0.module.asc" title="grpc-gcp-1.10.0.module.asc">grpc-gcp-1.10.0.module.asc</a>                        2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0.module.md5" title="grpc-gcp-1.10.0.module.md5">grpc-gcp-1.10.0.module.md5</a>                        2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0.module.sha1" title="grpc-gcp-1.10.0.module.sha1">grpc-gcp-1.10.0.module.sha1</a>                       2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0.module.sha256" title="grpc-gcp-1.10.0.module.sha256">grpc-gcp-1.10.0.module.sha256</a>                     2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0.module.sha512" title="grpc-gcp-1.10.0.module.sha512">grpc-gcp-1.10.0.module.sha512</a>                     2026-04-13 16:39       128      
+<a href="grpc-gcp-1.10.0.pom" title="grpc-gcp-1.10.0.pom">grpc-gcp-1.10.0.pom</a>                               2026-04-13 16:39      3277      
+<a href="grpc-gcp-1.10.0.pom.asc" title="grpc-gcp-1.10.0.pom.asc">grpc-gcp-1.10.0.pom.asc</a>                           2026-04-13 16:39       646      
+<a href="grpc-gcp-1.10.0.pom.md5" title="grpc-gcp-1.10.0.pom.md5">grpc-gcp-1.10.0.pom.md5</a>                           2026-04-13 16:39        32      
+<a href="grpc-gcp-1.10.0.pom.sha1" title="grpc-gcp-1.10.0.pom.sha1">grpc-gcp-1.10.0.pom.sha1</a>                          2026-04-13 16:39        40      
+<a href="grpc-gcp-1.10.0.pom.sha256" title="grpc-gcp-1.10.0.pom.sha256">grpc-gcp-1.10.0.pom.sha256</a>                        2026-04-13 16:39        64      
+<a href="grpc-gcp-1.10.0.pom.sha512" title="grpc-gcp-1.10.0.pom.sha512">grpc-gcp-1.10.0.pom.sha512</a>                        2026-04-13 16:39       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -s https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>grpc-gcp</artifactId>
+  <version>1.10.0</version>
+  <name>gRPC extension library for Google Cloud Platform</name>
+  <description>GRPC-GCP-Extension Java</description>
+  <url>https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/master/grpc-gcp</url>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>https://opensource.org/licenses/Apache-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>grpc.io</id>
+      <name>gRPC Contributors</name>
+      <email>grpc-io@googlegroups.com</email>
+      <url>https://grpc.io/</url>
+      <organization>gRPC Authors</organization>
+      <organizationUrl>https://www.google.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/GoogleCloudPlatform/grpc-gcp-java.git</connection>
+    <url>https://github.com/GoogleCloudPlatform/grpc-gcp-java</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>3.25.5</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>3.25.5</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+      <version>1.69.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>1.69.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>1.69.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-api</artifactId>
+      <version>0.28.3</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+      <version>1.46.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>api-common</artifactId>
+      <version>2.1.5</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value-annotations</artifactId>
+      <version>1.11.0</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-test-sources.jar" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-tests.jar" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 207ms:
+404 https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-tests.jar
+
+ succeeded in 234ms:
+404 https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-test-sources.jar
+
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/
+web search: 
+web search: https://mvnrepository.com/artifact/com.google.cloud/grpc-gcp
+web search: 
+web search: 'grpc-gcp' in https://repo.maven.apache.org/maven2/com/google/cloud/
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/google/cloud/
+web search: 
+web search: GoogleCloudPlatform grpc-gcp-java GitHub grpc-gcp 1.10.0
+web search: 
+web search: https://mvnrepository.com/artifact/com.google.cloud/grpc-gcp/1.10.0
+web search: 
+web search: 
+web search: 
+web search: site:github.com/GoogleCloudPlatform/grpc-gcp-java "grpc-gcp" "Package grpc-gcp provides"
+web search: 
+web search: "grpc-gcp-1.10.0-sources.jar"
+codex
+There is no Maven `tests` or `test-sources` artifact for `grpc-gcp:1.10.0`, so the versioned GitHub test path remains the best available test-suite URL. The artifact is a Java Maven library, not Kotlin, Groovy, or Scala-specific, so the requested `language` field should remain absent.
+exec
+/usr/bin/bash -lc 'jq empty metadata/com.google.cloud/grpc-gcp/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.google.cloud/grpc-gcp/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+web search: 
+web search: Maven Central com.google.cloud grpc-gcp 1.10.0
+web search: 
+web search: GoogleCloudPlatform grpc-gcp-java GitHub repository
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/grpc-gcp-1.10.0-sources.jar
+web search: 
+web search: "GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test"
+web search: 
+web search: mvnrepository com.google.cloud grpc-gcp 1.10.0 "GRPC-GCP-Extension Java"
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/com.google.cloud/grpc-gcp/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9
+ succeeded in 0ms:
+?? metadata/com.google.cloud/grpc-gcp/index.json
+
+web search: 
+web search: OpenAI
+web search: 
+web search: "com.google.cloud:grpc-gcp:1.10.0"
+web search: 
+web search: central.sonatype.com artifact com.google.cloud grpc-gcp 1.10.0
+web search: 
+web search: site:github.com/GoogleCloudPlatform/grpc-gcp-java "gcp-managed-channel"
+web search: 
+web search: https://github.com/GoogleCloudPlatform/grpc-gcp-java
+web search: 
+web search: https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test
+web search: 
+web search: https://central.sonatype.com/artifact/com.google.cloud/grpc-gcp
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/com/google/cloud/grpc-gcp/1.10.0/
+codex
+No changes were made to [index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/metadata/com.google.cloud/grpc-gcp/index.json): all requested URL fields and `description` were already non-blank, and `language` should remain absent because this is a Java Maven artifact, not Kotlin/Groovy/Scala-specific. Maven Central identifies it as `GRPC-GCP-Extension Java` with the canonical SCM root at `GoogleCloudPlatform/grpc-gcp-java`; the GitHub repo is also overwhelmingly Java. ([central.sonatype.com](https://central.sonatype.com/artifact/com.google.cloud/grpc-gcp))
+
+I verified the rendered source and Javadoc Maven URLs return `200`, the rendered GitHub test-suite URL at tag `1.10.0` exists, and Maven does not publish `tests` or `test-sources` artifacts for `1.10.0`, so the existing GitHub test URL remains the right choice. The current two-sentence description is already suitable and explains the library’s GCP-specific gRPC extensions and managed channel behavior. ([github.com](https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test))
+
+Validation run: `jq empty metadata/com.google.cloud/grpc-gcp/index.json` passed.
+tokens used
+142,363
+No changes were made to [index.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/metadata/com.google.cloud/grpc-gcp/index.json): all requested URL fields and `description` were already non-blank, and `language` should remain absent because this is a Java Maven artifact, not Kotlin/Groovy/Scala-specific. Maven Central identifies it as `GRPC-GCP-Extension Java` with the canonical SCM root at `GoogleCloudPlatform/grpc-gcp-java`; the GitHub repo is also overwhelmingly Java. ([central.sonatype.com](https://central.sonatype.com/artifact/com.google.cloud/grpc-gcp))
+
+I verified the rendered source and Javadoc Maven URLs return `200`, the rendered GitHub test-suite URL at tag `1.10.0` exists, and Maven does not publish `tests` or `test-sources` artifacts for `1.10.0`, so the existing GitHub test URL remains the right choice. The current two-sentence description is already suitable and explains the library’s GCP-specific gRPC extensions and managed channel behavior. ([github.com](https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/1.10.0/grpc-gcp/src/test))
+
+Validation run: `jq empty metadata/com.google.cloud/grpc-gcp/index.json` passed.
+Ran agent for com.google.cloud:grpc-gcp:1.10.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/build/agent-url-discovery-logs/com.google.cloud-grpc-gcp-1.10.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4705-f9ef2ff9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 1s
+9 actionable tasks: 1 executed, 8 up-to-date
