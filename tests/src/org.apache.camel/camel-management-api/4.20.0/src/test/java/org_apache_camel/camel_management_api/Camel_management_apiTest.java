@@ -23,9 +23,11 @@ import javax.management.openmbean.SimpleType;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
+import org.apache.camel.Processor;
 import org.apache.camel.api.management.JmxNotificationBroadcasterAware;
 import org.apache.camel.api.management.JmxSystemPropertyKeys;
 import org.apache.camel.api.management.ManagedCamelContext;
+import org.apache.camel.api.management.ManagedInstance;
 import org.apache.camel.api.management.NotificationSender;
 import org.apache.camel.api.management.NotificationSenderAware;
 import org.apache.camel.api.management.mbean.CamelOpenMBeanTypes;
@@ -34,6 +36,7 @@ import org.apache.camel.api.management.mbean.ComponentVerifierExtension.Scope;
 import org.apache.camel.api.management.mbean.ComponentVerifierExtension.VerificationError;
 import org.apache.camel.api.management.mbean.ManagedCamelContextMBean;
 import org.apache.camel.api.management.mbean.ManagedConsumerMBean;
+import org.apache.camel.api.management.mbean.ManagedProcessorAware;
 import org.apache.camel.api.management.mbean.ManagedProcessorMBean;
 import org.apache.camel.api.management.mbean.ManagedRouteGroupMBean;
 import org.apache.camel.api.management.mbean.ManagedRouteMBean;
@@ -143,6 +146,26 @@ public class Camel_management_apiTest {
         assertThat(context.getManagedConsumer("consumer-1")).isNull();
         assertThat(context.lastConsumerId).isEqualTo("consumer-1");
         assertThat(context.lastConsumerType).isEqualTo(ManagedConsumerMBean.class);
+    }
+
+    @Test
+    void managedProcessorAwareObjectsExposeAndReplaceUnderlyingProcessorInstances() throws Exception {
+        List<String> processedBy = new ArrayList<>();
+        Processor firstProcessor = exchange -> processedBy.add("first");
+        Processor replacementProcessor = exchange -> processedBy.add("replacement");
+        ManagedProcessorHolder managedProcessor = new ManagedProcessorHolder();
+
+        managedProcessor.setProcessor(firstProcessor);
+        assertThat(managedProcessor.getProcessor()).isSameAs(firstProcessor);
+        assertThat(managedProcessor.getInstance()).isSameAs(firstProcessor);
+        managedProcessor.getProcessor().process(null);
+
+        managedProcessor.setProcessor(replacementProcessor);
+        assertThat(managedProcessor.getProcessor()).isSameAs(replacementProcessor);
+        assertThat(managedProcessor.getInstance()).isSameAs(replacementProcessor);
+        managedProcessor.getProcessor().process(null);
+
+        assertThat(processedBy).containsExactly("first", "replacement");
     }
 
     @Test
@@ -431,6 +454,25 @@ public class Camel_management_apiTest {
         @Override
         public Map<VerificationError.Attribute, Object> getDetails() {
             return details;
+        }
+    }
+
+    private static final class ManagedProcessorHolder implements ManagedProcessorAware, ManagedInstance {
+        private Processor processor;
+
+        @Override
+        public Processor getProcessor() {
+            return processor;
+        }
+
+        @Override
+        public void setProcessor(Processor processor) {
+            this.processor = processor;
+        }
+
+        @Override
+        public Object getInstance() {
+            return processor;
         }
     }
 
