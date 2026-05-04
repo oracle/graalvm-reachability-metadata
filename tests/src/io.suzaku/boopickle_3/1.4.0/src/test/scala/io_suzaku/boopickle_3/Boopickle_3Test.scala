@@ -176,6 +176,23 @@ class Boopickle_3Test {
   }
 
   @Test
+  def writesLargePayloadsAsMultipleByteBufferChunks(): Unit = {
+    val value: Vector[Int] = Vector.tabulate(2000)(index => index * 3)
+    val chunks: Vector[ByteBuffer] = Pickle.intoByteBuffers(value).toVector
+
+    assertTrue(chunks.size > 1, "Expected the payload to be split across multiple buffers")
+
+    val totalSize: Int = chunks.map(_.remaining()).sum
+    val combined: ByteBuffer = ByteBuffer.allocate(totalSize)
+    chunks.foreach { chunk =>
+      combined.put(chunk.duplicate())
+    }
+    combined.flip()
+
+    assertEquals(value, Unpickle[Vector[Int]].fromBytes(combined))
+  }
+
+  @Test
   def restoresInputByteOrderAndReportsTryFromBytesFailures(): Unit = {
     val bytes: ByteBuffer = Pickle.intoBytes(Vector("little", "endian"))
     bytes.order(ByteOrder.BIG_ENDIAN)
