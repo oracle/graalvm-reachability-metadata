@@ -1,6 +1,6 @@
 <h1>
-  <img src="docs/assets/readme/graalvm-bunny.svg" alt="" width="42" align="absmiddle">
   GraalVM Reachability Metadata Repository
+  <img src="docs/assets/readme/graalvm-bunny.svg" alt="" width="42" align="absmiddle">
 </h1>
 
 [![Libraries supported](https://img.shields.io/badge/dynamic/json.svg?label=libraries%20supported&query=%24.badges.librariesSupported&url=https%3A%2F%2Fraw.githubusercontent.com%2Foracle%2Fgraalvm-reachability-metadata%2Fstats%2Fcoverage%2Flatest%2Fbadges.json&style=flat-square&color=0A7EC2)](COVERAGE.md)
