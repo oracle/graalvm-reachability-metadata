@@ -150,6 +150,23 @@ public class ProfilesTest {
     }
 
     @Test
+    void configurationProfileFileParsesIndentedContinuationAsMultilinePropertyValue() {
+        ProfileFile profileFile = configurationFile("""
+                [profile command]
+                credential_process = /opt/bin/token-provider
+                  --audience example
+                  output = json
+                region = us-east-2
+                """);
+
+        Profile command = profileFile.profile("command").orElseThrow();
+        assertThat(command.property(ProfileProperty.CREDENTIAL_PROCESS))
+                .contains("/opt/bin/token-provider\n--audience example\noutput = json");
+        assertThat(command.properties()).containsEntry(ProfileProperty.REGION, "us-east-2")
+                                        .doesNotContainKey("credential_process.output");
+    }
+
+    @Test
     void credentialsProfileFileParsesUnprefixedProfilesAndDuplicateProperties() {
         ProfileFile profileFile = credentialsFile("""
                 [default]
