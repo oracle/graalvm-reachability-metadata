@@ -176,6 +176,24 @@ public class EventstreamTest {
     }
 
     @Test
+    void encodeHeadersWritesStandaloneHeaderBlockInIterableOrder() {
+        List<Map.Entry<String, HeaderValue>> headers = List.of(
+                Map.entry("flag", HeaderValue.fromBoolean(true)),
+                Map.entry("disabled", HeaderValue.fromBoolean(false)),
+                Map.entry("count", HeaderValue.fromInteger(3)),
+                Map.entry("name", HeaderValue.fromString("aws")));
+
+        byte[] encodedHeaders = Message.encodeHeaders(headers);
+
+        assertThat(encodedHeaders).containsExactly(new byte[] {
+                4, 'f', 'l', 'a', 'g', 0,
+                8, 'd', 'i', 's', 'a', 'b', 'l', 'e', 'd', 1,
+                5, 'c', 'o', 'u', 'n', 't', 4, 0, 0, 0, 3,
+                4, 'n', 'a', 'm', 'e', 7, 0, 3, 'a', 'w', 's'
+        });
+    }
+
+    @Test
     void decoderBuffersPartialFramesAndReturnsDecodedMessagesInArrivalOrder() {
         Message first = new Message(Map.of("sequence", HeaderValue.fromInteger(1)), new byte[] {1});
         Message second = new Message(Map.of("sequence", HeaderValue.fromInteger(2)), new byte[] {2, 3});
