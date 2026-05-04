@@ -153,6 +153,64 @@
         }
       }
     },
+    "dynamicAccessUnreachableEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "className",
+        "metadataType",
+        "trackedApi",
+        "frame",
+        "reason"
+      ],
+      "properties": {
+        "className": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceFile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadataType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trackedApi": {
+          "type": "string",
+          "minLength": 1
+        },
+        "frame": {
+          "type": "string",
+          "minLength": 1
+        },
+        "line": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pgoFailureReason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtimeEnvironment": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
     "runMetrics": {
       "type": "object",
       "additionalProperties": false,
@@ -248,6 +306,13 @@
         "previous_library_stats": {
           "$ref": "#/definitions/statsSnapshot",
           "description": "Coverage snapshot copied from `stats/<groupId>/<artifactId>/<metadata-version>/stats.json` for the previous library version when applicable."
+        },
+        "dynamic_access_unreachable": {
+          "type": "array",
+          "description": "Dynamic-access call sites classified as unreachable in the current run setup, with per-call-site explanations.",
+          "items": {
+            "$ref": "#/definitions/dynamicAccessUnreachableEntry"
+          }
         },
         "metrics": {
           "type": "object",

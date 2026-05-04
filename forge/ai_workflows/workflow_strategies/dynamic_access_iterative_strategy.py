@@ -133,6 +133,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         previous_report = None
         prompt_iterations = 0
         successful_classes = 0
+        terminal_skipped_classes = 0
+        terminal_unresolved_classes = 0
         processed_classes_this_part = 0
         initial_part_covered_calls = current_report.covered_calls
         if self.large_library_progress_state is not None:
@@ -159,7 +161,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 ):
                     self._print_dynamic_access_message("Coverage not improved. Keeping generated tests by request.")
                     return True, prompt_iterations
-                return successful_classes > 0, prompt_iterations
+                return (
+                    successful_classes > 0
+                    or (terminal_skipped_classes > 0 and terminal_unresolved_classes == 0)
+                ), prompt_iterations
 
             class_name = active_class.class_name
             # Snapshot HEAD before this class so we can roll back on failure
@@ -196,10 +201,14 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             class_failed = False
             class_committed = False
             gate_failed = False
+            class_skipped = False
             while self._should_continue_class_attempts(class_attempts, class_attempts_without_progress):
                 self._print_dynamic_access_detail(
                     self._format_class_attempt_status(class_attempts, class_attempts_without_progress)
                 )
+                if not self._prepare_dynamic_access_attempt(agent, active_class, current_report, class_attempts):
+                    class_skipped = True
+                    break
                 delta = compute_class_delta(previous_report, current_report, class_name)
                 dynamic_prompt = self._render_dynamic_access_prompt(active_class, delta, class_attempts)
                 self._print_dynamic_access_detail("agent: running dynamic-access prompt", indent_level=2)
@@ -354,6 +363,36 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
             # Clear context between classes to keep the agent window focused.
             agent.clear_context()
+            if class_skipped:
+                self._print_dynamic_access_detail(
+                    "final: skipped because the remaining dynamic-access calls are unreachable in this setup",
+                    indent_level=1,
+                )
+                exhausted_classes.add(class_name)
+                terminal_skipped_classes += 1
+                self._mark_large_library_exhausted(class_name, current_report)
+                self._print_class_completion_progress(
+                    class_name,
+                    self._completed_class_count(current_report, exhausted_classes),
+                    self._class_completion_total(initial_class_count, current_report, exhausted_classes),
+                    current_report,
+                )
+                processed_classes_this_part += 1
+                if self._should_stop_for_large_library_chunk(
+                        current_report,
+                        exhausted_classes,
+                        processed_classes_this_part,
+                        initial_part_covered_calls,
+                ):
+                    self._last_phase_status = RUN_STATUS_CHUNK_READY
+                    self._print_dynamic_access_message(
+                        "Large-library chunk boundary reached after {count} class(es).".format(
+                            count=processed_classes_this_part,
+                        )
+                    )
+                    self._save_large_library_progress(current_report)
+                    return True, prompt_iterations
+                continue
             if gate_failed:
                 self._print_failure_analysis(
                     "native_test_verification_gate_failed",
@@ -374,6 +413,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     class_name=class_name,
                 )
                 exhausted_classes.add(class_name)
+                terminal_unresolved_classes += 1
                 self._mark_large_library_failed(class_name, current_report)
                 self._print_class_completion_progress(
                     class_name,
@@ -406,6 +446,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 exhausted_classes.add(class_name)
                 if class_committed:
                     successful_classes += 1
+                else:
+                    terminal_unresolved_classes += 1
                 self._mark_large_library_exhausted(class_name, current_report)
             self._print_class_completion_progress(
                 class_name,
@@ -631,6 +673,9 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
     def _dynamic_access_prompt_extras(self, active_class) -> dict:
         return {}
+
+    def _prepare_dynamic_access_attempt(self, agent, active_class, current_report, class_attempts: int) -> bool:
+        return True
 
     def _should_continue_class_attempts(self, class_attempts: int, class_attempts_without_progress: int) -> bool:
         return class_attempts < self.max_class_iterations

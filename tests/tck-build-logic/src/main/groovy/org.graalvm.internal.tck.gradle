@@ -317,6 +317,18 @@ tasks.register("listLibraryJars") { task ->
     }
 }
 
+tasks.register("listTestRuntimeClasspath") { task ->
+    task.setDescription("Lists resolved test runtime classpath entries (one per line)")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.doLast {
+        sourceSets.test.runtimeClasspath.files
+                .sort { File file -> file.absolutePath }
+                .each { File file ->
+                    println file.absolutePath
+                }
+    }
+}
+
 Provider<Directory> dynamicAccessOutputDir = layout.buildDirectory.dir("native/nativeTestCompile/dynamic-access")
 Provider<Directory> pgoNearCallOutputDir = layout.buildDirectory.dir("reports/pgo-near-call")
 Provider<RegularFile> pgoNearCallProfileFile = layout.buildDirectory.file("native/nativeTestCompile/pgo-near-call.iprof")

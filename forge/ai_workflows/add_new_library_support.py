@@ -37,6 +37,7 @@ from utility_scripts.large_library_progress import resolve_workflow_progress_sta
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
+from utility_scripts.runtime_context import collect_runtime_environment_summary
 from utility_scripts.schema_validator import validate_run_metrics, validate_benchmark_run_metrics
 from utility_scripts.source_context import (
     discover_artifact_metadata,
@@ -286,6 +287,40 @@ def run_scaffold(library: str) -> bool:
     raise ScaffoldError(scaffold_proc.stderr or scaffold_proc.stdout or "Gradle scaffold task failed")
 
 
+def collect_test_runtime_classpath_summary(library: str, max_entries: int = 200) -> str:
+    """Collect current test runtime classpath facts for agent persistent instructions."""
+    result = subprocess.run(
+        [
+            "./gradlew",
+            "listTestRuntimeClasspath",
+            f"-Pcoordinates={library}",
+            "--quiet",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return (
+            "- Current test runtime classpath could not be collected before agent start; "
+            "the library test module build.gradle remains editable."
+        )
+
+    entries = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+    if not entries:
+        return "- Current test runtime classpath is empty or unavailable; build.gradle remains editable."
+    lines = [
+        "- Current test runtime classpath has {count} entries and is changeable via build.gradle.".format(
+            count=len(entries),
+        )
+    ]
+    lines.extend("- {entry}".format(entry=entry) for entry in entries[:max_entries])
+    if len(entries) > max_entries:
+        lines.append("- ... {count} more entries".format(count=len(entries) - max_entries))
+    return "\n".join(lines)
+
+
 def init_agent(
         strategy,
         working_dir,
@@ -473,6 +508,8 @@ def main(argv=None):
         strategy_obj=strategy,
         library=library,
         reachability_repo_path=reachability_repo_path,
+        runtime_environment_summary=collect_runtime_environment_summary(),
+        classpath_guidance_summary=collect_test_runtime_classpath_summary(library),
         source_context_overview=prepared_source_context.to_prompt_overview(),
         source_context_available=prepared_source_context.is_available,
         source_context_files=prepared_source_context.read_only_files,
@@ -607,6 +644,7 @@ def main(argv=None):
             strategy_name=strategy_name,
             starting_commit=checkpoint_commit_hash,
             ending_commit=ending_commit_hash,
+            dynamic_access_unreachable=getattr(strategy_obj, "dynamic_access_unreachable", None),
         )
     else:
         run_metrics = metrics_writer.create_run_metrics_output_json(
@@ -623,6 +661,7 @@ def main(argv=None):
             starting_commit=checkpoint_commit_hash,
             ending_commit=ending_commit_hash,
             post_generation_intervention=strategy_obj.post_generation_intervention,
+            dynamic_access_unreachable=getattr(strategy_obj, "dynamic_access_unreachable", None),
         )
 
     metrics_json = resolve_add_new_library_support_metrics_json(

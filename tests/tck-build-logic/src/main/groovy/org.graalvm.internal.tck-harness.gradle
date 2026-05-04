@@ -33,6 +33,7 @@ import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesT
 import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.harness.tasks.ListLibraryJarsInvocationTask
+import org.graalvm.internal.tck.harness.tasks.ListTestRuntimeClasspathInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GeneratePgoDynamicAccessNearCallReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessCoverageReportTask
@@ -53,7 +54,7 @@ import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
-if (!gradle.startParameter.taskNames.any { it in ["listLibraryJars", "generateDynamicAccessReport", "generatePgoDynamicAccessNearCallReport"] }) {
+if (!gradle.startParameter.taskNames.any { it in ["listLibraryJars", "listTestRuntimeClasspath", "generateDynamicAccessReport", "generatePgoDynamicAccessNearCallReport"] }) {
     logger.lifecycle("GraalVM Reachability Metadata TCK")
     logger.lifecycle("---------------------------------")
 }
@@ -303,6 +304,11 @@ tasks.register("discoverArtifactMetadata", DiscoverArtifactMetadata.class) { tas
 
 tasks.register("listLibraryJars", ListLibraryJarsInvocationTask.class) { task ->
     task.setDescription("Lists resolved tested-library JARs for matching coordinates (one per line)")
+    task.setGroup(METADATA_GROUP)
+}
+
+tasks.register("listTestRuntimeClasspath", ListTestRuntimeClasspathInvocationTask.class) { task ->
+    task.setDescription("Lists resolved test runtime classpath entries for matching coordinates (one per line)")
     task.setGroup(METADATA_GROUP)
 }
 

@@ -91,6 +91,14 @@ class WorkflowStrategy(ABC):
         """Initialize the strategy from a configuration dict and context substitutions."""
         self.strategy_obj = strategy_obj or {}
         self.context = context
+        self.context.setdefault(
+            "runtime_environment_summary",
+            "- Runtime environment facts were not collected for this workflow.",
+        )
+        self.context.setdefault(
+            "classpath_guidance_summary",
+            "- The test runtime classpath is controlled by the library test module build.gradle.",
+        )
         self.model_name = self.strategy_obj.get("model")
         if not isinstance(self.model_name, str) or not self.model_name:
             raise ValueError("Strategy is missing required field: model")

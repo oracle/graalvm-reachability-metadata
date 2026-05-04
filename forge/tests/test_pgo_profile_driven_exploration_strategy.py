@@ -3,13 +3,17 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import json
 import os
 import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.workflow_strategies.pgo_profile_driven_exploration_strategy import PgoProfileDrivenExplorationStrategy
+from ai_workflows.workflow_strategies.pgo_profile_driven_exploration_strategy import (
+    PgoNearCallGuidanceUnavailableError,
+    PgoProfileDrivenExplorationStrategy,
+)
 from utility_scripts.dynamic_access_report import DynamicAccessCallSite, DynamicAccessClass, DynamicAccessCoverageReport
 
 
@@ -65,6 +69,138 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
             ),
             active_class.uncovered_call_sites,
         )
+
+    def test_refresh_fails_hard_when_pgo_diagnostic_task_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(tmpdir)
+            active_class = self._report(0).classes[0]
+
+            with patch.object(
+                    strategy,
+                    "_run_gradle_command_with_output",
+                    return_value=subprocess.CompletedProcess(
+                        args=[],
+                        returncode=1,
+                        stdout="Execution failed for task ':nativeTestCompile'.",
+                    ),
+            ), patch("builtins.print") as print_output:
+                with self.assertRaisesRegex(PgoNearCallGuidanceUnavailableError, "gradle_diagnostic_task_failed"):
+                    strategy._refresh_pgo_near_call_guidance(active_class)
+
+        print_output.assert_any_call("Execution failed for task ':nativeTestCompile'.")
+
+    def test_refresh_returns_unavailable_guidance_when_formatter_has_no_actionable_guidance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(tmpdir)
+            active_class = self._report(0).classes[0]
+
+            with patch.object(
+                    strategy,
+                    "_run_gradle_command_with_output",
+                    return_value=subprocess.CompletedProcess(args=[], returncode=0, stdout=""),
+            ), patch(
+                    "ai_workflows.workflow_strategies.pgo_profile_driven_exploration_strategy.format_pgo_near_call_guidance",
+                    return_value="- PGO near-call guidance unavailable: no sampled path matched the uncovered call sites.",
+            ):
+                guidance = strategy._refresh_pgo_near_call_guidance(active_class)
+
+        self.assertTrue(guidance.startswith("- PGO near-call guidance unavailable:"))
+
+    def test_prepare_attempt_marks_unreachable_calls_and_skips_class_when_pgo_has_no_guidance(self) -> None:
+        class FakeAgent:
+            def send_prompt(self, prompt: str) -> str:
+                return json.dumps({
+                    "summary": "linux-only branch cannot reach macOS cleaner",
+                    "callSites": [
+                        {
+                            "metadataType": "reflection",
+                            "trackedApi": "java.lang.Class#forName(java.lang.String)",
+                            "frame": "example.TargetHolder.call(TargetHolder.java:41)",
+                            "line": 41,
+                            "reachable": False,
+                            "reason": "Guarded by an OS check that excludes this host.",
+                            "requiredChanges": "",
+                            "confidence": "high",
+                        },
+                        {
+                            "metadataType": "reflection",
+                            "trackedApi": "java.lang.Class#forName(java.lang.String)",
+                            "frame": "example.TargetHolder.call(TargetHolder.java:42)",
+                            "line": 42,
+                            "reachable": False,
+                            "reason": "Guarded by an OS check that excludes this host.",
+                            "requiredChanges": "",
+                            "confidence": "high",
+                        },
+                        {
+                            "metadataType": "reflection",
+                            "trackedApi": "java.lang.Class#forName(java.lang.String)",
+                            "frame": "example.TargetHolder.call(TargetHolder.java:43)",
+                            "line": 43,
+                            "reachable": False,
+                            "reason": "Guarded by an OS check that excludes this host.",
+                            "requiredChanges": "",
+                            "confidence": "high",
+                        },
+                    ],
+                })
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(tmpdir)
+            active_class = self._report(0).classes[0]
+
+            with patch.object(
+                    strategy,
+                    "_refresh_pgo_near_call_guidance",
+                    return_value="- PGO near-call guidance unavailable: no sampled path matched the uncovered call sites.",
+            ), patch.object(
+                    strategy,
+                    "_render_reachability_analysis_prompt",
+                    return_value="analysis prompt",
+            ), patch.object(strategy, "_collect_test_runtime_classpath", return_value=["/tmp/lib.jar"]):
+                should_attempt = strategy._prepare_dynamic_access_attempt(FakeAgent(), active_class, self._report(0), 0)
+
+        self.assertFalse(should_attempt)
+        self.assertEqual(len(strategy.dynamic_access_unreachable), 3)
+        self.assertEqual(
+            strategy.dynamic_access_unreachable[0]["reason"],
+            "Guarded by an OS check that excludes this host.",
+        )
+
+    def test_prepare_attempt_fails_when_pgo_has_no_guidance_but_call_is_reachable(self) -> None:
+        class FakeAgent:
+            def send_prompt(self, prompt: str) -> str:
+                return json.dumps({
+                    "summary": "reachable by adding a dependency",
+                    "callSites": [
+                        {
+                            "metadataType": "reflection",
+                            "trackedApi": "java.lang.Class#forName(java.lang.String)",
+                            "frame": "example.TargetHolder.call(TargetHolder.java:41)",
+                            "line": 41,
+                            "reachable": True,
+                            "reason": "Reachable by adding an optional test dependency.",
+                            "requiredChanges": "Add the optional module to build.gradle.",
+                            "confidence": "medium",
+                        },
+                    ],
+                })
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(tmpdir)
+            active_class = self._report(0).classes[0]
+
+            with patch.object(
+                    strategy,
+                    "_refresh_pgo_near_call_guidance",
+                    return_value="- PGO near-call guidance unavailable: no sampled path matched the uncovered call sites.",
+            ), patch.object(
+                    strategy,
+                    "_render_reachability_analysis_prompt",
+                    return_value="analysis prompt",
+            ), patch.object(strategy, "_collect_test_runtime_classpath", return_value=["/tmp/lib.jar"]):
+                with self.assertRaisesRegex(PgoNearCallGuidanceUnavailableError, "near_call_guidance_unavailable"):
+                    strategy._prepare_dynamic_access_attempt(FakeAgent(), active_class, self._report(0), 0)
 
     def test_strategy_rejects_sampling_periods_below_native_image_minimum(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -130,6 +266,7 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
                 "model": "test-model",
                 "prompts": {
                     "pgo-profile-driven-exploration": "unused",
+                    "pgo-reachability-analysis": "unused",
                 },
                 "parameters": {
                     "max-iterations": max_iterations,

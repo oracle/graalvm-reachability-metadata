@@ -19,6 +19,20 @@ class RunMetricsSchemaTests(unittest.TestCase):
                 "library": "org.example:lib:1.0.0",
                 "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
                 "status": "chunk_ready",
+                "dynamic_access_unreachable": [
+                    {
+                        "className": "org.example.NativeOnly",
+                        "sourceFile": "NativeOnly.java",
+                        "metadataType": "reflection",
+                        "trackedApi": "java.lang.Class#forName(java.lang.String)",
+                        "frame": "org.example.NativeOnly.load(NativeOnly.java:42)",
+                        "line": 42,
+                        "reason": "Guarded by a Windows-only branch on the current Linux host.",
+                        "confidence": "high",
+                        "pgoFailureReason": "no sampled path matched the uncovered call sites.",
+                        "runtimeEnvironment": "- OS name: Linux",
+                    }
+                ],
                 "metrics": {
                     "input_tokens_used": 0,
                     "output_tokens_used": 0,

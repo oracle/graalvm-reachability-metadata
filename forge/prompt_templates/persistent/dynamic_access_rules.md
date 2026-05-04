@@ -1,5 +1,10 @@
 Rules:
+- Current Forge runtime environment:
+{runtime_environment_summary}
+- Current classpath guidance:
+{classpath_guidance_summary}
 - Add or refine tests so execution reaches uncovered dynamic-access call sites.
+- You may edit the library test module `build.gradle` to add or adjust test dependencies, JVM args, Native Image build args, or other classpath inputs when that is necessary to reach a dynamic-access call site.
 - Keep coverage for each dynamic-access class in its own dedicated `{test_language_display_name}` test file under `src/test/{test_source_dir_name}` in `graalvm-reachability-metadata`.
 - Maintain a one-to-one mapping between dynamic-access report classes and generated test class files.
 - Never use `$` in test class or file names. When naming test classes for inner or anonymous classes (classes whose name contains `$`), replace `$` followed by a number (anonymous classes like `Foo$4`) with `Anonymous4` (e.g., `FooAnonymous4Test`), and replace `$` followed by a name (named inner classes like `Foo$Bar`) with `Inner` and the name (e.g., `FooInnerBarTest`).

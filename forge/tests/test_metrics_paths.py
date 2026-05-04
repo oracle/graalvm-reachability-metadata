@@ -15,6 +15,7 @@ from ai_workflows.add_new_library_support import (
 from ai_workflows.java_fail_workflow import JAVAC_CONFIG, resolve_fix_metrics_json, write_fix_metrics
 from utility_scripts.library_stats import load_library_stats_entry, resolve_stats_file_path
 from utility_scripts.metrics_writer import (
+    build_run_metrics_dict,
     count_metadata_entries,
     count_test_only_metadata_entries,
     create_run_metrics_output_json,
@@ -402,6 +403,43 @@ class MetricsPathTests(unittest.TestCase):
 
             self.assertEqual(run_metrics["metrics"]["metadata_entries"], 1)
             self.assertEqual(run_metrics["metrics"]["test_only_metadata_entries"], 1)
+
+    def test_run_metrics_can_include_unreachable_dynamic_access_explanations(self) -> None:
+        run_metrics = build_run_metrics_dict(
+            package="org.example",
+            artifact="demo",
+            library_version="1.0.0",
+            strategy_name="pgo_profile_driven_exploration_main_sources_pi_gpt-5.5",
+            status="success",
+            global_iterations=0,
+            input_tokens_used=1,
+            output_tokens_used=2,
+            cost_usd=0.01,
+            lines_covered=3,
+            coverage_percent=4.0,
+            total_entries=5,
+            test_file="tests/src/org.example/demo/1.0.0/src/test/java/DemoTest.java",
+            metadata_file="metadata/org.example/demo/1.0.0/reachability-metadata.json",
+            dynamic_access_unreachable=[
+                {
+                    "className": "org.example.NativeOnly",
+                    "sourceFile": "NativeOnly.java",
+                    "metadataType": "reflection",
+                    "trackedApi": "java.lang.Class#forName(java.lang.String)",
+                    "frame": "org.example.NativeOnly.load(NativeOnly.java:42)",
+                    "line": 42,
+                    "reason": "Guarded by a Windows-only branch on the current Linux host.",
+                    "confidence": "high",
+                    "pgoFailureReason": "no sampled path matched the uncovered call sites.",
+                    "runtimeEnvironment": "- OS name: Linux",
+                }
+            ],
+        )
+
+        self.assertEqual(
+            run_metrics["dynamic_access_unreachable"][0]["reason"],
+            "Guarded by a Windows-only branch on the current Linux host.",
+        )
 
     def test_in_repo_add_new_library_support_metrics_resolves_to_stats_path(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
