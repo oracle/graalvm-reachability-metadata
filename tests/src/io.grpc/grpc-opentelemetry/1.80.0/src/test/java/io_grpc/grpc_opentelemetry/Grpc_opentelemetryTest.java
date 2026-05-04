@@ -24,11 +24,18 @@ import io.grpc.opentelemetry.GrpcTraceBinContextPropagator;
 import io.grpc.stub.ClientCalls;
 import io.grpc.stub.ServerCalls;
 import io.grpc.stub.StreamObserver;
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.metrics.MeterBuilder;
+import io.opentelemetry.api.metrics.MeterProvider;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.api.trace.TraceState;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.api.trace.TracerBuilder;
+import io.opentelemetry.api.trace.TracerProvider;
 import io.opentelemetry.context.Context;
+import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import java.io.ByteArrayInputStream;
@@ -211,6 +218,40 @@ public class Grpc_opentelemetryTest {
     }
 
     @Test
+    void grpcOpenTelemetryUsesExplicitOpenTelemetrySdkForInstrumentation() throws Exception {
+        RecordingOpenTelemetry recordingOpenTelemetry = new RecordingOpenTelemetry();
+        GrpcOpenTelemetry openTelemetry = GrpcOpenTelemetry.newBuilder()
+                .sdk(recordingOpenTelemetry)
+                .build();
+        String serverName = "otel-sdk-test-" + UUID.randomUUID();
+        InProcessServerBuilder serverBuilder = InProcessServerBuilder.forName(serverName).directExecutor();
+        openTelemetry.configureServerBuilder(serverBuilder);
+        Server server = serverBuilder.addService(echoService()).build().start();
+        InProcessChannelBuilder channelBuilder = InProcessChannelBuilder.forName(serverName).directExecutor();
+        openTelemetry.configureChannelBuilder(channelBuilder);
+        ManagedChannel channel = channelBuilder.build();
+        try {
+            String response = ClientCalls.blockingUnaryCall(
+                    channel,
+                    ECHO_METHOD,
+                    CallOptions.DEFAULT.withDeadlineAfter(5, TimeUnit.SECONDS),
+                    "sdk");
+
+            assertThat(response).isEqualTo("echo:sdk");
+            assertThat(recordingOpenTelemetry.meterProviderRequests()).isGreaterThanOrEqualTo(1);
+            assertThat(recordingOpenTelemetry.meterBuilderRequests()).isGreaterThanOrEqualTo(1);
+            assertThat(recordingOpenTelemetry.tracerProviderRequests()).isGreaterThanOrEqualTo(1);
+            assertThat(recordingOpenTelemetry.tracerBuilderRequests()).isGreaterThanOrEqualTo(1);
+            assertThat(recordingOpenTelemetry.propagatorRequests()).isGreaterThanOrEqualTo(1);
+        } finally {
+            channel.shutdownNow();
+            server.shutdownNow();
+            assertThat(channel.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(server.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void grpcOpenTelemetryDoesNotMaskRpcFailures() throws Exception {
         GrpcOpenTelemetry openTelemetry = GrpcOpenTelemetry.newBuilder().build();
         String serverName = "otel-failure-test-" + UUID.randomUUID();
@@ -270,6 +311,93 @@ public class Grpc_opentelemetryTest {
         return ServerServiceDefinition.builder("test.EchoService")
                 .addMethod(ECHO_METHOD, handler)
                 .build();
+    }
+
+    private static final class RecordingOpenTelemetry implements OpenTelemetry {
+        private final OpenTelemetry delegate = OpenTelemetry.noop();
+        private final RecordingMeterProvider meterProvider = new RecordingMeterProvider();
+        private final RecordingTracerProvider tracerProvider = new RecordingTracerProvider();
+        private final AtomicInteger meterProviderRequests = new AtomicInteger();
+        private final AtomicInteger tracerProviderRequests = new AtomicInteger();
+        private final AtomicInteger propagatorRequests = new AtomicInteger();
+
+        @Override
+        public TracerProvider getTracerProvider() {
+            tracerProviderRequests.incrementAndGet();
+            return tracerProvider;
+        }
+
+        @Override
+        public MeterProvider getMeterProvider() {
+            meterProviderRequests.incrementAndGet();
+            return meterProvider;
+        }
+
+        @Override
+        public ContextPropagators getPropagators() {
+            propagatorRequests.incrementAndGet();
+            return delegate.getPropagators();
+        }
+
+        private int meterProviderRequests() {
+            return meterProviderRequests.get();
+        }
+
+        private int meterBuilderRequests() {
+            return meterProvider.meterBuilderRequests();
+        }
+
+        private int tracerProviderRequests() {
+            return tracerProviderRequests.get();
+        }
+
+        private int tracerBuilderRequests() {
+            return tracerProvider.tracerBuilderRequests();
+        }
+
+        private int propagatorRequests() {
+            return propagatorRequests.get();
+        }
+    }
+
+    private static final class RecordingMeterProvider implements MeterProvider {
+        private final MeterProvider delegate = MeterProvider.noop();
+        private final AtomicInteger meterBuilderRequests = new AtomicInteger();
+
+        @Override
+        public MeterBuilder meterBuilder(String instrumentationScopeName) {
+            meterBuilderRequests.incrementAndGet();
+            return delegate.meterBuilder(instrumentationScopeName);
+        }
+
+        private int meterBuilderRequests() {
+            return meterBuilderRequests.get();
+        }
+    }
+
+    private static final class RecordingTracerProvider implements TracerProvider {
+        private final TracerProvider delegate = TracerProvider.noop();
+        private final AtomicInteger tracerBuilderRequests = new AtomicInteger();
+
+        @Override
+        public Tracer get(String instrumentationScopeName) {
+            return delegate.get(instrumentationScopeName);
+        }
+
+        @Override
+        public Tracer get(String instrumentationScopeName, String instrumentationScopeVersion) {
+            return delegate.get(instrumentationScopeName, instrumentationScopeVersion);
+        }
+
+        @Override
+        public TracerBuilder tracerBuilder(String instrumentationScopeName) {
+            tracerBuilderRequests.incrementAndGet();
+            return delegate.tracerBuilder(instrumentationScopeName);
+        }
+
+        private int tracerBuilderRequests() {
+            return tracerBuilderRequests.get();
+        }
     }
 
     private static final class Utf8Marshaller implements MethodDescriptor.Marshaller<String> {
