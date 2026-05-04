@@ -8,6 +8,8 @@ package graphql;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -78,7 +80,9 @@ public class GraphQlTests {
 
   private GraphQLSchema parseSchema(String schemaFileName, Consumer<RuntimeWiring.Builder> consumer) throws IOException {
     try (InputStream inputStream = GraphQlTests.class.getResourceAsStream(schemaFileName + ".graphqls")) {
-      TypeDefinitionRegistry registry = new SchemaParser().parse(inputStream);
+      assertThat(inputStream).isNotNull();
+      TypeDefinitionRegistry registry = new SchemaParser().parse(
+          new InputStreamReader(inputStream, StandardCharsets.UTF_8));
       RuntimeWiring.Builder runtimeWiringBuilder = RuntimeWiring.newRuntimeWiring();
       consumer.accept(runtimeWiringBuilder);
       return new SchemaGenerator().makeExecutableSchema(registry, runtimeWiringBuilder.build());

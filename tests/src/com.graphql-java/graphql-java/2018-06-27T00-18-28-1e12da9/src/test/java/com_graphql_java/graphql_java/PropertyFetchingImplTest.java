@@ -6,8 +6,21 @@
  */
 package com_graphql_java.graphql_java;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import graphql.execution.ExecutionContext;
+import graphql.execution.ExecutionId;
+import graphql.execution.ExecutionTypeInfo;
+import graphql.language.Field;
+import graphql.language.FragmentDefinition;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.DataFetchingEnvironmentImpl;
+import graphql.schema.DataFetchingFieldSelectionSet;
+import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLOutputType;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLType;
 import graphql.schema.PropertyDataFetcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,19 +33,16 @@ public class PropertyFetchingImplTest {
   @BeforeEach
   void resetPropertyFetcher() {
     PropertyDataFetcher.clearReflectionCache();
-    PropertyDataFetcher.setUseSetAccessible(true);
-    PropertyDataFetcher.setUseNegativeCache(true);
   }
 
   @Test
-  void invokesPublicGetterWithDataFetchingEnvironmentArgument() throws Exception {
-    EnvironmentAwareSource source = new EnvironmentAwareSource();
-    DataFetchingEnvironment environment = environmentFor(source);
+  void invokesFunctionFetcherWithSource() throws Exception {
+    FunctionSource source = new FunctionSource();
 
-    String value = PropertyDataFetcher.<String>fetching("value").get(environment);
+    String value = PropertyDataFetcher.<String, FunctionSource>fetching(FunctionSource::value)
+        .get(environmentFor(source));
 
-    assertThat(value).isEqualTo("value from " + EnvironmentAwareSource.class.getSimpleName());
-    assertThat(source.seenEnvironment).isSameAs(environment);
+    assertThat(value).isEqualTo("value from " + FunctionSource.class.getSimpleName());
   }
 
   @Test
@@ -72,18 +82,109 @@ public class PropertyFetchingImplTest {
   }
 
   private DataFetchingEnvironment environmentFor(Object source) {
-    return DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
-        .source(source)
-        .fieldType(GraphQLString)
-        .build();
+    return new TestDataFetchingEnvironment(source, GraphQLString);
   }
 
-  public static class EnvironmentAwareSource {
+  private static class TestDataFetchingEnvironment implements DataFetchingEnvironment {
 
-    private DataFetchingEnvironment seenEnvironment;
+    private final Object source;
+    private final GraphQLOutputType fieldType;
 
-    public String getValue(DataFetchingEnvironment environment) {
-      this.seenEnvironment = environment;
+    TestDataFetchingEnvironment(Object source, GraphQLOutputType fieldType) {
+      this.source = source;
+      this.fieldType = fieldType;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getSource() {
+      return (T) source;
+    }
+
+    @Override
+    public Map<String, Object> getArguments() {
+      return Collections.emptyMap();
+    }
+
+    @Override
+    public boolean containsArgument(String name) {
+      return false;
+    }
+
+    @Override
+    public <T> T getArgument(String name) {
+      return null;
+    }
+
+    @Override
+    public <T> T getContext() {
+      return null;
+    }
+
+    @Override
+    public <T> T getRoot() {
+      return null;
+    }
+
+    @Override
+    public GraphQLFieldDefinition getFieldDefinition() {
+      return null;
+    }
+
+    @Override
+    public List<Field> getFields() {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public Field getField() {
+      return null;
+    }
+
+    @Override
+    public GraphQLOutputType getFieldType() {
+      return fieldType;
+    }
+
+    @Override
+    public ExecutionTypeInfo getFieldTypeInfo() {
+      return null;
+    }
+
+    @Override
+    public GraphQLType getParentType() {
+      return null;
+    }
+
+    @Override
+    public GraphQLSchema getGraphQLSchema() {
+      return null;
+    }
+
+    @Override
+    public Map<String, FragmentDefinition> getFragmentsByName() {
+      return Collections.emptyMap();
+    }
+
+    @Override
+    public ExecutionId getExecutionId() {
+      return null;
+    }
+
+    @Override
+    public DataFetchingFieldSelectionSet getSelectionSet() {
+      return null;
+    }
+
+    @Override
+    public ExecutionContext getExecutionContext() {
+      return null;
+    }
+  }
+
+  public static class FunctionSource {
+
+    public String value() {
       return "value from " + getClass().getSimpleName();
     }
   }
