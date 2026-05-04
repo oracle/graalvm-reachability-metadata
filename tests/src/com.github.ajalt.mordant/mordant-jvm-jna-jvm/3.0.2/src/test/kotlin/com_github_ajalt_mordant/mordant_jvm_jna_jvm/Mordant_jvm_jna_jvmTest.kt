@@ -76,6 +76,24 @@ public class Mordant_jvm_jna_jvmTest {
     }
 
     @Test
+    fun providerReturnsNullWhenRecognizedPlatformNativeLibraryCannotBeLinked() {
+        val originalOsName: String? = System.getProperty("os.name")
+        try {
+            System.setProperty("os.name", "Windows Mordant Test")
+
+            val terminalInterface: TerminalInterface? = TerminalInterfaceProviderJna().load()
+
+            assertThat(terminalInterface).isNull()
+        } finally {
+            if (originalOsName == null) {
+                System.clearProperty("os.name")
+            } else {
+                System.setProperty("os.name", originalOsName)
+            }
+        }
+    }
+
+    @Test
     fun providerReturnsNullWhenNativeImagePropertyIsSet() {
         val originalImageCode: String? = System.getProperty("org.graalvm.nativeimage.imagecode")
         try {
