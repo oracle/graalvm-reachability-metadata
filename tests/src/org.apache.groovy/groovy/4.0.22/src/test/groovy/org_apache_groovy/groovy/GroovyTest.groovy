@@ -24,8 +24,11 @@ import groovy.util.GroovyCollections
 import groovy.util.Node
 import groovy.util.NodeBuilder
 import groovy.util.NodeList
+import groovy.util.ObservableList
 import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
+
+import java.beans.PropertyChangeEvent
 
 import static org.assertj.core.api.Assertions.assertThat
 import static org.assertj.core.api.Assertions.assertThatThrownBy
@@ -234,6 +237,30 @@ public class GroovyTest {
         assertThat(transposed).containsExactly([1, 'a'], [2, 'b'], [3, 'c'])
         assertThat(subsequences).contains(['a'], ['b'], ['c'], ['a', 'b'], ['a', 'c'], ['b', 'c'], ['a', 'b', 'c'])
         assertThat(union).containsExactly('a', 'b', 'c', 'd')
+    }
+
+    @Test
+    void observableListPublishesElementAndSizeChangeEvents() {
+        ObservableList tasks = new ObservableList(['draft'])
+        List<PropertyChangeEvent> events = []
+        tasks.addPropertyChangeListener { PropertyChangeEvent event ->
+            events << event
+        }
+
+        tasks.add('review')
+        String previous = tasks.set(0, 'plan') as String
+        String removed = tasks.remove(1) as String
+
+        assertThat(previous).isEqualTo('draft')
+        assertThat(removed).isEqualTo('review')
+        assertThat(tasks.content).containsExactly('plan')
+        assertThat(tasks.size).isEqualTo(1)
+        assertThat(events.collect { PropertyChangeEvent event -> event.propertyName })
+                .containsExactly('content', 'size', 'content', 'content', 'size')
+        assertThat(events.collect { PropertyChangeEvent event -> event.oldValue })
+                .containsExactly(null, 1, 'draft', 'review', 2)
+        assertThat(events.collect { PropertyChangeEvent event -> event.newValue })
+                .containsExactly('review', 2, 'plan', null, 1)
     }
 
     @Test
