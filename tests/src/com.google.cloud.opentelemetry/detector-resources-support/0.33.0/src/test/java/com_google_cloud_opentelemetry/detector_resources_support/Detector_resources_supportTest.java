@@ -28,7 +28,9 @@ import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -112,6 +114,8 @@ public class Detector_resources_supportTest {
             assertThat(platform.getSupportedPlatform()).isEqualTo(expectedPlatformFromEnvironment());
             assertThat(platform.getProjectId()).isEqualTo("project-one");
             assertAttributesForDetectedPlatform(platform);
+            assertThat(metadataProxy.requestHeaders("project/project-id"))
+                    .anySatisfy(headers -> assertThat(headers).containsEntry("metadata-flavor", "Google"));
         } finally {
             ProxySelector.setDefault(originalProxySelector);
         }
@@ -202,6 +206,7 @@ public class Detector_resources_supportTest {
         private final ServerSocket serverSocket;
         private final ExecutorService executor;
         private final Map<String, String> responses = new ConcurrentHashMap<>();
+        private final Map<String, Set<Map<String, String>>> requestHeaders = new ConcurrentHashMap<>();
 
         private MetadataProxy() throws IOException {
             serverSocket = new ServerSocket(0, 50, InetAddress.getLoopbackAddress());
@@ -245,6 +250,10 @@ public class Detector_resources_supportTest {
             responses.putAll(newResponses);
         }
 
+        private Set<Map<String, String>> requestHeaders(String key) {
+            return requestHeaders.getOrDefault(key, Set.of());
+        }
+
         private void acceptRequests() {
             while (!serverSocket.isClosed()) {
                 try {
@@ -268,14 +277,24 @@ public class Detector_resources_supportTest {
                 if (requestLine == null) {
                     return;
                 }
+                String key = metadataKey(requestLine);
+                Map<String, String> headers = new HashMap<>();
                 while (true) {
                     String headerLine = reader.readLine();
                     if (headerLine == null || headerLine.isEmpty()) {
                         break;
                     }
+                    int separator = headerLine.indexOf(':');
+                    if (separator > 0) {
+                        String name = headerLine.substring(0, separator).trim().toLowerCase(Locale.ROOT);
+                        String value = headerLine.substring(separator + 1).trim();
+                        headers.put(name, value);
+                    }
                 }
+                requestHeaders
+                        .computeIfAbsent(key, ignored -> ConcurrentHashMap.newKeySet())
+                        .add(Map.copyOf(headers));
 
-                String key = metadataKey(requestLine);
                 String responseBody = responses.get(key);
                 if (responseBody == null) {
                     writeResponse(acceptedSocket.getOutputStream(), 404, "Not Found", "");
