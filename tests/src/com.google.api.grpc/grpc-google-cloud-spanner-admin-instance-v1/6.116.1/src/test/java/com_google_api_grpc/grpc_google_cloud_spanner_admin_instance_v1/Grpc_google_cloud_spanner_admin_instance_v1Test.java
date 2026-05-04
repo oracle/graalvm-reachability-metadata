@@ -277,6 +277,24 @@ public class Grpc_google_cloud_spanner_admin_instance_v1Test {
     }
 
     @Test
+    void futureStubCancellationPropagatesToClientCall() {
+        CancellableChannel channel = new CancellableChannel();
+        ListenableFuture<Instance> future = InstanceAdminGrpc.newFutureStub(channel).getInstance(getInstanceRequest());
+
+        assertThat(channel.calls).hasSize(1);
+        CancellableClientCall<?, ?> clientCall = channel.calls.get(0);
+        assertThat(clientCall.recordedCall.method.getFullMethodName())
+                .isEqualTo(InstanceAdminGrpc.getGetInstanceMethod().getFullMethodName());
+        assertThat(clientCall.recordedCall.request).isEqualTo(getInstanceRequest());
+        assertThat(clientCall.cancelled).isFalse();
+
+        assertThat(future.cancel(true)).isTrue();
+
+        assertThat(future.isCancelled()).isTrue();
+        assertThat(clientCall.cancelled).isTrue();
+    }
+
+    @Test
     void blockingV2StubPropagatesGrpcStatusAsCheckedException() {
         FailingChannel channel = new FailingChannel(Status.UNAVAILABLE.withDescription("backend unavailable"));
         StatusException exception = null;
@@ -666,6 +684,61 @@ public class Grpc_google_cloud_spanner_admin_instance_v1Test {
         public void halfClose() {
             listener.onMessage(response);
             listener.onClose(Status.OK, new Metadata());
+        }
+
+        @Override
+        public void sendMessage(RequestT message) {
+            recordedCall.request = message;
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+    }
+
+    private static final class CancellableChannel extends Channel {
+        private final List<CancellableClientCall<?, ?>> calls = new ArrayList<>();
+
+        @Override
+        public <RequestT, ResponseT> ClientCall<RequestT, ResponseT> newCall(
+                MethodDescriptor<RequestT, ResponseT> methodDescriptor, CallOptions callOptions) {
+            RecordedCall recordedCall = new RecordedCall(methodDescriptor, callOptions);
+            CancellableClientCall<RequestT, ResponseT> call = new CancellableClientCall<>(recordedCall);
+            calls.add(call);
+            return call;
+        }
+
+        @Override
+        public String authority() {
+            return "cancellable-spanner-admin.test";
+        }
+    }
+
+    private static final class CancellableClientCall<RequestT, ResponseT> extends ClientCall<RequestT, ResponseT> {
+        private final RecordedCall recordedCall;
+        private boolean cancelled;
+
+        private CancellableClientCall(RecordedCall recordedCall) {
+            this.recordedCall = recordedCall;
+        }
+
+        @Override
+        public void start(Listener<ResponseT> responseListener, Metadata headers) {
+            responseListener.onHeaders(new Metadata());
+        }
+
+        @Override
+        public void request(int numMessages) {
+        }
+
+        @Override
+        public void cancel(String message, Throwable cause) {
+            cancelled = true;
+        }
+
+        @Override
+        public void halfClose() {
         }
 
         @Override
