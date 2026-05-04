@@ -6,6 +6,7 @@
  */
 package org_apache_groovy.groovy
 
+import groovy.io.FileType
 import groovy.lang.Binding
 import groovy.lang.Closure
 import groovy.lang.GString
@@ -29,6 +30,8 @@ import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 
 import java.beans.PropertyChangeEvent
+import java.nio.file.Files
+import java.nio.file.Path
 
 import static org.assertj.core.api.Assertions.assertThat
 import static org.assertj.core.api.Assertions.assertThatThrownBy
@@ -261,6 +264,52 @@ public class GroovyTest {
                 .containsExactly(null, 1, 'draft', 'review', 2)
         assertThat(events.collect { PropertyChangeEvent event -> event.newValue })
                 .containsExactly('review', 2, 'plan', null, 1)
+    }
+
+    @Test
+    void fileExtensionMethodsReadWriteTraverseAndTransformText() {
+        Path tempDirectory = Files.createTempDirectory('groovy-io-')
+        File root = tempDirectory.toFile()
+        try {
+            File notes = new File(root, 'notes.txt')
+            File nestedDirectory = new File(root, 'nested')
+            assertThat(nestedDirectory.mkdirs()).isTrue()
+            File numbers = new File(nestedDirectory, 'numbers.csv')
+
+            notes.withWriter('UTF-8') { Writer writer ->
+                writer << 'alpha\n'
+                writer << 'beta\n'
+                writer << 'gamma\n'
+            }
+            numbers.write('1,2\n3,4\n', 'UTF-8')
+
+            List<String> numberedLines = []
+            notes.eachLine('UTF-8') { String line, Integer number ->
+                numberedLines << "${number}:${line}".toString()
+            }
+            List<File> visitedFiles = []
+            root.eachFileRecurse(FileType.FILES) { File file ->
+                visitedFiles << file
+            }
+            StringWriter filtered = new StringWriter()
+            notes.filterLine(filtered, 'UTF-8') { String line ->
+                line.contains('a') && line.length() > 4
+            }
+            List<Integer> sums = []
+            numbers.splitEachLine(',', 'UTF-8') { List<String> values ->
+                sums << (values.collect { String value -> value.toInteger() }.sum() as Integer)
+            }
+
+            assertThat(notes.readLines('UTF-8')).containsExactly('alpha', 'beta', 'gamma')
+            assertThat(numberedLines).containsExactly('1:alpha', '2:beta', '3:gamma')
+            assertThat(visitedFiles.collect { File file ->
+                root.toPath().relativize(file.toPath()).toString().replace(File.separator, '/')
+            }).containsExactlyInAnyOrder('notes.txt', 'nested/numbers.csv')
+            assertThat(filtered.toString().readLines()).containsExactly('alpha', 'gamma')
+            assertThat(sums).containsExactly(3, 7)
+        } finally {
+            root.deleteDir()
+        }
     }
 
     @Test
