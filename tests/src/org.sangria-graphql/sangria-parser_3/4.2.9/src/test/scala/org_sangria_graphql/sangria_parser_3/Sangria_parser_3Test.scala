@@ -191,6 +191,80 @@ class Sangria_parser_3Test {
   }
 
   @Test
+  def parsesRemainingTypeSystemExtensionVariants(): Unit = {
+    val extensions: String =
+      """extend scalar DateTime @specifiedBy(url: "https://www.rfc-editor.org/rfc/rfc3339")
+        |
+        |extend interface NamedEntity implements Node @tag(name: "searchable") {
+        |  displayName(locale: String = "en"): String!
+        |}
+        |
+        |extend union SearchResult @tag(name: "extended") = Repository | Issue
+        |
+        |extend enum Role @tag(name: "security") {
+        |  SUPER_ADMIN @deprecated(reason: "Use ADMIN")
+        |}
+        |
+        |extend input UserFilter @tag(name: "filters") {
+        |  search: String
+        |  limit: Int = 10
+        |}
+        |""".stripMargin
+    val document: Document = parseDocument(
+      extensions,
+      ParserConfig.default.withEmptySourceId.withoutSourceMapper.withoutLocations)
+
+    assertEquals(5, document.definitions.size)
+
+    val scalarExtension: ScalarTypeExtensionDefinition = document.definitions.collectFirst {
+      case parsed: ScalarTypeExtensionDefinition => parsed
+    }.get
+    assertEquals("DateTime", scalarExtension.name)
+    assertEquals("specifiedBy", scalarExtension.directives.head.name)
+    assertEquals(
+      "https://www.rfc-editor.org/rfc/rfc3339",
+      scalarExtension.directives.head.arguments.head.value.asInstanceOf[StringValue].value)
+
+    val interfaceExtension: InterfaceTypeExtensionDefinition = document.definitions.collectFirst {
+      case parsed: InterfaceTypeExtensionDefinition => parsed
+    }.get
+    assertEquals("NamedEntity", interfaceExtension.name)
+    assertEquals(Vector("Node"), interfaceExtension.interfaces.map(_.name))
+    assertEquals("tag", interfaceExtension.directives.head.name)
+    val displayName: FieldDefinition = interfaceExtension.fields.head
+    assertEquals("displayName", displayName.name)
+    assertEquals(NotNullType(NamedType("String")), displayName.fieldType)
+    assertEquals(Vector("locale"), displayName.arguments.map(_.name))
+    assertEquals(Some(StringValue("en")), displayName.arguments.head.defaultValue)
+
+    val unionExtension: UnionTypeExtensionDefinition = document.definitions.collectFirst {
+      case parsed: UnionTypeExtensionDefinition => parsed
+    }.get
+    assertEquals("SearchResult", unionExtension.name)
+    assertEquals(Vector("Repository", "Issue"), unionExtension.types.map(_.name))
+    assertEquals("extended", unionExtension.directives.head.arguments.head.value.asInstanceOf[StringValue].value)
+
+    val enumExtension: EnumTypeExtensionDefinition = document.definitions.collectFirst {
+      case parsed: EnumTypeExtensionDefinition => parsed
+    }.get
+    assertEquals("Role", enumExtension.name)
+    assertEquals(Vector("SUPER_ADMIN"), enumExtension.values.map(_.name))
+    assertEquals("deprecated", enumExtension.values.head.directives.head.name)
+    assertEquals(
+      "Use ADMIN",
+      enumExtension.values.head.directives.head.arguments.head.value.asInstanceOf[StringValue].value)
+
+    val inputExtension: InputObjectTypeExtensionDefinition = document.definitions.collectFirst {
+      case parsed: InputObjectTypeExtensionDefinition => parsed
+    }.get
+    assertEquals("UserFilter", inputExtension.name)
+    assertEquals(Vector("search", "limit"), inputExtension.fields.map(_.name))
+    assertEquals(NamedType("String"), inputExtension.fields.head.valueType)
+    assertEquals(Some(BigIntValue(BigInt(10))), inputExtension.fields(1).defaultValue)
+    assertEquals("filters", inputExtension.directives.head.arguments.head.value.asInstanceOf[StringValue].value)
+  }
+
+  @Test
   def parsesStandaloneInputDocumentsWithScalarsListsObjectsVariablesAndTrailingComments(): Unit = {
     val input: String = (
       """{
