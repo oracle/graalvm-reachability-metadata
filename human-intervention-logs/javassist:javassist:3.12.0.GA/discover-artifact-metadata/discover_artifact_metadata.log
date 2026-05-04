@@ -1,0 +1,813 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df564-4c9f-7ea1-b019-b6b49c154f17
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javassist:javassist:3.12.0.GA
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.12.0.GA" when "$version$" is replaced with "3.12.0.GA".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671/build/discovered-artifact-metadata/javassist-javassist-3.12.0.GA.json
+- Set "coordinates" to "javassist:javassist:3.12.0.GA".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.12.0.GA".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources, then update the JSON directly with the version-tokenized URLs.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/javassist-javassist-3.12.0.GA.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+{
+  "coordinates" : "javassist:javassist:3.12.0.GA"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'javassist' build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+ succeeded in 0ms:
+build/discovered-artifact-metadata/javassist-javassist-3.12.0.GA.json:2:  "coordinates" : "javassist:javassist:3.12.0.GA"
+metadata/org.thymeleaf/thymeleaf/3.1.4.RELEASE/reachability-metadata.json:160:      "type" : "javassist.ClassPool"
+tests/src/io.quarkus/quarkus-classloader-commons/3.33.1/src/test/java/io_quarkus/quarkus_classloader_commons/Quarkus_classloader_commonsTest.java:120:        assertThat(ClassLoaderHelper.isInJdkPackage("javassist.ClassPool")).isFalse();
+
+web search: 
+web search: Maven Central javassist javassist 3.12.0.GA sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/javassist/javassist/3.12.0.GA/
+web search: 
+web search: Javassist source repository github tag 3.12.0.GA
+codex
+Maven Central has the 3.12.0.GA jar and sources jar but no test or javadoc jar in that directory, so I’m checking the POM and upstream tag layout for the best stable test and documentation URLs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javassist/javassist/3.12.0.GA/javassist-3.12.0.GA.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javassist</groupId>
+  <artifactId>javassist</artifactId>
+  <packaging>jar</packaging>
+  <description>Javassist (JAVA programming ASSISTant) makes Java bytecode manipulation
+     simple.  It is a class library for editing bytecodes in Java.
+  </description>
+  <version>3.12.0.GA</version>
+  <name>Javassist</name>
+  <url>http://www.javassist.org/</url>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://jira.jboss.org/jira/browse/JASSIST/</url>
+  </issueManagement>
+  <licenses>
+    <!-- this is the license under which javassist is distributed when
+	 it is bundled with JBoss
+      -->
+    <license>
+      <name>LGPL 2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/javassist/</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/javassist/</developerConnection>
+    <url>http://fisheye.jboss.org/browse/javassist/</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>chiba</id>
+      <name>Shigeru Chiba</name>
+      <email>chiba@acm.org</email>
+      <organization>Tokyo Institute Of Technology</organization>
+      <organizationUrl>http://www.csg.is.titech.ac.jp/</organizationUrl>
+      <roles>
+        <role>project lead</role>
+      </roles>
+      <timezone>8</timezone>
+    </developer>
+
+    <developer>
+      <id>adinn</id>
+      <name>Andrew Dinn</name>
+      <email>adinn@redhat.com</email>
+      <organization>JBoss</organization>
+      <organizationUrl>http://www.jboss.org/</organizationUrl>
+      <roles>
+        <role>contributing developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+
+  <distributionManagement>
+  <!--  
+      You need entries in your .m2/settings.xml like this:
+   <servers>
+    <server>
+       <id>jboss-releases-repository</id>
+       <username>your_jboss.org_username</username>
+       <password>password</password>
+    </server>
+    <server>
+       <id>jboss-snapshots-repository</id>
+       <username>your_jboss.org_username</username>
+       <password>password</password>
+    </server>
+  </servers>
+  
+  Then to deploy a snapshot, you need to run
+  
+  mvn deploy -Dversion=3.12.0-SNAPSHOT
+
+  To deploy a release you need to run
+
+  mvn deploy
+    -->
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshots Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <build>
+    <sourceDirectory>src/main/</sourceDirectory>
+    <testSourceDirectory>src/test/</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.4</source>
+          <target>1.4</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.sourceDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.0.3</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <inherited>true</inherited>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>jdk14</id>
+      <activation>
+        <jdk>1.4</jdk>
+        <property>
+           <name>!no.tools</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.4</version>
+          <scope>system</scope>
+          <optional>true</optional>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jdk15</id>
+      <activation>
+        <jdk>1.5</jdk>
+        <property>
+           <name>!no.tools</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.5</version>
+          <scope>system</scope>
+          <optional>true</optional>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jdk16</id>
+      <activation>
+        <jdk>1.6</jdk>
+        <property>
+           <name>!no.tools</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.6</version>
+          <scope>system</scope>
+          <optional>true</optional>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jboss-javassist/javassist.git '*3.12*'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javassist/javassist/3.12.0.GA/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javassist/javassist/3.12.0.GA</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javassist/javassist/3.12.0.GA</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="javassist-3.12.0.GA-sources.jar" title="javassist-3.12.0.GA-sources.jar">javassist-3.12.0.GA-sources.jar</a>                   2010-11-23 07:21    488011      
+<a href="javassist-3.12.0.GA-sources.jar.md5" title="javassist-3.12.0.GA-sources.jar.md5">javassist-3.12.0.GA-sources.jar.md5</a>               2010-11-23 07:21        32      
+<a href="javassist-3.12.0.GA-sources.jar.sha1" title="javassist-3.12.0.GA-sources.jar.sha1">javassist-3.12.0.GA-sources.jar.sha1</a>              2010-11-23 07:21        40      
+<a href="javassist-3.12.0.GA.jar" title="javassist-3.12.0.GA.jar">javassist-3.12.0.GA.jar</a>                           2010-11-23 07:21    633312      
+<a href="javassist-3.12.0.GA.jar.md5" title="javassist-3.12.0.GA.jar.md5">javassist-3.12.0.GA.jar.md5</a>                       2010-11-23 07:21        32      
+<a href="javassist-3.12.0.GA.jar.sha1" title="javassist-3.12.0.GA.jar.sha1">javassist-3.12.0.GA.jar.sha1</a>                      2010-11-23 07:21        40      
+<a href="javassist-3.12.0.GA.pom" title="javassist-3.12.0.GA.pom">javassist-3.12.0.GA.pom</a>                           2010-11-23 07:21      5846      
+<a href="javassist-3.12.0.GA.pom.md5" title="javassist-3.12.0.GA.pom.md5">javassist-3.12.0.GA.pom.md5</a>                       2010-11-23 07:21        32      
+<a href="javassist-3.12.0.GA.pom.sha1" title="javassist-3.12.0.GA.pom.sha1">javassist-3.12.0.GA.pom.sha1</a>                      2010-11-23 07:21        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 313ms:
+web search: 
+web search: Javassist GitHub jboss-javassist javassist tags 3.12.0-GA
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/javassist/javassist/3.12.0.GA/javassist-3.12.0.GA-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/javassist/javassist/3.12.0.GA/javassist-3.12.0.GA-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/jboss-javassist/javassist.git | tail -80' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+ exited 22 in 244ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 23:48:31 GMT
+content-type: text/html
+cf-ray: 9f6b658caf0bc126-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javassist/javassist/3.12.0.GA/javassist-3.12.0.GA-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 320ms:
+9347d8d7b2964aacae106423d3b80f4a081dbfcd	refs/tags/rel_3_17_1_ga
+7ff52ac61b307d6a785ae458d06bdf52335ae79c	refs/tags/rel_3_17_1_ga^{}
+48fa85781c2a7d0a66dbf64c02f76a7d1b65868e	refs/tags/rel_3_18_0_ga
+0fef5c5f48cb38b8562611db66534bcccf5ebd6c	refs/tags/rel_3_18_0_ga^{}
+68fb38ee61925d4ec41c636fe5a40b0737a68077	refs/tags/rel_3_18_1_beta1
+ee648fed68ac1dc5f8ce2959fccd3dc350598238	refs/tags/rel_3_18_1_beta1^{}
+1e261a2041155f77465045b39ee64b8c7bf26b97	refs/tags/rel_3_18_1_ga
+f52b94aec372d0c181b5f63954421e5864ca7533	refs/tags/rel_3_18_1_ga^{}
+88d3554fadccaff1a21fc8e4f2535712308ef827	refs/tags/rel_3_18_2_ga
+2d18ef591e4ccb9819a1d4890591ab3df440eed0	refs/tags/rel_3_18_2_ga^{}
+46dcfac4f016e1a637a80692aa4ea40597d38258	refs/tags/rel_3_18_2_ga_build
+b3a28a7daada9e561b895b6133cfac069f2e2528	refs/tags/rel_3_18_2_ga_build^{}
+70a1d2a8a163f1591af289f9cbe73cf271856e64	refs/tags/rel_3_19_0_ga
+e7a700d8580811bd31189601db1cee47c7a84a35	refs/tags/rel_3_2
+046c30cb2f0bcd38bcd3839ee3dc1b50810c7ca1	refs/tags/rel_3_2^{}
+ecb17c25b1fe408ca2fab170de3d1c5220cb3556	refs/tags/rel_3_20_0_ga
+4448bdae02290a7e34420f932df2facf4599acf1	refs/tags/rel_3_20_0_ga^{}
+5ec5dee14f570b4ee7832d0f5011169759a0744a	refs/tags/rel_3_21_0-java9-ea
+0ebd27d23e6cf16be080ee2ca89255429f06b5ad	refs/tags/rel_3_21_0-java9-ea^{}
+b63d3b1e840cbf77d26f75e7d1bd9e46655f2426	refs/tags/rel_3_21_0-java9-ea2
+fb93ae8b8f6e0646ed9b95d4d8d0abe77d601a62	refs/tags/rel_3_21_0-java9-ea2^{}
+17655b52cecc0f836e7ae37f6edb35a05874de64	refs/tags/rel_3_21_0_ga
+03f85a33931c6090477926c15ce9bdfeb0c5ce28	refs/tags/rel_3_21_0_ga^{}
+77cfb465acde6abdc473b4f46f25370da40a6add	refs/tags/rel_3_22_00_ga
+8cca83be821c64806322241ba0e602c42c864f1b	refs/tags/rel_3_22_00_ga^{}
+43f2a7115843b018ac5c58f6349c93a9219ec159	refs/tags/rel_3_22_0_cr1
+f95705f30494d966220cf204f0f0153a86948c69	refs/tags/rel_3_22_0_cr1^{}
+b22de1c175acb6f8ba42df16d838597c25c86888	refs/tags/rel_3_22_0_cr2
+292d6e76b0a86910a79a0e1a1b85f7a845406f3a	refs/tags/rel_3_22_0_cr2^{}
+8a2790fb1f620db38e84ace157e81a89a36416ac	refs/tags/rel_3_22_0_ga
+bb14f52dc9035e9b7d6003aa00366933394c7bc2	refs/tags/rel_3_22_0_ga^{}
+b689323674c48a475a22626bc75b3a0a7847678c	refs/tags/rel_3_22_1_ga
+a4178f83625a4eecae70df35555cd2d70c585ce1	refs/tags/rel_3_22_1_ga^{}
+d6867de38433d8b019c77bdfc651318d9e53c9fb	refs/tags/rel_3_23_0_ga
+dfce4e4b3d5fbd253d720867eab8e6146e0de516	refs/tags/rel_3_23_0_ga^{}
+2c2ad6db6db589fa1bac4deffeec74cf9f6566ea	refs/tags/rel_3_23_1_ga
+a59658da9986ec2a9952a6539000c57ff1f02026	refs/tags/rel_3_23_1_ga^{}
+04d439249addbc45e73b401571ee26ba4c6b9556	refs/tags/rel_3_23_2_ga
+b15f6c06408ed28d7f49725a962fda510b092951	refs/tags/rel_3_23_2_ga^{}
+61c5ee04068efb3d1087be2cf34157a6099f268a	refs/tags/rel_3_24_0_ga
+2d4ef86c82c843a45d7670df8a447fcc59c8d94d	refs/tags/rel_3_24_0_ga^{}
+be7cf71c23014f3b6f79c870d9648007049367ec	refs/tags/rel_3_24_0_rc
+106b44b0e0b7d19c8af4abc03b88c6d64ec442f0	refs/tags/rel_3_24_0_rc^{}
+6e721727d0b4f533f8923de52e857ce7c37a9576	refs/tags/rel_3_24_1_ga
+1a3d63712a3a5819dd54562983abbdd382f0d418	refs/tags/rel_3_24_1_ga^{}
+3fb6bda4a5725a8900db4d7e3e3060765d3a7890	refs/tags/rel_3_25_0_ga
+3aa3ca9d976b8e9460401834ef18823f67026c29	refs/tags/rel_3_25_0_ga^{}
+09da8551eff0c9ab2ae256eda552cbf28072aa10	refs/tags/rel_3_26_0_ga
+30627914d3f40b9a9bf88f57cd616e70dfdda97f	refs/tags/rel_3_26_0_ga^{}
+0dac3b1b5dccac355eb2d8f57c106cf2f3d9becc	refs/tags/rel_3_27_0_ga
+a6b7f12c25faafbf13f62742d05e86b6ae903606	refs/tags/rel_3_27_0_ga^{}
+0ec035fc6b7b63c7af9356b7ec3f1eaa9f93c3b5	refs/tags/rel_3_28_0_ga
+3112090a508b8a42c08cd68308d1018596a70b1e	refs/tags/rel_3_28_0_ga^{}
+ec87e0e54247e636bf87f9364d11f79e021cf143	refs/tags/rel_3_29_0_ga
+2423b4961edf1c43c6b05b9e375b1c100598021f	refs/tags/rel_3_29_0_ga^{}
+3ef33d933769f26f09875ab8fe9e508640e59b48	refs/tags/rel_3_29_1_ga
+7f59e6431c927cd71a62500521a2240fae17dc07	refs/tags/rel_3_29_1_ga^{}
+27865c8018b7ea353bc6bc2f1ffac2fba8984ddb	refs/tags/rel_3_29_2_ga
+049c06e9d6c8ebd737fc1124b811cb75568f6c6b	refs/tags/rel_3_29_2_ga^{}
+cc77cbc16e0064b4f82b4f17c0c808e20ca7d152	refs/tags/rel_3_30_0_ga
+dd2725820be97ed0a74dd51d543a36a2395945b6	refs/tags/rel_3_30_0_ga^{}
+0062b472294107afbc017f42e048055c616327cd	refs/tags/rel_3_30_1_ga
+71395e3994016a2ee70a0ae10395f1f6adab71a8	refs/tags/rel_3_30_1_ga^{}
+8f1ef4983217031d035424a5c1e4ba86af589ad0	refs/tags/rel_3_30_2_ga
+9ad05535d365fe5e39b221ed59516eaceb7e37ad	refs/tags/rel_3_30_2_ga^{}
+d0dd1bdb27021fa45217fe8c605922eb76d2abdc	refs/tags/rel_3_31_0_ga
+71351a0a500b4206f733d58660c7db16045340b7	refs/tags/rel_3_3_GA
+3cc1bdc1ba332156a831003d967d3393b48a9f80	refs/tags/rel_3_3_GA^{}
+a140fcb379fd566b851a5ab14bc36d8a7a457cc3	refs/tags/rel_3_4_GA
+4f6352718e35fae2ad15745e16c05768882a17f9	refs/tags/rel_3_4_GA^{}
+c96d7db44864b59d49f76c3ae0421ee65b06d9af	refs/tags/rel_3_6_ga
+77defc29735ffe992458fdf091d69b5cd6f1d1e7	refs/tags/rel_3_6_ga^{}
+36d440e0885a0ac06b6a6968d75b7fe7d3f7b723	refs/tags/rel_3_7_1_ga
+1c59c2e7f6cef3e7389cae2746962db2fa65c620	refs/tags/rel_3_7_1_ga^{}
+fef36fae57a309ce26813aee20dcb23e8832c804	refs/tags/rel_3_8_0_ga
+08ac7045cecec91cdc107349742c207af47ff055	refs/tags/rel_3_8_0_ga^{}
+02283e276a68296dfd3f5aee778b3d9b4545af64	refs/tags/rel_3_8_1_ga
+4bd7105829441948f5f142da387205026b8571a7	refs/tags/rel_3_8_1_ga^{}
+4cbce694309df3319685595bda0b628480849271	refs/tags/rel_3_9_0_ga
+4e0f7ad05ae2b8cd8e728a52ebb9e84490fd5b64	refs/tags/rel_3_9_0_ga^{}
+
+codex
+I found the upstream GitHub tag convention uses `rel_3_12_0_ga`, while the Maven artifact version is `3.12.0.GA`. I’m checking whether the Maven sources contain documentation or tests before choosing GitHub tag URLs for the fields Maven does not publish.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jboss-javassist/javassist.git '*rel_3_12*'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javassist/javassist/3.12.0.GA/javassist-3.12.0.GA-sources.jar -o /tmp/javassist-3.12.0.GA-sources.jar && jar tf /tmp/javassist-3.12.0.GA-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jboss-javassist/javassist/contents?ref=rel_3_12_0_ga | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+ succeeded in 144ms:
+META-INF/
+META-INF/MANIFEST.MF
+javassist/
+javassist/bytecode/
+javassist/bytecode/analysis/
+javassist/bytecode/annotation/
+javassist/bytecode/stackmap/
+javassist/compiler/
+javassist/compiler/ast/
+javassist/convert/
+javassist/tools/
+javassist/tools/reflect/
+javassist/tools/rmi/
+javassist/tools/web/
+javassist/expr/
+javassist/scopedpool/
+javassist/util/
+javassist/util/proxy/
+javassist/runtime/
+javassist/ClassPath.java
+javassist/bytecode/CodeIterator.java
+javassist/bytecode/LongVector.java
+javassist/bytecode/Descriptor.java
+javassist/bytecode/ExceptionTable.java
+javassist/bytecode/Bytecode.java
+javassist/bytecode/DuplicateMemberException.java
+javassist/bytecode/ParameterAnnotationsAttribute.java
+javassist/bytecode/StackMap.java
+javassist/bytecode/Opcode.java
+javassist/bytecode/InnerClassesAttribute.java
+javassist/bytecode/CodeAnalyzer.java
+javassist/bytecode/ClassFile.java
+javassist/bytecode/Mnemonic.java
+javassist/bytecode/LineNumberAttribute.java
+javassist/bytecode/CodeAttribute.java
+javassist/bytecode/analysis/Type.java
+javassist/bytecode/analysis/FramePrinter.java
+javassist/bytecode/analysis/Subroutine.java
+javassist/bytecode/analysis/Analyzer.java
+javassist/bytecode/analysis/Executor.java
+javassist/bytecode/analysis/SubroutineScanner.java
+javassist/bytecode/analysis/MultiArrayType.java
+javassist/bytecode/analysis/MultiType.java
+javassist/bytecode/analysis/Util.java
+javassist/bytecode/analysis/package.html
+javassist/bytecode/analysis/IntQueue.java
+javassist/bytecode/analysis/Frame.java
+javassist/bytecode/annotation/ArrayMemberValue.java
+javassist/bytecode/annotation/ShortMemberValue.java
+javassist/bytecode/annotation/AnnotationImpl.java
+javassist/bytecode/annotation/BooleanMemberValue.java
+javassist/bytecode/annotation/AnnotationsWriter.java
+javassist/bytecode/annotation/MemberValue.java
+javassist/bytecode/annotation/ClassMemberValue.java
+javassist/bytecode/annotation/StringMemberValue.java
+javassist/bytecode/annotation/LongMemberValue.java
+javassist/bytecode/annotation/FloatMemberValue.java
+javassist/bytecode/annotation/DoubleMemberValue.java
+javassist/bytecode/annotation/package.html
+javassist/bytecode/annotation/MemberValueVisitor.java
+javassist/bytecode/annotation/AnnotationMemberValue.java
+javassist/bytecode/annotation/ByteMemberValue.java
+javassist/bytecode/annotation/NoSuchClassError.java
+javassist/bytecode/annotation/CharMemberValue.java
+javassist/bytecode/annotation/EnumMemberValue.java
+javassist/bytecode/annotation/IntegerMemberValue.java
+javassist/bytecode/annotation/Annotation.java
+javassist/bytecode/stackmap/TypeData.java
+javassist/bytecode/stackmap/TypedBlock.java
+javassist/bytecode/stackmap/Tracer.java
+javassist/bytecode/stackmap/MapMaker.java
+javassist/bytecode/stackmap/TypeTag.java
+javassist/bytecode/stackmap/Liveness.java
+javassist/bytecode/stackmap/BasicBlock.java
+javassist/bytecode/BadBytecode.java
+javassist/bytecode/MethodInfo.java
+javassist/bytecode/AttributeInfo.java
+javassist/bytecode/ClassFileWriter.java
+javassist/bytecode/ExceptionsAttribute.java
+javassist/bytecode/package.html
+
+ succeeded in 185ms:
+[
+  {
+    "name": ".classpath",
+    "path": ".classpath",
+    "sha": "2810d72786967e2888bf0baf325fa9257fb93a27",
+    "size": 390,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/.classpath?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/.classpath",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/2810d72786967e2888bf0baf325fa9257fb93a27",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/.classpath",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/.classpath?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/2810d72786967e2888bf0baf325fa9257fb93a27",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/.classpath"
+    }
+  },
+  {
+    "name": ".project",
+    "path": ".project",
+    "sha": "4d88bda1b6f38ced476390a826c4cc546561fae1",
+    "size": 363,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/.project?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/.project",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/4d88bda1b6f38ced476390a826c4cc546561fae1",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/.project?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/4d88bda1b6f38ced476390a826c4cc546561fae1",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/.project"
+    }
+  },
+  {
+    "name": "License.html",
+    "path": "License.html",
+    "sha": "bec1335bd522ffbddff9665c8f195fc3655d3507",
+    "size": 25802,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/License.html?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/License.html",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/bec1335bd522ffbddff9665c8f195fc3655d3507",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/License.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/License.html?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/bec1335bd522ffbddff9665c8f195fc3655d3507",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/License.html"
+    }
+  },
+  {
+    "name": "Readme.html",
+    "path": "Readme.html",
+    "sha": "f4f23ff2de34c64fb0bdb0810eae95d6b80d9fd6",
+    "size": 25827,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/Readme.html?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/Readme.html",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/f4f23ff2de34c64fb0bdb0810eae95d6b80d9fd6",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/Readme.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/Readme.html?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/f4f23ff2de34c64fb0bdb0810eae95d6b80d9fd6",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/Readme.html"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "build.xml",
+    "sha": "0da95e5821ec8f93b5ed1a8e6c44d5566ab6049b",
+    "size": 10596,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/build.xml?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/build.xml",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/0da95e5821ec8f93b5ed1a8e6c44d5566ab6049b",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/build.xml?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/0da95e5821ec8f93b5ed1a8e6c44d5566ab6049b",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/build.xml"
+    }
+  },
+  {
+    "name": "lib",
+    "path": "lib",
+    "sha": "ae752fab1308d550617246fa92a46795f50cb339",
+    "size": 0,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/lib?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/lib",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/ae752fab1308d550617246fa92a46795f50cb339",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/lib?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/ae752fab1308d550617246fa92a46795f50cb339",
+      "html": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/lib"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "94a7e66384bc9f7558f4e8ec19f582b86b7af518",
+    "size": 4066,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/pom.xml?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/pom.xml",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/94a7e66384bc9f7558f4e8ec19f582b86b7af518",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/pom.xml?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/94a7e66384bc9f7558f4e8ec19f582b86b7af518",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/pom.xml"
+    }
+  },
+  {
+    "name": "sample",
+    "path": "sample",
+    "sha": "5a3890c53f3ba2cda5d0190bef4634e294414631",
+    "size": 0,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/sample?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/sample",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/5a3890c53f3ba2cda5d0190bef4634e294414631",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/sample?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/5a3890c53f3ba2cda5d0190bef4634e294414631",
+      "html": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/sample"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "311b1000abdc3d5d00ef8112f17471eeca1f5041",
+    "size": 0,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/src?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/src",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/311b1000abdc3d5d00ef8112f17471eeca1f5041",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/src?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/311b1000abdc3d5d00ef8112f17471eeca1f5041",
+      "html": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/src"
+    }
+  },
+  {
+    "name": "tutorial",
+    "path": "tutorial",
+    "sha": "38697f4da7ff681c45938256a8800a14c4c8f5e3",
+    "size": 0,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/tutorial",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/38697f4da7ff681c45938256a8800a14c4c8f5e3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/38697f4da7ff681c45938256a8800a14c4c8f5e3",
+      "html": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/tutorial"
+    }
+
+ succeeded in 315ms:
+216252544799681f87c7d05663f9fffa01f70922	refs/tags/rel_3_12_0_ga
+bf0dacc14fc73128155007a7a3c5b89b296f3238	refs/tags/rel_3_12_0_ga^{}
+5232ef7805929f9e0222f7e1cfd65c3104cac543	refs/tags/rel_3_12_1_ga
+870c4fc1f3fa118149083191fa99be9635ccefc2	refs/tags/rel_3_12_1_ga^{}
+
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+ succeeded in 0ms:
+build/discovered-artifact-metadata/javassist-javassist-3.12.0.GA.json
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jboss-javassist/javassist/contents/src?ref=rel_3_12_0_ga | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial?ref=rel_3_12_0_ga | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2858-12e16671
+ succeeded in 165ms:
+[
+  {
+    "name": "main",
+    "path": "src/main",
+    "sha": "163b240a02cbfaaabb612502a87dab514189ed96",
+    "size": 0,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/src/main?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/src/main",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/163b240a02cbfaaabb612502a87dab514189ed96",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/src/main?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/163b240a02cbfaaabb612502a87dab514189ed96",
+      "html": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "src/test",
+    "sha": "2fc0a3afb810dcd625c9739bc49195604aded40f",
+    "size": 0,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/src/test?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/src/test",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/2fc0a3afb810dcd625c9739bc49195604aded40f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/src/test?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/2fc0a3afb810dcd625c9739bc49195604aded40f",
+      "html": "https://github.com/jboss-javassist/javassist/tree/rel_3_12_0_ga/src/test"
+    }
+  }
+]
+
+ succeeded in 169ms:
+[
+  {
+    "name": "brown.css",
+    "path": "tutorial/brown.css",
+    "sha": "7570549fd289971fc6e74569b64ceed7cb0f8092",
+    "size": 208,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial/brown.css?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/tutorial/brown.css",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/7570549fd289971fc6e74569b64ceed7cb0f8092",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/tutorial/brown.css",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial/brown.css?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/7570549fd289971fc6e74569b64ceed7cb0f8092",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/tutorial/brown.css"
+    }
+  },
+  {
+    "name": "tutorial.html",
+    "path": "tutorial/tutorial.html",
+    "sha": "1d8dbc749e400551fb940220875b53cb1ec4422f",
+    "size": 41718,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial/tutorial.html?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/tutorial/tutorial.html",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/1d8dbc749e400551fb940220875b53cb1ec4422f",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/tutorial/tutorial.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial/tutorial.html?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/1d8dbc749e400551fb940220875b53cb1ec4422f",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/tutorial/tutorial.html"
+    }
+  },
+  {
+    "name": "tutorial2.html",
+    "path": "tutorial/tutorial2.html",
+    "sha": "ef978ca044b086de5fcb963d604072839c4dac91",
+    "size": 48552,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial/tutorial2.html?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/tutorial/tutorial2.html",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/ef978ca044b086de5fcb963d604072839c4dac91",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/tutorial/tutorial2.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial/tutorial2.html?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/ef978ca044b086de5fcb963d604072839c4dac91",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/tutorial/tutorial2.html"
+    }
+  },
+  {
+    "name": "tutorial3.html",
+    "path": "tutorial/tutorial3.html",
+    "sha": "d72a26c781e809cd63ac544b8735bbab637ce578",
+    "size": 10153,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial/tutorial3.html?ref=rel_3_12_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/tutorial/tutorial3.html",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/d72a26c781e809cd63ac544b8735bbab637ce578",
+    "download_url": "https://raw.githubusercontent.com/jboss-javassist/javassist/rel_3_12_0_ga/tutorial/tutorial3.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/tutorial/tutorial3.html?ref=rel_3_12_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/blobs/d72a26c781e809cd63ac544b8735bbab637ce578",
+      "html": "https://github.com/jboss-javassist/javassist/blob/rel_3_12_0_ga/tutorial/tutorial3.html"
+    }
+  }
+]
+
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
