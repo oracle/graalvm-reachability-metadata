@@ -102,6 +102,27 @@ class Upack_3Test {
   }
 
   @Test
+  def roundTripsMapsWithNonStringKeysAndUsesMsgSelectors(): Unit = {
+    val original: Msg = Obj(
+      Int32(7) -> Str("seven"),
+      False -> Arr(Str("bool-key"), Int64(123L)),
+      Null -> Obj(Int32(1) -> True)
+    )
+
+    val parsed: Msg = readBytes(upack.write(original))
+
+    assertEquals("seven", parsed.obj(Int32(7)).str)
+    assertEquals("bool-key", Msg.Selector.MsgSelector(False).apply(parsed).arr(0).str)
+    assertEquals(123L, parsed.obj(False).arr(1).int64)
+    assertTrue(parsed.obj(Null).obj(Int32(1)).bool)
+
+    Msg.Selector.MsgSelector(Int32(7)).update(parsed, Str("updated"))
+    Msg.Selector.MsgSelector(False).update(parsed, Arr(Int32(1), Int32(2)))
+    assertEquals("updated", parsed.obj(Int32(7)).str)
+    assertEquals(2, parsed.obj(False).arr(1).int32)
+  }
+
+  @Test
   def readsManualMessagePackFromArrayAndInputStream(): Unit = {
     val bytes: Array[Byte] = ints(
       0xde, 0x00, 0x03,
