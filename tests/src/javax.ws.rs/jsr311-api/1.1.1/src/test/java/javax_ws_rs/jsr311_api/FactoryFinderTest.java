@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FactoryFinderTest {
     private static final String RUNTIME_DELEGATE_SERVICE = "META-INF/services/"
@@ -93,6 +94,14 @@ public class FactoryFinderTest {
         });
     }
 
+    @Test
+    void throwsLinkageErrorWhenProviderDoesNotImplementRuntimeDelegate() throws Exception {
+        runWithContextClassLoader(new InvalidProviderClassLoader(), () ->
+                assertThatThrownBy(RuntimeDelegate::getInstance)
+                        .isInstanceOf(LinkageError.class)
+                        .hasMessageContaining("attempting to cast"));
+    }
+
     private static void runWithContextClassLoader(ClassLoader contextClassLoader, ThrowingRunnable action)
             throws Exception {
         AtomicReference<Throwable> failure = new AtomicReference<>();
@@ -160,6 +169,24 @@ public class FactoryFinderTest {
         @Override
         public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
             return null;
+        }
+    }
+
+    public static final class InvalidRuntimeDelegateProvider {
+    }
+
+    private static final class InvalidProviderClassLoader extends ClassLoader {
+        private InvalidProviderClassLoader() {
+            super(FactoryFinderTest.class.getClassLoader());
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String name) {
+            if (RUNTIME_DELEGATE_SERVICE.equals(name)) {
+                byte[] providerName = InvalidRuntimeDelegateProvider.class.getName().getBytes(StandardCharsets.UTF_8);
+                return new ByteArrayInputStream(providerName);
+            }
+            return super.getResourceAsStream(name);
         }
     }
 
