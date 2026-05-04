@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.appengine.api.NamespaceManager;
+import com.google.appengine.api.appidentity.AppIdentityService;
+import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.capabilities.Capability;
 import com.google.appengine.api.datastore.Blob;
@@ -336,6 +338,25 @@ public class Appengine_api_1_0_sdkTest {
         assertThat(queryOptions.getFieldsToSnippet()).containsExactly("title");
         assertThat(queryOptions.getSortOptions().getLimit()).isEqualTo(10);
         assertThat(queryOptions.getSortOptions().getSortExpressions()).containsExactly(sortExpression);
+    }
+
+    @Test
+    void appIdentityServiceParsesFullApplicationIds() {
+        AppIdentityService appIdentityService = AppIdentityServiceFactory.getAppIdentityService();
+
+        AppIdentityService.ParsedAppId partitioned = appIdentityService.parseFullAppId("s~example.com:orders");
+        AppIdentityService.ParsedAppId domainOnly = appIdentityService.parseFullAppId("example.com:orders");
+        AppIdentityService.ParsedAppId idOnly = appIdentityService.parseFullAppId("orders");
+
+        assertThat(partitioned.getPartition()).isEqualTo("s");
+        assertThat(partitioned.getDomain()).isEqualTo("example.com");
+        assertThat(partitioned.getId()).isEqualTo("orders");
+        assertThat(domainOnly.getPartition()).isEmpty();
+        assertThat(domainOnly.getDomain()).isEqualTo("example.com");
+        assertThat(domainOnly.getId()).isEqualTo("orders");
+        assertThat(idOnly.getPartition()).isEmpty();
+        assertThat(idOnly.getDomain()).isEmpty();
+        assertThat(idOnly.getId()).isEqualTo("orders");
     }
 
     @Test
