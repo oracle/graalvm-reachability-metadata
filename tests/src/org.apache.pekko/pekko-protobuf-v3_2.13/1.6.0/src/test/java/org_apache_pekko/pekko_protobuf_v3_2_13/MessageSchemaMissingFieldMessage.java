@@ -42,8 +42,9 @@ public final class MessageSchemaMissingFieldMessage
             case BUILD_MESSAGE_INFO:
                 return newMessageInfo(
                         DEFAULT_INSTANCE,
-                        "\u0000\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0004",
-                        new Object[] {"missing_"}
+                        "\u0000\u0002\u0000\u0000\u0001\u0002\u0002\u0000\u0000\u0000"
+                                + "\u0001\u0004\u0002\u0004",
+                        new Object[] {"present_", "missing_"}
                 );
             case NEW_MUTABLE_INSTANCE:
                 return new MessageSchemaMissingFieldMessage();
