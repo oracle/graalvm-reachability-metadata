@@ -26,6 +26,8 @@ import com.google.firestore.v1.ListDocumentsRequest;
 import com.google.firestore.v1.ListenRequest;
 import com.google.firestore.v1.ListenResponse;
 import com.google.firestore.v1.MapValue;
+import com.google.firestore.v1.PartitionQueryRequest;
+import com.google.firestore.v1.PartitionQueryResponse;
 import com.google.firestore.v1.Precondition;
 import com.google.firestore.v1.RunAggregationQueryRequest;
 import com.google.firestore.v1.RunAggregationQueryResponse;
@@ -289,6 +291,49 @@ public class Proto_google_cloud_firestore_v1Test {
         assertThat(batchGetRequest.getNewTransaction().getModeCase()).isEqualTo(TransactionOptions.ModeCase.READ_WRITE);
         assertThat(runQueryRequest.getQueryTypeCase()).isEqualTo(RunQueryRequest.QueryTypeCase.STRUCTURED_QUERY);
         assertThat(runQueryRequest.getConsistencySelectorCase()).isEqualTo(RunQueryRequest.ConsistencySelectorCase.TRANSACTION);
+    }
+
+    @Test
+    void partitionQueriesUsePagingReadTimesAndReturnSplitCursors() {
+        StructuredQuery query = StructuredQuery.newBuilder()
+                .addFrom(StructuredQuery.CollectionSelector.newBuilder().setCollectionId("users"))
+                .addOrderBy(StructuredQuery.Order.newBuilder()
+                        .setField(StructuredQuery.FieldReference.newBuilder().setFieldPath("name"))
+                        .setDirection(StructuredQuery.Direction.ASCENDING))
+                .build();
+        Cursor middlePartition = Cursor.newBuilder()
+                .addValues(Value.newBuilder().setStringValue("m"))
+                .setBefore(true)
+                .build();
+        Cursor finalPartition = Cursor.newBuilder()
+                .addValues(Value.newBuilder().setStringValue("t"))
+                .build();
+        PartitionQueryRequest request = PartitionQueryRequest.newBuilder()
+                .setParent(DATABASE_NAME + "/documents")
+                .setStructuredQuery(query)
+                .setPartitionCount(3L)
+                .setPageSize(2)
+                .setPageToken("partition-page-1")
+                .setReadTime(timestamp(40))
+                .build();
+        PartitionQueryResponse response = PartitionQueryResponse.newBuilder()
+                .addPartitions(middlePartition)
+                .addPartitions(finalPartition)
+                .setNextPageToken("partition-page-2")
+                .build();
+
+        assertThat(request.getQueryTypeCase()).isEqualTo(PartitionQueryRequest.QueryTypeCase.STRUCTURED_QUERY);
+        assertThat(request.getConsistencySelectorCase())
+                .isEqualTo(PartitionQueryRequest.ConsistencySelectorCase.READ_TIME);
+        assertThat(request.getPartitionCount()).isEqualTo(3L);
+        assertThat(request.getPageSize()).isEqualTo(2);
+        assertThat(request.getPageToken()).isEqualTo("partition-page-1");
+        assertThat(request.getStructuredQuery().getOrderBy(0).getField().getFieldPath()).isEqualTo("name");
+        assertThat(response.getPartitionsList())
+                .extracting(partition -> partition.getValues(0).getStringValue())
+                .containsExactly("m", "t");
+        assertThat(response.getPartitions(0).getBefore()).isTrue();
+        assertThat(response.getNextPageToken()).isEqualTo("partition-page-2");
     }
 
     @Test
