@@ -330,6 +330,18 @@ public class Metrics_spiTest {
     }
 
     @Test
+    void collectedMetricCollectionKeepsChildSnapshotIndependentFromCollector() {
+        MetricCollector collector = MetricCollector.create("snapshot-collector");
+        collector.createChild("collected-child");
+        MetricCollection collection = collector.collect();
+
+        collector.createChild("late-child");
+
+        assertThat(collection.children()).extracting(MetricCollection::name).containsExactly("collected-child");
+        assertThat(collection.childrenWithName("late-child")).isEmpty();
+    }
+
+    @Test
     void noOpMetricCollectorIgnoresMetricsAndReturnsEmptyCollection() {
         SdkMetric<Integer> metric = SdkMetric.create(
                 uniqueMetricName("ignored"), Integer.class, MetricLevel.INFO, MetricCategory.CUSTOM);
