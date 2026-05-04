@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.management.Notification;
+import javax.management.NotificationBroadcasterSupport;
 import javax.management.openmbean.CompositeDataSupport;
 import javax.management.openmbean.CompositeType;
 import javax.management.openmbean.OpenDataException;
@@ -21,8 +23,11 @@ import javax.management.openmbean.SimpleType;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
+import org.apache.camel.api.management.JmxNotificationBroadcasterAware;
 import org.apache.camel.api.management.JmxSystemPropertyKeys;
 import org.apache.camel.api.management.ManagedCamelContext;
+import org.apache.camel.api.management.NotificationSender;
+import org.apache.camel.api.management.NotificationSenderAware;
 import org.apache.camel.api.management.mbean.CamelOpenMBeanTypes;
 import org.apache.camel.api.management.mbean.ComponentVerifierExtension.Result;
 import org.apache.camel.api.management.mbean.ComponentVerifierExtension.Scope;
@@ -138,6 +143,32 @@ public class Camel_management_apiTest {
         assertThat(context.getManagedConsumer("consumer-1")).isNull();
         assertThat(context.lastConsumerId).isEqualTo("consumer-1");
         assertThat(context.lastConsumerType).isEqualTo(ManagedConsumerMBean.class);
+    }
+
+    @Test
+    void notificationAwareManagementObjectsCanPublishJmxNotifications() {
+        NotificationBroadcasterSupport broadcaster = new NotificationBroadcasterSupport();
+        List<Notification> receivedNotifications = new ArrayList<>();
+        broadcaster.addNotificationListener(
+                (notification, handback) -> {
+                    assertThat(handback).isEqualTo("camel-handback");
+                    receivedNotifications.add(notification);
+                },
+                notification -> notification.getType().startsWith("org.apache.camel."),
+                "camel-handback");
+
+        RecordingNotificationManagedObject managedObject = new RecordingNotificationManagedObject("camel-context");
+        managedObject.setNotificationBroadcaster(broadcaster);
+        managedObject.setNotificationSender(broadcaster::sendNotification);
+        managedObject.emitRouteStarted("route-1");
+
+        assertThat(receivedNotifications).hasSize(1);
+        Notification notification = receivedNotifications.get(0);
+        assertThat(notification.getType()).isEqualTo("org.apache.camel.management.route.started");
+        assertThat(notification.getSource()).isEqualTo("camel-context");
+        assertThat(notification.getSequenceNumber()).isEqualTo(1L);
+        assertThat(notification.getMessage()).isEqualTo("route started");
+        assertThat(notification.getUserData()).isEqualTo(Map.of("routeId", "route-1"));
     }
 
     @Test
@@ -400,6 +431,40 @@ public class Camel_management_apiTest {
         @Override
         public Map<VerificationError.Attribute, Object> getDetails() {
             return details;
+        }
+    }
+
+    private static final class RecordingNotificationManagedObject
+            implements NotificationSenderAware, JmxNotificationBroadcasterAware {
+        private final String source;
+        private NotificationBroadcasterSupport notificationBroadcaster;
+        private NotificationSender notificationSender;
+        private long sequenceNumber;
+
+        private RecordingNotificationManagedObject(String source) {
+            this.source = source;
+        }
+
+        @Override
+        public void setNotificationBroadcaster(NotificationBroadcasterSupport notificationBroadcaster) {
+            this.notificationBroadcaster = notificationBroadcaster;
+        }
+
+        @Override
+        public void setNotificationSender(NotificationSender notificationSender) {
+            this.notificationSender = notificationSender;
+        }
+
+        private void emitRouteStarted(String routeId) {
+            assertThat(notificationBroadcaster).isNotNull();
+            assertThat(notificationSender).isNotNull();
+            Notification notification = new Notification(
+                    "org.apache.camel.management.route.started",
+                    source,
+                    ++sequenceNumber,
+                    "route started");
+            notification.setUserData(Map.of("routeId", routeId));
+            notificationSender.sendNotification(notification);
         }
     }
 
