@@ -144,6 +144,18 @@ public class ArrowExceptionUtilsJvmTest {
     }
 
     @Test
+    fun `mergeSuppressed returns a fatal throwable unchanged when it is the only failure`() {
+        val fatalPrimary: LinkageError = LinkageError("primary fatal")
+        val fatalSecondary: OutOfMemoryError = OutOfMemoryError("secondary fatal")
+        val noPrimary: Throwable? = null
+
+        assertThat(fatalPrimary.mergeSuppressed(null)).isSameAs(fatalPrimary)
+        assertThat(noPrimary.mergeSuppressed(fatalSecondary)).isSameAs(fatalSecondary)
+        assertThat(fatalPrimary.suppressed).isEmpty()
+        assertThat(fatalSecondary.suppressed).isEmpty()
+    }
+
+    @Test
     fun `mergeSuppressed accumulates cleanup failures starting from no primary failure`() {
         var accumulated: Throwable? = null
         val firstCleanupFailure: IllegalStateException = IllegalStateException("first cleanup")
