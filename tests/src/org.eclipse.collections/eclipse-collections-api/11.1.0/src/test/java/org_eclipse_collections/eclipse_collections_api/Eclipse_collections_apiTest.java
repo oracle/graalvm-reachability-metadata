@@ -8,7 +8,7 @@ package org_eclipse_collections.eclipse_collections_api;
 
 import org.junit.jupiter.api.Test;
 
-class Eclipse_collections_apiTest {
+public class Eclipse_collections_apiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
