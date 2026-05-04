@@ -32,6 +32,9 @@ import io.grpc.Channel;
 import io.grpc.ClientCall;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
+import io.grpc.ServerCall;
+import io.grpc.ServerCallHandler;
+import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.ServiceDescriptor;
 import io.grpc.Status;
@@ -262,6 +265,54 @@ public class Grpc_google_common_protosTest {
         assertThat(asyncResponse.get()).isEqualTo(asyncListResponse);
     }
 
+    @Test
+    void boundAsyncServicesDispatchUnaryRequestsToImplementations() {
+        WaitOperationRequest waitRequest = WaitOperationRequest.newBuilder()
+                .setName("operations/server-dispatch")
+                .setTimeout(Duration.newBuilder().setSeconds(1).build())
+                .build();
+        Operation waitResponse = operation("operations/server-dispatch", true);
+        ServerServiceDefinition operationsService = OperationsGrpc.bindService(new OperationsGrpc.AsyncService() {
+            @Override
+            public void waitOperation(
+                    WaitOperationRequest request,
+                    StreamObserver<Operation> responseObserver) {
+                assertThat(request).isEqualTo(waitRequest);
+                responseObserver.onNext(waitResponse);
+                responseObserver.onCompleted();
+            }
+        });
+
+        Operation dispatchedOperation =
+                invokeUnary(operationsService, OperationsGrpc.getWaitOperationMethod(), waitRequest);
+
+        assertThat(dispatchedOperation).isEqualTo(waitResponse);
+
+        GetLocationRequest locationRequest = GetLocationRequest.newBuilder()
+                .setName("projects/test/locations/australia-southeast1")
+                .build();
+        Location locationResponse = Location.newBuilder()
+                .setName("projects/test/locations/australia-southeast1")
+                .setLocationId("australia-southeast1")
+                .setDisplayName("Sydney")
+                .build();
+        ServerServiceDefinition locationsService = LocationsGrpc.bindService(new LocationsGrpc.AsyncService() {
+            @Override
+            public void getLocation(
+                    GetLocationRequest request,
+                    StreamObserver<Location> responseObserver) {
+                assertThat(request).isEqualTo(locationRequest);
+                responseObserver.onNext(locationResponse);
+                responseObserver.onCompleted();
+            }
+        });
+
+        Location dispatchedLocation =
+                invokeUnary(locationsService, LocationsGrpc.getGetLocationMethod(), locationRequest);
+
+        assertThat(dispatchedLocation).isEqualTo(locationResponse);
+    }
+
     private static Operation operation(String name, boolean done) {
         return Operation.newBuilder()
                 .setName(name)
@@ -295,6 +346,27 @@ public class Grpc_google_common_protosTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private static <RequestT, ResponseT> ResponseT invokeUnary(
+            ServerServiceDefinition serviceDefinition,
+            MethodDescriptor<RequestT, ResponseT> method,
+            RequestT request) {
+        ServerMethodDefinition<RequestT, ResponseT> methodDefinition =
+                (ServerMethodDefinition<RequestT, ResponseT>) serviceDefinition.getMethod(method.getFullMethodName());
+        assertThat(methodDefinition)
+                .as("server method definition for %s", method.getFullMethodName())
+                .isNotNull();
+        ServerCallHandler<RequestT, ResponseT> callHandler = methodDefinition.getServerCallHandler();
+        CapturingServerCall<RequestT, ResponseT> serverCall = new CapturingServerCall<>(method);
+
+        ServerCall.Listener<RequestT> listener = callHandler.startCall(serverCall, new Metadata());
+        listener.onMessage(request);
+        listener.onHalfClose();
+
+        assertThat(serverCall.status()).isEqualTo(Status.OK);
+        return serverCall.response();
+    }
+
     private static final class FakeChannel extends Channel {
         private final Map<String, CallDefinition<?, ?>> definitions = new HashMap<>();
         private final Map<String, Integer> calledMethodNames = new HashMap<>();
@@ -326,6 +398,55 @@ public class Grpc_google_common_protosTest {
 
         private Map<String, Integer> calledMethodNames() {
             return calledMethodNames;
+        }
+    }
+
+    private static final class CapturingServerCall<RequestT, ResponseT> extends ServerCall<RequestT, ResponseT> {
+        private final MethodDescriptor<RequestT, ResponseT> method;
+        private ResponseT response;
+        private Status status;
+
+        private CapturingServerCall(MethodDescriptor<RequestT, ResponseT> method) {
+            this.method = method;
+        }
+
+        @Override
+        public void request(int messageCount) {
+            assertThat(messageCount).isPositive();
+        }
+
+        @Override
+        public void sendHeaders(Metadata headers) {
+            assertThat(headers).isNotNull();
+        }
+
+        @Override
+        public void sendMessage(ResponseT message) {
+            this.response = message;
+        }
+
+        @Override
+        public void close(Status status, Metadata trailers) {
+            assertThat(trailers).isNotNull();
+            this.status = status;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+
+        @Override
+        public MethodDescriptor<RequestT, ResponseT> getMethodDescriptor() {
+            return method;
+        }
+
+        private ResponseT response() {
+            return response;
+        }
+
+        private Status status() {
+            return status;
         }
     }
 
