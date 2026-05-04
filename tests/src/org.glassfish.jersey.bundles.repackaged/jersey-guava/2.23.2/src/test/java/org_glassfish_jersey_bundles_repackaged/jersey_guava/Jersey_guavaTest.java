@@ -10,7 +10,10 @@ import java.io.ByteArrayInputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,6 +23,7 @@ import jersey.repackaged.com.google.common.base.Joiner;
 import jersey.repackaged.com.google.common.base.MoreObjects;
 import jersey.repackaged.com.google.common.base.Optional;
 import jersey.repackaged.com.google.common.base.Preconditions;
+import jersey.repackaged.com.google.common.base.Predicates;
 import jersey.repackaged.com.google.common.base.Splitter;
 import jersey.repackaged.com.google.common.base.Ticker;
 import jersey.repackaged.com.google.common.cache.Cache;
@@ -27,6 +31,7 @@ import jersey.repackaged.com.google.common.cache.CacheBuilder;
 import jersey.repackaged.com.google.common.cache.CacheLoader;
 import jersey.repackaged.com.google.common.cache.LoadingCache;
 import jersey.repackaged.com.google.common.cache.RemovalNotification;
+import jersey.repackaged.com.google.common.collect.Collections2;
 import jersey.repackaged.com.google.common.collect.HashBasedTable;
 import jersey.repackaged.com.google.common.collect.HashMultimap;
 import jersey.repackaged.com.google.common.collect.HashMultiset;
@@ -35,6 +40,8 @@ import jersey.repackaged.com.google.common.collect.ImmutableList;
 import jersey.repackaged.com.google.common.collect.ImmutableListMultimap;
 import jersey.repackaged.com.google.common.collect.ImmutableMap;
 import jersey.repackaged.com.google.common.collect.ImmutableSet;
+import jersey.repackaged.com.google.common.collect.Iterables;
+import jersey.repackaged.com.google.common.collect.Lists;
 import jersey.repackaged.com.google.common.collect.MapDifference;
 import jersey.repackaged.com.google.common.collect.Maps;
 import jersey.repackaged.com.google.common.collect.Multiset;
@@ -125,6 +132,31 @@ public class Jersey_guavaTest {
         assertThat(aliases.asMap()).containsKeys("language", "format");
         assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> sortedNames.add("delta"));
+    }
+
+    @Test
+    void collectionUtilitiesCreateLiveFilteredTransformedAndPartitionedViews() {
+        List<String> words = Lists.newArrayList("alpha", "beta", "alpine", "gamma");
+        Collection<String> aWords = Collections2.filter(words, Predicates.containsPattern("^a"));
+        Collection<String> uppercased = Collections2.transform(aWords, word -> word.toUpperCase(Locale.ROOT));
+        List<List<String>> partitions = Lists.partition(words, 2);
+
+        assertThat(aWords).containsExactly("alpha", "alpine");
+        assertThat(uppercased).containsExactly("ALPHA", "ALPINE");
+        assertThat(partitions).containsExactly(
+                Arrays.asList("alpha", "beta"),
+                Arrays.asList("alpine", "gamma"));
+
+        words.add("atlas");
+
+        assertThat(aWords).containsExactly("alpha", "alpine", "atlas");
+        assertThat(uppercased).containsExactly("ALPHA", "ALPINE", "ATLAS");
+        assertThat(partitions).containsExactly(
+                Arrays.asList("alpha", "beta"),
+                Arrays.asList("alpine", "gamma"),
+                Arrays.asList("atlas"));
+        assertThat(Iterables.any(aWords, Predicates.equalTo("atlas"))).isTrue();
+        assertThat(Iterables.all(aWords, Predicates.containsPattern("^a"))).isTrue();
     }
 
     @Test
