@@ -105,6 +105,18 @@ class Sourcecode_3Test {
   }
 
   @Test
+  def capturesArgumentsFromNearestEnclosingConstructor(): Unit = {
+    val probe: ConstructorArgProbe = new ConstructorArgProbe("alpha", 42)(enabled = true)
+    val argumentLists: List[List[sourcecode.Text[_]]] = probe.capturedArgs.value.map(_.toList).toList
+
+    assertEquals(2, argumentLists.size)
+    assertEquals(List("label", "count"), argumentLists.head.map(_.source))
+    assertEquals(List(None, None), argumentLists.head.map(_.value))
+    assertEquals(List("enabled"), argumentLists(1).map(_.source))
+    assertEquals(List(None), argumentLists(1).map(_.value))
+  }
+
+  @Test
   def allowsExplicitContextValuesToOverrideGeneratedValues(): Unit = {
     val explicitFile: sourcecode.File = sourcecode.File("Manual.scala")
     val explicitLine: sourcecode.Line = sourcecode.Line(123)
@@ -195,6 +207,10 @@ class Sourcecode_3Test {
   }
 
   private def captureArgs(using args: sourcecode.Args): sourcecode.Args = args
+
+  private class ConstructorArgProbe(label: String, count: Int)(enabled: Boolean) {
+    val capturedArgs: sourcecode.Args = captureArgs
+  }
 
   private def assertPointsAtThisTest(file: String): Unit = {
     val normalizedFile: String = file.replace('\\', '/')
