@@ -1,0 +1,1458 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df432-ec2a-7140-ae06-c2e667c6ea96
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.javassist:javassist:3.14.0-GA
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.14.0-GA" when "$version$" is replaced with "3.14.0-GA".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+- Set "coordinates" to "org.javassist:javassist:3.14.0-GA".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.14.0-GA".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project, then patch the JSON in place. I’m checking nearby discovered metadata first so the URL shape matches this repo’s conventions.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.javassist:javassist:3.14.0-GA"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && ls build/discovered-artifact-metadata | head' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+org.javassist-javassist-3.14.0-GA.json
+
+exec
+/usr/bin/bash -lc "rg -n 'javassist|source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json:2:  "coordinates" : "org.javassist:javassist:3.14.0-GA"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-$version$/src/test",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jmx/src/test/java",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-json/src/test/java",
+metadata/io.dropwizard.metrics/metrics-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/$version$/cache-api-$version$-sources.jar",
+metadata/javax.cache/cache-api/index.json:6:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/$version$/cache-api-$version$-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/$version$/cache-api-$version$-sources.jar",
+metadata/javax.cache/cache-api/index.json:21:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/$version$/cache-api-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_6_1/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:23:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_5/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:38:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_4_2/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.fusesource.jansi/jansi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:7:    "test-code-url" : "https://github.com/fusesource/jansi/tree/jansi-$version$/src/test",
+metadata/org.fusesource.jansi/jansi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-javadoc.jar",
+metadata/org.fusesource.jansi/jansi/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:34:    "test-code-url" : "https://github.com/fusesource/jansi/tree/jansi-project-$version$/jansi/src/test",
+metadata/org.fusesource.jansi/jansi/index.json:35:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-javadoc.jar",
+metadata/org.fusesource.jansi/jansi/index.json:50:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:52:    "test-code-url" : "https://github.com/fusesource/jansi/tree/jansi-project-$version$/jansi/src/test",
+metadata/org.fusesource.jansi/jansi/index.json:53:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-javadoc.jar",
+metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/$version$/reactor-core-$version$-sources.jar",
+metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v$version$/reactor-core/src/test/java",
+metadata/io.projectreactor/reactor-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/$version$/reactor-core-$version$-docs.zip",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jvm/src/test",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/com.mchange/mchange-commons-java/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/$version$/mchange-commons-java-$version$-sources.jar",
+metadata/com.mchange/mchange-commons-java/index.json:7:    "test-code-url" : "https://github.com/swaldman/mchange-commons-java/tree/mchange-commons-java-$version$/src/test",
+metadata/com.mchange/mchange-commons-java/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/$version$/mchange-commons-java-$version$-javadoc.jar",
+metadata/io.undertow/undertow-parser-generator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/undertow/undertow-parser-generator/$version$/undertow-parser-generator-$version$-sources.jar",
+
+web search: 
+web search: org.javassist javassist 3.14.0-GA maven pom scm url
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/javassist/javassist/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+The repo conventions prefer Maven Central for `sources` and `javadoc` when those artifacts exist. I’m going to inspect the POM and directory listing directly now, plus the upstream tags to pin the test URL to the release.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/javassist/javassist/3.14.0-GA/javassist-3.14.0-GA.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.javassist</groupId>
+  <artifactId>javassist</artifactId>
+  <packaging>jar</packaging>
+  <description>Javassist (JAVA programming ASSISTant) makes Java bytecode manipulation
+     simple.  It is a class library for editing bytecodes in Java.
+  </description>
+  <version>3.14.0-GA</version>
+  <name>Javassist</name>
+  <url>http://www.javassist.org/</url>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://jira.jboss.org/jira/browse/JASSIST/</url>
+  </issueManagement>
+  <licenses>
+    <!-- this is the license under which javassist is usually distributed
+      -->
+    <license>
+      <name>MPL 1.1</name>
+      <url>http://www.mozilla.org/MPL/MPL-1.1.html</url>
+    </license>
+    <!-- this is the license under which javassist is distributed when
+	 it is bundled with JBoss
+      -->
+    <license>
+      <name>LGPL 2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/javassist/</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/javassist/</developerConnection>
+    <url>http://fisheye.jboss.org/browse/javassist/</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>chiba</id>
+      <name>Shigeru Chiba</name>
+      <email>chiba@acm.org</email>
+      <organization>Tokyo Institute of Technology</organization>
+      <organizationUrl>http://www.javassist.org/</organizationUrl>
+      <roles>
+        <role>project lead</role>
+      </roles>
+      <timezone>8</timezone>
+    </developer>
+
+    <developer>
+      <id>adinn</id>
+      <name>Andrew Dinn</name>
+      <email>adinn@redhat.com</email>
+      <organization>JBoss</organization>
+      <organizationUrl>http://www.jboss.org/</organizationUrl>
+      <roles>
+        <role>contributing developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+
+    <developer>
+      <id>kabir.khan@jboss.com</id>
+      <name>Kabir Khan</name>
+      <email>kabir.khan@jboss.com</email>
+      <organization>JBoss</organization>
+      <organizationUrl>http://www.jboss.org/</organizationUrl>
+      <roles>
+        <role>contributing developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+
+  <distributionManagement>
+  <!--  
+      You need entries in your .m2/settings.xml like this:
+   <servers>
+    <server>
+       <id>jboss-releases-repository</id>
+       <username>your_jboss.org_username</username>
+       <password>password</password>
+    </server>
+    <server>
+       <id>jboss-snapshots-repository</id>
+       <username>your_jboss.org_username</username>
+       <password>password</password>
+    </server>
+  </servers>
+  
+  To deploy a snapshot, you need to run
+  
+  mvn deploy -Dversion=3.x.y-SNAPSHOT
+
+  To deploy a release you need to change the version to 3.x.y.GA and run
+
+  mvn deploy
+    -->
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshots Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <build>
+    <sourceDirectory>src/main/</sourceDirectory>
+    <testSourceDirectory>src/test/</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.4</source>
+          <target>1.4</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.sourceDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.0.3</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <inherited>true</inherited>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.7</version>
+	<configuration>
+	  <attach>true</attach>
+	</configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <!-- profile for releasing to sonatype repo
+	 exercise with mvn -PcentralRelease
+      -->
+    <profile>
+      <id>centralRelease</id>
+      <!-- obviously we need to use the Sonatype staging repo for upload -->
+      <distributionManagement>
+	<repository>
+	  <id>sonatype-releases-repository</id>
+	  <name>Sonatype Releases Repository</name>
+	  <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+	</repository>
+      </distributionManagement>
+      <!-- we need to be able to sign the jars we install -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <configuration>
+              <passphrase>${gpg.passphrase}</passphrase>
+              <useAgent>${gpg.useAgent}</useAgent>
+            </configuration>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- profiles to add tools jar containing com.sun.jdi code
+	 needed by sample code
+	 -->
+    <profile>
+      <id>jdk14</id>
+      <activation>
+        <jdk>1.4</jdk>
+        <property>
+           <name>!no.tools</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.4</version>
+          <scope>system</scope>
+          <optional>true</optional>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jdk15</id>
+      <activation>
+        <jdk>1.5</jdk>
+        <property>
+           <name>!no.tools</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.5</version>
+          <scope>system</scope>
+          <optional>true</optional>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jdk16</id>
+      <activation>
+        <jdk>1.6</jdk>
+        <property>
+           <name>!no.tools</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.6</version>
+          <scope>system</scope>
+          <optional>true</optional>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/javassist/javassist/3.14.0-GA/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/javassist/javassist/3.14.0-GA</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/javassist/javassist/3.14.0-GA</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="javassist-3.14.0-GA-javadoc.jar" title="javassist-3.14.0-GA-javadoc.jar">javassist-3.14.0-GA-javadoc.jar</a>                   2010-10-06 13:24   1611218      
+<a href="javassist-3.14.0-GA-javadoc.jar.asc" title="javassist-3.14.0-GA-javadoc.jar.asc">javassist-3.14.0-GA-javadoc.jar.asc</a>               2010-10-06 13:24       490      
+<a href="javassist-3.14.0-GA-javadoc.jar.asc.md5" title="javassist-3.14.0-GA-javadoc.jar.asc.md5">javassist-3.14.0-GA-javadoc.jar.asc.md5</a>           2010-10-06 13:24        32      
+<a href="javassist-3.14.0-GA-javadoc.jar.asc.sha1" title="javassist-3.14.0-GA-javadoc.jar.asc.sha1">javassist-3.14.0-GA-javadoc.jar.asc.sha1</a>          2010-10-06 13:24        40      
+<a href="javassist-3.14.0-GA-javadoc.jar.md5" title="javassist-3.14.0-GA-javadoc.jar.md5">javassist-3.14.0-GA-javadoc.jar.md5</a>               2010-10-06 13:24        32      
+<a href="javassist-3.14.0-GA-javadoc.jar.sha1" title="javassist-3.14.0-GA-javadoc.jar.sha1">javassist-3.14.0-GA-javadoc.jar.sha1</a>              2010-10-06 13:24        40      
+<a href="javassist-3.14.0-GA-sources.jar" title="javassist-3.14.0-GA-sources.jar">javassist-3.14.0-GA-sources.jar</a>                   2010-10-06 13:24    497168      
+<a href="javassist-3.14.0-GA-sources.jar.asc" title="javassist-3.14.0-GA-sources.jar.asc">javassist-3.14.0-GA-sources.jar.asc</a>               2010-10-06 13:24       490      
+<a href="javassist-3.14.0-GA-sources.jar.asc.md5" title="javassist-3.14.0-GA-sources.jar.asc.md5">javassist-3.14.0-GA-sources.jar.asc.md5</a>           2010-10-06 13:24        32      
+<a href="javassist-3.14.0-GA-sources.jar.asc.sha1" title="javassist-3.14.0-GA-sources.jar.asc.sha1">javassist-3.14.0-GA-sources.jar.asc.sha1</a>          2010-10-06 13:24        40      
+<a href="javassist-3.14.0-GA-sources.jar.md5" title="javassist-3.14.0-GA-sources.jar.md5">javassist-3.14.0-GA-sources.jar.md5</a>               2010-10-06 13:24        32      
+<a href="javassist-3.14.0-GA-sources.jar.sha1" title="javassist-3.14.0-GA-sources.jar.sha1">javassist-3.14.0-GA-sources.jar.sha1</a>              2010-10-06 13:24        40      
+<a href="javassist-3.14.0-GA.jar" title="javassist-3.14.0-GA.jar">javassist-3.14.0-GA.jar</a>                           2010-10-06 13:24    647917      
+<a href="javassist-3.14.0-GA.jar.asc" title="javassist-3.14.0-GA.jar.asc">javassist-3.14.0-GA.jar.asc</a>                       2010-10-06 13:24       490      
+<a href="javassist-3.14.0-GA.jar.asc.md5" title="javassist-3.14.0-GA.jar.asc.md5">javassist-3.14.0-GA.jar.asc.md5</a>                   2010-10-06 13:24        32      
+<a href="javassist-3.14.0-GA.jar.asc.sha1" title="javassist-3.14.0-GA.jar.asc.sha1">javassist-3.14.0-GA.jar.asc.sha1</a>                  2010-10-06 13:24        40      
+<a href="javassist-3.14.0-GA.jar.md5" title="javassist-3.14.0-GA.jar.md5">javassist-3.14.0-GA.jar.md5</a>                       2010-10-06 13:24        32      
+<a href="javassist-3.14.0-GA.jar.sha1" title="javassist-3.14.0-GA.jar.sha1">javassist-3.14.0-GA.jar.sha1</a>                      2010-10-06 13:24        40      
+<a href="javassist-3.14.0-GA.pom" title="javassist-3.14.0-GA.pom">javassist-3.14.0-GA.pom</a>                           2010-10-06 13:24      7930      
+<a href="javassist-3.14.0-GA.pom.asc" title="javassist-3.14.0-GA.pom.asc">javassist-3.14.0-GA.pom.asc</a>                       2010-10-06 13:24       490      
+<a href="javassist-3.14.0-GA.pom.asc.md5" title="javassist-3.14.0-GA.pom.asc.md5">javassist-3.14.0-GA.pom.asc.md5</a>                   2010-10-06 13:24        32      
+<a href="javassist-3.14.0-GA.pom.asc.sha1" title="javassist-3.14.0-GA.pom.asc.sha1">javassist-3.14.0-GA.pom.asc.sha1</a>                  2010-10-06 13:24        40      
+<a href="javassist-3.14.0-GA.pom.md5" title="javassist-3.14.0-GA.pom.md5">javassist-3.14.0-GA.pom.md5</a>                       2010-10-06 13:24        32      
+<a href="javassist-3.14.0-GA.pom.sha1" title="javassist-3.14.0-GA.pom.sha1">javassist-3.14.0-GA.pom.sha1</a>                      2010-10-06 13:24        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags | rg -n '3\\.14|javassist|refs/tags' -C 1" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 248ms:
+2-  {
+3:    "ref": "refs/tags/3_26_0_ga",
+4-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzLzNfMjZfMF9nYQ==",
+5:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/3_26_0_ga",
+6-    "object": {
+--
+8-      "type": "tag",
+9:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/38a8ab2ece63d8fe0bf9a1688127cd560a4e95fd"
+10-    }
+--
+12-  {
+13:    "ref": "refs/tags/list",
+14-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL2xpc3Q=",
+15:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/list",
+16-    "object": {
+--
+18-      "type": "commit",
+19:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/commits/bb14f52dc9035e9b7d6003aa00366933394c7bc2"
+20-    }
+--
+22-  {
+23:    "ref": "refs/tags/log",
+24-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL2xvZw==",
+25:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/log",
+26-    "object": {
+--
+28-      "type": "commit",
+29:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/commits/0fef5c5f48cb38b8562611db66534bcccf5ebd6c"
+30-    }
+--
+32-  {
+33:    "ref": "refs/tags/rel_2_5_1",
+34-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8yXzVfMQ==",
+35:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_2_5_1",
+36-    "object": {
+--
+38-      "type": "tag",
+39:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/7aaac038239cd91461ea12a3af38ee565099828b"
+40-    }
+--
+42-  {
+43:    "ref": "refs/tags/rel_2_6",
+44-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8yXzY=",
+45:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_2_6",
+46-    "object": {
+--
+48-      "type": "tag",
+49:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/ce31cf12c1b1427afbb7ea9ca0a8daaf4f05f990"
+50-    }
+--
+52-  {
+53:    "ref": "refs/tags/rel_3_0",
+54-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzA=",
+55:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_0",
+56-    "object": {
+--
+58-      "type": "tag",
+59:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/8d740a9db45cf22e61c40d9558f9ef5de6f6e195"
+60-    }
+--
+62-  {
+63:    "ref": "refs/tags/rel_3_1",
+64-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE=",
+65:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_1",
+66-    "object": {
+--
+68-      "type": "tag",
+69:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/62968b41005016b644e5dabcbbb0a9260a6f2ee5"
+70-    }
+--
+72-  {
+73:    "ref": "refs/tags/rel_3_10_0_ga",
+74-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzEwXzBfZ2E=",
+75:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_10_0_ga",
+76-    "object": {
+--
+78-      "type": "tag",
+79:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/1615c495831ed96f749af83d0129ac9a7434f793"
+80-    }
+--
+82-  {
+83:    "ref": "refs/tags/rel_3_11_0_ga",
+84-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzExXzBfZ2E=",
+85:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_11_0_ga",
+86-    "object": {
+--
+88-      "type": "tag",
+89:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/02c3b797c04bed24d76359736ac6c49eaad257b9"
+90-    }
+--
+92-  {
+93:    "ref": "refs/tags/rel_3_12_0_ga",
+94-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzEyXzBfZ2E=",
+95:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_12_0_ga",
+96-    "object": {
+--
+98-      "type": "tag",
+99:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/216252544799681f87c7d05663f9fffa01f70922"
+100-    }
+--
+102-  {
+103:    "ref": "refs/tags/rel_3_12_1_ga",
+104-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzEyXzFfZ2E=",
+105:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_12_1_ga",
+106-    "object": {
+--
+108-      "type": "tag",
+109:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/5232ef7805929f9e0222f7e1cfd65c3104cac543"
+110-    }
+--
+112-  {
+113:    "ref": "refs/tags/rel_3_13_0_ga",
+114-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzEzXzBfZ2E=",
+115:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_13_0_ga",
+116-    "object": {
+--
+118-      "type": "tag",
+119:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/4f436fcf095f5ceb647618cff47ec3c7110c1f2e"
+120-    }
+--
+122-  {
+123:    "ref": "refs/tags/rel_3_14_0_ga",
+124-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE0XzBfZ2E=",
+125:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_14_0_ga",
+126-    "object": {
+--
+128-      "type": "tag",
+129:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/c76cf38388c2351d9224d019da1514f9ff36b5f3"
+130-    }
+--
+132-  {
+133:    "ref": "refs/tags/rel_3_15_0_ga",
+134-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE1XzBfZ2E=",
+135:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_15_0_ga",
+136-    "object": {
+--
+138-      "type": "tag",
+139:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/6f5bd3334f463bca8f16247330b5401a9f22b156"
+140-    }
+--
+142-  {
+143:    "ref": "refs/tags/rel_3_16_0_ga",
+144-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE2XzBfZ2E=",
+145:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_16_0_ga",
+146-    "object": {
+--
+148-      "type": "tag",
+149:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/04d4e95e1a5b02b56af1d01e89fabb0164eaca52"
+150-    }
+--
+152-  {
+153:    "ref": "refs/tags/rel_3_16_1_ga",
+154-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE2XzFfZ2E=",
+155:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_16_1_ga",
+156-    "object": {
+--
+158-      "type": "tag",
+159:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/36d52f44d618b23a3480113bb38f91aac337bd08"
+160-    }
+--
+162-  {
+163:    "ref": "refs/tags/rel_3_17_0_ga",
+164-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE3XzBfZ2E=",
+165:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_17_0_ga",
+166-    "object": {
+--
+168-      "type": "tag",
+169:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/8cfd97e638ede8ad15d28ed0886dcc619ea44211"
+170-    }
+--
+172-  {
+173:    "ref": "refs/tags/rel_3_17_1_ga",
+174-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE3XzFfZ2E=",
+175:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_17_1_ga",
+176-    "object": {
+--
+178-      "type": "tag",
+179:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/9347d8d7b2964aacae106423d3b80f4a081dbfcd"
+180-    }
+--
+182-  {
+183:    "ref": "refs/tags/rel_3_18_0_ga",
+184-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE4XzBfZ2E=",
+185:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_18_0_ga",
+186-    "object": {
+--
+188-      "type": "tag",
+189:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/48fa85781c2a7d0a66dbf64c02f76a7d1b65868e"
+190-    }
+--
+192-  {
+193:    "ref": "refs/tags/rel_3_18_1_beta1",
+194-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE4XzFfYmV0YTE=",
+195:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_18_1_beta1",
+196-    "object": {
+--
+198-      "type": "tag",
+199:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/68fb38ee61925d4ec41c636fe5a40b0737a68077"
+200-    }
+--
+202-  {
+203:    "ref": "refs/tags/rel_3_18_1_ga",
+204-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE4XzFfZ2E=",
+205:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_18_1_ga",
+206-    "object": {
+--
+208-      "type": "tag",
+209:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/1e261a2041155f77465045b39ee64b8c7bf26b97"
+210-    }
+--
+212-  {
+213:    "ref": "refs/tags/rel_3_18_2_ga",
+214-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE4XzJfZ2E=",
+215:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_18_2_ga",
+216-    "object": {
+--
+218-      "type": "tag",
+219:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/88d3554fadccaff1a21fc8e4f2535712308ef827"
+220-    }
+--
+222-  {
+223:    "ref": "refs/tags/rel_3_18_2_ga_build",
+224-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE4XzJfZ2FfYnVpbGQ=",
+225:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_18_2_ga_build",
+226-    "object": {
+--
+228-      "type": "tag",
+229:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/46dcfac4f016e1a637a80692aa4ea40597d38258"
+230-    }
+--
+232-  {
+233:    "ref": "refs/tags/rel_3_19_0_ga",
+234-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzE5XzBfZ2E=",
+235:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_19_0_ga",
+236-    "object": {
+--
+238-      "type": "commit",
+239:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/commits/70a1d2a8a163f1591af289f9cbe73cf271856e64"
+240-    }
+--
+242-  {
+243:    "ref": "refs/tags/rel_3_2",
+244-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI=",
+245:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_2",
+246-    "object": {
+--
+248-      "type": "tag",
+249:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/e7a700d8580811bd31189601db1cee47c7a84a35"
+250-    }
+--
+252-  {
+253:    "ref": "refs/tags/rel_3_20_0_ga",
+254-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIwXzBfZ2E=",
+255:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_20_0_ga",
+256-    "object": {
+--
+258-      "type": "tag",
+259:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/ecb17c25b1fe408ca2fab170de3d1c5220cb3556"
+260-    }
+--
+262-  {
+263:    "ref": "refs/tags/rel_3_21_0-java9-ea",
+264-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIxXzAtamF2YTktZWE=",
+265:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_21_0-java9-ea",
+266-    "object": {
+--
+268-      "type": "tag",
+269:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/5ec5dee14f570b4ee7832d0f5011169759a0744a"
+270-    }
+--
+272-  {
+273:    "ref": "refs/tags/rel_3_21_0-java9-ea2",
+274-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIxXzAtamF2YTktZWEy",
+275:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_21_0-java9-ea2",
+276-    "object": {
+--
+278-      "type": "tag",
+279:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/b63d3b1e840cbf77d26f75e7d1bd9e46655f2426"
+280-    }
+--
+282-  {
+283:    "ref": "refs/tags/rel_3_21_0_ga",
+284-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIxXzBfZ2E=",
+285:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_21_0_ga",
+286-    "object": {
+--
+288-      "type": "tag",
+289:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/17655b52cecc0f836e7ae37f6edb35a05874de64"
+290-    }
+--
+292-  {
+293:    "ref": "refs/tags/rel_3_22_00_ga",
+294-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIyXzAwX2dh",
+295:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_22_00_ga",
+296-    "object": {
+--
+298-      "type": "tag",
+299:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/77cfb465acde6abdc473b4f46f25370da40a6add"
+300-    }
+--
+302-  {
+303:    "ref": "refs/tags/rel_3_22_0_cr1",
+304-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIyXzBfY3Ix",
+305:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_22_0_cr1",
+306-    "object": {
+--
+308-      "type": "tag",
+309:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/43f2a7115843b018ac5c58f6349c93a9219ec159"
+310-    }
+--
+312-  {
+313:    "ref": "refs/tags/rel_3_22_0_cr2",
+314-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIyXzBfY3Iy",
+315:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_22_0_cr2",
+316-    "object": {
+--
+318-      "type": "tag",
+319:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/b22de1c175acb6f8ba42df16d838597c25c86888"
+320-    }
+--
+322-  {
+323:    "ref": "refs/tags/rel_3_22_0_ga",
+324-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIyXzBfZ2E=",
+325:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_22_0_ga",
+326-    "object": {
+--
+328-      "type": "tag",
+329:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/8a2790fb1f620db38e84ace157e81a89a36416ac"
+330-    }
+--
+332-  {
+333:    "ref": "refs/tags/rel_3_22_1_ga",
+334-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIyXzFfZ2E=",
+335:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_22_1_ga",
+336-    "object": {
+--
+338-      "type": "tag",
+339:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/b689323674c48a475a22626bc75b3a0a7847678c"
+340-    }
+--
+342-  {
+343:    "ref": "refs/tags/rel_3_23_0_ga",
+344-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIzXzBfZ2E=",
+345:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_23_0_ga",
+346-    "object": {
+--
+348-      "type": "tag",
+349:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/d6867de38433d8b019c77bdfc651318d9e53c9fb"
+350-    }
+--
+352-  {
+353:    "ref": "refs/tags/rel_3_23_1_ga",
+354-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIzXzFfZ2E=",
+355:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_23_1_ga",
+356-    "object": {
+--
+358-      "type": "tag",
+359:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/2c2ad6db6db589fa1bac4deffeec74cf9f6566ea"
+360-    }
+--
+362-  {
+363:    "ref": "refs/tags/rel_3_23_2_ga",
+364-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzIzXzJfZ2E=",
+365:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_23_2_ga",
+366-    "object": {
+--
+368-      "type": "tag",
+369:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/04d439249addbc45e73b401571ee26ba4c6b9556"
+370-    }
+--
+372-  {
+373:    "ref": "refs/tags/rel_3_24_0_ga",
+374-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI0XzBfZ2E=",
+375:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_24_0_ga",
+376-    "object": {
+--
+378-      "type": "tag",
+379:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/61c5ee04068efb3d1087be2cf34157a6099f268a"
+380-    }
+--
+382-  {
+383:    "ref": "refs/tags/rel_3_24_0_rc",
+384-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI0XzBfcmM=",
+385:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_24_0_rc",
+386-    "object": {
+--
+388-      "type": "tag",
+389:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/be7cf71c23014f3b6f79c870d9648007049367ec"
+390-    }
+--
+392-  {
+393:    "ref": "refs/tags/rel_3_24_1_ga",
+394-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI0XzFfZ2E=",
+395:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_24_1_ga",
+396-    "object": {
+--
+398-      "type": "tag",
+399:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/6e721727d0b4f533f8923de52e857ce7c37a9576"
+400-    }
+--
+402-  {
+403:    "ref": "refs/tags/rel_3_25_0_ga",
+404-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI1XzBfZ2E=",
+405:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_25_0_ga",
+406-    "object": {
+--
+408-      "type": "tag",
+409:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/3fb6bda4a5725a8900db4d7e3e3060765d3a7890"
+410-    }
+--
+412-  {
+413:    "ref": "refs/tags/rel_3_26_0_ga",
+414-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI2XzBfZ2E=",
+415:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_26_0_ga",
+416-    "object": {
+--
+418-      "type": "tag",
+419:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/09da8551eff0c9ab2ae256eda552cbf28072aa10"
+420-    }
+--
+422-  {
+423:    "ref": "refs/tags/rel_3_27_0_ga",
+424-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI3XzBfZ2E=",
+425:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_27_0_ga",
+426-    "object": {
+--
+428-      "type": "tag",
+429:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/0dac3b1b5dccac355eb2d8f57c106cf2f3d9becc"
+430-    }
+--
+432-  {
+433:    "ref": "refs/tags/rel_3_28_0_ga",
+434-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI4XzBfZ2E=",
+435:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_28_0_ga",
+436-    "object": {
+--
+438-      "type": "tag",
+439:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/0ec035fc6b7b63c7af9356b7ec3f1eaa9f93c3b5"
+440-    }
+--
+442-  {
+443:    "ref": "refs/tags/rel_3_29_0_ga",
+444-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI5XzBfZ2E=",
+445:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_29_0_ga",
+446-    "object": {
+--
+448-      "type": "tag",
+449:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/ec87e0e54247e636bf87f9364d11f79e021cf143"
+450-    }
+--
+452-  {
+453:    "ref": "refs/tags/rel_3_29_1_ga",
+454-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI5XzFfZ2E=",
+455:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_29_1_ga",
+456-    "object": {
+--
+458-      "type": "tag",
+459:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/3ef33d933769f26f09875ab8fe9e508640e59b48"
+460-    }
+--
+462-  {
+463:    "ref": "refs/tags/rel_3_29_2_ga",
+464-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzI5XzJfZ2E=",
+465:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_29_2_ga",
+466-    "object": {
+--
+468-      "type": "tag",
+469:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/27865c8018b7ea353bc6bc2f1ffac2fba8984ddb"
+470-    }
+--
+472-  {
+473:    "ref": "refs/tags/rel_3_30_0_ga",
+474-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzMwXzBfZ2E=",
+475:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_30_0_ga",
+476-    "object": {
+--
+478-      "type": "tag",
+479:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/cc77cbc16e0064b4f82b4f17c0c808e20ca7d152"
+480-    }
+--
+482-  {
+483:    "ref": "refs/tags/rel_3_30_1_ga",
+484-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzMwXzFfZ2E=",
+485:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_30_1_ga",
+486-    "object": {
+--
+488-      "type": "tag",
+489:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/0062b472294107afbc017f42e048055c616327cd"
+490-    }
+--
+492-  {
+493:    "ref": "refs/tags/rel_3_30_2_ga",
+494-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzMwXzJfZ2E=",
+495:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_30_2_ga",
+496-    "object": {
+--
+498-      "type": "tag",
+499:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/8f1ef4983217031d035424a5c1e4ba86af589ad0"
+500-    }
+--
+502-  {
+503:    "ref": "refs/tags/rel_3_31_0_ga",
+504-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzMxXzBfZ2E=",
+505:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_31_0_ga",
+506-    "object": {
+--
+508-      "type": "commit",
+509:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/commits/d0dd1bdb27021fa45217fe8c605922eb76d2abdc"
+510-    }
+--
+512-  {
+513:    "ref": "refs/tags/rel_3_3_GA",
+514-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzNfR0E=",
+515:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_3_GA",
+516-    "object": {
+--
+518-      "type": "tag",
+519:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/71351a0a500b4206f733d58660c7db16045340b7"
+520-    }
+--
+522-  {
+523:    "ref": "refs/tags/rel_3_4_GA",
+524-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzRfR0E=",
+525:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_4_GA",
+526-    "object": {
+--
+528-      "type": "tag",
+529:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/a140fcb379fd566b851a5ab14bc36d8a7a457cc3"
+530-    }
+--
+532-  {
+533:    "ref": "refs/tags/rel_3_6_ga",
+534-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzZfZ2E=",
+535:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_6_ga",
+536-    "object": {
+--
+538-      "type": "tag",
+539:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/c96d7db44864b59d49f76c3ae0421ee65b06d9af"
+540-    }
+--
+542-  {
+543:    "ref": "refs/tags/rel_3_7_1_ga",
+544-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzdfMV9nYQ==",
+545:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_7_1_ga",
+546-    "object": {
+--
+548-      "type": "tag",
+549:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/36d440e0885a0ac06b6a6968d75b7fe7d3f7b723"
+550-    }
+--
+552-  {
+553:    "ref": "refs/tags/rel_3_8_0_ga",
+554-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzhfMF9nYQ==",
+555:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_8_0_ga",
+556-    "object": {
+--
+558-      "type": "tag",
+559:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/fef36fae57a309ce26813aee20dcb23e8832c804"
+560-    }
+--
+562-  {
+563:    "ref": "refs/tags/rel_3_8_1_ga",
+564-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzhfMV9nYQ==",
+565:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_8_1_ga",
+566-    "object": {
+--
+568-      "type": "tag",
+569:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/02283e276a68296dfd3f5aee778b3d9b4545af64"
+570-    }
+--
+572-  {
+573:    "ref": "refs/tags/rel_3_9_0_ga",
+574-    "node_id": "MDM6UmVmMTAyNjIzNjQ6cmVmcy90YWdzL3JlbF8zXzlfMF9nYQ==",
+575:    "url": "https://api.github.com/repos/jboss-javassist/javassist/git/refs/tags/rel_3_9_0_ga",
+576-    "object": {
+--
+578-      "type": "tag",
+579:      "url": "https://api.github.com/repos/jboss-javassist/javassist/git/tags/4cbce694309df3319685595bda0b628480849271"
+580-    }
+
+exec
+/usr/bin/bash -lc "curl -fIs https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jboss-javassist/javassist/contents/src/test?ref=rel_3_14_0_ga | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+exec
+/usr/bin/bash -lc "curl -fIs https://repo.maven.apache.org/maven2/org/javassist/javassist/3.14.0-GA/javassist-3.14.0-GA-sources.jar | sed -n '1,12p' && curl -fIs https://repo.maven.apache.org/maven2/org/javassist/javassist/3.14.0-GA/javassist-3.14.0-GA-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+exec
+/usr/bin/bash -lc "curl -fIs https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/main | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 196ms:
+[
+  {
+    "name": "test",
+    "path": "src/test/test",
+    "sha": "56ab994814eafd5bc28c0fbd0908e3ee29bbd937",
+    "size": 0,
+    "url": "https://api.github.com/repos/jboss-javassist/javassist/contents/src/test/test?ref=rel_3_14_0_ga",
+    "html_url": "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test",
+    "git_url": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/56ab994814eafd5bc28c0fbd0908e3ee29bbd937",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jboss-javassist/javassist/contents/src/test/test?ref=rel_3_14_0_ga",
+      "git": "https://api.github.com/repos/jboss-javassist/javassist/git/trees/56ab994814eafd5bc28c0fbd0908e3ee29bbd937",
+      "html": "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test"
+    }
+  }
+]
+
+ succeeded in 526ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 18:14:57 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"426cdb0ed673e29ff4e7f43338b7bdb3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+ succeeded in 589ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 18:14:57 GMT
+content-type: application/java-archive
+content-length: 1611218
+cf-ray: 9f697cf14f1c0208-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "12e6b036754d0c9f6cf3bd0d0f99b7a3"
+last-modified: Wed, 06 Oct 2010 13:24:14 GMT
+x-checksum-md5: 12e6b036754d0c9f6cf3bd0d0f99b7a3
+x-checksum-sha1: 3864b663b2e203859f9bf7a2f2b3b7ea2597b69d
+server: cloudflare
+
+ succeeded in 601ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 18:14:57 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8dc004f4a94d6cc91c1a18e43390598a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+web search: 
+web search: javassist 3.14.0-GA source tag SVN
+web search: 
+web search: https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org javassist javassist 3.14.0-GA javassist-3.14.0-GA-sources.jar
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.fusesource.jansi/jansi/index.json && sed -n '1,50p' metadata/log4j/log4j/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+    "repository-url" : "https://github.com/fusesource/jansi",
+    "test-code-url" : "https://github.com/fusesource/jansi/tree/jansi-$version$/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-javadoc.jar",
+    "description" : "Jansi is a Java library for generating and interpreting ANSI escape sequences in console output. It wraps output streams and native terminal support so Java applications can emit styled text and interact with terminal capabilities across platforms.",
+    "tested-versions" : [
+      "2.0",
+      "2.0.1",
+      "2.1.0",
+      "2.1.1",
+      "2.2.0",
+      "2.3.0",
+      "2.3.1",
+      "2.3.2",
+      "2.3.3",
+      "2.3.4",
+      "2.4.0",
+      "2.4.1",
+      "2.4.2",
+      "2.4.3"
+    ],
+    "allowed-packages" : [
+      "org.fusesource.jansi"
+    ]
+  },
+  {
+    "metadata-version" : "1.16",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+    "repository-url" : "https://github.com/fusesource/jansi",
+    "test-code-url" : "https://github.com/fusesource/jansi/tree/jansi-project-$version$/jansi/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-javadoc.jar",
+    "description" : "Jansi is a Java library for generating and interpreting ANSI escape sequences in console output. It wraps output streams and native terminal support so Java applications can emit styled text and interact with terminal capabilities across platforms.",
+    "tested-versions" : [
+      "1.16",
+      "1.17",
+      "1.17.1",
+      "1.18"
+    ],
+    "allowed-packages" : [
+      "org.fusesource.hawtjni.runtime",
+      "org.fusesource.jansi"
+    ]
+  },
+  {
+    "metadata-version" : "1.13",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-sources.jar",
+    "repository-url" : "https://github.com/fusesource/jansi",
+    "test-code-url" : "https://github.com/fusesource/jansi/tree/jansi-project-$version$/jansi/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/$version$/jansi-$version$-javadoc.jar",
+    "description" : "Jansi is a Java library for generating and interpreting ANSI escape sequences in console output. It wraps output streams and native terminal support so Java applications can emit styled text and interact with terminal capabilities across platforms.",
+    "tested-versions" : [
+      "1.13",
+      "1.14",
+      "1.15"
+    ],
+    "allowed-packages" : [
+      "org.fusesource.hawtjni.runtime",
+      "org.fusesource.jansi"
+    ]
+  }
+]
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.apache.log4j"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+    "repository-url": "https://github.com/apache/logging-log4j1",
+    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+    "description": "Apache Log4j 1.2 is a Java logging framework that lets applications route log events to appenders such as the console, files, sockets, JDBC, and JMS. It provides hierarchical loggers plus configurable layouts, filters, and XML or properties-based configuration.",
+    "metadata-version": "1.2.17",
+    "tested-versions": [
+      "1.2.17"
+    ]
+  }
+]
+
+codex
+I found Maven Central has both `-sources.jar` and `-javadoc.jar`, while there is no test classifier in that artifact directory. The upstream GitHub mirror has the `rel_3_14_0_ga` tag and a `src/test/test` tree for that release, so I’ll use Maven for source/docs and the tagged GitHub tree for tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/javassist/javassist/3.14.0-GA/javassist-3.14.0-GA.pom | xmllint --xpath 'concat(/_:project/_:packaging,\"\\n\",/_:project/_:description,\"\\n\",/_:project/_:scm/_:url,\"\\n\")' - 2>/dev/null || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/javassist.jar" https://repo.maven.apache.org/maven2/org/javassist/javassist/3.14.0-GA/javassist-3.14.0-GA.jar; jar tf "$tmp/javassist.jar" | sed -n '"'1,40p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jboss-javassist/javassist | rg -n '\"html_url\"|\"description\"|\"homepage\"|\"language\"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 236ms:
+14:    "html_url": "https://github.com/jboss-javassist",
+28:  "html_url": "https://github.com/jboss-javassist/javassist",
+29:  "description": "Java bytecode engineering toolkit",
+75:  "homepage": "www.javassist.org",
+79:  "language": "Java",
+123:    "html_url": "https://github.com/jboss-javassist",
+
+ succeeded in 272ms:
+META-INF/
+META-INF/MANIFEST.MF
+javassist/
+javassist/bytecode/
+javassist/bytecode/analysis/
+javassist/bytecode/annotation/
+javassist/bytecode/stackmap/
+javassist/compiler/
+javassist/compiler/ast/
+javassist/convert/
+javassist/tools/
+javassist/tools/reflect/
+javassist/tools/rmi/
+javassist/tools/web/
+javassist/expr/
+javassist/scopedpool/
+javassist/util/
+javassist/util/proxy/
+javassist/runtime/
+javassist/ClassPool$1.class
+javassist/CtConstructor.class
+javassist/CtField$FloatInitializer.class
+javassist/JarClassPath.class
+javassist/bytecode/StackMapTable$RuntimeCopyException.class
+javassist/bytecode/CodeIterator$Lookup.class
+javassist/bytecode/SignatureAttribute$NestedClassType.class
+javassist/bytecode/StackMap$Printer.class
+javassist/bytecode/CodeAttribute.class
+javassist/bytecode/SignatureAttribute$TypeParameter.class
+javassist/bytecode/StackMapTable$Printer.class
+javassist/bytecode/ExceptionsAttribute.class
+javassist/bytecode/LongVector.class
+javassist/bytecode/ExceptionTable.class
+javassist/bytecode/AttributeInfo.class
+javassist/bytecode/StackMapTable$Walker.class
+javassist/bytecode/SignatureAttribute$1.class
+javassist/bytecode/InterfaceMethodrefInfo.class
+javassist/bytecode/FieldrefInfo.class
+javassist/bytecode/ClassFileWriter$FieldWriter.class
+javassist/bytecode/StackMapTable$Copier.class
+
+codex
+I’ve also confirmed the main artifact is a regular JVM JAR with `.class` files, so it remains a Native Image metadata target. It is Java, not Kotlin/Groovy/Scala-specific under the requested language field rules, so I’ll leave `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+diff --git a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+index ff96dae6926ab8fc4bdd9e24543032e9f23e977a..f4264faae51356e66e35b22adbd35ba3c8e4d8dc
+--- a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
++++ b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javassist:javassist:3.14.0-GA"
++  "coordinates" : "org.javassist:javassist:3.14.0-GA",
++  "repository-url" : "https://github.com/jboss-javassist/javassist",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-javadoc.jar",
++  "description" : "Javassist is a Java bytecode engineering library for inspecting, creating, and modifying classes at runtime or build time. It provides high-level APIs for editing bytecode, class definitions, methods, fields, and annotations without directly writing JVM bytecode instructions."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+index ff96dae6926ab8fc4bdd9e24543032e9f23e977a..f4264faae51356e66e35b22adbd35ba3c8e4d8dc
+--- a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
++++ b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javassist:javassist:3.14.0-GA"
++  "coordinates" : "org.javassist:javassist:3.14.0-GA",
++  "repository-url" : "https://github.com/jboss-javassist/javassist",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-javadoc.jar",
++  "description" : "Javassist is a Java bytecode engineering library for inspecting, creating, and modifying classes at runtime or build time. It provides high-level APIs for editing bytecode, class definitions, methods, fields, and annotations without directly writing JVM bytecode instructions."
+ }
+
+exec
+/usr/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json >/tmp/javassist-metadata.pretty && sed -n '1,120p' /tmp/javassist-metadata.pretty" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+{
+    "coordinates": "org.javassist:javassist:3.14.0-GA",
+    "repository-url": "https://github.com/jboss-javassist/javassist",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-sources.jar",
+    "test-code-url": "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-javadoc.jar",
+    "description": "Javassist is a Java bytecode engineering library for inspecting, creating, and modifying classes at runtime or build time. It provides high-level APIs for editing bytecode, class definitions, methods, fields, and annotations without directly writing JVM bytecode instructions."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+index ff96dae6926ab8fc4bdd9e24543032e9f23e977a..f4264faae51356e66e35b22adbd35ba3c8e4d8dc
+--- a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
++++ b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javassist:javassist:3.14.0-GA"
++  "coordinates" : "org.javassist:javassist:3.14.0-GA",
++  "repository-url" : "https://github.com/jboss-javassist/javassist",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-javadoc.jar",
++  "description" : "Javassist is a Java bytecode engineering library for inspecting, creating, and modifying classes at runtime or build time. It provides high-level APIs for editing bytecode, class definitions, methods, fields, and annotations without directly writing JVM bytecode instructions."
+ }
+
+web search: 
+web search: Maven Central org.javassist javassist 3.14.0-GA sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/javassist/javassist/
+web search: 
+web search: 
+web search: 
+web search: https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json >/dev/null && printf 'json ok\\n'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+json ok
+
+diff --git a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+index ff96dae6926ab8fc4bdd9e24543032e9f23e977a..f4264faae51356e66e35b22adbd35ba3c8e4d8dc
+--- a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
++++ b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javassist:javassist:3.14.0-GA"
++  "coordinates" : "org.javassist:javassist:3.14.0-GA",
++  "repository-url" : "https://github.com/jboss-javassist/javassist",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-javadoc.jar",
++  "description" : "Javassist is a Java bytecode engineering library for inspecting, creating, and modifying classes at runtime or build time. It provides high-level APIs for editing bytecode, class definitions, methods, fields, and annotations without directly writing JVM bytecode instructions."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.javassist:javassist:3.14.0-GA",
+  "repository-url" : "https://github.com/jboss-javassist/javassist",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-sources.jar",
+  "test-code-url" : "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-javadoc.jar",
+  "description" : "Javassist is a Java bytecode engineering library for inspecting, creating, and modifying classes at runtime or build time. It provides high-level APIs for editing bytecode, class definitions, methods, fields, and annotations without directly writing JVM bytecode instructions."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9
+diff --git a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+index ff96dae6926ab8fc4bdd9e24543032e9f23e977a..f4264faae51356e66e35b22adbd35ba3c8e4d8dc
+--- a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
++++ b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javassist:javassist:3.14.0-GA"
++  "coordinates" : "org.javassist:javassist:3.14.0-GA",
++  "repository-url" : "https://github.com/jboss-javassist/javassist",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-javadoc.jar",
++  "description" : "Javassist is a Java bytecode engineering library for inspecting, creating, and modifying classes at runtime or build time. It provides high-level APIs for editing bytecode, class definitions, methods, fields, and annotations without directly writing JVM bytecode instructions."
+ }
+
+ succeeded in 217ms:
+web search: 
+web search: org.javassist javassist 3.14.0-GA Maven Central javassist-3.14.0-GA-sources.jar javassist-3.14.0-GA-javadoc.jar
+web search: 
+web search: site:github.com/jboss-javassist/javassist rel_3_14_0_ga src/test/test
+web search: 
+web search: https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test
+web search: 
+web search: 
+web search: 
+web search: javassist-3.14.0-GA.pom description Java bytecode manipulation simple class library for editing bytecodes in Java
+codex
+Updated [org.javassist-javassist-3.14.0-GA.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json) with repository, Maven Central source/javadoc URLs, the tagged upstream test suite URL, and the two-sentence description. Maven Central has the `sources` and `javadoc` artifacts for `3.14.0-GA`, and the upstream repo has the `rel_3_14_0_ga` test tree. ([repo1.maven.org](https://repo1.maven.org/maven2/org/javassist/javassist/3.14.0-GA/?utm_source=openai))
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a JVM JAR with class files. JSON syntax validation passed with `python -m json.tool`.
+diff --git a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+index ff96dae6926ab8fc4bdd9e24543032e9f23e977a..f4264faae51356e66e35b22adbd35ba3c8e4d8dc
+--- a/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
++++ b/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javassist:javassist:3.14.0-GA"
++  "coordinates" : "org.javassist:javassist:3.14.0-GA",
++  "repository-url" : "https://github.com/jboss-javassist/javassist",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jboss-javassist/javassist/tree/rel_3_14_0_ga/src/test/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/javassist/javassist/$version$/javassist-$version$-javadoc.jar",
++  "description" : "Javassist is a Java bytecode engineering library for inspecting, creating, and modifying classes at runtime or build time. It provides high-level APIs for editing bytecode, class definitions, methods, fields, and annotations without directly writing JVM bytecode instructions."
+ }
+
+tokens used
+96,558
+Updated [org.javassist-javassist-3.14.0-GA.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9/build/discovered-artifact-metadata/org.javassist-javassist-3.14.0-GA.json) with repository, Maven Central source/javadoc URLs, the tagged upstream test suite URL, and the two-sentence description. Maven Central has the `sources` and `javadoc` artifacts for `3.14.0-GA`, and the upstream repo has the `rel_3_14_0_ga` test tree. ([repo1.maven.org](https://repo1.maven.org/maven2/org/javassist/javassist/3.14.0-GA/?utm_source=openai))
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the artifact is a JVM JAR with class files. JSON syntax validation passed with `python -m json.tool`.
+Ran agent for org.javassist:javassist:3.14.0-GA (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9/build/agent-artifact-discovery-logs/org.javassist-javassist-3.14.0-GA.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1491-01a941f9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 58s
+9 actionable tasks: 4 executed, 5 from cache
