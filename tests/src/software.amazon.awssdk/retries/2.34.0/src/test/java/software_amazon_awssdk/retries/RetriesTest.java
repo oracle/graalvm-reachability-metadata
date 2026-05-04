@@ -205,6 +205,43 @@ public class RetriesTest {
     }
 
     @Test
+    void legacyStrategyDoesNotSpendCircuitBreakerCapacityForThrottlingFailures() {
+        LegacyRetryStrategy strategy = LegacyRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .treatAsThrottling(ThrottlingFailure.class::isInstance)
+            .backoffStrategy(BackoffStrategy.retryImmediately())
+            .throttlingBackoffStrategy(BackoffStrategy.retryImmediately())
+            .circuitBreakerEnabled(true)
+            .build();
+        String throttledScope = "legacy-throttling-capacity";
+
+        for (int attempt = 0; attempt < 120; attempt++) {
+            RetryToken token = strategy.acquireInitialToken(AcquireInitialTokenRequest.create(throttledScope)).token();
+            RefreshRetryTokenResponse retry = strategy.refreshRetryToken(
+                refreshRequest(token, new ThrottlingFailure()).build());
+            assertThat(retry.token()).isNotNull();
+        }
+
+        TokenAcquisitionFailedException blockedRetry = null;
+        for (int attempt = 0; attempt < 200 && blockedRetry == null; attempt++) {
+            RetryToken token = strategy.acquireInitialToken(AcquireInitialTokenRequest.create("legacy-normal-capacity"))
+                .token();
+            RuntimeException failure = new RuntimeException("normal-" + attempt);
+            try {
+                strategy.refreshRetryToken(refreshRequest(token, failure).build());
+            } catch (TokenAcquisitionFailedException e) {
+                assertThat(e).hasCause(failure);
+                blockedRetry = e;
+            }
+        }
+
+        assertThat(blockedRetry).isNotNull()
+            .hasMessageContaining("protect the caller")
+            .satisfies(exception -> assertThat(exception.token()).isNotNull());
+    }
+
+    @Test
     void adaptiveStrategyAppliesConfiguredBackoffAndCanBeCopied() {
         AdaptiveRetryStrategy strategy = AdaptiveRetryStrategy.builder()
             .maxAttempts(4)
