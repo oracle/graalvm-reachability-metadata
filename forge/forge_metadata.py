@@ -519,7 +519,7 @@ def fetch_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
     data = gh_json(
         "api", "--method", "GET", "/search/issues",
         "-f", f"q={query}",
-        "-f", "sort=created",
+        "-f", "sort=updated",
         "-f", "order=desc",
         "-F", f"per_page={per_page}",
         "-F", f"page={page}",
@@ -536,7 +536,7 @@ def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
         return fetch_issue_search_page(query, page, per_page)
 
     ttl_seconds = get_issue_search_cache_ttl_seconds()
-    cache_key = build_issue_search_cache_key("page", query, "created", "desc", page, per_page)
+    cache_key = build_issue_search_cache_key("page", query, "updated", "desc", page, per_page)
     now = time.time()
     cached_payload = _read_issue_search_cache_payload()
     if cached_payload is not None:
@@ -4874,7 +4874,7 @@ def format_issue_scan_position(
 def log_issue_scan_start(label: str, offset: int) -> None:
     """Log where an issue scan starts."""
     if offset == 0:
-        position = "from the beginning with priority-first ordering"
+        position = "from the most recently updated issues with priority-first ordering"
     else:
         position = f"from offset {offset}"
     print()
