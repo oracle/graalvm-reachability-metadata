@@ -53,6 +53,14 @@ final case class Contact(name: String, primaryEmail: Email, secondaryEmails: Lis
 
 final case class DefaultsEnabled(name: String, active: Boolean = true, aliases: List[String] = Nil) derives ReadWriter
 
+final case class ExternalLine(sku: String, quantity: Int) derives ReadWriter
+
+final case class ExternalOrder(id: String, lines: List[ExternalLine], metadata: Map[String, String]) derives ReadWriter
+
+final case class InternalLine(sku: String, quantity: Int) derives ReadWriter
+
+final case class InternalOrder(id: String, lines: List[InternalLine], metadata: Map[String, String]) derives ReadWriter
+
 class Upickle_3Test {
   @Test
   def readsAndWritesNestedCaseClassesWithCollectionsOptionsAndRenamedFields(): Unit = {
@@ -183,6 +191,26 @@ class Upickle_3Test {
         read[List[Int]]("""{"not":"a-list"}""")
         ()
       }
+    )
+  }
+
+  @Test
+  def transformsBetweenCompatibleTypesUsingReadersAndWriters(): Unit = {
+    val external: ExternalOrder = ExternalOrder(
+      id = "order-42",
+      lines = List(ExternalLine("BOOK-1", 2), ExternalLine("PEN-9", 5)),
+      metadata = Map("channel" -> "web", "priority" -> "standard")
+    )
+
+    val internal: InternalOrder = transform(external).to[InternalOrder]
+
+    assertEquals(
+      InternalOrder(
+        id = "order-42",
+        lines = List(InternalLine("BOOK-1", 2), InternalLine("PEN-9", 5)),
+        metadata = Map("channel" -> "web", "priority" -> "standard")
+      ),
+      internal
     )
   }
 
