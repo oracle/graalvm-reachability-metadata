@@ -16,6 +16,7 @@ import upickle.core.Visitor
 import upickle.implicits.allowUnknownKeys
 import upickle.implicits.flatten
 import upickle.implicits.key
+import upickle.implicits.serializeDefaults
 
 import java.util.UUID
 import scala.collection.immutable.ListMap
@@ -253,6 +254,12 @@ object DefaultsExample {
   implicit val rw: MiniPickle.ReadWriter[DefaultsExample] = MiniPickle.macroRWAll[DefaultsExample]
 }
 
+@serializeDefaults(true)
+case class VerboseDefaultsExample(name: String = "default", enabled: Boolean = true, count: Int = 7)
+object VerboseDefaultsExample {
+  implicit val rw: MiniPickle.ReadWriter[VerboseDefaultsExample] = MiniPickle.macroRWAll[VerboseDefaultsExample]
+}
+
 @allowUnknownKeys(false)
 case class StrictExample(name: String)
 object StrictExample {
@@ -329,6 +336,17 @@ class Upickle_implicits_3Test {
     assertThat(decoded).isEqualTo(DefaultsExample("configured"))
     assertThatThrownBy(() => readTree[StrictExample](ListMap("name" -> "strict", "ignored" -> true)))
       .isInstanceOf(classOf[Exception])
+  }
+
+  @Test
+  def serializeDefaultsAnnotationWritesDefaultValuedFields(): Unit = {
+    val value: VerboseDefaultsExample = VerboseDefaultsExample()
+    val tree: ListMap[String, Any] = writeTree(value).asInstanceOf[ListMap[String, Any]]
+
+    assertThat(tree("name")).isEqualTo("default")
+    assertThat(tree("enabled")).isEqualTo(true)
+    assertThat(tree("count")).isEqualTo(7)
+    assertThat(readTree[VerboseDefaultsExample](tree)).isEqualTo(value)
   }
 
   @Test
