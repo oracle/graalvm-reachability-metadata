@@ -124,6 +124,28 @@ public class Proto_google_cloud_firestore_bundle_v1Test {
     }
 
     @Test
+    void bundledQueryPreservesForwardCompatibleLimitTypeValues() throws Exception {
+        int unrecognizedLimitTypeValue = 9876;
+        BundledQuery query = BundledQuery.newBuilder()
+                .setParent(DATABASE + "/documents")
+                .setLimitTypeValue(unrecognizedLimitTypeValue)
+                .build();
+
+        assertThat(query.getLimitTypeValue()).isEqualTo(unrecognizedLimitTypeValue);
+        assertThat(query.getLimitType()).isEqualTo(BundledQuery.LimitType.UNRECOGNIZED);
+
+        BundledQuery parsedQuery = BundledQuery.parseFrom(query.toByteArray());
+        assertThat(parsedQuery.getLimitTypeValue()).isEqualTo(unrecognizedLimitTypeValue);
+        assertThat(parsedQuery.getLimitType()).isEqualTo(BundledQuery.LimitType.UNRECOGNIZED);
+
+        BundledQuery recognizedQuery = parsedQuery.toBuilder()
+                .setLimitType(BundledQuery.LimitType.LAST)
+                .build();
+        assertThat(recognizedQuery.getLimitTypeValue()).isEqualTo(BundledQuery.LimitType.LAST_VALUE);
+        assertThat(recognizedQuery.getLimitType()).isEqualTo(BundledQuery.LimitType.LAST);
+    }
+
+    @Test
     void bundleElementSwitchesAmongEverySupportedElementType() throws Exception {
         BundleMetadata metadata = BundleMetadata.newBuilder()
                 .setId("bundle-users")
