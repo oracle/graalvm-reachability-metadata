@@ -45,10 +45,12 @@ import org.jboss.shrinkwrap.api.ArchiveFormat;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.NamedAsset;
 import org.jboss.shrinkwrap.api.exporter.StreamExporter;
 import org.jboss.shrinkwrap.api.formatter.Formatter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 
 public class Arquillian_container_test_apiTest {
@@ -123,6 +125,25 @@ public class Arquillian_container_test_apiTest {
         assertThat(archive.addedPaths).containsExactly(Testable.MARKER_FILE_PATH.get());
         assertThat(archive.addedAssets).hasSize(1);
         assertThat(Testable.MARKER_FILE_PATH.get()).isEqualTo("/META-INF/arquillian.ArchiveUnderTest");
+    }
+
+    @Test
+    void testableAddsRetrievableEmptyMarkerAssetToRealArchive() throws Exception {
+        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "sample.jar");
+
+        JavaArchive returned = Testable.archiveToTest(archive);
+        Node marker = archive.get(Testable.MARKER_FILE_PATH);
+
+        assertThat(returned).isSameAs(archive);
+        assertThat(Testable.isArchiveToTest(archive)).isTrue();
+        assertThat(marker).isNotNull();
+        assertThat(marker.getPath()).isEqualTo(Testable.MARKER_FILE_PATH);
+
+        byte[] markerBytes;
+        try (InputStream markerStream = marker.getAsset().openStream()) {
+            markerBytes = markerStream.readAllBytes();
+        }
+        assertThat(markerBytes).isEmpty();
     }
 
     @Test
