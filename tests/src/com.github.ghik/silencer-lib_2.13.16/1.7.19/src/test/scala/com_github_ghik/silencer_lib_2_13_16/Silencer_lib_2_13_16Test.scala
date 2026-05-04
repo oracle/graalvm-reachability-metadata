@@ -94,6 +94,17 @@ class Silencer_lib_2_13_16Test {
     assertEquals(Some("1 + 3 + 5 = 9"), summarized)
     assertFalse(pipeline.summarize(Nil).isDefined)
   }
+
+  @Test
+  def annotationsOnImplicitDefinitionsKeepImplicitResolutionAndExtensionMethods(): Unit = {
+    import SilencerImplicitFixture._
+
+    assertEquals("int:7", render(7))
+    assertEquals("string:metadata", render("metadata"))
+    assertEquals("some(int:3)", render(Option(3)))
+    assertEquals("none", render(Option.empty[Int]))
+    assertEquals("int:12", 12.rendered)
+  }
 }
 
 @silent("class-level silencer annotation")
@@ -183,5 +194,51 @@ final class SilencerPipeline {
   @silent("private helper method annotation")
   private def parse(value: String): Option[Int] = {
     value.toIntOption
+  }
+}
+
+@silent("implicit type class annotation")
+trait SilencerFormatter[A] {
+  def render(value: A): String
+}
+
+object SilencerImplicitFixture {
+  @silent("implicit integer formatter annotation")
+  implicit val intFormatter: SilencerFormatter[Int] = new SilencerFormatter[Int] {
+    override def render(value: Int): String = {
+      s"int:$value"
+    }
+  }
+
+  @silent("implicit string formatter annotation")
+  implicit val stringFormatter: SilencerFormatter[String] = new SilencerFormatter[String] {
+    override def render(value: String): String = {
+      s"string:$value"
+    }
+  }
+
+  @silent("implicit option formatter annotation")
+  implicit def optionFormatter[A](implicit formatter: SilencerFormatter[A]): SilencerFormatter[Option[A]] = {
+    new SilencerFormatter[Option[A]] {
+      override def render(value: Option[A]): String = {
+        value match {
+          case Some(innerValue) => s"some(${formatter.render(innerValue)})"
+          case None => "none"
+        }
+      }
+    }
+  }
+
+  @silent("implicit-parameter method annotation")
+  def render[A](value: A)(implicit @silent("implicit formatter parameter annotation") formatter: SilencerFormatter[A]): String = {
+    formatter.render(value)
+  }
+
+  @silent("implicit extension class annotation")
+  implicit final class RenderOps[A](@silent("extension receiver annotation") private val value: A) extends AnyVal {
+    @silent("extension method annotation")
+    def rendered(implicit formatter: SilencerFormatter[A]): String = {
+      render(value)
+    }
   }
 }
