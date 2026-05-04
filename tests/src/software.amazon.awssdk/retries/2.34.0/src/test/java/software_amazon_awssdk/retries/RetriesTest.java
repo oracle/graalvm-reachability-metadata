@@ -123,6 +123,46 @@ public class RetriesTest {
     }
 
     @Test
+    void circuitBreakerBlocksRetriesWhenScopedCapacityIsExhaustedAndSuccessRestoresCapacity() {
+        StandardRetryStrategy strategy = StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .backoffStrategy(BackoffStrategy.retryImmediately())
+            .circuitBreakerEnabled(true)
+            .build();
+        String scope = "circuit-breaker-scope";
+        RetryToken tokenThatAcquiredCapacity = null;
+        TokenAcquisitionFailedException blockedRetry = null;
+
+        for (int attempt = 0; attempt < 200 && blockedRetry == null; attempt++) {
+            RetryToken initialToken = strategy.acquireInitialToken(AcquireInitialTokenRequest.create(scope)).token();
+            RuntimeException failure = new RuntimeException("retryable-" + attempt);
+            try {
+                tokenThatAcquiredCapacity = strategy.refreshRetryToken(refreshRequest(initialToken, failure).build())
+                    .token();
+            } catch (TokenAcquisitionFailedException e) {
+                assertThat(e).hasCause(failure);
+                blockedRetry = e;
+            }
+        }
+
+        assertThat(tokenThatAcquiredCapacity).isNotNull();
+        assertThat(blockedRetry).isNotNull()
+            .hasMessageContaining("protect the caller")
+            .satisfies(exception -> assertThat(exception.token()).isNotNull());
+
+        RetryToken restoredCapacityToken = strategy.recordSuccess(RecordSuccessRequest.create(tokenThatAcquiredCapacity))
+            .token();
+        assertThat(restoredCapacityToken).isNotNull();
+
+        RetryToken initialTokenAfterSuccess = strategy.acquireInitialToken(AcquireInitialTokenRequest.create(scope))
+            .token();
+        RefreshRetryTokenResponse retryAfterSuccess = strategy.refreshRetryToken(
+            refreshRequest(initialTokenAfterSuccess, new RuntimeException("after success")).build());
+        assertThat(retryAfterSuccess.token()).isNotNull();
+    }
+
+    @Test
     void legacyStrategyUsesThrottlingBackoffForFailuresMarkedAsThrottling() {
         LegacyRetryStrategy strategy = LegacyRetryStrategy.builder()
             .maxAttempts(3)
