@@ -22,6 +22,7 @@ import org.http4s.Header
 import org.http4s.InvalidMessageBodyFailure
 import org.http4s.Media
 import org.http4s.MediaType
+import org.http4s.Message
 import org.http4s.Method
 import org.http4s.ParseFailure
 import org.http4s.Request
@@ -189,6 +190,20 @@ class Http4s_circe_3Test {
     val decodedWidgets: List[Widget] = decodedJson.map(_.as[Widget].toOption.get)
 
     assertEquals(widgets, decodedWidgets)
+  }
+
+  @Test
+  def messageSyntaxDecodesJsonAndDomainValuesFromRequestBody(): Unit = {
+    import org.http4s.circe._
+
+    val request: Message[IO] = Request[IO](Method.POST, parseUri("/syntax"))
+      .withEntity("""{"id":21,"name":"syntax","tags":["extension"]}""")
+      .withContentType(`Content-Type`(MediaType.application.json))
+
+    val json: Json = run(request.json)
+
+    assertEquals(Right(21), json.hcursor.downField("id").as[Int])
+    assertEquals(Widget(21, "syntax", List("extension")), run(request.decodeJson[Widget]))
   }
 
   @Test
