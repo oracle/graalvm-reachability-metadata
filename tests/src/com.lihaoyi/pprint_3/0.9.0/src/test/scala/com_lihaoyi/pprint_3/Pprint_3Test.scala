@@ -79,6 +79,15 @@ class Pprint_3Test {
   }
 
   @Test
+  def rendersSymbolicProductsAsInfixExpressions(): Unit = {
+    final case class ::(head: Any, tail: Any)
+    val printer: PPrinter = PPrinter.BlackWhite
+
+    assertEquals("1 :: 2", printer(::(1, 2)).plainText)
+    assertEquals("0 :: 1 :: 2", printer(::(0, ::(1, 2))).plainText)
+  }
+
+  @Test
   def wrapsIndentedOutputAndTruncatesTallOutput(): Unit = {
     val printer: PPrinter = PPrinter.BlackWhite
 
