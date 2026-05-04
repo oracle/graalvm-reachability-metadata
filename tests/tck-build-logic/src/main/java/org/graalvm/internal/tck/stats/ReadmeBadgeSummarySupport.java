@@ -241,12 +241,37 @@ public final class ReadmeBadgeSummarySupport {
             markdown.append("| `")
                     .append(markdownCell(entry.coordinate()))
                     .append("` | ")
-                    .append(markdownCell(entry.description()))
+                    .append(collapsibleDescriptionCell(entry.description()))
                     .append(" | ")
                     .append(markdownCell(formatDynamicAccessCoverage(entry.dynamicAccessCoverage())))
                     .append(" |\n");
         }
         return markdown.toString();
+    }
+
+    static String collapsibleDescriptionCell(String description) {
+        if (description == null) {
+            return "";
+        }
+        String normalized = description.trim().replaceAll("\\s+", " ");
+        if (normalized.isEmpty()) {
+            return "";
+        }
+        int summaryEnd = normalized.indexOf(". ");
+        if (summaryEnd <= 0) {
+            return escapeMarkdownTableHtml(normalized);
+        }
+        String summary = escapeMarkdownTableHtml(normalized.substring(0, summaryEnd + 1));
+        String rest = escapeMarkdownTableHtml(normalized.substring(summaryEnd + 2));
+        return "<details><summary>" + summary + "</summary> " + rest + "</details>";
+    }
+
+    private static String escapeMarkdownTableHtml(String value) {
+        return value
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("|", "\\|");
     }
 
     private static StatsMetrics buildStatsMetrics(LibraryStatsModels.LibraryStats libraryStats) {
