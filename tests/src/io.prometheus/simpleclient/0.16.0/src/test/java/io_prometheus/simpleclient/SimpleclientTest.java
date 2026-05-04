@@ -243,6 +243,37 @@ public class SimpleclientTest {
     }
 
     @Test
+    void collectorRegistryManagesCollectorLifecycle() {
+        CollectorRegistry registry = new CollectorRegistry();
+        Counter processed = Counter.build("lifecycle_events_total", "Lifecycle events.")
+                .register(registry);
+        processed.inc(2.0);
+
+        assertThat(registry.getSampleValue("lifecycle_events_total")).isEqualTo(2.0);
+
+        Counter duplicate = Counter.build("lifecycle_events_total", "Duplicate lifecycle events.")
+                .create();
+        assertThatIllegalArgumentException().isThrownBy(() -> duplicate.register(registry));
+
+        registry.unregister(processed);
+        assertThat(registry.getSampleValue("lifecycle_events_total")).isNull();
+        assertThat(Collections.list(registry.metricFamilySamples())).isEmpty();
+
+        processed.register(registry);
+        assertThat(registry.getSampleValue("lifecycle_events_total")).isEqualTo(2.0);
+
+        Gauge activeSessions = Gauge.build("active_sessions", "Active sessions.")
+                .register(registry);
+        activeSessions.set(3.0);
+        assertThat(registry.getSampleValue("active_sessions")).isEqualTo(3.0);
+
+        registry.clear();
+        assertThat(registry.getSampleValue("lifecycle_events_total")).isNull();
+        assertThat(registry.getSampleValue("active_sessions")).isNull();
+        assertThat(Collections.list(registry.metricFamilySamples())).isEmpty();
+    }
+
+    @Test
     void customMetricFamiliesCanBeCollectedAndFiltered() {
         CollectorRegistry registry = new CollectorRegistry();
         Collector customCollector = new Collector() {
