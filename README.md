@@ -57,4 +57,4 @@ Before submitting a pull request, please [open a ticket](https://github.com/orac
 3. Development workflow is described in [DEVELOPING.md](docs/DEVELOPING.md).
 
 ---
-Built with love by the community and the [GraalVM](https://www.graalvm.org/), [Spring](https://spring.io/projects/spring-boot), and [Micronaut](https://micronaut.io/) teams.
+❤️ by the community and the [GraalVM](https://www.graalvm.org/), [Spring](https://spring.io/projects/spring-boot), and [Micronaut](https://micronaut.io/) teams.
