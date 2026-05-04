@@ -6,6 +6,10 @@
  */
 package com_graphql_java.graphql_java;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import static graphql.Scalars.GraphQLString;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PropertyFetchingImplTest {
+public class PropertyDataFetcherTest {
 
   @BeforeEach
   void resetPropertyFetcher() {
@@ -79,6 +83,22 @@ public class PropertyFetchingImplTest {
 
     assertThat(fetcher.get(environmentFor(source))).isEqualTo("private field value");
     assertThat(fetcher.get(environmentFor(source))).isEqualTo("private field value");
+  }
+
+  @Test
+  void findsPublicMethodOnRootInterfaceWhenNoSuperclassExists() throws Throwable {
+    PropertyDataFetcher<String> fetcher = PropertyDataFetcher.fetching("name");
+    // A non-public interface has no superclass, so it exercises the root interface lookup path.
+    MethodHandle finder = MethodHandles.privateLookupIn(PropertyDataFetcher.class, MethodHandles.lookup())
+        .findVirtual(
+            PropertyDataFetcher.class,
+            "findPubliclyAccessibleMethod",
+            MethodType.methodType(Method.class, Class.class, String.class));
+
+    Method method = (Method) finder.invoke(fetcher, NonPublicNameSource.class, "getName");
+
+    assertThat(method.getDeclaringClass()).isEqualTo(NonPublicNameSource.class);
+    assertThat(method.getName()).isEqualTo("getName");
   }
 
   private DataFetchingEnvironment environmentFor(Object source) {
@@ -211,5 +231,10 @@ public class PropertyFetchingImplTest {
   public static class PrivateFieldSource {
 
     private final String privateField = "private field value";
+  }
+
+  interface NonPublicNameSource {
+
+    String getName();
   }
 }
