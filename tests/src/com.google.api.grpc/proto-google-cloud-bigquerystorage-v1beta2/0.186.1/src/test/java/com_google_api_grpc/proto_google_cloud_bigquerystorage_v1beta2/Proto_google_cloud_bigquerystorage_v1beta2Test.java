@@ -197,6 +197,36 @@ public class Proto_google_cloud_bigquerystorage_v1beta2Test {
     }
 
     @Test
+    void avroReadSessionCarriesAvroSchemaAndStreamMetadata() {
+        String avroSchemaJson = """
+                {"type":"record","name":"Event","fields":[{"name":"user_id","type":"long"}]}
+                """;
+        ReadSession readSession = ReadSession.newBuilder()
+                .setName("projects/sample-project/locations/us/sessions/session-1")
+                .setDataFormat(DataFormat.AVRO)
+                .setAvroSchema(AvroSchema.newBuilder().setSchema(avroSchemaJson))
+                .setTable(TableName.format(PROJECT, DATASET, TABLE))
+                .addStreams(ReadStream.newBuilder()
+                        .setName(ReadStreamName.format(PROJECT, LOCATION, SESSION, READ_STREAM)))
+                .build();
+        CreateReadSessionRequest request = CreateReadSessionRequest.newBuilder()
+                .setParent(ProjectName.format(PROJECT))
+                .setReadSession(readSession)
+                .setMaxStreamCount(1)
+                .build();
+
+        assertEquals(ProjectName.format(PROJECT), request.getParent());
+        assertEquals(1, request.getMaxStreamCount());
+        assertEquals(DataFormat.AVRO, request.getReadSession().getDataFormat());
+        assertEquals(ReadSession.SchemaCase.AVRO_SCHEMA, request.getReadSession().getSchemaCase());
+        assertTrue(request.getReadSession().hasAvroSchema());
+        assertFalse(request.getReadSession().hasArrowSchema());
+        assertEquals(avroSchemaJson, request.getReadSession().getAvroSchema().getSchema());
+        assertEquals(TableName.format(PROJECT, DATASET, TABLE), request.getReadSession().getTable());
+        assertEquals(READ_STREAM, ReadStreamName.parse(request.getReadSession().getStreams(0).getName()).getStream());
+    }
+
+    @Test
     void storageProtoDescriptorExposesServicesStreamingAndHttpBindings() {
         FileDescriptor descriptor = StorageProto.getDescriptor();
         ServiceDescriptor readService = descriptor.findServiceByName("BigQueryRead");
