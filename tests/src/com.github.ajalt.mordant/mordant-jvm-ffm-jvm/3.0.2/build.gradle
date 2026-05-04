@@ -13,6 +13,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "com.github.ajalt.mordant:mordant-jvm-ffm-jvm:$libraryVersion"
+    testImplementation "com.github.ajalt.mordant:mordant-core-jvm:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
@@ -24,6 +25,12 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "21"
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "--enable-native-access=ALL-UNNAMED"
+    ]
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
@@ -31,6 +38,13 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.addAll([
+                '--enable-native-access=ALL-UNNAMED'
+            ])
         }
     }
 }
