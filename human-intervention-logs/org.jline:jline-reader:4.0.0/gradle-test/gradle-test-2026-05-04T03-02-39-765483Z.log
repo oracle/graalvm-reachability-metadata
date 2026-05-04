@@ -1,0 +1,128 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.jline:jline-reader:4.0.0
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5601-a9ce3250/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+Jline_readerTest > lineReaderReadsScriptedInputWithConfiguredTerminalHistoryAndVariables() FAILED
+    org.jline.reader.EndOfFileException: org.jline.utils.ClosedException
+        at app//org.jline.keymap.BindingReader.readCharacter(BindingReader.java:234)
+        at app//org.jline.keymap.BindingReader.readBinding(BindingReader.java:159)
+        at app//org.jline.keymap.BindingReader.readBinding(BindingReader.java:98)
+        at app//org.jline.reader.impl.LineReaderImpl.doReadBinding(LineReaderImpl.java:1041)
+        at app//org.jline.reader.impl.LineReaderImpl.readBinding(LineReaderImpl.java:1074)
+        at app//org.jline.reader.impl.LineReaderImpl.readLine(LineReaderImpl.java:717)
+        at app//org.jline.reader.impl.LineReaderImpl.readLine(LineReaderImpl.java:530)
+        at app//org_jline.jline_reader.Jline_readerTest.lineReaderReadsScriptedInputWithConfiguredTerminalHistoryAndVariables(Jline_readerTest.java:231)
+
+        Caused by:
+        org.jline.utils.ClosedException
+            at app//org.jline.utils.NonBlockingInputStream.checkClosed(NonBlockingInputStream.java:135)
+            at app//org.jline.utils.NonBlockingPumpInputStream.read(NonBlockingPumpInputStream.java:86)
+            at app//org.jline.utils.NonBlockingInputStream.read(NonBlockingInputStream.java:195)
+            at app//org.jline.utils.NonBlocking$NonBlockingInputStreamReader.read(NonBlocking.java:193)
+            at app//org.jline.utils.NonBlockingReader.read(NonBlockingReader.java:208)
+            at app//org.jline.keymap.BindingReader.readCharacter(BindingReader.java:226)
+            ... 7 more
+
+
+10 tests completed, 2 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5601-a9ce3250/tests/src/org.jline/jline-reader/4.0.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+Jline_readerTest > keyMapTranslatesDisplaysBindsAndReadsTerminalInput() FAILED
+    org.jline.reader.EndOfFileException: org.jline.utils.ClosedException
+        at app//org.jline.keymap.BindingReader.readCharacter(BindingReader.java:234)
+        at app//org.jline.keymap.BindingReader.readBinding(BindingReader.java:159)
+        at app//org.jline.keymap.BindingReader.readBinding(BindingReader.java:83)
+        at app//org_jline.jline_reader.Jline_readerTest.keyMapTranslatesDisplaysBindsAndReadsTerminalInput(Jline_readerTest.java:270)
+
+        Caused by:
+        org.jline.utils.ClosedException
+            at app//org.jline.utils.NonBlockingInputStream.checkClosed(NonBlockingInputStream.java:135)
+            at app//org.jline.utils.NonBlockingPumpInputStream.read(NonBlockingPumpInputStream.java:86)
+            at app//org.jline.utils.NonBlockingInputStream.read(NonBlockingInputStream.java:195)
+            at app//org.jline.utils.NonBlocking$NonBlockingInputStreamReader.read(NonBlocking.java:193)
+            at app//org.jline.utils.NonBlockingReader.read(NonBlockingReader.java:208)
+            at app//org.jline.keymap.BindingReader.readCharacter(BindingReader.java:226)
+
+            ... 3 more
+BUILD FAILED in 6s
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5601-a9ce3250/tests/src/org.jline/jline-reader/4.0.0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5601-a9ce3250/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.jline:jline-reader:4.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 7s
+9 actionable tasks: 1 executed, 8 up-to-date
