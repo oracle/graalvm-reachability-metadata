@@ -6,16 +6,22 @@
  */
 package com_google_api_grpc.proto_google_common_protos;
 
+import com.google.api.AuthProvider;
+import com.google.api.AuthRequirement;
+import com.google.api.Authentication;
+import com.google.api.AuthenticationRule;
 import com.google.api.CustomHttpPattern;
 import com.google.api.Distribution;
 import com.google.api.Documentation;
 import com.google.api.Http;
 import com.google.api.HttpBody;
 import com.google.api.HttpRule;
+import com.google.api.JwtLocation;
 import com.google.api.LabelDescriptor;
 import com.google.api.LaunchStage;
 import com.google.api.MetricDescriptor;
 import com.google.api.MonitoredResourceDescriptor;
+import com.google.api.OAuthRequirements;
 import com.google.api.ResourceDescriptor;
 import com.google.api.Service;
 import com.google.apps.card.v1.Card;
@@ -132,6 +138,54 @@ public class Proto_google_common_protosTest {
         assertThat(bookResource.getStyleList()).containsExactly(ResourceDescriptor.Style.DECLARATIVE_FRIENDLY);
         assertThat(service.getMetrics(0).getMetadata().getSamplePeriod().getSeconds()).isEqualTo(60);
         assertThat(service.getMonitoredResources(0).getLabels(0)).isEqualTo(locationLabel);
+    }
+
+    @Test
+    void buildsAuthenticationConfigurationForJwtProviders() {
+        JwtLocation authorizationHeader = JwtLocation.newBuilder()
+                .setHeader("Authorization")
+                .setValuePrefix("Bearer ")
+                .build();
+        JwtLocation accessTokenQuery = JwtLocation.newBuilder()
+                .setQuery("access_token")
+                .build();
+        AuthProvider googleAccountsProvider = AuthProvider.newBuilder()
+                .setId("google_accounts")
+                .setIssuer("https://accounts.google.com")
+                .setJwksUri("https://www.googleapis.com/oauth2/v3/certs")
+                .setAudiences("library.googleapis.com")
+                .setAuthorizationUrl("https://accounts.google.com/o/oauth2/v2/auth")
+                .addJwtLocations(authorizationHeader)
+                .addJwtLocations(accessTokenQuery)
+                .build();
+        AuthenticationRule authenticatedMethod = AuthenticationRule.newBuilder()
+                .setSelector("google.example.v1.LibraryService.GetBook")
+                .setOauth(OAuthRequirements.newBuilder()
+                        .setCanonicalScopes("https://www.googleapis.com/auth/cloud-platform")
+                        .build())
+                .addRequirements(AuthRequirement.newBuilder()
+                        .setProviderId(googleAccountsProvider.getId())
+                        .setAudiences("library.googleapis.com")
+                        .build())
+                .build();
+        AuthenticationRule publicHealthCheck = AuthenticationRule.newBuilder()
+                .setSelector("google.example.v1.LibraryService.GetHealth")
+                .setAllowWithoutCredential(true)
+                .build();
+        Authentication authentication = Authentication.newBuilder()
+                .addProviders(googleAccountsProvider)
+                .addRules(authenticatedMethod)
+                .addRules(publicHealthCheck)
+                .build();
+
+        assertThat(authentication.getProviders(0).getJwtLocationsList()).containsExactly(
+                authorizationHeader,
+                accessTokenQuery);
+        assertThat(authentication.getProviders(0).getJwtLocations(0).getInCase()).isEqualTo(JwtLocation.InCase.HEADER);
+        assertThat(authentication.getRules(0).getOauth().getCanonicalScopes())
+                .isEqualTo("https://www.googleapis.com/auth/cloud-platform");
+        assertThat(authentication.getRules(0).getRequirements(0).getProviderId()).isEqualTo("google_accounts");
+        assertThat(authentication.getRules(1).getAllowWithoutCredential()).isTrue();
     }
 
     @Test
