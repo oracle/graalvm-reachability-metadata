@@ -1,0 +1,540 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019df48d-b30f-7cc3-8a51-faafcb650424
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.typesafe.play:play-configuration_2.13:2.9.10
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.9.10" when "$version$" is replaced with "2.9.10".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+- Set "coordinates" to "com.typesafe.play:play-configuration_2.13:2.9.10".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.9.10".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream Play Framework sources, then update the JSON in place with version-templated URLs where they’re reliable.
+exec
+/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json && sed -n '1,200p' build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+-rw-rw-r-- 1 jovan jovan 73 May  4 21:53 build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+{
+  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
+}
+
+exec
+/bin/bash -lc "rg -n \"play-configuration_2.13|com.typesafe.play\" build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.xml' -g '*.java' -g '*.scala'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json:2:  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
+metadata/com.typesafe.play/play-configuration_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-sources.jar",
+metadata/com.typesafe.play/play-configuration_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-functional_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-functional_2.13/$version$/play-functional_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/play-functional_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-functional_2.13/$version$/play-functional_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-configuration_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/play-configuration_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/com.typesafe.play/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-functional_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-functional_3/$version$/play-functional_3-$version$-sources.jar",
+metadata/com.typesafe.play/play-functional_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-functional_3/$version$/play-functional_3-$version$-javadoc.jar",
+tests/src/com.typesafe.play/play-build-link/2.9.7/user-code-filter.json:10:      "includeClasses" : "com_typesafe_play.play_build_link.**"
+tests/src/com.typesafe.play/play-exceptions/2.9.7/user-code-filter.json:10:      "includeClasses" : "com_typesafe_play.play_exceptions.**"
+tests/src/com.typesafe.play/play-functional_2.13/2.10.8/src/test/scala/com_typesafe_play/play_functional_2_13/Play_functional_2_13Test.scala:7:package com_typesafe_play.play_functional_2_13
+tests/src/com.typesafe.play/play-exceptions/2.9.7/src/test/java/com_typesafe_play/play_exceptions/Play_exceptionsTest.java:7:package com_typesafe_play.play_exceptions;
+tests/src/com.typesafe.play/play-build-link/2.9.7/src/test/java/com_typesafe_play/play_build_link/Play_build_linkTest.java:7:package com_typesafe_play.play_build_link;
+tests/src/com.typesafe.play/play-configuration_2.13/2.9.10/user-code-filter.json:10:      "includeClasses" : "com_typesafe_play.play_configuration_2_13.**"
+tests/src/com.typesafe.play/play-functional_3/2.10.6/user-code-filter.json:10:      "includeClasses" : "com_typesafe_play.play_functional_3.**"
+tests/src/com.typesafe.play/play-configuration_2.13/2.9.10/src/test/scala/com_typesafe_play/play_configuration_2_13/EnvironmentTest.scala:7:package com_typesafe_play.play_configuration_2_13
+tests/src/com.typesafe.play/play-functional_3/2.10.6/src/test/scala/com_typesafe_play/play_functional_3/Play_functional_3Test.scala:7:package com_typesafe_play.play_functional_3
+tests/src/com.typesafe.play/play-configuration_3/2.9.7/user-code-filter.json:10:      "includeClasses" : "com_typesafe_play.play_configuration_3.**"
+tests/src/com.typesafe.play/play-configuration_3/2.9.7/src/test/scala/com_typesafe_play/play_configuration_3/EnvironmentTest.scala:7:package com_typesafe_play.play_configuration_3
+
+web search: 
+web search: com.typesafe.play play-configuration_2.13 2.9.10 maven sources javadoc tests jar
+codex
+The repo already has prior metadata for the same artifact and Scala-3 variant pointing source and docs at Maven jars. I’m checking the actual Maven directory and upstream tag now so the discovered file matches the 2.9.10 release rather than guessing from nearby entries.
+exec
+/bin/bash -lc "sed -n '1,120p' metadata/com.typesafe.play/play-configuration_2.13/index.json && sed -n '1,120p' metadata/com.typesafe.play/play-configuration_3/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.10",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
+    "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.9.10"
+    ],
+    "allowed-packages" : [
+      "play"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.7",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/playframework/playframework",
+    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+    "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.9.7",
+      "2.9.8",
+      "2.9.9",
+      "2.9.10"
+    ],
+    "allowed-packages" : [
+      "play"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/ | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10.pom | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.typesafe.play</groupId>
+    <artifactId>play-configuration_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Play-Configuration</description>
+    <url>https://github.com/playframework/playframework</url>
+    <version>2.9.10</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Play-Configuration</name>
+    <organization>
+        <name>The Play Framework Project</name>
+        <url>https://playframework.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/playframework/playframework</url>
+        <connection>scm:git:https://github.com/playframework/playframework.git</connection>
+        <developerConnection>scm:git:git@github.com:playframework/playframework.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>playframework</id>
+            <name>The Play Framework Contributors</name>
+            <url>https://github.com/playframework</url>
+            <email>contact@playframework.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.playframework.com/documentation/2.9.10/api/scala/index.html</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.18</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.play</groupId>
+            <artifactId>play-exceptions</artifactId>
+            <version>2.9.10</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-core_2.13</artifactId>
+            <version>4.20.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-junit_2.13</artifactId>
+            <version>4.20.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.17.8</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-agent</artifactId>
+            <version>1.17.8</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+ succeeded in 149ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/typesafe/play/play-configuration_2.13/2.9.10</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/typesafe/play/play-configuration_2.13/2.9.10</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="play-configuration_2.13-2.9.10-javadoc.jar" title="play-configuration_2.13-2.9.10-javadoc.jar">play-configuration_2.13-2.9.10-javadoc.jar</a>        2025-12-22 00:16   1177555      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.asc" title="play-configuration_2.13-2.9.10-javadoc.jar.asc">play-configuration_2.13-2.9.10-javadoc.jar.as...</a>  2025-12-22 00:16       833      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.asc.md5" title="play-configuration_2.13-2.9.10-javadoc.jar.asc.md5">play-configuration_2.13-2.9.10-javadoc.jar.as...</a>  2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.asc.sha1" title="play-configuration_2.13-2.9.10-javadoc.jar.asc.sha1">play-configuration_2.13-2.9.10-javadoc.jar.as...</a>  2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.md5" title="play-configuration_2.13-2.9.10-javadoc.jar.md5">play-configuration_2.13-2.9.10-javadoc.jar.md...</a>  2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10-javadoc.jar.sha1" title="play-configuration_2.13-2.9.10-javadoc.jar.sha1">play-configuration_2.13-2.9.10-javadoc.jar.sh...</a>  2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10-sources.jar" title="play-configuration_2.13-2.9.10-sources.jar">play-configuration_2.13-2.9.10-sources.jar</a>        2025-12-22 00:16      9659      
+<a href="play-configuration_2.13-2.9.10-sources.jar.asc" title="play-configuration_2.13-2.9.10-sources.jar.asc">play-configuration_2.13-2.9.10-sources.jar.as...</a>  2025-12-22 00:16       833      
+<a href="play-configuration_2.13-2.9.10-sources.jar.asc.md5" title="play-configuration_2.13-2.9.10-sources.jar.asc.md5">play-configuration_2.13-2.9.10-sources.jar.as...</a>  2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10-sources.jar.asc.sha1" title="play-configuration_2.13-2.9.10-sources.jar.asc.sha1">play-configuration_2.13-2.9.10-sources.jar.as...</a>  2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10-sources.jar.md5" title="play-configuration_2.13-2.9.10-sources.jar.md5">play-configuration_2.13-2.9.10-sources.jar.md...</a>  2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10-sources.jar.sha1" title="play-configuration_2.13-2.9.10-sources.jar.sha1">play-configuration_2.13-2.9.10-sources.jar.sh...</a>  2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10.jar" title="play-configuration_2.13-2.9.10.jar">play-configuration_2.13-2.9.10.jar</a>                2025-12-22 00:16     51576      
+<a href="play-configuration_2.13-2.9.10.jar.asc" title="play-configuration_2.13-2.9.10.jar.asc">play-configuration_2.13-2.9.10.jar.asc</a>            2025-12-22 00:16       833      
+<a href="play-configuration_2.13-2.9.10.jar.asc.md5" title="play-configuration_2.13-2.9.10.jar.asc.md5">play-configuration_2.13-2.9.10.jar.asc.md5</a>        2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10.jar.asc.sha1" title="play-configuration_2.13-2.9.10.jar.asc.sha1">play-configuration_2.13-2.9.10.jar.asc.sha1</a>       2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10.jar.md5" title="play-configuration_2.13-2.9.10.jar.md5">play-configuration_2.13-2.9.10.jar.md5</a>            2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10.jar.sha1" title="play-configuration_2.13-2.9.10.jar.sha1">play-configuration_2.13-2.9.10.jar.sha1</a>           2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10.pom" title="play-configuration_2.13-2.9.10.pom">play-configuration_2.13-2.9.10.pom</a>                2025-12-22 00:16      3228      
+<a href="play-configuration_2.13-2.9.10.pom.asc" title="play-configuration_2.13-2.9.10.pom.asc">play-configuration_2.13-2.9.10.pom.asc</a>            2025-12-22 00:16       833      
+<a href="play-configuration_2.13-2.9.10.pom.asc.md5" title="play-configuration_2.13-2.9.10.pom.asc.md5">play-configuration_2.13-2.9.10.pom.asc.md5</a>        2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10.pom.asc.sha1" title="play-configuration_2.13-2.9.10.pom.asc.sha1">play-configuration_2.13-2.9.10.pom.asc.sha1</a>       2025-12-22 00:16        40      
+<a href="play-configuration_2.13-2.9.10.pom.md5" title="play-configuration_2.13-2.9.10.pom.md5">play-configuration_2.13-2.9.10.pom.md5</a>            2025-12-22 00:16        32      
+<a href="play-configuration_2.13-2.9.10.pom.sha1" title="play-configuration_2.13-2.9.10.pom.sha1">play-configuration_2.13-2.9.10.pom.sha1</a>           2025-12-22 00:16        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: https://github.com/playframework/playframework/tree/2.9.10/core/play-configuration/src/test
+web search: 
+web search: repo.maven.apache.org maven2 com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/typesafe/play/
+web search: 
+web search: 
+codex
+Maven Central publishes the main jar plus sources and javadoc jars for 2.9.10, but I don’t see a test-sources artifact there. I’m going to use Maven for source/docs and the Play Framework 2.9.10 GitHub test path for tests, with Scala 2 marked from the `_2.13` artifact suffix and POM dependency.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..ed69b87f542a30a12c217154c7a22d31fed60dc1
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..ed69b87f542a30a12c217154c7a22d31fed60dc1
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+ succeeded in 0ms:
+{
+  "coordinates": "com.typesafe.play:play-configuration_2.13:2.9.10",
+  "repository-url": "https://github.com/playframework/playframework",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
+  "test-code-url": "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
+  "description": "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10-sources.jar | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+exec
+/bin/bash -lc "curl -fsSI https://github.com/playframework/playframework/tree/2.9.10/core/play-configuration/src/test | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+exec
+/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10-javadoc.jar | sed -n '1,12p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 19:54:15 GMT
+content-type: application/java-archive
+content-length: 1177555
+cf-ray: 9f6a0e657bb30a8e-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 58134
+etag: "f5e4de57778d81fd5c0e9751593c2336"
+last-modified: Mon, 22 Dec 2025 00:16:52 GMT
+x-checksum-md5: f5e4de57778d81fd5c0e9751593c2336
+x-checksum-sha1: 30e481eaca584b5d2c123c6a83395c83ba000ecd
+
+ succeeded in 127ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 19:54:15 GMT
+content-type: application/java-archive
+content-length: 9659
+cf-ray: 9f6a0e656b08e294-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 58135
+etag: "90e7017fdb00b02a8173a0478084aaae"
+last-modified: Mon, 22 Dec 2025 00:16:52 GMT
+x-checksum-md5: 90e7017fdb00b02a8173a0478084aaae
+x-checksum-sha1: cabe73e248e26e00fb9853eea2294a2545c06825
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..ed69b87f542a30a12c217154c7a22d31fed60dc1
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 762ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 19:54:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ac9d77440c46c11c5437f9a1f8ea49e9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+ succeeded in 0ms:
+exec
+/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/artifact.jar" https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/2.9.10/play-configuration_2.13-2.9.10.jar; jar tf "$tmp/artifact.jar" | rg '"'\\.class"'$'"' | sed -n '1,20p'; rm -rf \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..ed69b87f542a30a12c217154c7a22d31fed60dc1
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 186ms:
+play/Environment.class
+play/Mode.class
+play/api/ConfigLoader$$anonfun$apply$2.class
+play/api/ConfigLoader$$anonfun$map$2.class
+play/api/ConfigLoader$$anonfun$mapLoader$3.class
+play/api/ConfigLoader$$anonfun$optionLoader$2.class
+play/api/ConfigLoader$.class
+play/api/ConfigLoader.class
+play/api/Configuration$$anon$1.class
+play/api/Configuration$$anonfun$getDeprecated$1.class
+play/api/Configuration$.class
+play/api/Configuration.class
+play/api/Environment$.class
+play/api/Environment.class
+play/api/Mode$.class
+play/api/Mode$Dev$.class
+play/api/Mode$Prod$.class
+play/api/Mode$Test$.class
+play/api/Mode.class
+
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json && git ls-files --stage build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..ed69b87f542a30a12c217154c7a22d31fed60dc1
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: https://github.com/playframework/playframework/tree/2.9.10/core/play-configuration/src/test
+web search: 
+web search: play-configuration_2.13 2.9.10 Maven Central sources javadoc
+web search: 
+web search: https://mvnrepository.com/artifact/com.typesafe.play/play-configuration_2.13/2.9.10
+codex
+Updated [com.typesafe.play-play-configuration_2.13-2.9.10.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json).
+
+Set Maven Central sources/javadoc URLs, GitHub test-suite URL at tag `2.9.10`, repository root, two-sentence description, and Scala 2 language metadata. The artifact is a JVM `jar` with class files, so I did not set `not-for-native-image`; Maven confirms `packaging` is `jar`, Scala library dependency, and repository SCM, and GitHub confirms the tagged test path exists. ([central.sonatype.com](https://central.sonatype.com/artifact/com.typesafe.play/play-configuration_2.13))
+
+Validation done:
+`jq .` passed, and the resolved source, javadoc, and test URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+index 6c9623677d979058d6ebbc37a15f87a157798613..ed69b87f542a30a12c217154c7a22d31fed60dc1
+--- a/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
++++ b/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10"
++  "coordinates" : "com.typesafe.play:play-configuration_2.13:2.9.10",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_2.13/$version$/play-configuration_2.13-$version$-javadoc.jar",
++  "description" : "Play Configuration provides Play Framework's configuration API for loading and accessing Typesafe Config/HOCON settings in Scala and Java applications. It includes environment and mode abstractions used by Play components to resolve application configuration across development, test, and production.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+54,443
+Updated [com.typesafe.play-play-configuration_2.13-2.9.10.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009/build/discovered-artifact-metadata/com.typesafe.play-play-configuration_2.13-2.9.10.json).
+
+Set Maven Central sources/javadoc URLs, GitHub test-suite URL at tag `2.9.10`, repository root, two-sentence description, and Scala 2 language metadata. The artifact is a JVM `jar` with class files, so I did not set `not-for-native-image`; Maven confirms `packaging` is `jar`, Scala library dependency, and repository SCM, and GitHub confirms the tagged test path exists. ([central.sonatype.com](https://central.sonatype.com/artifact/com.typesafe.play/play-configuration_2.13))
+
+Validation done:
+`jq .` passed, and the resolved source, javadoc, and test URLs returned HTTP 200.
+Ran agent for com.typesafe.play:play-configuration_2.13:2.9.10 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009/build/agent-artifact-discovery-logs/com.typesafe.play-play-configuration_2.13-2.9.10.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5460-ee8bb009/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 4s
+9 actionable tasks: 4 executed, 5 from cache
