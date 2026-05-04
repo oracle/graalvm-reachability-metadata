@@ -267,7 +267,7 @@ class Ujson_3Test {
     val parseException = assertThrows(
       classOf[ujson.ParseException],
       () => {
-        ujson.read(ujson.Readable.fromString("""{"invalid":]"""))
+        ujson.read(ujson.Readable.fromString("""{"invalid":]"""), trace = false)
         ()
       }
     )
@@ -278,7 +278,7 @@ class Ujson_3Test {
     val incompleteException = assertThrows(
       classOf[ujson.IncompleteParseException],
       () => {
-        ujson.read(ujson.Readable.fromString("""{"unfinished":"value"""))
+        ujson.read(ujson.Readable.fromString("""{"unfinished":"value"""), trace = false)
         ()
       }
     )
