@@ -12,11 +12,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
@@ -438,6 +440,22 @@ public class ProfilesTest {
     }
 
     @Test
+    void profileFileLocationExpandsHomeDirectoryShorthandInConfiguredLocations() {
+        String separator = FileSystems.getDefault().getSeparator();
+        String configProperty = "~" + separator + ".aws" + separator + "custom-config";
+        String credentialsProperty = "~" + separator + ".aws" + separator + "custom-credentials";
+        Path userHomeDirectory = sdkUserHomeDirectory();
+
+        withSystemProperty(AWS_CONFIG_FILE_PROPERTY, configProperty, () ->
+                withSystemProperty(AWS_SHARED_CREDENTIALS_FILE_PROPERTY, credentialsProperty, () -> {
+                    assertThat(ProfileFileLocation.configurationFilePath())
+                            .isEqualTo(userHomeDirectory.resolve(".aws").resolve("custom-config"));
+                    assertThat(ProfileFileLocation.credentialsFilePath())
+                            .isEqualTo(userHomeDirectory.resolve(".aws").resolve("custom-credentials"));
+                }));
+    }
+
+    @Test
     void defaultSupplierLoadsConfiguredLocationsWhenTheyExist() throws IOException {
         Path credentials = tempDir.resolve("supplier-credentials");
         Path config = tempDir.resolve("supplier-config");
@@ -537,6 +555,29 @@ public class ProfilesTest {
                           .content(content)
                           .type(ProfileFile.Type.CREDENTIALS)
                           .build();
+    }
+
+    private static Path sdkUserHomeDirectory() {
+        String home = System.getenv("HOME");
+        if (home != null) {
+            return Path.of(home);
+        }
+
+        String osName = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        if (osName.startsWith("windows")) {
+            String userProfile = System.getenv("USERPROFILE");
+            if (userProfile != null) {
+                return Path.of(userProfile);
+            }
+
+            String homeDrive = System.getenv("HOMEDRIVE");
+            String homePath = System.getenv("HOMEPATH");
+            if (homeDrive != null && homePath != null) {
+                return Path.of(homeDrive + homePath);
+            }
+        }
+
+        return Path.of(System.getProperty("user.home"));
     }
 
     private static void withSystemProperty(String name, String value, Runnable action) {
