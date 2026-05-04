@@ -18,7 +18,7 @@ import sangria.renderer.SchemaFilter
 import sangria.schema.{Argument, Context, EnumType, Field, InputObjectType, IntType, ListType, ObjectType, Schema, StringType, fields}
 
 import scala.concurrent.duration.DurationInt
-import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 class Sangria_derivation_3Test {
   private given ExecutionContext = ExecutionContext.global
@@ -36,6 +36,10 @@ class Sangria_derivation_3Test {
       Vector.fill(repeat)(s"$prefix$fullName").mkString(" | ")
 
   private final case class Book(title: String, pages: Int, genre: Genre, author: Author, internalCode: String)
+
+  private final case class Recommendation(title: String):
+    @GraphQLField
+    def normalizedTitle: Future[String] = Future.successful(title.toUpperCase)
 
   private final case class BookFilter(
       term: String,
@@ -88,6 +92,10 @@ class Sangria_derivation_3Test {
     ExcludeFields("internalCode")
   )
 
+  private given RecommendationType: ObjectType[Unit, Recommendation] = deriveObjectType[Unit, Recommendation](
+    ObjectTypeName("Recommendation")
+  )
+
   private given BookFilterInputType: InputObjectType[BookFilter] = deriveInputObjectType[BookFilter](
     InputObjectTypeName("BookFilterInput"),
     RenameInputField("minPages", "minimumPages"),
@@ -137,6 +145,19 @@ class Sangria_derivation_3Test {
   )
 
   private lazy val CatalogSchema: Schema[Unit, Unit] = Schema(QueryType)
+
+  private lazy val RecommendationQueryType: ObjectType[Unit, Unit] = ObjectType(
+    "RecommendationQuery",
+    fields[Unit, Unit](
+      Field(
+        "recommendations",
+        ListType(RecommendationType),
+        resolve = _ => Vector(Recommendation("dune"), Recommendation("earthsea"))
+      )
+    )
+  )
+
+  private lazy val RecommendationSchema: Schema[Unit, Unit] = Schema(RecommendationQueryType)
 
   private lazy val ViewerCatalogQueryType: ObjectType[ViewerCatalogContext, Unit] =
     deriveContextObjectType[ViewerCatalogContext, ViewerCatalog, Unit](_.viewerCatalog)
@@ -256,6 +277,28 @@ class Sangria_derivation_3Test {
   }
 
   @Test
+  def derivesObjectMethodsReturningFutureValues(): Unit = {
+    val result: ObjectValue = executeRecommendations(
+      """
+        |{
+        |  recommendations {
+        |    title
+        |    normalizedTitle
+        |  }
+        |}
+        |""".stripMargin
+    )
+
+    val recommendations: Vector[ObjectValue] =
+      listField(objectField(result, "data"), "recommendations").values.map(_.asInstanceOf[ObjectValue])
+    assertEquals(2, recommendations.size)
+    assertStringField(recommendations.head, "title", "dune")
+    assertStringField(recommendations.head, "normalizedTitle", "DUNE")
+    assertStringField(recommendations(1), "title", "earthsea")
+    assertStringField(recommendations(1), "normalizedTitle", "EARTHSEA")
+  }
+
+  @Test
   def derivesContextObjectTypesFromAUserContextValue(): Unit = {
     val result: ObjectValue = executeViewerCatalog(
       """
@@ -328,6 +371,16 @@ class Sangria_derivation_3Test {
   private def execute(query: String): ObjectValue = {
     val document: Document = QueryParser.parse(query).get
     val result: Value = Await.result(Executor.execute(CatalogSchema, document), 5.seconds)
+
+    result match {
+      case objectValue: ObjectValue => objectValue
+      case other => fail(s"Expected GraphQL execution result object, got $other")
+    }
+  }
+
+  private def executeRecommendations(query: String): ObjectValue = {
+    val document: Document = QueryParser.parse(query).get
+    val result: Value = Await.result(Executor.execute(RecommendationSchema, document), 5.seconds)
 
     result match {
       case objectValue: ObjectValue => objectValue
