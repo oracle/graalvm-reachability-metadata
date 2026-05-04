@@ -427,6 +427,53 @@ public class Netty_transport_classes_io_uringTest {
         }
     }
 
+    @Test
+    void connectedDatagramChannelsCanSendRawBuffersWhenAvailable() throws Exception {
+        if (!IoUring.isAvailable()) {
+            assertThatThrownBy(IoUringIoHandler::newFactory).isInstanceOf(LinkageError.class);
+            return;
+        }
+
+        EventLoopGroup serverGroup = null;
+        EventLoopGroup clientGroup = null;
+        Channel serverChannel = null;
+        IoUringDatagramChannel clientChannel = null;
+        try {
+            serverGroup = newIoUringEventLoopGroup();
+            clientGroup = newIoUringEventLoopGroup();
+            CountDownLatch received = new CountDownLatch(1);
+            AtomicReference<String> response = new AtomicReference<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+            serverChannel = awaitSuccess(new Bootstrap()
+                    .group(serverGroup)
+                    .channel(IoUringDatagramChannel.class)
+                    .handler(new DatagramEchoServerInitializer(failure))
+                    .bind(new InetSocketAddress("127.0.0.1", 0))).channel();
+            clientChannel = (IoUringDatagramChannel) awaitSuccess(new Bootstrap()
+                    .group(clientGroup)
+                    .channel(IoUringDatagramChannel.class)
+                    .handler(new ConnectedDatagramEchoClientInitializer(response, received, failure))
+                    .connect(serverChannel.localAddress())).channel();
+
+            assertThat(clientChannel.isConnected()).isTrue();
+            assertThat(clientChannel.remoteAddress()).isEqualTo(serverChannel.localAddress());
+
+            awaitSuccess(clientChannel.writeAndFlush(Unpooled.copiedBuffer("connected-ping", CharsetUtil.UTF_8)));
+
+            assertThat(received.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            assertThat(response.get()).isEqualTo("datagram:connected-ping");
+
+            awaitSuccess(clientChannel.disconnect());
+            assertThat(clientChannel.isConnected()).isFalse();
+        } finally {
+            close(serverChannel);
+            close(clientChannel);
+            shutdown(clientGroup);
+            shutdown(serverGroup);
+        }
+    }
+
     private static void assertChannelConstructorMatchesAvailability(Supplier<? extends Channel> constructor) {
         if (IoUring.isAvailable()) {
             Channel channel = constructor.get();
@@ -636,6 +683,40 @@ public class Netty_transport_classes_io_uringTest {
                     response.set(packet.content().toString(CharsetUtil.UTF_8));
                     received.countDown();
                     ctx.close();
+                }
+
+                @Override
+                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                    failure.compareAndSet(null, cause);
+                    received.countDown();
+                    ctx.close();
+                }
+            });
+        }
+    }
+
+    private static final class ConnectedDatagramEchoClientInitializer extends ChannelInitializer<Channel> {
+        private final AtomicReference<String> response;
+        private final CountDownLatch received;
+        private final AtomicReference<Throwable> failure;
+
+        private ConnectedDatagramEchoClientInitializer(
+                AtomicReference<String> response,
+                CountDownLatch received,
+                AtomicReference<Throwable> failure
+        ) {
+            this.response = response;
+            this.received = received;
+            this.failure = failure;
+        }
+
+        @Override
+        protected void initChannel(Channel channel) {
+            channel.pipeline().addLast(new SimpleChannelInboundHandler<DatagramPacket>() {
+                @Override
+                protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) {
+                    response.set(packet.content().toString(CharsetUtil.UTF_8));
+                    received.countDown();
                 }
 
                 @Override
