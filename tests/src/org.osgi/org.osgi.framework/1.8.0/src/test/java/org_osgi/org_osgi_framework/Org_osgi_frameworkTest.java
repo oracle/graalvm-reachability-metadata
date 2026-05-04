@@ -8,7 +8,7 @@ package org_osgi.org_osgi_framework;
 
 import org.junit.jupiter.api.Test;
 
-class Org_osgi_frameworkTest {
+public class Org_osgi_frameworkTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
