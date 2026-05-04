@@ -189,12 +189,16 @@ public final class MetadataGenerationUtils {
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+        Path repositoryRoot = gradlew.getParent();
 
         GeneralUtils.printInfo("Generating metadata");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), "Cannot generate metadata", testsDirectory);
 
         GeneralUtils.printInfo("Performing metadata copy");
         GeneralUtils.invokeCommand(execOps, gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
+
+        GeneralUtils.printInfo("Splitting test-only metadata");
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("splitTestOnlyMetadata", "-Pcoordinates=" + coordinates), "Cannot split test-only metadata", repositoryRoot);
     }
 
     /**
@@ -203,6 +207,7 @@ public final class MetadataGenerationUtils {
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, String gvmTckLv) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+        Path repositoryRoot = gradlew.getParent();
 
         Map<String, String> env = Map.of("GVM_TCK_LV", gvmTckLv);
 
@@ -211,6 +216,9 @@ public final class MetadataGenerationUtils {
 
         GeneralUtils.printInfo("Performing metadata copy");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+
+        GeneralUtils.printInfo("Splitting test-only metadata");
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("splitTestOnlyMetadata", "-Pcoordinates=" + coordinates), env, "Cannot split test-only metadata", repositoryRoot);
     }
 
     /**

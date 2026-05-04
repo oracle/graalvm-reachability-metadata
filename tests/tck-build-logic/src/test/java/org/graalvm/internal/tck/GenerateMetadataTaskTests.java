@@ -59,7 +59,8 @@ class GenerateMetadataTaskTests {
                 .contains("userCodeFilterPath = \"user-code-filter.json\"");
         assertThat(readGradlewInvocations())
                 .contains("tests/src/org.lz4/lz4-java/1.8.0|-Pagent test")
-                .contains("tests/src/org.lz4/lz4-java/1.8.0|metadataCopy --task test --dir " + tempDir.resolve("metadata/org.lz4/lz4-java/1.8.0"));
+                .contains("tests/src/org.lz4/lz4-java/1.8.0|metadataCopy --task test --dir " + tempDir.resolve("metadata/org.lz4/lz4-java/1.8.0"))
+                .contains(tempDir + "|splitTestOnlyMetadata -Pcoordinates=org.lz4:lz4-java:1.8.0");
     }
 
     @Test
