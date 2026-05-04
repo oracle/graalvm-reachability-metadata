@@ -1,0 +1,1139 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df2b4-3a13-7bf2-b60d-57f5a172fd23
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.33.3" when "$version$" is replaced with "2.33.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+- Set "coordinates" to "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.33.3".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream so the URLs point at the right 2.33.3 tag, then I’ll update the JSON directly.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json && sed -n '1,160p' build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+-rw-rw-r-- 1 vjovanov vjovanov 93 May  4 13:16 build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+{
+  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"language\"|jsoniter-scala' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json:2:  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3"
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/org.threeten/threetenbp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-sources.jar",
+metadata/com.google.guava/guava-bootstrap/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/guava/guava-bootstrap/$version$/guava-bootstrap-$version$-sources.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/$version$/commons-dbcp2-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-sources.jar",
+metadata/org.apache.commons/commons-math/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math/$version$/commons-math-$version$-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/$version$/commons-pool2-$version$-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/org.example/library/index.json:9:    "source-code-url": "N/A",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+metadata/javax.el/el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/el-api/$version$/el-api-$version$-sources.jar",
+metadata/com.ongres.stringprep/stringprep/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
+metadata/com.ongres.stringprep/saslprep/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ongres/stringprep/saslprep/$version$/saslprep-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:5:    "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz",
+metadata/com.github.jnr/jnr-x86asm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-x86asm/$version$/jnr-x86asm-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+
+web search: 
+web search: Maven com.github.plokhotnyuk.jsoniter-scala jsoniter-scala-macros_3 2.33.3 pom
+codex
+The local file currently only has coordinates. I’m checking the Maven Central directory and POM next, because this repo prefers Maven-hosted sources/tests when those classifiers exist.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/jsoniter-scala-macros_3-2.33.3.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/jsoniter-scala-macros_3-2.33.3-sources.jar \\
+  https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/jsoniter-scala-macros_3-2.33.3-tests.jar \\
+  https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/jsoniter-scala-macros_3-2.33.3-test-sources.jar \\
+  https://javadoc.io/doc/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-macros_3/2.33.3/index.html; do
+  printf '%s -> ' \""'$url"; curl -I -fsSL "$url" | sed -n '"'1p';
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 275ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsoniter-scala-macros_3-2.33.3-javadoc.jar" title="jsoniter-scala-macros_3-2.33.3-javadoc.jar">jsoniter-scala-macros_3-2.33.3-javadoc.jar</a>        2025-03-18 20:45   2750950      
+<a href="jsoniter-scala-macros_3-2.33.3-javadoc.jar.asc" title="jsoniter-scala-macros_3-2.33.3-javadoc.jar.asc">jsoniter-scala-macros_3-2.33.3-javadoc.jar.as...</a>  2025-03-18 20:45       833      
+<a href="jsoniter-scala-macros_3-2.33.3-javadoc.jar.asc.md5" title="jsoniter-scala-macros_3-2.33.3-javadoc.jar.asc.md5">jsoniter-scala-macros_3-2.33.3-javadoc.jar.as...</a>  2025-03-18 20:45        32      
+<a href="jsoniter-scala-macros_3-2.33.3-javadoc.jar.asc.sha1" title="jsoniter-scala-macros_3-2.33.3-javadoc.jar.asc.sha1">jsoniter-scala-macros_3-2.33.3-javadoc.jar.as...</a>  2025-03-18 20:45        40      
+<a href="jsoniter-scala-macros_3-2.33.3-javadoc.jar.md5" title="jsoniter-scala-macros_3-2.33.3-javadoc.jar.md5">jsoniter-scala-macros_3-2.33.3-javadoc.jar.md...</a>  2025-03-18 20:45        32      
+<a href="jsoniter-scala-macros_3-2.33.3-javadoc.jar.sha1" title="jsoniter-scala-macros_3-2.33.3-javadoc.jar.sha1">jsoniter-scala-macros_3-2.33.3-javadoc.jar.sh...</a>  2025-03-18 20:45        40      
+<a href="jsoniter-scala-macros_3-2.33.3-sources.jar" title="jsoniter-scala-macros_3-2.33.3-sources.jar">jsoniter-scala-macros_3-2.33.3-sources.jar</a>        2025-03-18 20:45     35959      
+<a href="jsoniter-scala-macros_3-2.33.3-sources.jar.asc" title="jsoniter-scala-macros_3-2.33.3-sources.jar.asc">jsoniter-scala-macros_3-2.33.3-sources.jar.as...</a>  2025-03-18 20:45       833      
+<a href="jsoniter-scala-macros_3-2.33.3-sources.jar.asc.md5" title="jsoniter-scala-macros_3-2.33.3-sources.jar.asc.md5">jsoniter-scala-macros_3-2.33.3-sources.jar.as...</a>  2025-03-18 20:45        32      
+<a href="jsoniter-scala-macros_3-2.33.3-sources.jar.asc.sha1" title="jsoniter-scala-macros_3-2.33.3-sources.jar.asc.sha1">jsoniter-scala-macros_3-2.33.3-sources.jar.as...</a>  2025-03-18 20:45        40      
+<a href="jsoniter-scala-macros_3-2.33.3-sources.jar.md5" title="jsoniter-scala-macros_3-2.33.3-sources.jar.md5">jsoniter-scala-macros_3-2.33.3-sources.jar.md...</a>  2025-03-18 20:45        32      
+<a href="jsoniter-scala-macros_3-2.33.3-sources.jar.sha1" title="jsoniter-scala-macros_3-2.33.3-sources.jar.sha1">jsoniter-scala-macros_3-2.33.3-sources.jar.sh...</a>  2025-03-18 20:45        40      
+<a href="jsoniter-scala-macros_3-2.33.3.jar" title="jsoniter-scala-macros_3-2.33.3.jar">jsoniter-scala-macros_3-2.33.3.jar</a>                2025-03-18 20:45   1162924      
+<a href="jsoniter-scala-macros_3-2.33.3.jar.asc" title="jsoniter-scala-macros_3-2.33.3.jar.asc">jsoniter-scala-macros_3-2.33.3.jar.asc</a>            2025-03-18 20:45       833      
+<a href="jsoniter-scala-macros_3-2.33.3.jar.asc.md5" title="jsoniter-scala-macros_3-2.33.3.jar.asc.md5">jsoniter-scala-macros_3-2.33.3.jar.asc.md5</a>        2025-03-18 20:45        32      
+<a href="jsoniter-scala-macros_3-2.33.3.jar.asc.sha1" title="jsoniter-scala-macros_3-2.33.3.jar.asc.sha1">jsoniter-scala-macros_3-2.33.3.jar.asc.sha1</a>       2025-03-18 20:45        40      
+<a href="jsoniter-scala-macros_3-2.33.3.jar.md5" title="jsoniter-scala-macros_3-2.33.3.jar.md5">jsoniter-scala-macros_3-2.33.3.jar.md5</a>            2025-03-18 20:45        32      
+<a href="jsoniter-scala-macros_3-2.33.3.jar.sha1" title="jsoniter-scala-macros_3-2.33.3.jar.sha1">jsoniter-scala-macros_3-2.33.3.jar.sha1</a>           2025-03-18 20:45        40      
+<a href="jsoniter-scala-macros_3-2.33.3.pom" title="jsoniter-scala-macros_3-2.33.3.pom">jsoniter-scala-macros_3-2.33.3.pom</a>                2025-03-18 20:45      2621      
+<a href="jsoniter-scala-macros_3-2.33.3.pom.asc" title="jsoniter-scala-macros_3-2.33.3.pom.asc">jsoniter-scala-macros_3-2.33.3.pom.asc</a>            2025-03-18 20:45       833      
+<a href="jsoniter-scala-macros_3-2.33.3.pom.asc.md5" title="jsoniter-scala-macros_3-2.33.3.pom.asc.md5">jsoniter-scala-macros_3-2.33.3.pom.asc.md5</a>        2025-03-18 20:45        32      
+<a href="jsoniter-scala-macros_3-2.33.3.pom.asc.sha1" title="jsoniter-scala-macros_3-2.33.3.pom.asc.sha1">jsoniter-scala-macros_3-2.33.3.pom.asc.sha1</a>       2025-03-18 20:45        40      
+<a href="jsoniter-scala-macros_3-2.33.3.pom.md5" title="jsoniter-scala-macros_3-2.33.3.pom.md5">jsoniter-scala-macros_3-2.33.3.pom.md5</a>            2025-03-18 20:45        32      
+<a href="jsoniter-scala-macros_3-2.33.3.pom.sha1" title="jsoniter-scala-macros_3-2.33.3.pom.sha1">jsoniter-scala-macros_3-2.33.3.pom.sha1</a>           2025-03-18 20:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 317ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.github.plokhotnyuk.jsoniter-scala</groupId>
+    <artifactId>jsoniter-scala-macros_3</artifactId>
+    <packaging>jar</packaging>
+    <description>jsoniter-scala-macros</description>
+    <url>https://github.com/plokhotnyuk/jsoniter-scala</url>
+    <version>2.33.3</version>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/mit-license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>jsoniter-scala-macros</name>
+    <inceptionYear>2017</inceptionYear>
+    <organization>
+        <name>com.github.plokhotnyuk.jsoniter-scala</name>
+        <url>https://github.com/plokhotnyuk</url>
+    </organization>
+    <scm>
+        <url>https://github.com/plokhotnyuk/jsoniter-scala</url>
+        <connection>scm:git@github.com:plokhotnyuk/jsoniter-scala.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>plokhotnyuk</id>
+            <name>Andriy Plokhotnyuk</name>
+            <url>https://twitter.com/aplokhotnyuk</url>
+            <email>plokhotnyuk@gmail.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.plokhotnyuk.jsoniter-scala</groupId>
+            <artifactId>jsoniter-scala-core_3</artifactId>
+            <version>2.33.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.epam.deltix</groupId>
+            <artifactId>dfp</artifactId>
+            <version>1.0.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_3</artifactId>
+            <version>3.2.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-collection-compat_3</artifactId>
+            <version>2.13.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+ succeeded in 1074ms:
+HTTP/2 200 
+https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/jsoniter-scala-macros_3-2.33.3-tests.jar -> curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/jsoniter-scala-macros_3-2.33.3-test-sources.jar -> curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+https://javadoc.io/doc/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-macros_3/2.33.3/index.html -> HTTP/2 200 
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central jsoniter-scala-macros_3 2.33.3
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/shared/src/main/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros \\
+  https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros \\
+  https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros \\
+  https://plokhotnyuk.github.io/jsoniter-scala/latest/api/com/github/plokhotnyuk/jsoniter_scala/macros.html; do
+  printf '%s -> ' \""'$url"; curl -I -fsSL "$url" | sed -n '"'1p';
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/plokhotnyuk/jsoniter-scala.git 'refs/tags/*2.33.3*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents?ref=v2.33.3 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 240ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "1f77399cf4f14b879eb83f80b8e4ea140e8283d7",
+    "size": 0,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/.github?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/.github",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/1f77399cf4f14b879eb83f80b8e4ea140e8283d7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/.github?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/1f77399cf4f14b879eb83f80b8e4ea140e8283d7",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "a396b53f06e82279af3881db45a3e8bc4f609b68",
+    "size": 319,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/.gitignore?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/.gitignore",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/a396b53f06e82279af3881db45a3e8bc4f609b68",
+    "download_url": "https://raw.githubusercontent.com/plokhotnyuk/jsoniter-scala/v2.33.3/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/.gitignore?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/a396b53f06e82279af3881db45a3e8bc4f609b68",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/.gitignore"
+    }
+  },
+  {
+    "name": ".jvmopts",
+    "path": ".jvmopts",
+    "sha": "411a33b1374c46841cb8f01ffdce2d87c590b9ee",
+    "size": 109,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/.jvmopts?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/.jvmopts",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/411a33b1374c46841cb8f01ffdce2d87c590b9ee",
+    "download_url": "https://raw.githubusercontent.com/plokhotnyuk/jsoniter-scala/v2.33.3/.jvmopts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/.jvmopts?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/411a33b1374c46841cb8f01ffdce2d87c590b9ee",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/.jvmopts"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "a33507599b4317e9582b4857b761b4821f62d52b",
+    "size": 1104,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/LICENSE?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/LICENSE",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/a33507599b4317e9582b4857b761b4821f62d52b",
+    "download_url": "https://raw.githubusercontent.com/plokhotnyuk/jsoniter-scala/v2.33.3/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/LICENSE?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/a33507599b4317e9582b4857b761b4821f62d52b",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "18f1f4a3eeac6def145bbdbb50d206cb465622ff",
+    "size": 50225,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/README.md?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/README.md",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/18f1f4a3eeac6def145bbdbb50d206cb465622ff",
+    "download_url": "https://raw.githubusercontent.com/plokhotnyuk/jsoniter-scala/v2.33.3/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/README.md?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/18f1f4a3eeac6def145bbdbb50d206cb465622ff",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/README.md"
+    }
+  },
+  {
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "sha": "de2e8580a8f00c12629f56838b8f27e9081ce7ef",
+    "size": 11506,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/build.sbt?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/build.sbt",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/de2e8580a8f00c12629f56838b8f27e9081ce7ef",
+    "download_url": "https://raw.githubusercontent.com/plokhotnyuk/jsoniter-scala/v2.33.3/build.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/build.sbt?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/blobs/de2e8580a8f00c12629f56838b8f27e9081ce7ef",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/build.sbt"
+    }
+  },
+  {
+    "name": "jsoniter-scala-benchmark",
+    "path": "jsoniter-scala-benchmark",
+    "sha": "0a97a5f832e33656efdf8021032c68eb5fc43b1f",
+    "size": 0,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-benchmark?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-benchmark",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/0a97a5f832e33656efdf8021032c68eb5fc43b1f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-benchmark?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/0a97a5f832e33656efdf8021032c68eb5fc43b1f",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-benchmark"
+    }
+  },
+  {
+    "name": "jsoniter-scala-circe",
+    "path": "jsoniter-scala-circe",
+    "sha": "f4f41a60c2d502750d4b13a0fd3a70f1e1ab7897",
+    "size": 0,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-circe?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-circe",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/f4f41a60c2d502750d4b13a0fd3a70f1e1ab7897",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-circe?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/f4f41a60c2d502750d4b13a0fd3a70f1e1ab7897",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-circe"
+    }
+  },
+  {
+    "name": "jsoniter-scala-core",
+    "path": "jsoniter-scala-core",
+    "sha": "0e70e0fcccf04b37d6c8068a5c0a4963ca7b94f4",
+    "size": 0,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-core?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-core",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/0e70e0fcccf04b37d6c8068a5c0a4963ca7b94f4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-core?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/0e70e0fcccf04b37d6c8068a5c0a4963ca7b94f4",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-core"
+    }
+  },
+  {
+    "name": "jsoniter-scala-examples",
+    "path": "jsoniter-scala-examples",
+    "sha": "20f51cedbb1f3b6146cd52a1e8265b8ed293d143",
+    "size": 0,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-examples?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-examples",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/20f51cedbb1f3b6146cd52a1e8265b8ed293d143",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-examples?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/20f51cedbb1f3b6146cd52a1e8265b8ed293d143",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-examples"
+    }
+  },
+  {
+    "name": "jsoniter-scala-macros",
+    "path": "jsoniter-scala-macros",
+    "sha": "5e71490325eebff235922c8681c28a40aabebff7",
+    "size": 0,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-macros?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/5e71490325eebff235922c8681c28a40aabebff7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-macros?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/5e71490325eebff235922c8681c28a40aabebff7",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros"
+    }
+  },
+  {
+    "name": "project",
+    "path": "project",
+    "sha": "b9b34d28809eea7e7327b574549f62fa600b43ec",
+    "size": 0,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/project?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/project",
+    "git_url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/b9b34d28809eea7e7327b574549f62fa600b43ec",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/project?ref=v2.33.3",
+      "git": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/b9b34d28809eea7e7327b574549f62fa600b43ec",
+      "html": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/project"
+    }
+  },
+  {
+    "name": "release.sbt",
+    "path": "release.sbt",
+    "sha": "9381aaa58591fabcd360f4ac0121d13f8303d28c",
+    "size": 1895,
+    "url": "https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/release.sbt?ref=v2.33.3",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/blob/v2.33.3/release.sbt",
+
+ succeeded in 424ms:
+499ea4e60f4d255b86f8a5cfe62fcf3e94cbe4f6	refs/tags/v2.33.3
+5222dda8a5366d88ced82a815f45eb8142f86c07	refs/tags/v2.33.3^{}
+
+ succeeded in 2639ms:
+HTTP/2 200 
+https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros -> HTTP/2 200 
+https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros -> HTTP/2 200 
+https://plokhotnyuk.github.io/jsoniter-scala/latest/api/com/github/plokhotnyuk/jsoniter_scala/macros.html -> HTTP/2 404 
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://javadoc.io|\"documentation-url\": \"https://javadoc.io|\"documentation-url\".*javadoc.jar' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 0ms:
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jni/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jni/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/org.jline/jline-native/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-native/$version$/jline-native-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/org.jline/jline-console/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,50p' metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json && sed -n '1,40p' metadata/io.github.oshai/kotlin-logging-jvm/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/ajalt/clikt",
+    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+    "description" : "Clikt is a Kotlin multiplatform library for building command-line interfaces with declarative command, option, and argument parsing. The clikt-core-jvm artifact provides the JVM variant of the core parser, including help output, shell completion support, parameter conversion, value sources, and JVM-specific file and path types.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.3"
+    },
+    "tested-versions" : [
+      "5.1.0"
+    ],
+    "allowed-packages" : [
+      "com.github.ajalt.clikt"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "8.0.01",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/oshai/kotlin-logging",
+    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.1"
+    },
+    "tested-versions" : [
+      "8.0.01",
+      "8.0.02"
+    ],
+    "allowed-packages" : [
+      "io.github.oshai.kotlinlogging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"N/A\"|\"test-code-url\": \"N/A\"|\"test-code-url\".*src/test|\"test-code-url\".*tests.jar' metadata -g '*.json' | head -60" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:22:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+metadata/org.jline/jline-terminal-jni/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/org.jline/jline-terminal-jni/index.json:21:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-$version$/okio/src/test",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jline/jline-native/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/native/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.jline/jline-reader/index.json:8:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.jline/jline-reader/index.json:22:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:22:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+metadata/org.jline/jline-console/index.json:52:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-tests.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-tests.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/runtime/src/test",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.javaparser/javaparser-core/index.json:8:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:22:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/parameter-names/src/test",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/paranamer/src/test/java",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-$version$/src/test",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:130:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-$version$/src/test",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:39:    "test-code-url" : "N/A",
+metadata/io.swagger/swagger-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.example/library/index.json:11:    "test-code-url": "N/A",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-$version$/src/test",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+
+codex
+Maven Central publishes the main JAR, sources JAR, and javadoc JAR for 2.33.3, but no tests or test-sources classifier. I’m narrowing the upstream test path now so the test URL lands on the tagged suite rather than just the repository root.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/v2.33.3?recursive=1' | rg 'jsoniter-scala-macros/.*/src/(main|test)' | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/plokhotnyuk/jsoniter-scala/contents/jsoniter-scala-macros?ref=v2.33.3 | rg '\"name\"|\"path\"|\"html_url\"|\"type\"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/plokhotnyuk/jsoniter-scala/v2.33.3/README.md | rg -n 'jsoniter-scala|JsonValueCodec|JsonCodecMaker|macros|Scala 3|compile' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 197ms:
+    "name": "js",
+    "path": "jsoniter-scala-macros/js",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/js",
+    "type": "dir",
+    "name": "jvm",
+    "path": "jsoniter-scala-macros/jvm",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/jvm",
+    "type": "dir",
+    "name": "native",
+    "path": "jsoniter-scala-macros/native",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/native",
+    "type": "dir",
+    "name": "shared",
+    "path": "jsoniter-scala-macros/shared",
+    "html_url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/shared",
+    "type": "dir",
+
+ succeeded in 191ms:
+1:# jsoniter-scala
+3:[![Actions Build](https://github.com/plokhotnyuk/jsoniter-scala/workflows/build/badge.svg)](https://github.com/plokhotnyuk/jsoniter-scala/actions)
+5:[![Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/plokhotnyuk/jsoniter-scala?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+6:[![Maven Central](https://img.shields.io/badge/maven--central-2.33.3-blue.svg)](https://repo1.maven.org/maven2/com/github/plokhotnyuk/jsoniter-scala/)
+8:Scala macros for compile-time generation of safe and ultra-fast JSON codecs.
+12:[**Latest results of benchmarks on JVMs**](https://plokhotnyuk.github.io/jsoniter-scala/) that compare parsing and
+13:serialization performance of jsoniter-scala with: [borer](https://github.com/sirthias/borer), 
+15:[circe with jsoniter-scala booster](https://github.com/plokhotnyuk/jsoniter-scala/tree/master/jsoniter-scala-circe),
+20:[play-json with jsoniter-scala booster](https://github.com/evolution-gaming/play-json-tools/tree/master/play-json-jsoniter),
+29:[**Latest results of benchmarks on browsers**](https://plokhotnyuk.github.io/jsoniter-scala/index-scalajs.html) that
+30:compare performance of jsoniter-scala with: [circe](https://github.com/circe/circe), 
+31:[circe with jsoniter-scala booster](https://github.com/plokhotnyuk/jsoniter-scala/tree/master/jsoniter-scala-circe),
+33:[play-json with jsoniter-scala booster](https://github.com/evolution-gaming/play-json-tools/tree/master/play-json-jsoniter),
+36:compiled by Scala.js 1.18.2 to ES 2015 with GCC v20220202 optimizations applied on
+50:This library had started from macros that reused [jsoniter (json-iterator) for Java](https://github.com/json-iterator/java) 
+53:The idea to generate codecs by Scala macros and main details were borrowed from
+54:[Kryo Macros](https://github.com/evolution-gaming/kryo-macros) (originally developed by [Alexander Nemish](https://github.com/nau)) and adapted for the needs of the JSON domain.
+56:Other Scala macros features were peeped in [AVSystem Commons](https://github.com/AVSystem/scala-commons/tree/master/commons-macros/src/main/scala/com/avsystem/commons/macros)
+82:[![GitHub contributors](https://contrib.rocks/image?repo=plokhotnyuk/jsoniter-scala)](https://github.com/plokhotnyuk/jsoniter-scala/graphs/contributors)
+96:4. **Productivity**: derive codecs recursively for complex types using one line macro, do it in _compile-time_ to 
+97:minimize the probability of run-time issues, optionally print generated sources as compiler output to be inspected for 
+100:5. **Ergonomics**: have preconfigured defaults for the safest and common usage that can be easily altered by compile- 
+101:and run-time configuration instances, combined with compile-time annotations and implicits, embrace the textual 
+118:  (including immutable arrays in Scala 3), module classes, literal types, value classes, and case classes with
+160:- Using black box macros only for codec generation ensures that your types will never be changed
+179:There are configurable options that can be set in compile-time:
+189:- Ability to override names of classes of ADTs and fields using a compile-time annotation  
+223:The [**v2.13.5.2**](https://github.com/plokhotnyuk/jsoniter-scala/releases/tag/v2.13.5.2) release is the last version that
+226:The [**v2.13.3.2**](https://github.com/plokhotnyuk/jsoniter-scala/releases/tag/v2.13.3.2) release is the last version that
+229:The [**v2.30.2**](https://github.com/plokhotnyuk/jsoniter-scala/releases/tag/v2.30.2) release is the last version that
+233:For upcoming features and fixes see [Commits](https://github.com/plokhotnyuk/jsoniter-scala/commits/master)
+234:and [Issues page](https://github.com/plokhotnyuk/jsoniter-scala/issues).
+245:Add the core library with a "compile" scope and the macros library with "compile-internal" or "provided" scopes to your 
+250:  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core" % "2.33.3",
+251:  // Use the "provided" scope instead when the "compile-internal" scope is not supported  
+252:  "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.33.3" % "compile-internal"
+255:In the beginning of Scala CLI script use "dep" scope for the core library or "compileOnly.dep" scope for the macros
+258://> using dep "com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core::2.33.3"
+259://> using compileOnly.dep "com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros::2.33.3"
+264:import com.github.plokhotnyuk.jsoniter_scala.macros._
+267:given userCodec: JsonValueCodec[User] = JsonCodecMaker.make
+270:That's it! You have generated an instance of `com.github.plokhotnyuk.jsoniter_scala.core.JsonValueCodec` for the
+295:For more use cases of jsoniter-scala, please, check out tests:
+296:- [JsonCodecMakerSpec](https://github.com/plokhotnyuk/jsoniter-scala/blob/master/jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerSpec.scala)
+297:- [PackageSpec](https://github.com/plokhotnyuk/jsoniter-scala/blob/master/jsoniter-scala-core/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/core/PackageSpec.scala)
+298:- [JsonReaderSpec](https://github.com/plokhotnyuk/jsoniter-scala/blob/master/jsoniter-scala-core/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/core/JsonReaderSpec.scala)
+299:- [JsonWriterSpec](https://github.com/plokhotnyuk/jsoniter-scala/blob/master/jsoniter-scala-core/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/core/JsonWriterSpec.scala)
+301:All Scala 3 only features are tested by specs in [this directory](https://github.com/plokhotnyuk/jsoniter-scala/tree/master/jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros).
+324:- [akka-http](https://github.com/hseeberger/akka-http-json/blob/master/akka-http-jsoniter-scala/src/test/scala/de/heikoseeberger/akkahttpjsoniterscala/ExampleApp.scala)
+328:- [pekko-http](https://github.com/pjfanning/pekko-http-json/blob/d8ca725bb5621e46c6df0c739ef83eb9f96bb3f1/pekko-http-jsoniter-scala/src/test/scala/com/github/pjfanning/pekkohttpjsoniterscala/ExampleApp.scala)
+333:Usages of jsoniter-scala in OSS libraries:
+341:- [iron](https://github.com/Iltotore/iron) - a lightweight library for refined types in Scala 3
+342:- [jsoniter-scala-circe](https://github.com/plokhotnyuk/jsoniter-scala/tree/master/jsoniter-scala-circe) - the circe 
+345:- [logging4s](https://github.com/logging4s/logging4s) - structured logging for Scala 3
+346:- [neotype](https://github.com/kitlangton/neotype) - a friendly newtype library for Scala 3
+357:- [tapir](https://tapir.softwaremill.com/en/latest/endpoint/json.html#jsoniter-scala) - Typed API descRiptions
+359:Also, for usages in other OSS projects see the `Dependents` section of [peoject's Scala Index page](https://index.scala-lang.org/plokhotnyuk/jsoniter-scala)
+374:2. The configuration parameter for the `make` macro is evaluated in compile-time. It requires no dependency
+379:        to compile all such dependencies before their usage for generation of codecs.
+381:Sometime Scala 2 compiler can fail to compile the `make` macro call with the same error message for the configuration 
+386:- move jsoniter-scala imports to be local, like [here](https://github.com/plokhotnyuk/play/blob/master/src/main/scala/microservice/HelloWorld.scala#L6-L7)
+388:- use `sbt clean compile stage` or `sbt clean test stage` instead of just `sbt clean stage`, like in
+392:3. [Unexpected compiler errors](https://github.com/plokhotnyuk/jsoniter-scala/issues/551)
+394:like [here](https://github.com/plokhotnyuk/jsoniter-scala/commit/db52782e6c426b73efac6c5ecaa4c28c9d128f48).
+399:4. Compile-time configuration for `make` calls in Scala 3 has limited support of possible expressions for name mapping.
+401:Please use examples of `CodecMakerConfig` usage from [unit tests](https://github.com/plokhotnyuk/jsoniter-scala/blob/master/jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerSpec.scala).   
+403:5. [Unexpected parsing or serialization errors](https://github.com/plokhotnyuk/jsoniter-scala/issues/923)
+420:6. Scala.js doesn't support Java enums compiled from Java sources, so linking fails with errors like:
+422:[error] Referring to non-existent class com.github.plokhotnyuk.jsoniter_scala.macros.Level
+423:[error]   called from private com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMakerSpec.$anonfun$new$24()void
+424:[error]   called from private com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMakerSpec.$anonfun$new$1()void
+425:[error]   called from constructor com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMakerSpec.<init>()void
+426:[error]   called from static constructor com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMakerSpec.<clinit>()void
+457:For Scala 3 the workaround can be the same for all platforms:
+465:7. Scala 3 compiler cannot derive anonymous codecs for generic types with concrete type parameters:
+471:given JsonValueCodec[DeResult[Option[String]]] = JsonCodecMaker.make
+472:given JsonValueCodec[DeResult[RootPathFiles]] = JsonCodecMaker.make
+476:[error] 19 |      given JsonValueCodec[DeResult[RootPathFiles]] = JsonCodecMaker.make
+478:[error]    |given_JsonValueCodec_DeResult is already defined as given instance given_JsonValueCodec_DeResult
+482:given codecOfDeResult1: JsonValueCodec[DeResult[Option[String]]] = JsonCodecMaker.make
+
+ succeeded in 541ms:
+      "path": "jsoniter-scala-macros/js/src/test",
+      "path": "jsoniter-scala-macros/js/src/test/scala-2",
+      "path": "jsoniter-scala-macros/js/src/test/scala-2/com",
+      "path": "jsoniter-scala-macros/js/src/test/scala-2/com/github",
+      "path": "jsoniter-scala-macros/js/src/test/scala-2/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/js/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/js/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/js/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros/Level.scala",
+      "path": "jsoniter-scala-macros/js/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros/Levels.scala",
+      "path": "jsoniter-scala-macros/js/src/test/scala-3",
+      "path": "jsoniter-scala-macros/js/src/test/scala-3/com",
+      "path": "jsoniter-scala-macros/js/src/test/scala-3/com/github",
+      "path": "jsoniter-scala-macros/js/src/test/scala-3/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/js/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/js/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/js/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/Level.scala",
+      "path": "jsoniter-scala-macros/js/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/Levels.scala",
+      "path": "jsoniter-scala-macros/js/src/test/scala",
+      "path": "jsoniter-scala-macros/js/src/test/scala/com",
+      "path": "jsoniter-scala-macros/js/src/test/scala/com/github",
+      "path": "jsoniter-scala-macros/js/src/test/scala/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/js/src/test/scala/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/js/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/js/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/TestUtils.scala",
+      "path": "jsoniter-scala-macros/jvm/src/test",
+      "path": "jsoniter-scala-macros/jvm/src/test/java",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk/jsoniter_scala/macros/Level.java",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk/jsoniter_scala/macros/Levels.java",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerDecimal64Spec.scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerJVMSpec.scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/TestUtils.scala",
+      "path": "jsoniter-scala-macros/native/src/test",
+      "path": "jsoniter-scala-macros/native/src/test/scala-2",
+      "path": "jsoniter-scala-macros/native/src/test/scala-2/com",
+      "path": "jsoniter-scala-macros/native/src/test/scala-2/com/github",
+      "path": "jsoniter-scala-macros/native/src/test/scala-2/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/native/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/native/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/native/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros/Level.scala",
+      "path": "jsoniter-scala-macros/native/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros/Levels.scala",
+      "path": "jsoniter-scala-macros/native/src/test/scala-3",
+      "path": "jsoniter-scala-macros/native/src/test/scala-3/com",
+      "path": "jsoniter-scala-macros/native/src/test/scala-3/com/github",
+      "path": "jsoniter-scala-macros/native/src/test/scala-3/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/native/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/native/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/native/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/Level.scala",
+      "path": "jsoniter-scala-macros/native/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/Levels.scala",
+      "path": "jsoniter-scala-macros/native/src/test/scala",
+      "path": "jsoniter-scala-macros/native/src/test/scala/com",
+      "path": "jsoniter-scala-macros/native/src/test/scala/com/github",
+      "path": "jsoniter-scala-macros/native/src/test/scala/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/native/src/test/scala/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/native/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/native/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/TestUtils.scala",
+      "path": "jsoniter-scala-macros/shared/src/main",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-2",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-2/com",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-2/com/github",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-2/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-2/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMaker.scala",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-3",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-3/com",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-3/com/github",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-3/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-3/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/ConfiguredJsonValueCodec.scala",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMaker.scala",
+      "path": "jsoniter-scala-macros/shared/src/main/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/NameMapper.scala",
+      "path": "jsoniter-scala-macros/shared/src/test",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2.13",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2.13/com",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2.13/com/github",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2.13/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2.13/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2.13/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2.13/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerLiteralTypesSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2.13/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerNewTypeSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2/com",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2/com/github",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerCompileTimeEvalSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerEnumeratumSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros/NamespacePollutions.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-2/com/github/plokhotnyuk/jsoniter_scala/macros/ScalaVersionCheck.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerLiteralTypesSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerNewEnumSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerNewKeywordSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerNewTypeSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/NamespacePollutions.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/ScalaVersionCheck.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala/com",
+      "path": "jsoniter-scala-macros/shared/src/test/scala/com/github",
+      "path": "jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros",
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/plokhotnyuk/jsoniter-scala/git/trees/v2.33.3?recursive=1' | rg 'jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros|jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros|jsoniter-scala-macros/jvm/src/test' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 132ms:
+      "path": "jsoniter-scala-macros/jvm/src/test",
+      "path": "jsoniter-scala-macros/jvm/src/test/java",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk/jsoniter_scala/macros/Level.java",
+      "path": "jsoniter-scala-macros/jvm/src/test/java/com/github/plokhotnyuk/jsoniter_scala/macros/Levels.java",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerDecimal64Spec.scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerJVMSpec.scala",
+      "path": "jsoniter-scala-macros/jvm/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/TestUtils.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerLiteralTypesSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerNewEnumSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerNewKeywordSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerNewTypeSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/NamespacePollutions.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala-3/com/github/plokhotnyuk/jsoniter_scala/macros/ScalaVersionCheck.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros",
+      "path": "jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/JsonCodecMakerSpec.scala",
+      "path": "jsoniter-scala-macros/shared/src/test/scala/com/github/plokhotnyuk/jsoniter_scala/macros/VerifyingSpec.scala",
+
+codex
+I have enough evidence now: the artifact is the Scala 3 JVM macros artifact, Maven has source and javadoc classifiers, and upstream tests live under the tagged `jsoniter-scala-macros` tree. I’m updating the metadata JSON with Maven source/docs URLs and the tagged GitHub test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+diff --git a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+index c353f6a142a36b19639e14da652c503211dc51ad..a07f8d67557125092f3a9e3de358bfd1913bf9b6
+--- a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
++++ b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3"
++  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3",
++  "repository-url" : "https://github.com/plokhotnyuk/jsoniter-scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-macros/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-javadoc.jar",
++  "description" : "jsoniter-scala-macros_3 provides Scala 3 macro support for jsoniter-scala, deriving JsonValueCodec instances at compile time for safe and fast JSON parsing and serialization. It works with jsoniter-scala-core to generate codecs for case classes, sealed hierarchies, enums, collections, and other Scala types while exposing compile-time configuration for naming and codec behavior.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+index c353f6a142a36b19639e14da652c503211dc51ad..a07f8d67557125092f3a9e3de358bfd1913bf9b6
+--- a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
++++ b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3"
++  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3",
++  "repository-url" : "https://github.com/plokhotnyuk/jsoniter-scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-macros/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-javadoc.jar",
++  "description" : "jsoniter-scala-macros_3 provides Scala 3 macro support for jsoniter-scala, deriving JsonValueCodec instances at compile time for safe and fast JSON parsing and serialization. It works with jsoniter-scala-core to generate codecs for case classes, sealed hierarchies, enums, collections, and other Scala types while exposing compile-time configuration for naming and codec behavior.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 0ms:
+{
+  "coordinates": "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3",
+  "repository-url": "https://github.com/plokhotnyuk/jsoniter-scala",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-macros/shared/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-javadoc.jar",
+  "description": "jsoniter-scala-macros_3 provides Scala 3 macro support for jsoniter-scala, deriving JsonValueCodec instances at compile time for safe and fast JSON parsing and serialization. It works with jsoniter-scala-core to generate codecs for case classes, sealed hierarchies, enums, collections, and other Scala types while exposing compile-time configuration for naming and codec behavior.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/jsoniter-scala-macros_3-2.33.3-sources.jar \\
+  https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/shared/src/test \\
+  https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/jsoniter-scala-macros_3-2.33.3-javadoc.jar; do
+  printf '%s -> ' \""'$url"; curl -I -fsSL "$url" | sed -n '"'1p';
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+diff --git a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+index c353f6a142a36b19639e14da652c503211dc51ad..a07f8d67557125092f3a9e3de358bfd1913bf9b6
+--- a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
++++ b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3"
++  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3",
++  "repository-url" : "https://github.com/plokhotnyuk/jsoniter-scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-macros/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-javadoc.jar",
++  "description" : "jsoniter-scala-macros_3 provides Scala 3 macro support for jsoniter-scala, deriving JsonValueCodec instances at compile time for safe and fast JSON parsing and serialization. It works with jsoniter-scala-core to generate codecs for case classes, sealed hierarchies, enums, collections, and other Scala types while exposing compile-time configuration for naming and codec behavior.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1126ms:
+HTTP/2 200 
+https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/2.33.3/jsoniter-scala-macros_3-2.33.3-javadoc.jar -> HTTP/2 200 
+
+diff --git a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+index c353f6a142a36b19639e14da652c503211dc51ad..a07f8d67557125092f3a9e3de358bfd1913bf9b6
+--- a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
++++ b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3"
++  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3",
++  "repository-url" : "https://github.com/plokhotnyuk/jsoniter-scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-macros/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-javadoc.jar",
++  "description" : "jsoniter-scala-macros_3 provides Scala 3 macro support for jsoniter-scala, deriving JsonValueCodec instances at compile time for safe and fast JSON parsing and serialization. It works with jsoniter-scala-core to generate codecs for case classes, sealed hierarchies, enums, collections, and other Scala types while exposing compile-time configuration for naming and codec behavior.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+ succeeded in 0ms:
+{
+  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3",
+  "repository-url" : "https://github.com/plokhotnyuk/jsoniter-scala",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-macros/shared/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-javadoc.jar",
+  "description" : "jsoniter-scala-macros_3 provides Scala 3 macro support for jsoniter-scala, deriving JsonValueCodec instances at compile time for safe and fast JSON parsing and serialization. It works with jsoniter-scala-core to generate codecs for case classes, sealed hierarchies, enums, collections, and other Scala types while exposing compile-time configuration for naming and codec behavior.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4
+diff --git a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+index c353f6a142a36b19639e14da652c503211dc51ad..a07f8d67557125092f3a9e3de358bfd1913bf9b6
+--- a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
++++ b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3"
++  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3",
++  "repository-url" : "https://github.com/plokhotnyuk/jsoniter-scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-macros/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-javadoc.jar",
++  "description" : "jsoniter-scala-macros_3 provides Scala 3 macro support for jsoniter-scala, deriving JsonValueCodec instances at compile time for safe and fast JSON parsing and serialization. It works with jsoniter-scala-core to generate codecs for case classes, sealed hierarchies, enums, collections, and other Scala types while exposing compile-time configuration for naming and codec behavior.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 199ms:
+web search: 
+web search: https://github.com/plokhotnyuk/jsoniter-scala/tree/v2.33.3/jsoniter-scala-macros/shared/src/test
+web search: 
+web search: repo.maven.apache.org jsoniter-scala-macros_3 2.33.3 sources jar javadoc jar
+codex
+Updated [the metadata JSON](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json).
+
+I set the repository, Maven source and javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language field. I left `not-for-native-image` absent because this is a JVM JAR artifact, not one of the non-JVM artifact cases; Maven also lists it as a Scala 3 artifact with a JAR file. ([mvnrepository.com](https://mvnrepository.com/artifact/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-macros_3/2.33.3?utm_source=openai))
+
+Verified:
+`jq` parses the JSON, and the source, test, and documentation URLs all return `HTTP 200` after replacing `$version$` with `2.33.3`.
+diff --git a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+index c353f6a142a36b19639e14da652c503211dc51ad..a07f8d67557125092f3a9e3de358bfd1913bf9b6
+--- a/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
++++ b/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3"
++  "coordinates" : "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3",
++  "repository-url" : "https://github.com/plokhotnyuk/jsoniter-scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-macros/shared/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-macros_3/$version$/jsoniter-scala-macros_3-$version$-javadoc.jar",
++  "description" : "jsoniter-scala-macros_3 provides Scala 3 macro support for jsoniter-scala, deriving JsonValueCodec instances at compile time for safe and fast JSON parsing and serialization. It works with jsoniter-scala-core to generate codecs for case classes, sealed hierarchies, enums, collections, and other Scala types while exposing compile-time configuration for naming and codec behavior.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+63,688
+Updated [the metadata JSON](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4/build/discovered-artifact-metadata/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.json).
+
+I set the repository, Maven source and javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language field. I left `not-for-native-image` absent because this is a JVM JAR artifact, not one of the non-JVM artifact cases; Maven also lists it as a Scala 3 artifact with a JAR file. ([mvnrepository.com](https://mvnrepository.com/artifact/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-macros_3/2.33.3?utm_source=openai))
+
+Verified:
+`jq` parses the JSON, and the source, test, and documentation URLs all return `HTTP 200` after replacing `$version$` with `2.33.3`.
+Ran agent for com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_3:2.33.3 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4/build/agent-artifact-discovery-logs/com.github.plokhotnyuk.jsoniter-scala-jsoniter-scala-macros_3-2.33.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4985-e8838eb4/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 36s
+9 actionable tasks: 4 executed, 5 from cache
