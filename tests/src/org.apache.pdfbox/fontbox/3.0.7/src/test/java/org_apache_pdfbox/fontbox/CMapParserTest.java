@@ -24,6 +24,6 @@ public class CMapParserTest {
         assertThat(cmap.getType()).isEqualTo(1);
         assertThat(cmap.getWMode()).isZero();
         assertThat(cmap.hasCIDMappings()).isTrue();
-        assertThat(cmap.toCID(new byte[] { 0x12, 0x34 })).isEqualTo(0x1234);
+        assertThat(cmap.toCID(new byte[] {0x12, 0x34 })).isEqualTo(0x1234);
     }
 }
