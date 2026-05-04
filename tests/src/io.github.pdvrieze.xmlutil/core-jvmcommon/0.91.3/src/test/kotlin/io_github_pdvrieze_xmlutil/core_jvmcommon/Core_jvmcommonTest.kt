@@ -8,6 +8,7 @@ package io_github_pdvrieze_xmlutil.core_jvmcommon
 
 import nl.adaptivity.xmlutil.EventType
 import nl.adaptivity.xmlutil.ExperimentalXmlUtilApi
+import nl.adaptivity.xmlutil.XmlBufferedReader
 import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.XmlEvent
 import nl.adaptivity.xmlutil.XmlReader
@@ -244,6 +245,47 @@ public class CoreJvmcommonTest {
             assertThat(reader.nextTag()).isEqualTo(EventType.START_ELEMENT)
             assertThat(reader.namespaceContext.getNamespaceURI("bk")).isEqualTo(BOOK_NS)
             assertThat(reader.getAttributeValue("urn:edition", "number")).isEqualTo("first")
+        }
+    }
+
+    @Test
+    fun bufferedReaderPeeksEventsAndPushesBackCurrentEvent(): Unit {
+        val source: String = "<article><title id=\"main\">Alpha<![CDATA[ & Beta]]><!-- skipped -->" +
+            " Gamma</title><empty /></article>"
+
+        XmlBufferedReader(xmlStreaming.newGenericReader(source)).use { reader: XmlBufferedReader ->
+            moveToStartElement(reader, "article")
+            assertThat(reader.eventType).isEqualTo(EventType.START_ELEMENT)
+
+            val peekedTitle: XmlEvent = requireNotNull(reader.peek())
+            assertThat(peekedTitle.eventType).isEqualTo(EventType.START_ELEMENT)
+            assertThat((peekedTitle as XmlEvent.StartElementEvent).localName).isEqualTo("title")
+            assertThat(reader.eventType).isEqualTo(EventType.START_ELEMENT)
+            assertThat(reader.localName).isEqualTo("article")
+
+            assertThat(reader.next()).isEqualTo(EventType.START_ELEMENT)
+            assertThat(reader.localName).isEqualTo("title")
+            assertThat(reader.getAttributeValue("", "id")).isEqualTo("main")
+
+            assertThat(reader.next()).isEqualTo(EventType.TEXT)
+            assertThat(reader.text).isEqualTo("Alpha")
+            reader.pushBackCurrent()
+            assertThat(reader.next()).isEqualTo(EventType.TEXT)
+            assertThat(reader.text).isEqualTo("Alpha")
+
+            assertThat(reader.peekNextEvent()).isEqualTo(EventType.CDSECT)
+            assertThat(reader.eventType).isEqualTo(EventType.TEXT)
+            assertThat(reader.next()).isEqualTo(EventType.CDSECT)
+            assertThat(reader.text).isEqualTo(" & Beta")
+            assertThat(reader.next()).isEqualTo(EventType.COMMENT)
+            assertThat(reader.text).isEqualTo(" skipped ")
+            assertThat(reader.next()).isEqualTo(EventType.TEXT)
+            assertThat(reader.text).isEqualTo(" Gamma")
+
+            assertThat(reader.next()).isEqualTo(EventType.END_ELEMENT)
+            assertThat(reader.localName).isEqualTo("title")
+            assertThat(reader.nextTag()).isEqualTo(EventType.START_ELEMENT)
+            assertThat(reader.localName).isEqualTo("empty")
         }
     }
 
