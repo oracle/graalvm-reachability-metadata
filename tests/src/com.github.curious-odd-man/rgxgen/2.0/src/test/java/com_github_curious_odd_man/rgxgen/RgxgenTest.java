@@ -44,6 +44,13 @@ public class RgxgenTest {
     }
 
     @Test
+    void nonCapturingGroupsAreNotBackReferenceTargets() {
+        RgxGen rgxGen = RgxGen.parse("(?:cat|dog)-([0-2])\\1");
+
+        assertGeneratedValuesMatch(rgxGen, Pattern.compile("(?:cat|dog)-([0-2])\\1"));
+    }
+
+    @Test
     void streamUsesTheGeneratorAndProducesMatchingValues() {
         Pattern expected = Pattern.compile("[a-c]{2}[0-2]");
         List<String> generated = RgxGen.parse("[a-c]{2}[0-2]")
