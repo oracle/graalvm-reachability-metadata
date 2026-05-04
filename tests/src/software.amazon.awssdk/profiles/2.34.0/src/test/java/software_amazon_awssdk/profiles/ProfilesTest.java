@@ -84,6 +84,24 @@ public class ProfilesTest {
     }
 
     @Test
+    void profileBuilderRequiresNameAndProperties() {
+        assertThatThrownBy(() -> Profile.builder()
+                                        .properties(Map.of(ProfileProperty.REGION, "us-west-2"))
+                                        .build())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("name");
+        assertThatThrownBy(() -> Profile.builder()
+                                        .name("missing-properties")
+                                        .build())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("properties");
+        assertThatThrownBy(() -> Profile.builder()
+                                        .name("null-properties")
+                                        .properties(null))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
     void configurationProfileFileParsesProfilesSectionsCommentsAndContinuations() {
         ProfileFile profileFile = configurationFile("""
                 # leading comments and blank lines are ignored
@@ -170,6 +188,65 @@ public class ProfilesTest {
     }
 
     @Test
+    void parserHandlesTabsSemicolonCommentsEqualsInValuesAndInvalidProperties() {
+        ProfileFile profileFile = credentialsFile("""
+                ; leading semicolon comment
+                [default] ; section comment
+                aws_access_key_id	=	key=value ; stripped comment
+                !invalid = ignored
+                  ignored-continuation
+                multiline = first line
+                  second line # continuation comments are values
+                subproperties =
+                  endpoint_url = http://localhost:9000/path?a=b # kept
+                  use_arn_region = true
+                """);
+
+        Profile profile = profileFile.profile("default").orElseThrow();
+        assertThat(profile.property(ProfileProperty.AWS_ACCESS_KEY_ID)).contains("key=value");
+        assertThat(profile.property("!invalid")).isEmpty();
+        assertThat(profile.property("multiline"))
+                .contains("first line\nsecond line # continuation comments are values");
+        assertThat(profile.property("subproperties"))
+                .contains("\nendpoint_url = http://localhost:9000/path?a=b # kept\nuse_arn_region = true");
+        assertThat(profile.properties())
+                .containsEntry("subproperties.endpoint_url", "http://localhost:9000/path?a=b # kept")
+                .containsEntry("subproperties.use_arn_region", "true");
+    }
+
+    @Test
+    void configurationSectionsSupportTabsAndCredentialsFilesIgnoreSections() {
+        ProfileFile configuration = configurationFile("""
+                [sso-session	admin]
+                sso_region = us-east-2
+
+                [services	local-services]
+                sqs =
+                  endpoint_url = http://localhost:9324
+
+                [sso-session bad name]
+                sso_region = ignored
+                """);
+        ProfileFile credentials = credentialsFile("""
+                [sso-session admin]
+                sso_region = ignored
+
+                [valid]
+                aws_access_key_id = still-read
+                """);
+
+        assertThat(configuration.getSection("sso-session", "admin").orElseThrow().property(ProfileProperty.SSO_REGION))
+                .contains("us-east-2");
+        assertThat(configuration.getSection("services", "local-services").orElseThrow()
+                                .property("sqs.endpoint_url"))
+                .contains("http://localhost:9324");
+        assertThat(configuration.getSection("sso-session", "bad name")).isEmpty();
+        assertThat(credentials.getSection("sso-session", "admin")).isEmpty();
+        assertThat(credentials.profile("valid").orElseThrow().property(ProfileProperty.AWS_ACCESS_KEY_ID))
+                .contains("still-read");
+    }
+
+    @Test
     void profileFileBuilderReadsAndClosesInputStreamContent() {
         CloseRecordingInputStream content = new CloseRecordingInputStream("""
                 [stream]
@@ -212,6 +289,38 @@ public class ProfilesTest {
                                              .type(ProfileFile.Type.CREDENTIALS))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("does not exist");
+        assertThatThrownBy(() -> ProfileFile.builder()
+                                             .content((Path) null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("profileLocation");
+    }
+
+    @Test
+    void profileFilesExposeImmutableViewsEqualityHashCodeAndToString() {
+        ProfileFile profileFile = credentialsFile("""
+                [one]
+                aws_access_key_id = first-key
+                """);
+        ProfileFile same = credentialsFile("""
+                [one]
+                aws_access_key_id = first-key
+                """);
+        ProfileFile different = credentialsFile("""
+                [one]
+                aws_access_key_id = different-key
+                """);
+        ProfileFile empty = ProfileFile.aggregator().build();
+
+        assertThat(empty.profiles()).isEmpty();
+        assertThat(empty.profile("one")).isEmpty();
+        assertThat(profileFile.profiles()).containsOnlyKeys("one");
+        assertThatThrownBy(() -> profileFile.profiles().put("two", profileFile.profile("one").orElseThrow()))
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThat(profileFile).isEqualTo(same);
+        assertThat(profileFile.hashCode()).isEqualTo(same.hashCode());
+        assertThat(profileFile).isNotEqualTo(different);
+        assertThat(profileFile).isNotEqualTo("not-a-profile-file");
+        assertThat(profileFile.toString()).contains("ProfileFile", "profiles", "one");
     }
 
     @Test
@@ -361,6 +470,47 @@ public class ProfilesTest {
     }
 
     @Test
+    void defaultSupplierReadsOnlyExistingConfiguredLocation() throws IOException {
+        Path credentials = tempDir.resolve("credentials-only");
+        Path config = tempDir.resolve("config-only");
+        Path missingCredentials = tempDir.resolve("missing-credentials");
+        Path missingConfig = tempDir.resolve("missing-config");
+        Files.writeString(credentials, """
+                [default]
+                aws_access_key_id = credentials-only-key
+                """);
+        Files.writeString(config, """
+                [default]
+                region = ca-central-1
+                """);
+
+        withSystemProperty(AWS_SHARED_CREDENTIALS_FILE_PROPERTY, credentials.toString(), () ->
+                withSystemProperty(AWS_CONFIG_FILE_PROPERTY, missingConfig.toString(), () -> {
+                    Profile profile = ProfileFileSupplier.defaultSupplier().get().profile("default").orElseThrow();
+
+                    assertThat(profile.property(ProfileProperty.AWS_ACCESS_KEY_ID)).contains("credentials-only-key");
+                    assertThat(profile.property(ProfileProperty.REGION)).isEmpty();
+                }));
+        withSystemProperty(AWS_SHARED_CREDENTIALS_FILE_PROPERTY, missingCredentials.toString(), () ->
+                withSystemProperty(AWS_CONFIG_FILE_PROPERTY, config.toString(), () -> {
+                    Profile profile = ProfileFileSupplier.defaultSupplier().get().profile("default").orElseThrow();
+
+                    assertThat(profile.property(ProfileProperty.REGION)).contains("ca-central-1");
+                    assertThat(profile.property(ProfileProperty.AWS_ACCESS_KEY_ID)).isEmpty();
+                }));
+    }
+
+    @Test
+    void profileFileLocationsExpandHomeDirectoryMarkerInConfiguredLocations() {
+        withSystemProperty(AWS_SHARED_CREDENTIALS_FILE_PROPERTY, "~/custom-credentials", () ->
+                assertThat(ProfileFileLocation.credentialsFilePath())
+                        .isEqualTo(Path.of(System.getProperty("user.home"), "custom-credentials")));
+        withSystemProperty(AWS_CONFIG_FILE_PROPERTY, "~/custom-config", () ->
+                assertThat(ProfileFileLocation.configurationFilePath())
+                        .isEqualTo(Path.of(System.getProperty("user.home"), "custom-config")));
+    }
+
+    @Test
     void malformedProfileFilesFailFastWithLineSpecificMessages() {
         assertThatThrownBy(() -> credentialsFile("aws_access_key_id = no-section"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -379,6 +529,28 @@ public class ProfilesTest {
                 """))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Profile definition must end with ']'");
+
+        assertThatThrownBy(() -> credentialsFile("  orphan-continuation"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Expected a profile or property definition on line 1");
+        assertThatThrownBy(() -> credentialsFile("""
+                [default]
+                  orphan-continuation
+                """))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Expected a profile or property definition on line 2");
+        assertThatThrownBy(() -> credentialsFile("""
+                [default]
+                = unnamed
+                """))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Property did not have a name on line 2");
+        assertThatThrownBy(() -> configurationFile("""
+                [sso-session admin
+                sso_region = us-west-2
+                """))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Section definition must end with ']'");
     }
 
     private static final class CloseRecordingInputStream extends ByteArrayInputStream {
