@@ -10,6 +10,10 @@ import org.jboss.arquillian.core.spi.Manager;
 import org.jboss.arquillian.core.spi.ManagerBuilder;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SecurityActionsTest {
@@ -24,6 +28,36 @@ public class SecurityActionsTest {
             assertThat(manager.getClass().getName()).isEqualTo(MANAGER_IMPL_CLASS_NAME);
         } finally {
             manager.shutdown();
+        }
+    }
+
+    @Test
+    void createsManagerWithExplicitClassLoader() throws Exception {
+        Method newInstance = Class.forName("org.jboss.arquillian.core.spi.SecurityActions").getDeclaredMethod(
+                "newInstance",
+                String.class,
+                Class[].class,
+                Object[].class,
+                Class.class,
+                ClassLoader.class);
+        newInstance.setAccessible(true);
+
+        Manager manager = null;
+        try {
+            manager = (Manager) newInstance.invoke(
+                    null,
+                    MANAGER_IMPL_CLASS_NAME,
+                    new Class<?>[] {Collection.class, Collection.class},
+                    new Object[] {Set.of(), Set.of()},
+                    Manager.class,
+                    getClass().getClassLoader());
+
+            assertThat(manager).isNotNull();
+            assertThat(manager.getClass().getName()).isEqualTo(MANAGER_IMPL_CLASS_NAME);
+        } finally {
+            if (manager != null) {
+                manager.shutdown();
+            }
         }
     }
 
