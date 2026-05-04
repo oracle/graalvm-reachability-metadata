@@ -76,6 +76,18 @@ public class AnnotationsTest {
     }
 
     @Test
+    void sdkAnnotationsCanDocumentGeneratedModeledEnumValues() {
+        ModeledEndpointStatus status = ModeledEndpointStatus.fromServiceValue("preview");
+
+        assertThat(status).isEqualTo(ModeledEndpointStatus.PREVIEW);
+        assertThat(status.serviceValue()).isEqualTo("preview");
+        assertThat(status.requiresReleaseReview()).isTrue();
+        assertThat(status.routingHeader()).isEqualTo("x-amz-endpoint-status:preview");
+        assertThat(ModeledEndpointStatus.fromServiceValue("available"))
+                .isEqualTo(ModeledEndpointStatus.AVAILABLE);
+    }
+
+    @Test
     void annotationsWithMembersCanBeImplementedWithoutReflection() {
         Generated generated = new Generated() {
             @Override
@@ -388,6 +400,57 @@ public class AnnotationsTest {
         @SdkTestInternalApi
         String describeForTests() {
             return operation + "#" + attempts;
+        }
+    }
+
+    @Generated(value = "smithy-enum-generator", comments = "exercise generated enum constants")
+    @SdkPublicApi
+    enum ModeledEndpointStatus {
+        @Generated("enum-constant-available")
+        @SdkPublicApi
+        AVAILABLE("available", false),
+
+        @Generated("enum-constant-preview")
+        @ReviewBeforeRelease("Preview enum value must be reviewed before public documentation is updated")
+        PREVIEW("preview", true);
+
+        @NotNull
+        @SdkPublicApi
+        private final String serviceValue;
+
+        @SdkInternalApi
+        private final boolean requiresReleaseReview;
+
+        @SdkInternalApi
+        ModeledEndpointStatus(String serviceValue, boolean requiresReleaseReview) {
+            this.serviceValue = serviceValue;
+            this.requiresReleaseReview = requiresReleaseReview;
+        }
+
+        @NotNull
+        @SdkPublicApi
+        String serviceValue() {
+            return serviceValue;
+        }
+
+        @SdkProtectedApi
+        boolean requiresReleaseReview() {
+            return requiresReleaseReview;
+        }
+
+        @Generated(value = "routing-header", comments = "derived from generated enum model")
+        String routingHeader() {
+            return "x-amz-endpoint-status:" + serviceValue;
+        }
+
+        @SdkPublicApi
+        static ModeledEndpointStatus fromServiceValue(@NotNull String serviceValue) {
+            for (ModeledEndpointStatus status : values()) {
+                if (status.serviceValue.equals(serviceValue)) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("Unknown endpoint status: " + serviceValue);
         }
     }
 
