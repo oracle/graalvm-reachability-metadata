@@ -122,6 +122,39 @@ public class Opentelemetry_semconvTest {
     }
 
     @Test
+    void cloudEventsAttributesCanDescribeEventEnvelope() {
+        Attributes cloudEventAttributes = Attributes.builder()
+                .put(SemanticAttributes.CLOUDEVENTS_EVENT_ID, "evt-0001")
+                .put(SemanticAttributes.CLOUDEVENTS_EVENT_SOURCE, "urn:example:orders")
+                .put(SemanticAttributes.CLOUDEVENTS_EVENT_SPEC_VERSION, "1.0")
+                .put(SemanticAttributes.CLOUDEVENTS_EVENT_TYPE, "com.example.order.created")
+                .put(SemanticAttributes.CLOUDEVENTS_EVENT_SUBJECT, "orders/123")
+                .build();
+
+        assertKey(SemanticAttributes.CLOUDEVENTS_EVENT_ID, "cloudevents.event_id", AttributeType.STRING);
+        assertKey(SemanticAttributes.CLOUDEVENTS_EVENT_SOURCE, "cloudevents.event_source", AttributeType.STRING);
+        assertKey(SemanticAttributes.CLOUDEVENTS_EVENT_SPEC_VERSION,
+                "cloudevents.event_spec_version", AttributeType.STRING);
+        assertKey(SemanticAttributes.CLOUDEVENTS_EVENT_TYPE, "cloudevents.event_type", AttributeType.STRING);
+        assertKey(SemanticAttributes.CLOUDEVENTS_EVENT_SUBJECT, "cloudevents.event_subject", AttributeType.STRING);
+
+        assertThat(cloudEventAttributes.get(SemanticAttributes.CLOUDEVENTS_EVENT_ID)).isEqualTo("evt-0001");
+        assertThat(cloudEventAttributes.get(SemanticAttributes.CLOUDEVENTS_EVENT_SOURCE))
+                .isEqualTo("urn:example:orders");
+        assertThat(cloudEventAttributes.get(SemanticAttributes.CLOUDEVENTS_EVENT_SPEC_VERSION)).isEqualTo("1.0");
+        assertThat(cloudEventAttributes.get(SemanticAttributes.CLOUDEVENTS_EVENT_TYPE))
+                .isEqualTo("com.example.order.created");
+        assertThat(cloudEventAttributes.get(SemanticAttributes.CLOUDEVENTS_EVENT_SUBJECT)).isEqualTo("orders/123");
+        assertThat(cloudEventAttributes.asMap())
+                .containsOnlyKeys(
+                        SemanticAttributes.CLOUDEVENTS_EVENT_ID,
+                        SemanticAttributes.CLOUDEVENTS_EVENT_SOURCE,
+                        SemanticAttributes.CLOUDEVENTS_EVENT_SPEC_VERSION,
+                        SemanticAttributes.CLOUDEVENTS_EVENT_TYPE,
+                        SemanticAttributes.CLOUDEVENTS_EVENT_SUBJECT);
+    }
+
+    @Test
     void resourceAttributesCanDescribeRuntimeAndDeployment() {
         List<String> commandArgs = List.of("--server.port=8080", "--profile=test");
         List<String> hostAddresses = List.of("192.0.2.10", "2001:db8::10");
