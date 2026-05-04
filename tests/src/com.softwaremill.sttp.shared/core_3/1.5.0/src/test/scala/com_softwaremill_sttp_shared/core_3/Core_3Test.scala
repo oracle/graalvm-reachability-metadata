@@ -81,6 +81,26 @@ class Core_3Test {
   }
 
   @Test
+  def attributeMapsCanBeBuiltAndCopiedFromUnderlyingEntries(): Unit = {
+    val userKey: AttributeKey[String] = new AttributeKey[String]("user")
+    val attemptsKey: AttributeKey[Int] = new AttributeKey[Int]("attempts")
+    val entries: Map[String, Any] = Map(
+      userKey.typeName -> "alice",
+      attemptsKey.typeName -> 2
+    )
+
+    val fromEntries: AttributeMap = AttributeMap(entries)
+    assertFalse(fromEntries.isEmpty)
+    assertEquals(Some("alice"), fromEntries.get(userKey))
+    assertEquals(Some(2), fromEntries.get(attemptsKey))
+
+    val copied: AttributeMap = fromEntries.copy(entries.updated(userKey.typeName, "bob"))
+    assertEquals(Some("bob"), copied.get(userKey))
+    assertEquals(Some(2), copied.get(attemptsKey))
+    assertEquals(Some("alice"), fromEntries.get(userKey))
+  }
+
+  @Test
   def eitherMonadMapsRecoversConvertsAndRunsFinalizers(): Unit = {
     val boom: IllegalStateException = new IllegalStateException("boom")
     val finalizers: AtomicInteger = new AtomicInteger(0)
