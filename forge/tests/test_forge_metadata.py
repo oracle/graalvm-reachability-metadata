@@ -129,6 +129,169 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
         ])
 
 
+class HumanInterventionCandidateTests(unittest.TestCase):
+    @staticmethod
+    def _dynamic_access_metrics(covered_calls: int, total_calls: int) -> dict:
+        return {
+            "strategy_name": "dynamic-access",
+            "status": "success",
+            "stats": {
+                "dynamicAccess": {
+                    "coveredCalls": covered_calls,
+                    "totalCalls": total_calls,
+                    "coverageRatio": covered_calls / total_calls,
+                },
+            },
+        }
+
+    def test_new_library_coverage_below_review_gate_routes_to_human_intervention(self) -> None:
+        claimed_issue = _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW)
+
+        with patch.object(
+                forge_metadata,
+                "_load_pending_run_metrics",
+                return_value=self._dynamic_access_metrics(2, 16),
+        ), \
+                patch.object(
+                    forge_metadata,
+                    "load_strategy_by_name",
+                    return_value={"workflow": "dynamic_access_iterative"},
+                ):
+            candidate = forge_metadata.resolve_human_intervention_candidate(claimed_issue)
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate.reason, "low_dynamic_access_coverage")
+        self.assertEqual(candidate.coverage.covered_calls, 2)
+        self.assertEqual(candidate.coverage.total_calls, 16)
+
+    def test_new_library_coverage_at_review_gate_continues_without_intervention(self) -> None:
+        claimed_issue = _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW)
+
+        with patch.object(
+                forge_metadata,
+                "_load_pending_run_metrics",
+                return_value=self._dynamic_access_metrics(8, 16),
+        ), \
+                patch.object(
+                    forge_metadata,
+                    "load_strategy_by_name",
+                    return_value={"workflow": "dynamic_access_iterative"},
+                ):
+            candidate = forge_metadata.resolve_human_intervention_candidate(claimed_issue)
+
+        self.assertIsNone(candidate)
+
+    def test_library_update_keeps_existing_low_coverage_threshold(self) -> None:
+        claimed_issue = _claimed_issue(forge_metadata.LABEL_LIBRARY_UPDATE)
+
+        with patch.object(
+                forge_metadata,
+                "_load_pending_run_metrics",
+                return_value=self._dynamic_access_metrics(2, 16),
+        ), \
+                patch.object(
+                    forge_metadata,
+                    "load_strategy_by_name",
+                    return_value={"workflow": "dynamic_access_iterative"},
+                ):
+            candidate = forge_metadata.resolve_human_intervention_candidate(claimed_issue)
+
+        self.assertIsNone(candidate)
+
+    def test_successful_low_coverage_new_library_routes_before_pr_publication(self) -> None:
+        claimed_issue = _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW)
+        candidate = forge_metadata.HumanInterventionCandidate(
+            strategy_name="dynamic-access",
+            workflow_status="success",
+            coverage=forge_metadata.DynamicAccessCoverageSnapshot(
+                covered_calls=2,
+                total_calls=16,
+                coverage_ratio=0.125,
+                source="stats",
+            ),
+        )
+        run_result = forge_metadata.WorkflowRunResult(
+            claimed_issue=claimed_issue,
+            success=True,
+            started_at=123.0,
+        )
+
+        with patch.object(
+                forge_metadata,
+                "resolve_human_intervention_candidate",
+                return_value=candidate,
+        ) as resolve_candidate, \
+                patch.object(
+                    forge_metadata,
+                    "handle_successful_human_intervention_claimed_issue",
+                ) as handle_human_intervention, \
+                patch.object(forge_metadata, "finalize_successful_issue") as finalize_successful_issue, \
+                patch.object(forge_metadata, "apply_large_library_completion_follow_up") as large_library_follow_up:
+            self.assertTrue(forge_metadata.handle_completed_run(run_result))
+
+        resolve_candidate.assert_called_once_with(claimed_issue, workflow_success=True)
+        handle_human_intervention.assert_called_once_with(
+            claimed_issue,
+            candidate,
+            started_at=123.0,
+        )
+        finalize_successful_issue.assert_not_called()
+        large_library_follow_up.assert_not_called()
+
+    def test_successful_human_intervention_follow_up_preserves_branch_and_reverts_claim(self) -> None:
+        claimed_issue = _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW)
+        candidate = forge_metadata.HumanInterventionCandidate(
+            strategy_name="dynamic-access",
+            workflow_status="success",
+            coverage=forge_metadata.DynamicAccessCoverageSnapshot(
+                covered_calls=0,
+                total_calls=57,
+                coverage_ratio=0.0,
+                source="stats",
+            ),
+        )
+        preservation_result = forge_metadata.FailurePreservationResult(
+            branch_name="ai/automation/human-intervention/1412",
+            branch_url="https://github.com/example/repo/tree/ai/automation/human-intervention/1412",
+            committed_changes=True,
+        )
+
+        with patch.object(
+                forge_metadata,
+                "preserve_failed_work_for_follow_up",
+                return_value=preservation_result,
+        ) as preserve_failed_work, \
+                patch.object(
+                    forge_metadata,
+                    "run_human_intervention_analysis",
+                    return_value="Human intervention needed\n\nCoverage is too low.",
+                ) as run_human_intervention_analysis, \
+                patch.object(
+                    forge_metadata,
+                    "post_human_intervention_comment_and_label",
+                ) as post_human_intervention, \
+                patch.object(forge_metadata, "refresh_preserved_branch_logs") as refresh_logs, \
+                patch.object(forge_metadata, "revert_claimed_issue") as revert_claimed_issue:
+            forge_metadata.handle_successful_human_intervention_claimed_issue(
+                claimed_issue,
+                candidate,
+                started_at=123.0,
+            )
+
+        preserve_failed_work.assert_called_once_with(claimed_issue)
+        run_human_intervention_analysis.assert_called_once_with(
+            claimed_issue,
+            candidate,
+            123.0,
+            preservation_result,
+        )
+        post_human_intervention.assert_called_once()
+        self.assertEqual(post_human_intervention.call_args.args[0], 1412)
+        self.assertIn(preservation_result.branch_url, post_human_intervention.call_args.args[1])
+        refresh_logs.assert_called_once_with(claimed_issue, preservation_result)
+        revert_claimed_issue.assert_called_once_with(claimed_issue, candidate.reason)
+
+
 class IssueClaimPreflightTests(unittest.TestCase):
     def test_forge_gh_does_not_log_github_query_by_default(self) -> None:
         completed_process = subprocess.CompletedProcess(

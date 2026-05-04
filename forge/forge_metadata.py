@@ -179,6 +179,7 @@ ADD_NEW_LIBRARY_METRICS_FILE = "add_new_library_support.json"
 FIX_JAVAC_METRICS_FILE = "fix_javac_fail.json"
 FIX_JAVA_RUN_METRICS_FILE = "fix_java_run_fail.json"
 LOW_DYNAMIC_ACCESS_COVERAGE_RATIO = 0.10
+NEW_LIBRARY_DYNAMIC_ACCESS_COVERAGE_RATIO = 0.50
 HUMAN_INTERVENTION_LABEL_COLOR = "B60205"
 HUMAN_INTERVENTION_LABEL_DESCRIPTION = (
     "Requires manual follow-up because automated processing needs human attention"
@@ -1893,6 +1894,18 @@ def _load_dynamic_access_snapshot_from_report(claimed_issue: ClaimedIssue) -> Dy
     )
 
 
+def has_reviewable_dynamic_access_coverage(
+        claimed_issue: ClaimedIssue,
+        coverage_snapshot: DynamicAccessCoverageSnapshot,
+) -> bool:
+    """Return True when dynamic-access coverage is high enough to publish normally."""
+    if coverage_snapshot.covered_calls <= 0:
+        return False
+    if claimed_issue.label == LABEL_LIBRARY_NEW:
+        return coverage_snapshot.coverage_ratio >= NEW_LIBRARY_DYNAMIC_ACCESS_COVERAGE_RATIO
+    return coverage_snapshot.coverage_ratio > LOW_DYNAMIC_ACCESS_COVERAGE_RATIO
+
+
 def resolve_human_intervention_candidate(
         claimed_issue: ClaimedIssue,
         workflow_success: bool = True,
@@ -1945,10 +1958,7 @@ def resolve_human_intervention_candidate(
     if coverage_snapshot is None:
         return None
 
-    if (
-            coverage_snapshot.covered_calls > 0
-            and coverage_snapshot.coverage_ratio > LOW_DYNAMIC_ACCESS_COVERAGE_RATIO
-    ):
+    if has_reviewable_dynamic_access_coverage(claimed_issue, coverage_snapshot):
         return None
 
     return HumanInterventionCandidate(
@@ -3715,6 +3725,46 @@ def handle_failed_claimed_issue(
     revert_claimed_issue(claimed_issue, reason)
 
 
+def handle_successful_human_intervention_claimed_issue(
+        claimed_issue: ClaimedIssue,
+        candidate: HumanInterventionCandidate,
+        started_at: float | None = None,
+) -> None:
+    """Preserve a successful but unpublishable run for human follow-up before PR creation."""
+    if is_user_interrupt_requested():
+        raise KeyboardInterrupt
+    preservation_result = preserve_failed_work_for_follow_up(claimed_issue)
+    if is_user_interrupt_requested():
+        raise KeyboardInterrupt
+    try:
+        comment_body = run_human_intervention_analysis(
+            claimed_issue,
+            candidate,
+            started_at,
+            preservation_result,
+        )
+        comment_body = ensure_preserved_branch_link_in_comment(comment_body, preservation_result)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to apply human-intervention follow-up to issue #{claimed_issue.issue['number']}: {exc!r}",
+            file=sys.stderr,
+        )
+        traceback.print_exc()
+        comment_body = None
+    if is_user_interrupt_requested():
+        raise KeyboardInterrupt
+    post_human_intervention_comment_and_label(claimed_issue.issue["number"], comment_body)
+    try:
+        refresh_preserved_branch_logs(claimed_issue, preservation_result)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to refresh preserved logs for issue #{claimed_issue.issue['number']}: {exc!r}",
+            file=sys.stderr,
+        )
+        traceback.print_exc()
+    revert_claimed_issue(claimed_issue, candidate.reason)
+
+
 def handle_completed_run(run_result: WorkflowRunResult) -> bool:
     """Finalize a completed workflow run and return the final handled result."""
     claimed_issue = run_result.claimed_issue
@@ -3728,6 +3778,15 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 started_at=run_result.started_at,
             )
             return False
+        if claimed_issue.label == LABEL_LIBRARY_NEW:
+            candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success=True)
+            if candidate is not None:
+                handle_successful_human_intervention_claimed_issue(
+                    claimed_issue,
+                    candidate,
+                    started_at=run_result.started_at,
+                )
+                return True
         try:
             finalize_successful_issue(claimed_issue)
         except Exception as exc:
@@ -3784,7 +3843,7 @@ def process_claimed_issue_lifecycle(
             log_success_banner(
                 format_issue_result_message(
                     claimed_issue,
-                    "Workflow finished, follow-up completed, and the issue was finalized.",
+                    "Workflow finished and follow-up completed.",
                 )
             )
         else:
