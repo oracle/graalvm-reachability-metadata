@@ -24,13 +24,13 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 **Manually request library support.** These GitHub buttons route to the issue template our automation expects.
 
 <p align="center">
-  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library.svg" width="600"></a>
+  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library.svg" width="520"></a>
 </p>
 <p align="center">
-  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><img alt="Open an existing library update ticket" src="docs/assets/readme/button-update-metadata.svg" width="600"></a>
+  <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml"><img alt="Open an existing library update ticket" src="docs/assets/readme/button-update-metadata.svg" width="520"></a>
 </p>
 <p align="center">
-  <a href="docs/CONTRIBUTING.md"><img alt="Open contribution instructions" src="docs/assets/readme/button-contribute-fix.svg" width="600"></a>
+  <a href="docs/CONTRIBUTING.md"><img alt="Open contribution instructions" src="docs/assets/readme/button-contribute-fix.svg" width="520"></a>
 </p>
 
 ### 🔎 Check if Your Library or Framework Is Supported
@@ -38,7 +38,8 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 To quickly check whether reachability metadata exists for a specific library, run this command directly from your terminal:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh \
+curl -sSL \
+  https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh \
   | bash -s "<groupId>:<artifactId>:<version>"
 ```
 
