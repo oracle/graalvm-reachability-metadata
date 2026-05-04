@@ -130,6 +130,16 @@ public class Arrow_atomic_jvmTest {
     }
 
     @Test
+    fun atomicIntArithmeticFollowsJvmOverflowSemantics() {
+        val counter = AtomicInt(Int.MAX_VALUE)
+
+        assertThat(counter.incrementAndGet()).isEqualTo(Int.MIN_VALUE)
+        assertThat(counter.getAndAdd(-1)).isEqualTo(Int.MIN_VALUE)
+        assertThat(counter.value).isEqualTo(Int.MAX_VALUE)
+        assertThat(counter.addAndGet(2)).isEqualTo(Int.MIN_VALUE + 1)
+    }
+
+    @Test
     fun atomicIntSupportsPublicUpdateFunctionsAndRetriesOnInterference() {
         val counter = AtomicInt(0)
         val seenValues = mutableListOf<Int>()
@@ -253,6 +263,16 @@ public class Arrow_atomic_jvmTest {
     }
 
     @Test
+    fun atomicLongArithmeticFollowsJvmOverflowSemantics() {
+        val total = AtomicLong(Long.MAX_VALUE)
+
+        assertThat(total.incrementAndGet()).isEqualTo(Long.MIN_VALUE)
+        assertThat(total.getAndAdd(-1L)).isEqualTo(Long.MIN_VALUE)
+        assertThat(total.value).isEqualTo(Long.MAX_VALUE)
+        assertThat(total.addAndGet(2L)).isEqualTo(Long.MIN_VALUE + 1L)
+    }
+
+    @Test
     fun atomicLongSupportsPublicUpdateFunctionsAndReportsFailedTryUpdate() {
         val total = AtomicLong(7L)
 
@@ -319,6 +339,20 @@ public class Arrow_atomic_jvmTest {
         assertThat(state.compareAndSet(expected, replacement)).isTrue()
         assertThat(state.compareAndSet(expected, State(step = 6, label = "stale"))).isFalse()
         assertThat(state.value).isSameAs(replacement)
+    }
+
+    @Test
+    fun atomicReferenceSupportsNullableValues() {
+        val state = Atomic<String?>(null)
+
+        assertThat(state.value).isNull()
+        assertThat(state.compareAndSet(null, "ready")).isTrue()
+        assertThat(state.value).isEqualTo("ready")
+        assertThat(state.getAndSet(null)).isEqualTo("ready")
+        assertThat(state.value).isNull()
+
+        state.update { current -> current ?: "created" }
+        assertThat(state.value).isEqualTo("created")
     }
 
     @Test
