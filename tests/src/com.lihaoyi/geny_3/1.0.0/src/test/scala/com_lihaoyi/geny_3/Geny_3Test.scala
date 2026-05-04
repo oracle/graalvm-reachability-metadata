@@ -71,6 +71,24 @@ class Geny_3Test {
   }
 
   @Test
+  def generatorFromAdaptsArbitraryIterableOnceSourcesLazilyAndRepeatably(): Unit = {
+    final case class Rows[A](entries: Vector[A])
+
+    val conversions: AtomicInteger = new AtomicInteger(0)
+    val source: Rows[String] = Rows(Vector("red", "blue", "green"))
+    val generator: Generator[String] = Generator.from(source) { rows =>
+      conversions.incrementAndGet()
+      rows.entries.iterator
+    }
+
+    assertEquals(0, conversions.get())
+    assertEquals(List("red", "blue", "green"), generator.toList)
+    assertEquals(1, conversions.get())
+    assertEquals(List("red", "blue", "green"), generator.toList)
+    assertEquals(2, conversions.get())
+  }
+
+  @Test
   def generatorTransformationsAreLazyComposableAndShortCircuiting(): Unit = {
     val evaluations: AtomicInteger = new AtomicInteger(0)
     val transformed: Generator[String] = Generator(1, 2, 3, 4, 5)
