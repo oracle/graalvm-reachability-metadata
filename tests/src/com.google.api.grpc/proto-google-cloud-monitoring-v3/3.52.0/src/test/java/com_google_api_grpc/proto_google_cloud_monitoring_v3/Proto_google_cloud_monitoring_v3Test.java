@@ -8,6 +8,7 @@ package com_google_api_grpc.proto_google_cloud_monitoring_v3;
 
 import java.util.List;
 
+import com.google.api.LabelDescriptor;
 import com.google.api.Metric;
 import com.google.api.MetricDescriptor;
 import com.google.api.MonitoredResource;
@@ -25,6 +26,7 @@ import com.google.monitoring.v3.DistributionCut;
 import com.google.monitoring.v3.Group;
 import com.google.monitoring.v3.GroupName;
 import com.google.monitoring.v3.InternalChecker;
+import com.google.monitoring.v3.LabelValue;
 import com.google.monitoring.v3.ListGroupMembersRequest;
 import com.google.monitoring.v3.ListGroupMembersResponse;
 import com.google.monitoring.v3.ListGroupsRequest;
@@ -38,6 +40,8 @@ import com.google.monitoring.v3.NotificationChannel;
 import com.google.monitoring.v3.NotificationChannelName;
 import com.google.monitoring.v3.Point;
 import com.google.monitoring.v3.ProjectName;
+import com.google.monitoring.v3.QueryTimeSeriesRequest;
+import com.google.monitoring.v3.QueryTimeSeriesResponse;
 import com.google.monitoring.v3.Range;
 import com.google.monitoring.v3.RequestBasedSli;
 import com.google.monitoring.v3.Service;
@@ -48,6 +52,8 @@ import com.google.monitoring.v3.ServiceName;
 import com.google.monitoring.v3.Snooze;
 import com.google.monitoring.v3.TimeInterval;
 import com.google.monitoring.v3.TimeSeries;
+import com.google.monitoring.v3.TimeSeriesData;
+import com.google.monitoring.v3.TimeSeriesDescriptor;
 import com.google.monitoring.v3.TimeSeriesRatio;
 import com.google.monitoring.v3.TypedValue;
 import com.google.monitoring.v3.UpdateGroupRequest;
@@ -60,6 +66,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
+import com.google.rpc.Code;
+import com.google.rpc.Status;
 import com.google.type.CalendarPeriod;
 import org.junit.jupiter.api.Test;
 
@@ -160,6 +168,77 @@ public class Proto_google_cloud_monitoring_v3Test {
         assertThat(listResponse.getTimeSeries(0).getMetric().getLabelsMap()).containsEntry("status", "200");
         assertThat(listResponse.getTimeSeries(0).getPoints(0).getValue().getDoubleValue()).isEqualTo(123.45);
         assertThat(createRequest.getTimeSeries(0).getResource().getLabelsOrThrow("zone")).isEqualTo("us-central1-a");
+    }
+
+    @Test
+    void queryTimeSeriesRequestsAndResponsesModelDescriptorsRowsAndPartialErrors() {
+        QueryTimeSeriesRequest request = QueryTimeSeriesRequest.newBuilder()
+                .setName(PROJECT_NAME)
+                .setQuery("""
+                        fetch gce_instance
+                        | metric 'custom.googleapis.com/http/server/latency'
+                        | group_by [resource.zone, metric.healthy],
+                            [mean_latency: mean(value.latency), sample_count: count()]
+                        """)
+                .setPageSize(20)
+                .setPageToken("query-page")
+                .build();
+        TimeSeriesDescriptor descriptor = TimeSeriesDescriptor.newBuilder()
+                .addLabelDescriptors(LabelDescriptor.newBuilder()
+                        .setKey("resource.zone")
+                        .setValueType(LabelDescriptor.ValueType.STRING)
+                        .setDescription("Zone label emitted by the query."))
+                .addLabelDescriptors(LabelDescriptor.newBuilder()
+                        .setKey("metric.healthy")
+                        .setValueType(LabelDescriptor.ValueType.BOOL)
+                        .setDescription("Whether the backend reported a healthy response."))
+                .addPointDescriptors(TimeSeriesDescriptor.ValueDescriptor.newBuilder()
+                        .setKey("mean_latency")
+                        .setValueType(MetricDescriptor.ValueType.DOUBLE)
+                        .setMetricKind(MetricDescriptor.MetricKind.GAUGE)
+                        .setUnit("ms"))
+                .addPointDescriptors(TimeSeriesDescriptor.ValueDescriptor.newBuilder()
+                        .setKey("sample_count")
+                        .setValueType(MetricDescriptor.ValueType.INT64)
+                        .setMetricKind(MetricDescriptor.MetricKind.CUMULATIVE)
+                        .setUnit("1"))
+                .build();
+        TimeSeriesData data = TimeSeriesData.newBuilder()
+                .addLabelValues(LabelValue.newBuilder().setStringValue("us-central1-a"))
+                .addLabelValues(LabelValue.newBuilder().setBoolValue(true))
+                .addPointData(TimeSeriesData.PointData.newBuilder()
+                        .setTimeInterval(interval(1_700_000_300L, 1_700_000_360L))
+                        .addValues(TypedValue.newBuilder().setDoubleValue(275.25))
+                        .addValues(TypedValue.newBuilder().setInt64Value(42)))
+                .build();
+        QueryTimeSeriesResponse response = QueryTimeSeriesResponse.newBuilder()
+                .setTimeSeriesDescriptor(descriptor)
+                .addTimeSeriesData(data)
+                .setNextPageToken("query-next")
+                .addPartialErrors(Status.newBuilder()
+                        .setCode(Code.INVALID_ARGUMENT_VALUE)
+                        .setMessage("one query branch could not be evaluated"))
+                .build();
+
+        assertThat(request.getQuery()).contains("group_by [resource.zone, metric.healthy]");
+        assertThat(request.getPageToken()).isEqualTo("query-page");
+        assertThat(response.hasTimeSeriesDescriptor()).isTrue();
+        assertThat(response.getTimeSeriesDescriptor().getLabelDescriptorsList())
+                .extracting(LabelDescriptor::getKey)
+                .containsExactly("resource.zone", "metric.healthy");
+        assertThat(response.getTimeSeriesDescriptor().getPointDescriptors(0).getValueType())
+                .isEqualTo(MetricDescriptor.ValueType.DOUBLE);
+        assertThat(response.getTimeSeriesDescriptor().getPointDescriptors(1).getMetricKind())
+                .isEqualTo(MetricDescriptor.MetricKind.CUMULATIVE);
+        assertThat(response.getTimeSeriesData(0).getLabelValues(0).getValueCase())
+                .isEqualTo(LabelValue.ValueCase.STRING_VALUE);
+        assertThat(response.getTimeSeriesData(0).getLabelValues(1).getBoolValue()).isTrue();
+        assertThat(response.getTimeSeriesData(0).getPointData(0).getValues(0).getDoubleValue()).isEqualTo(275.25);
+        assertThat(response.getTimeSeriesData(0).getPointData(0).getValues(1).getInt64Value()).isEqualTo(42L);
+        assertThat(response.getTimeSeriesData(0).getPointData(0).getTimeInterval().getStartTime().getSeconds())
+                .isEqualTo(1_700_000_300L);
+        assertThat(response.getPartialErrors(0).getCode()).isEqualTo(Code.INVALID_ARGUMENT_VALUE);
+        assertThat(response.getNextPageToken()).isEqualTo("query-next");
     }
 
     @Test
