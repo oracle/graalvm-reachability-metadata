@@ -137,6 +137,25 @@ public class Opentelemetry_semconvTest {
     }
 
     @Test
+    void standardHttpRequestMethodValueConstantsCanBeStoredAsAttributes() {
+        List<String> standardMethods = List.of(
+                HttpRequestMethodValues.CONNECT,
+                HttpRequestMethodValues.DELETE,
+                HttpRequestMethodValues.HEAD,
+                HttpRequestMethodValues.OPTIONS,
+                HttpRequestMethodValues.PATCH,
+                HttpRequestMethodValues.PUT,
+                HttpRequestMethodValues.TRACE);
+
+        assertThat(standardMethods).containsExactly("CONNECT", "DELETE", "HEAD", "OPTIONS", "PATCH", "PUT", "TRACE");
+        for (String method : standardMethods) {
+            Attributes attributes = Attributes.of(HttpAttributes.HTTP_REQUEST_METHOD, method);
+
+            assertThat(attributes.get(HttpAttributes.HTTP_REQUEST_METHOD)).isEqualTo(method);
+        }
+    }
+
+    @Test
     void networkClientServerUrlAndUserAgentAttributesWorkTogether() {
         Attributes attributes = Attributes.builder()
                 .put(ClientAttributes.CLIENT_ADDRESS, "198.51.100.7")
