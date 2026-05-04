@@ -9,6 +9,8 @@ package com_lihaoyi.sourcecode_3
 import org.junit.jupiter.api.Assertions.{assertEquals, assertFalse, assertNotEquals, assertThrows, assertTrue}
 import org.junit.jupiter.api.Test
 
+import scala.language.implicitConversions
+
 class Sourcecode_3Test {
   @Test
   def capturesFileLineAndPackageAtCompileTime(): Unit = {
@@ -141,6 +143,23 @@ class Sourcecode_3Test {
   }
 
   @Test
+  def wrapsRawValuesAsSourceContextValues(): Unit = {
+    val convertedFileName: sourcecode.FileName = "Converted.scala"
+    val convertedMachineName: sourcecode.Name.Machine = "machineName"
+    val argument: sourcecode.Text[Option[Int]] = sourcecode.Text(Some(42), "answer")
+    val convertedArgs: sourcecode.Args = Seq(Seq(argument))
+
+    assertEquals("Converted.scala", convertedFileName.value)
+    assertEquals("machineName", convertedMachineName.value)
+    assertEquals(Seq(Seq(argument)), convertedArgs.value)
+
+    assertEquals("Context.scala", captureFileNameValue(using "Context.scala"))
+    assertEquals("rawMachineFullName", captureMachineFullNameValue(using "rawMachineFullName"))
+    assertEquals("rawMachineEnclosing", captureMachineEnclosingValue(using "rawMachineEnclosing"))
+    assertEquals(Seq(Seq(argument)), captureArgs(using Seq(Seq(argument))).value)
+  }
+
+  @Test
   def sourceValuesProvideCaseClassSemantics(): Unit = {
     val line: sourcecode.Line = sourcecode.Line(10)
     val copiedLine: sourcecode.Line = line.copy(value = 11)
@@ -188,6 +207,8 @@ class Sourcecode_3Test {
 
   private def captureFile(using file: sourcecode.File): sourcecode.File = file
 
+  private def captureFileNameValue(using fileName: sourcecode.FileName): String = fileName.value
+
   private def captureName(using name: sourcecode.Name): String = name.value
 
   private def captureNameValue(using name: sourcecode.Name): String = name.value
@@ -196,7 +217,11 @@ class Sourcecode_3Test {
 
   private def captureFullNameValue(using fullName: sourcecode.FullName): String = fullName.value
 
+  private def captureMachineFullNameValue(using fullName: sourcecode.FullName.Machine): String = fullName.value
+
   private def captureEnclosingValue(using enclosing: sourcecode.Enclosing): String = enclosing.value
+
+  private def captureMachineEnclosingValue(using enclosing: sourcecode.Enclosing.Machine): String = enclosing.value
 
   private def capturePkgValue(using pkg: sourcecode.Pkg): String = pkg.value
 
