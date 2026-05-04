@@ -356,6 +356,108 @@ public class RetriesTest {
             .hasMessageContaining("RetryToken is of unexpected class");
     }
 
+    @Test
+    void responseFactoriesReturnProvidedTokensAndDelays() {
+        RetryToken token = new ForeignRetryToken();
+
+        AcquireInitialTokenResponse initialResponse = AcquireInitialTokenResponse.create(token, Duration.ofMillis(1));
+        RefreshRetryTokenResponse retryResponse = RefreshRetryTokenResponse.create(token, Duration.ofMillis(2));
+        RecordSuccessResponse successResponse = RecordSuccessResponse.create(token);
+
+        assertThat(initialResponse.token()).isSameAs(token);
+        assertThat(initialResponse.delay()).isEqualTo(Duration.ofMillis(1));
+        assertThat(retryResponse.token()).isSameAs(token);
+        assertThat(retryResponse.delay()).isEqualTo(Duration.ofMillis(2));
+        assertThat(successResponse.token()).isSameAs(token);
+    }
+
+    @Test
+    void tokenAcquisitionFailureConstructorsExposeMessageCauseAndOptionalToken() {
+        RetryToken token = new ForeignRetryToken();
+        RuntimeException cause = new RuntimeException("cause");
+
+        TokenAcquisitionFailedException messageOnly = new TokenAcquisitionFailedException("message only");
+        TokenAcquisitionFailedException messageAndCause = new TokenAcquisitionFailedException(
+            "message and cause", cause);
+        TokenAcquisitionFailedException messageTokenAndCause = new TokenAcquisitionFailedException(
+            "message token and cause", token, cause);
+
+        assertThat(messageOnly).hasMessage("message only").hasNoCause();
+        assertThat(messageOnly.token()).isNull();
+        assertThat(messageAndCause).hasMessage("message and cause").hasCause(cause);
+        assertThat(messageAndCause.token()).isNull();
+        assertThat(messageTokenAndCause).hasMessage("message token and cause").hasCause(cause);
+        assertThat(messageTokenAndCause.token()).isSameAs(token);
+    }
+
+    @Test
+    void retryPredicateInstanceConvenienceMethodsAcceptSubclassesInExceptionChain() {
+        assertRefreshSucceeds(StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(ExactFailure.class)
+            .circuitBreakerEnabled(false)
+            .build(), new ExactFailureSubclass());
+
+        assertRefreshSucceeds(StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionOrCauseInstanceOf(ExactFailure.class)
+            .circuitBreakerEnabled(false)
+            .build(), new RuntimeException(new ExactFailureSubclass()));
+
+        assertRefreshFails(StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnRootCause(ExactFailure.class)
+            .circuitBreakerEnabled(false)
+            .build(), new RuntimeException(new ExactFailureSubclass()));
+    }
+
+    @Test
+    void defaultBuildersCreateUsableLegacyAndAdaptiveStrategies() {
+        LegacyRetryStrategy legacy = DefaultRetryStrategy.legacyStrategyBuilder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .backoffStrategy(BackoffStrategy.fixedDelayWithoutJitter(Duration.ofMillis(5)))
+            .throttlingBackoffStrategy(BackoffStrategy.fixedDelayWithoutJitter(Duration.ofMillis(11)))
+            .treatAsThrottling(ThrottlingFailure.class::isInstance)
+            .circuitBreakerEnabled(false)
+            .build();
+        AdaptiveRetryStrategy adaptive = DefaultRetryStrategy.adaptiveStrategyBuilder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .backoffStrategy(BackoffStrategy.retryImmediately())
+            .throttlingBackoffStrategy(BackoffStrategy.retryImmediately())
+            .treatAsThrottling(ThrottlingFailure.class::isInstance)
+            .useClientDefaults(false)
+            .build();
+
+        assertThat(legacy.maxAttempts()).isEqualTo(2);
+        assertThat(legacy.refreshRetryToken(refreshRequest(
+            legacy.acquireInitialToken(AcquireInitialTokenRequest.create("default-legacy")).token(),
+            new ThrottlingFailure()).build()).delay()).isEqualTo(Duration.ofMillis(11));
+        assertThat(adaptive.maxAttempts()).isEqualTo(2);
+        assertThat(adaptive.useClientDefaults()).isFalse();
+        assertThat(adaptive.refreshRetryToken(refreshRequest(
+            adaptive.acquireInitialToken(AcquireInitialTokenRequest.create("default-adaptive")).token(),
+            new RuntimeException("retryable")).build()).token()).isNotNull();
+    }
+
+    @Test
+    void recordingSuccessAfterInitialAttemptReturnsANewToken() {
+        StandardRetryStrategy strategy = StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .backoffStrategy(BackoffStrategy.retryImmediately())
+            .circuitBreakerEnabled(false)
+            .build();
+        RetryToken initialToken = strategy.acquireInitialToken(AcquireInitialTokenRequest.create("initial-success"))
+            .token();
+
+        RetryToken successToken = strategy.recordSuccess(RecordSuccessRequest.create(initialToken)).token();
+
+        assertThat(successToken).isNotNull();
+        assertThat(successToken).isNotSameAs(initialToken);
+    }
+
     private static RefreshRetryTokenRequest.Builder refreshRequest(RetryToken token, Throwable failure) {
         return RefreshRetryTokenRequest.builder()
             .token(token)
