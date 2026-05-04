@@ -22,13 +22,16 @@ import org.jetbrains.annotations.NotNull;
 import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -46,6 +49,17 @@ import java.util.regex.Pattern;
 public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
 
     private static final Pattern METADATA_PATTERN = Pattern.compile("metadata/[^/]+/[^/]+/index\\.json");
+    private static final Pattern METADATA_COORDINATE_PATTERN = Pattern.compile("metadata/([^/]+)/([^/]+)/index\\.json");
+    private static final String VERSION_TOKEN = "$version$";
+    private static final List<String> URL_TEMPLATE_FIELDS = List.of(
+            "source-code-url",
+            "test-code-url",
+            "documentation-url"
+    );
+    private static final Set<String> MAVEN_CENTRAL_HOSTS = Set.of(
+            "repo1.maven.org",
+            "repo.maven.apache.org"
+    );
 
     @Input
     @Optional
@@ -152,6 +166,7 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
                 // Additional semantic validations for library metadata index files
                 if (METADATA_PATTERN.matcher(filePath).matches()) {
                     checkLibraryIndexTestedVersions(json, filePath, failures);
+                    checkLibraryIndexUrlTemplates(json, filePath, failures);
                 }
 
                 // Print success only if no new failures were added by schema or semantic checks
@@ -167,6 +182,114 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
             failures.forEach(f -> getLogger().error(f));
             throw new GradleException("Validation failed for " + failures.size() + " file(s).");
         }
+    }
+
+    /**
+     * Checks Maven Central URL templates against every tested-version alias in the entry.
+     * <p>
+     * This is intentionally a structural check instead of an HTTP probe so the global
+     * index validator remains deterministic. It catches templates such as
+     * {@code $version$+1} on entries that also contain aliases like {@code 13} or
+     * {@code 13-ea+1}, where rendering creates untracked Maven artifact versions.
+     */
+    static void checkLibraryIndexUrlTemplates(JsonNode json, String filePath, List<String> failures) {
+        if (json == null || !json.isArray()) {
+            return;
+        }
+
+        Matcher coordinateMatcher = METADATA_COORDINATE_PATTERN.matcher(filePath);
+        if (!coordinateMatcher.matches()) {
+            return;
+        }
+
+        String groupPath = coordinateMatcher.group(1).replace('.', '/');
+        String artifact = coordinateMatcher.group(2);
+
+        for (JsonNode entry : json) {
+            String metadataVersion = entry.path("metadata-version").isTextual()
+                    ? entry.path("metadata-version").asText()
+                    : "<unknown>";
+            List<String> testedVersions = testedVersions(entry);
+            if (testedVersions.size() <= 1) {
+                continue;
+            }
+
+            Set<String> testedVersionSet = new LinkedHashSet<>(testedVersions);
+            for (String fieldName : URL_TEMPLATE_FIELDS) {
+                JsonNode urlNode = entry.get(fieldName);
+                if (urlNode == null || !urlNode.isTextual()) {
+                    continue;
+                }
+
+                String template = urlNode.asText();
+                if (!template.contains(VERSION_TOKEN)) {
+                    continue;
+                }
+
+                for (String testedVersion : testedVersions) {
+                    String renderedUrl = template.replace(VERSION_TOKEN, testedVersion);
+                    String renderedMavenVersion = mavenCentralArtifactVersion(renderedUrl, groupPath, artifact);
+                    if (renderedMavenVersion == null || testedVersion.equals(renderedMavenVersion)) {
+                        continue;
+                    }
+                    if (!testedVersionSet.contains(renderedMavenVersion)) {
+                        failures.add("❌ " + filePath + ": " + fieldName
+                                + " template under metadata-version " + metadataVersion
+                                + " renders tested-version " + testedVersion
+                                + " to Maven artifact version " + renderedMavenVersion
+                                + ", which is not listed in tested-versions. Split the entry or use an alias-safe URL.");
+                    }
+                }
+            }
+        }
+    }
+
+    private static List<String> testedVersions(JsonNode entry) {
+        JsonNode testedVersionsNode = entry.get("tested-versions");
+        if (testedVersionsNode == null || !testedVersionsNode.isArray()) {
+            return Collections.emptyList();
+        }
+
+        List<String> testedVersions = new ArrayList<>();
+        for (JsonNode testedVersionNode : testedVersionsNode) {
+            if (testedVersionNode != null && testedVersionNode.isTextual()) {
+                testedVersions.add(testedVersionNode.asText());
+            }
+        }
+        return testedVersions;
+    }
+
+    private static String mavenCentralArtifactVersion(String renderedUrl, String groupPath, String artifact) {
+        URI uri;
+        try {
+            uri = URI.create(renderedUrl);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
+        String host = uri.getHost();
+        if (host == null || !MAVEN_CENTRAL_HOSTS.contains(host.toLowerCase(Locale.ROOT))) {
+            return null;
+        }
+
+        String expectedPrefix = "/maven2/" + groupPath + "/" + artifact + "/";
+        String path = uri.getPath();
+        if (path == null || !path.startsWith(expectedPrefix)) {
+            return null;
+        }
+
+        String remainder = path.substring(expectedPrefix.length());
+        int separator = remainder.indexOf('/');
+        if (separator <= 0 || separator == remainder.length() - 1) {
+            return null;
+        }
+
+        String artifactVersion = remainder.substring(0, separator);
+        String fileName = remainder.substring(separator + 1);
+        if (!fileName.startsWith(artifact + "-" + artifactVersion + "-")) {
+            return null;
+        }
+        return artifactVersion;
     }
 
     /**

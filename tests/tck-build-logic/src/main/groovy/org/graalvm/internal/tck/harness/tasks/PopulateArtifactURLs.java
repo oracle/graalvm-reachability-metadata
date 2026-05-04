@@ -271,8 +271,9 @@ public class PopulateArtifactURLs extends DefaultTask {
         String indexFile = target.indexPath.toString().replace('\\', '/');
         String metadataVersion = target.entry.metadataVersion();
         String testVersion = hasText(target.entry.testVersion()) ? target.entry.testVersion() : metadataVersion;
-        String urlUpdateInstructions = urlUpdateInstructions(overwriteExisting, metadataVersion);
-        String sourceArtifactVerificationInstructions = sourceArtifactVerificationInstructions(verifyArtifactSources, metadataVersion);
+        String testedVersions = testedVersionsDisplay(target.entry.testedVersions(), metadataVersion);
+        String urlUpdateInstructions = urlUpdateInstructions(overwriteExisting);
+        String sourceArtifactVerificationInstructions = sourceArtifactVerificationInstructions(verifyArtifactSources, testedVersions);
 
         return """
                 Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s:%s:%s
@@ -282,7 +283,7 @@ public class PopulateArtifactURLs extends DefaultTask {
                 - { "name": "scala", "version": "2" } for Scala 2 libraries
                 - { "name": "scala", "version": "3" } for Scala 3 libraries
                 If the library is not language-specific, leave the "language" field absent.
-                The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "%s" when "$version$" is replaced with "%s".
+                The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [%s].
                 The source, test suite, and documentation URLs should point to the right tag of the library.
                 If we have these source of these artifacts on maven, that should be prefered.
                 If there are tests on maven that should also be prefered.
@@ -312,12 +313,12 @@ public class PopulateArtifactURLs extends DefaultTask {
                 - Coordinate version: %s
                 - Entry metadata-version: %s
                 - Entry test-version: %s
+                - Entry tested-versions: [%s]
                 """.formatted(
                 target.group,
                 target.artifact,
                 target.version,
-                metadataVersion,
-                metadataVersion,
+                testedVersions,
                 sourceArtifactVerificationInstructions,
                 indexFile,
                 metadataVersion,
@@ -330,58 +331,66 @@ public class PopulateArtifactURLs extends DefaultTask {
                 currentLanguageValue(target.entry),
                 target.version,
                 metadataVersion,
-                testVersion
+                testVersion,
+                testedVersions
         ).strip();
     }
 
-    private static String sourceArtifactVerificationInstructions(boolean verifyArtifactSources, String version) {
+    private static String sourceArtifactVerificationInstructions(boolean verifyArtifactSources, String testedVersions) {
         if (!verifyArtifactSources) {
             return "";
         }
         return """
                 Source Artifact Verification (required):
-                - Verify candidate source URLs for version "%s", including Maven and non-Maven candidates.
+                - Verify candidate source URLs for every entry tested-version alias ([%s]), including Maven and non-Maven candidates.
                 - If you use Maven source artifacts, confirm `-sources.jar` contains real source files (`.java`, `.kt`, `.scala`, `.groovy`), not only metadata/license files.
                 - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
                 - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
                 - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
-                - If an existing URL can be rendered as a version template, verify the rendered exact-version candidate before writing the "$version$" template.
-                """.formatted(version).strip();
+                - If an existing URL can be rendered as a version template, verify the rendered candidate for every entry tested-version alias before writing the "$version$" template.
+                """.formatted(testedVersions).strip();
     }
 
-    private static String urlUpdateInstructions(boolean overwriteExisting, String version) {
+    private static String urlUpdateInstructions(boolean overwriteExisting) {
         if (overwriteExisting) {
             return """
                     - Overwrite existing URL values.
-                    - Set "source-code-url" to the selected source URL with "$version$" replacing version "%s".
+                    - Set "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
                     - Set "repository-url" to the selected repository URL.
                     - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
-                    - Set "test-code-url" to the selected test suite URL with "$version$" replacing version "%s".
-                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing version "%s".
+                    - Set "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
                     - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
-                    - Render template candidates for entry metadata-version "%s" and verify rendered URLs before writing them.
+                    - Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
                     - If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
                     - A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
                     - Set "description" to a concise explanation of the library in exactly two sentences.
                     - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
-                    """.formatted(version, version, version, version).strip();
+                    """.strip();
         }
         return """
                 - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
                 - A field is missing only when absent, null, or blank.
                 - Do not modify fields that already contain a non-blank value.
-                - Set missing "source-code-url" to the selected source URL with "$version$" replacing version "%s".
+                - Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
                 - Set missing "repository-url" to the selected repository URL.
                 - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
-                - Set missing "test-code-url" to the selected test suite URL with "$version$" replacing version "%s".
-                - Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing version "%s".
+                - Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+                - Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
                 - When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
-                - Render template candidates for entry metadata-version "%s" and verify rendered URLs before writing them.
+                - Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
                 - If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
                 - A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
                 - Set missing "description" to a concise explanation of the library in exactly two sentences.
                 - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
-                """.formatted(version, version, version, version).strip();
+                """.strip();
+    }
+
+    private static String testedVersionsDisplay(List<String> testedVersions, String metadataVersion) {
+        if (testedVersions == null || testedVersions.isEmpty()) {
+            return metadataVersion;
+        }
+        return String.join(", ", testedVersions);
     }
 
     private static String currentValue(String value) {

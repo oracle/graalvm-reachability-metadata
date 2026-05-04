@@ -53,14 +53,14 @@ class PopulateArtifactURLsTests {
                 .contains("{ \"name\": \"groovy\", \"version\": \"<groovy major.minor, e.g. 4.0>\" }")
                 .contains("{ \"name\": \"scala\", \"version\": \"2\" }")
                 .contains("If the library is not language-specific, leave the \"language\" field absent.")
-                .contains("The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version \"1.4.1\" when \"$version$\" is replaced with \"1.4.1\".")
+                .contains("The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when \"$version$\" is replaced with that alias. Entry tested-versions: [1.4.1].")
                 .contains("The \"description\" field must explain what the library does in exactly two sentences.")
                 .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
                 .contains("Set missing \"repository-url\" to the selected repository URL.")
                 .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
-                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
-                .contains("Set missing \"documentation-url\" to the selected project documentation URL with \"$version$\" replacing version \"1.4.1\".")
-                .contains("Render template candidates for entry metadata-version \"1.4.1\" and verify rendered URLs before writing them.")
+                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing each tested-version alias only when that template is valid for every alias.")
+                .contains("Set missing \"documentation-url\" to the selected project documentation URL with \"$version$\" replacing each tested-version alias only when that template is valid for every alias.")
+                .contains("Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.")
                 .contains("A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.")
                 .contains("Set missing \"description\" to a concise explanation of the library in exactly two sentences.")
                 .contains("Set missing \"language\" only when the library is language-specific; otherwise leave the field absent.")
@@ -178,16 +178,16 @@ class PopulateArtifactURLsTests {
         String output = outputBuffer.toString(StandardCharsets.UTF_8);
         assertThat(output)
                 .contains("Source Artifact Verification (required):")
-                .contains("Verify candidate source URLs for version \"1.4.1\", including Maven and non-Maven candidates.")
+                .contains("Verify candidate source URLs for every entry tested-version alias ([1.4.1]), including Maven and non-Maven candidates.")
                 .contains("confirm `-sources.jar` contains real source files")
                 .contains("confirm `-test-sources.jar` contains real test source files.")
                 .contains("For non-Maven source/test URLs")
                 .contains("Prefer a verified repository tag URL instead.")
-                .contains("If an existing URL can be rendered as a version template, verify the rendered exact-version candidate before writing the \"$version$\" template.");
+                .contains("If an existing URL can be rendered as a version template, verify the rendered candidate for every entry tested-version alias before writing the \"$version$\" template.");
     }
 
     @Test
-    void runUsesEntryMetadataVersionForUrlTemplatesWhenCoordinateMatchesTestedVersion() throws IOException, InterruptedException {
+    void runUsesEntryTestedVersionsForUrlTemplatesWhenCoordinateMatchesTestedVersion() throws IOException, InterruptedException {
         Project project = createProjectWithSharedMetadataVersion();
         PopulateArtifactURLs task = project.getTasks().create(
                 "populateArtifactURLs",
@@ -208,12 +208,13 @@ class PopulateArtifactURLsTests {
         String output = outputBuffer.toString(StandardCharsets.UTF_8);
         assertThat(output)
                 .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.example:demo:1.4.2")
-                .contains("The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version \"1.4.1\" when \"$version$\" is replaced with \"1.4.1\".")
-                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing version \"1.4.1\".")
-                .contains("Render template candidates for entry metadata-version \"1.4.1\" and verify rendered URLs before writing them.")
+                .contains("The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when \"$version$\" is replaced with that alias. Entry tested-versions: [1.4.2].")
+                .contains("Set missing \"source-code-url\" to the selected source URL with \"$version$\" replacing each tested-version alias only when that template is valid for every alias.")
+                .contains("Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.")
                 .contains("Entry selector: \"metadata-version\" = \"1.4.1\"")
                 .contains("- Coordinate version: 1.4.2")
-                .contains("- Entry metadata-version: 1.4.1");
+                .contains("- Entry metadata-version: 1.4.1")
+                .contains("- Entry tested-versions: [1.4.2]");
     }
 
     private Project createProjectWithMetadata() throws IOException {
