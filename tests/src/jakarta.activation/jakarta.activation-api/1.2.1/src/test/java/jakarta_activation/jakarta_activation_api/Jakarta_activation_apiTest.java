@@ -147,6 +147,22 @@ public class Jakarta_activation_apiTest {
     }
 
     @Test
+    void dataHandlerWritesToWritableDataSourceOutputStream() throws Exception {
+        WritableByteArrayDataSource dataSource = new WritableByteArrayDataSource("text/plain", "writable.txt");
+        DataHandler handler = new DataHandler(dataSource);
+
+        try (OutputStream outputStream = handler.getOutputStream()) {
+            outputStream.write(SAMPLE_TEXT.getBytes(StandardCharsets.UTF_8));
+        }
+
+        assertThat(handler.getName()).isEqualTo("writable.txt");
+        assertThat(handler.getContentType()).isEqualTo("text/plain");
+        try (InputStream inputStream = handler.getInputStream()) {
+            assertThat(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8)).isEqualTo(SAMPLE_TEXT);
+        }
+    }
+
+    @Test
     void dataHandlerDelegatesDataSourceAccessAndCommandLookup() throws Exception {
         ByteArrayDataSource dataSource = new ByteArrayDataSource("bytes".getBytes(StandardCharsets.UTF_8),
                 "application/x-bytes", "bytes.bin");
@@ -232,6 +248,43 @@ public class Jakarta_activation_apiTest {
         @Override
         public String getContentType(String filename) {
             return contentType;
+        }
+    }
+
+    private static final class WritableByteArrayDataSource implements DataSource {
+        private byte[] bytes = new byte[0];
+        private final String contentType;
+        private final String name;
+
+        private WritableByteArrayDataSource(String contentType, String name) {
+            this.contentType = contentType;
+            this.name = name;
+        }
+
+        @Override
+        public InputStream getInputStream() {
+            return new ByteArrayInputStream(bytes);
+        }
+
+        @Override
+        public OutputStream getOutputStream() {
+            return new ByteArrayOutputStream() {
+                @Override
+                public void close() throws IOException {
+                    super.close();
+                    bytes = toByteArray();
+                }
+            };
+        }
+
+        @Override
+        public String getContentType() {
+            return contentType;
+        }
+
+        @Override
+        public String getName() {
+            return name;
         }
     }
 
