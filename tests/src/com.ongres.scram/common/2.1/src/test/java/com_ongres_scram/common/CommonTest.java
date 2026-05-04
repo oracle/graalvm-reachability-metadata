@@ -16,6 +16,7 @@ import com.ongres.scram.common.ScramMechanism;
 import com.ongres.scram.common.ScramMechanisms;
 import com.ongres.scram.common.ScramStringFormatting;
 import com.ongres.scram.common.exception.ScramParseException;
+import com.ongres.scram.common.gssapi.Gs2AttributeValue;
 import com.ongres.scram.common.gssapi.Gs2Attributes;
 import com.ongres.scram.common.gssapi.Gs2CbindFlag;
 import com.ongres.scram.common.gssapi.Gs2Header;
@@ -298,6 +299,33 @@ public class CommonTest {
 
         assertThatThrownBy(() -> ScramAttributeValue.parse("abc123"))
                 .isInstanceOf(ScramParseException.class);
+    }
+
+    @Test
+    void parsesAndWritesGs2AttributeValues() {
+        Gs2AttributeValue noChannelBinding = new Gs2AttributeValue(Gs2Attributes.CLIENT_NOT, null);
+        Gs2AttributeValue channelBinding = Gs2AttributeValue.parse("p=tls-server-end-point");
+
+        assertThat(noChannelBinding.getChar()).isEqualTo('n');
+        assertThat(noChannelBinding.getValue()).isNull();
+        assertThat(noChannelBinding.toString()).isEqualTo("n");
+        assertThat(Gs2AttributeValue.parse("n").getValue()).isNull();
+        assertThat(channelBinding.getChar()).isEqualTo('p');
+        assertThat(channelBinding.getValue()).isEqualTo("tls-server-end-point");
+        assertThat(channelBinding.toString()).isEqualTo("p=tls-server-end-point");
+        assertThat(Gs2AttributeValue.writeTo(new StringBuffer(), Gs2Attributes.AUTHZID, "authzid").toString())
+                .isEqualTo("a=authzid");
+        assertThat(Gs2AttributeValue.parse(null)).isNull();
+
+        assertThatThrownBy(() -> Gs2AttributeValue.parse("n="))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Invalid Gs2AttributeValue");
+        assertThatThrownBy(() -> Gs2AttributeValue.parse("x=value"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Invalid GS2Attribute character");
+        assertThatThrownBy(() -> new Gs2AttributeValue(Gs2Attributes.AUTHZID, ""))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Value should be either null or non-empty");
     }
 
     @Test
