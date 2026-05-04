@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -271,6 +272,31 @@ public class Jwks_rsaTest {
     }
 
     @Test
+    void builderRoutesRequestsThroughConfiguredProxy() throws Exception {
+        RSAPublicKey publicKey = (RSAPublicKey) generateRsaKeyPair().getPublic();
+        AtomicReference<URI> proxiedUri = new AtomicReference<>();
+        try (LocalJwksServer proxyServer = new LocalJwksServer(exchange -> {
+            proxiedUri.set(exchange.getRequestURI());
+            sendJson(exchange, jwksJson(rsaJwkJson("proxied", publicKey)));
+        })) {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, proxyServer.address());
+            URL jwksUrl = URI.create("http://issuer.example/.well-known/jwks.json").toURL();
+            JwkProvider provider = new JwkProviderBuilder(jwksUrl)
+                    .proxied(proxy)
+                    .cached(false)
+                    .rateLimited(false)
+                    .timeouts(500, 500)
+                    .build();
+
+            Jwk jwk = provider.get("proxied");
+
+            assertThat(jwk.getPublicKey().getEncoded()).isEqualTo(publicKey.getEncoded());
+            assertThat(proxiedUri.get()).isEqualTo(jwksUrl.toURI());
+            assertThat(proxyServer.requests()).isEqualTo(1);
+        }
+    }
+
+    @Test
     void validatesProviderConstructionArguments() throws Exception {
         assertThatIllegalStateException()
                 .isThrownBy(() -> new JwkProviderBuilder((URL) null))
@@ -373,6 +399,10 @@ public class Jwks_rsaTest {
             return URI.create("http://%s:%d/.well-known/jwks.json"
                             .formatted(server.getAddress().getHostString(), server.getAddress().getPort()))
                     .toURL();
+        }
+
+        private InetSocketAddress address() {
+            return server.getAddress();
         }
 
         private int requests() {
