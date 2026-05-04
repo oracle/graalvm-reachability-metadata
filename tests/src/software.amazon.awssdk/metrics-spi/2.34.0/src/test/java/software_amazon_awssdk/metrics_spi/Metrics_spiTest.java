@@ -157,6 +157,32 @@ public class Metrics_spiTest {
     }
 
     @Test
+    void metricCollectorRecursivelyCollectsNestedChildCollections() {
+        SdkMetric<String> phase = SdkMetric.create(
+                uniqueMetricName("phase"), String.class, MetricLevel.INFO, MetricCategory.CORE);
+        MetricCollector root = MetricCollector.create("root-call");
+        MetricCollector attempt = root.createChild("attempt");
+        MetricCollector signer = attempt.createChild("signer");
+        MetricCollector marshaller = attempt.createChild("marshaller");
+
+        signer.reportMetric(phase, "signed");
+        marshaller.reportMetric(phase, "marshalled");
+        MetricCollection collection = root.collect();
+
+        assertThat(collection.children()).singleElement().satisfies(attemptCollection -> {
+            assertThat(attemptCollection.name()).isEqualTo("attempt");
+            assertThat(attemptCollection.metricValues(phase)).isEmpty();
+            assertThat(attemptCollection.children()).extracting(MetricCollection::name)
+                    .containsExactly("signer", "marshaller");
+            assertThat(attemptCollection.childrenWithName("signer")).singleElement()
+                    .satisfies(child -> assertThat(child.metricValues(phase)).containsExactly("signed"));
+            assertThat(attemptCollection.childrenWithName("marshaller")).singleElement()
+                    .satisfies(child -> assertThat(child.metricValues(phase)).containsExactly("marshalled"));
+        });
+        assertThat(collection.childrenWithName("signer")).isEmpty();
+    }
+
+    @Test
     void metricCollectionStreamsAndIteratesOverCollectedMetricRecords() {
         SdkMetric<Integer> bytes = SdkMetric.create(
                 uniqueMetricName("bytes"), Integer.class, MetricLevel.TRACE, MetricCategory.HTTP_CLIENT);
