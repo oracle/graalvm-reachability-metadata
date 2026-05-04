@@ -35,11 +35,7 @@ curl -sSL \
   | bash -s "<groupId>:<artifactId>:<version>"
 ```
 
-### Manually Request Library Support
-
-<p align="center">
-  <img alt="Manual intervention" src="docs/assets/readme/manual-intervention.svg" width="72">
-</p>
+### 🙋 Manually Request Library Support
 
 <p align="center">
   <a href="https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml"><img alt="Open a new library support ticket" src="docs/assets/readme/button-new-library.svg" width="340"></a>
