@@ -1399,6 +1399,52 @@ class IssueClaimCacheTests(unittest.TestCase):
             ],
         )
 
+    def test_process_loop_logs_scan_start_and_progress(self) -> None:
+        issues = [
+            {
+                "number": issue_number,
+                "title": f"Add support for org.example:lib{issue_number}:1.0.0",
+                "labels": [],
+                "assignees": [],
+            }
+            for issue_number in range(1, 251)
+        ]
+
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(
+                        forge_metadata,
+                        "get_prioritized_issues_with_label",
+                        return_value=(issues, 0, len(issues), True, True),
+                    ), \
+                    patch.object(
+                        forge_metadata,
+                        "claim_issue_for_processing",
+                        return_value=None,
+                    ), \
+                    patch("sys.stdout", new_callable=io.StringIO) as stdout:
+                self.assertEqual(
+                    forge_metadata.process_issues_with_label(
+                        forge_metadata.LABEL_LIBRARY_NEW,
+                        1,
+                        0,
+                        "/tmp/reachability",
+                        "/tmp/metrics",
+                        None,
+                        False,
+                        "automation-user",
+                        1,
+                    ),
+                    0,
+                )
+
+        output = stdout.getvalue()
+        self.assertIn("Starting issue scan for label 'library-new-request'", output)
+        self.assertIn("Looked through 100 issue(s) for label 'library-new-request'", output)
+        self.assertIn("Looked through 200 issue(s) for label 'library-new-request'", output)
+        self.assertNotIn("Looked through 300 issue(s)", output)
+
 
 class ProjectItemStatusTests(unittest.TestCase):
     def test_common_helper_fetches_project_item_and_status_with_one_graphql_call(self) -> None:

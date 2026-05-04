@@ -117,6 +117,7 @@ DEFAULT_MAX_ISSUES = 5  # Default maximum number of issues to process per run
 DEFAULT_PARALLELISM = 1
 MAX_PARALLELISM = 4
 DEFAULT_ISSUE_SCAN_BATCH_SIZE = 25
+ISSUE_SCAN_PROGRESS_LOG_INTERVAL = 100
 GITHUB_API_MAX_PAGE_SIZE = 100
 GITHUB_SEARCH_MAX_RESULTS = 1000
 # GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
@@ -4851,6 +4852,45 @@ def get_issue_scan_batch_size(_remaining_limit: int, _available_slots: int) -> i
     return DEFAULT_ISSUE_SCAN_BATCH_SIZE
 
 
+def format_issue_scan_position(
+        offset: int,
+        current_offset: int,
+        priority_offset: int,
+        regular_offset: int,
+) -> str:
+    """Return a concise description of the current issue scan position."""
+    if offset == 0:
+        return f"priority offset {priority_offset}, regular offset {regular_offset}"
+    return f"offset {current_offset}"
+
+
+def log_issue_scan_start(label: str, offset: int) -> None:
+    """Log where an issue scan starts."""
+    if offset == 0:
+        position = "from the beginning with priority-first ordering"
+    else:
+        position = f"from offset {offset}"
+    print()
+    log_stage("issue-scan", f"Starting issue scan for label '{label}' {position}")
+
+
+def log_issue_scan_progress(
+        label: str,
+        scanned_count: int,
+        offset: int,
+        current_offset: int,
+        priority_offset: int,
+        regular_offset: int,
+) -> None:
+    """Log issue scan progress after another interval of candidates was inspected."""
+    position = format_issue_scan_position(offset, current_offset, priority_offset, regular_offset)
+    print()
+    log_stage(
+        "issue-scan",
+        f"Looked through {scanned_count} issue(s) for label '{label}' ({position})",
+    )
+
+
 def resolve_random_issue_scan_offset(label: str) -> int:
     """Choose a random searchable offset for an issue label."""
     issue_count = count_issues_with_label(label)
@@ -4892,6 +4932,7 @@ def process_issues_with_label(
 
     processed_count = 0
     scanned_count = 0
+    next_scan_progress_log_count = ISSUE_SCAN_PROGRESS_LOG_INTERVAL
     current_offset = offset
     priority_offset = 0
     regular_offset = 0
@@ -4900,6 +4941,8 @@ def process_issues_with_label(
     unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]] = []
     pending_issues: list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]] = []
     active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue] = {}
+
+    log_issue_scan_start(label, offset)
 
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=parallelism)
     try:
@@ -4955,6 +4998,16 @@ def process_issues_with_label(
                             for issue in issues
                         )
                         scanned_count += len(issues)
+                        while scanned_count >= next_scan_progress_log_count:
+                            log_issue_scan_progress(
+                                label,
+                                next_scan_progress_log_count,
+                                offset,
+                                current_offset,
+                                priority_offset,
+                                regular_offset,
+                            )
+                            next_scan_progress_log_count += ISSUE_SCAN_PROGRESS_LOG_INTERVAL
                         continue
                     else:
                         break
