@@ -17,8 +17,12 @@ import org.json4s.prefs.EmptyValueStrategy
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
+import java.io.ByteArrayInputStream
 import java.io.StringReader
 import java.io.StringWriter
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
 
 class Json4s_native_core_3Test {
   @Test
@@ -250,6 +254,32 @@ class Json4s_native_core_3Test {
     assertEquals(None, JsonMethods.parseOpt("""{"invalid":]"""))
   }
 
+  @Test
+  def acceptsNonStringInputsThroughJsonMethodsFacade(): Unit = {
+    val stream: TrackingByteArrayInputStream = new TrackingByteArrayInputStream(
+      """{"text":"héllo","source":"stream"}""".getBytes(StandardCharsets.UTF_8)
+    )
+
+    val streamParsed: JValue = JsonMethods.parse(stream)
+
+    assertEquals(JString("héllo"), streamParsed \ "text")
+    assertEquals(JString("stream"), streamParsed \ "source")
+    assertTrue(stream.closed)
+
+    val tempFile: Path = Files.createTempFile("json4s-native-core", ".json")
+    try {
+      Files.writeString(tempFile, """{"source":"file","numbers":[10,20]}""", StandardCharsets.UTF_8)
+
+      val fileParsed: JValue = JsonMethods.parse(tempFile.toFile)
+
+      assertEquals(JString("file"), fileParsed \ "source")
+      assertEquals(JArray(List(JInt(10), JInt(20))), fileParsed \ "numbers")
+      assertEquals(Some(fileParsed), JsonMethods.parseOpt(tempFile.toFile))
+    } finally {
+      Files.deleteIfExists(tempFile)
+    }
+  }
+
   private def collectTokens(parser: JsonParser.Parser): List[JsonParser.Token] = {
     val builder: scala.collection.mutable.ListBuffer[JsonParser.Token] = scala.collection.mutable.ListBuffer.empty[JsonParser.Token]
     var continue: Boolean = true
@@ -262,6 +292,15 @@ class Json4s_native_core_3Test {
   }
 
   private final class TrackingStringReader(text: String) extends StringReader(text) {
+    var closed: Boolean = false
+
+    override def close(): Unit = {
+      closed = true
+      super.close()
+    }
+  }
+
+  private final class TrackingByteArrayInputStream(bytes: Array[Byte]) extends ByteArrayInputStream(bytes) {
     var closed: Boolean = false
 
     override def close(): Unit = {
