@@ -20,6 +20,7 @@ import com.google.spanner.admin.database.v1.Backup;
 import com.google.spanner.admin.database.v1.Database;
 import com.google.spanner.admin.instance.v1.Instance;
 import com.google.spanner.admin.instance.v1.InstanceConfig;
+import com.google.spanner.admin.instance.v1.ReplicaInfo;
 import com.google.spanner.executor.v1.AdaptMessageAction;
 import com.google.spanner.executor.v1.AdminAction;
 import com.google.spanner.executor.v1.AdminResult;
@@ -36,16 +37,20 @@ import com.google.spanner.executor.v1.ColumnMetadata;
 import com.google.spanner.executor.v1.Concurrency;
 import com.google.spanner.executor.v1.CreateCloudDatabaseAction;
 import com.google.spanner.executor.v1.CreateCloudInstanceAction;
+import com.google.spanner.executor.v1.CreateUserInstanceConfigAction;
 import com.google.spanner.executor.v1.DataChangeRecord;
+import com.google.spanner.executor.v1.DeleteUserInstanceConfigAction;
 import com.google.spanner.executor.v1.DmlAction;
 import com.google.spanner.executor.v1.ExecuteChangeStreamQuery;
 import com.google.spanner.executor.v1.ExecutePartitionAction;
 import com.google.spanner.executor.v1.FinishTransactionAction;
 import com.google.spanner.executor.v1.GenerateDbPartitionsForQueryAction;
 import com.google.spanner.executor.v1.GenerateDbPartitionsForReadAction;
+import com.google.spanner.executor.v1.GetCloudInstanceConfigAction;
 import com.google.spanner.executor.v1.HeartbeatRecord;
 import com.google.spanner.executor.v1.KeyRange;
 import com.google.spanner.executor.v1.KeySet;
+import com.google.spanner.executor.v1.ListCloudInstanceConfigsAction;
 import com.google.spanner.executor.v1.MutationAction;
 import com.google.spanner.executor.v1.OperationResponse;
 import com.google.spanner.executor.v1.PartitionedUpdateAction;
@@ -64,6 +69,7 @@ import com.google.spanner.executor.v1.StartBatchTransactionAction;
 import com.google.spanner.executor.v1.StartTransactionAction;
 import com.google.spanner.executor.v1.TableMetadata;
 import com.google.spanner.executor.v1.TransactionExecutionOptions;
+import com.google.spanner.executor.v1.UpdateUserInstanceConfigAction;
 import com.google.spanner.executor.v1.Value;
 import com.google.spanner.executor.v1.ValueList;
 import com.google.spanner.executor.v1.WriteMutationsAction;
@@ -326,6 +332,66 @@ public class Proto_google_cloud_spanner_executor_v1Test {
         assertThat(adminResult.getDatabaseResponse().getListedDatabases(0).getName()).isEqualTo(DATABASE_PATH);
         assertThat(adminResult.getBackupResponse().getNextPageToken()).isEqualTo("next-backup-page");
         assertThat(adminResult.getOperationResponse().getOperation().getName()).isEqualTo("operations/finished");
+    }
+
+    @Test
+    void userInstanceConfigAdminActionsPreserveReplicaPagingAndLabels() {
+        ReplicaInfo defaultLeader = ReplicaInfo.newBuilder()
+                .setLocation("us-central1")
+                .setType(ReplicaInfo.ReplicaType.READ_WRITE)
+                .setDefaultLeaderLocation(true)
+                .build();
+        ReplicaInfo readOnlyReplica = ReplicaInfo.newBuilder()
+                .setLocation("us-east1")
+                .setType(ReplicaInfo.ReplicaType.READ_ONLY)
+                .build();
+        CreateUserInstanceConfigAction createUserConfig = CreateUserInstanceConfigAction.newBuilder()
+                .setProjectId("test-project")
+                .setUserConfigId("custom-config")
+                .setBaseConfigId("nam3")
+                .addReplicas(defaultLeader)
+                .addReplicas(readOnlyReplica)
+                .build();
+        UpdateUserInstanceConfigAction updateUserConfig = UpdateUserInstanceConfigAction.newBuilder()
+                .setProjectId("test-project")
+                .setUserConfigId("custom-config")
+                .setDisplayName("Custom test instance config")
+                .putLabels("environment", "test")
+                .build();
+        ListCloudInstanceConfigsAction listConfigs = ListCloudInstanceConfigsAction.newBuilder()
+                .setProjectId("test-project")
+                .setPageSize(20)
+                .setPageToken("next-config-page")
+                .build();
+        GetCloudInstanceConfigAction getConfig = GetCloudInstanceConfigAction.newBuilder()
+                .setProjectId("test-project")
+                .setInstanceConfigId("custom-config")
+                .build();
+        DeleteUserInstanceConfigAction deleteUserConfig = DeleteUserInstanceConfigAction.newBuilder()
+                .setProjectId("test-project")
+                .setUserConfigId("custom-config")
+                .build();
+        AdminAction createAction = AdminAction.newBuilder().setCreateUserInstanceConfig(createUserConfig).build();
+        AdminAction updateAction = createAction.toBuilder().setUpdateUserInstanceConfig(updateUserConfig).build();
+        AdminAction listAction = AdminAction.newBuilder().setListInstanceConfigs(listConfigs).build();
+        AdminAction getAction = AdminAction.newBuilder().setGetCloudInstanceConfig(getConfig).build();
+        AdminAction deleteAction = AdminAction.newBuilder().setDeleteUserInstanceConfig(deleteUserConfig).build();
+
+        assertThat(createUserConfig.getReplicasList()).extracting(ReplicaInfo::getType)
+                .containsExactly(ReplicaInfo.ReplicaType.READ_WRITE, ReplicaInfo.ReplicaType.READ_ONLY);
+        assertThat(createUserConfig.getReplicas(0).getDefaultLeaderLocation()).isTrue();
+        assertThat(createAction.getActionCase()).isEqualTo(AdminAction.ActionCase.CREATE_USER_INSTANCE_CONFIG);
+        assertThat(updateAction.getActionCase()).isEqualTo(AdminAction.ActionCase.UPDATE_USER_INSTANCE_CONFIG);
+        assertThat(updateAction.hasCreateUserInstanceConfig()).isFalse();
+        assertThat(updateAction.getUpdateUserInstanceConfig().hasDisplayName()).isTrue();
+        assertThat(updateAction.getUpdateUserInstanceConfig().getLabelsMap()).containsEntry("environment", "test");
+        assertThat(listAction.getActionCase()).isEqualTo(AdminAction.ActionCase.LIST_INSTANCE_CONFIGS);
+        assertThat(listAction.getListInstanceConfigs().hasPageSize()).isTrue();
+        assertThat(listAction.getListInstanceConfigs().getPageToken()).isEqualTo("next-config-page");
+        assertThat(getAction.getActionCase()).isEqualTo(AdminAction.ActionCase.GET_CLOUD_INSTANCE_CONFIG);
+        assertThat(getAction.getGetCloudInstanceConfig().getInstanceConfigId()).isEqualTo("custom-config");
+        assertThat(deleteAction.getActionCase()).isEqualTo(AdminAction.ActionCase.DELETE_USER_INSTANCE_CONFIG);
+        assertThat(deleteAction.getDeleteUserInstanceConfig().getUserConfigId()).isEqualTo("custom-config");
     }
 
     @Test
