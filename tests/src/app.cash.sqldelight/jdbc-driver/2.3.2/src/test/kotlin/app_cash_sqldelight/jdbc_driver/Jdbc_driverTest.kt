@@ -6,17 +6,19 @@
  */
 package app_cash_sqldelight.jdbc_driver
 
+import app.cash.sqldelight.Query
 import app.cash.sqldelight.TransacterImpl
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.driver.jdbc.JdbcCursor
 import app.cash.sqldelight.driver.jdbc.JdbcDriver
-import app.cash.sqldelight.driver.jdbc.asJdbcDriver
 import app.cash.sqldelight.driver.jdbc.JdbcPreparedStatement
+import app.cash.sqldelight.driver.jdbc.asJdbcDriver
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.h2.jdbcx.JdbcDataSource
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import java.sql.Connection
 import java.sql.Date
 import java.sql.Time
 import java.sql.Timestamp
@@ -270,6 +272,47 @@ public class Jdbc_driverTest {
         assertThat(messages(driver)).containsExactly("created")
     }
 
+    @Test
+    fun jdbcDriverReusesTransactionConnectionAndClosesItAfterCommit(): Unit =
+        withCountingDriver { driver: CountingJdbcDriver ->
+            driver.execute(
+                identifier = null,
+                sql = "CREATE TABLE transaction_items (id INTEGER PRIMARY KEY, name VARCHAR(100))",
+                parameters = 0,
+                binders = null,
+            )
+            assertThat(driver.openConnectionCount()).isEqualTo(1)
+            assertThat(driver.closeConnectionCount()).isEqualTo(1)
+
+            val transacter: DriverBackedTransacter = DriverBackedTransacter(driver)
+            val rowCountInTransaction: Long = transacter.transactionWithResult {
+                driver.execute(
+                    identifier = 40,
+                    sql = "INSERT INTO transaction_items (id, name) VALUES (?, ?)",
+                    parameters = 2,
+                ) {
+                    bindLong(0, 1L)
+                    bindString(1, "first")
+                }
+                driver.execute(
+                    identifier = 41,
+                    sql = "INSERT INTO transaction_items (id, name) VALUES (?, ?)",
+                    parameters = 2,
+                ) {
+                    bindLong(0, 2L)
+                    bindString(1, "second")
+                }
+                transactionItemCount(driver)
+            }
+
+            assertThat(rowCountInTransaction).isEqualTo(2L)
+            assertThat(driver.openConnectionCount()).isEqualTo(2)
+            assertThat(driver.closeConnectionCount()).isEqualTo(2)
+            assertThat(transactionItemCount(driver)).isEqualTo(2L)
+            assertThat(driver.openConnectionCount()).isEqualTo(3)
+            assertThat(driver.closeConnectionCount()).isEqualTo(3)
+        }
+
     private data class PersonRow(
         val id: Long?,
         val name: String?,
@@ -316,6 +359,31 @@ public class Jdbc_driverTest {
 
     private class DriverBackedTransacter(driver: JdbcDriver) : TransacterImpl(driver)
 
+    private class CountingJdbcDriver(private val dataSource: JdbcDataSource) : JdbcDriver() {
+        private val openConnections: AtomicInteger = AtomicInteger()
+        private val closedConnections: AtomicInteger = AtomicInteger()
+
+        override fun getConnection(): Connection {
+            openConnections.incrementAndGet()
+            return dataSource.connection
+        }
+
+        override fun closeConnection(connection: Connection): Unit {
+            closedConnections.incrementAndGet()
+            connection.close()
+        }
+
+        override fun addListener(vararg queryKeys: String, listener: Query.Listener): Unit = Unit
+
+        override fun removeListener(vararg queryKeys: String, listener: Query.Listener): Unit = Unit
+
+        override fun notifyListeners(vararg queryKeys: String): Unit = Unit
+
+        fun openConnectionCount(): Int = openConnections.get()
+
+        fun closeConnectionCount(): Int = closedConnections.get()
+    }
+
     private companion object {
         private val databaseCounter: AtomicInteger = AtomicInteger()
 
@@ -336,6 +404,23 @@ public class Jdbc_driverTest {
             }
         }
 
+        private fun withCountingDriver(block: (CountingJdbcDriver) -> Unit): Unit {
+            val dataSource: JdbcDataSource = JdbcDataSource().apply {
+                setURL("jdbc:h2:mem:sqldelight_jdbc_${databaseCounter.incrementAndGet()};DB_CLOSE_DELAY=-1")
+                setUser("sa")
+                setPassword("")
+            }
+            val driver: CountingJdbcDriver = CountingJdbcDriver(dataSource)
+            try {
+                block(driver)
+            } finally {
+                runCatching {
+                    driver.execute(null, "DROP ALL OBJECTS", 0, null)
+                }
+                driver.close()
+            }
+        }
+
         private fun messages(driver: JdbcDriver): List<String> {
             return driver.executeQuery(
                 identifier = null,
@@ -346,6 +431,19 @@ public class Jdbc_driverTest {
                         values += cursor.getString(0) ?: error("message was null")
                     }
                     QueryResult.Value(values)
+                },
+                parameters = 0,
+                binders = null,
+            ).value
+        }
+
+        private fun transactionItemCount(driver: JdbcDriver): Long {
+            return driver.executeQuery(
+                identifier = null,
+                sql = "SELECT COUNT(*) FROM transaction_items",
+                mapper = { cursor ->
+                    assertThat(cursor.next().value).isTrue()
+                    QueryResult.Value(cursor.getLong(0) ?: 0L)
                 },
                 parameters = 0,
                 binders = null,
