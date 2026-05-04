@@ -76,7 +76,7 @@ public class Jersey_guavaTest {
                 .appendTo(new StringBuilder(), versions)
                 .toString();
 
-        Iterable<String> parts = Splitter.on(',').trimResults().split(" alpha, beta ,,gamma ");
+        Iterable<String> parts = Splitter.on(',').trimResults().split(" alpha, beta" + ",,gamma ");
         CharMatcher identifierMatcher = CharMatcher.inRange('a', 'z')
                 .or(CharMatcher.inRange('0', '9'))
                 .or(CharMatcher.is('-'));
