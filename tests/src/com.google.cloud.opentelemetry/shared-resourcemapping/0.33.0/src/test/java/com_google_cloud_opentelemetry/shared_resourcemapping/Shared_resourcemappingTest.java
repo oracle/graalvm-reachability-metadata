@@ -240,6 +240,23 @@ public class Shared_resourcemappingTest {
     }
 
     @Test
+    void mapsGenericNodeUsingHostNameWhenHostIdIsUnavailable() {
+        Resource hostNameOnlyResource = Resource.builder()
+                .put(CLOUD_REGION, "australia-southeast1")
+                .put(SERVICE_NAMESPACE, "edge")
+                .put(HOST_NAME, "worker-2")
+                .build();
+
+        GcpResource hostNameOnlyNode = ResourceTranslator.mapResource(hostNameOnlyResource);
+
+        assertThat(hostNameOnlyNode.getResourceType()).isEqualTo("generic_node");
+        assertThat(labels(hostNameOnlyNode)).isEqualTo(Map.of(
+                "location", "australia-southeast1",
+                "namespace", "edge",
+                "node_id", "worker-2"));
+    }
+
+    @Test
     void attributeMappingFactoriesExposeConfiguredPriorityAndFallbacks() {
         AttributeMapping singleKey = AttributeMapping.create("zone", CLOUD_AVAILABILITY_ZONE);
 
