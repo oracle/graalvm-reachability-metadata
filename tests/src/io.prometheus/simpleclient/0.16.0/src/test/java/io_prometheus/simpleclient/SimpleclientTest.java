@@ -168,6 +168,40 @@ public class SimpleclientTest {
     }
 
     @Test
+    void histogramSamplesCanCarryExplicitExemplarsOnBuckets() {
+        Histogram histogram = Histogram.build("rpc_latency_seconds", "RPC latency.")
+                .labelNames("method")
+                .buckets(0.1, 0.5, 1.0)
+                .create();
+        Map<String, String> labels = new LinkedHashMap<>();
+        labels.put("trace_id", "trace-456");
+        labels.put("span_id", "span-789");
+
+        Histogram.Child child = histogram.labels("GET");
+        child.observeWithExemplar(0.2, labels);
+
+        Histogram.Child.Value value = child.get();
+        assertThat(value.buckets).containsExactly(0.0, 1.0, 1.0, 1.0);
+        assertThat(value.exemplars[0]).isNull();
+        assertThat(value.exemplars[1]).isNotNull();
+        assertThat(value.exemplars[1].getValue()).isEqualTo(0.2);
+        assertThat(value.exemplars[1].getNumberOfLabels()).isEqualTo(2);
+        assertThat(value.exemplars[1].getLabelName(0)).isEqualTo("span_id");
+        assertThat(value.exemplars[1].getLabelValue(0)).isEqualTo("span-789");
+        assertThat(value.exemplars[1].getLabelName(1)).isEqualTo("trace_id");
+        assertThat(value.exemplars[1].getLabelValue(1)).isEqualTo("trace-456");
+
+        Sample bucket = findSample(
+                singleFamily(histogram.collect()),
+                "rpc_latency_seconds_bucket",
+                List.of("method", "le"),
+                List.of("GET", "0.5"));
+        assertThat(bucket.value).isEqualTo(1.0);
+        assertThat(bucket.exemplar).isNotNull();
+        assertThat(bucket.exemplar.getValue()).isEqualTo(0.2);
+    }
+
+    @Test
     void histogramTimingHelpersRecordCallableAndRunnableDurations() {
         Histogram histogram = Histogram.build("operation_seconds", "Operation duration.")
                 .buckets(0.001, 0.01, 1.0)
@@ -337,6 +371,19 @@ public class SimpleclientTest {
     private static Sample findSample(MetricFamilySamples family, String sampleName) {
         return family.samples.stream()
                 .filter(sample -> sample.name.equals(sampleName))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Missing sample " + sampleName + " in " + family.name));
+    }
+
+    private static Sample findSample(
+            MetricFamilySamples family,
+            String sampleName,
+            List<String> labelNames,
+            List<String> labelValues) {
+        return family.samples.stream()
+                .filter(sample -> sample.name.equals(sampleName))
+                .filter(sample -> sample.labelNames.equals(labelNames))
+                .filter(sample -> sample.labelValues.equals(labelValues))
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Missing sample " + sampleName + " in " + family.name));
     }
