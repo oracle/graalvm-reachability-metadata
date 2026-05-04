@@ -17,6 +17,7 @@ import com.google.cloud.grpc.GcpManagedChannelOptions.ChannelPickStrategy;
 import com.google.cloud.grpc.GcpManagedChannelOptions.GcpChannelPoolOptions;
 import com.google.cloud.grpc.GcpManagedChannelOptions.GcpMetricsOptions;
 import com.google.cloud.grpc.GcpManagedChannelOptions.GcpResiliencyOptions;
+import com.google.cloud.grpc.GcpMultiEndpointChannel;
 import com.google.cloud.grpc.GcpMultiEndpointOptions;
 import com.google.cloud.grpc.fallback.GcpFallbackChannel;
 import com.google.cloud.grpc.fallback.GcpFallbackChannelOptions;
@@ -33,6 +34,7 @@ import io.grpc.ClientCall;
 import io.grpc.ClientInterceptor;
 import io.grpc.CompressorRegistry;
 import io.grpc.ConnectivityState;
+import io.grpc.Context;
 import io.grpc.DecompressorRegistry;
 import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;
@@ -53,6 +55,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -274,6 +277,61 @@ public class Grpc_gcpTest {
     }
 
     @Test
+    void multiEndpointChannelRoutesCallsUsingDefaultCallOptionAndContextSelections() throws Exception {
+        AtomicInteger builderIndex = new AtomicInteger();
+        List<CountingManagedChannel> createdChannels = new ArrayList<>();
+        ApiFunction<ManagedChannelBuilder<?>, ManagedChannelBuilder<?>> configurator = builder ->
+                new TestManagedChannelBuilder("pool-" + builderIndex.incrementAndGet(), createdChannels);
+        GcpManagedChannelOptions managedOptions = GcpManagedChannelOptions.newBuilder()
+                .withChannelPoolOptions(GcpChannelPoolOptions.newBuilder()
+                        .setMaxSize(1)
+                        .setMinSize(0)
+                        .setInitSize(0)
+                        .build())
+                .build();
+        GcpMultiEndpointOptions defaultEndpoint = GcpMultiEndpointOptions.newBuilder(
+                        List.of("default-primary", "default-backup"))
+                .withName("default")
+                .withChannelConfigurator(configurator)
+                .withRecoveryTimeout(Duration.ZERO)
+                .withSwitchingDelay(Duration.ZERO)
+                .build();
+        GcpMultiEndpointOptions analyticsEndpoint = GcpMultiEndpointOptions.newBuilder(List.of("analytics-primary"))
+                .withName("analytics")
+                .withChannelConfigurator(configurator)
+                .withRecoveryTimeout(Duration.ZERO)
+                .withSwitchingDelay(Duration.ZERO)
+                .build();
+        GcpMultiEndpointChannel channel = new GcpMultiEndpointChannel(
+                List.of(defaultEndpoint, analyticsEndpoint), ApiConfig.getDefaultInstance(), managedOptions);
+        try {
+            assertThat(createdChannels).hasSize(3);
+            assertThat(channel.authority()).isEqualTo("pool-1");
+            assertThat(channel.authorityFor("default")).isEqualTo("pool-1");
+            assertThat(channel.authorityFor("analytics")).isEqualTo("pool-3");
+            assertThat(channel.authorityFor("missing")).isNull();
+
+            channel.newCall(METHOD, CallOptions.DEFAULT);
+            channel.newCall(METHOD, CallOptions.DEFAULT.withOption(GcpMultiEndpointChannel.ME_KEY, "analytics"));
+            Context.current()
+                    .withValue(GcpMultiEndpointChannel.ME_CONTEXT_KEY, "analytics")
+                    .run(() -> channel.newCall(METHOD, CallOptions.DEFAULT));
+            Context.current()
+                    .withValue(GcpMultiEndpointChannel.ME_CONTEXT_KEY, "analytics")
+                    .run(() -> channel.newCall(
+                            METHOD, CallOptions.DEFAULT.withOption(GcpMultiEndpointChannel.ME_KEY, "default")));
+            channel.newCall(METHOD, CallOptions.DEFAULT.withOption(GcpMultiEndpointChannel.ME_KEY, "unknown"));
+
+            assertThat(createdChannels.get(0).newCallCount()).isEqualTo(3);
+            assertThat(createdChannels.get(1).newCallCount()).isZero();
+            assertThat(createdChannels.get(2).newCallCount()).isEqualTo(2);
+        } finally {
+            channel.shutdownNow();
+            assertThat(channel.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void fallbackOptionsConfigureFallbackChannelAndDelegateLifecycle() throws Exception {
         GcpFallbackOpenTelemetry openTelemetry = GcpFallbackOpenTelemetry.newBuilder()
                 .withSdk(OpenTelemetry.noop())
@@ -351,9 +409,15 @@ public class Grpc_gcpTest {
 
     private static final class TestManagedChannelBuilder extends ManagedChannelBuilder<TestManagedChannelBuilder> {
         private final String authority;
+        private final List<CountingManagedChannel> createdChannels;
 
         private TestManagedChannelBuilder(String authority) {
+            this(authority, new ArrayList<>());
+        }
+
+        private TestManagedChannelBuilder(String authority, List<CountingManagedChannel> createdChannels) {
             this.authority = authority;
+            this.createdChannels = createdChannels;
         }
 
         @Override
@@ -408,7 +472,9 @@ public class Grpc_gcpTest {
 
         @Override
         public ManagedChannel build() {
-            return new CountingManagedChannel(authority);
+            CountingManagedChannel channel = new CountingManagedChannel(authority);
+            createdChannels.add(channel);
+            return channel;
         }
     }
 
@@ -467,6 +533,13 @@ public class Grpc_gcpTest {
         @Override
         public ConnectivityState getState(boolean requestConnection) {
             return shutdown ? ConnectivityState.SHUTDOWN : ConnectivityState.READY;
+        }
+
+        @Override
+        public void notifyWhenStateChanged(ConnectivityState source, Runnable callback) {
+            if (!source.equals(getState(false))) {
+                callback.run();
+            }
         }
     }
 
