@@ -358,6 +358,31 @@ class Sangria_parser_3Test {
   }
 
   @Test
+  def sourceMapperRendersLinePositionForParsedNodes(): Unit = {
+    val sourceId: String = "source-mapper.graphql"
+    val query: String =
+      """query LocateField {
+        |  user {
+        |    name
+        |  }
+        |}
+        |""".stripMargin
+    val document: Document = parseDocument(query, ParserConfig.default.copy(sourceIdFn = _ => sourceId))
+    val sourceMapper: SourceMapper = document.sourceMapper.getOrElse(fail("Expected a source mapper"))
+    val operation: OperationDefinition = document.operation(Some("LocateField")).get
+    val user: Field = operation.selections.head.asInstanceOf[Field]
+    val name: Field = user.selections.head.asInstanceOf[Field]
+    val location: AstLocation = name.location.getOrElse(fail("Expected field location"))
+
+    assertEquals(sourceId, sourceMapper.id)
+    assertEquals(query, sourceMapper.source)
+    assertEquals("(line 3, column 5)", sourceMapper.renderLocation(location))
+    val renderedLine: String = sourceMapper.renderLinePosition(location, "GraphQL: ")
+    assertTrue(renderedLine.contains("    name"))
+    assertTrue(renderedLine.contains("GraphQL:     ^"))
+  }
+
+  @Test
   def reportsSyntaxErrorsForInvalidDocumentsAndInputs(): Unit = {
     val syntaxError: SyntaxError = assertSyntaxError(
       QueryParser.parse("{ field: {} }", ParserConfig.default.withEmptySourceId.withoutSourceMapper))
