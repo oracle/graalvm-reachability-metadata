@@ -48,6 +48,7 @@ import io.grpc.ServerServiceDefinition;
 import io.grpc.ServiceDescriptor;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import io.grpc.stub.BlockingClientCall;
 import io.grpc.stub.StreamObserver;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -183,6 +184,29 @@ public class Grpc_google_cloud_spanner_v1Test {
         }
     }
 
+    @Test
+    void blockingV2StubReadsServerStreamingResponsesThroughBlockingClientCall() throws Exception {
+        try (GrpcFixture fixture = GrpcFixture.start()) {
+            SpannerGrpc.SpannerBlockingV2Stub stub = SpannerGrpc.newBlockingV2Stub(fixture.channel);
+
+            BlockingClientCall<?, PartialResultSet> sqlCall = stub.executeStreamingSql(sqlRequest("v2 stream sql"));
+            assertThat(readNext(sqlCall).getResumeToken()).isEqualTo(ByteString.copyFromUtf8("sql-1"));
+            assertThat(readNext(sqlCall).getResumeToken()).isEqualTo(ByteString.copyFromUtf8("sql-2"));
+            assertThat(readNext(sqlCall)).isNull();
+
+            BlockingClientCall<?, PartialResultSet> readCall = stub.streamingRead(readRequest("Singers"));
+            assertThat(readNext(readCall).getResumeToken()).isEqualTo(ByteString.copyFromUtf8("read-1"));
+            assertThat(readNext(readCall).getResumeToken()).isEqualTo(ByteString.copyFromUtf8("read-2"));
+            assertThat(readNext(readCall)).isNull();
+
+            BlockingClientCall<?, BatchWriteResponse> batchWriteCall =
+                    stub.batchWrite(BatchWriteRequest.newBuilder().setSession(SESSION).build());
+            assertThat(readNext(batchWriteCall).getIndexesList()).containsExactly(0);
+            assertThat(readNext(batchWriteCall).getIndexesList()).containsExactly(1);
+            assertThat(readNext(batchWriteCall)).isNull();
+        }
+    }
+
     private static List<String> expectedFullMethodNames() {
         return List.of(
                 fullMethodName("CreateSession"),
@@ -267,6 +291,10 @@ public class Grpc_google_cloud_spanner_v1Test {
         List<T> values = new ArrayList<>();
         iterator.forEachRemaining(values::add);
         return values;
+    }
+
+    private static <T> T readNext(BlockingClientCall<?, T> call) throws Exception {
+        return call.read(5, TimeUnit.SECONDS);
     }
 
     private static final class GrpcFixture implements AutoCloseable {
