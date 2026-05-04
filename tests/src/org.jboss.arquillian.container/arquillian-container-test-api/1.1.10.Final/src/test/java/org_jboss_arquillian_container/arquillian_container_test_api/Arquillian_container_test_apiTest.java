@@ -161,8 +161,8 @@ public class Arquillian_container_test_apiTest {
         Method defaultDeployment = DeploymentFixture.class.getDeclaredMethod("defaultDeployment");
         Method manualDeployment = DeploymentFixture.class.getDeclaredMethod("manualDeployment");
 
-        Deployment defaultAnnotation = defaultDeployment.getAnnotation(Deployment.class);
-        Deployment manualAnnotation = manualDeployment.getAnnotation(Deployment.class);
+        Deployment defaultAnnotation = defaultDeployment.getAnnotationsByType(Deployment.class)[0];
+        Deployment manualAnnotation = manualDeployment.getAnnotationsByType(Deployment.class)[0];
 
         assertThat(defaultAnnotation.name()).isEqualTo("_DEFAULT_");
         assertThat(defaultAnnotation.managed()).isTrue();
@@ -182,17 +182,17 @@ public class Arquillian_container_test_apiTest {
         Method expectedFailureDeployment = DeploymentFixture.class.getDeclaredMethod("expectedFailureDeployment");
         Method defaultFailureDeployment = DeploymentFixture.class.getDeclaredMethod("defaultFailureDeployment");
 
-        assertThat(annotatedDeployment.getAnnotation(TargetsContainer.class).value()).isEqualTo("managed-server");
-        assertThat(annotatedDeployment.getAnnotation(OverProtocol.class).value()).isEqualTo("Servlet 3.0");
-        assertThat(expectedFailureDeployment.getAnnotation(ShouldThrowException.class).value())
+        assertThat(annotatedDeployment.getAnnotationsByType(TargetsContainer.class)[0].value()).isEqualTo("managed-server");
+        assertThat(annotatedDeployment.getAnnotationsByType(OverProtocol.class)[0].value()).isEqualTo("Servlet 3.0");
+        assertThat(expectedFailureDeployment.getAnnotationsByType(ShouldThrowException.class)[0].value())
                 .isEqualTo(IllegalStateException.class);
-        assertThat(defaultFailureDeployment.getAnnotation(ShouldThrowException.class).value())
+        assertThat(defaultFailureDeployment.getAnnotationsByType(ShouldThrowException.class)[0].value())
                 .isEqualTo(Exception.class);
 
         assertRuntimeMethodTarget(OverProtocol.class);
         assertRuntimeMethodTarget(ShouldThrowException.class);
-        assertThat(TargetsContainer.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(TargetsContainer.class.getAnnotation(Target.class).value())
+        assertThat(TargetsContainer.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(TargetsContainer.class.getAnnotationsByType(Target.class)[0].value())
                 .containsExactlyInAnyOrder(ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER);
     }
 
@@ -204,15 +204,15 @@ public class Arquillian_container_test_apiTest {
         Parameter containerParameter = operation.getParameters()[0];
         Parameter deploymentParameter = operation.getParameters()[1];
 
-        assertThat(operation.getAnnotation(OperateOnDeployment.class).value()).isEqualTo("orders");
-        assertThat(operation.getAnnotation(RunAsClient.class)).isNotNull();
-        assertThat(targetContainer.getAnnotation(TargetsContainer.class).value()).isEqualTo("managed-server");
-        assertThat(relatedDeployment.getAnnotation(OperateOnDeployment.class).value()).isEqualTo("billing");
-        assertThat(containerParameter.getAnnotation(TargetsContainer.class).value()).isEqualTo("parameter-server");
-        assertThat(deploymentParameter.getAnnotation(OperateOnDeployment.class).value()).isEqualTo("inventory");
+        assertThat(operation.getAnnotationsByType(OperateOnDeployment.class)[0].value()).isEqualTo("orders");
+        assertThat(operation.getAnnotationsByType(RunAsClient.class)[0]).isNotNull();
+        assertThat(targetContainer.getAnnotationsByType(TargetsContainer.class)[0].value()).isEqualTo("managed-server");
+        assertThat(relatedDeployment.getAnnotationsByType(OperateOnDeployment.class)[0].value()).isEqualTo("billing");
+        assertThat(containerParameter.getAnnotationsByType(TargetsContainer.class)[0].value()).isEqualTo("parameter-server");
+        assertThat(deploymentParameter.getAnnotationsByType(OperateOnDeployment.class)[0].value()).isEqualTo("inventory");
 
-        assertThat(OperateOnDeployment.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(OperateOnDeployment.class.getAnnotation(Target.class).value())
+        assertThat(OperateOnDeployment.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(OperateOnDeployment.class.getAnnotationsByType(Target.class)[0].value())
                 .containsExactlyInAnyOrder(ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER);
     }
 
@@ -220,17 +220,17 @@ public class Arquillian_container_test_apiTest {
     void runAsClientIsRuntimeVisibleOnMethodsTypesAndInheritedBySubclasses() throws Exception {
         Method operation = DeploymentFixture.class.getDeclaredMethod("operate", String.class, String.class);
 
-        assertThat(ClientFixture.class.getAnnotation(RunAsClient.class)).isNotNull();
-        assertThat(ClientSubclass.class.getAnnotation(RunAsClient.class)).isNotNull();
-        assertThat(operation.getAnnotation(RunAsClient.class)).isNotNull();
-        assertThat(RunAsClient.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(RunAsClient.class.getAnnotation(Target.class).value())
+        assertThat(ClientFixture.class.getAnnotationsByType(RunAsClient.class)[0]).isNotNull();
+        assertThat(ClientSubclass.class.getAnnotationsByType(RunAsClient.class)[0]).isNotNull();
+        assertThat(operation.getAnnotationsByType(RunAsClient.class)[0]).isNotNull();
+        assertThat(RunAsClient.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(RunAsClient.class.getAnnotationsByType(Target.class)[0].value())
                 .containsExactlyInAnyOrder(ElementType.TYPE, ElementType.METHOD);
     }
 
     private static void assertRuntimeMethodTarget(Class<?> annotationType) {
-        assertThat(annotationType.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(annotationType.getAnnotation(Target.class).value()).containsExactly(ElementType.METHOD);
+        assertThat(annotationType.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotationType.getAnnotationsByType(Target.class)[0].value()).containsExactly(ElementType.METHOD);
     }
 
     private static final class RecordingContainerController implements ContainerController {
