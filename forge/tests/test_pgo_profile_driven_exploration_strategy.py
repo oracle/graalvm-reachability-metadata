@@ -70,7 +70,7 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
             active_class.uncovered_call_sites,
         )
 
-    def test_refresh_fails_hard_when_pgo_diagnostic_task_fails(self) -> None:
+    def test_refresh_returns_unavailable_guidance_when_pgo_diagnostic_task_fails(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             strategy = self._strategy(tmpdir)
             active_class = self._report(0).classes[0]
@@ -81,13 +81,89 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
                     return_value=subprocess.CompletedProcess(
                         args=[],
                         returncode=1,
-                        stdout="Execution failed for task ':nativeTestCompile'.",
+                        stdout=(
+                            "> Task :nativeTestCompile FAILED\n"
+                            "Execution failed for task ':nativeTestCompile'."
+                        ),
                     ),
             ), patch("builtins.print") as print_output:
-                with self.assertRaisesRegex(PgoNearCallGuidanceUnavailableError, "gradle_diagnostic_task_failed"):
-                    strategy._refresh_pgo_near_call_guidance(active_class)
+                guidance = strategy._refresh_pgo_near_call_guidance(active_class)
 
-        print_output.assert_any_call("Execution failed for task ':nativeTestCompile'.")
+        self.assertTrue(guidance.startswith("- PGO near-call guidance unavailable:"))
+        self.assertIn("task_nativeTestCompile_failed", guidance)
+        print_output.assert_any_call("> Task :nativeTestCompile FAILED\nExecution failed for task ':nativeTestCompile'.")
+
+    def test_prepare_attempt_runs_reachability_analysis_when_pgo_diagnostic_task_fails(self) -> None:
+        class FakeAgent:
+            def __init__(self) -> None:
+                self.prompt = ""
+
+            def send_prompt(self, prompt: str) -> str:
+                self.prompt = prompt
+                return json.dumps({
+                    "summary": "remaining call is blocked by the current toolchain",
+                    "callSites": [
+                        {
+                            "metadataType": "reflection",
+                            "trackedApi": "java.lang.Class#forName(java.lang.String)",
+                            "frame": "example.TargetHolder.call(TargetHolder.java:41)",
+                            "line": 41,
+                            "reachable": False,
+                            "reason": "The PGO diagnostic native-image build fails before guidance can be produced.",
+                            "requiredChanges": "",
+                            "confidence": "high",
+                        },
+                        {
+                            "metadataType": "reflection",
+                            "trackedApi": "java.lang.Class#forName(java.lang.String)",
+                            "frame": "example.TargetHolder.call(TargetHolder.java:42)",
+                            "line": 42,
+                            "reachable": False,
+                            "reason": "The PGO diagnostic native-image build fails before guidance can be produced.",
+                            "requiredChanges": "",
+                            "confidence": "high",
+                        },
+                        {
+                            "metadataType": "reflection",
+                            "trackedApi": "java.lang.Class#forName(java.lang.String)",
+                            "frame": "example.TargetHolder.call(TargetHolder.java:43)",
+                            "line": 43,
+                            "reachable": False,
+                            "reason": "The PGO diagnostic native-image build fails before guidance can be produced.",
+                            "requiredChanges": "",
+                            "confidence": "high",
+                        },
+                    ],
+                })
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(tmpdir)
+            active_class = self._report(0).classes[0]
+            fake_agent = FakeAgent()
+
+            with patch.object(
+                    strategy,
+                    "_run_gradle_command_with_output",
+                    return_value=subprocess.CompletedProcess(
+                        args=[],
+                        returncode=1,
+                        stdout=(
+                            "> Task :nativeTestCompile FAILED\n"
+                            "Error: com.oracle.svm.shared.util.VMError$HostedError: "
+                            "mismatch with existing registration: example.TargetHolder\n"
+                        ),
+                    ),
+            ), patch.object(strategy, "_collect_test_runtime_classpath", return_value=["/tmp/lib.jar"]), \
+                    patch.object(
+                        strategy,
+                        "_render_prompt",
+                        side_effect=lambda _key, **kwargs: kwargs["pgo_failure_reason"],
+                    ):
+                should_attempt = strategy._prepare_dynamic_access_attempt(fake_agent, active_class, self._report(0), 0)
+
+        self.assertFalse(should_attempt)
+        self.assertIn("mismatch with existing registration", fake_agent.prompt)
+        self.assertEqual(len(strategy.dynamic_access_unreachable), 3)
 
     def test_refresh_returns_unavailable_guidance_when_formatter_has_no_actionable_guidance(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

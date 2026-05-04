@@ -139,7 +139,10 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                 exit_code=result.returncode,
             )
             print(result.stdout)
-            raise PgoNearCallGuidanceUnavailableError("gradle_diagnostic_task_failed")
+            return (
+                f"{PGO_GUIDANCE_UNAVAILABLE_PREFIX} "
+                f"{self._format_pgo_gradle_failure(result)}"
+            )
 
         guidance = format_pgo_near_call_guidance(
             self.pgo_near_call_report_dir,
@@ -222,6 +225,70 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
                 return build_gradle_file.read()
         except FileNotFoundError:
             return "// build.gradle not found"
+
+    def _format_pgo_gradle_failure(self, result) -> str:
+        issue = self._summarize_gradle_issue(result.stdout)
+        excerpt = self._extract_pgo_failure_excerpt(result.stdout)
+        if excerpt:
+            return (
+                "generatePgoDynamicAccessNearCallReport failed "
+                f"(exit_code={result.returncode}, issue={issue}).\n"
+                "Relevant Gradle/native-image output:\n"
+                f"{excerpt}"
+            )
+        return (
+            "generatePgoDynamicAccessNearCallReport failed "
+            f"(exit_code={result.returncode}, issue={issue})."
+        )
+
+    @staticmethod
+    def _extract_pgo_failure_excerpt(output: str, max_lines: int = 120, max_chars: int = 12000) -> str:
+        """Extract diagnostic lines that are useful to the reachability analyst."""
+        patterns = (
+            "Execution failed for task",
+            "> Task :nativeTestCompile FAILED",
+            "> Task :generatePgoDynamicAccessNearCallReport FAILED",
+            "Error:",
+            "Caused by:",
+            "mismatch with existing registration",
+            "Cluster members:",
+            "Process 'command",
+            "Fatal error:",
+            "Could not find agent library native-image-agent",
+            "FAILURE: Build failed with an exception.",
+            "* What went wrong:",
+            "BUILD FAILED",
+        )
+        selected: list[str] = []
+        include_following_lines = 0
+        for raw_line in output.splitlines():
+            line = raw_line.strip()
+            if not line:
+                continue
+            if any(pattern in line for pattern in patterns):
+                selected.append(line)
+                include_following_lines = 3
+            elif include_following_lines > 0:
+                selected.append(line)
+                include_following_lines -= 1
+
+        if not selected:
+            selected = [
+                line.strip()
+                for line in output.splitlines()
+                if line.strip()
+            ][-40:]
+
+        deduplicated: list[str] = []
+        for line in selected:
+            if deduplicated and deduplicated[-1] == line:
+                continue
+            deduplicated.append(line)
+
+        excerpt = "\n".join(deduplicated[:max_lines])
+        if len(excerpt) > max_chars:
+            return excerpt[:max_chars] + "\n... truncated ..."
+        return excerpt
 
     @staticmethod
     def _parse_json_response(response: str) -> dict:
