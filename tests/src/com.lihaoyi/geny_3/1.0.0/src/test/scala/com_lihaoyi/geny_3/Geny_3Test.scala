@@ -28,6 +28,7 @@ import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 import scala.collection.mutable
+import scala.io.Codec
 
 class Geny_3Test {
   @Test
@@ -190,6 +191,20 @@ class Geny_3Test {
     assertNotEquals(sameBytes, new Bytes("abcd".getBytes(StandardCharsets.UTF_8)))
     assertNotEquals(sameBytes, "abc")
     assertEquals("abc", sameBytes.toString)
+  }
+
+  @Test
+  def byteDataDecodesTextWithExplicitCodec(): Unit = {
+    val latin1Text: String = " café \nniño\n"
+    val chunks: ByteData.Chunks = ByteData.Chunks(Seq(
+      new Bytes(" café \n".getBytes(StandardCharsets.ISO_8859_1)),
+      new Bytes("niño\n".getBytes(StandardCharsets.ISO_8859_1))
+    ))
+    val latin1: Codec = Codec(StandardCharsets.ISO_8859_1)
+
+    assertEquals(latin1Text, chunks.text(latin1))
+    assertEquals("café \nniño", chunks.trim(latin1))
+    assertEquals(Vector(" café ", "niño"), chunks.lines(latin1))
   }
 
   @Test
