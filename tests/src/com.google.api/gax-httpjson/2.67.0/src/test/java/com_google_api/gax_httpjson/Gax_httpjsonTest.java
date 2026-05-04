@@ -10,6 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.LowLevelHttpRequest;
+import com.google.api.client.http.LowLevelHttpResponse;
+import com.google.api.core.NanoClock;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
 import com.google.api.gax.httpjson.GaxHttpJsonProperties;
@@ -17,6 +21,7 @@ import com.google.api.gax.httpjson.HttpHeadersUtils;
 import com.google.api.gax.httpjson.HttpJsonCallContext;
 import com.google.api.gax.httpjson.HttpJsonCallOptions;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
+import com.google.api.gax.httpjson.HttpJsonCallableFactory;
 import com.google.api.gax.httpjson.HttpJsonHeaderEnhancers;
 import com.google.api.gax.httpjson.HttpJsonOperationSnapshot;
 import com.google.api.gax.httpjson.HttpJsonStatusCode;
@@ -31,7 +36,11 @@ import com.google.api.gax.httpjson.ProtoOperationTransformers;
 import com.google.api.gax.httpjson.ProtoRestSerializer;
 import com.google.api.gax.longrunning.OperationSnapshot;
 import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.api.gax.tracing.BaseApiTracerFactory;
 import com.google.auth.ApiKeyCredentials;
 import com.google.longrunning.ListOperationsRequest;
 import com.google.longrunning.Operation;
@@ -42,16 +51,21 @@ import com.google.protobuf.TypeRegistry;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
@@ -304,6 +318,96 @@ public class Gax_httpjsonTest {
     }
 
     @Test
+    void unaryCallableExecutesPatchRequestWithHttpMethodOverride() throws Exception {
+        ProtoRestSerializer<ListOperationsRequest> serializer = ProtoRestSerializer.create();
+        ProtoMessageRequestFormatter<ListOperationsRequest> formatter =
+                ProtoMessageRequestFormatter.<ListOperationsRequest>newBuilder()
+                        .setPath(
+                                "/v1/{name=projects/*}/operations",
+                                request -> {
+                                    Map<String, String> pathParams = new HashMap<>();
+                                    serializer.putPathParam(pathParams, "name", request.getName());
+                                    return pathParams;
+                                })
+                        .setQueryParamsExtractor(
+                                request -> {
+                                    Map<String, List<String>> queryParams = new HashMap<>();
+                                    serializer.putQueryParam(queryParams, "filter", request.getFilter());
+                                    serializer.putQueryParam(queryParams, "pageSize", request.getPageSize());
+                                    return queryParams;
+                                })
+                        .setRequestBodyExtractor(request -> serializer.toBody("*", request))
+                        .build();
+        ProtoMessageResponseParser<Operation> parser = ProtoMessageResponseParser.<Operation>newBuilder()
+                .setDefaultInstance(Operation.getDefaultInstance())
+                .build();
+        ApiMethodDescriptor<ListOperationsRequest, Operation> descriptor =
+                ApiMethodDescriptor.<ListOperationsRequest, Operation>newBuilder()
+                        .setFullMethodName("google.longrunning.Operations.UpdateOperation")
+                        .setHttpMethod("PATCH")
+                        .setType(ApiMethodDescriptor.MethodType.UNARY)
+                        .setRequestFormatter(formatter)
+                        .setResponseParser(parser)
+                        .build();
+        HttpJsonCallSettings<ListOperationsRequest, Operation> callSettings =
+                HttpJsonCallSettings.<ListOperationsRequest, Operation>newBuilder()
+                        .setMethodDescriptor(descriptor)
+                        .build();
+        Operation expectedOperation = Operation.newBuilder().setName("operations/patched").setDone(true).build();
+        CapturingHttpTransport httpTransport =
+                new CapturingHttpTransport("{\"name\":\"operations/patched\",\"done\":true}");
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        ManagedHttpJsonChannel managedChannel = ManagedHttpJsonChannel.newBuilder()
+                .setEndpoint("test.googleapis.com")
+                .setExecutor(executor)
+                .setHttpTransport(httpTransport)
+                .build();
+        HttpJsonTransportChannel transportChannel = HttpJsonTransportChannel.create(managedChannel);
+        try {
+            HttpJsonCallContext callContext = (HttpJsonCallContext) HttpJsonCallContext.createDefault()
+                    .withTransportChannel(transportChannel)
+                    .withExtraHeaders(Map.of("x-test-header", List.of("from-context")));
+            ClientContext clientContext = ClientContext.newBuilder()
+                    .setClock(NanoClock.getDefaultClock())
+                    .setDefaultCallContext(callContext)
+                    .setExecutor(executor)
+                    .setTracerFactory(BaseApiTracerFactory.getInstance())
+                    .setTransportChannel(transportChannel)
+                    .build();
+            UnaryCallSettings<ListOperationsRequest, Operation> unaryCallSettings =
+                    UnaryCallSettings.<ListOperationsRequest, Operation>newUnaryCallSettingsBuilder()
+                            .setSimpleTimeoutNoRetriesDuration(Duration.ofSeconds(5))
+                            .build();
+            UnaryCallable<ListOperationsRequest, Operation> callable =
+                    HttpJsonCallableFactory.createUnaryCallable(callSettings, unaryCallSettings, clientContext);
+            ListOperationsRequest request = ListOperationsRequest.newBuilder()
+                    .setName("projects/sample")
+                    .setFilter("done=false")
+                    .setPageSize(5)
+                    .build();
+
+            Operation operation = callable.call(request);
+
+            assertThat(operation).isEqualTo(expectedOperation);
+            assertThat(httpTransport.getRequestMethod()).isEqualTo("POST");
+            assertThat(httpTransport.getRequestUrl())
+                    .startsWith("https://test.googleapis.com/v1/projects/sample/operations")
+                    .contains("filter=done%3Dfalse")
+                    .contains("pageSize=5");
+            assertThat(httpTransport.getHeaderValues("X-HTTP-Method-Override")).containsExactly("PATCH");
+            assertThat(httpTransport.getHeaderValues("x-test-header")).containsExactly("from-context");
+            assertThat(httpTransport.getRequestBody())
+                    .contains("projects/sample")
+                    .contains("pageSize")
+                    .contains("5");
+        } finally {
+            transportChannel.close();
+            executor.shutdownNow();
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+        }
+    }
+
+    @Test
     void managedChannelLifecycleDelegatesThroughTransportChannel() throws Exception {
         ManagedHttpJsonChannel managedChannel = ManagedHttpJsonChannel.newBuilder()
                 .setEndpoint("localhost:8080")
@@ -375,5 +479,118 @@ public class Gax_httpjsonTest {
                 .setQueryParamsExtractor(request -> Map.of())
                 .setRequestBodyExtractor(request -> "")
                 .build();
+    }
+
+    private static final class CapturingHttpTransport extends HttpTransport {
+        private final String responseBody;
+        private String requestMethod;
+        private String requestUrl;
+        private String requestBody;
+        private final Map<String, List<String>> requestHeaders = new HashMap<>();
+
+        private CapturingHttpTransport(String responseBody) {
+            this.responseBody = responseBody;
+        }
+
+        @Override
+        protected LowLevelHttpRequest buildRequest(String method, String url) {
+            requestMethod = method;
+            requestUrl = url;
+            return new LowLevelHttpRequest() {
+                @Override
+                public void addHeader(String name, String value) {
+                    requestHeaders.computeIfAbsent(name, ignored -> new ArrayList<>()).add(value);
+                }
+
+                @Override
+                public LowLevelHttpResponse execute() throws IOException {
+                    ByteArrayOutputStream content = new ByteArrayOutputStream();
+                    if (getStreamingContent() != null) {
+                        getStreamingContent().writeTo(content);
+                    }
+                    requestBody = content.toString(StandardCharsets.UTF_8);
+                    return new JsonLowLevelHttpResponse(responseBody);
+                }
+            };
+        }
+
+        private String getRequestMethod() {
+            return requestMethod;
+        }
+
+        private String getRequestUrl() {
+            return requestUrl;
+        }
+
+        private List<String> getHeaderValues(String name) {
+            for (Map.Entry<String, List<String>> entry : requestHeaders.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(name)) {
+                    return entry.getValue();
+                }
+            }
+            return List.of();
+        }
+
+        private String getRequestBody() {
+            return requestBody;
+        }
+    }
+
+    private static final class JsonLowLevelHttpResponse extends LowLevelHttpResponse {
+        private final byte[] content;
+
+        private JsonLowLevelHttpResponse(String responseBody) {
+            this.content = responseBody.getBytes(StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public InputStream getContent() {
+            return new ByteArrayInputStream(content);
+        }
+
+        @Override
+        public String getContentEncoding() {
+            return null;
+        }
+
+        @Override
+        public long getContentLength() {
+            return content.length;
+        }
+
+        @Override
+        public String getContentType() {
+            return "application/json; charset=utf-8";
+        }
+
+        @Override
+        public String getStatusLine() {
+            return "HTTP/1.1 200 OK";
+        }
+
+        @Override
+        public int getStatusCode() {
+            return 200;
+        }
+
+        @Override
+        public String getReasonPhrase() {
+            return "OK";
+        }
+
+        @Override
+        public int getHeaderCount() {
+            return 0;
+        }
+
+        @Override
+        public String getHeaderName(int index) {
+            return null;
+        }
+
+        @Override
+        public String getHeaderValue(int index) {
+            return null;
+        }
     }
 }
