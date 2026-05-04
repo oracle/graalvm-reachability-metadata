@@ -35,6 +35,11 @@ class Silencer_lib_2_13_16Test {
   }
 
   @Test
+  def silentAnnotationSuppressesFatalUnusedLocalCompilerWarning(): Unit = {
+    assertEquals(42, SilencedWarningFixture.valueAfterSuppressedCompilerWarning())
+  }
+
+  @Test
   def classObjectFieldMethodAndParameterAnnotationsPreserveRuntimeSemantics(): Unit = {
     val fixture: SilencerAnnotatedFixture = new SilencerAnnotatedFixture(" Native Image ")
 
@@ -116,6 +121,15 @@ class Silencer_lib_2_13_16Test {
     assertEquals(8, length.value)
     assertEquals(("metadata", 8), combined.value)
     assertEquals("metadata -> 8", combined.fold { case (label, size) => s"$label -> $size" })
+  }
+}
+
+object SilencedWarningFixture {
+  @silent(".*unusedSilencedWarningValue.*never used.*")
+  def valueAfterSuppressedCompilerWarning(): Int = {
+    val unusedSilencedWarningValue: String = "silenced"
+
+    42
   }
 }
 

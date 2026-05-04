@@ -13,9 +13,17 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "com.github.ghik:silencer-lib_2.13.16:$libraryVersion"
+    scalaCompilerPlugins "com.github.ghik:silencer-plugin_2.13.16:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.scala-lang:scala-library:2.13.16'
     testImplementation 'org.scala-lang:scala-compiler:2.13.16'
+}
+
+tasks.withType(ScalaCompile).configureEach {
+    scalaCompileOptions.additionalParameters = [
+            "-Wunused:locals",
+            "-Werror"
+    ]
 }
 
 java {
