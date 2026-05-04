@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Retries_spiTest {
+    private static final Duration ONE_MILLI = Duration.ofMillis(1);
     private static final Duration FIFTY_MILLIS = Duration.ofMillis(50);
     private static final Duration HUNDRED_MILLIS = Duration.ofMillis(100);
     private static final Duration TWO_HUNDRED_MILLIS = Duration.ofMillis(200);
@@ -225,6 +226,17 @@ public class Retries_spiTest {
         assertThat(strategy.computeDelay(3)).isEqualTo(TWO_HUNDRED_MILLIS);
         assertThat(strategy.computeDelay(4)).isEqualTo(Duration.ofMillis(400));
         assertThat(strategy.computeDelay(20)).isEqualTo(ONE_SECOND);
+    }
+
+    @Test
+    void exponentialBackoffCapsAttemptGrowthBeforeIntegerOverflow() {
+        BackoffStrategy strategy = BackoffStrategy.exponentialDelayWithoutJitter(
+                ONE_MILLI, Duration.ofMillis(Integer.MAX_VALUE));
+        Duration highestCalculatedDelay = Duration.ofMillis(1L << 28);
+
+        assertThat(strategy.computeDelay(30)).isEqualTo(highestCalculatedDelay);
+        assertThat(strategy.computeDelay(31)).isEqualTo(highestCalculatedDelay);
+        assertThat(strategy.computeDelay(Integer.MAX_VALUE)).isEqualTo(highestCalculatedDelay);
     }
 
     @Test
