@@ -54,6 +54,28 @@ public class Camel_xml_jaxp_utilTest {
     }
 
     @Test
+    void prettyPrintNormalizesExistingWhitespaceBetweenSiblingElements() throws Exception {
+        String xml = """
+                <menu>
+                    <item>Fosters</item>
+                    <item>Bell Expedition</item>
+                </menu>
+                """.trim();
+
+        String prettyXml = XmlPrettyPrinter.pettyPrint(xml, 2);
+
+        assertThat(prettyXml).isEqualTo("""
+                <menu>
+                  <item>
+                    Fosters
+                  </item>
+                  <item>
+                    Bell Expedition
+                  </item>
+                </menu>""");
+    }
+
+    @Test
     void prettyPrintPreservesQualifiedNamesWhenNamespacesAreDisabled() throws Exception {
         String xml = """
                 <ns:root xmlns:ns="urn:test"><ns:child name="camel"/></ns:root>
