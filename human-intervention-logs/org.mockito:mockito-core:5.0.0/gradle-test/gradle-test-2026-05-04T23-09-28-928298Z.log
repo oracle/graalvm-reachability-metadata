@@ -1,0 +1,368 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.mockito:mockito-core:5.0.0
+Command: `/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 22 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+> Task :compileTestJava
+
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+
+> Task :test
+
+ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest > serializesAndDeserializesAcrossClassLoadersUsingSerializationProxy() FAILED
+    org.mockito.exceptions.base.MockitoSerializationIssue: 
+    Mockito mock cannot be deserialized to a mock of 'org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.SerializableTarget'. The error was :
+  
+    A Byte Buddy-generated mock cannot be deserialized into a non-Byte Buddy generated mock class
+
+    The mock maker in use was: class org.mockito.internal.creation.proxy.ProxyMockMaker
+    If you are unsure what is the reason of this exception, feel free to open an issue on GitHub.
+        at java.base@25.0.2/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+        at java.base@25.0.2/java.io.ObjectStreamClass.invokeReadResolve(ObjectStreamClass.java:1066)
+        at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2142)
+        at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+        at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+        at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.roundTrip(ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.java:47)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.lambda$serializesAndDeserializesAcrossClassLoadersUsingSerializationProxy$0(ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.java:34)
+        at app//org_mockito.mockito_core.MockitoDynamicAccessSupport.runAllowingUnsupportedFeatureError(MockitoDynamicAccessSupport.java:16)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.serializesAndDeserializesAcrossClassLoadersUsingSerializationProxy(ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.java:24)
+
+        Caused by:
+        org.mockito.exceptions.base.MockitoSerializationIssue: 
+        A Byte Buddy-generated mock cannot be deserialized into a non-Byte Buddy generated mock class
+
+        The mock maker in use was: class org.mockito.internal.creation.proxy.ProxyMockMaker
+            at java.base@25.0.2/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1912)
+            at java.base@25.0.2/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1785)
+            at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2101)
+            at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+            at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+            at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+            ... 11 more
+
+            Caused by:
+            java.lang.ClassCastException: class org.mockito.internal.creation.proxy.ProxyMockMaker cannot be cast to class org.mockito.internal.creation.bytebuddy.ClassCreatingMockMaker (org.mockito.internal.creation.proxy.ProxyMockMaker and org.mockito.internal.creation.bytebuddy.ClassCreatingMockMaker are in unnamed module of loader 'app')
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyCrossClassLoaderSerializationSupport$MockitoMockObjectInputStream.resolveClass(ByteBuddyCrossClassLoaderSerializationSupport.java:288)
+                at java.base/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1912)
+                at java.base/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1785)
+                at java.base/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2101)
+                at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+                at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+                at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyCrossClassLoaderSerializationSupport$CrossClassLoaderSerializationProxy.readResolve(ByteBuddyCrossClassLoaderSerializationSupport.java:209)
+                ... 11 more
+
+ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest > resolvesMockClassWhileReadingSerializedAcrossClassLoaderMock() FAILED
+    org.mockito.exceptions.base.MockitoSerializationIssue: 
+    Mockito mock cannot be deserialized to a mock of 'org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.InputStreamSerializableTarget'. The error was :
+  
+    A Byte Buddy-generated mock cannot be deserialized into a non-Byte Buddy generated mock class
+
+    The mock maker in use was: class org.mockito.internal.creation.proxy.ProxyMockMaker
+    If you are unsure what is the reason of this exception, feel free to open an issue on GitHub.
+        at java.base@25.0.2/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+        at java.base@25.0.2/java.io.ObjectStreamClass.invokeReadResolve(ObjectStreamClass.java:1066)
+        at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2142)
+        at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+        at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+        at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.roundTrip(ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.java:48)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.lambda$resolvesMockClassWhileReadingSerializedAcrossClassLoaderMock$0(ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.java:34)
+        at app//org_mockito.mockito_core.MockitoDynamicAccessSupport.runAllowingUnsupportedFeatureError(MockitoDynamicAccessSupport.java:16)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.resolvesMockClassWhileReadingSerializedAcrossClassLoaderMock(ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.java:24)
+
+        Caused by:
+        org.mockito.exceptions.base.MockitoSerializationIssue: 
+        A Byte Buddy-generated mock cannot be deserialized into a non-Byte Buddy generated mock class
+
+        The mock maker in use was: class org.mockito.internal.creation.proxy.ProxyMockMaker
+            at java.base@25.0.2/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1912)
+            at java.base@25.0.2/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1785)
+            at java.base@25.0.2/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2101)
+            at java.base@25.0.2/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+            at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+            at java.base@25.0.2/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+            ... 11 more
+
+            Caused by:
+            java.lang.ClassCastException: class org.mockito.internal.creation.proxy.ProxyMockMaker cannot be cast to class org.mockito.internal.creation.bytebuddy.ClassCreatingMockMaker (org.mockito.internal.creation.proxy.ProxyMockMaker and org.mockito.internal.creation.bytebuddy.ClassCreatingMockMaker are in unnamed module of loader 'app')
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyCrossClassLoaderSerializationSupport$MockitoMockObjectInputStream.resolveClass(ByteBuddyCrossClassLoaderSerializationSupport.java:288)
+                at java.base/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1912)
+                at java.base/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1785)
+                at java.base/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2101)
+                at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1620)
+                at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:487)
+                at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:445)
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyCrossClassLoaderSerializationSupport$CrossClassLoaderSerializationProxy.readResolve(ByteBuddyCrossClassLoaderSerializationSupport.java:209)
+                ... 11 more
+
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+> Task :test
+
+InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest > exposesConstructorFromConstructionMockContext() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Cannot mock/spy class org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest$ConstructorTarget
+    Mockito cannot mock/spy because :
+     - non-interface
+        at app//org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest.lambda$exposesConstructorFromConstructionMockContext$0(InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest.java:32)
+        at app//org_mockito.mockito_core.MockitoDynamicAccessSupport.runAllowingUnsupportedFeatureError(MockitoDynamicAccessSupport.java:16)
+        at app//org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest.exposesConstructorFromConstructionMockContext(InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest.java:25)
+
+InlineDelegateByteBuddyMockMakerTest > createsInlineMockForFinalClass() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Mockito cannot mock this class: class org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerTest$FinalInlineTarget.
+    Can not mock final classes with the following settings :
+     - explicit serialization (e.g. withSettings().serializable())
+     - extra interfaces (e.g. withSettings().extraInterfaces(...))
+
+    You are seeing this disclaimer because Mockito is configured to create inlined mocks.
+    You can learn about inline mocks and their limitations under item #39 of the Mockito class javadoc.
+
+    Underlying exception : org.mockito.exceptions.base.MockitoException: Could not modify all classes [class java.lang.Object, class org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerTest$FinalInlineTarget]
+        at app//org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerTest.lambda$createsInlineMockForFinalClass$0(InlineDelegateByteBuddyMockMakerTest.java:22)
+        at app//org_mockito.mockito_core.MockitoDynamicAccessSupport.runAllowingUnsupportedFeatureError(MockitoDynamicAccessSupport.java:16)
+        at app//org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerTest.createsInlineMockForFinalClass(InlineDelegateByteBuddyMockMakerTest.java:19)
+
+        Caused by:
+        org.mockito.exceptions.base.MockitoException: Could not modify all classes [class java.lang.Object, class org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerTest$FinalInlineTarget]
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+            ... 3 more
+
+            Caused by:
+            java.lang.IllegalStateException: 
+            Byte Buddy could not instrument all classes within the mock's type hierarchy
+
+            This problem should never occur for javac-compiled classes. This problem has been observed for classes that are:
+             - Compiled by older versions of scalac
+             - Classes that are part of the Android distribution
+                at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:285)
+                at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.mockClass(InlineBytecodeGenerator.java:218)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.lambda$mockClass$0(TypeCachingBytecodeGenerator.java:47)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClass(TypeCachingBytecodeGenerator.java:40)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createMockType(InlineDelegateByteBuddyMockMaker.java:396)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.doCreateMock(InlineDelegateByteBuddyMockMaker.java:355)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createMock(InlineDelegateByteBuddyMockMaker.java:334)
+                at org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker.createMock(InlineByteBuddyMockMaker.java:56)
+                at org.mockito.internal.util.MockUtil.createMock(MockUtil.java:99)
+                at org.mockito.internal.MockitoCore.mock(MockitoCore.java:88)
+                at org.mockito.Mockito.mock(Mockito.java:2037)
+                ... 3 more
+
+                Caused by:
+                java.lang.IllegalArgumentException: Java 21 (65) is not supported by the current version of Byte Buddy which officially supports Java 20 (64) - update Byte Buddy or set net.bytebuddy.experimental as a VM property
+                    at net.bytebuddy.utility.OpenedClassReader.of(OpenedClassReader.java:96)
+                    at net.bytebuddy.dynamic.scaffold.TypeWriter$Default$ForInlining.create(TypeWriter.java:4011)
+                    at net.bytebuddy.dynamic.scaffold.TypeWriter$Default.make(TypeWriter.java:2224)
+                    at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase$UsingTypeWriter.make(DynamicType.java:4050)
+                    at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase.make(DynamicType.java:3734)
+                    at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.transform(InlineBytecodeGenerator.java:402)
+                    at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+                    at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+                    at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+                    at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses0(Native Method)
+                    at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses(InstrumentationImpl.java:221)
+                    at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
+                    ... 17 more
+
+StackWalkerCheckerTest > observesConstructorMockingWithoutMockingSubclassConstructorCalls() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Cannot mock/spy class org_mockito.mockito_core.StackWalkerCheckerTest$ConstructedTarget
+    Mockito cannot mock/spy because :
+     - non-interface
+        at app//org_mockito.mockito_core.StackWalkerCheckerTest.lambda$observesConstructorMockingWithoutMockingSubclassConstructorCalls$0(StackWalkerCheckerTest.java:30)
+        at app//org_mockito.mockito_core.MockitoDynamicAccessSupport.runAllowingUnsupportedFeatureError(MockitoDynamicAccessSupport.java:16)
+        at app//org_mockito.mockito_core.StackWalkerCheckerTest.observesConstructorMockingWithoutMockingSubclassConstructorCalls(StackWalkerCheckerTest.java:23)
+
+MethodHandleProxyInnerLegacyVersionTest > invokesDefaultMethodThroughProxyMockMaker() FAILED
+    java.lang.reflect.UndeclaredThrowableException
+        at org_mockito.mockito_core.$Proxy80.defaultValue(Unknown Source)
+        at org_mockito.mockito_core.MethodHandleProxyInnerLegacyVersionTest.invokesDefaultMethodThroughProxyMockMaker(MethodHandleProxyInnerLegacyVersionTest.java:26)
+
+        Caused by:
+        java.lang.IllegalAccessException: class org.mockito.internal.creation.proxy.InvokeDefaultProxy$InvokeDefaultRealMethod$$InjectedInvoker/0x000000003773cc00 cannot access a member of interface org_mockito.mockito_core.MethodHandleProxyInnerLegacyVersionTest$LegacyDefaultMethodService with modifiers "public"
+            at java.base/jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:400)
+            at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:670)
+            at java.base/java.lang.reflect.Proxy.invokeDefault(Proxy.java:1166)
+            at java.base/java.lang.reflect.InvocationHandler.invokeDefault(InvocationHandler.java:264)
+            at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:131)
+            at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+            at org.mockito.internal.creation.proxy.InvokeDefaultProxy$InvokeDefaultRealMethod.invoke(InvokeDefaultProxy.java:56)
+            at org.mockito.internal.invocation.InterceptedInvocation.callRealMethod(InterceptedInvocation.java:142)
+            at org.mockito.internal.stubbing.answers.CallsRealMethods.answer(CallsRealMethods.java:45)
+            at org.mockito.Answers.answer(Answers.java:90)
+            at org.mockito.internal.handler.MockHandlerImpl.handle(MockHandlerImpl.java:111)
+            at org.mockito.internal.handler.NullResultGuardian.handle(NullResultGuardian.java:29)
+            at org.mockito.internal.handler.InvocationNotifierHandler.handle(InvocationNotifierHandler.java:34)
+            at org.mockito.internal.creation.proxy.ProxyMockMaker$MockInvocationHandler.invoke(ProxyMockMaker.java:154)
+            ... 2 more
+
+StackTraceCheckerTest > inlineMockingExercisesConstructorCallDetectionFallbackSetup() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Mockito cannot mock this class: class org_mockito.mockito_core.StackTraceCheckerTest$StackTraceTarget.
+
+    If you're not sure why you're getting this error, please open an issue on GitHub.
+
+
+    Java               : 25
+    JVM vendor name    : Oracle Corporation
+    JVM vendor version : 25.0.2+10-LTS-jvmci-25.1-b17
+    JVM name           : Java HotSpot(TM) 64-Bit Server VM
+    JVM version        : 25.0.2+10-LTS-jvmci-25.1-b17
+    JVM info           : mixed mode, sharing
+    OS name            : Linux
+    OS version         : 6.17.0-22-generic
+
+
+    You are seeing this disclaimer because Mockito is configured to create inlined mocks.
+    You can learn about inline mocks and their limitations under item #39 of the Mockito class javadoc.
+
+    Underlying exception : org.mockito.exceptions.base.MockitoException: Could not modify all classes [class org_mockito.mockito_core.StackTraceCheckerTest$StackTraceTarget, class java.lang.Object]
+        at app//org_mockito.mockito_core.StackTraceCheckerTest.lambda$inlineMockingExercisesConstructorCallDetectionFallbackSetup$0(StackTraceCheckerTest.java:21)
+        at app//org_mockito.mockito_core.MockitoDynamicAccessSupport.runAllowingUnsupportedFeatureError(MockitoDynamicAccessSupport.java:16)
+        at app//org_mockito.mockito_core.StackTraceCheckerTest.inlineMockingExercisesConstructorCallDetectionFallbackSetup(StackTraceCheckerTest.java:18)
+
+        Caused by:
+        org.mockito.exceptions.base.MockitoException: Could not modify all classes [class org_mockito.mockito_core.StackTraceCheckerTest$StackTraceTarget, class java.lang.Object]
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+            ... 3 more
+
+            Caused by:
+            java.lang.IllegalStateException: 
+            Byte Buddy could not instrument all classes within the mock's type hierarchy
+
+            This problem should never occur for javac-compiled classes. This problem has been observed for classes that are:
+             - Compiled by older versions of scalac
+             - Classes that are part of the Android distribution
+                at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:285)
+                at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.mockClass(InlineBytecodeGenerator.java:218)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.lambda$mockClass$0(TypeCachingBytecodeGenerator.java:47)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClass(TypeCachingBytecodeGenerator.java:40)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createMockType(InlineDelegateByteBuddyMockMaker.java:396)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.doCreateMock(InlineDelegateByteBuddyMockMaker.java:355)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createMock(InlineDelegateByteBuddyMockMaker.java:334)
+                at org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker.createMock(InlineByteBuddyMockMaker.java:56)
+                at org.mockito.internal.util.MockUtil.createMock(MockUtil.java:99)
+                at org.mockito.internal.MockitoCore.mock(MockitoCore.java:88)
+                at org.mockito.Mockito.mock(Mockito.java:2037)
+                ... 3 more
+
+                Caused by:
+                java.lang.IllegalArgumentException: Java 25 (69) is not supported by the current version of Byte Buddy which officially supports Java 20 (64) - update Byte Buddy or set net.bytebuddy.experimental as a VM property
+                    at net.bytebuddy.utility.OpenedClassReader.of(OpenedClassReader.java:96)
+                    at net.bytebuddy.dynamic.scaffold.TypeWriter$Default$ForInlining.create(TypeWriter.java:4011)
+                    at net.bytebuddy.dynamic.scaffold.TypeWriter$Default.make(TypeWriter.java:2224)
+                    at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase$UsingTypeWriter.make(DynamicType.java:4050)
+                    at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase.make(DynamicType.java:3734)
+                    at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.transform(InlineBytecodeGenerator.java:402)
+                    at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+                    at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+                    at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+                    at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses0(Native Method)
+                    at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses(InstrumentationImpl.java:221)
+                    at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
+                    ... 17 more
+
+52 tests completed, 7 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/tests/src/org.mockito/mockito-core/5.0.0/build/reports/problems/problems-report.html
+
+FAILURE: 
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+Build failed with an exception.
+
+* What went wrong:
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+Execution failed for task ':test'.
+15 actionable tasks: 4 executed, 11 up-to-date
+> There were failing tests. See the report at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/tests/src/org.mockito/mockito-core/5.0.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 1m 2s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.mockito:mockito-core:5.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 10s
+9 actionable tasks: 1 executed, 8 up-to-date

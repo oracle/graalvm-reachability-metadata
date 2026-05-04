@@ -1,0 +1,143 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :generateMetadata
+[34m[INFO] Generating user-code-filter.json...[0m
+[34m[INFO] Configuring agent block in: build.gradle...[0m
+[34m[INFO] Agent block already present in: build.gradle - skipping...[0m
+[34m[INFO] Generating metadata...[0m
+
+> Task :generateMetadata FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':generateMetadata'.
+> Cannot generate metadata. See output:
+  > Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+  > Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+  > Task :tck-build-logic:compileJava UP-TO-DATE
+  > Task :tck-build-logic:compileGroovy UP-TO-DATE
+  > Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+  > Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+  > Task :tck-build-logic:processResources UP-TO-DATE
+  > Task :tck-build-logic:classes UP-TO-DATE
+  > Task :tck-build-logic:jar UP-TO-DATE
+  > Task :tck-test-support:compileJava UP-TO-DATE
+  > Task :tck-test-support:processResources NO-SOURCE
+  > Task :tck-test-support:classes UP-TO-DATE
+  > Task :tck-test-support:jar UP-TO-DATE
+  > Task :checkTestTimeoutAnnotations
+  > Task :compileJava NO-SOURCE
+  > Task :processResources NO-SOURCE
+  > Task :classes UP-TO-DATE
+  > Task :compileTestJava UP-TO-DATE
+  > Task :processTestResources UP-TO-DATE
+  > Task :testClasses UP-TO-DATE
+  
+  > Task :test
+  [native-image-plugin] Instrumenting task with the native-image-agent: test
+  [1.047s][warning][jni,resolve] Re-registering of platform native method: jdk.internal.misc.Unsafe.allocateInstance(Ljava/lang/Class;)Ljava/lang/Object; from code in a different classloader
+  
+  Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+  
+  > Task :test
+  
+  SubclassInjectionLoaderInnerWithLookupTest > createsLocalSubclassMockWithLookupInjection() FAILED
+      org.mockito.exceptions.base.MockitoException: 
+      Mockito cannot mock this class: class org_mockito.mockito_core.SubclassInjectionLoaderInnerWithLookupTest$LookupInjectedTarget.
+  
+      Mockito can only mock non-private & non-final classes, but the root cause of this error might be different.
+      Please check the full stacktrace to understand what the issue is.
+      If you're still not sure why you're getting this error, please open an issue on GitHub.
+  
+  
+      Java               : 25
+      JVM vendor name    : Oracle Corporation
+      JVM vendor version : 25.0.2+10-LTS-jvmci-25.1-b17
+      JVM name           : Java HotSpot(TM) 64-Bit Server VM
+      JVM version        : 25.0.2+10-LTS-jvmci-25.1-b17
+      JVM info           : mixed mode, sharing
+      OS name            : Linux
+      OS version         : 6.17.0-22-generic
+  
+  
+      Underlying exception : org.mockito.exceptions.base.MockitoException: 
+      Cannot create mock for class org_mockito.mockito_core.SubclassInjectionLoaderInnerWithLookupTest$LookupInjectedTarget
+  
+      The type is not public and its mock class is loaded by a different class loader.
+      This can have multiple reasons:
+       - You are mocking a class with additional interfaces of another class loader
+       - Mockito is loaded by a different class loader than the mocked type (e.g. with OSGi)
+       - The thread's context class loader is different than the mock's class loader
+          at app//org_mockito.mockito_core.SubclassInjectionLoaderInnerWithLookupTest.lambda$createsLocalSubclassMockWithLookupInjection$0(SubclassInjectionLoaderInnerWithLookupTest.java:25)
+          at app//org_mockito.mockito_core.MockitoDynamicAccessSupport.runAllowingUnsupportedFeatureError(MockitoDynamicAccessSupport.java:17)
+          at app//org_mockito.mockito_core.SubclassInjectionLoaderInnerWithLookupTest.createsLocalSubclassMockWithLookupInjection(SubclassInjectionLoaderInnerWithLookupTest.java:22)
+  
+          Caused by:
+          org.mockito.exceptions.base.MockitoException: 
+          Cannot create mock for class org_mockito.mockito_core.SubclassInjectionLoaderInnerWithLookupTest$LookupInjectedTarget
+  
+          The type is not public and its mock class is loaded by a different class loader.
+          This can have multiple reasons:
+           - You are mocking a class with additional interfaces of another class loader
+           - Mockito is loaded by a different class loader than the mocked type (e.g. with OSGi)
+           - The thread's context class loader is different than the mock's class loader
+              at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+              at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+              at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+              at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+              ... 3 more
+  
+  52 tests completed, 1 failed
+  
+  > Task :test FAILED
+  
+  FAILURE: Build failed with an exception.
+  
+  * What went wrong:
+  Execution failed for task ':test'.
+  > There were failing tests. See the report at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/tests/src/org.mockito/mockito-core/5.0.0/build/reports/tests/test/index.html
+  
+  * Try:
+  > Run with --scan to generate a Build Scan (Powered by Develocity).
+  
+  BUILD FAILED in 5m 41s
+  
+  [Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/tests/src/org.mockito/mockito-core/5.0.0/build/reports/problems/problems-report.html
+  
+  Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+  
+  You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+  
+  For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+  14 actionable tasks: 2 executed, 12 up-to-date
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5m 48s
+9 actionable tasks: 1 executed, 8 up-to-date

@@ -1,0 +1,1012 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df4fd-83d8-7c51-a394-48e34f78052e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mockito:mockito-core:5.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [5.0.0, 5.1.0, 5.1.1, 5.2.0, 5.3.0, 5.3.1, 5.4.0, 5.5.0, 5.6.0, 5.7.0, 5.8.0, 5.9.0, 5.10.0, 5.11.0, 5.12.0, 5.13.0, 5.14.0, 5.14.1, 5.14.2, 5.15.2, 5.16.0, 5.16.1, 5.17.0, 5.18.0, 5.19.0, 5.20.0, 5.21.0, 5.22.0, 5.23.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/metadata/org.mockito/mockito-core/index.json
+- Entry selector: "metadata-version" = "5.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar
+- repository-url: https://github.com/mockito/mockito
+- test-code-url: https://github.com/mockito/mockito/tree/v$version$/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar
+- description: Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.
+- language: <missing>
+
+Context:
+- Coordinate version: 5.0.0
+- Entry metadata-version: 5.0.0
+- Entry test-version: 5.0.0
+- Entry tested-versions: [5.0.0, 5.1.0, 5.1.1, 5.2.0, 5.3.0, 5.3.1, 5.4.0, 5.5.0, 5.6.0, 5.7.0, 5.8.0, 5.9.0, 5.10.0, 5.11.0, 5.12.0, 5.13.0, 5.14.0, 5.14.1, 5.14.2, 5.15.2, 5.16.0, 5.16.1, 5.17.0, 5.18.0, 5.19.0, 5.20.0, 5.21.0, 5.22.0, 5.23.0]
+codex
+I’ll verify the current templates against Maven Central and the Mockito tags before touching the JSON, then only patch fields that are genuinely missing or stale under your rules.
+exec
+/usr/bin/zsh -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"5\\.0\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.mockito/mockito-core/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 0ms:
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+7:    "metadata-version": "5.0.0",
+8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+9:    "repository-url": "https://github.com/mockito/mockito",
+10:    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+12:    "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+50:    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+51:    "repository-url": "https://github.com/mockito/mockito",
+52:    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+53:    "documentation-url": "https://github.com/mockito/mockito/blob/v$version$/README.md",
+54:    "description": "Mockito Core is a Java mocking framework for creating and configuring mock objects in tests. It helps isolate code under test by stubbing behavior and verifying interactions.",
+
+exec
+/usr/bin/zsh -lc 'git status --short' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 256ms:
+?? tests/src/org.mockito/mockito-core/5.0.0/.baseline-stats.json
+
+codex
+The target entry already has nonblank URLs and a two-sentence description; the only missing candidate is `language`. I’m checking whether better Maven-hosted test artifacts exist and whether every rendered URL works for all listed aliases.
+exec
+/usr/bin/zsh -lc "sed -n '1,90p' metadata/org.mockito/mockito-core/index.json" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.mockito"
+    ],
+    "metadata-version": "5.0.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+    "repository-url": "https://github.com/mockito/mockito",
+    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+    "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+    "tested-versions": [
+      "5.0.0",
+      "5.1.0",
+      "5.1.1",
+      "5.2.0",
+      "5.3.0",
+      "5.3.1",
+      "5.4.0",
+      "5.5.0",
+      "5.6.0",
+      "5.7.0",
+      "5.8.0",
+      "5.9.0",
+      "5.10.0",
+      "5.11.0",
+      "5.12.0",
+      "5.13.0",
+      "5.14.0",
+      "5.14.1",
+      "5.14.2",
+      "5.15.2",
+      "5.16.0",
+      "5.16.1",
+      "5.17.0",
+      "5.18.0",
+      "5.19.0",
+      "5.20.0",
+      "5.21.0",
+      "5.22.0",
+      "5.23.0"
+    ]
+  },
+  {
+    "allowed-packages": [
+      "org.mockito"
+    ],
+    "metadata-version": "4.8.1",
+    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+    "repository-url": "https://github.com/mockito/mockito",
+    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+    "documentation-url": "https://github.com/mockito/mockito/blob/v$version$/README.md",
+    "description": "Mockito Core is a Java mocking framework for creating and configuring mock objects in tests. It helps isolate code under test by stubbing behavior and verifying interactions.",
+    "tested-versions": [
+      "4.8.1",
+      "4.9.0",
+      "4.10.0",
+      "4.11.0"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-tests.jar >/dev/null && echo tests-jar-present || echo tests-jar-missing' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-test-sources.jar >/dev/null && echo test-sources-present || echo test-sources-missing' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc 'curl -fsI https://github.com/mockito/mockito/tree/v5.0.0/src/test >/dev/null && echo github-test-tree-present || echo github-test-tree-missing' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 603ms:
+test-sources-missing
+
+ succeeded in 605ms:
+tests-jar-missing
+
+ succeeded in 649ms:
+github-test-tree-present
+
+exec
+/usr/bin/zsh -lc 'versions=(5.0.0 5.1.0 5.1.1 5.2.0 5.3.0 5.3.1 5.4.0 5.5.0 5.6.0 5.7.0 5.8.0 5.9.0 5.10.0 5.11.0 5.12.0 5.13.0 5.14.0 5.14.1 5.14.2 5.15.2 5.16.0 5.16.1 5.17.0 5.18.0 5.19.0 5.20.0 5.21.0 5.22.0 5.23.0)
+for kind in sources javadoc github_tests; do
+  echo "$kind"
+  failed=0
+  for v in $versions; do
+    case $kind in
+      sources) url="https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$v/mockito-core-$v-sources.jar" ;;
+      javadoc) url="https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$v/mockito-core-$v-javadoc.jar" ;;
+      github_tests) url="https://github.com/mockito/mockito/tree/v$v/src/test" ;;
+    esac
+    if ! curl -fsIL --max-time 20 "$url" >/dev/null; then
+      echo "FAIL $v $url"
+      failed=1
+    fi
+  done
+  if [ "$failed" -eq 0 ]; then echo "all ok"; fi
+done' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+codex
+Maven does not publish a `mockito-core` tests or test-sources artifact for `5.0.0`, so the GitHub `src/test` tag path remains the right test-suite candidate. The full alias sweep is running now for sources, javadocs, and tagged tests.
+ succeeded in 25164ms:
+all ok
+javadoc
+all ok
+github_tests
+FAIL 5.14.2 https://github.com/mockito/mockito/tree/v5.14.2/src/test
+FAIL 5.15.2 https://github.com/mockito/mockito/tree/v5.15.2/src/test
+FAIL 5.16.0 https://github.com/mockito/mockito/tree/v5.16.0/src/test
+FAIL 5.16.1 https://github.com/mockito/mockito/tree/v5.16.1/src/test
+FAIL 5.17.0 https://github.com/mockito/mockito/tree/v5.17.0/src/test
+FAIL 5.18.0 https://github.com/mockito/mockito/tree/v5.18.0/src/test
+FAIL 5.19.0 https://github.com/mockito/mockito/tree/v5.19.0/src/test
+FAIL 5.20.0 https://github.com/mockito/mockito/tree/v5.20.0/src/test
+FAIL 5.21.0 https://github.com/mockito/mockito/tree/v5.21.0/src/test
+FAIL 5.22.0 https://github.com/mockito/mockito/tree/v5.22.0/src/test
+FAIL 5.23.0 https://github.com/mockito/mockito/tree/v5.23.0/src/test
+
+codex
+The source and javadoc Maven templates are valid for every alias. The existing GitHub test template stops rendering for aliases from `5.14.2` onward, so I’m looking for a cross-version test-suite path before patching the stale value.
+exec
+/usr/bin/zsh -lc "curl -fsSL https://api.github.com/repos/mockito/mockito/contents?ref=v5.14.2 | rg '\"name\"|\"path\"'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc 'for path in mockito-core/src/test mockito-core/src/test/java subprojects/mockito-core/src/test src/test java-tests/test; do url="https://github.com/mockito/mockito/tree/v5.14.2/$path"; printf '"'%-35s ' \""'$path"; curl -fsIL --max-time 20 "$url" >/dev/null && echo OK || echo FAIL; done' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 0ms:
+zsh:1: command not found: curl
+mockito-core/src/test               FAIL
+mockito-core/src/test/java          zsh:1: command not found: curl
+FAIL
+subprojects/mockito-core/src/test   FAIL
+src/test                            FAIL
+java-tests/test                     zsh:1: command not found: curl
+zsh:1: command not found: curl
+zsh:1: command not found: curl
+FAIL
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://api.github.com/repos/mockito/mockito/git/trees/v5.14.2?recursive=1 | rg '\"path\": \".*src/test' | head -50" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ exited 1 in 124ms:
+zsh:1: no matches found: https://api.github.com/repos/mockito/mockito/contents?ref=v5.14.2
+
+ succeeded in 122ms:
+zsh:1: no matches found: https://api.github.com/repos/mockito/mockito/git/trees/v5.14.2?recursive=1
+
+exec
+/usr/bin/zsh -lc "bash -lc 'for p in mockito-core/src/test mockito-core/src/test/java subprojects/mockito-core/src/test src/test java-tests/test; do url=\"https://github.com/mockito/mockito/tree/v5.14.2/"'$p"; printf "%-35s " "$p"; curl -fsIL --max-time 20 "$url" >/dev/null && echo OK || echo FAIL; done'"'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/mockito/mockito/contents?ref=v5.14.2' | rg '\"name\"|\"path\"'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/mockito/mockito/git/trees/v5.14.2?recursive=1' | rg '\"path\": \".*src/test' | head -80" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 409ms:
+    "name": ".checkstyle",
+    "path": ".checkstyle",
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "name": ".github",
+    "path": ".github",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "name": "README.md",
+    "path": "README.md",
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "name": "check_reproducibility.sh",
+    "path": "check_reproducibility.sh",
+    "name": "config",
+    "path": "config",
+    "name": "doc",
+    "path": "doc",
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "name": "gradle",
+    "path": "gradle",
+    "name": "gradlew",
+    "path": "gradlew",
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "name": "mockito-bom",
+    "path": "mockito-bom",
+    "name": "mockito-core",
+    "path": "mockito-core",
+    "name": "mockito-extensions",
+    "path": "mockito-extensions",
+    "name": "mockito-integration-tests",
+    "path": "mockito-integration-tests",
+    "name": "settings.gradle.kts",
+    "path": "settings.gradle.kts",
+
+ succeeded in 918ms:
+      "path": "mockito-core/src/test",
+      "path": "mockito-core/src/test/java",
+      "path": "mockito-core/src/test/java/org",
+      "path": "mockito-core/src/test/java/org/concurrentmockito",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/ThreadVerifiesContinuouslyInteractingMockTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/ThreadsRunAllTestsHalfManualTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/ThreadsShareAMockTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/ThreadsShareGenerouslyStubbedMockTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/VerificationInOrderFromMultipleThreadsTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/package-info.java",
+      "path": "mockito-core/src/test/java/org/mockito",
+      "path": "mockito-core/src/test/java/org/mockito/AnnotationsAreCopiedFromMockedTypeTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/ArgumentCaptorTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/DescriptionTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/InvocationFactoryTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/MockTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/MockitoClearTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/MockitoEnvTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/MockitoTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/PrematureGarbageCollectionTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/StateMaster.java",
+      "path": "mockito-core/src/test/java/org/mockito/StaticMockingExperimentTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/configuration",
+      "path": "mockito-core/src/test/java/org/mockito/configuration/MockitoConfiguration.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base/MockitoAssertionErrorTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base/MockitoExceptionTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base/MockitoSerializationIssueTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base/StackTraceBuilder.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base/TraceBuilder.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/stacktrace",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/stacktrace/StackTraceCleanerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal",
+      "path": "mockito-core/src/test/java/org/mockito/internal/AllInvocationsFinderTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/InOrderImplTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/InvalidStateDetectionTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/ClassPathLoaderTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/ConfigurationAccess.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/GlobalConfigurationTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/MockAnnotationProcessorTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/MockInjectionTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/injection",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/injection/ConstructorInjectionTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/injection/SimpleArgumentResolverTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/plugins",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/plugins/DefaultMockitoPluginsTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/plugins/PluginFileReaderTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/plugins/PluginFinderTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/configuration/plugins/PluginLoaderTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/AbstractMockMakerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/DelegatingMethodTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/InterfaceOverrideTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/MockSettingsImplTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy/AbstractByteBuddyMockMakerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy/ByteBuddyMockMakerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMakerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMakerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy/PlatformUtilsTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy/SubclassByteBuddyMockMakerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy/TypeCachingMockBytecodeGeneratorTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy/sample",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/bytebuddy/sample/DifferentPackage.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/instance",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/instance/ConstructorInstantiatorTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/proxy",
+      "path": "mockito-core/src/test/java/org/mockito/internal/creation/proxy/ProxyMockMakerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/debugging",
+      "path": "mockito-core/src/test/java/org/mockito/internal/debugging/LoggingListenerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/debugging/VerboseMockInvocationLoggerTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/debugging/WarningsFinderTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/exceptions",
+      "path": "mockito-core/src/test/java/org/mockito/internal/exceptions/ReporterTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/exceptions/stacktrace",
+      "path": "mockito-core/src/test/java/org/mockito/internal/exceptions/stacktrace/ConditionalStackTraceFilterTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/exceptions/stacktrace/StackTraceFilterTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/internal/exceptions/util",
+curl: (23) Failure writing output to destination
+
+ succeeded in 2873ms:
+OK
+mockito-core/src/test/java          OK
+subprojects/mockito-core/src/test   FAIL
+src/test                            FAIL
+java-tests/test                     FAIL
+
+exec
+/usr/bin/zsh -lc 'versions=(5.0.0 5.1.0 5.1.1 5.2.0 5.3.0 5.3.1 5.4.0 5.5.0 5.6.0 5.7.0 5.8.0 5.9.0 5.10.0 5.11.0 5.12.0 5.13.0 5.14.0 5.14.1 5.14.2 5.15.2 5.16.0 5.16.1 5.17.0 5.18.0 5.19.0 5.20.0 5.21.0 5.22.0 5.23.0)
+failed=0
+for v in $versions; do
+  url="https://github.com/mockito/mockito/tree/v$v/mockito-core/src/test"
+  if ! curl -fsIL --max-time 20 "$url" >/dev/null; then
+    echo "FAIL $v $url"
+    failed=1
+  fi
+done
+if [ "$failed" -eq 0 ]; then echo "mockito-core/src/test all ok"; fi' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+codex
+Mockito moved the core tests from `src/test` to `mockito-core/src/test` later in the 5.x line. I’m checking whether there’s a stable tag URL or Maven source bundle that can cover every alias; if not, the field has to be set to `N/A` under the “valid for every alias” rule.
+ succeeded in 17806ms:
+FAIL 5.0.0 https://github.com/mockito/mockito/tree/v5.0.0/mockito-core/src/test
+FAIL 5.1.0 https://github.com/mockito/mockito/tree/v5.1.0/mockito-core/src/test
+FAIL 5.1.1 https://github.com/mockito/mockito/tree/v5.1.1/mockito-core/src/test
+FAIL 5.2.0 https://github.com/mockito/mockito/tree/v5.2.0/mockito-core/src/test
+FAIL 5.3.0 https://github.com/mockito/mockito/tree/v5.3.0/mockito-core/src/test
+FAIL 5.3.1 https://github.com/mockito/mockito/tree/v5.3.1/mockito-core/src/test
+FAIL 5.4.0 https://github.com/mockito/mockito/tree/v5.4.0/mockito-core/src/test
+FAIL 5.5.0 https://github.com/mockito/mockito/tree/v5.5.0/mockito-core/src/test
+FAIL 5.6.0 https://github.com/mockito/mockito/tree/v5.6.0/mockito-core/src/test
+FAIL 5.7.0 https://github.com/mockito/mockito/tree/v5.7.0/mockito-core/src/test
+FAIL 5.8.0 https://github.com/mockito/mockito/tree/v5.8.0/mockito-core/src/test
+FAIL 5.9.0 https://github.com/mockito/mockito/tree/v5.9.0/mockito-core/src/test
+FAIL 5.10.0 https://github.com/mockito/mockito/tree/v5.10.0/mockito-core/src/test
+FAIL 5.11.0 https://github.com/mockito/mockito/tree/v5.11.0/mockito-core/src/test
+FAIL 5.12.0 https://github.com/mockito/mockito/tree/v5.12.0/mockito-core/src/test
+FAIL 5.13.0 https://github.com/mockito/mockito/tree/v5.13.0/mockito-core/src/test
+FAIL 5.14.0 https://github.com/mockito/mockito/tree/v5.14.0/mockito-core/src/test
+FAIL 5.14.1 https://github.com/mockito/mockito/tree/v5.14.1/mockito-core/src/test
+
+exec
+/usr/bin/zsh -lc 'for v in 5.0.0 5.14.2 5.23.0; do url="https://github.com/mockito/mockito/archive/refs/tags/v$v.zip"; printf '"'%s ' \""'$v"; curl -fsIL --max-time 20 "$url" >/dev/null && echo OK || echo FAIL; done' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc 'for v in 5.14.1 5.14.2; do echo "v$v"; curl -fsSL "https://api.github.com/repos/mockito/mockito/git/trees/v$v?recursive=1" | rg '"'\"path\": \".*(src/test|test/java|tests)' | head -30; done" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc "rg -n 'mockito-core|test-code-url.*archive|test-code-url.*tree/v\\"'$version'"\\"'$"|test-code-url.*tree/v'"\\"'$version'"\\"'$/src/test|test-code-url.*tree/v'"\\"'$version'"\\"'$'"' metadata | head -80" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 181ms:
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:7:    "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-core/shared/src/test",
+metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+metadata/org.mockito/mockito-core/index.json:10:    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+metadata/org.mockito/mockito-core/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:50:    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+metadata/org.mockito/mockito-core/index.json:52:    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:7:    "test-code-url" : "https://github.com/orchestr7/ktoml/tree/v$version$/ktoml-core/src/commonTest",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v$version$/org.eclipse.paho.mqttv5.client.test/src/test",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v$version$/org.eclipse.paho.client.mqttv3.test",
+metadata/org.tpolecat/sourcepos_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/SourcePos/tree/v$version$/sourcepos/src/test",
+metadata/com.graphql-java/graphql-java/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/v$version$/src/test",
+metadata/com.graphql-java/graphql-java/index.json:54:    "test-code-url" : "https://github.com/graphql-java/graphql-java/tree/v$version$/src/test",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v$version$/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/v$version$/src/test",
+metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v$version$/reactor-core/src/test/java",
+metadata/org.scala-sbt/test-interface/index.json:7:    "test-code-url" : "https://github.com/sbt/test-interface/tree/v$version$/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:66:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:84:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v$version$/src/test",
+metadata/org.scala-sbt/compiler-interface/index.json:66:    "test-code-url" : "https://github.com/sbt/zinc/tree/v$version$/internal/compiler-interface/src/test",
+metadata/com.github.albfernandez/juniversalchardet/index.json:7:    "test-code-url" : "https://github.com/albfernandez/juniversalchardet/tree/v$version$/src/test",
+metadata/org.parboiled/parboiled_3/index.json:7:    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+metadata/org.jspecify/jspecify/index.json:7:    "test-code-url" : "https://github.com/jspecify/jspecify/tree/v$version$/src/integrationTest/java",
+metadata/com.ecwid.consul/consul-api/index.json:13:    "test-code-url": "https://github.com/Ecwid/consul-api/tree/v$version$/src/test",
+metadata/org.freemarker/freemarker/index.json:11:    "test-code-url": "https://github.com/apache/freemarker/tree/v$version$/src/test",
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:7:    "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/v$version$/scalac-scoverage-runtime",
+metadata/com.github.ghik/silencer-lib_2.13/index.json:7:    "test-code-url" : "https://github.com/ghik/silencer/tree/v$version$/silencer-lib/src/test",
+metadata/eu.timepit/refined_3/index.json:7:    "test-code-url" : "https://github.com/fthomas/refined/tree/v$version$/modules/core/shared/src/test",
+metadata/at.yawk.lz4/lz4-java/index.json:7:    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v$version$/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:7:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:21:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v$version$-build-plan/jib-build-plan/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:26:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$-rc0/metrics-core/src/test",
+metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/com.codahale.metrics/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/com.ibm.async/asyncutil/index.json:7:    "test-code-url" : "https://github.com/IBM/java-async-util/tree/v$version$/asyncutil/src/test",
+metadata/org.liquibase/liquibase-core/index.json:14:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-core/src/test",
+metadata/org.liquibase/liquibase-core/index.json:31:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-core/src/test",
+metadata/org.liquibase/liquibase-core/index.json:48:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+metadata/org.liquibase/liquibase-core/index.json:66:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+metadata/org.liquibase/liquibase-core/index.json:89:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+metadata/org.liquibase/liquibase-core/index.json:105:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v$version$/liquibase-standard/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/redis.clients/jedis/index.json:7:    "test-code-url" : "https://github.com/redis/jedis/tree/v$version$/src/test/java",
+metadata/net.i2p.crypto/eddsa/index.json:8:    "test-code-url": "https://github.com/str4d/ed25519-java/tree/v$version$/test",
+metadata/io.grpc/grpc-inprocess/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/inprocess/src/test",
+metadata/io.grpc/grpc-rls/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/rls/src/test/java",
+metadata/io.grpc/grpc-core/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/core/src/test",
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/api/src/test/java/io/grpc",
+metadata/io.grpc/grpc-context/index.json:65:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/context/src/test",
+metadata/io.grpc/grpc-opentelemetry/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/opentelemetry/src/test/java",
+metadata/io.grpc/grpc-grpclb/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/grpclb/src/test",
+metadata/io.grpc/grpc-googleapis/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/googleapis/src/test",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/netty/src/test",
+metadata/com.google.protobuf/protobuf-java/index.json:7:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v$version$/java/src/test/java",
+metadata/org.hamcrest/hamcrest/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/v$version$/hamcrest/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:24:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v$version$/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:48:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v$version$/java/util/src/test",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/formats/hocon/src/test",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx-datetime/tree/v$version$/core/jvm/test",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/formats/json-tests/jvmTest",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/formats/properties/commonTest",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/core/jvmTest",
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.collections.immutable/tree/v$version$/core/commonTest",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/formats/cbor/jvmTest",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/formats/protobuf/jvmTest",
+metadata/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/sdk-extensions/autoconfigure/src/test/java",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/android-extensions/android-extensions-compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/jdk7/test",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/io.opentelemetry/opentelemetry-api/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/api/all/src/test/java",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/parcelize/parcelize-compiler/tests",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/daemon/daemon-tests/test",
+metadata/io.micrometer/micrometer-commons/index.json:7:    "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v$version$/micrometer-commons/src/test/java",
+metadata/io.micrometer/micrometer-commons/index.json:30:    "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v$version$/micrometer-commons/src/test/java",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/common/test",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/exporters/zipkin/src/test",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:39:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v$version$/exporters/zipkin/src/test",
+metadata/io.micrometer/micrometer-observation/index.json:7:    "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v$version$/micrometer-observation/src/test",
+
+ succeeded in 1284ms:
+      "path": "mockito-extensions/android/src/test",
+      "path": "mockito-extensions/android/src/test/README.md",
+      "path": "mockito-extensions/errorprone/src/test",
+      "path": "mockito-extensions/errorprone/src/test/java",
+      "path": "mockito-extensions/errorprone/src/test/java/org",
+      "path": "mockito-extensions/errorprone/src/test/java/org/mockito",
+      "path": "mockito-extensions/errorprone/src/test/java/org/mockito/errorprone",
+      "path": "mockito-extensions/errorprone/src/test/java/org/mockito/errorprone/bugpatterns",
+      "path": "mockito-extensions/errorprone/src/test/java/org/mockito/errorprone/bugpatterns/MockitoAnyClassWithPrimitiveTypeTest.java",
+      "path": "mockito-extensions/errorprone/src/test/java/org/mockito/errorprone/bugpatterns/MockitoAnyIncorrectPrimitiveTypeTest.java",
+      "path": "mockito-extensions/errorprone/src/test/java/org/mockito/errorprone/bugpatterns/MockitoInternalUsageTest.java",
+      "path": "mockito-extensions/errorprone/src/test/java/org/mockito/errorprone/bugpatterns/MockitoNotExtensibleTest.java",
+      "path": "mockito-extensions/junit-jupiter/src/test",
+      "path": "mockito-extensions/junit-jupiter/src/test/java",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage/GenericTypeMockMultipleMatchesTest.java",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage/GenericTypeMockTest.java",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage/InjectMocksTest.java",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage/JunitJupiterTest.java",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage/MultiLevelNestedTest.java",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage/ProductionCode.java",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage/StrictnessTest.java",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage/annotation",
+      "path": "mockito-extensions/junit-jupiter/src/test/java/org/mockitousage/annotation/CaptorAnnotationWithPrimitiveTest.java",
+      "path": "mockito-extensions/proxy/src/test",
+      "path": "mockito-extensions/proxy/src/test/java",
+      "path": "mockito-extensions/proxy/src/test/java/org",
+      "path": "mockito-extensions/proxy/src/test/java/org/mockitoproxy",
+      "path": "mockito-extensions/proxy/src/test/java/org/mockitoproxy/MocksTest.java",
+curl: (23) Failure writing output to destination
+v5.14.2
+      "path": "mockito-core/src/test",
+      "path": "mockito-core/src/test/java",
+      "path": "mockito-core/src/test/java/org",
+      "path": "mockito-core/src/test/java/org/concurrentmockito",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/ThreadVerifiesContinuouslyInteractingMockTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/ThreadsRunAllTestsHalfManualTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/ThreadsShareAMockTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/ThreadsShareGenerouslyStubbedMockTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/VerificationInOrderFromMultipleThreadsTest.java",
+      "path": "mockito-core/src/test/java/org/concurrentmockito/package-info.java",
+      "path": "mockito-core/src/test/java/org/mockito",
+      "path": "mockito-core/src/test/java/org/mockito/AnnotationsAreCopiedFromMockedTypeTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/ArgumentCaptorTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/DescriptionTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/InvocationFactoryTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/MockTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/MockitoClearTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/MockitoEnvTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/MockitoTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/PrematureGarbageCollectionTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/StateMaster.java",
+      "path": "mockito-core/src/test/java/org/mockito/StaticMockingExperimentTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/configuration",
+      "path": "mockito-core/src/test/java/org/mockito/configuration/MockitoConfiguration.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base/MockitoAssertionErrorTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base/MockitoExceptionTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base/MockitoSerializationIssueTest.java",
+      "path": "mockito-core/src/test/java/org/mockito/exceptions/base/StackTraceBuilder.java",
+curl: (23) Failure writing output to destination
+
+ succeeded in 1986ms:
+OK
+5.14.2 OK
+5.23.0 OK
+
+exec
+/usr/bin/zsh -lc "rg -n '\"test-code-url\"\\s*:\\s*\"N/A\"|\"source-code-url\"\\s*:\\s*\"N/A\"|\"documentation-url\"\\s*:\\s*\"N/A\"' metadata | head -50" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 0ms:
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-ref/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/aopalliance/aopalliance/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:41:    "test-code-url" : "N/A",
+metadata/com.mysema.commons/mysema-commons-lang/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.sonatype.aether/aether-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.sonatype.aether/aether-spi/index.json:21:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:7:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-function/index.json:41:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.enterprise/cdi-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.scala-sbt/compiler-interface/index.json:7:    "test-code-url" : "N/A",
+metadata/org.scala-sbt/compiler-interface/index.json:48:    "test-code-url" : "N/A",
+metadata/org.scala-sbt/util-interface/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.camel/spi-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.camel/spi-annotations/index.json:97:    "test-code-url" : "N/A",
+metadata/org.apache.camel/spi-annotations/index.json:113:    "test-code-url" : "N/A",
+metadata/javax.transaction/transaction-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.transaction/jta/index.json:7:    "test-code-url" : "N/A",
+metadata/com.vaadin.external.google/android-json/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:8:    "test-code-url": "N/A",
+metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.intellij/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.checkerframework/checker-qual/index.json:6:    "test-code-url" : "N/A",
+metadata/org.checkerframework/checker-qual/index.json:21:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/io.undertow/undertow-parser-generator/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/portlet-api/portlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.namespace.service/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/mockito/mockito/contents?ref=v5.0.0' | rg '\"name\"|\"path\"'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc 'for p in src/test src/test/java mockito-core/src/test mockito-core/src/test/java; do url="https://github.com/mockito/mockito/tree/v5.0.0/$p"; printf '"'%-30s ' \""'$p"; curl -fsIL --max-time 20 "$url" >/dev/null && echo OK || echo FAIL; done' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc 'versions=(5.0.0 5.1.0 5.1.1 5.2.0 5.3.0 5.3.1 5.4.0 5.5.0 5.6.0 5.7.0 5.8.0 5.9.0 5.10.0 5.11.0 5.12.0 5.13.0 5.14.0 5.14.1 5.14.2 5.15.2 5.16.0 5.16.1 5.17.0 5.18.0 5.19.0 5.20.0 5.21.0 5.22.0 5.23.0)
+failed=0
+for v in $versions; do
+  url="https://github.com/mockito/mockito/tree/v$v"
+  if ! curl -fsIL --max-time 20 "$url" >/dev/null; then echo "FAIL $v"; failed=1; fi
+done
+if [ "$failed" -eq 0 ]; then echo "root tag all ok"; fi' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 403ms:
+    "name": ".checkstyle",
+    "path": ".checkstyle",
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "name": ".github",
+    "path": ".github",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "name": "README.md",
+    "path": "README.md",
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "name": "check_reproducibility.sh",
+    "path": "check_reproducibility.sh",
+    "name": "config",
+    "path": "config",
+    "name": "doc",
+    "path": "doc",
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "name": "gradle",
+    "path": "gradle",
+    "name": "gradlew",
+    "path": "gradlew",
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "name": "settings.gradle.kts",
+    "path": "settings.gradle.kts",
+    "name": "src",
+    "path": "src",
+    "name": "subprojects",
+    "path": "subprojects",
+
+ succeeded in 2190ms:
+OK
+src/test/java                  OK
+mockito-core/src/test          FAIL
+mockito-core/src/test/java     FAIL
+
+ succeeded in 25731ms:
+root tag all ok
+
+exec
+/usr/bin/zsh -lc "rg -n '\"test-code-url\"\\s*:\\s*\"https://github.com/["'^/]+/[''^/]+/tree/v?'"\\"'$version'"\\"'$"'"' metadata | head -50" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 298ms:
+codex
+There is no single direct test-directory template that covers the whole alias set: earlier tags expose core tests under `src/test`, later tags expose them under `mockito-core/src/test`. Since a root repository URL would not be a test-suite URL, I’m going to set `test-code-url` to `N/A` and leave the verified Maven source/javadoc URLs, repository URL, description, and absent `language` unchanged.
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0.pom | rg -n '<url>|<connection>|<developerConnection>|<tag>|<name>|<description>'" in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 256ms:
+8:  <name>mockito-core</name>
+9:  <description>Mockito mock objects library core API and implementation</description>
+10:  <url>https://github.com/mockito/mockito</url>
+13:      <name>The MIT License</name>
+14:      <url>https://github.com/mockito/mockito/blob/main/LICENSE</url>
+21:      <name>Szczepan Faber</name>
+22:      <url>https://github.com/mockitoguy</url>
+29:      <name>Brice Dutheil</name>
+30:      <url>https://github.com/bric3</url>
+37:      <name>Rafael Winterhalter</name>
+38:      <url>https://github.com/raphw</url>
+45:      <name>Tim van der Lippe</name>
+46:      <url>https://github.com/TimvdLippe</url>
+53:    <url>https://github.com/mockito/mockito.git</url>
+57:    <url>https://github.com/mockito/mockito/issues</url>
+61:    <url>https://github.com/mockito/mockito/actions</url>
+
+apply patch
+patch: completed
+/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/metadata/org.mockito/mockito-core/index.json
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+codex
+The metadata file is patched only at the stale test URL. I’m validating the JSON and checking the final diff now.
+exec
+/usr/bin/zsh -lc 'jq empty metadata/org.mockito/mockito-core/index.json && echo json-ok' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+exec
+/usr/bin/zsh -lc 'git diff -- metadata/org.mockito/mockito-core/index.json' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+ succeeded in 0ms:
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841f..fef92f632 100644
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+ succeeded in 171ms:
+json-ok
+
+exec
+/usr/bin/zsh -lc 'git status --short' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+ succeeded in 310ms:
+ M metadata/org.mockito/mockito-core/index.json
+?? tests/src/org.mockito/mockito-core/5.0.0/.baseline-stats.json
+
+codex
+`jq` accepts the file and the diff is scoped to `test-code-url`. I’m running the repository metadata validator for the coordinate; no unit tests are being added or run.
+exec
+/usr/bin/zsh -lc './gradlew checkMetadataFiles -Pcoordinates=org.mockito:mockito-core:5.0.0 --stacktrace' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+ succeeded in 21941ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+Metadata files check passed for org.mockito:mockito-core:5.0.0
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 21s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+exec
+/usr/bin/zsh -lc 'versions=(5.0.0 5.1.0 5.1.1 5.2.0 5.3.0 5.3.1 5.4.0 5.5.0 5.6.0 5.7.0 5.8.0 5.9.0 5.10.0 5.11.0 5.12.0 5.13.0 5.14.0 5.14.1 5.14.2 5.15.2 5.16.0 5.16.1 5.17.0 5.18.0 5.19.0 5.20.0 5.21.0 5.22.0 5.23.0)
+found=0
+for classifier in tests test-sources; do
+  for v in $versions; do
+    url="https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$v/mockito-core-$v-$classifier.jar"
+    if curl -fsIL --max-time 20 "$url" >/dev/null; then
+      echo "FOUND $classifier $v $url"
+      found=1
+    fi
+  done
+done
+if [ "$found" -eq 0 ]; then echo "no maven test artifacts found for aliases"; fi' in /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+ succeeded in 22453ms:
+no maven test artifacts found for aliases
+
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+codex
+Updated [metadata/org.mockito/mockito-core/index.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/metadata/org.mockito/mockito-core/index.json:10).
+
+Selected values:
+- `repository-url`: `https://github.com/mockito/mockito`
+- `source-code-url`: Maven sources template kept, verified for all aliases
+- `documentation-url`: Maven javadoc template kept, verified for all aliases
+- `test-code-url`: set to `N/A`; Maven has no tests/test-sources artifacts for the aliases, and Mockito’s tagged test path changes from `src/test` to `mockito-core/src/test`
+- `description`: kept unchanged; already exactly two sentences
+- `language`: left absent; `mockito-core` is not Kotlin/Groovy/Scala-specific
+
+Validation passed: `./gradlew checkMetadataFiles -Pcoordinates=org.mockito:mockito-core:5.0.0 --stacktrace`.
+
+Note: there is an existing untracked file I did not touch: `tests/src/org.mockito/mockito-core/5.0.0/.baseline-stats.json`.
+diff --git a/metadata/org.mockito/mockito-core/index.json b/metadata/org.mockito/mockito-core/index.json
+index 6fbb4841fe3e5bf6fffa78a8b31f6594f7aebb71..fef92f632907fbd5855c2ee5335a3783621bfae7
+--- a/metadata/org.mockito/mockito-core/index.json
++++ b/metadata/org.mockito/mockito-core/index.json
+@@ -7,7 +7,7 @@
+     "metadata-version": "5.0.0",
+     "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-sources.jar",
+     "repository-url": "https://github.com/mockito/mockito",
+-    "test-code-url": "https://github.com/mockito/mockito/tree/v$version$/src/test",
++    "test-code-url": "N/A",
+     "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/$version$/mockito-core-$version$-javadoc.jar",
+     "description": "Mockito Core is a Java mocking framework for creating, stubbing, and verifying mock objects in tests. It helps isolate code under test by simulating collaborators and asserting interactions.",
+     "tested-versions": [
+
+2026-05-04T22:00:26.920085Z ERROR codex_core::session: failed to record rollout items: thread 019df4fd-83d8-7c51-a394-48e34f78052e not found
+tokens used
+46,889
+Updated [metadata/org.mockito/mockito-core/index.json](/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/metadata/org.mockito/mockito-core/index.json:10).
+
+Selected values:
+- `repository-url`: `https://github.com/mockito/mockito`
+- `source-code-url`: Maven sources template kept, verified for all aliases
+- `documentation-url`: Maven javadoc template kept, verified for all aliases
+- `test-code-url`: set to `N/A`; Maven has no tests/test-sources artifacts for the aliases, and Mockito’s tagged test path changes from `src/test` to `mockito-core/src/test`
+- `description`: kept unchanged; already exactly two sentences
+- `language`: left absent; `mockito-core` is not Kotlin/Groovy/Scala-specific
+
+Validation passed: `./gradlew checkMetadataFiles -Pcoordinates=org.mockito:mockito-core:5.0.0 --stacktrace`.
+
+Note: there is an existing untracked file I did not touch: `tests/src/org.mockito/mockito-core/5.0.0/.baseline-stats.json`.
+Ran agent for org.mockito:mockito-core:5.0.0 (exit 0). Log: /home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/build/agent-url-discovery-logs/org.mockito-mockito-core-5.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 47s
+9 actionable tasks: 4 executed, 5 from cache

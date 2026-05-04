@@ -1,0 +1,178 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.mockito:mockito-core:5.0.0
+Command: `/home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 incompatible and 23 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test
+
+ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest > serializesProxyAndResolvesItBackToAMock() FAILED
+    java.io.NotSerializableException: org.mockito.internal.creation.proxy.ProxyMockMaker$MockInvocationHandler
+        at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1085)
+        at java.base/java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1451)
+        at java.base/java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1408)
+        at java.base/java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1317)
+        at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1079)
+        at java.base/java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:325)
+        at org_mockito.mockito_core.CrossClassLoaderSerializationTestSupport.serializesAndDeserializesAcrossClassLoaders(CrossClassLoaderSerializationTestSupport.java:34)
+        at org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.serializesProxyAndResolvesItBackToAMock(ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.java:14)
+
+ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest > resolvesAnnotatedMockitoMockClassDuringDeserialization() FAILED
+    java.io.NotSerializableException: org.mockito.internal.creation.proxy.ProxyMockMaker$MockInvocationHandler
+        at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1085)
+        at java.base/java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1451)
+        at java.base/java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1408)
+        at java.base/java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1317)
+        at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1079)
+        at java.base/java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:325)
+        at org_mockito.mockito_core.CrossClassLoaderSerializationTestSupport.serializesAndDeserializesAcrossClassLoaders(CrossClassLoaderSerializationTestSupport.java:34)
+        at org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.resolvesAnnotatedMockitoMockClassDuringDeserialization(ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.java:14)
+
+ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectOutputStreamTest > annotatesMockitoMockClassDuringSerialization() FAILED
+    java.io.NotSerializableException: org.mockito.internal.creation.proxy.ProxyMockMaker$MockInvocationHandler
+        at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1085)
+        at java.base/java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1451)
+        at java.base/java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1408)
+        at java.base/java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1317)
+        at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1079)
+        at java.base/java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:325)
+        at org_mockito.mockito_core.CrossClassLoaderSerializationTestSupport.serializesAndDeserializesAcrossClassLoaders(CrossClassLoaderSerializationTestSupport.java:34)
+        at org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectOutputStreamTest.annotatesMockitoMockClassDuringSerialization(ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectOutputStreamTest.java:14)
+
+InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest > exposesConstructorAndArgumentsFromConstructionMockContext() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    The used MockMaker ProxyMockMaker does not support the creation of construction mocks
+
+    Mockito's inline mock maker supports construction mocks based on the Instrumentation API.
+    You can simply enable this mock mode, by placing the 'mockito-inline' artifact where you are currently using 'mockito-core'.
+    Note that Mockito's inline mock maker is not supported on Android.
+        at app//org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest.lambda$exposesConstructorAndArgumentsFromConstructionMockContext$0(InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest.java:22)
+        at app//org_mockito.mockito_core.MockitoDynamicTestSupport.lambda$runAllowingUnsupportedDynamicLoading$0(MockitoDynamicTestSupport.java:31)
+        at app//org_mockito.mockito_core.MockitoDynamicTestSupport.callAllowingUnsupportedDynamicLoading(MockitoDynamicTestSupport.java:19)
+        at app//org_mockito.mockito_core.MockitoDynamicTestSupport.runAllowingUnsupportedDynamicLoading(MockitoDynamicTestSupport.java:29)
+        at app//org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest.exposesConstructorAndArgumentsFromConstructionMockContext(InlineDelegateByteBuddyMockMakerInnerInlineConstructionMockContextTest.java:20)
+
+InlineDelegateByteBuddyMockMakerTest > createsConcreteClassMockUsingInlineMockMaker() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Cannot mock/spy class org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerTest$ConcreteService
+    Mockito cannot mock/spy because :
+     - non-interface
+        at app//org_mockito.mockito_core.InlineDelegateByteBuddyMockMakerTest.createsConcreteClassMockUsingInlineMockMaker(InlineDelegateByteBuddyMockMakerTest.java:17)
+
+ReturnsSmartNullsInnerThrowsSmartNullPointerTest > reportsSmartNullInvocationLocation() FAILED
+    java.lang.IllegalArgumentException: object of type jdk.proxy4.$Proxy67 is not an instance of org.mockito.internal.creation.bytebuddy.MockAccess
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.checkReceiver(DirectMethodHandleAccessor.java:199)
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:100)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+        at org_mockito.mockito_core.ReturnsSmartNullsInnerThrowsSmartNullPointerTest.reportsSmartNullInvocationLocation(ReturnsSmartNullsInnerThrowsSmartNullPointerTest.java:29)
+
+StackWalkerCheckerTest > checksConstructionCallStackBeforeMockingConstructor() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    The used MockMaker ProxyMockMaker does not support the creation of construction mocks
+
+    Mockito's inline mock maker supports construction mocks based on the Instrumentation API.
+    You can simply enable this mock mode, by placing the 'mockito-inline' artifact where you are currently using 'mockito-core'.
+    Note that Mockito's inline mock maker is not supported on Android.
+        at app//org_mockito.mockito_core.StackWalkerCheckerTest.lambda$checksConstructionCallStackBeforeMockingConstructor$0(StackWalkerCheckerTest.java:21)
+        at app//org_mockito.mockito_core.MockitoDynamicTestSupport.lambda$runAllowingUnsupportedDynamicLoading$0(MockitoDynamicTestSupport.java:31)
+        at app//org_mockito.mockito_core.MockitoDynamicTestSupport.callAllowingUnsupportedDynamicLoading(MockitoDynamicTestSupport.java:19)
+        at app//org_mockito.mockito_core.MockitoDynamicTestSupport.runAllowingUnsupportedDynamicLoading(MockitoDynamicTestSupport.java:29)
+        at app//org_mockito.mockito_core.StackWalkerCheckerTest.checksConstructionCallStackBeforeMockingConstructor(StackWalkerCheckerTest.java:18)
+
+TypeSupportTest > checksWhetherTypeIsSealedBeforeInlineMockGeneration() FAILED
+    java.lang.AssertionError: 
+    Expecting actual throwable to be an instance of:
+      org.mockito.exceptions.base.MockitoException
+    but was:
+      java.lang.IllegalArgumentException: org_mockito.mockito_core.TypeSupportTest$SealedService is a sealed interface
+    	at java.base/java.lang.reflect.Proxy$ProxyBuilder.validateProxyInterfaces(Proxy.java:616)
+    	at java.base/java.lang.reflect.Proxy$ProxyBuilder.<init>(Proxy.java:560)
+    	at java.base/java.lang.reflect.Proxy$ProxyBuilder.<init>(Proxy.java:568)
+    	...(26 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+        at org_mockito.mockito_core.TypeSupportTest.checksWhetherTypeIsSealedBeforeInlineMockGeneration(TypeSupportTest.java:19)
+
+48 tests completed, 8 failed
+
+> Task :test FAILED
+
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/tests/src/org.mockito/mockito-core/5.0.0/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/tests/src/org.mockito/mockito-core/5.0.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 42s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/reachability-copy/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-2a1f0e6b/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.mockito:mockito-core:5.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 48s
+9 actionable tasks: 1 executed, 8 up-to-date
