@@ -235,6 +235,28 @@ public class Postgis_geometryTest {
     }
 
     @Test
+    void explicitMeasuredParsingTreatsThirdCoordinateAsMeasure() throws Exception {
+        Geometry measuredPolygon = GeometryBuilder.geomFromString(
+                "POLYGON((0 0 7,4 0 8,0 0 7))", true);
+        assertThat(measuredPolygon).isInstanceOf(Polygon.class);
+        assertThat(measuredPolygon.getDimension()).isEqualTo(2);
+        assertThat(measuredPolygon.isMeasured()).isTrue();
+        assertThat(measuredPolygon.getFirstPoint().getM()).isEqualTo(7.0);
+        assertThat(measuredPolygon.toString()).isEqualTo("POLYGONM((0 0 7,4 0 8,0 0 7))");
+        assertThat(measuredPolygon.checkConsistency()).isTrue();
+
+        GeometryCollection measuredCollection = new GeometryCollection(
+                "GEOMETRYCOLLECTION(POINT(1 2 3),LINESTRING(0 0 4,3 4 5))", true);
+        assertThat(measuredCollection.getDimension()).isEqualTo(2);
+        assertThat(measuredCollection.isMeasured()).isTrue();
+        assertThat(measuredCollection.getFirstPoint().getM()).isEqualTo(3.0);
+        assertThat(measuredCollection.getSubGeometry(1)).isInstanceOf(LineString.class);
+        assertThat(measuredCollection.toString()).isEqualTo(
+                "GEOMETRYCOLLECTIONM(POINTM(1 2 3),LINESTRINGM(0 0 4,3 4 5))");
+        assertThat(measuredCollection.checkConsistency()).isTrue();
+    }
+
+    @Test
     void binaryWriterAndParserRoundTripRepresentativeGeometriesInBothEndiannesses() throws Exception {
         Geometry[] geometries = new Geometry[] {
                 measuredPoint(),
