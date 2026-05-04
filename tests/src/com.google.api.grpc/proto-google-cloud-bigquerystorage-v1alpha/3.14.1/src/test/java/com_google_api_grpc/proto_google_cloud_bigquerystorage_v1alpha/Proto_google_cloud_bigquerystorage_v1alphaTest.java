@@ -6,6 +6,11 @@
  */
 package com_google_api_grpc.proto_google_cloud_bigquerystorage_v1alpha;
 
+import com.google.api.AnnotationsProto;
+import com.google.api.ClientProto;
+import com.google.api.HttpRule;
+import com.google.api.ResourceDescriptor;
+import com.google.api.ResourceProto;
 import com.google.cloud.bigquery.storage.v1alpha.BatchCreateMetastorePartitionsRequest;
 import com.google.cloud.bigquery.storage.v1alpha.BatchCreateMetastorePartitionsResponse;
 import com.google.cloud.bigquery.storage.v1alpha.BatchDeleteMetastorePartitionsRequest;
@@ -227,6 +232,62 @@ public class Proto_google_cloud_bigquerystorage_v1alphaTest {
         assertThat(error.getMaxBatchSize()).isEqualTo(900L);
         assertThat(error.getErrorMessage()).isEqualTo("too many metastore partitions");
         assertThat(BatchSizeTooLargeError.parseFrom(error.toByteString())).isEqualTo(error);
+    }
+
+    @Test
+    void exposesServiceHttpAndResourceAnnotations() {
+        Descriptors.FileDescriptor serviceDescriptor = MetastorePartitionServiceProto.getDescriptor();
+        Descriptors.ServiceDescriptor service = serviceDescriptor.findServiceByName("MetastorePartitionService");
+
+        assertThat(service.getOptions().getExtension(ClientProto.defaultHost))
+                        .isEqualTo("bigquerystorage.googleapis.com");
+        assertThat(service.getOptions().getExtension(ClientProto.oauthScopes))
+                        .contains("https://www.googleapis.com/auth/bigquery")
+                        .contains("https://www.googleapis.com/auth/cloud-platform");
+
+        HttpRule createRule = service.findMethodByName("BatchCreateMetastorePartitions")
+                        .getOptions()
+                        .getExtension(AnnotationsProto.http);
+        HttpRule deleteRule = service.findMethodByName("BatchDeleteMetastorePartitions")
+                        .getOptions()
+                        .getExtension(AnnotationsProto.http);
+        HttpRule updateRule = service.findMethodByName("BatchUpdateMetastorePartitions")
+                        .getOptions()
+                        .getExtension(AnnotationsProto.http);
+        HttpRule listRule = service.findMethodByName("ListMetastorePartitions")
+                        .getOptions()
+                        .getExtension(AnnotationsProto.http);
+
+        assertThat(createRule.getPost())
+                        .isEqualTo("/v1alpha/{parent=projects/*/datasets/*/tables/*}/partitions:batchCreate");
+        assertThat(createRule.getBody()).isEqualTo("*");
+        assertThat(deleteRule.getPost())
+                        .isEqualTo("/v1alpha/{parent=projects/*/datasets/*/tables/*}/partitions:batchDelete");
+        assertThat(deleteRule.getBody()).isEqualTo("*");
+        assertThat(updateRule.getPost())
+                        .isEqualTo("/v1alpha/{parent=projects/*/datasets/*/tables/*}/partitions:batchUpdate");
+        assertThat(updateRule.getBody()).isEqualTo("*");
+        assertThat(listRule.getGet())
+                        .isEqualTo("/v1alpha/{parent=projects/*/locations/*/datasets/*/tables/*}/partitions:list");
+        assertThat(service.findMethodByName("ListMetastorePartitions").getOptions()
+                        .getExtension(ClientProto.methodSignature))
+                        .containsExactly("parent");
+        assertThat(service.findMethodByName("StreamMetastorePartitions").getOptions()
+                        .hasExtension(AnnotationsProto.http))
+                        .isFalse();
+
+        List<ResourceDescriptor> resourceDefinitions = serviceDescriptor.getOptions()
+                        .getExtension(ResourceProto.resourceDefinition);
+        ResourceDescriptor readStreamResource = ReadStream.getDescriptor().getOptions()
+                        .getExtension(ResourceProto.resource);
+
+        assertThat(resourceDefinitions).extracting(ResourceDescriptor::getType)
+                        .contains("bigquery.googleapis.com/Table");
+        assertThat(resourceDefinitions.get(0).getPatternList())
+                        .contains("projects/{project}/datasets/{dataset}/tables/{table}");
+        assertThat(readStreamResource.getType()).isEqualTo("bigquerystorage.googleapis.com/ReadStream");
+        assertThat(readStreamResource.getPatternList())
+                        .contains("projects/{project}/locations/{location}/sessions/{session}/streams/{stream}");
     }
 
     @Test
