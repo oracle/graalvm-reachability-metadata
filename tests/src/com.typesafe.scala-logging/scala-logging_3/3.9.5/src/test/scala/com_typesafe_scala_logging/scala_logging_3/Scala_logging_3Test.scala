@@ -151,6 +151,51 @@ class ScalaLogging3Test {
   }
 
   @Test
+  def takingImplicitLoggerSupportsMarkersThrowablesAndMultipleArguments(): Unit = {
+    val underlying: RecordingSlf4jLogger = RecordingSlf4jLogger("contextual-markers", enabledLevels = Set("WARN", "ERROR"))
+    val hookEvents: ListBuffer[String] = ListBuffer.empty
+    given CanLog[RequestContext] with {
+      override def logMessage(originalMessage: String, context: RequestContext): String = {
+        hookEvents += s"logMessage:${context.id}"
+        s"[${context.id}] $originalMessage"
+      }
+
+      override def afterLog(context: RequestContext): Unit = {
+        hookEvents += s"afterLog:${context.id}"
+      }
+    }
+    given RequestContext = RequestContext("request-8")
+    val logger: LoggerTakingImplicit[RequestContext] = Logger.takingImplicit[RequestContext](underlying)
+    val marker: Marker = MarkerFactory.getMarker("contextual-marker")
+    val failure: RuntimeException = new RuntimeException("contextual failure")
+
+    logger.warn(marker, "contextual warn {} {}", "left", "right")
+    logger.error(marker, "contextual error", failure)
+
+    assertEquals(
+      Seq("logMessage:request-8", "afterLog:request-8", "logMessage:request-8", "afterLog:request-8"),
+      hookEvents.toSeq
+    )
+    assertEquals(2, underlying.records.size)
+    assertRecord(
+      underlying.records(0),
+      "WARN",
+      Some("contextual-marker"),
+      "[request-8] contextual warn {} {}",
+      Seq("left", "right"),
+      None
+    )
+    assertRecord(
+      underlying.records(1),
+      "ERROR",
+      Some("contextual-marker"),
+      "[request-8] contextual error",
+      Seq.empty,
+      Some(failure)
+    )
+  }
+
+  @Test
   def takingImplicitLoggerDoesNotEvaluateDisabledMessagesOrRunHooks(): Unit = {
     val underlying: RecordingSlf4jLogger = RecordingSlf4jLogger("contextual-disabled", enabledLevels = Set.empty)
     var messageEvaluated: Boolean = false
