@@ -23,6 +23,20 @@ public final class GeneratedDescriptorDependency {
                 .addMessageType(DescriptorProtos.DescriptorProto.newBuilder()
                         .setName("DependencyMessage")
                         .build())
+                .addMessageType(DescriptorProtos.DescriptorProto.newBuilder()
+                        .setName("ExtensibleMessage")
+                        .addExtensionRange(DescriptorProtos.DescriptorProto.ExtensionRange.newBuilder()
+                                .setStart(100)
+                                .setEnd(536870912)
+                                .build())
+                        .build())
+                .addExtension(DescriptorProtos.FieldDescriptorProto.newBuilder()
+                        .setName("covered_extension")
+                        .setNumber(100)
+                        .setLabel(DescriptorProtos.FieldDescriptorProto.Label.LABEL_OPTIONAL)
+                        .setType(DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING)
+                        .setExtendee(".coverage.dependency.ExtensibleMessage")
+                        .build())
                 .build();
 
         try {
