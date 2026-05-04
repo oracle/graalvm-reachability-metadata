@@ -192,6 +192,39 @@ public class Shrinkwrap_spiTest {
         }
     }
 
+    @Test
+    void memoryMapArchiveResolvesNestedArchivesByTypeAndArchiveFormat() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        try {
+            Configuration configuration = configuration(new StubExtensionLoader(), executorService);
+            InMemoryMemoryMapArchive archive = new InMemoryMemoryMapArchive(
+                    "application", configuration, ArchiveFormat.ZIP);
+            ArchivePath libraryPath = path("/WEB-INF/lib/module.jar");
+            ArchivePath readmePath = path("/docs/readme.txt");
+            archive.add(new TestAsset("library"), libraryPath);
+            archive.add(new TestAsset("readme"), readmePath);
+
+            MemoryMapArchive byStringPath = archive.getAsType(MemoryMapArchive.class, "/WEB-INF/lib/module.jar");
+            MemoryMapArchive byArchivePathAndFormat = archive.getAsType(
+                    MemoryMapArchive.class, libraryPath, ArchiveFormat.ZIP);
+            Collection<MemoryMapArchive> byFilter = archive.getAsType(
+                    MemoryMapArchive.class, path -> path.get().startsWith("/WEB-INF/lib/"));
+            Collection<MemoryMapArchive> byFilterAndFormat = archive.getAsType(
+                    MemoryMapArchive.class, path -> path.get().endsWith("readme.txt"), ArchiveFormat.ZIP);
+
+            assertThat(byStringPath).isSameAs(archive);
+            assertThat(byArchivePathAndFormat).isSameAs(archive);
+            assertThat(byFilter).containsExactly(archive);
+            assertThat(byFilterAndFormat).containsExactly(archive);
+            assertThat(archive.getAsType(MemoryMapArchive.class, "/missing.jar")).isNull();
+            assertThat(archive.getAsType(MemoryMapArchive.class, libraryPath, ArchiveFormat.TAR)).isNull();
+            assertThat(archive.getAsType(
+                    MemoryMapArchive.class, path -> path.get().endsWith("module.jar"), ArchiveFormat.TAR)).isEmpty();
+        } finally {
+            executorService.shutdownNow();
+        }
+    }
+
     private static Configuration configuration(ExtensionLoader extensionLoader, ExecutorService executorService) {
         return new ConfigurationBuilder()
                 .extensionLoader(extensionLoader)
