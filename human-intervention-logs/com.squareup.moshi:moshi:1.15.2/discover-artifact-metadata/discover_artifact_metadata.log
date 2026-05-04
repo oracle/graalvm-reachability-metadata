@@ -1,0 +1,774 @@
+Starting a Gradle Daemon, 7 busy and 5 incompatible and 239 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df563-c72c-75f0-9810-1556875fee81
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.squareup.moshi:moshi:1.15.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.15.2" when "$version$" is replaced with "1.15.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+- Set "coordinates" to "com.squareup.moshi:moshi:1.15.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.15.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against the published Maven coordinates and the upstream Moshi repository, then update the JSON in place with version-tokenized URLs.
+web search: 
+web search: com.squareup.moshi moshi 1.15.2 Maven Central sources jar
+codex
+Maven Central confirms `com.squareup.moshi:moshi:1.15.2` is a JAR artifact, so I’m checking the repo’s metadata conventions before choosing the exact URL shapes.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+{
+  "coordinates" : "com.squareup.moshi:moshi:1.15.2"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|not-for-native-image' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:37:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:12:    "repository-url": "https://github.com/ehcache/ehcache3",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:7:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:6:    "repository-url" : "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:6:    "repository-url" : "https://github.com/google/dagger",
+metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:6:    "repository-url" : "https://github.com/spotify/completable-futures",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:6:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:24:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:38:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:6:    "repository-url" : "https://github.com/apache/geronimo-xbean",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.threeten/threetenbp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+metadata/org.threeten/threetenbp/index.json:6:    "repository-url" : "https://github.com/ThreeTen/threetenbp",
+metadata/org.threeten/threetenbp/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+metadata/org.threeten/threetenbp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:6:    "repository-url" : "https://github.com/ThreeTen/threeten-extra",
+metadata/org.threeten/threeten-extra/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threeten-extra/tree/v$version$/src/test",
+metadata/org.threeten/threeten-extra/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:6:    "repository-url" : "https://github.com/package-url/packageurl-java",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/listenablefuture/index.json:7:    "repository-url": "https://github.com/google/guava",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:6:    "repository-url" : "https://github.com/google/guava",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'com.squareup.moshi|moshi' . -g '*.json' -g '"'!build/**'"' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+./metadata/net.javacrumbs.json-unit/json-unit-core/2.40.1/reachability-metadata.json:19:      "type": "com.squareup.moshi.Moshi"
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central com.squareup.moshi moshi 1.15.2 sources jar javadoc jar
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/squareup/moshi/moshi/1.15.2/moshi-1.15.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.squareup.moshi</groupId>
+  <artifactId>moshi</artifactId>
+  <version>1.15.2</version>
+  <name>moshi</name>
+  <description>A modern JSON API for Android and Java</description>
+  <url>https://github.com/square/moshi/</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>square</id>
+      <name>Square, Inc.</name>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/square/moshi.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/square/moshi.git</developerConnection>
+    <url>https://github.com/square/moshi/</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.squareup.okio</groupId>
+      <artifactId>okio-jvm</artifactId>
+      <version>3.7.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>1.8.21</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/squareup/moshi/moshi/1.15.2/ | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/squareup/moshi/moshi/1.15.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/squareup/moshi/moshi/1.15.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="moshi-1.15.2-javadoc.jar" title="moshi-1.15.2-javadoc.jar">moshi-1.15.2-javadoc.jar</a>                          2024-12-05 16:51    175011      
+<a href="moshi-1.15.2-javadoc.jar.asc" title="moshi-1.15.2-javadoc.jar.asc">moshi-1.15.2-javadoc.jar.asc</a>                      2024-12-05 16:51       821      
+<a href="moshi-1.15.2-javadoc.jar.asc.md5" title="moshi-1.15.2-javadoc.jar.asc.md5">moshi-1.15.2-javadoc.jar.asc.md5</a>                  2024-12-05 16:51        32      
+<a href="moshi-1.15.2-javadoc.jar.asc.sha1" title="moshi-1.15.2-javadoc.jar.asc.sha1">moshi-1.15.2-javadoc.jar.asc.sha1</a>                 2024-12-05 16:51        40      
+<a href="moshi-1.15.2-javadoc.jar.asc.sha256" title="moshi-1.15.2-javadoc.jar.asc.sha256">moshi-1.15.2-javadoc.jar.asc.sha256</a>               2024-12-05 16:51        64      
+<a href="moshi-1.15.2-javadoc.jar.asc.sha512" title="moshi-1.15.2-javadoc.jar.asc.sha512">moshi-1.15.2-javadoc.jar.asc.sha512</a>               2024-12-05 16:51       128      
+<a href="moshi-1.15.2-javadoc.jar.md5" title="moshi-1.15.2-javadoc.jar.md5">moshi-1.15.2-javadoc.jar.md5</a>                      2024-12-05 16:51        32      
+<a href="moshi-1.15.2-javadoc.jar.sha1" title="moshi-1.15.2-javadoc.jar.sha1">moshi-1.15.2-javadoc.jar.sha1</a>                     2024-12-05 16:51        40      
+<a href="moshi-1.15.2-javadoc.jar.sha256" title="moshi-1.15.2-javadoc.jar.sha256">moshi-1.15.2-javadoc.jar.sha256</a>                   2024-12-05 16:51        64      
+<a href="moshi-1.15.2-javadoc.jar.sha512" title="moshi-1.15.2-javadoc.jar.sha512">moshi-1.15.2-javadoc.jar.sha512</a>                   2024-12-05 16:51       128      
+<a href="moshi-1.15.2-sources.jar" title="moshi-1.15.2-sources.jar">moshi-1.15.2-sources.jar</a>                          2024-12-05 16:51     88004      
+<a href="moshi-1.15.2-sources.jar.asc" title="moshi-1.15.2-sources.jar.asc">moshi-1.15.2-sources.jar.asc</a>                      2024-12-05 16:51       821      
+<a href="moshi-1.15.2-sources.jar.asc.md5" title="moshi-1.15.2-sources.jar.asc.md5">moshi-1.15.2-sources.jar.asc.md5</a>                  2024-12-05 16:51        32      
+<a href="moshi-1.15.2-sources.jar.asc.sha1" title="moshi-1.15.2-sources.jar.asc.sha1">moshi-1.15.2-sources.jar.asc.sha1</a>                 2024-12-05 16:51        40      
+<a href="moshi-1.15.2-sources.jar.asc.sha256" title="moshi-1.15.2-sources.jar.asc.sha256">moshi-1.15.2-sources.jar.asc.sha256</a>               2024-12-05 16:51        64      
+<a href="moshi-1.15.2-sources.jar.asc.sha512" title="moshi-1.15.2-sources.jar.asc.sha512">moshi-1.15.2-sources.jar.asc.sha512</a>               2024-12-05 16:51       128      
+<a href="moshi-1.15.2-sources.jar.md5" title="moshi-1.15.2-sources.jar.md5">moshi-1.15.2-sources.jar.md5</a>                      2024-12-05 16:51        32      
+<a href="moshi-1.15.2-sources.jar.sha1" title="moshi-1.15.2-sources.jar.sha1">moshi-1.15.2-sources.jar.sha1</a>                     2024-12-05 16:51        40      
+<a href="moshi-1.15.2-sources.jar.sha256" title="moshi-1.15.2-sources.jar.sha256">moshi-1.15.2-sources.jar.sha256</a>                   2024-12-05 16:51        64      
+<a href="moshi-1.15.2-sources.jar.sha512" title="moshi-1.15.2-sources.jar.sha512">moshi-1.15.2-sources.jar.sha512</a>                   2024-12-05 16:51       128      
+<a href="moshi-1.15.2.jar" title="moshi-1.15.2.jar">moshi-1.15.2.jar</a>                                  2024-12-05 16:51    162258      
+<a href="moshi-1.15.2.jar.asc" title="moshi-1.15.2.jar.asc">moshi-1.15.2.jar.asc</a>                              2024-12-05 16:51       821      
+<a href="moshi-1.15.2.jar.asc.md5" title="moshi-1.15.2.jar.asc.md5">moshi-1.15.2.jar.asc.md5</a>                          2024-12-05 16:51        32      
+<a href="moshi-1.15.2.jar.asc.sha1" title="moshi-1.15.2.jar.asc.sha1">moshi-1.15.2.jar.asc.sha1</a>                         2024-12-05 16:51        40      
+<a href="moshi-1.15.2.jar.asc.sha256" title="moshi-1.15.2.jar.asc.sha256">moshi-1.15.2.jar.asc.sha256</a>                       2024-12-05 16:51        64      
+<a href="moshi-1.15.2.jar.asc.sha512" title="moshi-1.15.2.jar.asc.sha512">moshi-1.15.2.jar.asc.sha512</a>                       2024-12-05 16:51       128      
+<a href="moshi-1.15.2.jar.md5" title="moshi-1.15.2.jar.md5">moshi-1.15.2.jar.md5</a>                              2024-12-05 16:51        32      
+<a href="moshi-1.15.2.jar.sha1" title="moshi-1.15.2.jar.sha1">moshi-1.15.2.jar.sha1</a>                             2024-12-05 16:51        40      
+<a href="moshi-1.15.2.jar.sha256" title="moshi-1.15.2.jar.sha256">moshi-1.15.2.jar.sha256</a>                           2024-12-05 16:51        64      
+<a href="moshi-1.15.2.jar.sha512" title="moshi-1.15.2.jar.sha512">moshi-1.15.2.jar.sha512</a>                           2024-12-05 16:51       128      
+<a href="moshi-1.15.2.module" title="moshi-1.15.2.module">moshi-1.15.2.module</a>                               2024-12-05 16:51      2812      
+<a href="moshi-1.15.2.module.asc" title="moshi-1.15.2.module.asc">moshi-1.15.2.module.asc</a>                           2024-12-05 16:51       821      
+<a href="moshi-1.15.2.module.asc.md5" title="moshi-1.15.2.module.asc.md5">moshi-1.15.2.module.asc.md5</a>                       2024-12-05 16:51        32      
+<a href="moshi-1.15.2.module.asc.sha1" title="moshi-1.15.2.module.asc.sha1">moshi-1.15.2.module.asc.sha1</a>                      2024-12-05 16:51        40      
+<a href="moshi-1.15.2.module.asc.sha256" title="moshi-1.15.2.module.asc.sha256">moshi-1.15.2.module.asc.sha256</a>                    2024-12-05 16:51        64      
+<a href="moshi-1.15.2.module.asc.sha512" title="moshi-1.15.2.module.asc.sha512">moshi-1.15.2.module.asc.sha512</a>                    2024-12-05 16:51       128      
+<a href="moshi-1.15.2.module.md5" title="moshi-1.15.2.module.md5">moshi-1.15.2.module.md5</a>                           2024-12-05 16:51        32      
+<a href="moshi-1.15.2.module.sha1" title="moshi-1.15.2.module.sha1">moshi-1.15.2.module.sha1</a>                          2024-12-05 16:51        40      
+<a href="moshi-1.15.2.module.sha256" title="moshi-1.15.2.module.sha256">moshi-1.15.2.module.sha256</a>                        2024-12-05 16:51        64      
+<a href="moshi-1.15.2.module.sha512" title="moshi-1.15.2.module.sha512">moshi-1.15.2.module.sha512</a>                        2024-12-05 16:51       128      
+<a href="moshi-1.15.2.pom" title="moshi-1.15.2.pom">moshi-1.15.2.pom</a>                                  2024-12-05 16:51      1859      
+<a href="moshi-1.15.2.pom.asc" title="moshi-1.15.2.pom.asc">moshi-1.15.2.pom.asc</a>                              2024-12-05 16:51       821      
+<a href="moshi-1.15.2.pom.asc.md5" title="moshi-1.15.2.pom.asc.md5">moshi-1.15.2.pom.asc.md5</a>                          2024-12-05 16:51        32      
+<a href="moshi-1.15.2.pom.asc.sha1" title="moshi-1.15.2.pom.asc.sha1">moshi-1.15.2.pom.asc.sha1</a>                         2024-12-05 16:51        40      
+<a href="moshi-1.15.2.pom.asc.sha256" title="moshi-1.15.2.pom.asc.sha256">moshi-1.15.2.pom.asc.sha256</a>                       2024-12-05 16:51        64      
+<a href="moshi-1.15.2.pom.asc.sha512" title="moshi-1.15.2.pom.asc.sha512">moshi-1.15.2.pom.asc.sha512</a>                       2024-12-05 16:51       128      
+<a href="moshi-1.15.2.pom.md5" title="moshi-1.15.2.pom.md5">moshi-1.15.2.pom.md5</a>                              2024-12-05 16:51        32      
+<a href="moshi-1.15.2.pom.sha1" title="moshi-1.15.2.pom.sha1">moshi-1.15.2.pom.sha1</a>                             2024-12-05 16:51        40      
+<a href="moshi-1.15.2.pom.sha256" title="moshi-1.15.2.pom.sha256">moshi-1.15.2.pom.sha256</a>                           2024-12-05 16:51        64      
+<a href="moshi-1.15.2.pom.sha512" title="moshi-1.15.2.pom.sha512">moshi-1.15.2.pom.sha512</a>                           2024-12-05 16:51       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/square/moshi.git | rg 'refs/tags/(1\\.15\\.2|v1\\.15\\.2|moshi-1\\.15\\.2)"'$'"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 412ms:
+7d9ac56e4e1e73e541808491b53abbd6b8897bd7	refs/tags/1.15.2
+
+codex
+The published POM points to `https://github.com/square/moshi/`, and the exact upstream tag is `1.15.2` rather than `v1.15.2`. I’m now checking the module layout at that tag so the test URL lands on the actual Moshi test directory.
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/square/moshi/contents/?ref=1.15.2 | rg '\"name\":|\"path\":' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/square/moshi/contents/moshi?ref=1.15.2 | rg '\"name\":|\"path\":' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/square/moshi/contents/moshi/src?ref=1.15.2 | rg '\"name\":|\"path\":' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 155ms:
+    "name": "build.gradle.kts",
+    "path": "moshi/build.gradle.kts",
+    "name": "japicmp",
+    "path": "moshi/japicmp",
+    "name": "records-tests",
+    "path": "moshi/records-tests",
+    "name": "src",
+    "path": "moshi/src",
+
+ succeeded in 175ms:
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "name": ".github",
+    "path": ".github",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "name": "CHANGELOG.md",
+    "path": "CHANGELOG.md",
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "name": "README.md",
+    "path": "README.md",
+    "name": "build.gradle.kts",
+    "path": "build.gradle.kts",
+    "name": "deploy_javadoc.sh",
+    "path": "deploy_javadoc.sh",
+    "name": "examples",
+    "path": "examples",
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "name": "gradle",
+    "path": "gradle",
+    "name": "gradlew",
+    "path": "gradlew",
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "name": "kotlin",
+    "path": "kotlin",
+    "name": "moshi-adapters",
+    "path": "moshi-adapters",
+    "name": "moshi-kotlin-codegen",
+    "path": "moshi-kotlin-codegen",
+    "name": "moshi-kotlin",
+    "path": "moshi-kotlin",
+    "name": "moshi",
+    "path": "moshi",
+    "name": "releasing.md",
+    "path": "releasing.md",
+    "name": "settings.gradle.kts",
+    "path": "settings.gradle.kts",
+
+ succeeded in 155ms:
+    "name": "main",
+    "path": "moshi/src/main",
+    "name": "test",
+    "path": "moshi/src/test",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/ajalt/mordant",
+    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+    "description" : "Mordant Core is a Kotlin multiplatform library for rendering styled terminal output, including ANSI colors, text styling, widgets, tables, input handling, and terminal capability detection. The mordant-core-jvm artifact provides the JVM variant of the core APIs for command-line applications that need rich terminal rendering and interaction.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.0"
+    },
+    "tested-versions" : [
+      "3.0.2"
+    ],
+    "allowed-packages" : [
+      "com.github.ajalt.mordant"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.9.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/$version$/kotlinx-serialization-core-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/core/jvmTest",
+    "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v$version$/docs",
+    "description" : "kotlinx-serialization-core-jvm is the JVM runtime core for Kotlin serialization, providing serializers, descriptors, encoding and decoding abstractions, and module support used by format implementations. It supports Kotlin multiplatform serialization on the JVM and is used together with format modules such as JSON, CBOR, ProtoBuf, and Properties.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.2"
+    },
+    "tested-versions" : [
+      "1.9.0",
+      "1.10.0",
+      "1.11.0"
+    ],
+    "allowed-packages" : [
+      "kotlinx.serialization"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/ajalt/clikt",
+    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+    "description" : "Clikt is a Kotlin multiplatform library for building command-line interfaces with declarative command, option, and argument parsing. The clikt-core-jvm artifact provides the JVM variant of the core parser, including help output, shell completion support, parameter conversion, value sources, and JVM-specific file and path types.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.3"
+    },
+    "tested-versions" : [
+      "5.1.0"
+    ],
+    "allowed-packages" : [
+      "com.github.ajalt.clikt"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/square/moshi/contents/moshi/src/test?ref=1.15.2 | rg '\"name\":|\"path\":'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/square/moshi/contents/moshi/src/main?ref=1.15.2 | rg '\"name\":|\"path\":'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/square/moshi/1.15.2/moshi/build.gradle.kts | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/square/moshi/1.15.2/gradle/libs.versions.toml | rg -n 'kotlin|ksp|version' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 155ms:
+    "name": "java",
+    "path": "moshi/src/test/java",
+
+ succeeded in 164ms:
+15:[versions]
+19:kotlin = "1.8.21"
+20:kotlinCompileTesting = "0.2.1"
+21:kotlinpoet = "1.13.2"
+22:ksp = "1.8.21-1.0.11"
+26:dokka = { id = "org.jetbrains.dokka", version = "1.8.10" }
+27:japicmp = { id = "me.champeau.gradle.japicmp", version = "0.2.9" }
+28:ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+29:mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.25.2" }
+30:mavenShadow = { id = "com.github.johnrengelman.shadow", version = "7.0.0" }
+31:spotless = { id = "com.diffplug.spotless", version = "5.14.2" }
+36:autoService = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoService" }
+37:autoService-ksp = "dev.zacsweers.autoservice:auto-service-ksp:1.0.0"
+40:kotlin-annotationProcessingEmbeddable = { module = "org.jetbrains.kotlin:kotlin-annotation-processing-embeddable", version.ref = "kotlin" }
+41:kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+42:kotlin-compilerEmbeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
+43:kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+44:kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
+45:kotlinpoet-metadata = { module = "com.squareup:kotlinpoet-metadata", version.ref = "kotlinpoet" }
+46:kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
+47:kotlinxMetadata = "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.6.0"
+48:ksp = { module = "com.google.devtools.ksp:symbol-processing", version.ref = "ksp" }
+49:ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+55:kotlinCompileTesting = { module = "dev.zacsweers.kctfork:core", version.ref = "kotlinCompileTesting" }
+56:kotlinCompileTesting-ksp = { module = "dev.zacsweers.kctfork:ksp", version.ref ="kotlinCompileTesting" }
+
+ succeeded in 178ms:
+    "name": "java",
+    "path": "moshi/src/main/java",
+    "name": "java16",
+    "path": "moshi/src/main/java16",
+    "name": "resources",
+    "path": "moshi/src/main/resources",
+
+ succeeded in 183ms:
+/*
+ * Copyright (C) 2020 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import com.vanniktech.maven.publish.JavadocJar.Javadoc
+import com.vanniktech.maven.publish.KotlinJvm
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
+import org.gradle.jvm.tasks.Jar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+  kotlin("jvm")
+  id("com.vanniktech.maven.publish.base")
+  id("org.jetbrains.dokka")
+}
+
+val mainSourceSet by sourceSets.named("main")
+val java16 by sourceSets.creating {
+  java {
+    srcDir("src/main/java16")
+  }
+}
+
+tasks.named<JavaCompile>("compileJava16Java") {
+  options.release.set(16)
+}
+
+tasks.named<JavaCompile>("compileJava16Java") {
+  // We use JDK 17 for latest but target 16 for maximum compatibility
+  javaCompiler.set(
+    javaToolchains.compilerFor {
+      languageVersion.set(JavaLanguageVersion.of(17))
+    }
+  )
+  options.release.set(16)
+}
+
+// Package our actual RecordJsonAdapter from java16 sources in and denote it as an MRJAR
+tasks.named<Jar>("jar") {
+  from(java16.output) {
+    into("META-INF/versions/16")
+  }
+  manifest {
+    attributes("Multi-Release" to "true")
+  }
+}
+
+configurations {
+  "java16Implementation" {
+    extendsFrom(api.get())
+    extendsFrom(implementation.get())
+  }
+}
+
+tasks.withType<Test>().configureEach {
+  // ExtendsPlatformClassWithProtectedField tests a case where we set a protected ByteArrayOutputStream.buf field
+  jvmArgs("--add-opens=java.base/java.io=ALL-UNNAMED")
+}
+
+tasks.withType<KotlinCompile>()
+  .configureEach {
+    kotlinOptions {
+      if (name.contains("test", true)) {
+        @Suppress("SuspiciousCollectionReassignment") // It's not suspicious
+        freeCompilerArgs += listOf("-opt-in=kotlin.ExperimentalStdlibApi")
+      }
+    }
+  }
+
+dependencies {
+  // So the j16 source set can "see" main Moshi sources
+  "java16Implementation"(mainSourceSet.output)
+  compileOnly(libs.jsr305)
+  api(libs.okio)
+
+  testCompileOnly(libs.jsr305)
+  testImplementation(libs.junit)
+  testImplementation(libs.truth)
+}
+
+tasks.withType<Jar>().configureEach {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.squareup.moshi")
+  }
+}
+
+configure<MavenPublishBaseExtension> {
+  configure(KotlinJvm(javadocJar = Javadoc()))
+}
+
+codex
+I found Maven-published sources and Javadoc for this version, so those will be used for source and documentation. The tests are not published as a Maven test artifact, so the test URL will point at `moshi/src/test` on the `1.15.2` GitHub tag.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+diff --git a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+index aaaa59876729744e6291b38ffce5cb1cdd3166cb..9285580b08ab2de82b0f560857fdff9aa66dfd09
+--- a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
++++ b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.squareup.moshi:moshi:1.15.2"
++  "coordinates" : "com.squareup.moshi:moshi:1.15.2",
++  "repository-url" : "https://github.com/square/moshi",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-javadoc.jar",
++  "description" : "Moshi is a modern JSON library for Java and Android that converts JSON to Java objects and back using reflective or generated adapters. The core moshi artifact provides the adapter model, JSON reader/writer APIs, and built-in support for common Java types."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+index aaaa59876729744e6291b38ffce5cb1cdd3166cb..9285580b08ab2de82b0f560857fdff9aa66dfd09
+--- a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
++++ b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.squareup.moshi:moshi:1.15.2"
++  "coordinates" : "com.squareup.moshi:moshi:1.15.2",
++  "repository-url" : "https://github.com/square/moshi",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-javadoc.jar",
++  "description" : "Moshi is a modern JSON library for Java and Android that converts JSON to Java objects and back using reflective or generated adapters. The core moshi artifact provides the adapter model, JSON reader/writer APIs, and built-in support for common Java types."
+ }
+
+codex
+The JSON is updated. I’m doing a quick syntax check and probing the resolved URLs for `1.15.2` so we catch any bad tag or artifact path before I wrap up.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+{
+  "coordinates": "com.squareup.moshi:moshi:1.15.2",
+  "repository-url": "https://github.com/square/moshi",
+  "source-code-url": "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-sources.jar",
+  "test-code-url": "https://github.com/square/moshi/tree/$version$/moshi/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-javadoc.jar",
+  "description": "Moshi is a modern JSON library for Java and Android that converts JSON to Java objects and back using reflective or generated adapters. The core moshi artifact provides the adapter model, JSON reader/writer APIs, and built-in support for common Java types."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in https://github.com/square/moshi https://repo1.maven.org/maven2/com/squareup/moshi/moshi/1.15.2/moshi-1.15.2-sources.jar https://github.com/square/moshi/tree/1.15.2/moshi/src/test https://repo1.maven.org/maven2/com/squareup/moshi/moshi/1.15.2/moshi-1.15.2-javadoc.jar; do printf '%s -> ' \""'$url"; curl -fsSL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+diff --git a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+index aaaa59876729744e6291b38ffce5cb1cdd3166cb..9285580b08ab2de82b0f560857fdff9aa66dfd09
+--- a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
++++ b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.squareup.moshi:moshi:1.15.2"
++  "coordinates" : "com.squareup.moshi:moshi:1.15.2",
++  "repository-url" : "https://github.com/square/moshi",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-javadoc.jar",
++  "description" : "Moshi is a modern JSON library for Java and Android that converts JSON to Java objects and back using reflective or generated adapters. The core moshi artifact provides the adapter model, JSON reader/writer APIs, and built-in support for common Java types."
+ }
+
+ succeeded in 1803ms:
+200
+https://repo1.maven.org/maven2/com/squareup/moshi/moshi/1.15.2/moshi-1.15.2-sources.jar -> 200
+https://github.com/square/moshi/tree/1.15.2/moshi/src/test -> 200
+https://repo1.maven.org/maven2/com/squareup/moshi/moshi/1.15.2/moshi-1.15.2-javadoc.jar -> 200
+
+diff --git a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+index aaaa59876729744e6291b38ffce5cb1cdd3166cb..9285580b08ab2de82b0f560857fdff9aa66dfd09
+--- a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
++++ b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.squareup.moshi:moshi:1.15.2"
++  "coordinates" : "com.squareup.moshi:moshi:1.15.2",
++  "repository-url" : "https://github.com/square/moshi",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-javadoc.jar",
++  "description" : "Moshi is a modern JSON library for Java and Android that converts JSON to Java objects and back using reflective or generated adapters. The core moshi artifact provides the adapter model, JSON reader/writer APIs, and built-in support for common Java types."
+ }
+
+web search: 
+web search: https://github.com/square/moshi/tree/1.15.2/moshi/src/test
+web search: 
+web search: repo1.maven.org com squareup moshi moshi 1.15.2 moshi-1.15.2-sources.jar moshi-1.15.2-javadoc.jar
+web search: 
+web search: https://central.sonatype.com/artifact/com.squareup.moshi/moshi
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json && nl -ba build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4490-bf3e7c39
+diff --git a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+index aaaa59876729744e6291b38ffce5cb1cdd3166cb..9285580b08ab2de82b0f560857fdff9aa66dfd09
+--- a/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
++++ b/build/discovered-artifact-metadata/com.squareup.moshi-moshi-1.15.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.squareup.moshi:moshi:1.15.2"
++  "coordinates" : "com.squareup.moshi:moshi:1.15.2",
++  "repository-url" : "https://github.com/square/moshi",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-sources.jar",
++  "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-javadoc.jar",
++  "description" : "Moshi is a modern JSON library for Java and Android that converts JSON to Java objects and back using reflective or generated adapters. The core moshi artifact provides the adapter model, JSON reader/writer APIs, and built-in support for common Java types."
+ }
+
+ succeeded in 147ms:
+     1	{
+     2	  "coordinates" : "com.squareup.moshi:moshi:1.15.2",
+     3	  "repository-url" : "https://github.com/square/moshi",
+     4	  "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi/src/test",
+     6	  "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/$version$/moshi-$version$-javadoc.jar",
+     7	  "description" : "Moshi is a modern JSON library for Java and Android that converts JSON to Java objects and back using reflective or generated adapters. The core moshi artifact provides the adapter model, JSON reader/writer APIs, and built-in support for common Java types."
+     8	}
+
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
