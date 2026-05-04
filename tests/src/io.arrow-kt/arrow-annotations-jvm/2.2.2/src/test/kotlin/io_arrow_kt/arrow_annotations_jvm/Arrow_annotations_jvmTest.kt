@@ -16,6 +16,10 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.util.EnumMap
 import java.util.EnumSet
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.startCoroutine
 import kotlin.properties.Delegates
 
 public class ArrowAnnotationsJvmTest {
@@ -216,6 +220,22 @@ public class ArrowAnnotationsJvmTest {
         assertThat(state.renderWith(formatter)).isEqualTo("state=published")
         assertThat(state.changes()).containsExactly("draft", "published")
     }
+
+    @Test
+    fun syntheticAnnotationCanMarkSuspendApisAndSuspendFunctionTypes() {
+        val workflow: SyntheticSuspendWorkflow = SyntheticSuspendWorkflow(initialState = "queued")
+        val transition:
+            @synthetic suspend (@synthetic SyntheticString) -> @synthetic SyntheticString = { state: SyntheticString ->
+                "$state:completed"
+            }
+
+        val completedState: SyntheticString = runSyntheticSuspend {
+            workflow.advance(transition)
+        }
+
+        assertThat(completedState).isEqualTo("queued:completed")
+        assertThat(workflow.visitedStates()).containsExactly("queued", "queued:completed")
+    }
 }
 
 private fun OpticsTarget.description(): String = when (this) {
@@ -224,6 +244,33 @@ private fun OpticsTarget.description(): String = when (this) {
     OpticsTarget.PRISM -> "prism"
     OpticsTarget.OPTIONAL -> "optional"
     OpticsTarget.DSL -> "dsl"
+}
+
+private object SyntheticSuspendNoValue
+
+private fun <T> runSyntheticSuspend(block: suspend () -> T): T {
+    var value: Any? = SyntheticSuspendNoValue
+    var failure: Throwable? = null
+    var completed: Boolean = false
+
+    block.startCoroutine(
+        object : Continuation<T> {
+            override val context: CoroutineContext = EmptyCoroutineContext
+
+            override fun resumeWith(result: Result<T>) {
+                result
+                    .onSuccess { resultValue: T -> value = resultValue }
+                    .onFailure { throwable: Throwable -> failure = throwable }
+                completed = true
+            }
+        },
+    )
+
+    check(completed) { "Synthetic suspend test block did not complete synchronously" }
+    failure?.let { throwable: Throwable -> throw throwable }
+
+    @Suppress("UNCHECKED_CAST")
+    return value as T
 }
 
 @optics(targets = [OpticsTarget.LENS, OpticsTarget.PRISM, OpticsTarget.OPTIONAL, OpticsTarget.DSL])
@@ -406,4 +453,23 @@ private class SyntheticObservableState(
 
     @synthetic
     fun changes(): List<@synthetic SyntheticString> = history.toList()
+}
+
+@synthetic
+private class SyntheticSuspendWorkflow(
+    initialState: @synthetic SyntheticString,
+) {
+    private val visitedStates: MutableList<SyntheticString> = mutableListOf(initialState)
+
+    @synthetic
+    suspend fun advance(
+        @synthetic transition: @synthetic suspend (@synthetic SyntheticString) -> @synthetic SyntheticString,
+    ): @synthetic SyntheticString {
+        val nextState: SyntheticString = transition(visitedStates.last())
+        visitedStates += nextState
+        return nextState
+    }
+
+    @synthetic
+    fun visitedStates(): List<@synthetic SyntheticString> = visitedStates.toList()
 }
