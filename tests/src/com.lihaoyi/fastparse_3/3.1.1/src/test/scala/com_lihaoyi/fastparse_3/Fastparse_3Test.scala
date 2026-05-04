@@ -6,9 +6,12 @@
  */
 package com_lihaoyi.fastparse_3
 
+import java.io.StringReader
+
 import fastparse.*
 import fastparse.IndexedParserInput
 import fastparse.IteratorParserInput
+import fastparse.ReaderParserInput
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
@@ -120,6 +123,26 @@ class Fastparse_3Test {
     val parsed: Parsed[CharacterSummary] = parse("Aλ9!?", CharacterGrammar.summary(_))
 
     assertThat(parsed).isEqualTo(Parsed.Success(CharacterSummary("Aλ", "9", "!?"), 5))
+  }
+
+  @Test
+  def parsesReaderBackedInputWhileBufferingAcrossReads(): Unit = {
+    val inputText: String = "name\t=  fastparse"
+    val inspectedReader: StringReader = new StringReader(inputText)
+    val parsedReader: StringReader = new StringReader(inputText)
+
+    try {
+      val inspectedInput: ReaderParserInput = ReaderParserInput(inspectedReader, 4)
+      val parsedInput: ReaderParserInput = ReaderParserInput(parsedReader, 4)
+      val parsed: Parsed[(String, String)] = parse(parsedInput, ReaderBackedGrammar.assignment(_))
+
+      assertThat(inspectedInput.isReachable(16)).isTrue
+      assertThat(inspectedInput.slice(0, 4)).isEqualTo("name")
+      assertThat(parsed).isEqualTo(Parsed.Success(("name", "fastparse"), 17))
+    } finally {
+      inspectedReader.close()
+      parsedReader.close()
+    }
   }
 
   private def expectFailure[T](parsed: Parsed[T]): Parsed.Failure = parsed match {
@@ -259,4 +282,13 @@ private object CharacterGrammar {
   private def letters[$: P]: P[String] = P(CharsWhile(CharPredicates.isLetter, min = 1).!)
 
   private def digits[$: P]: P[String] = P(CharsWhile(CharPredicates.isDigit, min = 1).!)
+}
+
+private object ReaderBackedGrammar {
+  import fastparse.*
+  import fastparse.SingleLineWhitespace.*
+
+  def assignment[$: P]: P[(String, String)] = P(identifier ~ "=" ~ identifier ~ End)
+
+  private def identifier[$: P]: P[String] = P(CharsWhileIn("a-zA-Z", min = 1).!)
 }
