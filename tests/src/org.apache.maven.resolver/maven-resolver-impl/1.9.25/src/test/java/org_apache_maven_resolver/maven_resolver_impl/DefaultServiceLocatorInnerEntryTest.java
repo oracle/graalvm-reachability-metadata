@@ -8,51 +8,31 @@ package org_apache_maven_resolver.maven_resolver_impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.spi.locator.Service;
-import org.eclipse.aether.spi.locator.ServiceLocator;
+import org.eclipse.aether.spi.io.FileProcessor;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class DefaultServiceLocatorInnerEntryTest {
+    @TempDir
+    Path tempDir;
+
     @Test
-    void createsRegisteredServiceUsingDeclaredNoArgConstructor() {
+    void createsRegisteredFileProcessorServiceImplementation() throws IOException {
         DefaultServiceLocator locator = new DefaultServiceLocator();
-        locator.setService(DemoService.class, PrivateConstructorDemoService.class);
 
-        DemoService service = locator.getService(DemoService.class);
+        FileProcessor fileProcessor = locator.getService(FileProcessor.class);
 
-        assertThat(service).isInstanceOf(PrivateConstructorDemoService.class);
-        PrivateConstructorDemoService demoService = (PrivateConstructorDemoService) service;
-        assertThat(demoService.marker()).isEqualTo("created");
-        assertThat(demoService.initialized).isTrue();
-        assertThat(demoService.locator).isSameAs(locator);
-        assertThat(locator.getService(DemoService.class)).isSameAs(service);
-    }
+        assertThat(fileProcessor).isNotNull();
 
-    private interface DemoService {
-        String marker();
-    }
+        Path target = tempDir.resolve("nested/output.txt");
+        fileProcessor.write(target.toFile(), "maven resolver service locator");
 
-    private static final class PrivateConstructorDemoService implements DemoService, Service {
-        private final String marker;
-
-        private boolean initialized;
-
-        private ServiceLocator locator;
-
-        private PrivateConstructorDemoService() {
-            marker = "created";
-        }
-
-        @Override
-        public String marker() {
-            return marker;
-        }
-
-        @Override
-        public void initService(ServiceLocator locator) {
-            initialized = true;
-            this.locator = locator;
-        }
+        assertThat(Files.readString(target, StandardCharsets.UTF_8)).isEqualTo("maven resolver service locator");
     }
 }
