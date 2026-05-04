@@ -192,15 +192,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 )
             )
             class_attempts = 0
+            class_attempts_without_progress = 0
             class_failed = False
             class_committed = False
             gate_failed = False
-            while class_attempts < self.max_class_iterations:
+            while self._should_continue_class_attempts(class_attempts, class_attempts_without_progress):
                 self._print_dynamic_access_detail(
-                    "attempt {attempt}/{max_attempts}".format(
-                        attempt=class_attempts + 1,
-                        max_attempts=self.max_class_iterations,
-                    )
+                    self._format_class_attempt_status(class_attempts, class_attempts_without_progress)
                 )
                 delta = compute_class_delta(previous_report, current_report, class_name)
                 dynamic_prompt = self._render_dynamic_access_prompt(active_class, delta, class_attempts)
@@ -342,7 +340,9 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         current_report = refreshed
                         updated_class = current_report.get_class(class_name) or updated_class
                     self._save_large_library_progress(current_report)
+                    class_attempts_without_progress = 0
                 else:
+                    class_attempts_without_progress += 1
                     self._print_dynamic_access_detail(
                         "result: no new coverage, {remaining} {call_label} still uncovered".format(
                             remaining=updated_class.uncovered_calls,
@@ -388,7 +388,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 # and move on to the next uncovered class.
                 self._print_dynamic_access_detail(
                     "final: exhausted after {attempts} attempts".format(
-                        attempts=self.max_class_iterations,
+                        attempts=self._format_class_exhaustion_attempts(
+                            class_attempts,
+                            class_attempts_without_progress,
+                        ),
                     )
                 )
                 self._print_failure_analysis(
@@ -628,6 +631,18 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
     def _dynamic_access_prompt_extras(self, active_class) -> dict:
         return {}
+
+    def _should_continue_class_attempts(self, class_attempts: int, class_attempts_without_progress: int) -> bool:
+        return class_attempts < self.max_class_iterations
+
+    def _format_class_attempt_status(self, class_attempts: int, class_attempts_without_progress: int) -> str:
+        return "attempt {attempt}/{max_attempts}".format(
+            attempt=class_attempts + 1,
+            max_attempts=self.max_class_iterations,
+        )
+
+    def _format_class_exhaustion_attempts(self, class_attempts: int, class_attempts_without_progress: int) -> str:
+        return str(self.max_class_iterations)
 
     def _library_test_change_signature(self) -> str:
         """Capture tracked and untracked changes under the generated library test tree."""

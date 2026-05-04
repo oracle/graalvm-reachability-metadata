@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 from ai_workflows.workflow_strategies.pgo_profile_driven_exploration_strategy import PgoProfileDrivenExplorationStrategy
-from utility_scripts.dynamic_access_report import DynamicAccessCallSite, DynamicAccessClass
+from utility_scripts.dynamic_access_report import DynamicAccessCallSite, DynamicAccessClass, DynamicAccessCoverageReport
 
 
 class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
@@ -71,10 +71,59 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "must be at least 100"):
                 self._strategy(tmpdir, pgo_sampling_period_micros=99)
 
+    def test_class_attempt_budget_resets_when_coverage_improves(self) -> None:
+        class FakeAgent:
+            def __init__(self) -> None:
+                self.prompts = 0
+
+            def send_prompt(self, prompt: str) -> None:
+                self.prompts += 1
+
+            def run_test_command(self, command: str) -> str:
+                return "BUILD SUCCESSFUL"
+
+            def clear_context(self) -> None:
+                pass
+
+        initial_report = self._report(0)
+        report_one_covered = self._report(1)
+        report_two_covered = self._report(2)
+        fake_agent = FakeAgent()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            strategy = self._strategy(tmpdir, max_iterations=3)
+            with patch.object(strategy, "_refresh_pgo_near_call_guidance", return_value="guidance"), \
+                    patch.object(strategy, "_render_prompt", return_value="prompt"), \
+                    patch.object(
+                        strategy,
+                        "_generate_dynamic_access_report",
+                        side_effect=[
+                            report_one_covered,
+                            report_two_covered,
+                            report_two_covered,
+                            report_two_covered,
+                            report_two_covered,
+                        ],
+                    ), \
+                    patch.object(strategy, "_commit_test_sources"), \
+                    patch.object(strategy, "_run_native_test_verification_gate", return_value=True), \
+                    patch.object(strategy, "_refresh_report_after_gate", return_value=None), \
+                    patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                    patch(
+                        "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.check_output",
+                        return_value="checkpoint\n",
+                    ):
+                phase_ok, iterations = strategy._run_dynamic_access_phase(fake_agent, initial_report)
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 5)
+        self.assertEqual(fake_agent.prompts, 5)
+
     @staticmethod
     def _strategy(
             reachability_repo_path: str,
             pgo_sampling_period_micros: int = 250,
+            max_iterations: int = 1,
     ) -> PgoProfileDrivenExplorationStrategy:
         return PgoProfileDrivenExplorationStrategy(
             {
@@ -83,7 +132,7 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
                     "pgo-profile-driven-exploration": "unused",
                 },
                 "parameters": {
-                    "max-iterations": 1,
+                    "max-iterations": max_iterations,
                     "max-class-test-iterations": 1,
                     "pgo-sampling-period-micros": pgo_sampling_period_micros,
                 },
@@ -91,6 +140,34 @@ class PgoProfileDrivenExplorationStrategyTests(unittest.TestCase):
             library="org.example:lib:1.0.0",
             reachability_repo_path=reachability_repo_path,
             test_version="1.0.0",
+        )
+
+    @staticmethod
+    def _report(covered_calls: int) -> DynamicAccessCoverageReport:
+        return DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=3,
+            covered_calls=covered_calls,
+            classes=[
+                DynamicAccessClass(
+                    class_name="example.TargetHolder",
+                    source_file="TargetHolder.java",
+                    resolved_source_file=None,
+                    total_calls=3,
+                    covered_calls=covered_calls,
+                    call_sites=[
+                        DynamicAccessCallSite(
+                            metadata_type="reflection",
+                            tracked_api="java.lang.Class#forName(java.lang.String)",
+                            frame=f"example.TargetHolder.call(TargetHolder.java:{line})",
+                            line=line,
+                            covered=index < covered_calls,
+                        )
+                        for index, line in enumerate([41, 42, 43])
+                    ],
+                )
+            ],
         )
 
 

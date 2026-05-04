@@ -198,7 +198,8 @@ All concrete strategies expect `library` (coordinates),
 [`pgo_profile_driven_exploration_strategy.py`](../ai_workflows/workflow_strategies/pgo_profile_driven_exploration_strategy.py)
 
 - **Required prompts**: `pgo-profile-driven-exploration`.
-- **Required params**: `max-iterations`, `max-class-test-iterations`.
+- **Required params**: `max-iterations` (consecutive no-progress attempt
+  budget), `max-class-test-iterations`.
 - **Loop**: inherits the per-class dynamic-access loop. Before each prompt it
   runs `generatePgoDynamicAccessNearCallReport` with
   `-PpgoSamplingPeriodMicros` (default strategy value: `100`), parses the
@@ -206,7 +207,10 @@ All concrete strategies expect `library` (coordinates),
   compares the closest sampled runtime path with the static path to the
   uncovered dynamic-access call. The prompt asks the agent to keep the shared
   prefix but take the missing static edge instead of the branch currently
-  exercised by tests.
+  exercised by tests. Unlike `dynamic_access_iterative`, this strategy does not
+  treat `max-iterations` as a fixed per-class cap: every coverage gain resets
+  the no-progress counter, so it keeps trying until the class reaches full
+  coverage or stalls for the configured number of consecutive attempts.
 - **Artifacts**: each subproject writes
   `build/reports/pgo-near-call/{reports,dynamic-access,native-test.iprof}`.
 - **Returns**: same as `dynamic_access_iterative`,

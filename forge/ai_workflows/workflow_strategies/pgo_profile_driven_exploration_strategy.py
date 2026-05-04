@@ -74,3 +74,19 @@ class PgoProfileDrivenExplorationStrategy(DynamicAccessIterativeStrategy):
         )
         self._print_dynamic_access_detail("PGO near-call guidance refreshed", indent_level=2)
         return guidance
+
+    def _should_continue_class_attempts(self, class_attempts: int, class_attempts_without_progress: int) -> bool:
+        return class_attempts_without_progress < self.max_class_iterations
+
+    def _format_class_attempt_status(self, class_attempts: int, class_attempts_without_progress: int) -> str:
+        return "attempt {attempt} (no-progress budget used: {stalled}/{budget})".format(
+            attempt=class_attempts + 1,
+            stalled=class_attempts_without_progress,
+            budget=self.max_class_iterations,
+        )
+
+    def _format_class_exhaustion_attempts(self, class_attempts: int, class_attempts_without_progress: int) -> str:
+        return "{attempts} ({stalled} consecutive without progress)".format(
+            attempts=class_attempts,
+            stalled=class_attempts_without_progress,
+        )
