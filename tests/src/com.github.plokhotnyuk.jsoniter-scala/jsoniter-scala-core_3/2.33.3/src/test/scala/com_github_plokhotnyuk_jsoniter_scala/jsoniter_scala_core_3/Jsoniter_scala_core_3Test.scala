@@ -137,6 +137,27 @@ class Jsoniter_scala_core_3Test {
   }
 
   @Test
+  def encodesValuesAsJsonStringsAndAlternativeBinaryAlphabets(): Unit = {
+    val value: EncodedFields = EncodedFields(
+      id = 7,
+      active = true,
+      checksum = Array[Byte](0, 15, -91.toByte, -1.toByte),
+      token = Array[Byte](-5.toByte, -17.toByte, -1.toByte)
+    )
+
+    val json: String = writeToString(value)(encodedFieldsCodec)
+
+    assertTrue(json.contains("\"id\":\"7\""))
+    assertTrue(json.contains("\"active\":\"true\""))
+    assertTrue(json.contains("\"token\":\"--__\""))
+    val decoded: EncodedFields = readFromString[EncodedFields](json)(encodedFieldsCodec)
+    assertEquals(value.id, decoded.id)
+    assertEquals(value.active, decoded.active)
+    assertArrayEquals(value.checksum, decoded.checksum)
+    assertArrayEquals(value.token, decoded.token)
+  }
+
+  @Test
   def reportsReaderFailuresForInvalidInputAndCodecValidation(): Unit = {
     val trailingInput: JsonReaderException = expectReaderFailure {
       readFromString[Int]("1 2")(intCodec)
@@ -183,6 +204,8 @@ object Jsoniter_scala_core_3Test {
   final case class Envelope(name: String, payload: Telemetry)
 
   final case class DailyReport(values: Map[LocalDate, BigDecimal])
+
+  final case class EncodedFields(id: Int, active: Boolean, checksum: Array[Byte], token: Array[Byte])
 
   private val sampleTelemetry: Telemetry = Telemetry(
     id = 42,
@@ -409,6 +432,62 @@ object Jsoniter_scala_core_3Test {
     }
   }
 
+  private val encodedFieldsCodec: JsonValueCodec[EncodedFields] = new JsonValueCodec[EncodedFields] {
+    override def nullValue: EncodedFields = null
+
+    override def decodeValue(in: JsonReader, default: EncodedFields): EncodedFields = {
+      if (in.isNextToken('{')) {
+        var id: Int = 0
+        var active: Boolean = false
+        var checksum: Array[Byte] = Array.emptyByteArray
+        var token: Array[Byte] = Array.emptyByteArray
+        var seen: Int = 0
+
+        if (!in.isNextToken('}')) {
+          in.rollbackToken()
+          var keyLength: Int = -1
+          while (keyLength < 0 || in.isNextToken(',')) {
+            keyLength = in.readKeyAsCharBuf()
+            if (in.isCharBufEqualsTo(keyLength, "id")) {
+              seen = markSeen(in, keyLength, seen, 0)
+              id = in.readStringAsInt()
+            } else if (in.isCharBufEqualsTo(keyLength, "active")) {
+              seen = markSeen(in, keyLength, seen, 1)
+              active = in.readStringAsBoolean()
+            } else if (in.isCharBufEqualsTo(keyLength, "checksum")) {
+              seen = markSeen(in, keyLength, seen, 2)
+              checksum = in.readBase16AsBytes(checksum)
+            } else if (in.isCharBufEqualsTo(keyLength, "token")) {
+              seen = markSeen(in, keyLength, seen, 3)
+              token = in.readBase64UrlAsBytes(token)
+            } else {
+              in.skip()
+            }
+          }
+          if (!in.isCurrentToken('}')) in.objectEndOrCommaError()
+        }
+        val missing: Int = 0xf & ~seen
+        if (missing != 0) in.requiredFieldError(encodedFieldName(Integer.numberOfTrailingZeros(missing)))
+        EncodedFields(id, active, checksum, token)
+      } else {
+        in.readNullOrTokenError(default, '{')
+      }
+    }
+
+    override def encodeValue(value: EncodedFields, out: JsonWriter): Unit = {
+      out.writeObjectStart()
+      out.writeNonEscapedAsciiKey("id")
+      out.writeValAsString(value.id)
+      out.writeNonEscapedAsciiKey("active")
+      out.writeValAsString(value.active)
+      out.writeNonEscapedAsciiKey("checksum")
+      out.writeBase16Val(value.checksum, true)
+      out.writeNonEscapedAsciiKey("token")
+      out.writeBase64UrlVal(value.token, false)
+      out.writeObjectEnd()
+    }
+  }
+
   private def decodeStringList(in: JsonReader, default: List[String]): List[String] = {
     if (in.isNextToken('[')) {
       val builder: scala.collection.mutable.Builder[String, List[String]] = List.newBuilder[String]
@@ -456,6 +535,13 @@ object Jsoniter_scala_core_3Test {
     case 11 => "uuid"
     case 12 => "payload"
     case 13 => "tags"
+  }
+
+  private def encodedFieldName(index: Int): String = index match {
+    case 0 => "id"
+    case 1 => "active"
+    case 2 => "checksum"
+    case 3 => "token"
   }
 
   private def assertTelemetryEquals(expected: Telemetry, actual: Telemetry): Unit = {
