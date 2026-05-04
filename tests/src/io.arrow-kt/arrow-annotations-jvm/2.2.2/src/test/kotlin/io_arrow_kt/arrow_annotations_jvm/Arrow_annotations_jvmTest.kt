@@ -60,6 +60,31 @@ public class ArrowAnnotationsJvmTest {
     }
 
     @Test
+    fun opticsAnnotationInstancesAreUsableAsConfigurationValues() {
+        val defaultConfiguration: optics = optics()
+        val prismDslConfiguration: optics = optics(arrayOf(OpticsTarget.PRISM, OpticsTarget.DSL))
+        val equivalentConfiguration: optics = optics(arrayOf(OpticsTarget.PRISM, OpticsTarget.DSL))
+        val lensConfiguration: optics = optics(arrayOf(OpticsTarget.LENS))
+
+        assertThat(defaultConfiguration.targets).isEmpty()
+        assertThat(prismDslConfiguration.targets)
+            .containsExactly(OpticsTarget.PRISM, OpticsTarget.DSL)
+        assertThat(prismDslConfiguration).isEqualTo(equivalentConfiguration)
+        assertThat(prismDslConfiguration).isNotEqualTo(lensConfiguration)
+    }
+
+    @Test
+    fun markerAnnotationInstancesHaveStableValueSemantics() {
+        val syntheticMarker: synthetic = synthetic()
+        val anotherSyntheticMarker: synthetic = synthetic()
+        val copyMarker: optics.copy = optics.copy()
+
+        assertThat(syntheticMarker).isEqualTo(anotherSyntheticMarker)
+        assertThat(copyMarker).isEqualTo(optics.copy())
+        assertThat(syntheticMarker).isNotEqualTo(copyMarker)
+    }
+
+    @Test
     fun opticsAnnotationCanRequestSpecificTargetsOnDomainTypes() {
         val shippingAddress: ShippingAddress = ShippingAddress(street = "Main Street", city = "Zagreb")
         val order: OpticsAnnotatedOrder = OpticsAnnotatedOrder(id = "order-1", shippingAddress = shippingAddress)
