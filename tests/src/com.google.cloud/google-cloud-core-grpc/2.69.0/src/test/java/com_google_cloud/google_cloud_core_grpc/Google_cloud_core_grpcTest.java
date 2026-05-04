@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
+import com.google.api.gax.grpc.ChannelPoolSettings;
 import com.google.api.gax.grpc.GrpcStatusCode;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
@@ -155,6 +156,35 @@ public class Google_cloud_core_grpcTest {
 
         assertThat(fixedCredentialsProvider).isInstanceOf(FixedCredentialsProvider.class);
         assertThat(fixedCredentialsProvider.getCredentials()).isSameAs(apiKeyCredentials);
+    }
+
+    @Test
+    void setupChannelProviderPreservesGrpcChannelConfiguration() {
+        Duration keepAliveTime = Duration.ofSeconds(30);
+        Duration keepAliveTimeout = Duration.ofSeconds(5);
+        ChannelPoolSettings channelPoolSettings = ChannelPoolSettings.staticallySized(2);
+        TestServiceOptions serviceOptions = TestServiceOptions.newBuilder()
+                .setProjectId("test-project")
+                .setHost("configured.example.com:443")
+                .setCredentials(NoCredentials.getInstance())
+                .build();
+
+        TransportChannelProvider channelProvider = GrpcTransportOptions.setUpChannelProvider(
+                InstantiatingGrpcChannelProvider.newBuilder()
+                        .setKeepAliveTimeDuration(keepAliveTime)
+                        .setKeepAliveTimeoutDuration(keepAliveTimeout)
+                        .setKeepAliveWithoutCalls(true)
+                        .setMaxInboundMetadataSize(16 * 1024)
+                        .setChannelPoolSettings(channelPoolSettings),
+                serviceOptions);
+
+        assertThat(channelProvider).isInstanceOf(InstantiatingGrpcChannelProvider.class);
+        InstantiatingGrpcChannelProvider grpcChannelProvider = (InstantiatingGrpcChannelProvider) channelProvider;
+        assertThat(grpcChannelProvider.getKeepAliveTimeDuration()).isEqualTo(keepAliveTime);
+        assertThat(grpcChannelProvider.getKeepAliveTimeoutDuration()).isEqualTo(keepAliveTimeout);
+        assertThat(grpcChannelProvider.getKeepAliveWithoutCalls()).isTrue();
+        assertThat(grpcChannelProvider.getMaxInboundMetadataSize()).isEqualTo(16 * 1024);
+        assertThat(grpcChannelProvider.getChannelPoolSettings()).isEqualTo(channelPoolSettings);
     }
 
     @Test
