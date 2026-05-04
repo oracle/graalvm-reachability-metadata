@@ -36,6 +36,7 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.unique
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.int
+import com.github.ajalt.clikt.sources.MapValueSource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -184,6 +185,33 @@ public class Clikt_core_jvmTest {
         assertThat(conflictingFormat).isInstanceOf(MutuallyExclusiveGroupException::class.java)
     }
 
+    @Test
+    fun `uses chained map value sources for option values`() {
+        val configuredCommand = ValueSourceCommand()
+
+        configuredCommand.parse(emptyList())
+
+        assertThat(configuredCommand.settings).isEqualTo(
+            ValueSourceSettings(
+                host = "primary.example.test",
+                port = 9000,
+                label = "fallback-label",
+            ),
+        )
+
+        val commandLineCommand = ValueSourceCommand()
+
+        commandLineCommand.parse(listOf("--host", "cli.example.test", "--label", "cli-label"))
+
+        assertThat(commandLineCommand.settings).isEqualTo(
+            ValueSourceSettings(
+                host = "cli.example.test",
+                port = 9000,
+                label = "cli-label",
+            ),
+        )
+    }
+
     private data class ProcessingResult(
         val count: Int,
         val mode: String,
@@ -327,6 +355,39 @@ public class Clikt_core_jvmTest {
         override fun run() {
             val value = requireNotNull(credentials)
             summary = "${value.username}:${value.password}:$format"
+        }
+    }
+
+    private data class ValueSourceSettings(
+        val host: String,
+        val port: Int,
+        val label: String,
+    )
+
+    private class ValueSourceCommand : CoreCliktCommand("service") {
+        private val host: String by option("--host", valueSourceKey = "service.host").required()
+        private val port: Int by option("--port", valueSourceKey = "service.port").int().required()
+        private val label: String by option("--label", valueSourceKey = "service.label").required()
+
+        var settings: ValueSourceSettings? = null
+            private set
+
+        init {
+            configureContext {
+                valueSources(
+                    MapValueSource(
+                        mapOf(
+                            "service.host" to "primary.example.test",
+                            "service.port" to "9000",
+                        ),
+                    ),
+                    MapValueSource(mapOf("service.label" to "fallback-label")),
+                )
+            }
+        }
+
+        override fun run() {
+            settings = ValueSourceSettings(host = host, port = port, label = label)
         }
     }
 }
