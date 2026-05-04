@@ -180,6 +180,25 @@ class Upack_3Test {
   }
 
   @Test
+  def parsesMultipleTopLevelMessagesFromOneReader(): Unit = {
+    val first: Array[Byte] = upack.write(Str("first"))
+    val second: Array[Byte] = upack.write(Int32(42))
+    val third: Array[Byte] = upack.write(Arr(False, Null))
+    val reader: MsgPackReader = new MsgPackReader(first ++ second ++ third)
+
+    assertEquals("first", reader.parse(Msg).str)
+    assertEquals(first.length, reader.getIndex)
+
+    assertEquals(42, reader.parse(Msg).int32)
+    assertEquals(first.length + second.length, reader.getIndex)
+
+    val parsedThird: Msg = reader.parse(Msg)
+    assertFalse(parsedThird.arr(0).bool)
+    assertTrue(parsedThird.arr(1).isNull)
+    assertEquals(first.length + second.length + third.length, reader.getIndex)
+  }
+
+  @Test
   def exposesTypedAccessorsAndReportsInvalidAccesses(): Unit = {
     assertEquals("text", Str("text").str)
     assertEquals(12, Int64(12L).int32)
