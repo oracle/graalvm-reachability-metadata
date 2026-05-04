@@ -6,6 +6,7 @@
  */
 package com_typesafe_scala_logging.scala_logging_3
 
+import com.typesafe.scalalogging.AnyLogging
 import com.typesafe.scalalogging.CanLog
 import com.typesafe.scalalogging.LazyLogging
 import com.typesafe.scalalogging.Logger
@@ -234,6 +235,18 @@ class ScalaLogging3Test {
     assertNotNull(strictComponent.currentLogger.underlying)
   }
 
+  @Test
+  def anyLoggingUsesUserProvidedLogger(): Unit = {
+    val underlying: RecordingSlf4jLogger = RecordingSlf4jLogger("custom-any-logging", enabledLevels = Set("INFO"))
+    val component: AnyLoggingComponent = AnyLoggingComponent(Logger(underlying))
+
+    component.info("provided logger message")
+
+    assertSame(underlying, component.currentLogger.underlying)
+    assertEquals(1, underlying.records.size)
+    assertRecord(underlying.records.head, "INFO", None, "provided logger message", Seq.empty, None)
+  }
+
   private def assertRecord(
     record: LogRecord,
     level: String,
@@ -265,6 +278,16 @@ class ScalaLogging3Test {
 
   private object StrictComponent {
     def apply(): StrictComponent = new StrictComponent()
+  }
+
+  private final class AnyLoggingComponent(override protected val logger: Logger) extends AnyLogging {
+    def currentLogger: Logger = logger
+
+    def info(message: String): Unit = logger.info(message)
+  }
+
+  private object AnyLoggingComponent {
+    def apply(logger: Logger): AnyLoggingComponent = new AnyLoggingComponent(logger)
   }
 
   private final case class LogRecord(
