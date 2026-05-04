@@ -122,6 +122,21 @@ class Scopt_3Test {
   }
 
   @Test
+  def treatsTokensAfterDoubleDashAsPositionalArguments(): Unit = {
+    val (parsedConfig, effects) = OParser.runParser(
+      delimiterParser,
+      Seq("--verbose", "--", "--not-an-option", "-v", "plain-value"),
+      DelimiterConfig()
+    )
+
+    assertThat(parsedConfig.isDefined).isTrue()
+    val config: DelimiterConfig = parsedConfig.get
+    assertThat(config.verbose).isTrue()
+    assertThat(config.values.asJava).containsExactly("--not-an-option", "-v", "plain-value")
+    assertThat(errorMessages(effects).asJava).isEmpty()
+  }
+
+  @Test
   def enforcesExplicitOccurrenceBoundsForRepeatableOptions(): Unit = {
     val acceptedRun = OParser.runParser(
       occurrenceBoundParser,
@@ -243,6 +258,22 @@ class Scopt_3Test {
     )
   }
 
+  private def delimiterParser: OParser[?, DelimiterConfig] = {
+    val builder: OParserBuilder[DelimiterConfig] = OParser.builder[DelimiterConfig]
+    import builder.*
+
+    OParser.sequence(
+      programName("literal-tool"),
+      opt[Unit]('v', "verbose")
+        .action((_: Unit, config: DelimiterConfig) => config.copy(verbose = true))
+        .text("enable verbose logging"),
+      arg[String]("<value>...")
+        .unbounded()
+        .action((value: String, config: DelimiterConfig) => config.copy(values = config.values :+ value))
+        .text("literal values")
+    )
+  }
+
   private def occurrenceBoundParser: OParser[?, OccurrenceConfig] = {
     val builder: OParserBuilder[OccurrenceConfig] = OParser.builder[OccurrenceConfig]
     import builder.*
@@ -273,6 +304,8 @@ class Scopt_3Test {
     }
 
   private final case class Port(value: Int)
+
+  private final case class DelimiterConfig(verbose: Boolean = false, values: Seq[String] = Seq.empty)
 
   private final case class OccurrenceConfig(tags: Seq[String] = Seq.empty)
 
