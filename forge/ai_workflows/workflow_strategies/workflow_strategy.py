@@ -432,7 +432,7 @@ class WorkflowStrategy(ABC):
         print(f"ERROR: checkMetadataFiles still fails after updating allowed-packages for {library}.", file=sys.stderr)
         return False
 
-    def _finalize_successful_iteration(self) -> tuple[str, str | None]:
+    def _finalize_successful_iteration(self, base_commit: str | None = None) -> tuple[str, str | None]:
         """Generate metadata, run follow-up Gradle tasks, and commit the iteration."""
         log_stage("generate-metadata", f"Running generateMetadata for {self.library}")
         self._run_command(f"./gradlew generateMetadata -Pcoordinates={self.library} --agentAllowedPackages=fromJar")
@@ -455,6 +455,7 @@ class WorkflowStrategy(ABC):
                 artifact=artifact,
                 library_version=library_version,
                 model_name=self.model_name,
+                base_commit=base_commit,
             ):
                 return RUN_STATUS_FAILURE, None
         log_stage("commit-iteration", f"Running commit iteration for {self.library}")

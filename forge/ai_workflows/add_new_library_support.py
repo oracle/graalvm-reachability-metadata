@@ -389,6 +389,18 @@ def write_add_new_library_support_metrics(run_metrics, metrics_json, is_benchmar
     log_stage("schema-validation", "Schema validated")
 
 
+def _should_create_failure_run_metrics(
+        workflow_status: str,
+        unittest_number: int,
+        scaffold_placeholder_quality_gate_failed: bool,
+) -> bool:
+    """Return True when normal coverage/metadata metrics must not be collected."""
+    return (
+        scaffold_placeholder_quality_gate_failed
+        or workflow_status == RUN_STATUS_FAILURE
+        or (unittest_number == 0 and workflow_status != SUCCESS_WITH_INTERVENTION_STATUS)
+    )
+
 
 def main(argv=None):
     (
@@ -600,7 +612,7 @@ def main(argv=None):
             elif not strategy_obj._commit_library_iteration():
                 workflow_status = RUN_STATUS_FAILURE
         else:
-            finalize_status, _ = strategy_obj._finalize_successful_iteration()
+            finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=checkpoint_commit_hash)
             if finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} and workflow_status == RUN_STATUS_CHUNK_READY:
                 workflow_status = RUN_STATUS_CHUNK_READY
             else:
@@ -614,21 +626,16 @@ def main(argv=None):
     else:
         log_stage("status", "Test generation failed")
 
+    create_failure_metrics = _should_create_failure_run_metrics(
+        workflow_status,
+        unittest_number,
+        scaffold_placeholder_quality_gate_failed,
+    )
     if scaffold_placeholder_quality_gate_failed:
         log_stage("status", "Generated tests failed scaffold placeholder quality gate")
-        run_metrics = create_failure_run_metrics_output(
-            package=package,
-            artifact=artifact,
-            library_version=library_version,
-            agent=agent,
-            model_name=model_name,
-            global_iterations=global_iterations,
-            strategy_name=strategy_name,
-            starting_commit=checkpoint_commit_hash,
-            ending_commit=ending_commit_hash,
-        )
     elif unittest_number == 0 and workflow_status != SUCCESS_WITH_INTERVENTION_STATUS:
         log_stage("status", "No valid unit test generated")
+    if create_failure_metrics:
         run_metrics = create_failure_run_metrics_output(
             package=package,
             artifact=artifact,

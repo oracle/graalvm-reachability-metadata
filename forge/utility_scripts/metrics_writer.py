@@ -19,6 +19,10 @@ import utility_scripts.count_reachability_entries as reachability_metadata_count
 import utility_scripts.count_native_image_config_entries as legacy_metadata_count
 from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
+from utility_scripts.native_image_config_policy import (
+    find_changed_legacy_test_native_image_config_files_for_coordinate,
+    format_legacy_test_native_image_config_error,
+)
 from utility_scripts.source_context import resolve_test_source_layout
 from utility_scripts.strategy_loader import load_strategy_by_name
 from git_scripts.common_git import git_remote_exists
@@ -238,8 +242,23 @@ def count_metadata_entries(repo_path: str, package: str, artifact: str, library_
     return total
 
 
-def count_test_only_metadata_entries(repo_path: str, package: str, artifact: str, library_version: str) -> int:
+def count_test_only_metadata_entries(
+        repo_path: str,
+        package: str,
+        artifact: str,
+        library_version: str,
+        base_commit: str | None = None,
+) -> int:
     """Count test-only reachability metadata entries for a library version."""
+    coordinate = f"{package}:{artifact}:{library_version}"
+    legacy_test_config_paths = (
+        find_changed_legacy_test_native_image_config_files_for_coordinate(repo_path, coordinate, base_commit)
+        if base_commit is not None
+        else []
+    )
+    if legacy_test_config_paths:
+        raise ValueError(format_legacy_test_native_image_config_error(legacy_test_config_paths))
+
     test_version = _resolve_test_version_dir(repo_path, package, artifact, library_version)
     reach_json = os.path.join(
         repo_path,
@@ -293,6 +312,7 @@ def collect_and_print_metrics(
         agent,
         model_name: str | None,
         global_iterations: int,
+        starting_commit: str | None = None,
 ):
     """
     Compute metrics and print the same output produced previously.
@@ -326,7 +346,13 @@ def collect_and_print_metrics(
 
     # Calculating generated metadata entries
     total_entries = count_metadata_entries(repo_path, package, artifact, library_version)
-    test_only_metadata_entries = count_test_only_metadata_entries(repo_path, package, artifact, library_version)
+    test_only_metadata_entries = count_test_only_metadata_entries(
+        repo_path,
+        package,
+        artifact,
+        library_version,
+        base_commit=starting_commit,
+    )
 
     cached_tokens_suffix = ""
     if cached_input_tokens_used is not None:
@@ -471,7 +497,16 @@ def _is_test_source_file(file_name: str) -> bool:
     return file_name.endswith((".java", ".kt", ".scala", ".groovy"))
 
 
-def collect_base_metrics(repo_path, package, artifact, library_version, agent, model_name, global_iterations):
+def collect_base_metrics(
+        repo_path,
+        package,
+        artifact,
+        library_version,
+        agent,
+        model_name,
+        global_iterations,
+        starting_commit: str | None = None,
+):
     """Collect metrics and compute cost. Returns a flat dict of metric values."""
     metrics = collect_and_print_metrics(
         repo_path=repo_path,
@@ -481,6 +516,7 @@ def collect_base_metrics(repo_path, package, artifact, library_version, agent, m
         agent=agent,
         model_name=model_name,
         global_iterations=global_iterations,
+        starting_commit=starting_commit,
     )
     return metrics
 
@@ -503,7 +539,16 @@ def create_run_metrics_output_json(
     """
     Build a run_metrics dict using collected metrics.
     """
-    metrics = collect_base_metrics(repo_path, package, artifact, library_version, agent, model_name, global_iterations)
+    metrics = collect_base_metrics(
+        repo_path,
+        package,
+        artifact,
+        library_version,
+        agent,
+        model_name,
+        global_iterations,
+        starting_commit=starting_commit,
+    )
     test_file, metadata_file = resolve_artifact_paths(repo_path, package, artifact, library_version, tests_root)
     agent_name = resolve_agent(strategy_name)
     stats = load_library_stats_snapshot(repo_path, package, artifact, library_version)
@@ -552,7 +597,16 @@ def create_javac_fix_run_metrics_output_json(
         post_generation_intervention: dict | None = None,
 ):
     """Build run metrics for fix_javac_fail workflow including previous-version metrics."""
-    metrics = collect_base_metrics(repo_path, package, artifact, new_library_version, agent, model_name, global_iterations)
+    metrics = collect_base_metrics(
+        repo_path,
+        package,
+        artifact,
+        new_library_version,
+        agent,
+        model_name,
+        global_iterations,
+        starting_commit=starting_commit,
+    )
     test_file, metadata_file = resolve_artifact_paths(repo_path, package, artifact, new_library_version, tests_root)
 
     previous_coverage_percent, _ = collect_version_coverage_metrics(

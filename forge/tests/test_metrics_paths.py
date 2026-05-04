@@ -5,6 +5,7 @@
 
 import json
 import os
+import subprocess
 import tempfile
 import unittest
 
@@ -22,6 +23,28 @@ from utility_scripts.metrics_writer import (
     execution_metrics_path,
     resolve_artifact_paths,
 )
+from utility_scripts.native_image_config_policy import (
+    find_legacy_test_native_image_config_files_for_coordinate,
+    is_legacy_test_native_image_config_path,
+)
+
+
+def _git(repo_path: str, *args: str) -> str:
+    result = subprocess.run(
+        ["git", *args],
+        cwd=repo_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+    )
+    return result.stdout.strip()
+
+
+def _commit_all(repo_path: str, message: str) -> str:
+    _git(repo_path, "add", "-A")
+    _git(repo_path, "-c", "user.name=Forge Test", "-c", "user.email=forge@example.com", "commit", "-m", message)
+    return _git(repo_path, "rev-parse", "HEAD")
 
 
 def _minimal_run_metrics(library: str = "org.example:demo:1.0.0") -> dict:
@@ -368,6 +391,104 @@ class MetricsPathTests(unittest.TestCase):
                 )
 
             self.assertEqual(count_test_only_metadata_entries(temp_dir, "org.example", "demo", "1.0.0"), 3)
+
+    def test_count_test_only_metadata_entries_rejects_legacy_native_image_config(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            _git(temp_dir, "init")
+            with open(os.path.join(temp_dir, "README.md"), "w", encoding="utf-8") as file:
+                file.write("base\n")
+            base = _commit_all(temp_dir, "base")
+            test_metadata_dir = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "src",
+                "test",
+                "resources",
+                "META-INF",
+                "native-image",
+            )
+            os.makedirs(test_metadata_dir)
+            with open(os.path.join(test_metadata_dir, "serialization-config.json"), "w", encoding="utf-8") as file:
+                json.dump([], file)
+            _commit_all(temp_dir, "generated legacy config")
+
+            with self.assertRaisesRegex(ValueError, "reachability-metadata.json"):
+                count_test_only_metadata_entries(temp_dir, "org.example", "demo", "1.0.0", base_commit=base)
+
+    def test_count_test_only_metadata_entries_grandfathers_existing_legacy_native_image_config(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            _git(temp_dir, "init")
+            test_metadata_dir = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "src",
+                "test",
+                "resources",
+                "META-INF",
+                "native-image",
+            )
+            os.makedirs(test_metadata_dir)
+            with open(os.path.join(test_metadata_dir, "serialization-config.json"), "w", encoding="utf-8") as file:
+                json.dump([], file)
+            base = _commit_all(temp_dir, "existing legacy config")
+
+            self.assertEqual(count_test_only_metadata_entries(
+                temp_dir,
+                "org.example",
+                "demo",
+                "1.0.0",
+                base_commit=base,
+            ), 0)
+
+    def test_native_image_config_policy_resolves_test_version_from_index(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            metadata_dir = os.path.join(temp_dir, "metadata", "org.example", "demo")
+            test_metadata_dir = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "src",
+                "test",
+                "resources",
+                "META-INF",
+                "native-image",
+            )
+            os.makedirs(metadata_dir)
+            os.makedirs(test_metadata_dir)
+            with open(os.path.join(metadata_dir, "index.json"), "w", encoding="utf-8") as file:
+                json.dump(
+                    [
+                        {
+                            "metadata-version": "1.0.0",
+                            "test-version": "1.0.0",
+                            "tested-versions": ["1.0.1"],
+                        }
+                    ],
+                    file,
+                )
+            with open(os.path.join(test_metadata_dir, "resource-config.json"), "w", encoding="utf-8") as file:
+                json.dump({"resources": {"includes": []}}, file)
+
+            self.assertTrue(is_legacy_test_native_image_config_path(
+                "tests/src/org.example/demo/1.0.0/src/test/resources/META-INF/native-image/resource-config.json"
+            ))
+            self.assertEqual(
+                find_legacy_test_native_image_config_files_for_coordinate(temp_dir, "org.example:demo:1.0.1"),
+                [
+                    "tests/src/org.example/demo/1.0.0/src/test/resources/META-INF/native-image/resource-config.json",
+                ],
+            )
 
     def test_create_run_metrics_includes_test_only_metadata_entries_only_when_positive(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

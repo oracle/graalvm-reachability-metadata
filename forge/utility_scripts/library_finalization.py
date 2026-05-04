@@ -12,6 +12,11 @@ import sys
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import find_index_entry_for_version
 from utility_scripts.style_checks import run_style_fix_and_checks
+from utility_scripts.native_image_config_policy import (
+    find_changed_legacy_test_native_image_config_files_for_coordinate,
+    find_uncommitted_legacy_test_native_image_config_files_for_coordinate,
+    format_legacy_test_native_image_config_error,
+)
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.test_quality_checks import (
@@ -200,11 +205,22 @@ def run_library_finalization(
         library_version: str,
         log_prefix: str | None = None,
         model_name: str | None = None,
+        base_commit: str | None = None,
 ) -> bool:
     """Run the shared end-of-workflow finalization steps for one library."""
     del log_prefix
     log_stage("split-test-only-metadata", f"Running splitTestOnlyMetadata for {library}")
     if not _run_gradle_command(repo_path, ["./gradlew", "splitTestOnlyMetadata", f"-Pcoordinates={library}"]):
+        return False
+    legacy_test_config_paths = set(
+        find_uncommitted_legacy_test_native_image_config_files_for_coordinate(repo_path, library)
+    )
+    if base_commit is not None:
+        legacy_test_config_paths.update(
+            find_changed_legacy_test_native_image_config_files_for_coordinate(repo_path, library, base_commit)
+        )
+    if legacy_test_config_paths:
+        print(format_legacy_test_native_image_config_error(sorted(legacy_test_config_paths)), file=sys.stderr)
         return False
     if not _run_check_metadata_files_with_allowed_packages_fix(
         repo_path=repo_path,
