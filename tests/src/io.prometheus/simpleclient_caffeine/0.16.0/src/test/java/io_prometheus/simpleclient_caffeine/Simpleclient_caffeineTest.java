@@ -52,6 +52,37 @@ public class Simpleclient_caffeineTest {
     }
 
     @Test
+    void collectReportsMetricsForMultipleCaches() {
+        Cache<String, String> usersCache = Caffeine.newBuilder()
+                .recordStats()
+                .build();
+        usersCache.put("alice", "admin");
+        assertThat(usersCache.getIfPresent("alice")).isEqualTo("admin");
+
+        Cache<String, String> sessionsCache = Caffeine.newBuilder()
+                .recordStats()
+                .build();
+        sessionsCache.put("session-1", "alice");
+        sessionsCache.put("session-2", "bob");
+        assertThat(sessionsCache.getIfPresent("session-1")).isEqualTo("alice");
+        assertThat(sessionsCache.getIfPresent("expired")).isNull();
+
+        CacheMetricsCollector collector = new CacheMetricsCollector();
+        collector.addCache("users", usersCache);
+        collector.addCache("sessions", sessionsCache);
+
+        List<MetricFamilySamples> samples = collector.collect();
+        assertThat(metricValue(samples, "caffeine_cache_hit", "users")).isEqualTo(1.0);
+        assertThat(metricValue(samples, "caffeine_cache_miss", "users")).isEqualTo(0.0);
+        assertThat(metricValue(samples, "caffeine_cache_requests", "users")).isEqualTo(1.0);
+        assertThat(metricValue(samples, "caffeine_cache_estimated_size", "users")).isEqualTo(1.0);
+        assertThat(metricValue(samples, "caffeine_cache_hit", "sessions")).isEqualTo(1.0);
+        assertThat(metricValue(samples, "caffeine_cache_miss", "sessions")).isEqualTo(1.0);
+        assertThat(metricValue(samples, "caffeine_cache_requests", "sessions")).isEqualTo(2.0);
+        assertThat(metricValue(samples, "caffeine_cache_estimated_size", "sessions")).isEqualTo(2.0);
+    }
+
+    @Test
     void collectReportsLoadingCacheSuccessesFailuresAndDurationSummary() {
         AtomicInteger loadCount = new AtomicInteger();
         LoadingCache<String, String> cache = Caffeine.newBuilder()
