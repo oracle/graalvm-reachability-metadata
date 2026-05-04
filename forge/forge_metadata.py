@@ -129,6 +129,9 @@ REVIEW_PERIOD_SUFFIX_SECONDS = {
     "h": 60 * 60,
     "d": 24 * 60 * 60,
 }
+FAILED_CI_STATES = {"FAILURE", "ERROR"}
+RERUNNABLE_WORKFLOW_RUN_CONCLUSIONS = {"failure"}
+MAX_AUTOMATED_WORKFLOW_RERUN_ATTEMPTS = 3
 
 REPO = "oracle/graalvm-reachability-metadata"
 PROJECT_NUMBER = 30
@@ -1231,6 +1234,76 @@ def has_passing_pull_request_gates(pr: dict) -> bool:
     )
 
 
+def has_failed_pull_request_ci(pr: dict) -> bool:
+    """Return True when the pull request's combined CI status is failed."""
+    status_check_rollup = pr.get("statusCheckRollup")
+    ci_state = status_check_rollup.get("state") if isinstance(status_check_rollup, dict) else None
+    return ci_state in FAILED_CI_STATES
+
+
+def get_pull_request_workflow_runs(head_sha: str) -> list[dict]:
+    """Return GitHub Actions workflow runs for the pull request head commit."""
+    data = gh_json(
+        "api",
+        "--method",
+        "GET",
+        f"/repos/{REPO}/actions/runs",
+        "-F",
+        f"head_sha={head_sha}",
+        "-F",
+        "event=pull_request",
+        "-F",
+        "per_page=100",
+    )
+    workflow_runs = data.get("workflow_runs") if isinstance(data, dict) else None
+    if not isinstance(workflow_runs, list):
+        print(f"ERROR: Missing workflow runs for pull request head {head_sha}.", file=sys.stderr)
+        raise RuntimeError(f"Missing workflow runs for pull request head {head_sha}")
+    return workflow_runs
+
+
+def get_rerunnable_failed_workflow_run_ids(workflow_runs: list[dict]) -> list[int]:
+    """Return failed GitHub Actions run IDs below the automated rerun limit."""
+    run_ids: list[int] = []
+    for workflow_run in workflow_runs:
+        if not isinstance(workflow_run, dict):
+            continue
+        run_id = workflow_run.get("id")
+        run_attempt = workflow_run.get("run_attempt")
+        conclusion = workflow_run.get("conclusion")
+        if (
+                isinstance(run_id, int)
+                and isinstance(run_attempt, int)
+                and run_attempt < MAX_AUTOMATED_WORKFLOW_RERUN_ATTEMPTS
+                and conclusion in RERUNNABLE_WORKFLOW_RUN_CONCLUSIONS
+        ):
+            run_ids.append(run_id)
+    return run_ids
+
+
+def rerun_failed_pull_request_workflow_jobs(pr_number: int, head_sha: str) -> int:
+    """Rerun failed GitHub Actions jobs for the current pull request head SHA."""
+    workflow_runs = get_pull_request_workflow_runs(head_sha)
+    run_ids = get_rerunnable_failed_workflow_run_ids(workflow_runs)
+    if not run_ids:
+        print(
+            f"[No failed GitHub Actions workflow runs eligible for rerun on PR #{pr_number} "
+            f"at head {head_sha}.]"
+        )
+        return 0
+
+    for run_id in run_ids:
+        print(f"[Rerunning failed GitHub Actions jobs for PR #{pr_number}, workflow run {run_id}.]")
+        gh(
+            "api",
+            "--method",
+            "POST",
+            f"/repos/{REPO}/actions/runs/{run_id}/rerun-failed-jobs",
+        )
+
+    return len(run_ids)
+
+
 def resolve_pull_request_merge_flag(pr: dict) -> str:
     """Resolve the merge method flag, preferring squash merges by default."""
     repository = pr.get("repository")
@@ -1299,6 +1372,24 @@ def reconcile_reviewed_pull_request(pr_number: int) -> bool:
 
         if review_decision != "APPROVED":
             print(f"[Skipping merge for PR #{pr_number}: review decision is '{review_decision}'.]")
+            return True
+
+        if has_failed_pull_request_ci(pr):
+            head_sha = pr.get("headRefOid")
+            if not isinstance(head_sha, str) or not head_sha:
+                print(f"ERROR: Missing head SHA for approved PR #{pr_number} with failed CI.", file=sys.stderr)
+                raise RuntimeError(f"Missing head SHA for approved PR #{pr_number} with failed CI")
+            rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
+            if rerun_count:
+                print(
+                    f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+                    f"for approved PR #{pr_number}; skipping merge for this pass.]"
+                )
+            else:
+                print(
+                    f"[Skipping merge for approved PR #{pr_number}: CI failed, but no eligible "
+                    "GitHub Actions workflow runs were found to rerun.]"
+                )
             return True
 
         if not has_passing_pull_request_gates(pr):

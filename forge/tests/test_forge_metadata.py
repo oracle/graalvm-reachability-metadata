@@ -1596,6 +1596,85 @@ class InterruptHandlingTests(unittest.TestCase):
 
 
 class PullRequestReviewTests(unittest.TestCase):
+    def test_reconcile_approved_pr_with_failed_ci_reruns_failed_jobs_without_merging(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+            "reviewDecision": "APPROVED",
+            "mergeable": "MERGEABLE",
+            "mergeStateStatus": "CLEAN",
+            "statusCheckRollup": {"state": "FAILURE"},
+        }
+
+        with patch.object(forge_metadata, "get_pull_request_state", return_value=pr), \
+                patch.object(
+                    forge_metadata,
+                    "rerun_failed_pull_request_workflow_jobs",
+                    return_value=1,
+                ) as rerun_failed_jobs, \
+                patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
+            self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513))
+
+        rerun_failed_jobs.assert_called_once_with(3513, "abc123")
+        merge_pull_request.assert_not_called()
+
+    def test_reconcile_unapproved_pr_with_failed_ci_does_not_rerun_failed_jobs(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+            "reviewDecision": "REVIEW_REQUIRED",
+            "mergeable": "MERGEABLE",
+            "mergeStateStatus": "CLEAN",
+            "statusCheckRollup": {"state": "FAILURE"},
+        }
+
+        with patch.object(forge_metadata, "get_pull_request_state", return_value=pr), \
+                patch.object(
+                    forge_metadata,
+                    "rerun_failed_pull_request_workflow_jobs",
+                ) as rerun_failed_jobs, \
+                patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
+            self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513))
+
+        rerun_failed_jobs.assert_not_called()
+        merge_pull_request.assert_not_called()
+
+    def test_rerun_failed_pull_request_workflow_jobs_reruns_failures_under_attempt_limit(self) -> None:
+        workflow_runs = [
+            {"id": 101, "conclusion": "failure", "run_attempt": 1},
+            {"id": 102, "conclusion": "failure", "run_attempt": 2},
+            {"id": 103, "conclusion": "failure", "run_attempt": 3},
+            {"id": 104, "conclusion": "success", "run_attempt": 1},
+            {"id": 105, "conclusion": None, "run_attempt": 1},
+        ]
+
+        with patch.object(forge_metadata, "get_pull_request_workflow_runs", return_value=workflow_runs), \
+                patch.object(forge_metadata, "gh") as gh:
+            self.assertEqual(
+                forge_metadata.rerun_failed_pull_request_workflow_jobs(3513, "abc123"),
+                2,
+            )
+
+        self.assertEqual(
+            gh.call_args_list,
+            [
+                call(
+                    "api",
+                    "--method",
+                    "POST",
+                    f"/repos/{forge_metadata.REPO}/actions/runs/101/rerun-failed-jobs",
+                ),
+                call(
+                    "api",
+                    "--method",
+                    "POST",
+                    f"/repos/{forge_metadata.REPO}/actions/runs/102/rerun-failed-jobs",
+                ),
+            ],
+        )
+
     def test_fetch_review_base_ref_updates_origin_master_without_pull(self) -> None:
         completed_process = subprocess.CompletedProcess(args=[], returncode=0, stdout="")
 
