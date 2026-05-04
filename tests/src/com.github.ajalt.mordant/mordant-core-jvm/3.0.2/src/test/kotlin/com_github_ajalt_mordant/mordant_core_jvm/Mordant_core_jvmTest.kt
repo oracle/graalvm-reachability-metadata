@@ -28,6 +28,7 @@ import com.github.ajalt.mordant.terminal.StringPrompt
 import com.github.ajalt.mordant.terminal.Terminal
 import com.github.ajalt.mordant.terminal.TerminalRecorder
 import com.github.ajalt.mordant.terminal.YesNoPrompt
+import com.github.ajalt.mordant.terminal.outputAsHtml
 import com.github.ajalt.mordant.widgets.Caption
 import com.github.ajalt.mordant.widgets.HorizontalRule
 import com.github.ajalt.mordant.widgets.OrderedList
@@ -59,6 +60,22 @@ public class Mordant_core_jvmTest {
         assertThat(style.bold).isTrue()
         assertThat(style.underline).isTrue()
         assertThat(style.color).isNotNull()
+    }
+
+    @Test
+    fun terminalRecorderExportsStyledOutputAsEscapedHtml() {
+        val (terminal, recorder) = terminal(AnsiLevel.TRUECOLOR, width = 60)
+        val style = TextColors.rgb("#123456") + TextStyles.bold + TextStyles.italic
+
+        terminal.println(style("build <ok> & ready"))
+
+        val html = recorder.outputAsHtml(false, true, null)
+
+        assertThat(html).startsWith("<pre")
+        assertThat(html).contains("<code>", "</code>")
+        assertThat(html).contains("build &lt;ok&gt; &amp; ready")
+        assertThat(html).contains("color: #123456", "font-weight: bold", "font-style: italic")
+        assertThat(html).doesNotContain("\u001B[")
     }
 
     @Test
