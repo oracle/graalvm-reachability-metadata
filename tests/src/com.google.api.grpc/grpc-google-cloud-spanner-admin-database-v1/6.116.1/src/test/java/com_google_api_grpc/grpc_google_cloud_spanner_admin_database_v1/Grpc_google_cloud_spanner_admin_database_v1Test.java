@@ -15,6 +15,7 @@ import com.google.iam.v1.SetIamPolicyRequest;
 import com.google.iam.v1.TestIamPermissionsRequest;
 import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.longrunning.Operation;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.MessageLite;
@@ -65,6 +66,9 @@ import io.grpc.ServerServiceDefinition;
 import io.grpc.ServiceDescriptor;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import io.grpc.protobuf.ProtoFileDescriptorSupplier;
+import io.grpc.protobuf.ProtoMethodDescriptorSupplier;
+import io.grpc.protobuf.ProtoServiceDescriptorSupplier;
 import io.grpc.stub.StreamObserver;
 import java.io.InputStream;
 import java.util.List;
@@ -119,6 +123,30 @@ public class Grpc_google_cloud_spanner_admin_database_v1Test {
         assertUnaryMethod(DatabaseAdminGrpc.getDeleteBackupScheduleMethod(), "DeleteBackupSchedule");
         assertUnaryMethod(DatabaseAdminGrpc.getListBackupSchedulesMethod(), "ListBackupSchedules");
         assertUnaryMethod(DatabaseAdminGrpc.getInternalUpdateGraphOperationMethod(), "InternalUpdateGraphOperation");
+    }
+
+    @Test
+    void protobufSchemaDescriptorsExposeDatabaseAdminDefinitions() {
+        ProtoFileDescriptorSupplier fileSupplier =
+                (ProtoFileDescriptorSupplier) DatabaseAdminGrpc.getServiceDescriptor().getSchemaDescriptor();
+        ProtoServiceDescriptorSupplier serviceSupplier =
+                (ProtoServiceDescriptorSupplier) DatabaseAdminGrpc.getServiceDescriptor().getSchemaDescriptor();
+        ProtoMethodDescriptorSupplier methodSupplier =
+                (ProtoMethodDescriptorSupplier) DatabaseAdminGrpc.getGetDatabaseMethod().getSchemaDescriptor();
+
+        Descriptors.FileDescriptor fileDescriptor = fileSupplier.getFileDescriptor();
+        Descriptors.ServiceDescriptor serviceDescriptor = serviceSupplier.getServiceDescriptor();
+        Descriptors.MethodDescriptor methodDescriptor = methodSupplier.getMethodDescriptor();
+
+        assertThat(fileDescriptor.getServices()).contains(serviceDescriptor);
+        assertThat(serviceDescriptor.getFullName()).isEqualTo(DatabaseAdminGrpc.SERVICE_NAME);
+        assertThat(serviceDescriptor.getMethods())
+                .extracting(Descriptors.MethodDescriptor::getName)
+                .containsExactlyInAnyOrderElementsOf(expectedSchemaMethodNames());
+        assertThat(methodDescriptor.getName()).isEqualTo("GetDatabase");
+        assertThat(methodDescriptor.getInputType().getFullName())
+                .isEqualTo(GetDatabaseRequest.getDescriptor().getFullName());
+        assertThat(methodDescriptor.getOutputType().getFullName()).isEqualTo(Database.getDescriptor().getFullName());
     }
 
     @Test
@@ -398,6 +426,12 @@ public class Grpc_google_cloud_spanner_admin_database_v1Test {
                 fullMethodName("DeleteBackupSchedule"),
                 fullMethodName("ListBackupSchedules"),
                 fullMethodName("InternalUpdateGraphOperation"));
+    }
+
+    private static List<String> expectedSchemaMethodNames() {
+        return expectedFullMethodNames().stream()
+                .map(fullMethodName -> fullMethodName.substring(fullMethodName.lastIndexOf('/') + 1))
+                .toList();
     }
 
     private static String fullMethodName(String methodName) {
