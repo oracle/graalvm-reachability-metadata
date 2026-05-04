@@ -16,7 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.api.ClientProto;
+import com.google.api.FieldBehavior;
+import com.google.api.FieldBehaviorProto;
 import com.google.api.HttpRule;
+import com.google.api.ResourceDescriptor;
+import com.google.api.ResourceProto;
+import com.google.api.ResourceReference;
 import com.google.cloud.bigquery.storage.v1beta2.AppendRowsRequest;
 import com.google.cloud.bigquery.storage.v1beta2.AppendRowsResponse;
 import com.google.cloud.bigquery.storage.v1beta2.ArrowRecordBatch;
@@ -46,6 +51,7 @@ import com.google.cloud.bigquery.storage.v1beta2.SplitReadStreamRequest;
 import com.google.cloud.bigquery.storage.v1beta2.SplitReadStreamResponse;
 import com.google.cloud.bigquery.storage.v1beta2.StorageError;
 import com.google.cloud.bigquery.storage.v1beta2.StorageProto;
+import com.google.cloud.bigquery.storage.v1beta2.StreamProto;
 import com.google.cloud.bigquery.storage.v1beta2.StreamStats;
 import com.google.cloud.bigquery.storage.v1beta2.TableFieldSchema;
 import com.google.cloud.bigquery.storage.v1beta2.TableName;
@@ -55,6 +61,8 @@ import com.google.cloud.bigquery.storage.v1beta2.WriteStream;
 import com.google.cloud.bigquery.storage.v1beta2.WriteStreamName;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.MethodDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
@@ -273,6 +281,52 @@ public class Proto_google_cloud_bigquerystorage_v1beta2Test {
         assertEquals(HttpRule.PatternCase.POST, appendRowsHttp.getPatternCase());
         assertEquals("/v1beta2/{write_stream=projects/*/datasets/*/tables/*/streams/*}", appendRowsHttp.getPost());
         assertEquals("*", appendRowsHttp.getBody());
+    }
+
+    @Test
+    void descriptorsExposeResourceReferencesFieldBehaviorsAndResourcePatterns() {
+        FileDescriptor streamDescriptor = StreamProto.getDescriptor();
+        List<ResourceDescriptor> resourceDefinitions = streamDescriptor.getOptions()
+                .getExtension(ResourceProto.resourceDefinition);
+        assertEquals(1, resourceDefinitions.size());
+        assertEquals("bigquery.googleapis.com/Table", resourceDefinitions.get(0).getType());
+        assertIterableEquals(List.of("projects/{project}/datasets/{dataset}/tables/{table}"),
+                resourceDefinitions.get(0).getPatternList());
+
+        ResourceDescriptor readSessionResource = ReadSession.getDescriptor().getOptions()
+                .getExtension(ResourceProto.resource);
+        assertEquals("bigquerystorage.googleapis.com/ReadSession", readSessionResource.getType());
+        assertIterableEquals(List.of("projects/{project}/locations/{location}/sessions/{session}"),
+                readSessionResource.getPatternList());
+
+        ResourceDescriptor readStreamResource = ReadStream.getDescriptor().getOptions()
+                .getExtension(ResourceProto.resource);
+        assertEquals("bigquerystorage.googleapis.com/ReadStream", readStreamResource.getType());
+        assertIterableEquals(List.of("projects/{project}/locations/{location}/sessions/{session}/streams/{stream}"),
+                readStreamResource.getPatternList());
+
+        ResourceDescriptor writeStreamResource = WriteStream.getDescriptor().getOptions()
+                .getExtension(ResourceProto.resource);
+        assertEquals("bigquerystorage.googleapis.com/WriteStream", writeStreamResource.getType());
+        assertIterableEquals(List.of("projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}"),
+                writeStreamResource.getPatternList());
+
+        Descriptor createReadSessionRequest = CreateReadSessionRequest.getDescriptor();
+        FieldDescriptor parentField = createReadSessionRequest.findFieldByName("parent");
+        assertIterableEquals(List.of(FieldBehavior.REQUIRED), parentField.getOptions()
+                .getExtension(FieldBehaviorProto.fieldBehavior));
+        ResourceReference parentReference = parentField.getOptions().getExtension(ResourceProto.resourceReference);
+        assertEquals("cloudresourcemanager.googleapis.com/Project", parentReference.getType());
+
+        FieldDescriptor readSessionField = createReadSessionRequest.findFieldByName("read_session");
+        assertIterableEquals(List.of(FieldBehavior.REQUIRED), readSessionField.getOptions()
+                .getExtension(FieldBehaviorProto.fieldBehavior));
+
+        FieldDescriptor tableField = ReadSession.getDescriptor().findFieldByName("table");
+        assertIterableEquals(List.of(FieldBehavior.IMMUTABLE), tableField.getOptions()
+                .getExtension(FieldBehaviorProto.fieldBehavior));
+        assertEquals("bigquery.googleapis.com/Table", tableField.getOptions()
+                .getExtension(ResourceProto.resourceReference).getType());
     }
 
     @Test
