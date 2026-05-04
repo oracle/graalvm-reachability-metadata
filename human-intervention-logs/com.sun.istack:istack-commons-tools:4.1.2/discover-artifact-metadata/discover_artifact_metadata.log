@@ -1,0 +1,1611 @@
+Starting a Gradle Daemon, 14 busy and 6 incompatible and 188 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df084-659b-7822-818f-22213389e2f2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.istack:istack-commons-tools:4.1.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.1.2" when "$version$" is replaced with "4.1.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+- Set "coordinates" to "com.sun.istack:istack-commons-tools:4.1.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.1.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and the upstream repo, then update the discovered metadata JSON in place. First I’m checking the local metadata conventions so the URLs match the repository’s expected format.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+
+ succeeded in 0ms:
+{
+  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+web search: 
+web search: com.sun.istack istack-commons-tools 4.1.2 Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/
+web search: 
+web search: 
+codex
+Maven Central has the main JAR, sources JAR, and Javadoc JAR for `4.1.2`, which means the source and docs can use Maven-hosted artifacts. I’m checking whether test sources are published; if they are not, I’ll use the upstream tag for the test URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+<!--
+
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.sun.istack</groupId>
+        <artifactId>istack-commons</artifactId>
+        <version>4.1.2</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>istack-commons-tools</artifactId>
+
+    <name>istack common utility code tools</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <argLine/>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>--add-reads</arg>
+                                <arg>com.sun.istack.tools=ALL-UNNAMED</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>--add-reads</arg>
+                                <arg>com.sun.istack.tools=ALL-UNNAMED</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        @{argLine} --add-opens java.base/java.net=com.sun.istack.tools
+                    </argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalJOptions>
+                        <additionalJOption>--add-reads</additionalJOption>
+                        <additionalJOption>com.sun.istack.tools=ALL-UNNAMED</additionalJOption>
+                    </additionalJOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/istack/istack-commons-tools/4.1.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/istack/istack-commons-tools/4.1.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="istack-commons-tools-4.1.2-javadoc.jar" title="istack-commons-tools-4.1.2-javadoc.jar">istack-commons-tools-4.1.2-javadoc.jar</a>            2023-04-11 15:07    432607      
+<a href="istack-commons-tools-4.1.2-javadoc.jar.asc" title="istack-commons-tools-4.1.2-javadoc.jar.asc">istack-commons-tools-4.1.2-javadoc.jar.asc</a>        2023-04-11 15:07       833      
+<a href="istack-commons-tools-4.1.2-javadoc.jar.md5" title="istack-commons-tools-4.1.2-javadoc.jar.md5">istack-commons-tools-4.1.2-javadoc.jar.md5</a>        2023-04-11 15:07        32      
+<a href="istack-commons-tools-4.1.2-javadoc.jar.sha1" title="istack-commons-tools-4.1.2-javadoc.jar.sha1">istack-commons-tools-4.1.2-javadoc.jar.sha1</a>       2023-04-11 15:07        40      
+<a href="istack-commons-tools-4.1.2-sources.jar" title="istack-commons-tools-4.1.2-sources.jar">istack-commons-tools-4.1.2-sources.jar</a>            2023-04-11 15:07     12972      
+<a href="istack-commons-tools-4.1.2-sources.jar.asc" title="istack-commons-tools-4.1.2-sources.jar.asc">istack-commons-tools-4.1.2-sources.jar.asc</a>        2023-04-11 15:07       833      
+<a href="istack-commons-tools-4.1.2-sources.jar.md5" title="istack-commons-tools-4.1.2-sources.jar.md5">istack-commons-tools-4.1.2-sources.jar.md5</a>        2023-04-11 15:07        32      
+<a href="istack-commons-tools-4.1.2-sources.jar.sha1" title="istack-commons-tools-4.1.2-sources.jar.sha1">istack-commons-tools-4.1.2-sources.jar.sha1</a>       2023-04-11 15:07        40      
+<a href="istack-commons-tools-4.1.2.jar" title="istack-commons-tools-4.1.2.jar">istack-commons-tools-4.1.2.jar</a>                    2023-04-11 15:07     22711      
+<a href="istack-commons-tools-4.1.2.jar.asc" title="istack-commons-tools-4.1.2.jar.asc">istack-commons-tools-4.1.2.jar.asc</a>                2023-04-11 15:07       833      
+<a href="istack-commons-tools-4.1.2.jar.md5" title="istack-commons-tools-4.1.2.jar.md5">istack-commons-tools-4.1.2.jar.md5</a>                2023-04-11 15:07        32      
+<a href="istack-commons-tools-4.1.2.jar.sha1" title="istack-commons-tools-4.1.2.jar.sha1">istack-commons-tools-4.1.2.jar.sha1</a>               2023-04-11 15:07        40      
+<a href="istack-commons-tools-4.1.2.pom" title="istack-commons-tools-4.1.2.pom">istack-commons-tools-4.1.2.pom</a>                    2023-04-11 15:07      3925      
+<a href="istack-commons-tools-4.1.2.pom.asc" title="istack-commons-tools-4.1.2.pom.asc">istack-commons-tools-4.1.2.pom.asc</a>                2023-04-11 15:07       833      
+<a href="istack-commons-tools-4.1.2.pom.md5" title="istack-commons-tools-4.1.2.pom.md5">istack-commons-tools-4.1.2.pom.md5</a>                2023-04-11 15:07        32      
+<a href="istack-commons-tools-4.1.2.pom.sha1" title="istack-commons-tools-4.1.2.pom.sha1">istack-commons-tools-4.1.2.pom.sha1</a>               2023-04-11 15:07        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/istack/istack-commons/4.1.2/istack-commons-4.1.2.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.7</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.sun.istack</groupId>
+    <artifactId>istack-commons</artifactId>
+    <version>4.1.2</version>
+    <packaging>pom</packaging>
+    <name>iStack Common Utility Code</name>
+    <description>istack common utility code</description>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-istack-commons.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-istack-commons.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jaxb-istack-commons</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Eclipse Distribution License - v 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Lukas Jungmann</name>
+            <email>lukas.jungmann@oracle.com</email>
+            <organization>Oracle Corporation</organization>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jaxb-istack-commons/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Eclipse Implementation of JAXB mailing list</name>
+            <post>jaxb-impl-dev@eclipse.org</post>
+            <subscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</subscribe>
+            <unsubscribe>https://dev.eclipse.org/mailman/listinfo/jaxb-impl-dev</unsubscribe>
+            <archive>https://dev.eclipse.org/mhonarc/lists/jaxb-impl-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <properties>
+        <project.build.commonResourcesDirectory>${project.build.directory}/common-resources</project.build.commonResourcesDirectory>
+        <legal.doc.source>${project.build.commonResourcesDirectory}/legal</legal.doc.source>
+        <config.dir>${project.build.commonResourcesDirectory}/config</config.dir>
+        <copyright.exclude>${config.dir}/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.exclude>${config.dir}/spotbugs-exclude.xml</spotbugs.exclude>
+        <spotbugs.skip>false</spotbugs.skip>
+        <spotbugs.threshold>Low</spotbugs.threshold>
+        <spotbugs.version>4.7.3.4</spotbugs.version>
+
+        <activation.version>2.1.1</activation.version>
+        <maven.api.version>3.9.1</maven.api.version>
+        <maven.resolver.version>1.9.7</maven.resolver.version>
+        <junit.version>4.13.2</junit.version>
+        <ant.version>1.10.13</ant.version>
+        <codemodel.version>4.0.2</codemodel.version>
+        <plexus-utils.version>3.5.1</plexus-utils.version>
+        <maven-plugin-annotations.version>3.8.1</maven-plugin-annotations.version>
+        <testng.version>7.7.1</testng.version>
+        <args4j.version>2.33</args4j.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.testRelease>${maven.compiler.release}</maven.compiler.testRelease>
+        <vendor.name>Eclipse Foundation</vendor.name>
+    </properties>
+
+    <modules>
+        <module>buildtools</module>
+        <module>runtime</module>
+        <module>test</module>
+        <module>tools</module>
+        <module>maven-plugin</module>
+        <module>import-properties-plugin</module>
+        <module>soimp</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${activation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>${ant.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-junit</artifactId>
+                <version>${ant.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>codemodel</artifactId>
+                <version>${codemodel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>${maven.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-artifact</artifactId>
+                <version>${maven.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-model</artifactId>
+                <version>${maven.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>${plexus-utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${maven-plugin-annotations.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-settings</artifactId>
+                <version>${maven.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-api</artifactId>
+                <version>${maven.resolver.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.resolver</groupId>
+                <artifactId>maven-resolver-impl</artifactId>
+                <version>${maven.resolver.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>args4j</groupId>
+                <artifactId>args4j</artifactId>
+                <version>${args4j.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>gmaven-plugin</artifactId>
+                    <version>1.5</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.groovy</groupId>
+                            <artifactId>groovy</artifactId>
+                            <version>4.0.11</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.groovy</groupId>
+                            <artifactId>groovy-xml</artifactId>
+                            <version>4.0.11</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-invoker-plugin</artifactId>
+                    <version>3.5.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.9</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[${maven.compiler.release},)</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>[3.6.0,)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <configuration>
+                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                    <revisionOnScmFailure>false</revisionOnScmFailure>
+                    <shortRevisionLength>7</shortRevisionLength>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.copyright</groupId>
+                <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                <configuration>
+                    <excludeFile>${copyright.exclude}</excludeFile>
+                    <!-- skip files not under SCM-->
+                    <scmOnly>${copyright.scmonly}</scmOnly>
+                    <!-- for use with repair -->
+                    <update>${copyright.update}</update>
+                    <!-- check that year is correct -->
+                    <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                    <quiet>false</quiet>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>common-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/resources.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>istack-commons</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>resources</classifier>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.commonResourcesDirectory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                        <arg>-Xdoclint:all,-missing</arg>
+                        <arg>-Werror</arg>
+                    </compilerArgs>
+                    <showDeprecation>true</showDeprecation>
+                    <createMissingPackageInfoClass>false</createMissingPackageInfoClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                    <instructions>
+                        <Implementation-Vendor>${vendor.name}</Implementation-Vendor>
+                        <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                        <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                    </instructions>
+                    <niceManifest>true</niceManifest>
+                    <noWarningProjectTypes>
+                        <noWarningProjectType>pom</noWarningProjectType>
+                        <noWarningProjectType>maven-plugin</noWarningProjectType>
+                    </noWarningProjectTypes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                    <excludes>
+                        <exclude>META-INF/jpms.args</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <notimestamp>true</notimestamp>
+                    <doclint>all,-missing</doclint>
+                    <quiet>true</quiet>
+                    <failOnWarnings>true</failOnWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <excludeFilterFile>${spotbugs.exclude}</excludeFilterFile>
+                    <failThreshold>High</failThreshold>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <configuration>
+                    <extractors>
+                        <extractor>java-annotations</extractor>
+                    </extractors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>default-report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>license-check</id>
+            <pluginRepositories>
+                <pluginRepository>
+                    <!-- org.eclipse.dash:license-tool-plugin is nor final nor in central yet -->
+                    <id>dash-licenses-snapshots</id>
+                    <url>https://repo.eclipse.org/content/repositories/dash-licenses-snapshots/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.eclipse.dash</groupId>
+                            <artifactId>license-tool-plugin</artifactId>
+                            <version>0.0.1-SNAPSHOT</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.dash</groupId>
+                        <artifactId>license-tool-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>license-check</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>license-check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jaxb-istack-commons.git | rg '4\\.1\\.2|4\\.1|istack'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-test-sources.jar || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-sources.jar -o /tmp/istack-commons-tools-4.1.2-sources.jar && jar tf /tmp/istack-commons-tools-4.1.2-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2.jar -o /tmp/istack-commons-tools-4.1.2.jar && jar tf /tmp/istack-commons-tools-4.1.2.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 138ms:
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/sun/
+com/sun/istack/
+com/sun/istack/tools/
+META-INF/maven/
+META-INF/maven/com.sun.istack/
+META-INF/maven/com.sun.istack/istack-commons-tools/
+com/sun/istack/tools/DefaultAuthenticator.java
+com/sun/istack/tools/MaskingClassLoader.java
+com/sun/istack/tools/ParallelWorldClassLoader.java
+com/sun/istack/tools/ProtectedTask.java
+com/sun/istack/tools/SecureLoader.java
+com/sun/istack/tools/Utils.java
+com/sun/istack/tools/package-info.java
+module-info.java
+META-INF/maven/com.sun.istack/istack-commons-tools/pom.xml
+META-INF/maven/com.sun.istack/istack-commons-tools/pom.properties
+
+ succeeded in 146ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/sun/
+com/sun/istack/
+com/sun/istack/tools/
+META-INF/maven/
+META-INF/maven/com.sun.istack/
+META-INF/maven/com.sun.istack/istack-commons-tools/
+com/sun/istack/tools/SecureLoader$1.class
+com/sun/istack/tools/SecureLoader$2.class
+com/sun/istack/tools/SecureLoader$3.class
+com/sun/istack/tools/SecureLoader$4.class
+com/sun/istack/tools/SecureLoader$5.class
+com/sun/istack/tools/SecureLoader.class
+com/sun/istack/tools/DefaultAuthenticator$Receiver.class
+com/sun/istack/tools/DefaultAuthenticator$DefaultRImpl.class
+com/sun/istack/tools/DefaultAuthenticator$AuthInfo.class
+com/sun/istack/tools/DefaultAuthenticator.class
+com/sun/istack/tools/MaskingClassLoader.class
+com/sun/istack/tools/ParallelWorldClassLoader.class
+com/sun/istack/tools/Utils.class
+com/sun/istack/tools/ProtectedTask$AntElement.class
+com/sun/istack/tools/ProtectedTask.class
+META-INF/maven/com.sun.istack/istack-commons-tools/pom.xml
+META-INF/maven/com.sun.istack/istack-commons-tools/pom.properties
+module-info.class
+
+ succeeded in 257ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 01:05:28 GMT
+content-type: text/html
+cf-ray: 9f6398e61b907dd2-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 280ms:
+a9671d21e75d2dd6c45aff63109c806944b87515	refs/tags/4.1.0
+0f0f323fa642b0219c6026232d32cae37036ca5e	refs/tags/4.1.0^{}
+557c4af80c829af65339596eb4de13937ae60c35	refs/tags/4.1.0-M1
+ab6d947e0bd6d98ce0ffd6fd78a38472275e307a	refs/tags/4.1.0-M1^{}
+50a5aa3b052f646c7045b46783fbe3472e50c5dc	refs/tags/4.1.1
+d6e5d285ba5e78e977503bd530358c0fcbd925b5	refs/tags/4.1.1^{}
+4969a81adb70f402f4dae63d2585c14373da7409	refs/tags/4.1.2
+343a28eabbd483e9ac0c5d7be32c1aa50ba52631	refs/tags/4.1.2^{}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' -g '*.json' . | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+./metadata/ru.vyarus/generics-resolver/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-sources.jar",
+./metadata/dev.zio/zio-config_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-sources.jar",
+./metadata/dev.zio/zio-http_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-schema_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-sources.jar",
+./metadata/com.diffplug.durian/durian-swt.os/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+./metadata/dev.zio/zio-schema-derivation_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-derivation_3/$version$/zio-schema-derivation_3-$version$-sources.jar",
+./metadata/org.jline/jline-terminal-jni/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+./metadata/dev.zio/zio-schema-macros_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-prelude-macros_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude-macros_3/$version$/zio-prelude-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-config-typesafe_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config-typesafe_3/$version$/zio-config-typesafe_3-$version$-sources.jar",
+./metadata/org.scalatra/scalatra-common_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatra/scalatra-common_3/$version$/scalatra-common_3-$version$-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+./metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+./metadata/net.javacrumbs.json-unit/json-unit-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-sources.jar",
+./metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+./metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg 'repo1.maven.org.*sources.jar|javadoc.jar|tree/\\"'$version'"\\"'$|blob/'"\\"'$version'"\\"'$'"' -g '*.json' . | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+./metadata/com.github.mwiede/jsch/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+./metadata/com.github.mwiede/jsch/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/$version$/kotlin-stdlib-common-$version$-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+./metadata/org.springframework/spring-instrument/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+./metadata/org.springframework/spring-instrument/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/org.springframework/spring-aspects/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+./metadata/org.springframework/spring-aspects/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg 'documentation-url|test-code-url|repository-url' -g '*.json' . | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+./metadata/ru.vyarus/generics-resolver/index.json:    "repository-url" : "https://github.com/xvik/generics-resolver",
+./metadata/ru.vyarus/generics-resolver/index.json:    "test-code-url" : "https://github.com/xvik/generics-resolver/tree/$version$/src/test",
+./metadata/ru.vyarus/generics-resolver/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config_3/index.json:    "repository-url" : "https://github.com/zio/zio-config",
+./metadata/dev.zio/zio-config_3/index.json:    "test-code-url" : "https://github.com/zio/zio-config/tree/v$version$/core/shared/src/test",
+./metadata/dev.zio/zio-config_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "repository-url" : "https://github.com/zio/zio",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "repository-url" : "https://github.com/zio/zio",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests/shared/src/test",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:    "repository-url" : "https://github.com/zio/izumi-reflect",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:    "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-http_3/index.json:    "repository-url" : "https://github.com/zio/zio-http",
+./metadata/dev.zio/zio-http_3/index.json:    "test-code-url" : "https://github.com/zio/zio-http/tree/v$version$/zio-http/jvm/src/test",
+./metadata/dev.zio/zio-http_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "repository-url" : "https://github.com/zio/zio",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "repository-url" : "https://github.com/zio/zio",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "test-code-url" : "https://github.com/zio/zio/tree/v$version$/core-tests",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-schema_3/index.json:    "repository-url" : "https://github.com/zio/zio-schema",
+./metadata/dev.zio/zio-schema_3/index.json:    "test-code-url" : "https://github.com/zio/zio-schema/tree/v$version$/zio-schema/shared/src/test/scala",
+./metadata/dev.zio/zio-schema_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect_3/index.json:    "repository-url" : "https://github.com/zio/izumi-reflect",
+./metadata/dev.zio/izumi-reflect_3/index.json:    "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
+./metadata/dev.zio/izumi-reflect_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-schema-derivation_3/index.json:    "repository-url" : "https://github.com/zio/zio-schema",
+./metadata/dev.zio/zio-schema-derivation_3/index.json:    "test-code-url" : "https://github.com/zio/zio-schema/tree/v$version$/zio-schema-derivation/shared/src/test",
+./metadata/dev.zio/zio-schema-derivation_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-derivation_3/$version$/zio-schema-derivation_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-schema-macros_3/index.json:    "repository-url" : "https://github.com/zio/zio-schema",
+./metadata/dev.zio/zio-schema-macros_3/index.json:    "test-code-url" : "N/A",
+./metadata/dev.zio/zio-schema-macros_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-prelude-macros_3/index.json:    "repository-url" : "https://github.com/zio/zio-prelude",
+./metadata/dev.zio/zio-prelude-macros_3/index.json:    "test-code-url" : "https://github.com/zio/zio-prelude/tree/v$version$/core-tests",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/contents/tools?ref=4.1.2 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/contents/tools/src?ref=4.1.2 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ exited 1 in 178ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/contents?ref=4.1.2 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ exited 1 in 145ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-sources.jar \\
+  https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-javadoc.jar \\
+  https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/tools/src/test; do printf '%s -> ' \""'$url"; curl -fsSL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 181ms:
+    "name": ".github",
+    "path": ".github",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/.github",
+    "type": "dir",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/.gitignore",
+    "type": "file",
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/CONTRIBUTING.md",
+    "type": "file",
+    "name": "LICENSE.md",
+    "path": "LICENSE.md",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/LICENSE.md",
+    "type": "file",
+    "name": "NOTICE.md",
+    "path": "NOTICE.md",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/NOTICE.md",
+    "type": "file",
+    "name": "README.md",
+    "path": "README.md",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/README.md",
+    "type": "file",
+    "name": "istack-commons",
+    "path": "istack-commons",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons",
+    "type": "dir",
+
+ exited 22 in 622ms:
+200
+https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/tools/src/test -> curl: (22) The requested URL returned error: 404
+404
+
+codex
+The upstream tag exists as `4.1.2`, but the project root at that tag contains an extra `istack-commons/` directory, so the module paths are nested. I’m resolving the module-specific test path under that tag before editing the JSON.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/contents/istack-commons?ref=4.1.2 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/contents/istack-commons/tools/src?ref=4.1.2 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-ee4j/jaxb-istack-commons/4.1.2/istack-commons/README.md | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-ee4j/jaxb-istack-commons/4.1.2/istack-commons/tools/src/main/java/com/sun/istack/tools/DefaultAuthenticator.java | sed -n '1,100p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 152ms:
+    "name": "buildtools",
+    "path": "istack-commons/buildtools",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/buildtools",
+    "type": "dir",
+    "name": "import-properties-plugin",
+    "path": "istack-commons/import-properties-plugin",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/import-properties-plugin",
+    "type": "dir",
+    "name": "maven-plugin",
+    "path": "istack-commons/maven-plugin",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/maven-plugin",
+    "type": "dir",
+    "name": "pom.xml",
+    "path": "istack-commons/pom.xml",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/istack-commons/pom.xml",
+    "type": "file",
+    "name": "runtime",
+    "path": "istack-commons/runtime",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/runtime",
+    "type": "dir",
+    "name": "soimp",
+    "path": "istack-commons/soimp",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/soimp",
+    "type": "dir",
+    "name": "src",
+    "path": "istack-commons/src",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/src",
+    "type": "dir",
+    "name": "test",
+    "path": "istack-commons/test",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/test",
+    "type": "dir",
+    "name": "tools",
+    "path": "istack-commons/tools",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools",
+    "type": "dir",
+
+ succeeded in 168ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 184ms:
+    "name": "main",
+    "path": "istack-commons/tools/src/main",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/main",
+    "type": "dir",
+    "name": "test",
+    "path": "istack-commons/tools/src/test",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test",
+    "type": "dir",
+
+ succeeded in 186ms:
+/*
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Distribution License v. 1.0, which is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+package com.sun.istack.tools;
+
+import org.xml.sax.Locator;
+import org.xml.sax.helpers.LocatorImpl;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Authenticator;
+import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
+/**
+ * @author Vivek Pandey
+ * @author Lukas Jungmann
+ */
+public class DefaultAuthenticator extends Authenticator {
+
+    private static final Logger LOGGER = Logger.getLogger(DefaultAuthenticator.class.getName());
+    private static DefaultAuthenticator instance;
+    private static Authenticator systemAuthenticator = getCurrentAuthenticator();
+    private String proxyUser;
+    private String proxyPasswd;
+    private final List<AuthInfo> authInfo = new ArrayList<>();
+    private static int counter = 0;
+
+    DefaultAuthenticator() {
+        //try undocumented but often used properties
+        if (System.getProperty("http.proxyUser") != null) {
+            proxyUser = System.getProperty("http.proxyUser");
+        } else {
+            proxyUser = System.getProperty("proxyUser");
+        }
+        if (System.getProperty("http.proxyPassword") != null) {
+            proxyPasswd = System.getProperty("http.proxyPassword");
+        } else {
+            proxyPasswd = System.getProperty("proxyPassword");
+        }
+    }
+
+    public static synchronized DefaultAuthenticator getAuthenticator() {
+        if (instance == null) {
+            instance = new DefaultAuthenticator();
+            Authenticator.setDefault(instance);
+        }
+        counter++;
+        return instance;
+    }
+
+    public static synchronized void reset() {
+        --counter;
+        if (instance != null && counter == 0) {
+            Authenticator.setDefault(systemAuthenticator);
+        }
+    }
+
+    @Override
+    protected PasswordAuthentication getPasswordAuthentication() {
+        //If user sets proxy user and passwd and the RequestType is from proxy server then create
+        // PasswordAuthentication using proxyUser and proxyPasswd;
+        if ((getRequestorType() == RequestorType.PROXY) && proxyUser != null && proxyPasswd != null) {
+            return new PasswordAuthentication(proxyUser, proxyPasswd.toCharArray());
+        }
+        for (AuthInfo auth : authInfo) {
+            if (auth.matchingHost(getRequestingURL())) {
+                return new PasswordAuthentication(auth.getUser(), auth.getPassword().toCharArray());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Proxy authorization string in form of username:password.
+     *
+     * @param proxyAuth Proxy authorization string
+     */
+    public void setProxyAuth(String proxyAuth) {
+        if (proxyAuth == null) {
+
+exec
+/usr/bin/bash -lc 'unzip -p /tmp/istack-commons-tools-4.1.2.jar META-INF/MANIFEST.MF' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Bnd-LastModified: 1681225603810
+Bundle-Description: istack common utility code
+Bundle-DocURL: https://www.eclipse.org
+Bundle-License: http://www.eclipse.org/org/documents/edl-v10.php
+Bundle-ManifestVersion: 2
+Bundle-Name: istack common utility code tools
+Bundle-SymbolicName: com.sun.istack.commons-tools
+Bundle-Vendor: Eclipse Foundation
+Bundle-Version: 4.1.2
+Created-By: Apache Maven Bundle Plugin 5.1.8
+Export-Package: com.sun.istack.tools;uses:="org.apache.tools.ant,org.xml
+ .sax";version="4.1.2"
+Implementation-Build-Id: 4.1.2 - 343a28e
+Implementation-Vendor: Eclipse Foundation
+Implementation-Vendor-Id: com.sun.istack
+Import-Package: java.io,java.lang,java.lang.invoke,java.lang.reflect,jav
+ a.net,java.nio.charset,java.security,java.util,java.util.jar,java.util.
+ logging,java.util.regex,org.apache.tools.ant;resolution:=optional,org.x
+ ml.sax,org.xml.sax.helpers
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
+Tool: Bnd-6.3.1.202206071316
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/contents/istack-commons/tools/src/test?ref=4.1.2 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test \\
+  https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-sources.jar \\
+  https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-javadoc.jar; do printf '%s -> ' \""'$url"; curl -fsSL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-istack-commons/contents/istack-commons/tools/src/main/java/com/sun/istack/tools?ref=4.1.2 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 203ms:
+    "name": "java",
+    "path": "istack-commons/tools/src/test/java",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test/java",
+    "type": "dir",
+    "name": "resources",
+    "path": "istack-commons/tools/src/test/resources",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test/resources",
+    "type": "dir",
+
+ succeeded in 205ms:
+    "name": "DefaultAuthenticator.java",
+    "path": "istack-commons/tools/src/main/java/com/sun/istack/tools/DefaultAuthenticator.java",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/istack-commons/tools/src/main/java/com/sun/istack/tools/DefaultAuthenticator.java",
+    "type": "file",
+    "name": "MaskingClassLoader.java",
+    "path": "istack-commons/tools/src/main/java/com/sun/istack/tools/MaskingClassLoader.java",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/istack-commons/tools/src/main/java/com/sun/istack/tools/MaskingClassLoader.java",
+    "type": "file",
+    "name": "ParallelWorldClassLoader.java",
+    "path": "istack-commons/tools/src/main/java/com/sun/istack/tools/ParallelWorldClassLoader.java",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/istack-commons/tools/src/main/java/com/sun/istack/tools/ParallelWorldClassLoader.java",
+    "type": "file",
+    "name": "ProtectedTask.java",
+    "path": "istack-commons/tools/src/main/java/com/sun/istack/tools/ProtectedTask.java",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/istack-commons/tools/src/main/java/com/sun/istack/tools/ProtectedTask.java",
+    "type": "file",
+    "name": "SecureLoader.java",
+    "path": "istack-commons/tools/src/main/java/com/sun/istack/tools/SecureLoader.java",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/istack-commons/tools/src/main/java/com/sun/istack/tools/SecureLoader.java",
+    "type": "file",
+    "name": "Utils.java",
+    "path": "istack-commons/tools/src/main/java/com/sun/istack/tools/Utils.java",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/istack-commons/tools/src/main/java/com/sun/istack/tools/Utils.java",
+    "type": "file",
+    "name": "package-info.java",
+    "path": "istack-commons/tools/src/main/java/com/sun/istack/tools/package-info.java",
+    "html_url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/blob/4.1.2/istack-commons/tools/src/main/java/com/sun/istack/tools/package-info.java",
+    "type": "file",
+
+ succeeded in 1185ms:
+200
+https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-sources.jar -> 200
+https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-javadoc.jar -> 200
+
+codex
+I found a JVM JAR with `.class` files and `module-info.class`, so this remains a Native Image metadata candidate; it is not one of the non-JVM artifact cases. I’m going to write the metadata with Maven-hosted sources/Javadocs and the tagged GitHub test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..20da2b185f1af944a6e531a1d6e050154a936c49
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "iStack Commons Tools provides shared utility classes for iStack and JAXB tooling, including secure class loading, authentication handling, and protected Ant task execution. It is intended for Java tool and build integrations that need those common support APIs rather than a standalone end-user framework."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..20da2b185f1af944a6e531a1d6e050154a936c49
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "iStack Commons Tools provides shared utility classes for iStack and JAXB tooling, including secure class loading, authentication handling, and protected Ant task execution. It is intended for Java tool and build integrations that need those common support APIs rather than a standalone end-user framework."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.istack:istack-commons-tools:4.1.2",
+  "repository-url": "https://github.com/eclipse-ee4j/jaxb-istack-commons",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
+  "test-code-url": "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
+  "description": "iStack Commons Tools provides shared utility classes for iStack and JAXB tooling, including secure class loading, authentication handling, and protected Ant task execution. It is intended for Java tool and build integrations that need those common support APIs rather than a standalone end-user framework."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/eclipse-ee4j/jaxb-istack-commons \\
+  https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-sources.jar \\
+  https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test \\
+  https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-javadoc.jar; do printf '%s -> ' \""'$url"; curl -fsSL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..20da2b185f1af944a6e531a1d6e050154a936c49
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "iStack Commons Tools provides shared utility classes for iStack and JAXB tooling, including secure class loading, authentication handling, and protected Ant task execution. It is intended for Java tool and build integrations that need those common support APIs rather than a standalone end-user framework."
+ }
+
+ succeeded in 1061ms:
+200
+https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-sources.jar -> 200
+https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test -> 200
+https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/istack-commons-tools-4.1.2-javadoc.jar -> 200
+
+web search: 
+web search: Maven Central com.sun.istack istack-commons-tools 4.1.2 sources javadoc
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
+     3	  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
+     7	  "description" : "iStack Commons Tools provides shared utility classes for iStack and JAXB tooling, including secure class loading, authentication handling, and protected Ant task execution. It is intended for Java tool and build integrations that need those common support APIs rather than a standalone end-user framework."
+     8	}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..20da2b185f1af944a6e531a1d6e050154a936c49
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "iStack Commons Tools provides shared utility classes for iStack and JAXB tooling, including secure class loading, authentication handling, and protected Ant task execution. It is intended for Java tool and build integrations that need those common support APIs rather than a standalone end-user framework."
+ }
+
+ succeeded in 313ms:
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.1.2/istack-commons/tools/src/test
+web search: 
+web search: repo.maven.apache.org maven2 com sun istack istack-commons-tools 4.1.2 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/
+codex
+Updated [com.sun.istack-istack-commons-tools-4.1.2.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json:1).
+
+I used Maven-hosted sources and Javadoc because Central publishes both for `4.1.2`, and the test URL points to the tagged GitHub test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/)) Left `language` absent and did not set `not-for-native-image`; the artifact is a Java/JVM JAR with class files.
+
+Verification: JSON parses with `jq`, and all substituted URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+index 80aa2acd7492f0c7403d50212f0026b3841dff89..20da2b185f1af944a6e531a1d6e050154a936c49
+--- a/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
++++ b/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2"
++  "coordinates" : "com.sun.istack:istack-commons-tools:4.1.2",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/tools/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-tools/$version$/istack-commons-tools-$version$-javadoc.jar",
++  "description" : "iStack Commons Tools provides shared utility classes for iStack and JAXB tooling, including secure class loading, authentication handling, and protected Ant task execution. It is intended for Java tool and build integrations that need those common support APIs rather than a standalone end-user framework."
+ }
+
+tokens used
+65,365
+Updated [com.sun.istack-istack-commons-tools-4.1.2.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029/build/discovered-artifact-metadata/com.sun.istack-istack-commons-tools-4.1.2.json:1).
+
+I used Maven-hosted sources and Javadoc because Central publishes both for `4.1.2`, and the test URL points to the tagged GitHub test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/com/sun/istack/istack-commons-tools/4.1.2/)) Left `language` absent and did not set `not-for-native-image`; the artifact is a Java/JVM JAR with class files.
+
+Verification: JSON parses with `jq`, and all substituted URLs returned HTTP 200.
+Ran agent for com.sun.istack:istack-commons-tools:4.1.2 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029/build/agent-artifact-discovery-logs/com.sun.istack-istack-commons-tools-4.1.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3272-ef310029/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 53s
+9 actionable tasks: 4 executed, 5 from cache
