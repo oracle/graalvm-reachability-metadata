@@ -159,6 +159,28 @@ public class Junit_platform_suite_apiTest {
     }
 
     @Test
+    void explicitlyDeclaredRepeatableContainersCanBeConsumedAsRepeatableAnnotations() {
+        assertThat(annotationsByTypeOn(ContainerDeclaredSuite.class, ConfigurationParameter.class))
+                .extracting(ConfigurationParameter::key)
+                .containsExactly("container.first", "container.second");
+        assertThat(annotationsByTypeOn(ContainerDeclaredSuite.class, ConfigurationParametersResource.class))
+                .extracting(ConfigurationParametersResource::value)
+                .containsExactly("container-defaults.properties", "container-overrides.properties");
+        assertThat(annotationsByTypeOn(ContainerDeclaredSuite.class, Select.class))
+                .extracting(select -> select.value()[0])
+                .containsExactly("package:org.example.container", "class:org.example.ContainerFixture");
+        assertThat(annotationsByTypeOn(ContainerDeclaredSuite.class, SelectClasspathResource.class))
+                .extracting(SelectClasspathResource::value)
+                .containsExactly("container-suite.properties", "container-engine.properties");
+        assertThat(annotationsByTypeOn(ContainerDeclaredSuite.class, SelectFile.class))
+                .extracting(SelectFile::value)
+                .containsExactly("container-one.gradle", "container-two.gradle");
+        assertThat(annotationsByTypeOn(ContainerDeclaredSuite.class, SelectMethod.class))
+                .extracting(SelectMethod::name)
+                .containsExactly("containerTest", "containerParameterizedTest");
+    }
+
+    @Test
     void defaultAttributeValuesAreStableForOptionalSuiteAnnotations() {
         Suite suite = annotationOn(DefaultedSuite.class, Suite.class);
         SelectClasses classes = annotationOn(DefaultedSuite.class, SelectClasses.class);
@@ -258,6 +280,25 @@ public class Junit_platform_suite_apiTest {
     @SelectFile("defaults.txt")
     @SelectMethod
     private static class DefaultedSuite {
+    }
+
+    @Suite
+    @ConfigurationParameters({
+            @ConfigurationParameter(key = "container.first", value = "one"),
+            @ConfigurationParameter(key = "container.second", value = "two") })
+    @ConfigurationParametersResources({
+            @ConfigurationParametersResource("container-defaults.properties"),
+            @ConfigurationParametersResource("container-overrides.properties") })
+    @Selects({ @Select("package:org.example.container"), @Select("class:org.example.ContainerFixture") })
+    @SelectClasspathResources({
+            @SelectClasspathResource(value = "container-suite.properties", line = 5),
+            @SelectClasspathResource(value = "container-engine.properties", column = 2) })
+    @SelectFiles({ @SelectFile("container-one.gradle"), @SelectFile(value = "container-two.gradle", line = 9) })
+    @SelectMethods({
+            @SelectMethod(type = SelectedFixture.class, name = "containerTest"),
+            @SelectMethod(typeName = "org.example.ContainerFixture", name = "containerParameterizedTest",
+                    parameterTypeNames = "java.lang.String") })
+    private static class ContainerDeclaredSuite {
     }
 
     @Suite(failIfNoTests = false)
