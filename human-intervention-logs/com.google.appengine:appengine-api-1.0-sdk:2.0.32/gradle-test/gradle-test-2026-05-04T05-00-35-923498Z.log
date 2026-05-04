@@ -1,0 +1,148 @@
+Starting a Gradle Daemon, 8 busy and 5 incompatible and 174 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.google.appengine:appengine-api-1.0-sdk:2.0.32
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4727-1f9d9187/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 10 busy and 4 incompatible and 175 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4727-1f9d9187/tests/src/com.google.appengine/appengine-api-1.0-sdk/2.0.32/src/test/java/com_google_appengine/appengine_api_1_0_sdk/Appengine_api_1_0_sdkTest.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+> Task :compileTestJava
+
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+9 tests completed, 7 failed
+
+> Task :test FAILED
+
+Appengine_api_1_0_sdkTest > datastoreKeysEntitiesPropertiesAndQueriesRoundTrip() FAILED
+    java.lang.NullPointerException: Operation not allowed in a thread that is neither the original request thread nor a thread created by ThreadManager
+        at com.google.appengine.api.NamespaceManager.set(NamespaceManager.java:112)
+        at com_google_appengine.appengine_api_1_0_sdk.Appengine_api_1_0_sdkTest.datastoreKeysEntitiesPropertiesAndQueriesRoundTrip(Appengine_api_1_0_sdkTest.java:128)
+
+Appengine_api_1_0_sdkTest > mailUsersMemcacheBlobstoreCapabilitiesAndImagesExposeValueState() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: 30
+     but was: 1777870887
+        at java.base@25.0.3/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.3/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//com_google_appengine.appengine_api_1_0_sdk.Appengine_api_1_0_sdkTest.mailUsersMemcacheBlobstoreCapabilitiesAndImagesExposeValueState(Appengine_api_1_0_sdkTest.java:377)
+
+Appengine_api_1_0_sdkTest > namespaceManagerStoresValidNamespacesOnCurrentRequest() FAILED
+    java.lang.NullPointerException: Operation not allowed in a thread that is neither the original request thread nor a thread created by ThreadManager
+        at com.google.appengine.api.NamespaceManager.set(NamespaceManager.java:112)
+        at com_google_appengine.appengine_api_1_0_sdk.Appengine_api_1_0_sdkTest.namespaceManagerStoresValidNamespacesOnCurrentRequest(Appengine_api_1_0_sdkTest.java:119)
+
+Appengine_api_1_0_sdkTest > searchDocumentsFieldsFacetsAndQueryOptionsAreComposable() FAILED
+    java.lang.IllegalArgumentException: You cannot request IDs only if fields to return are already set
+        at com.google.appengine.repackaged.com.google.common.base.Preconditions.checkArgument(Preconditions.java:143)
+        at com.google.appengine.api.search.QueryOptions$Builder.setReturningIdsOnly(QueryOptions.java:264)
+        at com_google_appengine.appengine_api_1_0_sdk.Appengine_api_1_0_sdkTest.searchDocumentsFieldsFacetsAndQueryOptionsAreComposable(Appengine_api_1_0_sdkTest.java:315)
+
+Appengine_api_1_0_sdkTest > taskQueueOptionsBuildHttpAndPullQueueRequests() FAILED
+    com.google.appengine.api.taskqueue.UnsupportedTranslationException: Unsupported charset 'text/plain' requested.
+        at app//com.google.appengine.api.taskqueue.TaskOptions.payload(TaskOptions.java:374)
+        at app//com.google.appengine.api.taskqueue.TaskOptions$Builder.withPayload(TaskOptions.java:825)
+        at app//com_google_appengine.appengine_api_1_0_sdk.Appengine_api_1_0_sdkTest.taskQueueOptionsBuildHttpAndPullQueueRequests(Appengine_api_1_0_sdkTest.java:228)
+
+        Caused by:
+        java.io.UnsupportedEncodingException: text/plain
+            at java.base/java.lang.String.lookupCharset(String.java:863)
+            at java.base/java.lang.String.getBytes(String.java:1843)
+            at com.google.appengine.api.taskqueue.TaskOptions.payload(TaskOptions.java:372)
+            ... 2 more
+
+Appengine_api_1_0_sdkTest > apiProxyRoutesSynchronousAndAsynchronousCallsThroughDelegate() FAILED
+    com.google.apphosting.api.ApiProxy$CallNotFoundException: Can't make API call demo.sync in a thread that is neither the original request thread nor a thread created by ThreadManager
+        at app//com.google.apphosting.api.ApiProxy$CallNotFoundException.foreignThread(ApiProxy.java:855)
+        at app//com.google.apphosting.api.ApiProxy.makeSyncCall(ApiProxy.java:117)
+        at app//com.google.apphosting.api.ApiProxy.makeSyncCall(ApiProxy.java:81)
+        at app//com_google_appengine.appengine_api_1_0_sdk.Appengine_api_1_0_sdkTest.apiProxyRoutesSynchronousAndAsynchronousCallsThroughDelegate(Appengine_api_1_0_sdkTest.java:107)
+
+Appengine_api_1_0_sdkTest > datastoreValueObjectsDefensivelyCopyAndCompare() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: [97, 98, 99]
+     but was: [122, 98, 99]
+        at java.base@25.0.3/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.3/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//com_google_appengine.appengine_api_1_0_sdk.Appengine_api_1_0_sdkTest.datastoreValueObjectsDefensivelyCopyAndCompare(Appengine_api_1_0_sdkTest.java:186)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4727-1f9d9187/tests/src/com.google.appengine/appengine-api-1.0-sdk/2.0.32/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4727-1f9d9187/tests/src/com.google.appengine/appengine-api-1.0-sdk/2.0.32/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 12s
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4727-1f9d9187/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.google.appengine:appengine-api-1.0-sdk:2.0.32 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 22s
+9 actionable tasks: 1 executed, 8 up-to-date
