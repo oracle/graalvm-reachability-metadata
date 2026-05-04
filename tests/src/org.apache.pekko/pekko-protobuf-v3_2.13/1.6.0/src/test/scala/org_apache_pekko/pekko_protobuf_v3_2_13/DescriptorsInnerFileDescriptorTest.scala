@@ -13,7 +13,6 @@ import org.apache.pekko.protobufv3.internal.DescriptorProtos.FieldDescriptorProt
 import org.apache.pekko.protobufv3.internal.DescriptorProtos.FieldDescriptorProto.Type
 import org.apache.pekko.protobufv3.internal.Descriptors
 import org.assertj.core.api.Assertions.assertThat
-import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 
 class DescriptorsInnerFileDescriptorTest {
@@ -36,17 +35,12 @@ class DescriptorsInnerFileDescriptorTest {
       )
       .build()
 
-    val descriptor: Descriptors.FileDescriptor = try {
-      Descriptors.FileDescriptor.internalBuildGeneratedFileFrom(
-        descriptorData(dependentFile),
-        classOf[DescriptorsInnerFileDescriptorTest],
-        Array(classOf[FileDescriptorDependency].getName),
-        Array("file_descriptor_dependency.proto")
-      )
-    } catch {
-      case error: Error if NativeImageSupport.isUnsupportedFeatureError(error) => return
-      case error: Error => throw error
-    }
+    val descriptor: Descriptors.FileDescriptor = Descriptors.FileDescriptor.internalBuildGeneratedFileFrom(
+      descriptorData(dependentFile),
+      classOf[DescriptorsInnerFileDescriptorTest],
+      Array(classOf[FileDescriptorDependency].getName),
+      Array("file_descriptor_dependency.proto")
+    )
 
     assertThat(descriptor.getName).isEqualTo("file_descriptor_generated.proto")
     assertThat(descriptor.getDependencies).containsExactly(FileDescriptorDependency.descriptor)
