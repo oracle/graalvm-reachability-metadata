@@ -4,44 +4,42 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package izumi.reflect
+package dev_zio.izumi_reflect_thirdparty_boopickle_shaded_3
 
-import _root_.izumi.reflect.thirdparty.internal.boopickle.NoMacro.*
-import _root_.izumi.reflect.thirdparty.internal.boopickle.PickleImpl
-import _root_.izumi.reflect.thirdparty.internal.boopickle.PickleState
-import _root_.izumi.reflect.thirdparty.internal.boopickle.Pickler
-import _root_.izumi.reflect.thirdparty.internal.boopickle.UnpickleState
+import izumi.reflect.Tag
+import izumi.reflect.macrortti.LightTypeTag
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class Izumi_reflect_thirdparty_boopickle_shaded_3Test {
   @Test
-  def xmapDerivedPicklerRoundTripsDomainValue(): Unit = {
-    final case class Label(value: String)
+  def publicLightTypeTagSerializationRoundTripsThroughShadedBoopickle(): Unit = {
+    val tag: LightTypeTag = Tag[Map[String, List[Option[FixturePayload]]]].tag
 
-    implicit val labelPickler: Pickler[Label] = stringPickler.xmap[Label](Label.apply)((label: Label) => label.value)
-    val value: Label = Label("xmap-derived domain value")
+    val serialized: LightTypeTag.Serialized = tag.serialize()
+    val parsed: LightTypeTag = LightTypeTag.parse(serialized)
 
-    val decoded: Label = roundTrip(value)
-
-    assertEquals(value, decoded)
+    assertEquals(LightTypeTag.currentBinaryFormatVersion, serialized.version)
+    assertFalse(serialized.ref.isEmpty)
+    assertFalse(serialized.databases.isEmpty)
+    assertEquals(tag, parsed)
+    assertEquals(tag.repr, parsed.repr)
+    assertTrue(parsed =:= tag)
   }
 
   @Test
-  def nestedCollectionPicklersRoundTripOptionsAndTuples(): Unit = {
-    val value: Map[String, List[Option[(Int, Boolean)]]] = Map(
-      "enabled" -> List(Some(1 -> true), None, Some(127 -> false)),
-      "limits" -> List(Some((-4096, true)), Some((268435456, false)))
-    )
+  def parsedLightTypeTagKeepsPublicSubtypeEvidence(): Unit = {
+    val listTag: LightTypeTag = Tag[List[String]].tag
+    val seqTag: LightTypeTag = Tag[Seq[String]].tag
 
-    val decoded: Map[String, List[Option[(Int, Boolean)]]] = roundTrip(value)
+    val parsedListTag: LightTypeTag = LightTypeTag.parse(listTag.serialize())
+    val parsedSeqTag: LightTypeTag = LightTypeTag.parse(seqTag.serialize())
 
-    assertEquals(value, decoded)
-  }
-
-  private def roundTrip[A](value: A)(implicit pickler: Pickler[A]): A = {
-    implicit val state: PickleState = PickleState.pickleStateSpeed
-    val bytes = PickleImpl.intoBytes(value)
-    UnpickleState(bytes).unpickle[A]
+    assertTrue(parsedListTag <:< parsedSeqTag)
+    assertFalse(parsedSeqTag <:< parsedListTag)
   }
 }
+
+final case class FixturePayload(id: Int, name: String)
