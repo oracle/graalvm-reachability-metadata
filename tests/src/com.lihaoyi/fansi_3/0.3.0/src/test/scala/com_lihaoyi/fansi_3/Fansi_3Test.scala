@@ -229,6 +229,24 @@ class Fansi_3Test {
   }
 
   @Test
+  def selectiveResetAttributesClearOnlyMatchingStyleCategories(): Unit = {
+    val allStyles: Attrs = Color.Red ++ Back.Blue ++ Bold.On ++ Underlined.On ++ Reversed.On
+    val styled: Str = allStyles(Str("x"))
+    val withoutForeground: Str = Color.Reset(styled)
+    val foregroundOnly: Str = (Back.Reset ++ Bold.Off ++ Underlined.Off ++ Reversed.Off)(styled)
+    val plainAgain: Str = Attr.Reset(styled)
+
+    assertEquals((Back.Blue ++ Bold.On ++ Underlined.On ++ Reversed.On).transform(0L), withoutForeground.getColor(0))
+    assertEquals(s"$BlueBackground$BoldOn$UnderlinedOn${ReversedOn}x$ResetAll", withoutForeground.render)
+    assertEquals(Color.Red.transform(0L), foregroundOnly.getColor(0))
+    assertEquals(s"${Red}x$ForegroundReset", foregroundOnly.render)
+    assertEquals(0L, plainAgain.getColor(0))
+    assertEquals("x", plainAgain.render)
+    assertEquals("x", withoutForeground.plainText)
+    assertEquals("x", foregroundOnly.plainText)
+  }
+
+  @Test
   def publicAttributeMetadataAndValidationAreAvailable(): Unit = {
     assertEquals("Color.Red", Color.Red.name)
     assertEquals(Some(Red), Color.Red.escapeOpt)
