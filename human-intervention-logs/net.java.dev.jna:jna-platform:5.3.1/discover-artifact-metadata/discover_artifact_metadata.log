@@ -1,0 +1,639 @@
+Starting a Gradle Daemon, 2 busy and 5 incompatible and 5 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df3ca-f43c-7ed3-9f6e-33257f0287b7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.java.dev.jna:jna-platform:5.3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "5.3.1" when "$version$" is replaced with "5.3.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+- Set "coordinates" to "net.java.dev.jna:jna-platform:5.3.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "5.3.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream, then update the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ succeeded in 0ms:
+{
+  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'jna|net.java.dev.jna' || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:    "repository-url" : "https://github.com/google/dagger",
+metadata/com.google.dagger/dagger/index.json:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/com.google.dagger/dagger/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:    "repository-url" : "https://github.com/spotify/completable-futures",
+metadata/com.spotify/completable-futures/index.json:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/$version$/JavaEWAH-$version$-sources.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:    "repository-url" : "https://github.com/lemire/javaewah",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:    "test-code-url" : "https://github.com/lemire/javaewah/tree/JavaEWAH-$version$/src/test",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/$version$/JavaEWAH-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/expression/src/test/java",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:    "repository-url": "https://github.com/ehcache/ehcache3",
+metadata/org.ehcache/ehcache/index.json:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/cpu/src/test/java/io/smallrye/common/cpu",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-sources.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:    "repository-url" : "https://github.com/qos-ch/cal10n",
+metadata/ch.qos.cal10n/cal10n-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-tests.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:    "documentation-url" : "https://github.com/qos-ch/cal10n/blob/v$version$/cal10n-site/src/site/pages/documentation.html",
+metadata/io.opencensus/opencensus-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:    "repository-url": "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-api/index.json:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-io/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-io/$version$/smallrye-common-io-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-io/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-io/index.json:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/io/src/test/java",
+metadata/io.smallrye.common/smallrye-common-io/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-io/$version$/smallrye-common-io-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:    "repository-url" : "https://github.com/census-instrumentation/opencensus-java",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+
+web search: 
+web search: Maven Central net.java.dev.jna jna-platform 5.3.1 sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.3.1/
+web search: 
+web search: https://github.com/java-native-access/jna/tree/5.3.1
+web search: 
+web search: 'test' in https://github.com/java-native-access/jna/tree/5.3.1/contrib/platform/src
+codex
+The Maven directory confirms `sources.jar` and `javadoc.jar` exist for `5.3.1`, but there is no `tests.jar` listed, so I’m checking the exact upstream tag layout for the platform tests.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.3.1/jna-platform-5.3.1.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.java.dev.jna</groupId>
+  <artifactId>jna-platform</artifactId>
+  <version>5.3.1</version>
+  <packaging>jar</packaging>
+
+  <name>Java Native Access Platform</name>
+  <description>Java Native Access Platform</description>
+  <url>https://github.com/java-native-access/jna</url>
+
+  <licenses>
+      <license>
+          <name>LGPL, version 2.1</name>
+          <url>http://www.gnu.org/licenses/licenses.html</url>
+          <distribution>repo</distribution>
+      </license>
+      <license>
+          <name>Apache License v2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <distribution>repo</distribution>
+      </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:https://github.com/java-native-access/jna</connection>
+    <developerConnection>scm:git:ssh://git@github.com/java-native-access/jna.git</developerConnection>
+    <url>https://github.com/java-native-access/jna</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>twall</id>
+      <name>Timothy Wall</name>
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
+    <developer>
+      <email>mblaesing@doppel-helix.eu</email>
+      <name>Matthias Bläsing</name>
+      <url>https://github.com/matthiasblaesing/</url>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.3.1</version>
+    </dependency>
+  </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/java-native-access/jna/git/trees/5.3.1?recursive=1 | rg 'contrib/platform|/test|test/' | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.3.1/jna-platform-5.3.1-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.3.1/jna-platform-5.3.1-javadoc.jar && curl -fsI https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.3.1/jna-platform-5.3.1-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ succeeded in 359ms:
+      "path": "contrib/ntservice/test",
+      "path": "contrib/ntservice/test/placeholder.txt",
+      "path": "contrib/platform",
+      "path": "contrib/platform/.classpath",
+      "path": "contrib/platform/.project",
+      "path": "contrib/platform/build.xml",
+      "path": "contrib/platform/nbproject",
+      "path": "contrib/platform/nbproject/build-impl.xml",
+      "path": "contrib/platform/nbproject/project.properties",
+      "path": "contrib/platform/nbproject/project.xml",
+      "path": "contrib/platform/platform.iml",
+      "path": "contrib/platform/src",
+      "path": "contrib/platform/src/com",
+      "path": "contrib/platform/src/com/sun",
+      "path": "contrib/platform/src/com/sun/jna",
+      "path": "contrib/platform/src/com/sun/jna/platform",
+      "path": "contrib/platform/src/com/sun/jna/platform/DesktopWindow.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/EnumConverter.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/EnumUtils.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/FileMonitor.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/FileUtils.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/KeyboardUtils.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/RasterRangesUtils.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/WindowUtils.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/dnd",
+      "path": "contrib/platform/src/com/sun/jna/platform/dnd/DragHandler.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/dnd/DropHandler.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/dnd/DropTargetPainter.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/dnd/GhostedDragImage.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/dnd/package.html",
+      "path": "contrib/platform/src/com/sun/jna/platform/linux",
+      "path": "contrib/platform/src/com/sun/jna/platform/linux/LibC.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/linux/XAttr.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/linux/XAttrUtil.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/linux/package.html",
+      "path": "contrib/platform/src/com/sun/jna/platform/mac",
+      "path": "contrib/platform/src/com/sun/jna/platform/mac/Carbon.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/mac/MacFileUtils.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/mac/SystemB.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/mac/XAttr.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/mac/XAttrUtil.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/mac/package.html",
+      "path": "contrib/platform/src/com/sun/jna/platform/package.html",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix/LibC.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix/LibCAPI.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix/Reboot.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix/Resource.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix/X11.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix/package.html",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix/solaris",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix/solaris/LibKstat.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/unix/solaris/package.html",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/AccCtrl.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/Advapi32.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/Advapi32Util.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/BaseTSD.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/COMBindingBaseObject.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/COMEarlyBindingObject.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/COMException.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/COMInvokeException.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/COMInvoker.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/COMLateBindingObject.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/COMUtils.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/ConnectionPoint.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/ConnectionPointContainer.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/Dispatch.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/DispatchListener.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/DispatchVTable.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/EnumMoniker.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/EnumVariant.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IComEnumVariantIterator.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IConnectionPoint.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IConnectionPointContainer.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IDispatch.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IDispatchCallback.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IEnumIDList.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IEnumMoniker.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IEnumVariant.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IMoniker.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IPersist.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IPersistStream.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IRecordInfo.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IRunningObjectTable.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IShellFolder.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IStream.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/ITypeComp.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/ITypeInfo.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/ITypeLib.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IUnknown.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/IUnknownCallback.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/Moniker.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/RecordInfo.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/RunningObjectTable.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/TypeComp.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/TypeInfo.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/TypeInfoUtil.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/TypeLib.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/TypeLibUtil.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/Unknown.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/UnknownListener.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/UnknownVTable.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/Wbemcli.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/WbemcliUtil.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/package.html",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/TlbImp.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbAbstractMethod.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbBase.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbCmdlineArgs.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbCoClass.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbCoClass.template",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbConst.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbDispInterface.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbDispInterface.template",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbEnum.java",
+      "path": "contrib/platform/src/com/sun/jna/platform/win32/COM/tlb/imp/TlbEnum.template",
+curl: (23) Failure writing output to destination
+
+ exited 22 in 386ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 16:21:19 GMT
+content-type: application/java-archive
+content-length: 5514284
+cf-ray: 9f68d67b4b3f8bbd-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 36982
+etag: "df8190b8442dae17002c9e66cef714e3"
+last-modified: Sun, 28 Apr 2019 10:14:26 GMT
+x-checksum-md5: df8190b8442dae17002c9e66cef714e3
+x-checksum-sha1: 68440138ad510ebca8536112246f4b6f38505528
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 04 May 2026 16:21:19 GMT
+content-type: text/html
+cf-ray: 9f68d67bcf8ea625-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/java/dev/jna/jna-platform/5.3.1/jna-platform-5.3.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/java-native-access/jna/git/trees/5.3.1?recursive=1 | rg '\"path\": \"contrib/platform/(test|src/test|.*Test\\.java)' | head -100" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/java-native-access/jna/git/refs/tags/5.3.1' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/java-native-access/jna/contents/contrib/platform?ref=5.3.1 | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ succeeded in 154ms:
+a",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/COM/util/IDispatchTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/COM/util/ProxyObjectFactory_Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/COM/util/ProxyObjectObjectFactory_Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/COM/util/RunningObjectTable_Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Cfgmgr32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Crypt32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Crypt32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/CryptuiTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/DdemlTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/DdemlUtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Dxva2Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/GDI32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/GDI32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/GuidTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/IPHlpAPITest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Kernel32ConsoleTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Kernel32DiskManagementFunctionsTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Kernel32EnvironmentVarsTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Kernel32NamedPipeTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Kernel32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Kernel32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Kernel32VolumeManagementFunctionsTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/MprTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/MsiTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Netapi32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Netapi32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/NtDllTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/NtDllUtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Ole32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Ole32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/OleAutoTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/OpenGL32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/OpenGL32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/PdhTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/PowrProfTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/PsapiTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Rasapi32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Rasapi32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/SAFEARRAYTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Secur32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Secur32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/SetupApiTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Shell32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/Shell32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/ShlwapiTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/SspiTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/User32Test.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/User32UtilTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/User32WindowMessagesTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/VariantTest.java",
+      "path": "contrib/platform/test/com/sun/jna/platform/win32/VersionHelpersTest.java",
+
+ succeeded in 183ms:
+{
+  "ref": "refs/tags/5.3.1",
+  "node_id": "MDM6UmVmMTY4MDczMzpyZWZzL3RhZ3MvNS4zLjE=",
+  "url": "https://api.github.com/repos/java-native-access/jna/git/refs/tags/5.3.1",
+  "object": {
+    "sha": "f270bcff64d88e9b9ac7819c11adfa9d453836dc",
+    "type": "commit",
+    "url": "https://api.github.com/repos/java-native-access/jna/git/commits/f270bcff64d88e9b9ac7819c11adfa9d453836dc"
+  }
+}
+
+ succeeded in 187ms:
+    "name": ".classpath",
+    "path": "contrib/platform/.classpath",
+    "type": "file",
+    "name": ".project",
+    "path": "contrib/platform/.project",
+    "type": "file",
+    "name": "build.xml",
+    "path": "contrib/platform/build.xml",
+    "type": "file",
+    "name": "nbproject",
+    "path": "contrib/platform/nbproject",
+    "type": "dir",
+    "name": "platform.iml",
+    "path": "contrib/platform/platform.iml",
+    "type": "file",
+    "name": "src",
+    "path": "contrib/platform/src",
+    "type": "dir",
+    "name": "test",
+    "path": "contrib/platform/test",
+    "type": "dir",
+
+codex
+I found the upstream tag `5.3.1`, the platform tests under `contrib/platform/test`, and verified the Maven `sources.jar` and `javadoc.jar` are present while a tests jar is not. I’m updating the metadata with Maven URLs where available and the tagged GitHub test path for the test suite.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+index 817bfdf8392d7cb8e440243d18ae4e3b5f9a1f7e..a01f3b6ace61024f6c6e5afddcc4849651c3880e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/$version$/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-javadoc.jar",
++  "description" : "JNA Platform extends Java Native Access with Java mappings for common operating system APIs such as Windows Win32, macOS, Linux, and Unix interfaces. It lets Java applications call platform-specific native functions through JNA without writing custom JNI code."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+index 817bfdf8392d7cb8e440243d18ae4e3b5f9a1f7e..a01f3b6ace61024f6c6e5afddcc4849651c3880e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/$version$/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-javadoc.jar",
++  "description" : "JNA Platform extends Java Native Access with Java mappings for common operating system APIs such as Windows Win32, macOS, Linux, and Unix interfaces. It lets Java applications call platform-specific native functions through JNA without writing custom JNI code."
+ }
+
+web search: 
+web search: https://github.com/java-native-access/jna/tree/5.3.1/contrib/platform/test
+web search: 
+web search: repo.maven.apache.org maven2 net java dev jna jna-platform 5.3.1 jna-platform-5.3.1-sources.jar javadoc.jar pom
+web search: 
+web search: https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.3.1/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/net.java.dev.jna/jna-platform/5.3.1
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ succeeded in 0ms:
+{
+  "coordinates": "net.java.dev.jna:jna-platform:5.3.1",
+  "repository-url": "https://github.com/java-native-access/jna",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-sources.jar",
+  "test-code-url": "https://github.com/java-native-access/jna/tree/$version$/contrib/platform/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-javadoc.jar",
+  "description": "JNA Platform extends Java Native Access with Java mappings for common operating system APIs such as Windows Win32, macOS, Linux, and Unix interfaces. It lets Java applications call platform-specific native functions through JNA without writing custom JNI code."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+index 817bfdf8392d7cb8e440243d18ae4e3b5f9a1f7e..a01f3b6ace61024f6c6e5afddcc4849651c3880e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/$version$/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-javadoc.jar",
++  "description" : "JNA Platform extends Java Native Access with Java mappings for common operating system APIs such as Windows Win32, macOS, Linux, and Unix interfaces. It lets Java applications call platform-specific native functions through JNA without writing custom JNI code."
+ }
+
+codex
+The JSON parses cleanly. I’m checking the worktree view now because the edited file sits under `build/`, which may be ignored or untracked even though it has been updated on disk.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ succeeded in 0ms:
+{
+  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1",
+  "repository-url" : "https://github.com/java-native-access/jna",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-sources.jar",
+  "test-code-url" : "https://github.com/java-native-access/jna/tree/$version$/contrib/platform/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-javadoc.jar",
+  "description" : "JNA Platform extends Java Native Access with Java mappings for common operating system APIs such as Windows Win32, macOS, Linux, and Unix interfaces. It lets Java applications call platform-specific native functions through JNA without writing custom JNI code."
+}
+
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+ exited 1 in 0ms:
+error: pathspec 'build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json' did not match any file(s) known to git
+Did you forget to 'git add'?
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+index 817bfdf8392d7cb8e440243d18ae4e3b5f9a1f7e..a01f3b6ace61024f6c6e5afddcc4849651c3880e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/$version$/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-javadoc.jar",
++  "description" : "JNA Platform extends Java Native Access with Java mappings for common operating system APIs such as Windows Win32, macOS, Linux, and Unix interfaces. It lets Java applications call platform-specific native functions through JNA without writing custom JNI code."
+ }
+
+ succeeded in 180ms:
+web search: 
+web search: net.java.dev.jna jna-platform 5.3.1 Maven Central Java Native Access Platform github
+web search: 
+web search: https://github.com/java-native-access/jna/tree/5.3.1/contrib/platform/test
+web search: 
+web search: "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.3.1/"
+codex
+Updated [net.java.dev.jna-jna-platform-5.3.1.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json:1).
+
+I used Maven Central for the source and javadoc artifacts, since `jna-platform-5.3.1-sources.jar` and `jna-platform-5.3.1-javadoc.jar` are published there, and used the upstream `5.3.1` GitHub tag for `contrib/platform/test` because no Maven tests jar is listed. ([repo1.maven.org](https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.3.1/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`, since this is a JVM JAR artifact for JNA Platform, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. The JSON validates with `jq`.
+diff --git a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+index 817bfdf8392d7cb8e440243d18ae4e3b5f9a1f7e..a01f3b6ace61024f6c6e5afddcc4849651c3880e
+--- a/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
++++ b/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1"
++  "coordinates" : "net.java.dev.jna:jna-platform:5.3.1",
++  "repository-url" : "https://github.com/java-native-access/jna",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-sources.jar",
++  "test-code-url" : "https://github.com/java-native-access/jna/tree/$version$/contrib/platform/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/$version$/jna-platform-$version$-javadoc.jar",
++  "description" : "JNA Platform extends Java Native Access with Java mappings for common operating system APIs such as Windows Win32, macOS, Linux, and Unix interfaces. It lets Java applications call platform-specific native functions through JNA without writing custom JNI code."
+ }
+
+tokens used
+86,793
+Updated [net.java.dev.jna-jna-platform-5.3.1.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38/build/discovered-artifact-metadata/net.java.dev.jna-jna-platform-5.3.1.json:1).
+
+I used Maven Central for the source and javadoc artifacts, since `jna-platform-5.3.1-sources.jar` and `jna-platform-5.3.1-javadoc.jar` are published there, and used the upstream `5.3.1` GitHub tag for `contrib/platform/test` because no Maven tests jar is listed. ([repo1.maven.org](https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.3.1/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`, since this is a JVM JAR artifact for JNA Platform, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. The JSON validates with `jq`.
+Ran agent for net.java.dev.jna:jna-platform:5.3.1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38/build/agent-artifact-discovery-logs/net.java.dev.jna-jna-platform-5.3.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1344-e90dcf38/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 20s
+9 actionable tasks: 4 executed, 5 from cache
