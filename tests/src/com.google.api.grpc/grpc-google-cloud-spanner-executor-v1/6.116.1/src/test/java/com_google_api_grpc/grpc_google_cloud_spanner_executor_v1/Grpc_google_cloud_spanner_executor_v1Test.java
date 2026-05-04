@@ -18,6 +18,7 @@ import com.google.spanner.executor.v1.SpannerExecutorProxyGrpc;
 import com.google.spanner.executor.v1.Value;
 import com.google.spanner.executor.v1.ValueList;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Descriptors;
 import com.google.rpc.Status;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -29,6 +30,8 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerMethodDefinition;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.ServiceDescriptor;
+import io.grpc.protobuf.ProtoMethodDescriptorSupplier;
+import io.grpc.protobuf.ProtoServiceDescriptorSupplier;
 import io.grpc.stub.BlockingClientCall;
 import io.grpc.stub.StreamObserver;
 import java.io.InputStream;
@@ -97,6 +100,30 @@ public class Grpc_google_cloud_spanner_executor_v1Test {
         assertThat(serviceDefinition.getServiceDescriptor().getName()).isEqualTo(serviceDescriptor.getName());
         String fullMethodName = SpannerExecutorProxyGrpc.getExecuteActionAsyncMethod().getFullMethodName();
         assertThat(serviceDefinition.getMethod(fullMethodName)).isNotNull();
+    }
+
+    @Test
+    void protobufSchemaDescriptorsExposeExecutorServiceAndStreamingMethod() {
+        Object serviceSchemaDescriptor = SpannerExecutorProxyGrpc.getServiceDescriptor().getSchemaDescriptor();
+        assertThat(serviceSchemaDescriptor).isInstanceOf(ProtoServiceDescriptorSupplier.class);
+        ProtoServiceDescriptorSupplier serviceSupplier = (ProtoServiceDescriptorSupplier) serviceSchemaDescriptor;
+        Descriptors.FileDescriptor fileDescriptor = serviceSupplier.getFileDescriptor();
+        Descriptors.ServiceDescriptor protoService = serviceSupplier.getServiceDescriptor();
+
+        Object methodSchemaDescriptor = SpannerExecutorProxyGrpc.getExecuteActionAsyncMethod().getSchemaDescriptor();
+        assertThat(methodSchemaDescriptor).isInstanceOf(ProtoMethodDescriptorSupplier.class);
+        ProtoMethodDescriptorSupplier methodSupplier = (ProtoMethodDescriptorSupplier) methodSchemaDescriptor;
+        Descriptors.MethodDescriptor protoMethod = methodSupplier.getMethodDescriptor();
+
+        assertThat(fileDescriptor.getPackage()).isEqualTo("google.spanner.executor.v1");
+        assertThat(fileDescriptor.getServices()).contains(protoService);
+        assertThat(protoService.getFullName()).isEqualTo(SpannerExecutorProxyGrpc.SERVICE_NAME);
+        assertThat(protoMethod.getService()).isEqualTo(protoService);
+        assertThat(protoMethod.getName()).isEqualTo("ExecuteActionAsync");
+        assertThat(protoMethod.isClientStreaming()).isTrue();
+        assertThat(protoMethod.isServerStreaming()).isTrue();
+        assertThat(protoMethod.getInputType()).isEqualTo(SpannerAsyncActionRequest.getDescriptor());
+        assertThat(protoMethod.getOutputType()).isEqualTo(SpannerAsyncActionResponse.getDescriptor());
     }
 
     @Test
