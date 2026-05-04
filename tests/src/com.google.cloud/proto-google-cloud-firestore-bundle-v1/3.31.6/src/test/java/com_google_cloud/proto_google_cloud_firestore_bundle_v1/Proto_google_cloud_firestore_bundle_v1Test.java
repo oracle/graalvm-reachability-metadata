@@ -199,6 +199,51 @@ public class Proto_google_cloud_firestore_bundle_v1Test {
     }
 
     @Test
+    void readsOrderedLengthPrefixedBundleElementStream() throws Exception {
+        BundleElement metadataElement = BundleElement.newBuilder()
+                .setMetadata(BundleMetadata.newBuilder()
+                        .setId("ordered-bundle")
+                        .setCreateTime(timestamp(1_700_000_050L, 0))
+                        .setVersion(1)
+                        .setTotalDocuments(1)
+                        .setTotalBytes(128L))
+                .build();
+        BundleElement namedQueryElement = BundleElement.newBuilder()
+                .setNamedQuery(NamedQuery.newBuilder()
+                        .setName("ordered-users")
+                        .setBundledQuery(BundledQuery.newBuilder()
+                                .setParent(DATABASE + "/documents")
+                                .setLimitType(BundledQuery.LimitType.FIRST))
+                        .setReadTime(timestamp(1_700_000_060L, 0)))
+                .build();
+        BundleElement documentMetadataElement = BundleElement.newBuilder()
+                .setDocumentMetadata(BundledDocumentMetadata.newBuilder()
+                        .setName(DOCUMENT_NAME)
+                        .setReadTime(timestamp(1_700_000_070L, 0))
+                        .setExists(true)
+                        .addQueries("ordered-users"))
+                .build();
+        BundleElement documentElement = BundleElement.newBuilder()
+                .setDocument(Document.newBuilder()
+                        .setName(DOCUMENT_NAME)
+                        .putFields("name", Value.newBuilder().setStringValue("Alice").build()))
+                .build();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        metadataElement.writeDelimitedTo(output);
+        namedQueryElement.writeDelimitedTo(output);
+        documentMetadataElement.writeDelimitedTo(output);
+        documentElement.writeDelimitedTo(output);
+
+        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
+        assertThat(BundleElement.parseDelimitedFrom(input)).isEqualTo(metadataElement);
+        assertThat(BundleElement.parseDelimitedFrom(input)).isEqualTo(namedQueryElement);
+        assertThat(BundleElement.parseDelimitedFrom(input)).isEqualTo(documentMetadataElement);
+        assertThat(BundleElement.parseDelimitedFrom(input)).isEqualTo(documentElement);
+        assertThat(BundleElement.parseDelimitedFrom(input)).isNull();
+    }
+
+    @Test
     void descriptorsExposeBundleSchema() {
         Descriptors.FileDescriptor descriptor = BundleProto.getDescriptor();
 
