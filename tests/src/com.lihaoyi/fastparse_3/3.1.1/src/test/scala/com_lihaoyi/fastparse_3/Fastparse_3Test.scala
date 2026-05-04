@@ -98,6 +98,19 @@ class Fastparse_3Test {
   }
 
   @Test
+  def synthesizesDefaultValuesAndExplicitFailuresWithPassAndFail(): Unit = {
+    val defaulted: Parsed[Directive] = parse("cache", DirectiveGrammar.directive(_))
+    val enabled: Parsed[Directive] = parse("metrics=true", DirectiveGrammar.directive(_))
+    val invalidBoolean: Parsed.Failure = expectFailure(
+      parse("maybe", DirectiveGrammar.booleanValue(_), verboseFailures = true)
+    )
+
+    assertThat(defaulted).isEqualTo(Parsed.Success(Directive("cache", false), 5))
+    assertThat(enabled).isEqualTo(Parsed.Success(Directive("metrics", true), 12))
+    assertThat(invalidBoolean.msg).contains("boolean literal")
+  }
+
+  @Test
   def demonstratesCutBacktrackingAndNoCutRecovery(): Unit = {
     val noCut: Parsed[Unit] = parse("ac", CutGrammar.withoutCut(_))
     val cutFailure: Parsed.Failure = expectFailure(parse("ac", CutGrammar.withCut(_), verboseFailures = true))
@@ -156,6 +169,8 @@ final case class Assignment(name: String, value: Int)
 final case class SpanToken(text: String, start: Int, end: Int)
 
 final case class CharacterSummary(letters: String, digits: String, punctuation: String)
+
+final case class Directive(name: String, enabled: Boolean)
 
 private object ExpressionGrammar {
   import fastparse.*
@@ -244,6 +259,23 @@ private object CommandGrammar {
   private def reservedWord[$: P]: P[String] = P(keyword ~ End)
 
   private def identifier[$: P]: P[String] = P((CharIn("a-z", "A-Z", "_") ~~ CharsWhileIn("a-zA-Z0-9_", 0)).!)
+}
+
+private object DirectiveGrammar {
+  import fastparse.*
+  import fastparse.NoWhitespace.*
+
+  def directive[$: P]: P[Directive] = P(name ~ ("=" ~ booleanLiteral | Pass(false)) ~ End).map {
+    case (name: String, enabled: Boolean) => Directive(name, enabled)
+  }
+
+  def booleanValue[$: P]: P[Boolean] = P(booleanLiteral ~ End)
+
+  private def booleanLiteral[$: P]: P[Boolean] = P(
+    "true".!.map(_ => true) | "false".!.map(_ => false) | Fail("boolean literal")
+  )
+
+  private def name[$: P]: P[String] = P(CharsWhileIn("a-zA-Z", min = 1).!)
 }
 
 private object CutGrammar {
