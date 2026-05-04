@@ -308,6 +308,31 @@ class Core_3Test {
   }
 
   @Test
+  def eitherSyntaxEnsureRunsFinalizersAndReportsCleanupFailures(): Unit = {
+    implicit val monad: MonadError[[A] =>> Either[Throwable, A]] = EitherMonad
+    val cleanupRuns: AtomicInteger = new AtomicInteger(0)
+    val boom: IllegalStateException = new IllegalStateException("boom")
+
+    val success: Either[Throwable, String] = (Right("ok"): Either[Throwable, String]).ensure {
+      Right(cleanupRuns.incrementAndGet()).map(_ => ())
+    }
+    assertEquals(Right("ok"), success)
+    assertEquals(1, cleanupRuns.get())
+
+    val failed: Either[Throwable, String] = (Left(boom): Either[Throwable, String]).ensure {
+      Right(cleanupRuns.incrementAndGet()).map(_ => ())
+    }
+    assertEquals(Left(boom), failed)
+    assertEquals(2, cleanupRuns.get())
+
+    val cleanupFailure: IllegalArgumentException = new IllegalArgumentException("cleanup")
+    val cleanupFailed: Either[Throwable, String] = (Right("ignored"): Either[Throwable, String]).ensure {
+      Left(cleanupFailure)
+    }
+    assertEquals(Left(cleanupFailure), cleanupFailed)
+  }
+
+  @Test
   def capabilitiesExposeMarkerTypesTypedStreamMembersAndCancelableCallbacks(): Unit = {
     class ByteArrayStreams extends Streams[ByteArrayStreams] {
       type BinaryStream = Array[Byte]
