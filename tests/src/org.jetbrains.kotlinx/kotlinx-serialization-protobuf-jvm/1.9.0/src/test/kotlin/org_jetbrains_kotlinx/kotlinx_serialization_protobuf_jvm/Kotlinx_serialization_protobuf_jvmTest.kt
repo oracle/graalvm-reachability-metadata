@@ -138,6 +138,17 @@ public class Kotlinx_serialization_protobuf_jvmTest {
         assertThat(ProtoBuf.decodeFromByteArray<OneOfEnvelope>(encodedText)).isEqualTo(textMessage)
         assertThat(ProtoBuf.decodeFromByteArray<OneOfEnvelope>(encodedNumber)).isEqualTo(numberMessage)
     }
+
+    @Test
+    fun roundTripsEnumFieldsByNumericValue(): Unit {
+        val message = DeliveryMessage(status = DeliveryStatus.SENT, description = "left facility")
+
+        val encoded: ByteArray = ProtoBuf.encodeToByteArray(message)
+        val decoded: DeliveryMessage = ProtoBuf.decodeFromByteArray(encoded)
+
+        assertThat(encoded.toHexString()).isEqualTo("0801120D6C65667420666163696C697479")
+        assertThat(decoded).isEqualTo(message)
+    }
 }
 
 @Serializable
@@ -228,6 +239,21 @@ private data class NumberChoice(
     @ProtoNumber(3)
     val number: Int
 ) : OneOfChoice
+
+@Serializable
+private data class DeliveryMessage(
+    @ProtoNumber(1)
+    val status: DeliveryStatus,
+    @ProtoNumber(2)
+    val description: String
+)
+
+@Serializable
+private enum class DeliveryStatus {
+    CREATED,
+    SENT,
+    DELIVERED
+}
 
 private fun ByteArray.toHexString(): String = joinToString(separator = "") { byte ->
     "%02X".format(byte.toInt() and 0xFF)
