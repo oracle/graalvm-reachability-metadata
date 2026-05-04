@@ -20,6 +20,7 @@ import com.github.ajalt.mordant.table.horizontalLayout
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.table.verticalLayout
 import com.github.ajalt.mordant.terminal.Terminal
+import com.github.ajalt.mordant.terminal.TerminalCursor
 import com.github.ajalt.mordant.terminal.TerminalRecorder
 import com.github.ajalt.mordant.terminal.YesNoPrompt
 import com.github.ajalt.mordant.terminal.outputAsHtml
@@ -263,6 +264,50 @@ public class Mordant_core_jvmTest {
         assertThat(color).isEqualTo("green")
         assertThat(confirmation).isTrue()
         assertThat(recorder.output()).contains("Color", "Invalid value", "red, green, blue", "Continue", "Y/n")
+    }
+
+    @Test
+    fun terminalCursorBuildsAndPrintsAnsiMovements() {
+        val recorder: TerminalRecorder = TerminalRecorder(
+            ansiLevel = AnsiLevel.ANSI16,
+            width = 20,
+            height = 5,
+            outputInteractive = true,
+        )
+        val terminal: Terminal = Terminal(
+            ansiLevel = AnsiLevel.ANSI16,
+            width = 20,
+            height = 5,
+            interactive = true,
+            terminalInterface = recorder,
+        )
+        val cursor: TerminalCursor = terminal.cursor
+
+        val movements: String = cursor.getMoves {
+            savePosition()
+            setPosition(4, 2)
+            up(2)
+            right(3)
+            left(-1)
+            down(-1)
+            clearLineAfterCursor()
+            restorePosition()
+        }
+        cursor.move {
+            startOfLine()
+            clearScreenAfterCursor()
+        }
+        val expectedMovements: String = "\u001B[s" +
+            "\u001B[3;5H" +
+            "\u001B[2A" +
+            "\u001B[3C" +
+            "\u001B[1C" +
+            "\u001B[1A" +
+            "\u001B[0K" +
+            "\u001B[u"
+
+        assertThat(movements).isEqualTo(expectedMovements)
+        assertThat(recorder.stdout()).isEqualTo("\r\u001B[0J")
     }
 
     @Test
