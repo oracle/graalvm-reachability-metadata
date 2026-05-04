@@ -8,7 +8,7 @@ package org_aesh.readline;
 
 import org.junit.jupiter.api.Test;
 
-class ReadlineTest {
+public class ReadlineTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
