@@ -6,11 +6,264 @@
  */
 package io_arrow_kt.arrow_atomic_jvm
 
+import arrow.atomic.Atomic
+import arrow.atomic.AtomicBoolean
+import arrow.atomic.AtomicInt
+import arrow.atomic.AtomicLong
+import arrow.atomic.getAndUpdate
+import arrow.atomic.tryUpdate
+import arrow.atomic.update
+import arrow.atomic.updateAndGet
+import arrow.atomic.value
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
-class Arrow_atomic_jvmTest {
+public class Arrow_atomic_jvmTest {
     @Test
-    fun test() {
-        println("This is just a placeholder, implement your test")
+    fun atomicBooleanSupportsBasicCompareAndSetOperations() {
+        val flag = AtomicBoolean(false)
+
+        assertThat(flag.get()).isFalse()
+        assertThat(flag.value).isFalse()
+
+        flag.value = true
+        assertThat(flag.get()).isTrue()
+
+        flag.set(false)
+        assertThat(flag.value).isFalse()
+        assertThat(flag.compareAndSet(false, true)).isTrue()
+        assertThat(flag.value).isTrue()
+        assertThat(flag.compareAndSet(false, true)).isFalse()
+        assertThat(flag.getAndSet(false)).isTrue()
+        assertThat(flag.value).isFalse()
     }
+
+    @Test
+    fun atomicBooleanSupportsPublicUpdateFunctions() {
+        val flag = AtomicBoolean(false)
+
+        assertThat(flag.tryUpdate { current -> !current }).isTrue()
+        assertThat(flag.value).isTrue()
+
+        flag.update { current -> !current }
+        assertThat(flag.value).isFalse()
+
+        val previous = flag.getAndUpdate { current -> !current }
+        assertThat(previous).isFalse()
+        assertThat(flag.value).isTrue()
+
+        val updated = flag.updateAndGet { current -> !current }
+        assertThat(updated).isFalse()
+        assertThat(flag.value).isFalse()
+    }
+
+    @Test
+    fun atomicBooleanTryUpdateReportsCompareAndSetFailure() {
+        val flag = AtomicBoolean(false)
+
+        val updated = flag.tryUpdate { current ->
+            flag.value = !current
+            !current
+        }
+
+        assertThat(updated).isFalse()
+        assertThat(flag.value).isTrue()
+    }
+
+    @Test
+    fun atomicIntSupportsActualAtomicOperationsAndValueProperty() {
+        val counter = AtomicInt(1)
+
+        assertThat(counter.get()).isEqualTo(1)
+        assertThat(counter.value).isEqualTo(1)
+
+        counter.value = 2
+        assertThat(counter.get()).isEqualTo(2)
+
+        counter.set(3)
+        assertThat(counter.value).isEqualTo(3)
+        assertThat(counter.getAndSet(10)).isEqualTo(3)
+        assertThat(counter.value).isEqualTo(10)
+        assertThat(counter.incrementAndGet()).isEqualTo(11)
+        assertThat(counter.decrementAndGet()).isEqualTo(10)
+        assertThat(counter.addAndGet(5)).isEqualTo(15)
+        assertThat(counter.compareAndSet(15, 20)).isTrue()
+        assertThat(counter.compareAndSet(15, 30)).isFalse()
+        assertThat(counter.value).isEqualTo(20)
+    }
+
+    @Test
+    fun atomicIntSupportsPublicUpdateFunctionsAndRetriesOnInterference() {
+        val counter = AtomicInt(0)
+        val seenValues = mutableListOf<Int>()
+
+        assertThat(counter.tryUpdate { current -> current + 1 }).isTrue()
+        assertThat(counter.value).isEqualTo(1)
+
+        assertThat(
+            counter.tryUpdate { current ->
+                counter.value = 10
+                current + 1
+            },
+        ).isFalse()
+        assertThat(counter.value).isEqualTo(10)
+
+        counter.update { current ->
+            seenValues += current
+            if (seenValues.size == 1) {
+                counter.value = 20
+            }
+            current + 1
+        }
+        assertThat(seenValues).containsExactly(10, 20)
+        assertThat(counter.value).isEqualTo(21)
+
+        val previous = counter.getAndUpdate { current -> current + 4 }
+        assertThat(previous).isEqualTo(21)
+        assertThat(counter.value).isEqualTo(25)
+
+        val updated = counter.updateAndGet { current -> current * 2 }
+        assertThat(updated).isEqualTo(50)
+        assertThat(counter.value).isEqualTo(50)
+    }
+
+    @Test
+    fun atomicIntUpdatesAreSafeUnderContention() {
+        val counter = AtomicInt(0)
+        val workers = 4
+        val incrementsPerWorker = 500
+        val ready = CountDownLatch(workers)
+        val start = CountDownLatch(1)
+        val done = CountDownLatch(workers)
+        val executor = Executors.newFixedThreadPool(workers)
+
+        try {
+            repeat(workers) {
+                executor.execute {
+                    ready.countDown()
+                    if (start.await(5, TimeUnit.SECONDS)) {
+                        repeat(incrementsPerWorker) {
+                            counter.update { current -> current + 1 }
+                        }
+                    }
+                    done.countDown()
+                }
+            }
+
+            assertThat(ready.await(5, TimeUnit.SECONDS)).isTrue()
+            start.countDown()
+            assertThat(done.await(10, TimeUnit.SECONDS)).isTrue()
+        } finally {
+            executor.shutdownNow()
+            assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue()
+        }
+
+        assertThat(counter.value).isEqualTo(workers * incrementsPerWorker)
+    }
+
+    @Test
+    fun atomicLongSupportsActualAtomicOperationsAndValueProperty() {
+        val total = AtomicLong(100L)
+
+        assertThat(total.get()).isEqualTo(100L)
+        assertThat(total.value).isEqualTo(100L)
+
+        total.value = 125L
+        assertThat(total.get()).isEqualTo(125L)
+
+        total.set(150L)
+        assertThat(total.value).isEqualTo(150L)
+        assertThat(total.getAndSet(200L)).isEqualTo(150L)
+        assertThat(total.value).isEqualTo(200L)
+        assertThat(total.incrementAndGet()).isEqualTo(201L)
+        assertThat(total.decrementAndGet()).isEqualTo(200L)
+        assertThat(total.addAndGet(50L)).isEqualTo(250L)
+        assertThat(total.compareAndSet(250L, 300L)).isTrue()
+        assertThat(total.compareAndSet(250L, 400L)).isFalse()
+        assertThat(total.value).isEqualTo(300L)
+    }
+
+    @Test
+    fun atomicLongSupportsPublicUpdateFunctionsAndReportsFailedTryUpdate() {
+        val total = AtomicLong(7L)
+
+        assertThat(total.tryUpdate { current -> current + 1L }).isTrue()
+        assertThat(total.value).isEqualTo(8L)
+
+        assertThat(
+            total.tryUpdate { current ->
+                total.value = 99L
+                current + 1L
+            },
+        ).isFalse()
+        assertThat(total.value).isEqualTo(99L)
+
+        total.update { current -> current / 3L }
+        assertThat(total.value).isEqualTo(33L)
+
+        val previous = total.getAndUpdate { current -> current + 9L }
+        assertThat(previous).isEqualTo(33L)
+        assertThat(total.value).isEqualTo(42L)
+
+        val updated = total.updateAndGet { current -> current * 2L }
+        assertThat(updated).isEqualTo(84L)
+        assertThat(total.value).isEqualTo(84L)
+    }
+
+    @Test
+    fun atomicReferenceSupportsActualAtomicOperationsAndValueProperty() {
+        val state = Atomic(State(step = 1, label = "created"))
+
+        assertThat(state.get()).isEqualTo(State(1, "created"))
+        assertThat(state.value).isEqualTo(State(1, "created"))
+
+        state.value = State(step = 2, label = "assigned")
+        assertThat(state.get()).isEqualTo(State(2, "assigned"))
+
+        state.set(State(step = 3, label = "set"))
+        assertThat(state.value).isEqualTo(State(3, "set"))
+        assertThat(state.getAndSet(State(step = 4, label = "swapped"))).isEqualTo(State(3, "set"))
+        assertThat(state.value).isEqualTo(State(4, "swapped"))
+
+        val expected = state.value
+        val replacement = State(step = 5, label = "cas")
+        assertThat(state.compareAndSet(expected, replacement)).isTrue()
+        assertThat(state.compareAndSet(expected, State(step = 6, label = "stale"))).isFalse()
+        assertThat(state.value).isSameAs(replacement)
+    }
+
+    @Test
+    fun atomicReferenceSupportsPublicUpdateFunctionsAndReportsFailedTryUpdate() {
+        val state = Atomic(State(step = 1, label = "initial"))
+
+        assertThat(state.tryUpdate { current -> current.copy(step = current.step + 1) }).isTrue()
+        assertThat(state.value).isEqualTo(State(2, "initial"))
+
+        assertThat(
+            state.tryUpdate { current ->
+                state.value = State(step = 50, label = "interfering write")
+                current.copy(step = current.step + 1)
+            },
+        ).isFalse()
+        assertThat(state.value).isEqualTo(State(50, "interfering write"))
+
+        state.update { current -> current.copy(label = "updated") }
+        assertThat(state.value).isEqualTo(State(50, "updated"))
+
+        val previous = state.getAndUpdate { current -> current.copy(step = current.step + 1) }
+        assertThat(previous).isEqualTo(State(50, "updated"))
+        assertThat(state.value).isEqualTo(State(51, "updated"))
+
+        val updated = state.updateAndGet { current -> current.copy(label = "finished") }
+        assertThat(updated).isEqualTo(State(51, "finished"))
+        assertThat(state.value).isEqualTo(State(51, "finished"))
+    }
+
+    private data class State(
+        val step: Int,
+        val label: String,
+    )
 }
