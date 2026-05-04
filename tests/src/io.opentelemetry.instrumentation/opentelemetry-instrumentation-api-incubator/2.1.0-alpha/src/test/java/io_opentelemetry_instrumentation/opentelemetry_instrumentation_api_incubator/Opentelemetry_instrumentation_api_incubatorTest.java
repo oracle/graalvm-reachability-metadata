@@ -20,6 +20,8 @@ import io.opentelemetry.api.metrics.ObservableLongMeasurement;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.instrumentation.api.incubator.log.LoggingContextConstants;
 import io.opentelemetry.instrumentation.api.incubator.semconv.code.CodeAttributesExtractor;
+import io.opentelemetry.instrumentation.api.incubator.semconv.code.CodeAttributesGetter;
+import io.opentelemetry.instrumentation.api.incubator.semconv.code.CodeSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.incubator.semconv.db.DbClientAttributesExtractor;
 import io.opentelemetry.instrumentation.api.incubator.semconv.db.DbClientAttributesGetter;
 import io.opentelemetry.instrumentation.api.incubator.semconv.db.DbClientSpanNameExtractor;
@@ -136,6 +138,20 @@ public class Opentelemetry_instrumentation_api_incubatorTest {
         assertThat(attributes.get(CODE_NAMESPACE))
                 .isEqualTo(Opentelemetry_instrumentation_api_incubatorTest.class.getName());
         assertThat(attributes.get(CODE_FUNCTION)).isEqualTo("handle");
+    }
+
+    @Test
+    void codeSpanNameExtractorUsesSimpleClassAndMethodNames() {
+        CodeRequest request = new CodeRequest(Opentelemetry_instrumentation_api_incubatorTest.class, "handle");
+        CodeRequest classOnlyRequest = new CodeRequest(NestedCode.class, null);
+        CodeRequest unknownRequest = new CodeRequest(null, "handle");
+
+        assertThat(CodeSpanNameExtractor.create(new CodeGetter()).extract(request))
+                .isEqualTo("Opentelemetry_instrumentation_api_incubatorTest.handle");
+        assertThat(CodeSpanNameExtractor.create(new CodeGetter()).extract(classOnlyRequest))
+                .isEqualTo("NestedCode");
+        assertThat(CodeSpanNameExtractor.create(new CodeGetter()).extract(unknownRequest))
+                .isEqualTo("<unknown>.handle");
     }
 
     @Test
@@ -357,6 +373,31 @@ public class Opentelemetry_instrumentation_api_incubatorTest {
         public String getOperation(DatabaseRequest request) {
             return request.operation;
         }
+    }
+
+    private static final class CodeRequest {
+        private final Class<?> codeClass;
+        private final String methodName;
+
+        private CodeRequest(Class<?> codeClass, String methodName) {
+            this.codeClass = codeClass;
+            this.methodName = methodName;
+        }
+    }
+
+    private static final class CodeGetter implements CodeAttributesGetter<CodeRequest> {
+        @Override
+        public Class<?> getCodeClass(CodeRequest request) {
+            return request.codeClass;
+        }
+
+        @Override
+        public String getMethodName(CodeRequest request) {
+            return request.methodName;
+        }
+    }
+
+    private static final class NestedCode {
     }
 
     private static final class MessagingRequest {
