@@ -24,6 +24,7 @@ import com.github.ajalt.colormath.model.HSL
 import com.github.ajalt.colormath.model.LABColorSpaces
 import com.github.ajalt.colormath.model.RGB
 import com.github.ajalt.colormath.model.RGBColorSpaces
+import com.github.ajalt.colormath.model.RGBInt
 import com.github.ajalt.colormath.model.XYZColorSpaces
 import com.github.ajalt.colormath.parse
 import com.github.ajalt.colormath.parseOrNull
@@ -56,6 +57,22 @@ public class Colormath_jvmTest {
         val unclamped = RGB(1.4, -0.25, 0.5, 1.2)
         val clamped = unclamped.clamp()
         assertRgbClose(clamped, 1f, 0f, 0.5f, 1f)
+    }
+
+    @Test
+    fun `packs srgb channels as RGBInt values`(): Unit {
+        val packed = RGBInt(51, 102, 153, 204)
+        val fromFloats = RGBInt(0.2f, 0.4f, 0.6f, 0.8f)
+        val fromRgba = RGBInt.fromRGBA(0x336699ccu)
+
+        assertThat(fromFloats).isEqualTo(packed)
+        assertThat(fromRgba).isEqualTo(packed)
+        assertThat(packed.toRGBA()).isEqualTo(0x336699ccu)
+        assertThat(packed.toHex(true, RenderCondition.ALWAYS)).isEqualTo("#336699cc")
+        assertRgbClose(packed.toSRGB(), 0.2f, 0.4f, 0.6f, 0.8f)
+        assertClose(packed.redFloat, 0.2f)
+        assertClose(packed.greenFloat, 0.4f)
+        assertClose(packed.blueFloat, 0.6f)
     }
 
     @Test
