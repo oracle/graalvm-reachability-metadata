@@ -105,6 +105,38 @@ public class Org_osgi_util_promiseTest {
     }
 
     @Test
+    void thenFailureCallbackObservesAndControlsChainedFailure() throws Exception {
+        PromiseFactory factory = new PromiseFactory(PromiseFactory.inlineExecutor());
+        IllegalArgumentException originalFailure = new IllegalArgumentException("original failure");
+        Promise<String> failed = factory.failed(originalFailure);
+        AtomicReference<Promise<?>> observedPromise = new AtomicReference<>();
+        AtomicReference<Throwable> observedFailure = new AtomicReference<>();
+
+        Promise<Integer> chained = failed.then(
+                success -> {
+                    throw new AssertionError("success callback should not run");
+                },
+                resolved -> {
+                    observedPromise.set(resolved);
+                    observedFailure.set(resolved.getFailure());
+                });
+
+        assertThat(observedPromise).hasValue(failed);
+        assertThat(observedFailure).hasValue(originalFailure);
+        assertFailureCause(chained, originalFailure);
+
+        IllegalStateException replacementFailure = new IllegalStateException("replacement failure");
+        Promise<Integer> replacement = failed.then(
+                success -> {
+                    throw new AssertionError("success callback should not run");
+                },
+                resolved -> {
+                    throw replacementFailure;
+                });
+        assertFailureCause(replacement, replacementFailure);
+    }
+
+    @Test
     void promiseChainsPropagateFilteringMappingAndFlatMappingFailures() throws Exception {
         PromiseFactory factory = new PromiseFactory(PromiseFactory.inlineExecutor());
 
