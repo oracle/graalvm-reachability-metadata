@@ -11,6 +11,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -26,6 +27,7 @@ import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.serialization.XML
 import nl.adaptivity.xmlutil.serialization.XmlChildrenName
 import nl.adaptivity.xmlutil.serialization.XmlElement
+import nl.adaptivity.xmlutil.serialization.XmlOtherAttributes
 import nl.adaptivity.xmlutil.serialization.XmlSerialException
 import nl.adaptivity.xmlutil.serialization.XmlValue
 import org.assertj.core.api.Assertions.assertThat
@@ -88,6 +90,26 @@ public class Serialization_jvmTest {
     }
 
     @Test
+    fun preservesWildcardAttributesInDedicatedAttributeMap(): Unit {
+        val item = LabelledItem(
+            id = "item-91",
+            otherAttributes = mapOf(
+                "source" to "agent & test",
+                "reviewed" to "true",
+            ),
+            label = "Native image metadata",
+        )
+
+        val encoded: String = compactXml.encodeToString(LabelledItemSerializer, item, QName("item"))
+        val decoded: LabelledItem = compactXml.decodeFromString(LabelledItemSerializer, encoded, QName("item"))
+
+        assertThat(encoded)
+            .contains("id=\"item-91\"", "source=\"agent &amp; test\"", "reviewed=\"true\"")
+            .contains("<label>Native image metadata</label>")
+        assertThat(decoded).isEqualTo(item)
+    }
+
+    @Test
     fun exposesXmlDescriptorForCustomSerializer(): Unit {
         val descriptor = compactXml.xmlDescriptor(TicketSerializer, QName("ticket"))
 
@@ -122,6 +144,12 @@ public class Serialization_jvmTest {
         val priority: Priority,
         val title: String,
         val comments: List<String>,
+    )
+
+    private data class LabelledItem(
+        val id: String,
+        val otherAttributes: Map<String, String>,
+        val label: String,
     )
 
     private enum class Priority(val xmlValue: String) {
@@ -170,6 +198,48 @@ public class Serialization_jvmTest {
             Note(
                 id = requireNotNull(id) { "Missing note id" },
                 message = requireNotNull(message) { "Missing note message" },
+            )
+        }
+    }
+
+    private object LabelledItemSerializer : KSerializer<LabelledItem> {
+        private val otherAttributesSerializer: KSerializer<Map<String, String>> =
+            MapSerializer(String.serializer(), String.serializer())
+
+        @OptIn(ExperimentalSerializationApi::class)
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("LabelledItem") {
+            element<String>("id", annotations = listOf(XmlElement(false)))
+            element(
+                "otherAttributes",
+                otherAttributesSerializer.descriptor,
+                annotations = listOf(XmlOtherAttributes()),
+            )
+            element<String>("label", annotations = listOf(XmlElement(true)))
+        }
+
+        override fun serialize(encoder: Encoder, value: LabelledItem): Unit = encoder.encodeStructure(descriptor) {
+            encodeStringElement(descriptor, 0, value.id)
+            encodeSerializableElement(descriptor, 1, otherAttributesSerializer, value.otherAttributes)
+            encodeStringElement(descriptor, 2, value.label)
+        }
+
+        override fun deserialize(decoder: Decoder): LabelledItem = decoder.decodeStructure(descriptor) {
+            var id: String? = null
+            var otherAttributes: Map<String, String> = emptyMap()
+            var label: String? = null
+            while (true) {
+                when (val index: Int = decodeElementIndex(descriptor)) {
+                    CompositeDecoder.DECODE_DONE -> break
+                    0 -> id = decodeStringElement(descriptor, index)
+                    1 -> otherAttributes += decodeSerializableElement(descriptor, index, otherAttributesSerializer)
+                    2 -> label = decodeStringElement(descriptor, index)
+                    else -> error("Unexpected element index: $index")
+                }
+            }
+            LabelledItem(
+                id = requireNotNull(id) { "Missing item id" },
+                otherAttributes = otherAttributes,
+                label = requireNotNull(label) { "Missing item label" },
             )
         }
     }
