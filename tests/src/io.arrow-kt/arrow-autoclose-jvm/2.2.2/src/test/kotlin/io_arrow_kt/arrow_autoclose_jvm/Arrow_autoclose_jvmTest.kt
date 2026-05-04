@@ -105,6 +105,38 @@ public class Arrow_autoclose_jvmTest {
     }
 
     @Test
+    fun acquireFailureReleasesPreviouslyAcquiredResourcesWithTheOriginalFailure(): Unit {
+        val acquireFailure: IllegalStateException = IllegalStateException("acquire failed")
+        val events: MutableList<String> = mutableListOf()
+        var observedFailure: Throwable? = null
+
+        assertThatThrownBy {
+            autoCloseScope<Unit> {
+                autoClose(
+                    acquire = {
+                        events += "acquire:first"
+                        "first"
+                    },
+                    release = { resource, cause ->
+                        observedFailure = cause
+                        events += "release:$resource"
+                    },
+                )
+                autoClose(
+                    acquire = {
+                        events += "acquire:second"
+                        throw acquireFailure
+                    },
+                    release = { resource, _ -> events += "release:$resource" },
+                )
+            }
+        }.isSameAs(acquireFailure)
+
+        assertThat(observedFailure).isSameAs(acquireFailure)
+        assertThat(events).containsExactly("acquire:first", "acquire:second", "release:first")
+    }
+
+    @Test
     fun blockFailureIsRethrownAfterFinalizersReceiveTheOriginalFailure(): Unit {
         val failure: IllegalArgumentException = IllegalArgumentException("body failed")
         val events: MutableList<String> = mutableListOf()
