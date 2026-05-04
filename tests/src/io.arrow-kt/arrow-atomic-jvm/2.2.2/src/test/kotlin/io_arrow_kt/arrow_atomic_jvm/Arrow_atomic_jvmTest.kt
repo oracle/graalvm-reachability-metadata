@@ -175,6 +175,21 @@ public class Arrow_atomic_jvmTest {
     }
 
     @Test
+    fun atomicIntCompareAndExchangeReturnsWitnessValueAndOnlyUpdatesOnMatch() {
+        val counter = AtomicInt(4)
+
+        val failedWitness = counter.compareAndExchange(0, 9)
+
+        assertThat(failedWitness).isEqualTo(4)
+        assertThat(counter.value).isEqualTo(4)
+
+        val successfulWitness = counter.compareAndExchange(4, 9)
+
+        assertThat(successfulWitness).isEqualTo(4)
+        assertThat(counter.value).isEqualTo(9)
+    }
+
+    @Test
     fun atomicIntUpdatesAreSafeUnderContention() {
         val counter = AtomicInt(0)
         val workers = 4
@@ -297,6 +312,21 @@ public class Arrow_atomic_jvmTest {
         val updated = total.updateAndGet { current -> current * 2L }
         assertThat(updated).isEqualTo(84L)
         assertThat(total.value).isEqualTo(84L)
+    }
+
+    @Test
+    fun atomicLongCompareAndExchangeReturnsWitnessValueAndOnlyUpdatesOnMatch() {
+        val total = AtomicLong(40L)
+
+        val failedWitness = total.compareAndExchange(0L, 99L)
+
+        assertThat(failedWitness).isEqualTo(40L)
+        assertThat(total.value).isEqualTo(40L)
+
+        val successfulWitness = total.compareAndExchange(40L, 99L)
+
+        assertThat(successfulWitness).isEqualTo(40L)
+        assertThat(total.value).isEqualTo(99L)
     }
 
     @Test
