@@ -506,10 +506,12 @@ class ReadmeBadgeSummarySupportTests {
         assertThat(markdown).contains("![Coverage over Time](latest/metrics-over-time-dark.svg#gh-dark-mode-only)");
         assertThat(markdown).contains("| Library | Description | Dynamic access coverage |");
         assertThat(markdown).contains(
-                "| `com.example:alpha` | <details><summary>Alpha \\| library.</summary> "
-                        + "Provides extended &lt;docs&gt; &amp; utilities.</details> | 75.0% (3/4 calls) |"
+                "| `com.example:alpha` | <details><summary>Show</summary> "
+                        + "Alpha \\| library. Provides extended &lt;docs&gt; &amp; utilities.</details> | 75.0% (3/4 calls) |"
         );
-        assertThat(markdown).contains("| `com.example:zeta` | Zeta library | 25.0% (1/4 calls) |");
+        assertThat(markdown).contains(
+                "| `com.example:zeta` | <details><summary>Show</summary> Zeta library</details> | 25.0% (1/4 calls) |"
+        );
         assertThat(markdown).doesNotContain("org.example:ignored");
         assertThat(markdown.indexOf("`com.example:alpha`")).isLessThan(markdown.indexOf("`com.example:zeta`"));
         assertThat(markdown.indexOf("![Coverage over Time]")).isLessThan(markdown.indexOf("## Libraries"));

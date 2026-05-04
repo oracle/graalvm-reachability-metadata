@@ -257,13 +257,7 @@ public final class ReadmeBadgeSummarySupport {
         if (normalized.isEmpty()) {
             return "";
         }
-        int summaryEnd = normalized.indexOf(". ");
-        if (summaryEnd <= 0) {
-            return escapeMarkdownTableHtml(normalized);
-        }
-        String summary = escapeMarkdownTableHtml(normalized.substring(0, summaryEnd + 1));
-        String rest = escapeMarkdownTableHtml(normalized.substring(summaryEnd + 2));
-        return "<details><summary>" + summary + "</summary> " + rest + "</details>";
+        return "<details><summary>Show</summary> " + escapeMarkdownTableHtml(normalized) + "</details>";
     }
 
     private static String escapeMarkdownTableHtml(String value) {
