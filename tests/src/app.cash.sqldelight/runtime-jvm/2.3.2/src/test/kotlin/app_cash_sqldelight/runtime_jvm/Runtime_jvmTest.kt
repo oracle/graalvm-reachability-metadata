@@ -28,6 +28,9 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.util.ArrayDeque
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
@@ -261,6 +264,31 @@ public class Runtime_jvmTest {
         assertThat(transacter.argumentList(0)).isEqualTo("()")
         assertThat(transacter.argumentList(1)).isEqualTo("(?)")
         assertThat(transacter.argumentList(4)).isEqualTo("(?,?,?,?)")
+    }
+
+    @Test
+    fun transactionCallbacksAreConfinedToTheTransactionThread(): Unit {
+        val driver: RecordingSqlDriver = RecordingSqlDriver()
+        val transacter: RecordingTransacter = RecordingTransacter(driver)
+        val executor: ExecutorService = Executors.newSingleThreadExecutor()
+        var ownerThreadHookRan: Boolean = false
+
+        try {
+            transacter.transaction {
+                val failure: Future<Throwable?> = executor.submit<Throwable?> {
+                    runCatching { afterCommit { error("cross-thread hook should not be registered") } }.exceptionOrNull()
+                }
+
+                assertThat(failure.get(5, TimeUnit.SECONDS)).isInstanceOf(IllegalStateException::class.java)
+                afterCommit { ownerThreadHookRan = true }
+            }
+        } finally {
+            executor.shutdownNow()
+            assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue()
+        }
+
+        assertThat(ownerThreadHookRan).isTrue()
+        assertThat(driver.transactions.single().endedSuccessfully).isTrue()
     }
 
     @Test
