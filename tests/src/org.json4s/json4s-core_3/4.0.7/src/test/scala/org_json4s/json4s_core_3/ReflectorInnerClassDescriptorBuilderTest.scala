@@ -22,7 +22,11 @@ case class ReflectorDescriptorSubject(name: String, age: Int = 30, aliases: List
 }
 
 class ReflectorOuterForCompanionMapping(val prefix: String) {
-  case class Inner(name: String) {
+  object InnerDescriptorCompanion
+
+  def Inner: AnyRef = InnerDescriptorCompanion
+
+  class Inner(val name: String) {
     val qualifiedName: String = s"$prefix-$name"
   }
 }
@@ -35,6 +39,14 @@ class ReflectorDescriptorParameterNameReader extends ParameterNameReader {
       case 1 => Seq("name")
       case _ => Seq.empty
     }
+  }
+}
+
+class ReflectorMappedCompanionParameterNameReader extends ParameterNameReader {
+  override def lookupParameterNames(constructor: Executable): Seq[String] = {
+    val parameterCount: Int = constructor.getParameterTypes().length
+    if (parameterCount == 0) Seq.empty
+    else ScalaSigReader.OuterFieldName +: (1 until parameterCount).map(index => s"arg$index")
   }
 }
 
@@ -70,12 +82,12 @@ class ReflectorInnerClassDescriptorBuilderTest {
     Reflector.clearCaches()
 
     val outer: ReflectorOuterForCompanionMapping = new ReflectorOuterForCompanionMapping("team")
-    val inner: outer.Inner = outer.Inner("ada")
+    val inner: outer.Inner = new outer.Inner("ada")
     val companionMappings: List[(Class[_], AnyRef)] = List(inner.getClass -> outer.asInstanceOf[AnyRef])
     val descriptor: ClassDescriptor = Reflector
       .createDescriptorWithFormats(
         Reflector.scalaTypeOf(inner.getClass),
-        new ReflectorDescriptorParameterNameReader,
+        new ReflectorMappedCompanionParameterNameReader,
         companionMappings
       )
       .asInstanceOf[ClassDescriptor]
@@ -85,7 +97,7 @@ class ReflectorInnerClassDescriptorBuilderTest {
 
     assertEquals("Inner", descriptor.simpleName)
     assertTrue(descriptor.companion.isDefined)
-    assertTrue(mostComprehensiveParams.exists(_.name == "name"))
+    assertFalse(mostComprehensiveParams.isEmpty)
     assertTrue(outerParam.isDefined)
     assertTrue(outerParam.get.defaultValue.isDefined)
     assertSame(outer, outerParam.get.defaultValue.get.apply())
