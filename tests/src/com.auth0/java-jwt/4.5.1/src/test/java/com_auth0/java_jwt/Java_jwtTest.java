@@ -8,9 +8,9 @@ package com_auth0.java_jwt;
 
 import org.junit.jupiter.api.Test;
 
-class Java_jwtTest {
+public class Java_jwtTest {
     @Test
-    void test() throws Exception {
+    public void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
     }
 }
