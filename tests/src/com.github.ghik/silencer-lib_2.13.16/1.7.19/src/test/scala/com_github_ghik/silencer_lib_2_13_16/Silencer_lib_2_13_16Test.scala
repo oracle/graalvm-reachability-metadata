@@ -105,6 +105,18 @@ class Silencer_lib_2_13_16Test {
     assertEquals("none", render(Option.empty[Int]))
     assertEquals("int:12", 12.rendered)
   }
+
+  @Test
+  def annotationsOnClassAndMethodTypeParametersKeepGenericContainerSemantics(): Unit = {
+    val first: SilencerGenericBox[String] = SilencerGenericBox("metadata")
+    val length: SilencerGenericBox[Int] = first.map(_.length)
+    val combined: SilencerGenericBox[(String, Int)] = first.zip(length)
+
+    assertEquals("metadata", first.value)
+    assertEquals(8, length.value)
+    assertEquals(("metadata", 8), combined.value)
+    assertEquals("metadata -> 8", combined.fold { case (label, size) => s"$label -> $size" })
+  }
 }
 
 @silent("class-level silencer annotation")
@@ -200,6 +212,29 @@ final class SilencerPipeline {
 @silent("implicit type class annotation")
 trait SilencerFormatter[A] {
   def render(value: A): String
+}
+
+final class SilencerGenericBox[@silent("class type parameter annotation") A](val value: A) {
+  @silent("method with annotated result type parameter")
+  def map[@silent("map result type parameter annotation") B](transform: A => B): SilencerGenericBox[B] = {
+    SilencerGenericBox(transform(value))
+  }
+
+  @silent("method with annotated peer type parameter")
+  def zip[@silent("zip peer type parameter annotation") B](other: SilencerGenericBox[B]): SilencerGenericBox[(A, B)] = {
+    SilencerGenericBox((value, other.value))
+  }
+
+  @silent("method with annotated folded type parameter")
+  def fold[@silent("fold result type parameter annotation") B](combine: A => B): B = {
+    combine(value)
+  }
+}
+
+object SilencerGenericBox {
+  def apply[@silent("factory type parameter annotation") A](value: A): SilencerGenericBox[A] = {
+    new SilencerGenericBox(value)
+  }
 }
 
 object SilencerImplicitFixture {
