@@ -1,0 +1,20 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Completed.
+
+Changes made:
+- Removed unsupported generated test:
+  - `tests/src/org.hibernate/hibernate-jpamodelgen/6.5.0.Final/src/test/java/org_hibernate/hibernate_jpamodelgen/MockerTest.java`
+- Removed temporary diagnostic test-only file:
+  - `MockerDiagnosticTest.java`
+- Wrote report:
+  - `post-gen-interventions/org.hibernate_hibernate-jpamodelgen_6.5.0.Final.md`
+
+Root cause:
+- Not metadata-related.
+- The failing test exercised Byte Buddy runtime class definition, which Native Image does not support by default:
+  - `UnsupportedFeatureError: Classes cannot be defined at runtime`
+  - attempted class: `net.bytebuddy.utility.Invoker$Dispatcher`
+
+Verification:
+- Ran `./gradlew test -Pcoordinates=org.hibernate:hibernate-jpamodelgen:6.5.0.Final --stacktrace`
+- Result: passed.
