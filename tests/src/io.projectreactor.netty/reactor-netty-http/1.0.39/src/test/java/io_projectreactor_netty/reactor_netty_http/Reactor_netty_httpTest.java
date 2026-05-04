@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Locale;
+import java.util.Map;
 
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -19,6 +20,7 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
+import io.netty.handler.codec.http.multipart.HttpData;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
@@ -132,6 +134,33 @@ public class Reactor_netty_httpTest {
     }
 
     @Test
+    void decodesFormUrlencodedRequest() {
+        DisposableServer server = bind(HttpServer.create()
+                .route(routes -> routes.post("/submit", (request, response) -> request.receiveForm()
+                        .collectMap(HttpData::getName, Reactor_netty_httpTest::dataValue)
+                        .flatMap(form -> response
+                                .header(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.TEXT_PLAIN)
+                                .sendString(Mono.just(formResponse(request.isFormUrlencoded(), form)))
+                                .then()))));
+        try {
+            ClientResult result = clientFor(server)
+                    .post()
+                    .uri("/submit")
+                    .sendForm((request, form) -> form.attr("name", "Reactor Netty"))
+                    .responseSingle((response, content) -> content.asString(StandardCharsets.UTF_8)
+                            .map(body -> ClientResult.from(response, body)))
+                    .block(TIMEOUT);
+
+            assertThat(result).isNotNull();
+            assertThat(result.statusCode).isEqualTo(200);
+            assertThat(result.header(HttpHeaderNames.CONTENT_TYPE.toString())).contains("text/plain");
+            assertThat(result.body).isEqualTo("form=true;name=Reactor Netty");
+        } finally {
+            server.disposeNow(TIMEOUT);
+        }
+    }
+
+    @Test
     void followsRedirectsAndReceivesCompressedContent() {
         String payload = "reactor-netty-native-image ".repeat(200);
         DisposableServer server = bind(HttpServer.create()
@@ -217,6 +246,18 @@ public class Reactor_netty_httpTest {
         return HttpClient.create()
                 .baseUrl("http://" + LOOPBACK_ADDRESS + ":" + server.port())
                 .responseTimeout(TIMEOUT);
+    }
+
+    private static String dataValue(HttpData data) {
+        try {
+            return data.getString(StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to read form field " + data.getName(), e);
+        }
+    }
+
+    private static String formResponse(boolean formUrlencoded, Map<String, String> form) {
+        return "form=" + formUrlencoded + ";name=" + form.get("name");
     }
 
     private static final class ClientResult {
