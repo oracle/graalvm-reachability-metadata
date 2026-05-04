@@ -12,12 +12,20 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
+import io.grpc.Attributes;
+import io.grpc.CallOptions;
+import io.grpc.ChannelLogger;
+import io.grpc.ConnectivityState;
+import io.grpc.EquivalentAddressGroup;
+import io.grpc.LoadBalancer;
 import io.grpc.LoadBalancerRegistry;
 import io.grpc.ManagedChannel;
+import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.NameResolver;
 import io.grpc.Server;
 import io.grpc.Status;
+import io.grpc.SynchronizationContext;
 import io.grpc.grpclb.GrpclbConstants;
 import io.grpc.grpclb.GrpclbLoadBalancerProvider;
 import io.grpc.inprocess.InProcessChannelBuilder;
@@ -41,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
@@ -195,6 +205,36 @@ public class Grpc_grpclbTest {
     }
 
     @Test
+    void loadBalancerReportsEmptyResolutionAsTransientFailure() throws Exception {
+        RecordingLoadBalancerHelper helper = new RecordingLoadBalancerHelper();
+        LoadBalancer loadBalancer = null;
+        try {
+            loadBalancer = new GrpclbLoadBalancerProvider().newLoadBalancer(helper);
+            assertThat(loadBalancer.canHandleEmptyAddressListFromNameResolution()).isTrue();
+
+            Status status = loadBalancer.acceptResolvedAddresses(LoadBalancer.ResolvedAddresses.newBuilder()
+                    .setAddresses(List.of())
+                    .setAttributes(Attributes.EMPTY)
+                    .build());
+
+            assertThat(status.getCode()).isEqualTo(Status.Code.UNAVAILABLE);
+            assertThat(status.getDescription()).isEqualTo("No backend or balancer addresses found");
+            assertThat(helper.latestState.get()).isEqualTo(ConnectivityState.TRANSIENT_FAILURE);
+            assertThat(helper.latestPicker.get()).isNotNull();
+
+            LoadBalancer.PickResult pickResult = helper.latestPicker.get().pickSubchannel(new EmptyPickSubchannelArgs());
+            assertThat(pickResult.hasResult()).isTrue();
+            assertThat(pickResult.getStatus().getCode()).isEqualTo(Status.Code.UNAVAILABLE);
+            assertThat(pickResult.getStatus().getDescription()).isEqualTo("No backend or balancer addresses found");
+        } finally {
+            if (loadBalancer != null) {
+                loadBalancer.shutdown();
+            }
+            helper.shutdown();
+        }
+    }
+
+    @Test
     void inProcessStubStreamsInitialResponseServerListAndCompletion() throws Exception {
         String serverName = "grpclb-" + UUID.randomUUID();
         CountDownLatch completed = new CountDownLatch(1);
@@ -259,6 +299,81 @@ public class Grpc_grpclbTest {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         response.writeDelimitedTo(output);
         return output.toByteArray();
+    }
+
+    private static final class RecordingLoadBalancerHelper extends LoadBalancer.Helper {
+        private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        private final SynchronizationContext synchronizationContext = new SynchronizationContext((thread, throwable) -> {
+            throw new AssertionError("Unexpected synchronization context failure", throwable);
+        });
+        private final ChannelLogger channelLogger = new NoopChannelLogger();
+        private final AtomicReference<ConnectivityState> latestState = new AtomicReference<>();
+        private final AtomicReference<LoadBalancer.SubchannelPicker> latestPicker = new AtomicReference<>();
+
+        @Override
+        public ManagedChannel createOobChannel(EquivalentAddressGroup eag, String authority) {
+            throw new AssertionError("Empty resolution should not create an out-of-band channel");
+        }
+
+        @Override
+        public void updateBalancingState(ConnectivityState newState, LoadBalancer.SubchannelPicker newPicker) {
+            latestState.set(newState);
+            latestPicker.set(newPicker);
+        }
+
+        @Override
+        public SynchronizationContext getSynchronizationContext() {
+            return synchronizationContext;
+        }
+
+        @Override
+        public ScheduledExecutorService getScheduledExecutorService() {
+            return scheduledExecutorService;
+        }
+
+        @Override
+        public String getAuthority() {
+            return "test-authority.example";
+        }
+
+        @Override
+        public ChannelLogger getChannelLogger() {
+            return channelLogger;
+        }
+
+        void shutdown() throws InterruptedException {
+            scheduledExecutorService.shutdownNow();
+            assertThat(scheduledExecutorService.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    private static final class EmptyPickSubchannelArgs extends LoadBalancer.PickSubchannelArgs {
+        @Override
+        public CallOptions getCallOptions() {
+            return CallOptions.DEFAULT;
+        }
+
+        @Override
+        public Metadata getHeaders() {
+            return new Metadata();
+        }
+
+        @Override
+        public MethodDescriptor<?, ?> getMethodDescriptor() {
+            return LoadBalancerGrpc.getBalanceLoadMethod();
+        }
+    }
+
+    private static final class NoopChannelLogger extends ChannelLogger {
+        @Override
+        public void log(ChannelLogLevel level, String message) {
+            // The test records load-balancer state directly instead of asserting logs.
+        }
+
+        @Override
+        public void log(ChannelLogLevel level, String messageFormat, Object... args) {
+            // The test records load-balancer state directly instead of asserting logs.
+        }
     }
 
     private static final class NoopRequestObserver implements StreamObserver<LoadBalanceRequest> {
