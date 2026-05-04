@@ -209,6 +209,28 @@ public class RetriesTest {
     }
 
     @Test
+    void adaptiveStrategyAddsRateLimiterDelayAfterThrottlingFailures() {
+        AdaptiveRetryStrategy strategy = AdaptiveRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .backoffStrategy(BackoffStrategy.retryImmediately())
+            .throttlingBackoffStrategy(BackoffStrategy.retryImmediately())
+            .treatAsThrottling(ThrottlingFailure.class::isInstance)
+            .useClientDefaults(false)
+            .build();
+
+        RetryToken token = strategy.acquireInitialToken(AcquireInitialTokenRequest.create("adaptive-rate-limited"))
+            .token();
+        RefreshRetryTokenResponse retry = strategy.refreshRetryToken(
+            refreshRequest(token, new ThrottlingFailure()).build());
+
+        assertThat(retry.token()).isNotNull();
+        assertThat(retry.delay()).isGreaterThan(Duration.ZERO);
+        assertThat(strategy.acquireInitialToken(AcquireInitialTokenRequest.create("adaptive-independent"))
+            .delay()).isEqualTo(Duration.ZERO);
+    }
+
+    @Test
     void retryPredicateConvenienceMethodsHandleExactTypeCauseAndRootCause() {
         assertRefreshSucceeds(StandardRetryStrategy.builder()
             .maxAttempts(2)
