@@ -304,6 +304,9 @@ jobs:
                   )
                 });
 
+            def unique_preserve:
+              reduce .[] as $item ([]; if index($item) then . else . + [$item] end);
+
             def successes_by_library:
               group_by(.name)
               | map(
@@ -312,7 +315,7 @@ jobs:
                       name: $active[0].name,
                       latestVersion: $active[0].latestVersion,
                       successfulVersions: (
-                        ($active | map(.successfulVersions) | map(unique)) as $lists
+                        ($active | map(.successfulVersions | unique_preserve)) as $lists
                         | if ($lists | length) == 0 then []
                           else reduce $lists[1:][] as $candidate ($lists[0]; [ .[] | select($candidate | index(.)) ])
                           end
@@ -328,7 +331,16 @@ jobs:
             }
           ' "${RESULT_FILES[@]}" > aggregate-results.json
 
-          jq -r '.successes[] | .name as $name | .latestVersion as $latest | .successfulVersions[]? | "\($name):\(.)|\($latest)"' aggregate-results.json > successful_updates.txt
+          jq -r '
+            .successes[]
+            | .name as $name
+            | .latestVersion as $latest
+            | .successfulVersions as $versions
+            | range(0; $versions | length) as $i
+            | ($versions[$i]) as $version
+            | (if $i == 0 then $latest else $versions[$i - 1] end) as $lastSupported
+            | "\($name):\($version)|\($lastSupported)"
+          ' aggregate-results.json > successful_updates.txt
 
           if [[ -s successful_updates.txt ]]; then
             echo "has-successful-updates=true" >> "$GITHUB_OUTPUT"
@@ -352,9 +364,9 @@ jobs:
           git config --local user.name "Github Actions"
 
           update_new_versions() {
-            while IFS='|' read -r coordinates latest_version; do
-              if [[ -n "$coordinates" && -n "$latest_version" ]]; then
-                ./gradlew addTestedVersion -Pcoordinates="$coordinates" --lastSupportedVersion="$latest_version"
+            while IFS='|' read -r coordinates last_supported_version; do
+              if [[ -n "$coordinates" && -n "$last_supported_version" ]]; then
+                ./gradlew addTestedVersion -Pcoordinates="$coordinates" --lastSupportedVersion="$last_supported_version"
               fi
             done < successful_updates.txt
           }
