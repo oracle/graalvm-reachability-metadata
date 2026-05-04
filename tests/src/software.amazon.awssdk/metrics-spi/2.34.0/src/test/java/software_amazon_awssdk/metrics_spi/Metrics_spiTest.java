@@ -68,6 +68,33 @@ public class Metrics_spiTest {
     }
 
     @Test
+    void sdkMetricCreatedWithNullAdditionalVarargsUsesOnlyPrimaryCategory() {
+        SdkMetric<Long> metric = SdkMetric.create(
+                uniqueMetricName("single-category"),
+                Long.class,
+                MetricLevel.ERROR,
+                MetricCategory.CUSTOM,
+                (MetricCategory[]) null);
+
+        assertThat(metric.categories()).containsExactly(MetricCategory.CUSTOM);
+    }
+
+    @Test
+    void sdkMetricEqualityHashCodeAndStringAreBasedOnPublicMetricIdentity() {
+        SdkMetric<Integer> first = SdkMetric.create(
+                uniqueMetricName("identity-one"), Integer.class, MetricLevel.INFO, MetricCategory.CORE);
+        SdkMetric<Integer> second = SdkMetric.create(
+                uniqueMetricName("identity-two"), Integer.class, MetricLevel.INFO, MetricCategory.CORE);
+
+        assertThat(first).isEqualTo(first);
+        assertThat(first).isNotEqualTo(second);
+        assertThat(first).isNotEqualTo(null);
+        assertThat(first).isNotEqualTo("not-a-metric");
+        assertThat(first.hashCode()).isEqualTo(first.name().hashCode());
+        assertThat(first.toString()).contains("DefaultMetric", first.name(), "categories");
+    }
+
+    @Test
     void sdkMetricRejectsInvalidDefinitionsAndDuplicateNames() {
         String duplicateName = uniqueMetricName("duplicate");
         SdkMetric.create(duplicateName, Integer.class, MetricLevel.INFO, MetricCategory.CUSTOM);
@@ -109,6 +136,9 @@ public class Metrics_spiTest {
         assertThatThrownBy(() -> MetricCategory.fromString("transport"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("transport");
+        assertThatThrownBy(() -> MetricCategory.fromString(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("null");
     }
 
     @Test
@@ -144,6 +174,10 @@ public class Metrics_spiTest {
         MetricCollection collection = collector.collect();
         Instant afterCollecting = Instant.now();
 
+        assertThat(collector.name()).isEqualTo("client-call");
+        assertThat(collector.toString()).contains("DefaultMetricCollector", attemptCount.name());
+        assertThat(retryChild.name()).isEqualTo("retry");
+        assertThat(httpChild.name()).isEqualTo("http");
         assertThat(collection.name()).isEqualTo("client-call");
         assertThat(collection.creationTime()).isBetween(beforeCollecting, afterCollecting);
         assertThat(collection.metricValues(attemptCount)).containsExactly(1, 2);
@@ -229,10 +263,27 @@ public class Metrics_spiTest {
         for (MetricRecord<?> record : collection) {
             iteratedMetrics.add(record.metric());
             iteratedValues.add(record.value());
+            assertThat(record.toString()).contains(record.metric().name(), String.valueOf(record.value()));
         }
 
         assertThat(iteratedMetrics).containsExactlyInAnyOrder(responseSize, serviceId);
         assertThat(iteratedValues).containsExactlyInAnyOrder(512, "s3");
+    }
+
+    @Test
+    void metricCollectionPreservesNullMetricValues() {
+        SdkMetric<String> nullableMetric = SdkMetric.create(
+                uniqueMetricName("nullable"), String.class, MetricLevel.TRACE, MetricCategory.CUSTOM);
+        MetricCollector collector = MetricCollector.create("nullable-collection");
+
+        collector.reportMetric(nullableMetric, null);
+        MetricCollection collection = collector.collect();
+
+        assertThat(collection.metricValues(nullableMetric)).containsExactly((String) null);
+        assertThat(collection.stream()).singleElement().satisfies(record -> {
+            assertThat(record.metric()).isEqualTo(nullableMetric);
+            assertThat(record.value()).isNull();
+        });
     }
 
     @Test
@@ -282,15 +333,30 @@ public class Metrics_spiTest {
         MetricCollection collection = collector.collect();
 
         MetricPublisher defaultPublisher = LoggingMetricPublisher.create();
-        MetricPublisher plainPublisher = LoggingMetricPublisher.create(Level.INFO, LoggingMetricPublisher.Format.PLAIN);
+        MetricPublisher plainPublisher = LoggingMetricPublisher.create(
+                Level.INFO, LoggingMetricPublisher.Format.PLAIN);
         MetricPublisher prettyPublisher = LoggingMetricPublisher.create(
                 Level.INFO, LoggingMetricPublisher.Format.PRETTY);
+        MetricPublisher disabledTracePublisher = LoggingMetricPublisher.create(
+                Level.TRACE, LoggingMetricPublisher.Format.PLAIN);
 
         defaultPublisher.publish(collection);
         plainPublisher.publish(collection);
         prettyPublisher.publish(collection);
+        disabledTracePublisher.publish(collection);
         defaultPublisher.close();
         plainPublisher.close();
+        prettyPublisher.close();
+        disabledTracePublisher.close();
+    }
+
+    @Test
+    void loggingMetricPublisherPrettyPrintsEmptyCollections() {
+        MetricCollection collection = MetricCollector.create("empty-publisher-root").collect();
+        MetricPublisher prettyPublisher = LoggingMetricPublisher.create(
+                Level.INFO, LoggingMetricPublisher.Format.PRETTY);
+
+        prettyPublisher.publish(collection);
         prettyPublisher.close();
     }
 
@@ -308,6 +374,9 @@ public class Metrics_spiTest {
     void metricCollectorRejectsBlankRootName() {
         assertThatThrownBy(() -> MetricCollector.create(""))
                 .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("name");
+        assertThatThrownBy(() -> MetricCollector.create(null))
+                .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("name");
     }
 
