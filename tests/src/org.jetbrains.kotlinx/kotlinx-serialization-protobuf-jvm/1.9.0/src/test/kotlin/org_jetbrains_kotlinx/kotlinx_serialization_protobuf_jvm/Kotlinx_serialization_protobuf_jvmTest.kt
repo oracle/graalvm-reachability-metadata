@@ -9,6 +9,7 @@
 package org_jetbrains_kotlinx.kotlinx_serialization_protobuf_jvm
 
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.decodeFromHexString
@@ -17,6 +18,7 @@ import kotlinx.serialization.encodeToHexString
 import kotlinx.serialization.protobuf.ProtoBuf
 import kotlinx.serialization.protobuf.ProtoIntegerType
 import kotlinx.serialization.protobuf.ProtoNumber
+import kotlinx.serialization.protobuf.ProtoOneOf
 import kotlinx.serialization.protobuf.ProtoPacked
 import kotlinx.serialization.protobuf.ProtoType
 import kotlinx.serialization.protobuf.schema.ProtoBufSchemaGenerator
@@ -122,6 +124,20 @@ public class Kotlinx_serialization_protobuf_jvmTest {
         assertThat(schema).contains("int32 id = 1")
         assertThat(schema).contains("string name = 2")
     }
+
+    @Test
+    fun roundTripsProtoOneOfAlternatives(): Unit {
+        val textMessage = OneOfEnvelope(id = 42, choice = TextChoice(text = "ready"))
+        val numberMessage = OneOfEnvelope(id = 43, choice = NumberChoice(number = 99))
+
+        val encodedText: ByteArray = ProtoBuf.encodeToByteArray(textMessage)
+        val encodedNumber: ByteArray = ProtoBuf.encodeToByteArray(numberMessage)
+
+        assertThat(encodedText.toHexString()).isEqualTo("082A12057265616479")
+        assertThat(encodedNumber.toHexString()).isEqualTo("082B1863")
+        assertThat(ProtoBuf.decodeFromByteArray<OneOfEnvelope>(encodedText)).isEqualTo(textMessage)
+        assertThat(ProtoBuf.decodeFromByteArray<OneOfEnvelope>(encodedNumber)).isEqualTo(numberMessage)
+    }
 }
 
 @Serializable
@@ -187,6 +203,31 @@ private data class NullableChildMessage(
     @ProtoNumber(2)
     val child: ChildMessage? = null
 )
+
+@Serializable
+private data class OneOfEnvelope(
+    @ProtoNumber(1)
+    val id: Int,
+    @ProtoOneOf
+    val choice: OneOfChoice
+)
+
+@Serializable
+private sealed interface OneOfChoice
+
+@Serializable
+@SerialName("text_choice")
+private data class TextChoice(
+    @ProtoNumber(2)
+    val text: String
+) : OneOfChoice
+
+@Serializable
+@SerialName("number_choice")
+private data class NumberChoice(
+    @ProtoNumber(3)
+    val number: Int
+) : OneOfChoice
 
 private fun ByteArray.toHexString(): String = joinToString(separator = "") { byte ->
     "%02X".format(byte.toInt() and 0xFF)
