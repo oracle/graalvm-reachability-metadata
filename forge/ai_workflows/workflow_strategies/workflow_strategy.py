@@ -118,6 +118,33 @@ class WorkflowStrategy(ABC):
             raise ValueError(f"Strategy parameter '{name}' must be a non-negative integer")
         return value
 
+    def _parameter_bool(self, name: str, default: bool = False) -> bool:
+        """Return a boolean strategy parameter."""
+        value = self.parameters.get(name, default)
+        if not isinstance(value, bool):
+            raise ValueError(f"Strategy parameter '{name}' must be a boolean")
+        return value
+
+    @staticmethod
+    def _environment_bool(name: str, default: bool = False) -> bool:
+        """Return a boolean environment flag."""
+        raw_value = os.environ.get(name)
+        if raw_value is None:
+            return default
+        normalized_value = raw_value.strip().lower()
+        if normalized_value in {"1", "true", "yes", "on"}:
+            return True
+        if normalized_value in {"0", "false", "no", "off"}:
+            return False
+        raise ValueError(f"Environment variable '{name}' must be a boolean")
+
+    def _should_skip_native_test_verification(self) -> bool:
+        """Return True when the native-test verification gate should be skipped."""
+        return (
+            self._parameter_bool("skip-native-test-verification", False)
+            or self._environment_bool("FORGE_SKIP_NATIVE_TEST_VERIFICATION")
+        )
+
     def _load_prompt(self, key: str) -> str:
         """Load and render a prompt template by key, substituting context values."""
         return self._render_prompt(key)

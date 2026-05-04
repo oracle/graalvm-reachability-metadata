@@ -27,6 +27,7 @@ class until coverage is reached or the per-class budget is exhausted.
 | Per-attempt test-retry cap | strategy parameter `max-class-test-iterations` | yes |
 | Class iteration prompt | strategy `prompts["dynamic-access-iteration"]` | yes |
 | Per-class native-test verification budget | strategy parameter `max-native-test-verification-iterations` | yes (default 100) |
+| Skip native-test verification gate | strategy parameter `skip-native-test-verification` or `FORGE_SKIP_NATIVE_TEST_VERIFICATION=1` | no (default false; debugging only) |
 | Keep tests without DA gain | `--keep-tests-without-dynamic-access` | no |
 
 ## 3. Outputs

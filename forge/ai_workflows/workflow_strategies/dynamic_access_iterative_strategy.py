@@ -433,6 +433,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
     def _run_native_test_verification_gate(self, class_name: str) -> bool:
         """Run the per-class native-test verification gate; return True if PASSED."""
+        if self._should_skip_native_test_verification():
+            self._print_dynamic_access_detail(
+                f"native-test gate: skipped by configuration for {class_name}",
+                indent_level=2,
+            )
+            return True
         output_dir = per_class_output_dir(
             self.reachability_repo_path, self.group, self.artifact, self.test_version, class_name,
         )

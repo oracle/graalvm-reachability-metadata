@@ -177,6 +177,9 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
 
     def _run_native_test_verification_gate(self) -> bool:
         """Run the bulk native-test verification gate; return True if PASSED."""
+        if self._should_skip_native_test_verification():
+            self._print_detail("native-test gate: skipped by configuration", indent_level=2)
+            return True
         output_dir = global_output_dir(
             self.reachability_repo_path, self.group, self.artifact, self.version,
         )

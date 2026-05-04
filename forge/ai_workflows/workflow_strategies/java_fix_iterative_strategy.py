@@ -156,6 +156,9 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
 
     def _run_native_test_verification_gate(self) -> bool:
         """Terminal gate: verify nativeTest passes; FAILED aborts the workflow."""
+        if self._should_skip_native_test_verification():
+            self._print_message("native-test gate: skipped by configuration")
+            return True
         output_dir = global_output_dir(
             self.reachability_repo_path, self.group, self.artifact, self.version,
         )
