@@ -174,6 +174,7 @@ ISSUE_CLAIM_CACHE_REASON_ASSIGNED = "assigned"
 ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION = "human_intervention"
 ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE = "not_for_native_image"
 ISSUE_CLAIM_CACHE_REASON_BLOCKED = "blocked"
+ISSUE_CLAIM_CACHE_REASON_CLOSED = "closed"
 ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM = "missing_project_item"
 ISSUE_CLAIM_CACHE_REASON_NON_TODO = "non_todo"
 ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS = "in_progress"
@@ -182,6 +183,7 @@ ISSUE_CLAIM_CACHE_REASONS = {
     ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
     ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
     ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+    ISSUE_CLAIM_CACHE_REASON_CLOSED,
     ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
     ISSUE_CLAIM_CACHE_REASON_NON_TODO,
     ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
@@ -459,6 +461,16 @@ def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
         file=sys.stderr,
     )
     sys.exit(1)
+
+
+def get_issue_claim_payload(issue_number: int) -> dict:
+    """Fetch mutable issue state immediately before claim decisions."""
+    return gh_json(
+        "issue", "view",
+        str(issue_number),
+        "--repo", REPO,
+        "--json", "number,title,url,state,labels,assignees",
+    )
 
 
 def build_issue_search_query(
@@ -3979,6 +3991,9 @@ def claim_issue_for_processing(
         large_library_resume_artifact_override: str | None = None,
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace."""
+    if not refresh_issue_payload_for_claim(issue, label):
+        return None
+
     if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
         return None
 
@@ -4000,7 +4015,7 @@ def claim_issue_for_processing(
         )
         return None
 
-    item_id = try_claim_issue(issue, authenticated_user)
+    item_id = try_claim_issue(issue, authenticated_user, label)
     if not item_id:
         return None
 
@@ -4601,6 +4616,44 @@ def get_issue_claim_cache_observation_from_payload(
     return None
 
 
+def refresh_issue_payload_for_claim(issue: dict, required_label: str | None = None) -> bool:
+    """Refresh mutable issue state and return whether it remains claimable."""
+    issue_number = issue.get("number")
+    if not isinstance(issue_number, int):
+        return False
+
+    fresh_issue = get_issue_claim_payload(issue_number)
+    issue.clear()
+    issue.update(fresh_issue)
+
+    state = str(issue.get("state", "")).upper()
+    if state and state != "OPEN":
+        record_issue_claim_cache_observations([
+            IssueClaimCacheObservation(
+                issue_number=issue_number,
+                reason=ISSUE_CLAIM_CACHE_REASON_CLOSED,
+            )
+        ])
+        return False
+
+    if required_label is not None and not issue_has_label(issue, required_label):
+        log_stage(
+            "issue-claim",
+            f"Skipping issue #{issue_number}: it no longer has label '{required_label}'",
+        )
+        return False
+
+    observation = get_issue_claim_cache_observation_from_payload(issue)
+    if observation is not None and observation.reason in {
+            ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
+            ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
+    }:
+        record_issue_claim_cache_observations([observation])
+        return False
+
+    return True
+
+
 def get_issue_claim_cache_observation_from_preflight(
         preflight: IssueClaimPreflight,
         authenticated_user: str | None = None,
@@ -4650,6 +4703,8 @@ def format_cached_issue_claim_skip(cached_skip: CachedIssueClaimSkip) -> str:
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_BLOCKED:
         blockers_text = ", ".join(f"#{blocker}" for blocker in cached_skip.open_blockers)
         return f"recently cached as blocked by open issue(s) {blockers_text}"
+    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_CLOSED:
+        return "recently cached as closed"
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM:
         return f"recently cached as missing project {PROJECT_NUMBER} item"
     if cached_skip.reason in {ISSUE_CLAIM_CACHE_REASON_NON_TODO, ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS}:
@@ -4775,15 +4830,6 @@ def should_skip_issue_from_preflight(
 ) -> bool:
     number = issue["number"]
 
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
-        return True
-    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
-        return True
-
-    payload_assignees = get_issue_payload_assignees(issue)
-    if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
-        return True
-
     cached_large_library_continuation = (
         cached_skip is not None
         and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
@@ -4847,7 +4893,11 @@ def is_issue_blocked(issue_number: int) -> bool:
     return bool(get_open_blocking_issue_numbers(issue_number))
 
 
-def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
+def try_claim_issue(
+        issue: dict,
+        authenticated_user: str,
+        required_label: str | None = None,
+) -> Optional[str]:
     """
     Attempt to exclusively claim an issue.
 
@@ -4862,28 +4912,13 @@ def try_claim_issue(issue: dict, authenticated_user: str) -> Optional[str]:
     """
     number = issue["number"]
 
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
-            )
-        ])
-        return None
-    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
-            )
-        ])
-        return None
-
     claim_lock = try_acquire_issue_claim_lock(number)
     if claim_lock is None:
         return None
 
     try:
+        if not refresh_issue_payload_for_claim(issue, required_label):
+            return None
         return try_claim_issue_with_local_lock(issue, authenticated_user)
     finally:
         claim_lock.release()
@@ -5153,16 +5188,6 @@ def process_issues_with_label(
                                     log_stage("issue-scan", f"No open issues found with label '{label}'")
                                 exhausted = True
                                 break
-
-                        payload_cache_observations = [
-                            observation
-                            for observation in (
-                                get_issue_claim_cache_observation_from_payload(issue, authenticated_user)
-                                for issue in issues
-                            )
-                            if observation is not None
-                        ]
-                        record_issue_claim_cache_observations(payload_cache_observations)
 
                         cached_skips = get_cached_issue_claim_skips(issues, authenticated_user)
                         unresolved_candidates.extend(
