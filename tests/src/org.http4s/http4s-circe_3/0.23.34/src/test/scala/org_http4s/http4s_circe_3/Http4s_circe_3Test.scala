@@ -7,10 +7,12 @@
 package org_http4s.http4s_circe_3
 
 import cats.data.Kleisli
+import cats.data.NonEmptyList
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import fs2.Stream
 import io.circe.Decoder
+import io.circe.DecodingFailure
 import io.circe.Encoder
 import io.circe.Json
 import io.circe.Printer
@@ -26,6 +28,7 @@ import org.http4s.Request
 import org.http4s.Response
 import org.http4s.Status
 import org.http4s.Uri
+import org.http4s.circe.CirceInstances
 import org.http4s.circe.DecodingFailures
 import org.http4s.circe.accumulatingJsonOf
 import org.http4s.circe.decodeUri
@@ -132,6 +135,26 @@ class Http4s_circe_3Test {
     assertTrue(failure.isInstanceOf[InvalidMessageBodyFailure])
     assertTrue(failure.getMessage.contains("Could not decode JSON: <redacted-json>"))
     assertFalse(failure.getMessage.contains("\"name\":42"))
+  }
+
+  @Test
+  def circeInstancesBuilderUsesCustomJsonDecodeErrors(): Unit = {
+    val request: Media[IO] = jsonRequest("""{"id":12,"name":false,"tags":[]}""")
+    val customDecoder: EntityDecoder[IO, Widget] = CirceInstances.builder
+      .withJsonDecodeError { (_: Json, failures: NonEmptyList[DecodingFailure]) =>
+        InvalidMessageBodyFailure(s"custom widget decode error: ${failures.head.message}")
+      }
+      .build
+      .jsonOf[IO, Widget]
+    val decoded: Either[Throwable, Widget] = decodeAttemptAs(request, customDecoder)
+    val failure: Throwable = decoded match {
+      case Left(value) => value
+      case Right(value) => throw new AssertionError(s"expected custom decoder failure, got $value")
+    }
+
+    assertTrue(failure.isInstanceOf[InvalidMessageBodyFailure])
+    assertTrue(failure.getMessage.contains("custom widget decode error"))
+    assertFalse(failure.getMessage.contains("Could not decode JSON"))
   }
 
   @Test
