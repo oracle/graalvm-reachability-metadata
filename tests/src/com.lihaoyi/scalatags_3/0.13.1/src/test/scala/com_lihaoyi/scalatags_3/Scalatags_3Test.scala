@@ -65,6 +65,21 @@ class Scalatags_3Test {
   }
 
   @Test
+  def rendersVoidHtmlTagsAsSelfClosingTags(): Unit = {
+    val markup: String = div(
+      p("Line one", br, "Line two"),
+      img(src := "/assets/logo.svg", alt := "Scalatags logo"),
+      input(tpe := "email", name := "contact", value := "team@example.com")
+    ).render
+
+    assertThat(markup).isEqualTo(
+      "<div><p>Line one<br />Line two</p>" +
+        "<img src=\"/assets/logo.svg\" alt=\"Scalatags logo\" />" +
+        "<input type=\"email\" name=\"contact\" value=\"team@example.com\" /></div>"
+    )
+  }
+
+  @Test
   def rendersCollectionsAsRepeatedChildFragments(): Unit = {
     val rows: Seq[(String, Int)] = Seq("alpha" -> 1, "beta" -> 2, "gamma" -> 3)
     val tableMarkup: String = table(
