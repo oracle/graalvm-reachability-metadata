@@ -3991,7 +3991,7 @@ def claim_issue_for_processing(
         large_library_resume_artifact_override: str | None = None,
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace."""
-    if not refresh_issue_payload_for_claim(issue, label):
+    if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
         return None
 
     if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
@@ -4616,7 +4616,11 @@ def get_issue_claim_cache_observation_from_payload(
     return None
 
 
-def refresh_issue_payload_for_claim(issue: dict, required_label: str | None = None) -> bool:
+def refresh_issue_payload_for_claim(
+        issue: dict,
+        required_label: str | None = None,
+        authenticated_user: str | None = None,
+) -> bool:
     """Refresh mutable issue state and return whether it remains claimable."""
     issue_number = issue.get("number")
     if not isinstance(issue_number, int):
@@ -4643,11 +4647,8 @@ def refresh_issue_payload_for_claim(issue: dict, required_label: str | None = No
         )
         return False
 
-    observation = get_issue_claim_cache_observation_from_payload(issue)
-    if observation is not None and observation.reason in {
-            ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
-            ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
-    }:
+    observation = get_issue_claim_cache_observation_from_payload(issue, authenticated_user)
+    if observation is not None:
         record_issue_claim_cache_observations([observation])
         return False
 
@@ -4917,7 +4918,7 @@ def try_claim_issue(
         return None
 
     try:
-        if not refresh_issue_payload_for_claim(issue, required_label):
+        if not refresh_issue_payload_for_claim(issue, required_label, authenticated_user):
             return None
         return try_claim_issue_with_local_lock(issue, authenticated_user)
     finally:

@@ -590,6 +590,46 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         self.assertIn("no longer has label", stdout.getvalue())
 
+    def test_refresh_issue_payload_for_claim_skips_issue_assigned_to_other_user(self) -> None:
+        issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
+        fresh_issue = {
+            **_search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW]),
+            "state": "OPEN",
+            "assignees": [{"login": "other-user"}],
+        }
+
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue):
+                self.assertFalse(
+                    forge_metadata.refresh_issue_payload_for_claim(
+                        issue,
+                        forge_metadata.LABEL_LIBRARY_NEW,
+                        "automation-user",
+                    )
+                )
+                cache = forge_metadata.read_issue_claim_cache()
+
+        self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
+        self.assertEqual(cache[1412].assignees, ("other-user",))
+
+    def test_refresh_issue_payload_for_claim_allows_issue_assigned_to_authenticated_user(self) -> None:
+        issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
+        fresh_issue = {
+            **_search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW]),
+            "state": "OPEN",
+            "assignees": [{"login": "automation-user"}],
+        }
+
+        with patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue):
+            self.assertTrue(
+                forge_metadata.refresh_issue_payload_for_claim(
+                    issue,
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    "automation-user",
+                )
+            )
+
     def test_issue_scan_batch_size_returns_candidate_batch_size(self) -> None:
         self.assertEqual(
             forge_metadata.get_issue_scan_batch_size(1, 1),
