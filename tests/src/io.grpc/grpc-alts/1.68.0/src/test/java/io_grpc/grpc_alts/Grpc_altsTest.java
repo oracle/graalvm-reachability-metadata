@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import io.grpc.Attributes;
 import io.grpc.CallCredentials;
 import io.grpc.ChannelCredentials;
+import io.grpc.CompositeChannelCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
@@ -101,6 +102,23 @@ public class Grpc_altsTest {
         assertThat(computeEngineCredentials).isNotNull();
         assertThat(defaultServerCredentials).isNotNull();
         assertThat(configuredServerCredentials).isNotNull();
+    }
+
+    @Test
+    void compositeChannelCredentialsExposeCredentialsWithoutBearerTokens() {
+        ChannelCredentials googleDefaultCredentials = GoogleDefaultChannelCredentials.newBuilder()
+                .callCredentials(new NoopCallCredentials())
+                .build();
+        ChannelCredentials computeEngineCredentials = ComputeEngineChannelCredentials.create();
+
+        assertThat(googleDefaultCredentials).isInstanceOf(CompositeChannelCredentials.class);
+        CompositeChannelCredentials googleDefaultComposite = (CompositeChannelCredentials) googleDefaultCredentials;
+        assertThat(googleDefaultComposite.getCallCredentials()).isInstanceOf(NoopCallCredentials.class);
+        assertThat(googleDefaultCredentials.withoutBearerTokens()).isSameAs(googleDefaultComposite.getChannelCredentials());
+
+        assertThat(computeEngineCredentials).isInstanceOf(CompositeChannelCredentials.class);
+        CompositeChannelCredentials computeEngineComposite = (CompositeChannelCredentials) computeEngineCredentials;
+        assertThat(computeEngineCredentials.withoutBearerTokens()).isSameAs(computeEngineComposite.getChannelCredentials());
     }
 
     @Test
