@@ -247,6 +247,32 @@ public class Proto_google_cloud_bigquerystorage_v1beta1Test {
     }
 
     @Test
+    void enumValueFieldsPreserveUnrecognizedNumbersForForwardCompatibility() {
+        int futureDataFormat = 10_001;
+        int futureShardingStrategy = 10_002;
+        CreateReadSessionRequest request = CreateReadSessionRequest.newBuilder()
+                .setParent(PARENT)
+                .setTableReference(tableReference())
+                .setFormatValue(futureDataFormat)
+                .setShardingStrategyValue(futureShardingStrategy)
+                .build();
+
+        assertEquals(futureDataFormat, request.getFormatValue());
+        assertSame(DataFormat.UNRECOGNIZED, request.getFormat());
+        assertEquals(futureShardingStrategy, request.getShardingStrategyValue());
+        assertSame(ShardingStrategy.UNRECOGNIZED, request.getShardingStrategy());
+
+        CreateReadSessionRequest knownRequest = request.toBuilder()
+                .setFormat(DataFormat.AVRO)
+                .setShardingStrategy(ShardingStrategy.BALANCED)
+                .build();
+        assertEquals(DataFormat.AVRO_VALUE, knownRequest.getFormatValue());
+        assertSame(DataFormat.AVRO, knownRequest.getFormat());
+        assertEquals(ShardingStrategy.BALANCED_VALUE, knownRequest.getShardingStrategyValue());
+        assertSame(ShardingStrategy.BALANCED, knownRequest.getShardingStrategy());
+    }
+
+    @Test
     void generatedDescriptorsExposeMessagesServicesAndStreamingMethods() {
         FileDescriptor storageDescriptor = Storage.getDescriptor();
         assertEquals("google/cloud/bigquery/storage/v1beta1/storage.proto", storageDescriptor.getName());
