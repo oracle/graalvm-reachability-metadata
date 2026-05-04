@@ -94,9 +94,30 @@ public class Api_commonTest {
     }
 
     @Test
+    void pathTemplateCanDisableUrlEncoding() {
+        PathTemplate template = PathTemplate.createWithoutUrlEncoding("folders/{folder}/items/{item}");
+        Map<String, String> bindings = new LinkedHashMap<>();
+        bindings.put("folder", "team alpha");
+        bindings.put("item", "raw+value");
+
+        String resourcePath = template.instantiate(bindings);
+
+        assertThat(resourcePath).isEqualTo("folders/team alpha/items/raw+value");
+        assertThat(template.matches(resourcePath)).isTrue();
+        assertThat(template.match(resourcePath)).containsExactlyEntriesOf(bindings);
+        assertThat(template.instantiatePartial(Map.of("folder", "team alpha")))
+                .isEqualTo("folders/team alpha/items/{item=*}");
+        assertThatThrownBy(() -> template.instantiate(Map.of("folder", "team/alpha", "item", "raw+value")))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Invalid character \"/\"");
+    }
+
+    @Test
     void pathTemplateSupportsCustomVerbSuffixes() {
         PathTemplate template = PathTemplate.create("projects/{project}/operations/{operation}:cancel");
-        Map<String, String> bindings = Map.of("project", "project one", "operation", "operation-123");
+        Map<String, String> bindings = new LinkedHashMap<>();
+        bindings.put("project", "project one");
+        bindings.put("operation", "operation-123");
 
         String resourcePath = template.instantiate(bindings);
 
