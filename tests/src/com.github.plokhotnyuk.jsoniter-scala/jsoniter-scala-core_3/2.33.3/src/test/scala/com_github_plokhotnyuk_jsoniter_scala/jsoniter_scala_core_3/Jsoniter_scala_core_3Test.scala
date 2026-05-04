@@ -41,9 +41,20 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.MonthDay
+import java.time.OffsetDateTime
+import java.time.OffsetTime
+import java.time.Period
+import java.time.Year
+import java.time.YearMonth
 import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.UUID
 import scala.collection.mutable.ListBuffer
 
@@ -137,6 +148,28 @@ class Jsoniter_scala_core_3Test {
   }
 
   @Test
+  def roundTripsAdditionalJavaTimeValues(): Unit = {
+    val value: TemporalValues = TemporalValues(
+      duration = Duration.ofHours(27).plusMinutes(5).plusNanos(123456789L),
+      localDateTime = LocalDateTime.of(2026, 5, 4, 10, 15, 30, 987654321),
+      localTime = LocalTime.of(23, 59, 58, 123456789),
+      monthDay = MonthDay.of(5, 4),
+      offsetDateTime = OffsetDateTime.parse("2026-05-04T10:15:30.123456789+02:00"),
+      offsetTime = OffsetTime.parse("10:15:30.123456789+02:00"),
+      period = Period.of(1, 2, 3),
+      year = Year.of(2026),
+      yearMonth = YearMonth.of(2026, 5),
+      zonedDateTime = ZonedDateTime.parse("2026-05-04T10:15:30.123456789+02:00[Europe/Belgrade]"),
+      zoneOffset = ZoneOffset.ofHoursMinutes(5, 45)
+    )
+
+    val json: String = writeToString(value)(temporalValuesCodec)
+
+    assertTrue(json.contains("\"duration\":\"PT27H5M0.123456789S\""))
+    assertEquals(value, readFromString[TemporalValues](json)(temporalValuesCodec))
+  }
+
+  @Test
   def encodesValuesAsJsonStringsAndAlternativeBinaryAlphabets(): Unit = {
     val value: EncodedFields = EncodedFields(
       id = 7,
@@ -206,6 +239,19 @@ object Jsoniter_scala_core_3Test {
   final case class DailyReport(values: Map[LocalDate, BigDecimal])
 
   final case class EncodedFields(id: Int, active: Boolean, checksum: Array[Byte], token: Array[Byte])
+
+  final case class TemporalValues(
+      duration: Duration,
+      localDateTime: LocalDateTime,
+      localTime: LocalTime,
+      monthDay: MonthDay,
+      offsetDateTime: OffsetDateTime,
+      offsetTime: OffsetTime,
+      period: Period,
+      year: Year,
+      yearMonth: YearMonth,
+      zonedDateTime: ZonedDateTime,
+      zoneOffset: ZoneOffset)
 
   private val sampleTelemetry: Telemetry = Telemetry(
     id = 42,
@@ -432,6 +478,118 @@ object Jsoniter_scala_core_3Test {
     }
   }
 
+  private val temporalValuesCodec: JsonValueCodec[TemporalValues] = new JsonValueCodec[TemporalValues] {
+    private val RequiredMask: Int = (1 << 11) - 1
+
+    override def nullValue: TemporalValues = null
+
+    override def decodeValue(in: JsonReader, default: TemporalValues): TemporalValues = {
+      if (in.isNextToken('{')) {
+        var duration: Duration = null
+        var localDateTime: LocalDateTime = null
+        var localTime: LocalTime = null
+        var monthDay: MonthDay = null
+        var offsetDateTime: OffsetDateTime = null
+        var offsetTime: OffsetTime = null
+        var period: Period = null
+        var year: Year = null
+        var yearMonth: YearMonth = null
+        var zonedDateTime: ZonedDateTime = null
+        var zoneOffset: ZoneOffset = null
+        var seen: Int = 0
+
+        if (!in.isNextToken('}')) {
+          in.rollbackToken()
+          var keyLength: Int = -1
+          while (keyLength < 0 || in.isNextToken(',')) {
+            keyLength = in.readKeyAsCharBuf()
+            if (in.isCharBufEqualsTo(keyLength, "duration")) {
+              seen = markSeen(in, keyLength, seen, 0)
+              duration = in.readDuration(duration)
+            } else if (in.isCharBufEqualsTo(keyLength, "localDateTime")) {
+              seen = markSeen(in, keyLength, seen, 1)
+              localDateTime = in.readLocalDateTime(localDateTime)
+            } else if (in.isCharBufEqualsTo(keyLength, "localTime")) {
+              seen = markSeen(in, keyLength, seen, 2)
+              localTime = in.readLocalTime(localTime)
+            } else if (in.isCharBufEqualsTo(keyLength, "monthDay")) {
+              seen = markSeen(in, keyLength, seen, 3)
+              monthDay = in.readMonthDay(monthDay)
+            } else if (in.isCharBufEqualsTo(keyLength, "offsetDateTime")) {
+              seen = markSeen(in, keyLength, seen, 4)
+              offsetDateTime = in.readOffsetDateTime(offsetDateTime)
+            } else if (in.isCharBufEqualsTo(keyLength, "offsetTime")) {
+              seen = markSeen(in, keyLength, seen, 5)
+              offsetTime = in.readOffsetTime(offsetTime)
+            } else if (in.isCharBufEqualsTo(keyLength, "period")) {
+              seen = markSeen(in, keyLength, seen, 6)
+              period = in.readPeriod(period)
+            } else if (in.isCharBufEqualsTo(keyLength, "year")) {
+              seen = markSeen(in, keyLength, seen, 7)
+              year = in.readYear(year)
+            } else if (in.isCharBufEqualsTo(keyLength, "yearMonth")) {
+              seen = markSeen(in, keyLength, seen, 8)
+              yearMonth = in.readYearMonth(yearMonth)
+            } else if (in.isCharBufEqualsTo(keyLength, "zonedDateTime")) {
+              seen = markSeen(in, keyLength, seen, 9)
+              zonedDateTime = in.readZonedDateTime(zonedDateTime)
+            } else if (in.isCharBufEqualsTo(keyLength, "zoneOffset")) {
+              seen = markSeen(in, keyLength, seen, 10)
+              zoneOffset = in.readZoneOffset(zoneOffset)
+            } else {
+              in.skip()
+            }
+          }
+          if (!in.isCurrentToken('}')) in.objectEndOrCommaError()
+        }
+        val missing: Int = RequiredMask & ~seen
+        if (missing != 0) in.requiredFieldError(temporalFieldName(Integer.numberOfTrailingZeros(missing)))
+        TemporalValues(
+          duration,
+          localDateTime,
+          localTime,
+          monthDay,
+          offsetDateTime,
+          offsetTime,
+          period,
+          year,
+          yearMonth,
+          zonedDateTime,
+          zoneOffset
+        )
+      } else {
+        in.readNullOrTokenError(default, '{')
+      }
+    }
+
+    override def encodeValue(value: TemporalValues, out: JsonWriter): Unit = {
+      out.writeObjectStart()
+      out.writeNonEscapedAsciiKey("duration")
+      out.writeVal(value.duration)
+      out.writeNonEscapedAsciiKey("localDateTime")
+      out.writeVal(value.localDateTime)
+      out.writeNonEscapedAsciiKey("localTime")
+      out.writeVal(value.localTime)
+      out.writeNonEscapedAsciiKey("monthDay")
+      out.writeVal(value.monthDay)
+      out.writeNonEscapedAsciiKey("offsetDateTime")
+      out.writeVal(value.offsetDateTime)
+      out.writeNonEscapedAsciiKey("offsetTime")
+      out.writeVal(value.offsetTime)
+      out.writeNonEscapedAsciiKey("period")
+      out.writeVal(value.period)
+      out.writeNonEscapedAsciiKey("year")
+      out.writeVal(value.year)
+      out.writeNonEscapedAsciiKey("yearMonth")
+      out.writeVal(value.yearMonth)
+      out.writeNonEscapedAsciiKey("zonedDateTime")
+      out.writeVal(value.zonedDateTime)
+      out.writeNonEscapedAsciiKey("zoneOffset")
+      out.writeVal(value.zoneOffset)
+      out.writeObjectEnd()
+    }
+  }
+
   private val encodedFieldsCodec: JsonValueCodec[EncodedFields] = new JsonValueCodec[EncodedFields] {
     override def nullValue: EncodedFields = null
 
@@ -542,6 +700,20 @@ object Jsoniter_scala_core_3Test {
     case 1 => "active"
     case 2 => "checksum"
     case 3 => "token"
+  }
+
+  private def temporalFieldName(index: Int): String = index match {
+    case 0 => "duration"
+    case 1 => "localDateTime"
+    case 2 => "localTime"
+    case 3 => "monthDay"
+    case 4 => "offsetDateTime"
+    case 5 => "offsetTime"
+    case 6 => "period"
+    case 7 => "year"
+    case 8 => "yearMonth"
+    case 9 => "zonedDateTime"
+    case 10 => "zoneOffset"
   }
 
   private def assertTelemetryEquals(expected: Telemetry, actual: Telemetry): Unit = {
