@@ -486,6 +486,11 @@ public class Arquillian_container_test_apiTest {
         }
 
         @Override
+        public RecordingArchive filter(Filter<ArchivePath> filter) {
+            return unsupported();
+        }
+
+        @Override
         public RecordingArchive move(ArchivePath source, ArchivePath target) throws IllegalArgumentException {
             return unsupported();
         }
@@ -512,6 +517,11 @@ public class Arquillian_container_test_apiTest {
 
         @Override
         public Archive<RecordingArchive> shallowCopy() {
+            return unsupported();
+        }
+
+        @Override
+        public Archive<RecordingArchive> shallowCopy(Filter<ArchivePath> filter) {
             return unsupported();
         }
 
