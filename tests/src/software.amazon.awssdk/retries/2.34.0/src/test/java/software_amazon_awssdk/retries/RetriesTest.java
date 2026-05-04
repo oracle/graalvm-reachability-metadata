@@ -182,6 +182,39 @@ public class RetriesTest {
     }
 
     @Test
+    void circuitBreakerCapacityIsIsolatedByRequestScope() {
+        StandardRetryStrategy strategy = StandardRetryStrategy.builder()
+            .maxAttempts(2)
+            .retryOnExceptionInstanceOf(RuntimeException.class)
+            .backoffStrategy(BackoffStrategy.retryImmediately())
+            .circuitBreakerEnabled(true)
+            .build();
+        String exhaustedScope = "exhausted-scope";
+        TokenAcquisitionFailedException blockedRetry = null;
+
+        for (int attempt = 0; attempt < 200 && blockedRetry == null; attempt++) {
+            RetryToken token = strategy.acquireInitialToken(AcquireInitialTokenRequest.create(exhaustedScope)).token();
+            RuntimeException failure = new RuntimeException("scope failure " + attempt);
+            try {
+                strategy.refreshRetryToken(refreshRequest(token, failure).build());
+            } catch (TokenAcquisitionFailedException e) {
+                assertThat(e).hasCause(failure);
+                blockedRetry = e;
+            }
+        }
+
+        assertThat(blockedRetry).isNotNull()
+            .hasMessageContaining("protect the caller");
+
+        RetryToken independentScopeToken = strategy.acquireInitialToken(AcquireInitialTokenRequest.create(
+            "independent-scope")).token();
+        RefreshRetryTokenResponse retry = strategy.refreshRetryToken(
+            refreshRequest(independentScopeToken, new RuntimeException("independent failure")).build());
+
+        assertThat(retry.token()).isNotNull();
+    }
+
+    @Test
     void legacyStrategyUsesThrottlingBackoffForFailuresMarkedAsThrottling() {
         LegacyRetryStrategy strategy = LegacyRetryStrategy.builder()
             .maxAttempts(3)
