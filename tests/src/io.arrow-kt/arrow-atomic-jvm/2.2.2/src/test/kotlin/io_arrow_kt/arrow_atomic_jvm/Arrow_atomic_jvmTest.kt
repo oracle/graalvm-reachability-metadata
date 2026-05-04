@@ -262,6 +262,63 @@ public class Arrow_atomic_jvmTest {
         assertThat(state.value).isEqualTo(State(51, "finished"))
     }
 
+    @Test
+    fun atomicReferenceUpdateOverloadReturnsTransformResultForCommittedTransition() {
+        val state = Atomic(State(step = 1, label = "initial"))
+        val attemptedValues = mutableListOf<State>()
+        val committedTransitions = mutableListOf<String>()
+
+        val result = state.update(
+            { current ->
+                attemptedValues += current
+                if (attemptedValues.size == 1) {
+                    state.value = State(step = 10, label = "interfering write")
+                }
+                current.copy(step = current.step + 1)
+            },
+            { previous, updated ->
+                val transition = "${previous.step}->${updated.step}"
+                committedTransitions += transition
+                transition
+            },
+        )
+
+        assertThat(attemptedValues).containsExactly(
+            State(step = 1, label = "initial"),
+            State(step = 10, label = "interfering write"),
+        )
+        assertThat(result).isEqualTo("10->11")
+        assertThat(committedTransitions).containsExactly("10->11")
+        assertThat(state.value).isEqualTo(State(step = 11, label = "interfering write"))
+    }
+
+    @Test
+    fun atomicReferenceTryUpdateOverloadInvokesCallbackOnlyAfterSuccessfulCompareAndSet() {
+        val state = Atomic(State(step = 5, label = "ready"))
+        val transitions = mutableListOf<String>()
+
+        val succeeded = state.tryUpdate(
+            { current -> current.copy(step = current.step + 2) },
+            { previous, updated -> transitions += "${previous.step}->${updated.step}" },
+        )
+
+        assertThat(succeeded).isTrue()
+        assertThat(transitions).containsExactly("5->7")
+        assertThat(state.value).isEqualTo(State(step = 7, label = "ready"))
+
+        val failed = state.tryUpdate(
+            { current ->
+                state.value = State(step = 100, label = "interfering write")
+                current.copy(step = current.step + 1)
+            },
+            { previous, updated -> transitions += "${previous.step}->${updated.step}" },
+        )
+
+        assertThat(failed).isFalse()
+        assertThat(transitions).containsExactly("5->7")
+        assertThat(state.value).isEqualTo(State(step = 100, label = "interfering write"))
+    }
+
     private data class State(
         val step: Int,
         val label: String,
