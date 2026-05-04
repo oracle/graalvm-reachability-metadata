@@ -1,0 +1,1535 @@
+Starting a Gradle Daemon, 3 busy and 6 incompatible and 266 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df554-c731-73f0-8c49-88e0c60b5d5e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: servletapi:servletapi:2.4-20040521
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.4-20040521" when "$version$" is replaced with "2.4-20040521".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+- Set "coordinates" to "servletapi:servletapi:2.4-20040521".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.4-20040521".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata file and then verify the artifact coordinates against Maven/repository sources so the URLs match the exact `2.4-20040521` version pattern.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+{
+  "coordinates" : "servletapi:servletapi:2.4-20040521"
+}
+
+exec
+/usr/bin/bash -lc "find . -maxdepth 4 -type f \\( -name '*servletapi*' -o -name '*servlet-api*' \\) | sort" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+./build/agent-artifact-discovery-logs/servletapi-servletapi-2.4-20040521.log
+./build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 261ms:
+web search: 
+web search: Maven servletapi servletapi 2.4-20040521 source jar
+codex
+The file only has coordinates right now, and the artifact is old enough that its Maven identity appears in more than one historical form. I’m checking Maven Central and any attached source/javadoc artifacts first, per your preference, then I’ll fall back to authoritative project/specification URLs if Maven lacks source or test artifacts.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/servletapi/servletapi/2.4-20040521/servletapi-2.4-20040521.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>servletapi</groupId>
+  <artifactId>servletapi</artifactId>
+  <version>2.4-20040521</version>
+  <name>Java Servlet Technology</name>
+  <description>
+    Java Servlet technology provides Web developers with a simple, consistent mechanism for extending the functionality of a Web server and for accessing existing business systems.
+  </description>
+  <url>http://java.sun.com/products/servlet/</url>
+  <distributionManagement>
+    <downloadUrl>http://java.sun.com/products/servlet/download.html</downloadUrl>
+    <relocation>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4-20040521</version>
+    </relocation>
+  </distributionManagement>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/servletapi/servlet-api/2.4-20040521/servlet-api-2.4-20040521.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/servletapi/servletapi/2.4-20040521/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/servletapi/servlet-api/2.4-20040521/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 192ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: servletapi/servletapi/2.4-20040521</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>servletapi/servletapi/2.4-20040521</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:51       126      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:51        90      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:51       145      
+<a href="servletapi-2.4-20040521.jar" title="servletapi-2.4-20040521.jar">servletapi-2.4-20040521.jar</a>                       2005-09-20 05:51     98517      
+<a href="servletapi-2.4-20040521.jar.md5" title="servletapi-2.4-20040521.jar.md5">servletapi-2.4-20040521.jar.md5</a>                   2005-09-20 05:51        32      
+<a href="servletapi-2.4-20040521.jar.sha1" title="servletapi-2.4-20040521.jar.sha1">servletapi-2.4-20040521.jar.sha1</a>                  2005-09-20 05:51        40      
+<a href="servletapi-2.4-20040521.pom" title="servletapi-2.4-20040521.pom">servletapi-2.4-20040521.pom</a>                       2005-09-20 05:51       758      
+<a href="servletapi-2.4-20040521.pom.md5" title="servletapi-2.4-20040521.pom.md5">servletapi-2.4-20040521.pom.md5</a>                   2005-09-20 05:51       155      
+<a href="servletapi-2.4-20040521.pom.sha1" title="servletapi-2.4-20040521.pom.sha1">servletapi-2.4-20040521.pom.sha1</a>                  2005-09-20 05:51       163      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 200ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>servletapi</groupId>
+  <artifactId>servlet-api</artifactId>
+  <version>2.4-20040521</version>
+
+  <distributionManagement>
+    <relocation>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </relocation>
+  </distributionManagement>
+
+</project>
+ succeeded in 179ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: servletapi/servlet-api/2.4-20040521</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>servletapi/servlet-api/2.4-20040521</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:51       127      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:51        91      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:51       146      
+<a href="servlet-api-2.4-20040521.jar" title="servlet-api-2.4-20040521.jar">servlet-api-2.4-20040521.jar</a>                      2005-09-20 05:51     98517      
+<a href="servlet-api-2.4-20040521.jar.md5" title="servlet-api-2.4-20040521.jar.md5">servlet-api-2.4-20040521.jar.md5</a>                  2005-09-20 05:51        32      
+<a href="servlet-api-2.4-20040521.jar.sha1" title="servlet-api-2.4-20040521.jar.sha1">servlet-api-2.4-20040521.jar.sha1</a>                 2005-09-20 05:51        40      
+<a href="servlet-api-2.4-20040521.pom" title="servlet-api-2.4-20040521.pom">servlet-api-2.4-20040521.pom</a>                      2005-09-20 05:51       336      
+<a href="servlet-api-2.4-20040521.pom.md5" title="servlet-api-2.4-20040521.pom.md5">servlet-api-2.4-20040521.pom.md5</a>                  2005-09-20 05:51       157      
+<a href="servlet-api-2.4-20040521.pom.sha1" title="servlet-api-2.4-20040521.pom.sha1">servlet-api-2.4-20040521.pom.sha1</a>                 2005-09-20 05:51       165      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/servlet-api/2.4-20040521/servlet-api-2.4-20040521.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet</groupId>
+  <artifactId>servlet-api</artifactId>
+  <version>2.4-20040521</version>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/servlet-api/2.4-20040521/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/servlet-api/2.4-20040521</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/servlet-api/2.4-20040521</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="servlet-api-2.4-20040521.jar" title="servlet-api-2.4-20040521.jar">servlet-api-2.4-20040521.jar</a>                      2005-11-08 21:58     98517      
+<a href="servlet-api-2.4-20040521.jar.md5" title="servlet-api-2.4-20040521.jar.md5">servlet-api-2.4-20040521.jar.md5</a>                  2005-11-08 21:58        36      
+<a href="servlet-api-2.4-20040521.jar.sha1" title="servlet-api-2.4-20040521.jar.sha1">servlet-api-2.4-20040521.jar.sha1</a>                 2005-11-08 21:58        44      
+<a href="servlet-api-2.4-20040521.pom" title="servlet-api-2.4-20040521.pom">servlet-api-2.4-20040521.pom</a>                      2005-11-08 21:58       165      
+<a href="servlet-api-2.4-20040521.pom.md5" title="servlet-api-2.4-20040521.pom.md5">servlet-api-2.4-20040521.pom.md5</a>                  2005-11-08 21:58       160      
+<a href="servlet-api-2.4-20040521.pom.sha1" title="servlet-api-2.4-20040521.pom.sha1">servlet-api-2.4-20040521.pom.sha1</a>                 2005-11-08 21:58       168      
+<a href="servlet-api-2.4.pom" title="servlet-api-2.4.pom">servlet-api-2.4.pom</a>                               2005-11-08 21:58       165      
+<a href="servlet-api-2.4.pom.md5" title="servlet-api-2.4.pom.md5">servlet-api-2.4.pom.md5</a>                           2005-11-08 21:58       151      
+<a href="servlet-api-2.4.pom.sha1" title="servlet-api-2.4.pom.sha1">servlet-api-2.4.pom.sha1</a>                          2005-11-08 21:58       159      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/servletapi/servletapi/2.4-20040521/servletapi-2.4-20040521.jar -o /tmp/servletapi-2.4-20040521.jar && jar tf /tmp/servletapi-2.4-20040521.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 204ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/http/
+javax/servlet/resources/
+javax/servlet/Filter.class
+javax/servlet/FilterChain.class
+javax/servlet/FilterConfig.class
+javax/servlet/GenericServlet.class
+javax/servlet/http/Cookie.class
+javax/servlet/http/HttpServlet.class
+javax/servlet/http/HttpServletRequest.class
+javax/servlet/http/HttpServletRequestWrapper.class
+javax/servlet/http/HttpServletResponse.class
+javax/servlet/http/HttpServletResponseWrapper.class
+javax/servlet/http/HttpSession.class
+javax/servlet/http/HttpSessionActivationListener.class
+javax/servlet/http/HttpSessionAttributeListener.class
+javax/servlet/http/HttpSessionBindingEvent.class
+javax/servlet/http/HttpSessionBindingListener.class
+javax/servlet/http/HttpSessionContext.class
+javax/servlet/http/HttpSessionEvent.class
+javax/servlet/http/HttpSessionListener.class
+javax/servlet/http/HttpUtils.class
+javax/servlet/http/LocalStrings.properties
+javax/servlet/http/LocalStrings_es.properties
+javax/servlet/http/LocalStrings_fr.properties
+javax/servlet/http/LocalStrings_ja.properties
+javax/servlet/http/NoBodyOutputStream.class
+javax/servlet/http/NoBodyResponse.class
+javax/servlet/LocalStrings.properties
+javax/servlet/LocalStrings_fr.properties
+javax/servlet/LocalStrings_ja.properties
+javax/servlet/RequestDispatcher.class
+javax/servlet/resources/datatypes.dtd
+javax/servlet/resources/j2ee_1_4.xsd
+javax/servlet/resources/j2ee_web_services_1_1.xsd
+javax/servlet/resources/j2ee_web_services_client_1_1.xsd
+javax/servlet/resources/jspxml.xsd
+javax/servlet/resources/jsp_2_0.xsd
+javax/servlet/resources/web-app_2_2.dtd
+javax/servlet/resources/web-app_2_3.dtd
+javax/servlet/resources/web-app_2_4.xsd
+javax/servlet/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/resources/xml.xsd
+javax/servlet/resources/XMLSchema.dtd
+javax/servlet/Servlet.class
+javax/servlet/ServletConfig.class
+javax/servlet/ServletContext.class
+javax/servlet/ServletContextAttributeEvent.class
+javax/servlet/ServletContextAttributeListener.class
+javax/servlet/ServletContextEvent.class
+javax/servlet/ServletContextListener.class
+javax/servlet/ServletException.class
+javax/servlet/ServletInputStream.class
+javax/servlet/ServletOutputStream.class
+javax/servlet/ServletRequest.class
+javax/servlet/ServletRequestAttributeEvent.class
+javax/servlet/ServletRequestAttributeListener.class
+javax/servlet/ServletRequestEvent.class
+javax/servlet/ServletRequestListener.class
+javax/servlet/ServletRequestWrapper.class
+javax/servlet/ServletResponse.class
+javax/servlet/ServletResponseWrapper.class
+javax/servlet/SingleThreadModel.class
+javax/servlet/UnavailableException.class
+
+exec
+/usr/bin/bash -lc 'unzip -p /tmp/servletapi-2.4-20040521.jar META-INF/MANIFEST.MF' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: 1.4.2_01-b06 (Sun Microsystems Inc.)
+
+Name: javax/servlet/
+Specification-Title: Java API for Servlets
+Specification-Version: 2.4
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet
+Implementation-Version: 2.4.public_draft
+Implementation-Vendor: Apache Software Foundation
+
+
+exec
+/usr/bin/bash -lc "javap -classpath /tmp/servletapi-2.4-20040521.jar -verbose javax.servlet.Servlet | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "sha1sum /tmp/servletapi-2.4-20040521.jar && curl -fsSL https://repo1.maven.org/maven2/javax/servlet/servlet-api/2.4-20040521/servlet-api-2.4-20040521.jar.sha1 && printf '\\n'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 396ms:
+Classfile jar:file:///tmp/servletapi-2.4-20040521.jar!/javax/servlet/Servlet.class
+  Last modified May 21, 2004; size 473 bytes
+  SHA-256 checksum 1147f5d2e1c34dca473b52c48e6b9c3a97357bdd26ac8140c06d254e73fcdadd
+  Compiled from "Servlet.java"
+public interface javax.servlet.Servlet
+  minor version: 0
+  major version: 46
+  flags: (0x0601) ACC_PUBLIC, ACC_INTERFACE, ACC_ABSTRACT
+  this_class: #1                          // javax/servlet/Servlet
+  super_class: #2                         // java/lang/Object
+  interfaces: 0, fields: 0, methods: 5, attributes: 1
+Constant pool:
+   #1 = Class              #18            // javax/servlet/Servlet
+   #2 = Class              #19            // java/lang/Object
+   #3 = Utf8               init
+   #4 = Utf8               (Ljavax/servlet/ServletConfig;)V
+   #5 = Utf8               Exceptions
+   #6 = Class              #20            // javax/servlet/ServletException
+   #7 = Utf8               getServletConfig
+   #8 = Utf8               ()Ljavax/servlet/ServletConfig;
+   #9 = Utf8               service
+  #10 = Utf8               (Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V
+  #11 = Class              #21            // java/io/IOException
+  #12 = Utf8               getServletInfo
+  #13 = Utf8               ()Ljava/lang/String;
+  #14 = Utf8               destroy
+  #15 = Utf8               ()V
+  #16 = Utf8               SourceFile
+  #17 = Utf8               Servlet.java
+  #18 = Utf8               javax/servlet/Servlet
+  #19 = Utf8               java/lang/Object
+  #20 = Utf8               javax/servlet/ServletException
+  #21 = Utf8               java/io/IOException
+{
+  public abstract void init(javax.servlet.ServletConfig) throws javax.servlet.ServletException;
+    descriptor: (Ljavax/servlet/ServletConfig;)V
+    flags: (0x0401) ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws javax.servlet.ServletException
+
+  public abstract javax.servlet.ServletConfig getServletConfig();
+    descriptor: ()Ljavax/servlet/ServletConfig;
+    flags: (0x0401) ACC_PUBLIC, ACC_ABSTRACT
+
+  public abstract void service(javax.servlet.ServletRequest, javax.servlet.ServletResponse) throws javax.servlet.ServletException, java.io.IOException;
+    descriptor: (Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V
+    flags: (0x0401) ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws javax.servlet.ServletException, java.io.IOException
+
+  public abstract java.lang.String getServletInfo();
+    descriptor: ()Ljava/lang/String;
+    flags: (0x0401) ACC_PUBLIC, ACC_ABSTRACT
+
+  public abstract void destroy();
+    descriptor: ()V
+    flags: (0x0401) ACC_PUBLIC, ACC_ABSTRACT
+}
+SourceFile: "Servlet.java"
+
+ succeeded in 400ms:
+d66b0e9c78a90552042ab6f9f2f0afb1d87a268f  -
+
+
+web search: 
+web search: "2.4.public_draft" "javax.servlet"
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/doc/servletapi/servletapi/2.4-20040521/index.html | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/doc/javax.servlet/servlet-api/2.4-20040521/index.html | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/servletapi/servletapi/2.4-20040521/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/javax.servlet/servlet-api/2.4-20040521/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 142ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:31:44 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/servletapi/servletapi/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=waLKra%2FUjcBAPkBhPzJJfpPAnDgDAPDCxTYI%2BDcHjpGLWgQCQ0UsyMe9PpTEyOz9FfuOLSBoD4NB3gJNefM4R1rP5K2uqI0epRwHXSnXQ8DLEMuTMNhhHOumk25D6CFZ39GuqKJMcsgk"}]}
+server: cloudflare
+cf-ray: 9f6b4cfcf85401eb-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 141ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>servletapi 2.4-20040521 javadoc (servletapi)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/servletapi">servletapi</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						servletapi
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/servletapi/servletapi" class="dropdown-item">
+							servletapi
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						2.4-20040521
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/servletapi/servletapi/latest/index.html" class="dropdown-item">
+							2.4
+						</a>
+
+						
+						<a href="/doc/servletapi/servletapi/2.4.public_draft/index.html" class="dropdown-item">
+							2.4.public_draft
+						</a>
+						
+						<a href="/doc/servletapi/servletapi/2.4-20040521/index.html" class="dropdown-item">
+							2.4-20040521
+						</a>
+						
+						<a href="/doc/servletapi/servletapi/2.4-20030804.000000/index.html" class="dropdown-item">
+							2.4-20030804.000000
+
+ succeeded in 161ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:31:44 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/javax.servlet/servlet-api/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=U1V7sdSfIoER%2FmOwmMCz%2B9r7dkHYrzE37phCKw8jWo37GtbHNvGha0PlhyODxXXZEsdFextT2Dratgl2tSWh3zeDCI%2BNzpqdXcAZUXz6Pjh2L7z1UA7%2FOfOCwbf5pO42Z4NrdnXJbqTN"}]}
+server: cloudflare
+cf-ray: 9f6b4cfcfc0fbc05-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 355ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>servlet-api 2.4-20040521 javadoc (javax.servlet)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/javax.servlet">javax.servlet</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						servlet-api
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/javax.servlet/javax.servlet-api" class="dropdown-item">
+							javax.servlet-api
+						</a>
+						
+						<a href="/doc/javax.servlet/jsp-api" class="dropdown-item">
+							jsp-api
+						</a>
+						
+						<a href="/doc/javax.servlet/jstl" class="dropdown-item">
+							jstl
+						</a>
+						
+						<a href="/doc/javax.servlet/servlet-api" class="dropdown-item">
+							servlet-api
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						2.4-20040521
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/javax.servlet/servlet-api/latest/index.html" class="dropdown-item">
+							3.0-alpha-1
+						</a>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/servletapi/servletapi/2.4-20040521/index.html | rg -n \"(Source|source|jar|download|maven|scm|github|svn|cvs)\" | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/servletapi/servletapi/2.4-20040521/servletapi-2.4-20040521-sources.jar | sed -n '1,30p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/servletapi/servletapi/2.4-20040521/servletapi-2.4-20040521-tests.jar | sed -n '1,30p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/servletapi/servletapi/2.4-20040521/servletapi-2.4-20040521-javadoc.jar | sed -n '1,30p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 160ms:
+176:    <li>Is the <span class='font-italic'>servletapi-2.4-20040521-javadoc.jar</span> actually distributed to either maven or bintray?</li>
+177:    <li>Does the <span class='font-italic'>servletapi-2.4-20040521-javadoc.jar</span> file contains an <span class='font-italic'>index.html</span> in the extracted root folder? (you can rename .jar to .zip to extract the file)</li>
+180:  <a href='https://github.com/maxcellent/javadoc.io/issues' rel='nofollow'>
+
+ succeeded in 252ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 23:31:52 GMT
+content-type: text/html
+cf-ray: 9f6b4d2e7e86bc5c-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/servletapi/servletapi/2.4-20040521/servletapi-2.4-20040521-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 291ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 23:31:52 GMT
+content-type: text/html
+cf-ray: 9f6b4d2e8d4203a9-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/servletapi/servletapi/2.4-20040521/servletapi-2.4-20040521-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 302ms:
+HTTP/2 404 
+date: Mon, 04 May 2026 23:31:52 GMT
+content-type: text/html
+cf-ray: 9f6b4d2e8e8ec8a4-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/servletapi/servletapi/2.4-20040521/servletapi-2.4-20040521-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/servletapi/servletapi/2.4-20040521/index.html | sed -n '130,190p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 123ms:
+				<div class="modal-body">
+					<div>Latest version of <span class="text-monospace">servletapi:servletapi</span></div>
+					<div class="alert alert-secondary">
+						https://javadoc.io/doc/servletapi/servletapi
+						<a href="/doc/servletapi/servletapi" target="_blank" class="float-right">
+							<i class="fas fa-link"></i>
+						</a>
+					</div>
+					<div>Current version <span class="text-monospace">2.4-20040521</span></div>
+					<div class="alert alert-secondary">
+						https://javadoc.io/doc/servletapi/servletapi/2.4-20040521
+						<a href="/doc/servletapi/servletapi/2.4-20040521" target="_blank" class="float-right">
+							<i class="fas fa-link"></i>
+						</a>
+					</div>
+					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+					<div class="alert alert-secondary">
+						https://javadoc.io/doc/servletapi/servletapi/2.4-20040521/package-list
+						<a href="/doc/servletapi/servletapi/2.4-20040521/package-list" target="_blank" class="float-right">
+							<i class="fas fa-link"></i>
+						</a>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-gray" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="fill">
+		<v id="variables" isLatest="false" versionId="2.4-20040521"></v>
+
+		
+<div class="alert alert-info">
+  No JavaDoc is released for artifact <span class="font-italic">servletapi:servletapi:2.4-20040521</span>.
+  Please try other versions.
+
+  <br>
+  <br>
+  Owner of the project? Troubleshoot following things:
+  <ul>
+    <li>
+      <a href='/retry/servletapi/servletapi/2.4-20040521'>Retry</a> this version.
+      Sometimes it's just a matter of time to pick up new versions.
+    </li>
+    <li>Is the <span class='font-italic'>servletapi-2.4-20040521-javadoc.jar</span> actually distributed to either maven or bintray?</li>
+    <li>Does the <span class='font-italic'>servletapi-2.4-20040521-javadoc.jar</span> file contains an <span class='font-italic'>index.html</span> in the extracted root folder? (you can rename .jar to .zip to extract the file)</li>
+  </ul>
+
+  <a href='https://github.com/maxcellent/javadoc.io/issues' rel='nofollow'>
+    <i class="fas fa-link"></i>
+    report to us
+  </a>
+  if you tried everything but still doesn't work.
+</div>
+        
+	</div>
+
+
+		
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+{
+  "coordinates" : "servletapi:servletapi:2.4-20040521"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'javadoc.io|maven2|repo1.maven|java.sun.com/products/servlet|javax.servlet|servlet-api' build/discovered-artifact-metadata metadata repository 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+metadata/org.threeten/threetenbp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+metadata/org.threeten/threetenbp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.google.guava/guava-bootstrap/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/guava/guava-bootstrap/$version$/guava-bootstrap-$version$-sources.jar",
+metadata/com.google.guava/guava-bootstrap/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/guava/guava-bootstrap/$version$/guava-bootstrap-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json:5:        "typeReached": "javax.servlet.GenericServlet"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json:7:      "bundle": "javax.servlet.LocalStrings"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json:11:        "typeReached": "javax.servlet.http.HttpServlet"
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"\\s*:\\s*\"N/A\"|\"source-code-url\"\\s*:\\s*\"N/A\"|\"documentation-url\"\\s*:\\s*\"N/A\"|\"test-code-url\"\\s*:\\s*\"N/A\"' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find metadata -path '*/servletapi/*' -o -path '*servlet-api*' | sort | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+metadata/jakarta.servlet/jakarta.servlet-api
+metadata/jakarta.servlet/jakarta.servlet-api/4.0.4
+metadata/jakarta.servlet/jakarta.servlet-api/4.0.4/reachability-metadata.json
+metadata/jakarta.servlet/jakarta.servlet-api/5.0.0
+metadata/jakarta.servlet/jakarta.servlet-api/5.0.0/reachability-metadata.json
+metadata/jakarta.servlet/jakarta.servlet-api/index.json
+metadata/javax.servlet/javax.servlet-api
+metadata/javax.servlet/javax.servlet-api/3.1.0
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json
+metadata/javax.servlet/javax.servlet-api/index.json
+metadata/javax.servlet/servlet-api
+metadata/javax.servlet/servlet-api/2.3
+metadata/javax.servlet/servlet-api/2.3/reachability-metadata.json
+metadata/javax.servlet/servlet-api/2.4
+metadata/javax.servlet/servlet-api/2.4.public_draft
+metadata/javax.servlet/servlet-api/2.4.public_draft/reachability-metadata.json
+metadata/javax.servlet/servlet-api/2.4/reachability-metadata.json
+metadata/javax.servlet/servlet-api/index.json
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/5.0.2
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/5.0.2/reachability-metadata.json
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/index.json
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json
+metadata/org.mortbay.jetty/servlet-api
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json
+metadata/org.mortbay.jetty/servlet-api/index.json
+
+exec
+/usr/bin/bash -lc "rg -n 'not-for-native-image|\"language\"' metadata build | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/javax.servlet/servlet-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.4.public_draft",
+    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
+    "repository-url" : "https://github.com/apache/tomcat55",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
+    "description" : "Provides the Java Servlet public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation.",
+    "tested-versions" : [
+      "2.4-20040521",
+      "2.4.public_draft",
+      "2.5",
+      "3.0-alpha-1"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ]
+  },
+  {
+    "metadata-version" : "2.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/servlet-spec",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/servlet-$version$-fr-spec-oth-JSpec/servlet-2_4-fr-spec.pdf",
+    "description" : "Provides the Java Servlet 2.4 API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation.",
+    "tested-versions" : [
+      "2.4"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ]
+  },
+  {
+    "metadata-version" : "2.3",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/servlet-spec",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7840-servlet-$version$-spec-oth-JSpec/servlet-2_3-fcs-spec.pdf",
+    "description" : "Provides the Java Servlet 2.3 and JSP 1.2 API interfaces and classes used by Java web applications and servlet containers to model requests, responses, sessions, filters, and JSP pages. It lets applications compile against the standard javax.servlet and javax.servlet.jsp contracts without bundling a servlet container implementation.",
+    "tested-versions" : [
+      "2.3"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/jakarta.servlet/jakarta.servlet-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/javax.servlet/javax.servlet-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "4.0.4",
+    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/servlet",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+    "description" : "Jakarta Servlet defines the standard server-side API for Java web applications to process HTTP requests and generate responses. It provides interfaces and classes for servlets, filters, listeners, sessions, and deployment descriptors for Servlet 4.0 applications.",
+    "tested-versions" : [
+      "4.0.4"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "5.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/servlet",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+    "description" : "Jakarta Servlet defines the standard server-side API for Java web applications to process HTTP requests and generate responses. It provides interfaces and classes for servlets, filters, listeners, sessions, and deployment descriptors in Jakarta EE 9.",
+    "tested-versions" : [
+      "5.0.0",
+      "6.0.0",
+      "6.1.0"
+    ],
+    "allowed-packages" : [
+      "jakarta.servlet"
+    ]
+  }
+]
+
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/servlet-spec",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/$version$/javax.servlet-api-$version$-javadoc.jar",
+    "tested-versions" : [
+      "3.1.0",
+      "4.0.0",
+      "4.0.1"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ],
+    "description" : "Defines the Java Servlet 3.1 API for handling HTTP requests and responses in Java web applications. It provides the standard interfaces, classes, annotations, and asynchronous processing contracts used by servlet containers and web components."
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/org.mortbay.jetty/servlet-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.5-20081211",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+    "description" : "Provides the Java Servlet 2.5 API interfaces, classes, and deployment descriptor resources used by servlet containers and Java web applications. It packages the standard javax.servlet and javax.servlet.http contracts so applications can compile against the servlet specification without bundling a container implementation.",
+    "tested-versions" : [
+      "2.5-20081211"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/servletapi/servletapi/2.4.public_draft/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/2.4/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/servlet-api/2.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/servlet-api/2.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-07-17 11:09       121      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-07-17 11:09        85      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-07-17 11:09        40      
+<a href="servlet-api-2.4-sources.jar" title="servlet-api-2.4-sources.jar">servlet-api-2.4-sources.jar</a>                       2006-07-17 11:09     91051      
+<a href="servlet-api-2.4-sources.jar.md5" title="servlet-api-2.4-sources.jar.md5">servlet-api-2.4-sources.jar.md5</a>                   2006-07-17 11:09        92      
+<a href="servlet-api-2.4-sources.jar.sha1" title="servlet-api-2.4-sources.jar.sha1">servlet-api-2.4-sources.jar.sha1</a>                  2006-07-17 11:09       100      
+<a href="servlet-api-2.4.jar" title="servlet-api-2.4.jar">servlet-api-2.4.jar</a>                               2006-07-17 11:09     97693      
+<a href="servlet-api-2.4.jar.md5" title="servlet-api-2.4.jar.md5">servlet-api-2.4.jar.md5</a>                           2006-07-17 11:09        32      
+<a href="servlet-api-2.4.jar.sha1" title="servlet-api-2.4.jar.sha1">servlet-api-2.4.jar.sha1</a>                          2006-07-17 11:09        40      
+<a href="servlet-api-2.4.pom" title="servlet-api-2.4.pom">servlet-api-2.4.pom</a>                               2006-07-17 11:09       156      
+<a href="servlet-api-2.4.pom.md5" title="servlet-api-2.4.pom.md5">servlet-api-2.4.pom.md5</a>                           2006-07-17 11:09       142      
+<a href="servlet-api-2.4.pom.sha1" title="servlet-api-2.4.pom.sha1">servlet-api-2.4.pom.sha1</a>                          2006-07-17 11:09       150      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/2.4.public_draft/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/servlet-api/2.4.public_draft</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/servlet-api/2.4.public_draft</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-06 01:08       189      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-06 01:08        98      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-06 01:08       153      
+<a href="servlet-api-2.4.public_draft.jar" title="servlet-api-2.4.public_draft.jar">servlet-api-2.4.public_draft.jar</a>                  2006-11-06 01:08     97693      
+<a href="servlet-api-2.4.public_draft.jar.md5" title="servlet-api-2.4.public_draft.jar.md5">servlet-api-2.4.public_draft.jar.md5</a>              2006-11-06 01:08        32      
+<a href="servlet-api-2.4.public_draft.jar.sha1" title="servlet-api-2.4.public_draft.jar.sha1">servlet-api-2.4.public_draft.jar.sha1</a>             2006-11-06 01:08        40      
+<a href="servlet-api-2.4.public_draft.pom" title="servlet-api-2.4.public_draft.pom">servlet-api-2.4.public_draft.pom</a>                  2006-11-06 01:08       372      
+<a href="servlet-api-2.4.public_draft.pom.md5" title="servlet-api-2.4.public_draft.pom.md5">servlet-api-2.4.public_draft.pom.md5</a>              2006-11-06 01:08       168      
+<a href="servlet-api-2.4.public_draft.pom.sha1" title="servlet-api-2.4.public_draft.pom.sha1">servlet-api-2.4.public_draft.pom.sha1</a>             2006-11-06 01:08       176      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 232ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: servletapi/servletapi/2.4.public_draft</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>servletapi/servletapi/2.4.public_draft</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:51       130      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:51        94      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:51       149      
+<a href="servletapi-2.4.public_draft.jar" title="servletapi-2.4.public_draft.jar">servletapi-2.4.public_draft.jar</a>                   2005-09-20 05:51     97693      
+<a href="servletapi-2.4.public_draft.jar.md5" title="servletapi-2.4.public_draft.jar.md5">servletapi-2.4.public_draft.jar.md5</a>               2005-09-20 05:51        32      
+<a href="servletapi-2.4.public_draft.jar.sha1" title="servletapi-2.4.public_draft.jar.sha1">servletapi-2.4.public_draft.jar.sha1</a>              2005-09-20 05:51        40      
+<a href="servletapi-2.4.public_draft.pom" title="servletapi-2.4.public_draft.pom">servletapi-2.4.public_draft.pom</a>                   2005-09-20 05:51       753      
+<a href="servletapi-2.4.public_draft.pom.md5" title="servletapi-2.4.public_draft.pom.md5">servletapi-2.4.public_draft.pom.md5</a>               2005-09-20 05:51       163      
+<a href="servletapi-2.4.public_draft.pom.sha1" title="servletapi-2.4.public_draft.pom.sha1">servletapi-2.4.public_draft.pom.sha1</a>              2005-09-20 05:51       171      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: site:github.com/apache/tomcat55 servletapi jsr154 src share javax servlet Servlet.java TOMCAT_5_5_12
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/tomcat55/tags?per_page=100 | rg -n 'TOMCAT_5_5_12|TOMCAT_5_0|SERVLET|5_0_25'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/tomcat55/contents/servletapi/jsr154/src/share?ref=TOMCAT_5_5_12 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 187ms:
+[
+  {
+    "name": "dtd",
+    "path": "servletapi/jsr154/src/share/dtd",
+    "sha": "27dce38182f3e0516e6f0e78ef2ce6099ba6d3c2",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/tomcat55/contents/servletapi/jsr154/src/share/dtd?ref=TOMCAT_5_5_12",
+    "html_url": "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share/dtd",
+    "git_url": "https://api.github.com/repos/apache/tomcat55/git/trees/27dce38182f3e0516e6f0e78ef2ce6099ba6d3c2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat55/contents/servletapi/jsr154/src/share/dtd?ref=TOMCAT_5_5_12",
+      "git": "https://api.github.com/repos/apache/tomcat55/git/trees/27dce38182f3e0516e6f0e78ef2ce6099ba6d3c2",
+      "html": "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share/dtd"
+    }
+  },
+  {
+    "name": "javax",
+    "path": "servletapi/jsr154/src/share/javax",
+    "sha": "f2ff976a10b689020fa822c90c2bd2f92aa3a685",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/tomcat55/contents/servletapi/jsr154/src/share/javax?ref=TOMCAT_5_5_12",
+    "html_url": "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share/javax",
+    "git_url": "https://api.github.com/repos/apache/tomcat55/git/trees/f2ff976a10b689020fa822c90c2bd2f92aa3a685",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat55/contents/servletapi/jsr154/src/share/javax?ref=TOMCAT_5_5_12",
+      "git": "https://api.github.com/repos/apache/tomcat55/git/trees/f2ff976a10b689020fa822c90c2bd2f92aa3a685",
+      "html": "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share/javax"
+    }
+  }
+]
+
+ succeeded in 278ms:
+243:    "name": "TOMCAT_5_5_12",
+244:    "zipball_url": "https://api.github.com/repos/apache/tomcat55/zipball/refs/tags/TOMCAT_5_5_12",
+245:    "tarball_url": "https://api.github.com/repos/apache/tomcat55/tarball/refs/tags/TOMCAT_5_5_12",
+
+ succeeded in 785ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:32:26 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"201ecc89c30cf20d52f5d7afa408504d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=nY2BUbbPkFqd53YPcaTktB6cU0dlxHC8sZ7tsuYWU2QHARG2fEui%2F0ob%2FP4ammeHAvmUWMO4T3hB5Ng5xjAvMCRayMoiku6a%2BdQCCp4iWgcbJp%2Fl%2FxKmG%2BN4LgwE96rB6ZvK2e0ID05FPKPYTG2UOIJCVRiqyenqE%2F%2BrqGTeMnwcPgVRQvZT91nohu9HxTzp%2F%2Bd3orOXdBhm1N9uwH5rSDi2CEpwMdgWoLR9GxS4ehJ0upmjw0dM0rSoXB0x60qCHmx4j%2BjMpMUVLYHvhSjBAw%3D%3D--x939LzxZok9jKejB--O%2FW0uZzIUIFpb6Q6cB07QA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1246487620.1777937545; expires=Tue, 04 May 2027 23:32:25 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 04 May 2027 23:32:25 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5106:1385A6:4D9FE8E:3B70EBE:69F92C89
+
+
+web search: 
+web search: 
+web search: 
+web search: "servletapi:servletapi" "2.4-20040521"
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22servletapi%22%20AND%20a:%22servletapi%22%20AND%20v:%222.4-20040521%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22servletapi%22%20AND%20a:%22servlet-api%22%20AND%20v:%222.4-20040521%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22javax.servlet%22%20AND%20a:%22servlet-api%22%20AND%20v:%222.4-20040521%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 333ms:
+{"responseHeader":{"status":0,"QTime":3,"params":{"q":"g:\"servletapi\" AND a:\"servletapi\" AND v:\"2.4-20040521\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"servletapi:servletapi:2.4-20040521","g":"servletapi","a":"servletapi","v":"2.4-20040521","p":"jar","timestamp":1131488302000,"ec":[".jar",".pom"],"tags":["systems","accessing","functionality","with","technology","simple","existing","provides","mechanism","developers","business","servlet","server","java","consistent","extending"]}]}}
+ succeeded in 334ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"servletapi\" AND a:\"servlet-api\" AND v:\"2.4-20040521\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"servletapi:servlet-api:2.4-20040521","g":"servletapi","a":"servlet-api","v":"2.4-20040521","p":"jar","timestamp":1131488300000,"ec":[".jar",".pom"]}]}}
+ succeeded in 286ms:
+{"responseHeader":{"status":0,"QTime":2,"params":{"q":"g:\"javax.servlet\" AND a:\"servlet-api\" AND v:\"2.4-20040521\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"javax.servlet:servlet-api:2.4-20040521","g":"javax.servlet","a":"servlet-api","v":"2.4-20040521","p":"jar","timestamp":1131487117000,"ec":[".jar",".pom"]}]}}
+codex
+Maven Central confirms this coordinate only publishes the binary JAR and POM, with no source, tests, or javadoc classifiers. The JAR itself contains normal `javax.servlet` JVM `.class` files, so I’m leaving the Native Image exclusion fields absent.
+web search: 
+web search: github apache tomcat50 servletapi jsr154
+codex
+I found an existing servlet metadata pattern in the repo for this same tested version under the relocated `javax.servlet:servlet-api` line. I’m going to use that same Tomcat source root and Oracle Servlet 2.4 public-draft specification link, with `N/A` for tests because neither Maven nor the source metadata exposes a confidence-worthy test suite for this artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+diff --git a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+index b115b8a868f5d25159cb5c980b432319237dac70..7c02e39b315b9cc81e8d3302f6c7ea13335f43d5
+--- a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
++++ b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "servletapi:servletapi:2.4-20040521"
++  "coordinates" : "servletapi:servletapi:2.4-20040521",
++  "repository-url" : "https://github.com/apache/tomcat55",
++  "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
++  "description" : "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+index b115b8a868f5d25159cb5c980b432319237dac70..7c02e39b315b9cc81e8d3302f6c7ea13335f43d5
+--- a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
++++ b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "servletapi:servletapi:2.4-20040521"
++  "coordinates" : "servletapi:servletapi:2.4-20040521",
++  "repository-url" : "https://github.com/apache/tomcat55",
++  "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
++  "description" : "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+{
+  "coordinates": "servletapi:servletapi:2.4-20040521",
+  "repository-url": "https://github.com/apache/tomcat55",
+  "source-code-url": "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
+  "test-code-url": "N/A",
+  "documentation-url": "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
+  "description": "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+index b115b8a868f5d25159cb5c980b432319237dac70..7c02e39b315b9cc81e8d3302f6c7ea13335f43d5
+--- a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
++++ b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "servletapi:servletapi:2.4-20040521"
++  "coordinates" : "servletapi:servletapi:2.4-20040521",
++  "repository-url" : "https://github.com/apache/tomcat55",
++  "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
++  "description" : "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+index b115b8a868f5d25159cb5c980b432319237dac70..7c02e39b315b9cc81e8d3302f6c7ea13335f43d5
+--- a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
++++ b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "servletapi:servletapi:2.4-20040521"
++  "coordinates" : "servletapi:servletapi:2.4-20040521",
++  "repository-url" : "https://github.com/apache/tomcat55",
++  "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
++  "description" : "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+ }
+
+web search: 
+web search: https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share
+web search: 
+web search: repo1 maven servletapi servletapi 2.4-20040521 pom jar
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/tomcat/tags?per_page=100&page=40' | rg -n 'TOMCAT_5|5_0|5_5' || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/tomcat55/tags?per_page=100&page=3' | rg -n 'TOMCAT_5_5|TOMCAT_5_0|TOMCAT_5' || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/tomcat55/tags?per_page=100&page=4' | rg -n 'TOMCAT_5_5|TOMCAT_5_0|TOMCAT_5' || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 223ms:
+diff --git a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+index b115b8a868f5d25159cb5c980b432319237dac70..7c02e39b315b9cc81e8d3302f6c7ea13335f43d5
+--- a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
++++ b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "servletapi:servletapi:2.4-20040521"
++  "coordinates" : "servletapi:servletapi:2.4-20040521",
++  "repository-url" : "https://github.com/apache/tomcat55",
++  "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
++  "description" : "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+ }
+
+ succeeded in 447ms:
+ succeeded in 474ms:
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/tomcat55/tags?per_page=100' | jq -r '.[].name' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+diff --git a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+index b115b8a868f5d25159cb5c980b432319237dac70..7c02e39b315b9cc81e8d3302f6c7ea13335f43d5
+--- a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
++++ b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "servletapi:servletapi:2.4-20040521"
++  "coordinates" : "servletapi:servletapi:2.4-20040521",
++  "repository-url" : "https://github.com/apache/tomcat55",
++  "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
++  "description" : "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+ }
+
+ succeeded in 207ms:
+TOMCAT_5_5_36
+TOMCAT_5_5_35
+TOMCAT_5_5_34
+TOMCAT_5_5_33
+TOMCAT_5_5_32
+TOMCAT_5_5_31
+TOMCAT_5_5_30
+TOMCAT_5_5_29
+TOMCAT_5_5_28
+TOMCAT_5_5_27
+TOMCAT_5_5_26
+TOMCAT_5_5_25
+TOMCAT_5_5_24
+TOMCAT_5_5_23
+TOMCAT_5_5_22
+TOMCAT_5_5_21
+TOMCAT_5_5_20
+TOMCAT_5_5_19
+TOMCAT_5_5_18
+TOMCAT_5_5_17
+TOMCAT_5_5_16
+TOMCAT_5_5_15
+TOMCAT_5_5_14
+TOMCAT_5_5_13
+TOMCAT_5_5_12
+TOMCAT_5_5_11
+TOMCAT_5_5_10
+TOMCAT_5_5_9
+TOMCAT_5_5_8
+TOMCAT_5_5_7
+TOMCAT_5_5_6
+TOMCAT_5_5_5
+TOMCAT_5_5_4
+TOMCAT_5_5_3
+TOMCAT_5_5_2
+TOMCAT_5_5_1
+TOMCAT_5_5_0
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/repositories?q=org:apache+tomcat50' | jq -r '.items[]?.full_name' | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/orgs/apache/repos?per_page=100 | jq -r '.[].name' | rg '"'^tomcat'"' | sort" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59
+ succeeded in 225ms:
+diff --git a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+index b115b8a868f5d25159cb5c980b432319237dac70..7c02e39b315b9cc81e8d3302f6c7ea13335f43d5
+--- a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
++++ b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "servletapi:servletapi:2.4-20040521"
++  "coordinates" : "servletapi:servletapi:2.4-20040521",
++  "repository-url" : "https://github.com/apache/tomcat55",
++  "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
++  "description" : "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+ }
+
+ succeeded in 1333ms:
+diff --git a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+index b115b8a868f5d25159cb5c980b432319237dac70..7c02e39b315b9cc81e8d3302f6c7ea13335f43d5
+--- a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
++++ b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "servletapi:servletapi:2.4-20040521"
++  "coordinates" : "servletapi:servletapi:2.4-20040521",
++  "repository-url" : "https://github.com/apache/tomcat55",
++  "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
++  "description" : "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+ }
+
+web search: 
+web search: https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share
+web search: 
+web search: Maven Central servletapi servletapi 2.4-20040521 .jar .pom
+web search: 
+web search: 7876 servlet 2.4 prd spec PDF Oracle download.oracle.com
+codex
+Updated [servletapi-servletapi-2.4-20040521.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json).
+
+I used the Apache Tomcat 5.5 source tree for the Servlet 2.4 API source URL and Oracle’s Servlet 2.4 public review draft spec for documentation. Maven Central only exposes JAR/POM artifacts for this old coordinate family, so `test-code-url` is `N/A`. ([github.com](https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share))
+
+Validated the JSON with `jq`. I did not add `language` or `not-for-native-image`; the artifact is a JVM `javax.servlet` API JAR with `.class` files.
+diff --git a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+index b115b8a868f5d25159cb5c980b432319237dac70..7c02e39b315b9cc81e8d3302f6c7ea13335f43d5
+--- a/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
++++ b/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "servletapi:servletapi:2.4-20040521"
++  "coordinates" : "servletapi:servletapi:2.4-20040521",
++  "repository-url" : "https://github.com/apache/tomcat55",
++  "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
++  "description" : "Provides the Java Servlet 2.4 public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation."
+ }
+
+tokens used
+112,460
+Updated [servletapi-servletapi-2.4-20040521.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59/build/discovered-artifact-metadata/servletapi-servletapi-2.4-20040521.json).
+
+I used the Apache Tomcat 5.5 source tree for the Servlet 2.4 API source URL and Oracle’s Servlet 2.4 public review draft spec for documentation. Maven Central only exposes JAR/POM artifacts for this old coordinate family, so `test-code-url` is `N/A`. ([github.com](https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share))
+
+Validated the JSON with `jq`. I did not add `language` or `not-for-native-image`; the artifact is a JVM `javax.servlet` API JAR with `.class` files.
+Ran agent for servletapi:servletapi:2.4-20040521 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59/build/agent-artifact-discovery-logs/servletapi-servletapi-2.4-20040521.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2843-7f69fd59/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 42s
+9 actionable tasks: 4 executed, 5 from cache
