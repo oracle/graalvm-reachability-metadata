@@ -76,6 +76,27 @@ public class Mordant_jvm_jna_jvmTest {
     }
 
     @Test
+    fun providerReturnsNullWhenNativeImagePropertyIsSet() {
+        val originalImageCode: String? = System.getProperty("org.graalvm.nativeimage.imagecode")
+        try {
+            val nativeImagePhases: List<String> = listOf("buildtime", "runtime")
+            nativeImagePhases.forEach { phase ->
+                System.setProperty("org.graalvm.nativeimage.imagecode", phase)
+
+                val terminalInterface: TerminalInterface? = TerminalInterfaceProviderJna().load()
+
+                assertThat(terminalInterface).isNull()
+            }
+        } finally {
+            if (originalImageCode == null) {
+                System.clearProperty("org.graalvm.nativeimage.imagecode")
+            } else {
+                System.setProperty("org.graalvm.nativeimage.imagecode", originalImageCode)
+            }
+        }
+    }
+
+    @Test
     fun terminalUsesTheStandardInterfaceResolvedFromRegisteredProviders() {
         val terminal = Terminal(
             ansiLevel = AnsiLevel.NONE,
