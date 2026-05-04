@@ -22,6 +22,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.codec.http.multipart.HttpData;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
 import reactor.netty.DisposableServer;
@@ -181,6 +182,29 @@ public class Reactor_netty_httpTest {
             assertThat(result).isNotNull();
             assertThat(result.statusCode).isEqualTo(200);
             assertThat(result.body).isEqualTo(payload);
+        } finally {
+            server.disposeNow(TIMEOUT);
+        }
+    }
+
+    @Test
+    void streamsServerSentEvents() {
+        DisposableServer server = bind(HttpServer.create()
+                .route(routes -> routes.get("/events", (request, response) -> response.sse()
+                        .sendString(Flux.just("data:first\n\n", "data:second\n\n"), StandardCharsets.UTF_8))));
+        try {
+            ClientResult result = clientFor(server)
+                    .get()
+                    .uri("/events")
+                    .responseSingle((response, content) -> content.asString(StandardCharsets.UTF_8)
+                            .map(body -> ClientResult.from(response, body)))
+                    .block(TIMEOUT);
+
+            assertThat(result).isNotNull();
+            assertThat(result.statusCode).isEqualTo(200);
+            assertThat(result.header(HttpHeaderNames.CONTENT_TYPE.toString()))
+                    .contains(HttpHeaderValues.TEXT_EVENT_STREAM.toString());
+            assertThat(result.body).isEqualTo("data:first\n\ndata:second\n\n");
         } finally {
             server.disposeNow(TIMEOUT);
         }
