@@ -12,6 +12,8 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 import org.threeten.bp.chrono.Chronology;
+import org.threeten.bp.chrono.IsoChronology;
+import org.threeten.bp.chrono.JapaneseChronology;
 import org.threeten.bp.chrono.ThaiBuddhistChronology;
 
 public class ChronologyTest {
@@ -24,5 +26,17 @@ public class ChronologyTest {
         assertThat(chronology).isSameAs(ThaiBuddhistChronology.INSTANCE);
         assertThat(chronology.getId()).isEqualTo("ThaiBuddhist");
         assertThat(chronology.getCalendarType()).isEqualTo("buddhist");
+    }
+
+    @Test
+    void ofLocaleResolvesIsoAndJapaneseCalendars() {
+        Locale japaneseLocale = Locale.forLanguageTag("ja-JP-u-ca-japanese");
+
+        Chronology isoChronology = Chronology.ofLocale(Locale.US);
+        Chronology japaneseChronology = Chronology.ofLocale(japaneseLocale);
+
+        assertThat(isoChronology).isSameAs(IsoChronology.INSTANCE);
+        assertThat(japaneseChronology).isSameAs(JapaneseChronology.INSTANCE);
+        assertThat(japaneseChronology.getCalendarType()).isEqualTo("japanese");
     }
 }
