@@ -38,7 +38,8 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 To quickly check whether reachability metadata exists for a specific library, run this command directly from your terminal:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "<groupId>:<artifactId>:<version>"
+curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh \
+  | bash -s "<groupId>:<artifactId>:<version>"
 ```
 
 ---
