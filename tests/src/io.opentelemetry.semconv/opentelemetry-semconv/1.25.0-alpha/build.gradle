@@ -9,9 +9,11 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String apiVersion = libraryVersion.endsWith('-alpha') ? libraryVersion.substring(0, libraryVersion.length() - '-alpha'.length()) : libraryVersion
 
 dependencies {
     testImplementation "io.opentelemetry.semconv:opentelemetry-semconv:$libraryVersion"
+    testImplementation "io.opentelemetry:opentelemetry-api:$apiVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
