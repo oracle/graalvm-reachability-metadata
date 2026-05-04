@@ -36,6 +36,23 @@ public class Camel_xml_jaxp_utilTest {
     }
 
     @Test
+    void prettyPrintNormalizesSingleQuotedAttributes() throws Exception {
+        String xml = """
+                <root><item id='123' category='books'>Camel in Action</item></root>
+                """.trim();
+
+        String prettyXml = XmlPrettyPrinter.pettyPrint(xml, 2);
+
+        assertThat(prettyXml)
+                .contains("<item ")
+                .contains("id=\"123\"")
+                .contains("category=\"books\"")
+                .contains("Camel in Action")
+                .doesNotContain("id='123'")
+                .doesNotContain("category='books'");
+    }
+
+    @Test
     void prettyPrintUsesRequestedIndentationWidth() throws Exception {
         String xml = """
                 <root><group><entry>camel</entry></group></root>
