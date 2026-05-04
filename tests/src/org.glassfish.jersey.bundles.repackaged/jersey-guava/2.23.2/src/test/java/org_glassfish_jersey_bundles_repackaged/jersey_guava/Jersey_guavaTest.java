@@ -6,6 +6,7 @@
  */
 package org_glassfish_jersey_bundles_repackaged.jersey_guava;
 
+import java.io.ByteArrayInputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.Arrays;
@@ -40,6 +41,8 @@ import jersey.repackaged.com.google.common.collect.Multiset;
 import jersey.repackaged.com.google.common.collect.Ordering;
 import jersey.repackaged.com.google.common.collect.Sets;
 import jersey.repackaged.com.google.common.collect.Table;
+import jersey.repackaged.com.google.common.io.ByteArrayDataInput;
+import jersey.repackaged.com.google.common.io.ByteStreams;
 import jersey.repackaged.com.google.common.net.InetAddresses;
 import jersey.repackaged.com.google.common.primitives.Ints;
 import jersey.repackaged.com.google.common.primitives.UnsignedBytes;
@@ -234,6 +237,24 @@ public class Jersey_guavaTest {
         assertThat(cache.getIfPresent("two")).isNull();
         cache.invalidateAll(Arrays.asList("one", "three", "four"));
         assertThat(cache.size()).isZero();
+    }
+
+    @Test
+    void byteStreamsReadPrimitiveValuesFromByteArraysAndStreams() {
+        byte[] payload = {
+                0x01, 0x02, 0x03, 0x04,
+                0x05, 0x06,
+                0x11, 0x12, 0x13, 0x14
+        };
+
+        ByteArrayDataInput fromStart = ByteStreams.newDataInput(payload);
+        ByteArrayDataInput fromOffset = ByteStreams.newDataInput(payload, 6);
+        ByteArrayDataInput fromStream = ByteStreams.newDataInput(new ByteArrayInputStream(payload));
+
+        assertThat(fromStart.readInt()).isEqualTo(0x01020304);
+        assertThat(fromStart.readShort()).isEqualTo((short) 0x0506);
+        assertThat(fromOffset.readInt()).isEqualTo(0x11121314);
+        assertThat(fromStream.readInt()).isEqualTo(0x01020304);
     }
 
     @Test
