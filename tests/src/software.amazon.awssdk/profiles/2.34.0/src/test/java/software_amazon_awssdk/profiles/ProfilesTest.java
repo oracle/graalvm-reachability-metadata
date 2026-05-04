@@ -12,6 +12,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -260,6 +262,36 @@ public class ProfilesTest {
                 .containsEntry(ProfileProperty.AWS_ACCESS_KEY_ID, "first-key")
                 .containsEntry(ProfileProperty.REGION, "ap-southeast-2")
                 .containsEntry(ProfileProperty.DEFAULTS_MODE, "mobile");
+    }
+
+    @Test
+    void reloadWhenModifiedSupplierReloadsChangedDiskFile() throws IOException, InterruptedException {
+        Path credentials = tempDir.resolve("reloadable-credentials");
+        Files.writeString(credentials, """
+                [reloadable]
+                aws_access_key_id = initial-key
+                """);
+        ProfileFileSupplier supplier = ProfileFileSupplier.reloadWhenModified(credentials, ProfileFile.Type.CREDENTIALS);
+
+        ProfileFile initial = supplier.get();
+        assertThat(initial.profile("reloadable").orElseThrow().property(ProfileProperty.AWS_ACCESS_KEY_ID))
+                .contains("initial-key");
+        assertThat(supplier.get()).isSameAs(initial);
+
+        Files.writeString(credentials, """
+                [reloadable]
+                aws_access_key_id = refreshed-key
+                aws_secret_access_key = refreshed-secret
+                """);
+        Files.setLastModifiedTime(credentials, FileTime.from(Instant.now().plusSeconds(2)));
+        Thread.sleep(1_200L);
+
+        ProfileFile refreshed = supplier.get();
+        assertThat(refreshed).isNotSameAs(initial);
+        assertThat(refreshed.profile("reloadable").orElseThrow().properties())
+                .containsEntry(ProfileProperty.AWS_ACCESS_KEY_ID, "refreshed-key")
+                .containsEntry(ProfileProperty.AWS_SECRET_ACCESS_KEY, "refreshed-secret");
+        assertThat(supplier.get()).isSameAs(refreshed);
     }
 
     @Test
