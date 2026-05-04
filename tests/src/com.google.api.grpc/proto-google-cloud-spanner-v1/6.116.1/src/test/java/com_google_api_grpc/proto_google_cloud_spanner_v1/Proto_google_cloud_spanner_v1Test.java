@@ -13,7 +13,10 @@ import com.google.protobuf.NullValue;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.Value;
+import com.google.rpc.Code;
 import com.google.rpc.Status;
+import com.google.spanner.v1.BatchWriteRequest;
+import com.google.spanner.v1.BatchWriteResponse;
 import com.google.spanner.v1.CacheUpdate;
 import com.google.spanner.v1.ChangeStreamRecord;
 import com.google.spanner.v1.CommitRequest;
@@ -358,6 +361,51 @@ public class Proto_google_cloud_spanner_v1Test {
         assertThat(commitRequest.getTransactionCase()).isEqualTo(CommitRequest.TransactionCase.TRANSACTION_ID);
         assertThat(commitResponse.getCommitStats().getMutationCount()).isEqualTo(1);
         assertThat(rollbackRequest.getTransactionId().toStringUtf8()).isEqualTo("transaction-id");
+    }
+
+    @Test
+    void batchWriteRequestsGroupIndependentMutationSetsAndReportPerGroupResults() {
+        RequestOptions requestOptions = RequestOptions.newBuilder()
+                .setPriority(RequestOptions.Priority.PRIORITY_HIGH)
+                .setRequestTag("batch-write-tag")
+                .build();
+        BatchWriteRequest.MutationGroup firstGroup = BatchWriteRequest.MutationGroup.newBuilder()
+                .addMutations(Mutation.newBuilder().setInsert(writeMutation()))
+                .build();
+        BatchWriteRequest.MutationGroup secondGroup = BatchWriteRequest.MutationGroup.newBuilder()
+                .addMutations(Mutation.newBuilder()
+                        .setDelete(Mutation.Delete.newBuilder()
+                                .setTable("Singers")
+                                .setKeySet(KeySet.newBuilder().addKeys(listValue(stringValue("singer-2"))))))
+                .build();
+        BatchWriteRequest request = BatchWriteRequest.newBuilder()
+                .setSession(sessionName())
+                .setRequestOptions(requestOptions)
+                .addMutationGroups(firstGroup)
+                .addMutationGroups(secondGroup)
+                .setExcludeTxnFromChangeStreams(true)
+                .build();
+        BatchWriteResponse success = BatchWriteResponse.newBuilder()
+                .addIndexes(0)
+                .setStatus(Status.newBuilder().setCode(Code.OK.getNumber()).setMessage("OK"))
+                .setCommitTimestamp(timestamp(350, 0))
+                .build();
+        BatchWriteResponse retryableFailure = BatchWriteResponse.newBuilder()
+                .addIndexes(1)
+                .setStatus(Status.newBuilder().setCode(Code.ABORTED.getNumber()).setMessage("retry transaction"))
+                .build();
+
+        assertThat(request.getSession()).isEqualTo(sessionName());
+        assertThat(request.getRequestOptions().getRequestTag()).isEqualTo("batch-write-tag");
+        assertThat(request.getMutationGroupsList())
+                .extracting(BatchWriteRequest.MutationGroup::getMutationsCount)
+                .containsExactly(1, 1);
+        assertThat(request.getExcludeTxnFromChangeStreams()).isTrue();
+        assertThat(success.getIndexesList()).containsExactly(0);
+        assertThat(success.getStatus().getCode()).isEqualTo(Code.OK.getNumber());
+        assertThat(success.getCommitTimestamp().getSeconds()).isEqualTo(350);
+        assertThat(retryableFailure.getIndexesList()).containsExactly(1);
+        assertThat(retryableFailure.getStatus().getCode()).isEqualTo(Code.ABORTED.getNumber());
     }
 
     @Test
