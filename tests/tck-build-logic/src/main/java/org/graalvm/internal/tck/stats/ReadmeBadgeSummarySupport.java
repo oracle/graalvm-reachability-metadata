@@ -57,6 +57,46 @@ public final class ReadmeBadgeSummarySupport {
     private static final BigDecimal PERCENT_MIN_RANGE = new BigDecimal("10.0");
     private static final BigDecimal PERCENT_PADDING = new BigDecimal("2.0");
     private static final BigDecimal PERCENT_TICK_STEP = new BigDecimal("5.0");
+    private static final ThemePalette LIGHT_THEME = new ThemePalette(
+            "#f7fbff",
+            "#fff8ee",
+            "#0f172a",
+            "0.09",
+            "#0f172a",
+            "#5f748c",
+            "#ffffff",
+            "0.90",
+            "#dbe7f3",
+            "#667b92",
+            "#eef3f8",
+            "#71859a",
+            "#f6f8fb",
+            "#6b7f95",
+            "#edf3f8",
+            "#ffffff",
+            "#0f172a",
+            "#ffffff"
+    );
+    private static final ThemePalette DARK_THEME = new ThemePalette(
+            "#0d1117",
+            "#161b22",
+            "#000000",
+            "0.24",
+            "#f0f6fc",
+            "#8b949e",
+            "#161b22",
+            "0.96",
+            "#30363d",
+            "#8b949e",
+            "#30363d",
+            "#8b949e",
+            "#21262d",
+            "#8b949e",
+            "#30363d",
+            "#0d1117",
+            "#f0f6fc",
+            "#0d1117"
+    );
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
@@ -158,7 +198,12 @@ public final class ReadmeBadgeSummarySupport {
     public static void writeMetricsOverviewGraph(Path graphFile, ReadmeMetricsHistory history, Instant generatedAt) {
         writeTextWithTrailingNewline(
                 graphFile,
-                buildMetricsOverviewGraph(history, generatedAt),
+                buildMetricsOverviewGraph(history, generatedAt, LIGHT_THEME),
+                "Failed to write README metrics graph to "
+        );
+        writeTextWithTrailingNewline(
+                darkMetricsOverviewGraphFile(graphFile),
+                buildMetricsOverviewGraph(history, generatedAt, DARK_THEME),
                 "Failed to write README metrics graph to "
         );
     }
@@ -187,7 +232,8 @@ public final class ReadmeBadgeSummarySupport {
         markdown.append("Updated: ")
                 .append(summary.date())
                 .append("\n\n");
-        markdown.append("![Coverage over time](latest/metrics-over-time.svg)\n\n");
+        markdown.append("![Coverage over time](latest/metrics-over-time.svg#gh-light-mode-only)\n");
+        markdown.append("![Coverage over time](latest/metrics-over-time-dark.svg#gh-dark-mode-only)\n\n");
         markdown.append("## Libraries\n\n");
         markdown.append("| Library | Description | Dynamic access coverage |\n");
         markdown.append("| --- | --- | ---: |\n");
@@ -418,7 +464,7 @@ public final class ReadmeBadgeSummarySupport {
         return entry != null && !entry.isNotForNativeImage() && entry.metadataVersion() != null;
     }
 
-    private static String buildMetricsOverviewGraph(ReadmeMetricsHistory history, Instant generatedAt) {
+    private static String buildMetricsOverviewGraph(ReadmeMetricsHistory history, Instant generatedAt, ThemePalette theme) {
         List<PanelSpec> panels = List.of(
                 new PanelSpec(
                         "libraries-supported",
@@ -479,11 +525,19 @@ public final class ReadmeBadgeSummarySupport {
         svg.append("  <desc id=\"graph-desc\">A four-panel coverage dashboard showing libraries supported, tested library versions, dynamic access coverage, and tested lines of code over time.</desc>\n");
         svg.append("  <defs>\n");
         svg.append("    <linearGradient id=\"dashboard-bg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n");
-        svg.append("      <stop offset=\"0%\" stop-color=\"#f7fbff\"/>\n");
-        svg.append("      <stop offset=\"100%\" stop-color=\"#fff8ee\"/>\n");
+        svg.append("      <stop offset=\"0%\" stop-color=\"")
+                .append(theme.dashboardStart())
+                .append("\"/>\n");
+        svg.append("      <stop offset=\"100%\" stop-color=\"")
+                .append(theme.dashboardEnd())
+                .append("\"/>\n");
         svg.append("    </linearGradient>\n");
         svg.append("    <filter id=\"panel-shadow\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\">\n");
-        svg.append("      <feDropShadow dx=\"0\" dy=\"12\" stdDeviation=\"18\" flood-color=\"#0f172a\" flood-opacity=\"0.09\"/>\n");
+        svg.append("      <feDropShadow dx=\"0\" dy=\"12\" stdDeviation=\"18\" flood-color=\"")
+                .append(theme.shadowColor())
+                .append("\" flood-opacity=\"")
+                .append(theme.shadowOpacity())
+                .append("\"/>\n");
         svg.append("    </filter>\n");
         for (PanelSpec panel : panels) {
             svg.append("    <linearGradient id=\"")
@@ -501,10 +555,14 @@ public final class ReadmeBadgeSummarySupport {
         svg.append("  <rect width=\"100%\" height=\"100%\" rx=\"30\" fill=\"url(#dashboard-bg)\"/>\n");
         svg.append("  <text x=\"")
                 .append(DASHBOARD_PADDING)
-                .append("\" y=\"62\" fill=\"#0f172a\" font-size=\"34\" font-weight=\"700\">Coverage over time</text>\n");
+                .append("\" y=\"62\" fill=\"")
+                .append(theme.titleText())
+                .append("\" font-size=\"34\" font-weight=\"700\">Coverage over time</text>\n");
         svg.append("  <text x=\"")
                 .append(DASHBOARD_PADDING)
-                .append("\" y=\"92\" fill=\"#5f748c\" font-size=\"17\">Updated ")
+                .append("\" y=\"92\" fill=\"")
+                .append(theme.mutedText())
+                .append("\" font-size=\"17\">Updated ")
                 .append(escapeXml(latestDate.toString()))
                 .append(" | Generated ")
                 .append(escapeXml(formatGeneratedAt(generatedAt)))
@@ -512,7 +570,7 @@ public final class ReadmeBadgeSummarySupport {
         for (int index = 0; index < panels.size(); index++) {
             int panelX = DASHBOARD_PADDING + (index % 2) * (PANEL_WIDTH + DASHBOARD_GAP);
             int panelY = DASHBOARD_HEADER_HEIGHT + DASHBOARD_PADDING + (index / 2) * (PANEL_HEIGHT + DASHBOARD_GAP);
-            appendPanel(svg, panels.get(index), panelX, panelY, PANEL_WIDTH, PANEL_HEIGHT);
+            appendPanel(svg, panels.get(index), panelX, panelY, PANEL_WIDTH, PANEL_HEIGHT, theme);
         }
 
         svg.append("</svg>");
@@ -540,7 +598,7 @@ public final class ReadmeBadgeSummarySupport {
         return points;
     }
 
-    private static void appendPanel(StringBuilder svg, PanelSpec panel, int panelX, int panelY, int panelWidth, int panelHeight) {
+    private static void appendPanel(StringBuilder svg, PanelSpec panel, int panelX, int panelY, int panelWidth, int panelHeight, ThemePalette theme) {
         int plotX = panelX + PANEL_PLOT_LEFT;
         int plotY = panelY + PANEL_PLOT_TOP;
         int plotWidth = panelWidth - PANEL_PLOT_LEFT - PANEL_PLOT_RIGHT;
@@ -558,19 +616,29 @@ public final class ReadmeBadgeSummarySupport {
                 .append(panelWidth)
                 .append("\" height=\"")
                 .append(panelHeight)
-                .append("\" rx=\"24\" fill=\"#ffffff\" fill-opacity=\"0.90\" stroke=\"#dbe7f3\" filter=\"url(#panel-shadow)\"/>\n");
+                .append("\" rx=\"24\" fill=\"")
+                .append(theme.panelFill())
+                .append("\" fill-opacity=\"")
+                .append(theme.panelOpacity())
+                .append("\" stroke=\"")
+                .append(theme.panelStroke())
+                .append("\" filter=\"url(#panel-shadow)\"/>\n");
         svg.append("    <text x=\"")
                 .append(panelX + 24)
                 .append("\" y=\"")
                 .append(panelY + 34)
-                .append("\" fill=\"#0f172a\" font-size=\"23\" font-weight=\"700\">")
+                .append("\" fill=\"")
+                .append(theme.titleText())
+                .append("\" font-size=\"23\" font-weight=\"700\">")
                 .append(escapeXml(panel.title()))
                 .append("</text>\n");
         svg.append("    <text x=\"")
                 .append(panelX + 24)
                 .append("\" y=\"")
                 .append(panelY + 56)
-                .append("\" fill=\"#667b92\" font-size=\"15\">")
+                .append("\" fill=\"")
+                .append(theme.subtitleText())
+                .append("\" font-size=\"15\">")
                 .append(escapeXml(panel.subtitle()))
                 .append("</text>\n");
 
@@ -579,7 +647,9 @@ public final class ReadmeBadgeSummarySupport {
                     .append(panelX + (panelWidth / 2))
                     .append("\" y=\"")
                     .append(panelY + (panelHeight / 2))
-                    .append("\" fill=\"#6b7f95\" font-size=\"17\" text-anchor=\"middle\">No history entries yet</text>\n");
+                    .append("\" fill=\"")
+                    .append(theme.xTickText())
+                    .append("\" font-size=\"17\" text-anchor=\"middle\">No history entries yet</text>\n");
             svg.append("  </g>\n");
             return;
         }
@@ -600,12 +670,16 @@ public final class ReadmeBadgeSummarySupport {
                     .append(plotX + plotWidth)
                     .append("\" y2=\"")
                     .append(formatDecimal(y))
-                    .append("\" stroke=\"#eef3f8\" stroke-width=\"1\"/>\n");
+                    .append("\" stroke=\"")
+                    .append(theme.yGridLine())
+                    .append("\" stroke-width=\"1\"/>\n");
             svg.append("    <text x=\"")
                     .append(plotX - 10)
                     .append("\" y=\"")
                     .append(formatDecimal(y + 4))
-                    .append("\" fill=\"#71859a\" font-size=\"13\" text-anchor=\"end\">")
+                    .append("\" fill=\"")
+                    .append(theme.yTickText())
+                    .append("\" font-size=\"13\" text-anchor=\"end\">")
                     .append(escapeXml(formatTickValue(tick, panel.valueFormat())))
                     .append("</text>\n");
         }
@@ -630,12 +704,16 @@ public final class ReadmeBadgeSummarySupport {
                     .append(formatDecimal(x))
                     .append("\" y2=\"")
                     .append(plotBottom)
-                    .append("\" stroke=\"#f6f8fb\" stroke-width=\"1\"/>\n");
+                    .append("\" stroke=\"")
+                    .append(theme.xGridLine())
+                    .append("\" stroke-width=\"1\"/>\n");
             svg.append("    <text x=\"")
                     .append(formatDecimal(labelX))
                     .append("\" y=\"")
                     .append(panelY + panelHeight - 24)
-                    .append("\" fill=\"#6b7f95\" font-size=\"13\" text-anchor=\"")
+                    .append("\" fill=\"")
+                    .append(theme.xTickText())
+                    .append("\" font-size=\"13\" text-anchor=\"")
                     .append(textAnchor)
                     .append("\">")
                     .append(escapeXml(xLabels.get(labelIndex)))
@@ -650,7 +728,9 @@ public final class ReadmeBadgeSummarySupport {
                 .append(plotWidth)
                 .append("\" height=\"")
                 .append(frameHeight)
-                .append("\" rx=\"18\" fill=\"none\" stroke=\"#edf3f8\"/>\n");
+                .append("\" rx=\"18\" fill=\"none\" stroke=\"")
+                .append(theme.plotFrame())
+                .append("\"/>\n");
 
         String areaPath = buildAreaPath(panel.points(), bounds.minValue(), bounds.maxValue(), plotX, plotY, plotWidth, plotHeight, plotBottom);
         String linePath = buildLinePath(panel.points(), bounds.minValue(), bounds.maxValue(), plotX, plotY, plotWidth, plotHeight);
@@ -671,7 +751,9 @@ public final class ReadmeBadgeSummarySupport {
                 .append(formatDecimal(latestX))
                 .append("\" cy=\"")
                 .append(formatDecimal(latestY))
-                .append("\" r=\"6\" fill=\"#ffffff\" stroke=\"")
+                .append("\" r=\"6\" fill=\"")
+                .append(theme.pointFill())
+                .append("\" stroke=\"")
                 .append(panel.primaryColor())
                 .append("\" stroke-width=\"3.5\"/>\n");
 
@@ -686,10 +768,14 @@ public final class ReadmeBadgeSummarySupport {
                 .append(")\">\n");
         svg.append("      <rect width=\"")
                 .append(formatDecimal(badgeWidth))
-                .append("\" height=\"28\" rx=\"14\" fill=\"#0f172a\"/>\n");
+                .append("\" height=\"28\" rx=\"14\" fill=\"")
+                .append(theme.badgeFill())
+                .append("\"/>\n");
         svg.append("      <text x=\"")
                 .append(formatDecimal(badgeWidth / 2.0d))
-                .append("\" y=\"19\" fill=\"#ffffff\" font-size=\"15\" font-weight=\"700\" text-anchor=\"middle\">")
+                .append("\" y=\"19\" fill=\"")
+                .append(theme.badgeText())
+                .append("\" font-size=\"15\" font-weight=\"700\" text-anchor=\"middle\">")
                 .append(escapeXml(latestValue))
                 .append("</text>\n");
         svg.append("    </g>\n");
@@ -877,7 +963,7 @@ public final class ReadmeBadgeSummarySupport {
         if ("percent".equals(valueFormat)) {
             return formatPercent(value);
         }
-        return formatInteger(value.setScale(0, RoundingMode.HALF_UP).intValue());
+        return formatCompactInteger(value.setScale(0, RoundingMode.HALF_UP).longValue());
     }
 
     private static String formatMetricValue(BigDecimal value, String valueFormat) {
@@ -897,6 +983,14 @@ public final class ReadmeBadgeSummarySupport {
                 + "/"
                 + formatInteger(coverage.totalCalls())
                 + " calls)";
+    }
+
+    private static Path darkMetricsOverviewGraphFile(Path graphFile) {
+        String fileName = graphFile.getFileName().toString();
+        if (fileName.endsWith(".svg")) {
+            return graphFile.resolveSibling(fileName.substring(0, fileName.length() - 4) + "-dark.svg");
+        }
+        return graphFile.resolveSibling(fileName + "-dark.svg");
     }
 
     private static String markdownCell(String value) {
@@ -967,6 +1061,24 @@ public final class ReadmeBadgeSummarySupport {
         NumberFormat format = NumberFormat.getIntegerInstance(Locale.US);
         format.setGroupingUsed(true);
         return format.format(value);
+    }
+
+    private static String formatCompactInteger(long value) {
+        long absoluteValue = Math.abs(value);
+        if (absoluteValue >= 1_000_000L) {
+            return formatCompactDecimal(value, 1_000_000L, "M");
+        }
+        if (absoluteValue >= 100_000L) {
+            return formatCompactDecimal(value, 1_000L, "K");
+        }
+        return formatInteger(value);
+    }
+
+    private static String formatCompactDecimal(long value, long divisor, String suffix) {
+        BigDecimal compactValue = BigDecimal.valueOf(value)
+                .divide(BigDecimal.valueOf(divisor), 1, RoundingMode.HALF_UP)
+                .stripTrailingZeros();
+        return compactValue.toPlainString() + suffix;
     }
 
     private static String formatPercent(BigDecimal value) {
@@ -1051,6 +1163,28 @@ public final class ReadmeBadgeSummarySupport {
     private record ChartBounds(
             BigDecimal minValue,
             BigDecimal maxValue
+    ) {
+    }
+
+    private record ThemePalette(
+            String dashboardStart,
+            String dashboardEnd,
+            String shadowColor,
+            String shadowOpacity,
+            String titleText,
+            String mutedText,
+            String panelFill,
+            String panelOpacity,
+            String panelStroke,
+            String subtitleText,
+            String yGridLine,
+            String yTickText,
+            String xGridLine,
+            String xTickText,
+            String plotFrame,
+            String pointFill,
+            String badgeFill,
+            String badgeText
     ) {
     }
 

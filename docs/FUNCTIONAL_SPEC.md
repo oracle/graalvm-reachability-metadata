@@ -73,7 +73,7 @@ Every two weeks the `create-scheduled-release` workflow packages metadata if it 
 `publish-scheduled-coverage.yml` derives, from committed `stats/` and `metadata/**/index.json`:
 - `latest/badges.json` — badges shown in the README (libraries supported, tested versions, dynamic-access coverage, tested LOC).
 - `latest/libraries.json` — per-library metrics.
-- `latest/metrics-over-time.svg` — historical chart referenced from [COVERAGE.md](../COVERAGE.md).
+- `latest/metrics-over-time.svg` and `latest/metrics-over-time-dark.svg` — light and dark historical charts referenced from [COVERAGE.md](../COVERAGE.md).
 - `history/history.json` — append-only history.
 
 These are force-pushed to the `stats/coverage` branch.
