@@ -11,12 +11,14 @@ import arrow.atomic.AtomicBoolean
 import arrow.atomic.AtomicInt
 import arrow.atomic.AtomicLong
 import arrow.atomic.getAndUpdate
+import arrow.atomic.loop
 import arrow.atomic.tryUpdate
 import arrow.atomic.update
 import arrow.atomic.updateAndGet
 import arrow.atomic.value
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -162,6 +164,26 @@ public class Arrow_atomic_jvmTest {
         }
 
         assertThat(counter.value).isEqualTo(workers * incrementsPerWorker)
+    }
+
+    @Test
+    fun atomicLoopContinuouslySuppliesLatestValueUntilActionStops() {
+        val counter = AtomicInt(1)
+        val observedValues = mutableListOf<Int>()
+
+        val failure = assertThrows<IllegalStateException> {
+            counter.loop { current ->
+                observedValues += current
+                if (current == 3) {
+                    throw IllegalStateException("loop stopped")
+                }
+                counter.value = current + 1
+            }
+        }
+
+        assertThat(failure).hasMessage("loop stopped")
+        assertThat(observedValues).containsExactly(1, 2, 3)
+        assertThat(counter.value).isEqualTo(3)
     }
 
     @Test
