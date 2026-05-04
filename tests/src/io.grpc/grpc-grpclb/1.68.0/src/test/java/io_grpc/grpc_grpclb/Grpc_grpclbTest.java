@@ -23,6 +23,8 @@ import io.grpc.ManagedChannel;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.NameResolver;
+import io.grpc.NameResolverProvider;
+import io.grpc.NameResolverRegistry;
 import io.grpc.Server;
 import io.grpc.Status;
 import io.grpc.SynchronizationContext;
@@ -44,6 +46,8 @@ import io.grpc.stub.StreamObserver;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -202,6 +206,45 @@ public class Grpc_grpclbTest {
         assertThat(LoadBalancerRegistry.getDefaultRegistry().getProvider("grpclb"))
                 .isNotNull()
                 .isInstanceOf(GrpclbLoadBalancerProvider.class);
+    }
+
+    @Test
+    void nameResolverRegistryUsesGrpclbDnsProviderForDnsTargets() throws Exception {
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        NameResolver resolver = null;
+        try {
+            NameResolverProvider provider = NameResolverRegistry.getDefaultRegistry().getProviderForScheme("dns");
+            assertThat(provider).isNotNull();
+            assertThat(provider.getDefaultScheme()).isEqualTo("dns");
+            assertThat(provider.getProducedSocketAddressTypes()).containsExactly(InetSocketAddress.class);
+
+            NameResolver.Args args = NameResolver.Args.newBuilder()
+                    .setDefaultPort(443)
+                    .setProxyDetector(serverAddress -> null)
+                    .setSynchronizationContext(new SynchronizationContext((thread, throwable) -> {
+                        throw new AssertionError("Unexpected resolver synchronization context failure", throwable);
+                    }))
+                    .setScheduledExecutorService(scheduledExecutorService)
+                    .setServiceConfigParser(new NameResolver.ServiceConfigParser() {
+                        @Override
+                        public NameResolver.ConfigOrError parseServiceConfig(Map<String, ?> serviceConfig) {
+                            return NameResolver.ConfigOrError.fromConfig(serviceConfig);
+                        }
+                    })
+                    .setChannelLogger(new NoopChannelLogger())
+                    .build();
+
+            resolver = provider.newNameResolver(URI.create("dns:///orders.example.internal"), args);
+            assertThat(resolver).isNotNull();
+            assertThat(resolver.getServiceAuthority()).isEqualTo("orders.example.internal");
+            assertThat(provider.newNameResolver(URI.create("unix:///tmp/grpc.sock"), args)).isNull();
+        } finally {
+            if (resolver != null) {
+                resolver.shutdown();
+            }
+            scheduledExecutorService.shutdownNow();
+            assertThat(scheduledExecutorService.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     @Test
