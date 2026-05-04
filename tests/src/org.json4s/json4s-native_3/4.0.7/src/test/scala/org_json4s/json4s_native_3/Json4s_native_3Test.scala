@@ -161,6 +161,37 @@ class Json4s_native_3Test {
   }
 
   @Test
+  def buildsJsonIncrementallyWithStreamingWriter(): Unit = {
+    val stringWriter: StringWriter = new StringWriter()
+    val writer: JsonWriter[StringWriter] = JsonWriter.streamingPretty(stringWriter, true)
+
+    val completedWriter: JsonWriter[StringWriter] = writer
+      .startObject()
+      .startField("name")
+      .string("café")
+      .startField("scores")
+      .startArray()
+      .int(10)
+      .bigDecimal(BigDecimal("20.50"))
+      .boolean(true)
+      .addJValue(JObject(JField("bonus", JInt(3))))
+      .endArray()
+      .endObject()
+
+    assertSame(stringWriter, completedWriter.result)
+    val jsonText: String = stringWriter.toString
+    assertTrue(jsonText.contains("\n"))
+    assertTrue(jsonText.contains("caf\\u00E9"))
+
+    val parsed: JValue = parse(jsonText, true, true)
+    assertEquals(JString("café"), parsed \ "name")
+    assertEquals(
+      JArray(List(JInt(10), JDecimal(BigDecimal("20.50")), JBool.True, JObject(JField("bonus", JInt(3))))),
+      parsed \ "scores"
+    )
+  }
+
+  @Test
   def exposesPackageLevelParseAndRenderHelpers(): Unit = {
     val parsed: JValue = parseJson("""{"ok":true,"values":[1,2,3]}""")
     assertEquals(JBool.True, parsed \ "ok")
