@@ -118,6 +118,18 @@ public class Arrow_atomic_jvmTest {
     }
 
     @Test
+    fun atomicIntSupportsGetThenArithmeticOperations() {
+        val counter = AtomicInt(10)
+
+        assertThat(counter.getAndIncrement()).isEqualTo(10)
+        assertThat(counter.value).isEqualTo(11)
+        assertThat(counter.getAndDecrement()).isEqualTo(11)
+        assertThat(counter.value).isEqualTo(10)
+        assertThat(counter.getAndAdd(5)).isEqualTo(10)
+        assertThat(counter.value).isEqualTo(15)
+    }
+
+    @Test
     fun atomicIntSupportsPublicUpdateFunctionsAndRetriesOnInterference() {
         val counter = AtomicInt(0)
         val seenValues = mutableListOf<Int>()
@@ -226,6 +238,18 @@ public class Arrow_atomic_jvmTest {
         assertThat(total.compareAndSet(250L, 300L)).isTrue()
         assertThat(total.compareAndSet(250L, 400L)).isFalse()
         assertThat(total.value).isEqualTo(300L)
+    }
+
+    @Test
+    fun atomicLongSupportsGetThenArithmeticOperations() {
+        val total = AtomicLong(10L)
+
+        assertThat(total.getAndIncrement()).isEqualTo(10L)
+        assertThat(total.value).isEqualTo(11L)
+        assertThat(total.getAndDecrement()).isEqualTo(11L)
+        assertThat(total.value).isEqualTo(10L)
+        assertThat(total.getAndAdd(5L)).isEqualTo(10L)
+        assertThat(total.value).isEqualTo(15L)
     }
 
     @Test
