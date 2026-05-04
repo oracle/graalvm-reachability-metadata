@@ -17,7 +17,11 @@ import com.akuleshov7.ktoml.tree.nodes.TomlArrayOfTablesElement
 import com.akuleshov7.ktoml.tree.nodes.TomlKeyValueArray
 import com.akuleshov7.ktoml.tree.nodes.TomlKeyValuePrimitive
 import com.akuleshov7.ktoml.tree.nodes.TomlTable
+import com.akuleshov7.ktoml.tree.nodes.pairs.values.TomlDateTime
 import com.akuleshov7.ktoml.writers.TomlWriter
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -204,6 +208,28 @@ public class Ktoml_core_jvmTest {
             mapOf("name" to "Hammer", "sku" to "738594937"),
             mapOf("name" to "Nail", "sku" to "284758393"),
         )
+    }
+
+    @Test
+    fun parsesAndEmitsTomlDateAndTimeValues(): Unit {
+        val input: String = """
+            released = 2024-02-29
+            starts = 09:30:15
+            created = 2024-02-29T09:30:15
+        """.trimIndent()
+
+        val tree = TomlParser(TomlInputConfig.compliant()).parseString(input)
+        val temporalValues: Map<String, TomlDateTime> = tree.children
+            .filterIsInstance<TomlKeyValuePrimitive>()
+            .associate { it.name to it.value as TomlDateTime }
+        val emitted: String = TomlWriter(TomlOutputConfig.compliant()).writeToString(tree)
+
+        assertThat(temporalValues.getValue("released").content).isEqualTo(LocalDate(2024, 2, 29))
+        assertThat(temporalValues.getValue("starts").content).isEqualTo(LocalTime(9, 30, 15))
+        assertThat(temporalValues.getValue("created").content).isEqualTo(LocalDateTime(2024, 2, 29, 9, 30, 15))
+        assertThat(emitted).contains("released = 2024-02-29")
+        assertThat(emitted).contains("starts = 09:30:15")
+        assertThat(emitted).contains("created = 2024-02-29T09:30:15")
     }
 
     @Test
