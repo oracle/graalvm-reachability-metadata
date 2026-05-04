@@ -9,7 +9,7 @@ package org_sangria_graphql.sangria_core_3
 import org.junit.jupiter.api.Assertions.{assertEquals, assertFalse, assertTrue, fail}
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
-import sangria.ast.{Document, EnumTypeDefinition, EnumValue as AstEnumValue, ListValue, ObjectTypeDefinition, ObjectValue, StringValue, Value}
+import sangria.ast.{BooleanValue, Document, EnumTypeDefinition, EnumValue as AstEnumValue, ListValue, ObjectTypeDefinition, ObjectValue, StringValue, Value}
 import sangria.execution.{Executor, ValidationError}
 import sangria.marshalling.{InputUnmarshaller, ScalaInput}
 import sangria.marshalling.queryAst.queryAstResultMarshaller
@@ -260,6 +260,55 @@ class Sangria_core_3Test {
   }
 
   @Test
+  def executesIntrospectionQueriesForSchemaAndDeprecatedFields(): Unit = {
+    val result: ObjectValue = execute(
+      """
+        |{
+        |  __schema {
+        |    queryType { name }
+        |    mutationType { name }
+        |    types { name }
+        |    directives { name }
+        |  }
+        |  __type(name: "Human") {
+        |    name
+        |    kind
+        |    fields(includeDeprecated: true) {
+        |      name
+        |      isDeprecated
+        |      deprecationReason
+        |    }
+        |  }
+        |}
+        |""".stripMargin
+    )
+
+    val data: ObjectValue = objectField(result, "data")
+    val schema: ObjectValue = objectField(data, "__schema")
+    assertStringField(objectField(schema, "queryType"), "name", "Query")
+    assertStringField(objectField(schema, "mutationType"), "name", "Mutation")
+    assertTrue(listField(schema, "types").values.exists {
+      case objectValue: ObjectValue => objectValue.fieldsByName("name") == StringValue("SearchResult")
+      case _ => false
+    })
+    assertTrue(listField(schema, "directives").values.exists {
+      case objectValue: ObjectValue => objectValue.fieldsByName("name") == StringValue("include")
+      case _ => false
+    })
+
+    val humanType: ObjectValue = objectField(data, "__type")
+    assertStringField(humanType, "name", "Human")
+    assertStringField(humanType, "kind", "OBJECT")
+
+    val fields: Vector[Value] = listField(humanType, "fields").values
+    val legacyName: ObjectValue = fields.collectFirst {
+      case objectValue: ObjectValue if objectValue.fieldsByName("name") == StringValue("legacyName") => objectValue
+    }.getOrElse(fail("Expected introspection result to include deprecated legacyName field"))
+    assertBooleanField(legacyName, "isDeprecated", expected = true)
+    assertStringField(legacyName, "deprecationReason", "Use name instead.")
+  }
+
+  @Test
   def coercesEnumValuesAndBuiltInScalarsThroughPublicTypeApi(): Unit = {
     assertEquals(Right(Episode.Empire), EpisodeEnum.coerceInput(AstEnumValue("EMPIRE")).map(_._1))
     assertEquals(Right(Episode.Jedi), EpisodeEnum.coerceUserInput("JEDI").map(_._1))
@@ -315,5 +364,11 @@ class Sangria_core_3Test {
       case actual: StringValue => assertEquals(expected, actual.value)
       case actual: AstEnumValue => assertEquals(expected, actual.value)
       case other => fail(s"Expected field '$fieldName' to be a string-like value, got $other")
+    }
+
+  private def assertBooleanField(value: ObjectValue, fieldName: String, expected: Boolean): Unit =
+    value.fieldsByName(fieldName) match {
+      case actual: BooleanValue => assertEquals(expected, actual.value)
+      case other => fail(s"Expected field '$fieldName' to be a boolean value, got $other")
     }
 }
