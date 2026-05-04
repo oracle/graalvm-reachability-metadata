@@ -1,0 +1,1000 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019df56b-f000-7192-a69d-6f616118cea5
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.codehaus.jackson:jackson-mapper-asl:1.8.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.8.3" when "$version$" is replaced with "1.8.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+- Set "coordinates" to "org.codehaus.jackson:jackson-mapper-asl:1.8.3".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.8.3".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s upstream metadata first, then patch the JSON in place with the version-templated URLs and description.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+-rw-rw-r-- 1 vjovanov vjovanov 70 May  5 01:56 build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+
+ succeeded in 0ms:
+{
+  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3"
+}
+
+web search: 
+web search: org.codehaus.jackson jackson-mapper-asl 1.8.3 maven source jar scm url
+web search: 
+web search: FasterXML jackson-1 tags 1.8.3 jackson-mapper-asl
+web search: 
+web search: https://github.com/FasterXML/jackson/wiki/Jackson-Releases
+web search: 
+web search: jackson 1.8.3 javadoc org.codehaus.jackson.map.ObjectMapper
+web search: 
+web search: 
+codex
+Maven Central has the published binary and sources for `1.8.3`, but not an obvious test artifact in the version directory. I’m checking the migrated Jackson 1.x repository now to find the matching tag and test/doc paths.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/FasterXML/jackson-1.git | rg '1\\.8\\.3|1_8_3|1-8-3|1\\.8'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/jackson-mapper-asl-1.8.3.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc 'curl -fsSI https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/1.8.3/index.html' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/jackson-mapper-asl-1.8.3-test-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 140ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+
+ <!-- General information -->
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.codehaus.jackson</groupId>
+  <artifactId>jackson-mapper-asl</artifactId>
+  <packaging>jar</packaging>
+  <name>Data Mapper for Jackson</name>
+  <version>1.8.3</version>
+  <description>Data Mapper package is a high-performance data binding package
+built on Jackson JSON processor
+</description>
+
+ <!-- Contact information -->
+
+  <url>http://jackson.codehaus.org</url>
+  <issueManagement>
+    <url>http://jira.codehaus.org/browse/JACKSON</url>
+  </issueManagement>
+
+ <!-- Dependency information -->
+ 
+  <dependencies>
+    <!-- need the core Jackson parser/generator jar -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <version>1.8.3</version>
+    </dependency>
+  </dependencies>
+
+  <!-- Licensing (joy!) -->
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>FasterXML</name>
+    <url>http://fasterxml.com</url>
+  </organization>
+
+</project>
+
+ succeeded in 223ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:56:50 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=ZVn5iEgRbdg10Bq4grc1cKI6r%2BJyLLvB9OELLZ9dvTxRx74t7MFCkUXTKlTrnnFPOxcNC44bZBD7XyqNWXSBptLR55BwoYiIgqa1WhRRgPkk6Ky2jL3UrqfCDQB%2FBZnRNYW0lJrZ1Vrm"}]}
+server: cloudflare
+cf-ray: 9f6b71bc0f843b57-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 394ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 23:56:50 GMT
+content-type: text/html
+cf-ray: 9f6b71bc0e8fa285-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/jackson-mapper-asl-1.8.3-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 430ms:
+8b0ff4837b7fe509b9e96c1857392dea3ecd364d	refs/tags/1.8
+
+web search: 
+web search: jackson 1.8.3 tag github jackson.codehaus.org svn
+web search: 
+web search: https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/
+web search: 
+web search: https://github.com/FasterXML/jackson-1/tags
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/jackson-mapper-asl-1.8.3.jar -o /tmp/jackson-mapper-asl-1.8.3.jar && jar tf /tmp/jackson-mapper-asl-1.8.3.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/jackson-mapper-asl-1.8.3-sources.jar -o /tmp/jackson-mapper-asl-1.8.3-sources.jar && jar tf /tmp/jackson-mapper-asl-1.8.3-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/FasterXML/jackson-1/contents/src?ref=1.8' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes?ref=1.8' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 306ms:
+[
+  {
+    "name": "VERSION.txt",
+    "path": "src/VERSION.txt",
+    "sha": "d78bda93422ecbbca8caf772f7b37f8fe3b254e9",
+    "size": 10,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/VERSION.txt?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/blob/1.8/src/VERSION.txt",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/blobs/d78bda93422ecbbca8caf772f7b37f8fe3b254e9",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-1/1.8/src/VERSION.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/VERSION.txt?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/blobs/d78bda93422ecbbca8caf772f7b37f8fe3b254e9",
+      "html": "https://github.com/FasterXML/jackson-1/blob/1.8/src/VERSION.txt"
+    }
+  },
+  {
+    "name": "java",
+    "path": "src/java",
+    "sha": "e037b71091f90646c3c619d49553a37ae11cf960",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/java?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/java",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/e037b71091f90646c3c619d49553a37ae11cf960",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/java?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/e037b71091f90646c3c619d49553a37ae11cf960",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/java"
+    }
+  },
+  {
+    "name": "jaxrs",
+    "path": "src/jaxrs",
+    "sha": "794ce1fe77e9212af91b0bdab1d7ad065b022a9d",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/jaxrs?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/jaxrs",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/794ce1fe77e9212af91b0bdab1d7ad065b022a9d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/jaxrs?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/794ce1fe77e9212af91b0bdab1d7ad065b022a9d",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/jaxrs"
+    }
+  },
+  {
+    "name": "mapper",
+    "path": "src/mapper",
+    "sha": "49dca417406b9bf071214eaa910ea0f8008faef3",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/mapper?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/mapper",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/49dca417406b9bf071214eaa910ea0f8008faef3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/mapper?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/49dca417406b9bf071214eaa910ea0f8008faef3",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/mapper"
+    }
+  },
+  {
+    "name": "maven",
+    "path": "src/maven",
+    "sha": "d359f1835250814f3c0329291b90ccd6b4ff4af7",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/maven?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/maven",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/d359f1835250814f3c0329291b90ccd6b4ff4af7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/maven?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/d359f1835250814f3c0329291b90ccd6b4ff4af7",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/maven"
+    }
+  },
+  {
+    "name": "mrbean",
+    "path": "src/mrbean",
+    "sha": "d153cfed6e420e5e22bdb36cbc659fbd8d0fbbfb",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/mrbean?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/mrbean",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/d153cfed6e420e5e22bdb36cbc659fbd8d0fbbfb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/mrbean?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/d153cfed6e420e5e22bdb36cbc659fbd8d0fbbfb",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/mrbean"
+    }
+  },
+  {
+    "name": "perf",
+    "path": "src/perf",
+    "sha": "a619cdc8476319e7e6e853dd4546e27a914b40c5",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/perf?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/perf",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/a619cdc8476319e7e6e853dd4546e27a914b40c5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/perf?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/a619cdc8476319e7e6e853dd4546e27a914b40c5",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/perf"
+    }
+  },
+  {
+    "name": "sample",
+    "path": "src/sample",
+    "sha": "05f80cc7ff1c0d83bbd218ada68f309e151e19d3",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/sample?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/sample",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/05f80cc7ff1c0d83bbd218ada68f309e151e19d3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/sample?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/05f80cc7ff1c0d83bbd218ada68f309e151e19d3",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/sample"
+    }
+  },
+  {
+    "name": "smile",
+    "path": "src/smile",
+    "sha": "f291ea78e0b478e133c07cf5efcd0615d1c55f87",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/smile?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/smile",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/f291ea78e0b478e133c07cf5efcd0615d1c55f87",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/smile?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/f291ea78e0b478e133c07cf5efcd0615d1c55f87",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/smile"
+    }
+  },
+  {
+    "name": "test",
+    "path": "src/test",
+    "sha": "a619f2d6ff25e1bf4142335a6d1e90ebacfd9630",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/test?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/test",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/a619f2d6ff25e1bf4142335a6d1e90ebacfd9630",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/test?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/a619f2d6ff25e1bf4142335a6d1e90ebacfd9630",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/test"
+    }
+  },
+  {
+    "name": "tools",
+    "path": "src/tools",
+    "sha": "11fec8735b16291fa1376ec4a871821d79a6da36",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/tools?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/tools",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/11fec8735b16291fa1376ec4a871821d79a6da36",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/tools?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/11fec8735b16291fa1376ec4a871821d79a6da36",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/tools"
+    }
+  },
+  {
+    "name": "xc",
+    "path": "src/xc",
+    "sha": "81dd197e2d4f2c1fb4976b06578d7634e484800d",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/xc?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/src/xc",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/81dd197e2d4f2c1fb4976b06578d7634e484800d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/src/xc?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/81dd197e2d4f2c1fb4976b06578d7634e484800d",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/src/xc"
+    }
+  }
+]
+
+ succeeded in 415ms:
+META-INF/MANIFEST.MF
+org/codehaus/jackson/map/AbstractTypeResolver.java
+org/codehaus/jackson/map/AnnotationIntrospector.java
+org/codehaus/jackson/map/BeanDescription.java
+org/codehaus/jackson/map/BeanProperty.java
+org/codehaus/jackson/map/ClassIntrospector.java
+org/codehaus/jackson/map/ContextualDeserializer.java
+org/codehaus/jackson/map/ContextualKeyDeserializer.java
+org/codehaus/jackson/map/ContextualSerializer.java
+org/codehaus/jackson/map/DeserializationConfig.java
+org/codehaus/jackson/map/DeserializationContext.java
+org/codehaus/jackson/map/DeserializationProblemHandler.java
+org/codehaus/jackson/map/DeserializerFactory.java
+org/codehaus/jackson/map/DeserializerProvider.java
+org/codehaus/jackson/map/Deserializers.java
+org/codehaus/jackson/map/HandlerInstantiator.java
+org/codehaus/jackson/map/JsonDeserializer.java
+org/codehaus/jackson/map/JsonMappingException.java
+org/codehaus/jackson/map/JsonSerializable.java
+org/codehaus/jackson/map/JsonSerializableWithType.java
+org/codehaus/jackson/map/JsonSerializer.java
+org/codehaus/jackson/map/KeyDeserializer.java
+org/codehaus/jackson/map/KeyDeserializers.java
+org/codehaus/jackson/map/MapperConfig.java
+org/codehaus/jackson/map/MappingIterator.java
+org/codehaus/jackson/map/MappingJsonFactory.java
+org/codehaus/jackson/map/Module.java
+org/codehaus/jackson/map/ObjectMapper.java
+org/codehaus/jackson/map/ObjectReader.java
+org/codehaus/jackson/map/ObjectWriter.java
+org/codehaus/jackson/map/PropertyNamingStrategy.java
+org/codehaus/jackson/map/ResolvableDeserializer.java
+org/codehaus/jackson/map/ResolvableSerializer.java
+org/codehaus/jackson/map/RuntimeJsonMappingException.java
+org/codehaus/jackson/map/SerializationConfig.java
+org/codehaus/jackson/map/SerializerFactory.java
+org/codehaus/jackson/map/SerializerProvider.java
+org/codehaus/jackson/map/Serializers.java
+org/codehaus/jackson/map/TreeMapper.java
+org/codehaus/jackson/map/TypeDeserializer.java
+org/codehaus/jackson/map/TypeSerializer.java
+org/codehaus/jackson/map/annotate/JacksonStdImpl.java
+org/codehaus/jackson/map/annotate/JsonCachable.java
+org/codehaus/jackson/map/annotate/JsonDeserialize.java
+org/codehaus/jackson/map/annotate/JsonFilter.java
+org/codehaus/jackson/map/annotate/JsonSerialize.java
+org/codehaus/jackson/map/annotate/JsonTypeIdResolver.java
+org/codehaus/jackson/map/annotate/JsonTypeResolver.java
+org/codehaus/jackson/map/annotate/JsonView.java
+org/codehaus/jackson/map/annotate/NoClass.java
+org/codehaus/jackson/map/annotate/package-info.java
+org/codehaus/jackson/map/deser/AbstractDeserializer.java
+org/codehaus/jackson/map/deser/ArrayDeserializer.java
+org/codehaus/jackson/map/deser/ArrayDeserializers.java
+org/codehaus/jackson/map/deser/BasicDeserializerFactory.java
+org/codehaus/jackson/map/deser/BeanDeserializer.java
+org/codehaus/jackson/map/deser/BeanDeserializerBuilder.java
+org/codehaus/jackson/map/deser/BeanDeserializerFactory.java
+org/codehaus/jackson/map/deser/BeanDeserializerModifier.java
+org/codehaus/jackson/map/deser/CollectionDeserializer.java
+org/codehaus/jackson/map/deser/ContainerDeserializer.java
+org/codehaus/jackson/map/deser/Creator.java
+org/codehaus/jackson/map/deser/CreatorContainer.java
+org/codehaus/jackson/map/deser/CustomDeserializerFactory.java
+org/codehaus/jackson/map/deser/DateDeserializer.java
+org/codehaus/jackson/map/deser/EnumDeserializer.java
+org/codehaus/jackson/map/deser/EnumMapDeserializer.java
+org/codehaus/jackson/map/deser/EnumResolver.java
+org/codehaus/jackson/map/deser/EnumSetDeserializer.java
+org/codehaus/jackson/map/deser/FromStringDeserializer.java
+org/codehaus/jackson/map/deser/JsonNodeDeserializer.java
+org/codehaus/jackson/map/deser/MapDeserializer.java
+org/codehaus/jackson/map/deser/PropertyValue.java
+org/codehaus/jackson/map/deser/PropertyValueBuffer.java
+org/codehaus/jackson/map/deser/SettableAnyProperty.java
+org/codehaus/jackson/map/deser/SettableBeanProperty.java
+org/codehaus/jackson/map/deser/StdDeserializationContext.java
+org/codehaus/jackson/map/deser/StdDeserializer.java
+org/codehaus/jackson/map/deser/StdDeserializerProvider.java
+org/codehaus/jackson/map/deser/StdDeserializers.java
+
+ succeeded in 418ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/ASL2.0
+META-INF/LICENSE
+META-INF/NOTICE
+org/
+org/codehaus/
+org/codehaus/jackson/
+org/codehaus/jackson/map/
+org/codehaus/jackson/map/AbstractTypeResolver.class
+org/codehaus/jackson/map/AnnotationIntrospector$Pair.class
+org/codehaus/jackson/map/AnnotationIntrospector$ReferenceProperty$Type.class
+org/codehaus/jackson/map/AnnotationIntrospector$ReferenceProperty.class
+org/codehaus/jackson/map/AnnotationIntrospector.class
+org/codehaus/jackson/map/BeanDescription.class
+org/codehaus/jackson/map/BeanProperty$Std.class
+org/codehaus/jackson/map/BeanProperty.class
+org/codehaus/jackson/map/ClassIntrospector$MixInResolver.class
+org/codehaus/jackson/map/ClassIntrospector.class
+org/codehaus/jackson/map/ContextualDeserializer.class
+org/codehaus/jackson/map/ContextualKeyDeserializer.class
+org/codehaus/jackson/map/ContextualSerializer.class
+org/codehaus/jackson/map/DeserializationConfig$Feature.class
+org/codehaus/jackson/map/DeserializationConfig.class
+org/codehaus/jackson/map/DeserializationContext.class
+org/codehaus/jackson/map/DeserializationProblemHandler.class
+org/codehaus/jackson/map/DeserializerFactory$Config.class
+org/codehaus/jackson/map/DeserializerFactory.class
+org/codehaus/jackson/map/DeserializerProvider.class
+org/codehaus/jackson/map/Deserializers$None.class
+org/codehaus/jackson/map/Deserializers.class
+org/codehaus/jackson/map/HandlerInstantiator.class
+org/codehaus/jackson/map/JsonDeserializer$None.class
+org/codehaus/jackson/map/JsonDeserializer.class
+org/codehaus/jackson/map/JsonMappingException$Reference.class
+org/codehaus/jackson/map/JsonMappingException.class
+org/codehaus/jackson/map/JsonSerializable.class
+org/codehaus/jackson/map/JsonSerializableWithType.class
+org/codehaus/jackson/map/JsonSerializer$None.class
+org/codehaus/jackson/map/JsonSerializer.class
+
+ succeeded in 319ms:
+[
+  {
+    "name": "CREDITS",
+    "path": "release-notes/CREDITS",
+    "sha": "d1bdd5b2c64d366528f7824dee74d77b1ad667b2",
+    "size": 23973,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/CREDITS?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/blob/1.8/release-notes/CREDITS",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/blobs/d1bdd5b2c64d366528f7824dee74d77b1ad667b2",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-1/1.8/release-notes/CREDITS",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/CREDITS?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/blobs/d1bdd5b2c64d366528f7824dee74d77b1ad667b2",
+      "html": "https://github.com/FasterXML/jackson-1/blob/1.8/release-notes/CREDITS"
+    }
+  },
+  {
+    "name": "TODO",
+    "path": "release-notes/TODO",
+    "sha": "6bc77422f2a26a25385e699261b080db1b99ec9e",
+    "size": 443,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/TODO?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/blob/1.8/release-notes/TODO",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/blobs/6bc77422f2a26a25385e699261b080db1b99ec9e",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-1/1.8/release-notes/TODO",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/TODO?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/blobs/6bc77422f2a26a25385e699261b080db1b99ec9e",
+      "html": "https://github.com/FasterXML/jackson-1/blob/1.8/release-notes/TODO"
+    }
+  },
+  {
+    "name": "VERSION",
+    "path": "release-notes/VERSION",
+    "sha": "ca45767fc0c1501cb500cff442649aa5fe3053d0",
+    "size": 63054,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/VERSION?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/blob/1.8/release-notes/VERSION",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/blobs/ca45767fc0c1501cb500cff442649aa5fe3053d0",
+    "download_url": "https://raw.githubusercontent.com/FasterXML/jackson-1/1.8/release-notes/VERSION",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/VERSION?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/blobs/ca45767fc0c1501cb500cff442649aa5fe3053d0",
+      "html": "https://github.com/FasterXML/jackson-1/blob/1.8/release-notes/VERSION"
+    }
+  },
+  {
+    "name": "asl",
+    "path": "release-notes/asl",
+    "sha": "de523cccbdc8926804896943d850ca0f058d1755",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/asl?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/release-notes/asl",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/de523cccbdc8926804896943d850ca0f058d1755",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/asl?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/de523cccbdc8926804896943d850ca0f058d1755",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/release-notes/asl"
+    }
+  },
+  {
+    "name": "lgpl",
+    "path": "release-notes/lgpl",
+    "sha": "7f3e8f750d543f652c3d6926d8a15eed7f1fd8ad",
+    "size": 0,
+    "url": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/lgpl?ref=1.8",
+    "html_url": "https://github.com/FasterXML/jackson-1/tree/1.8/release-notes/lgpl",
+    "git_url": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/7f3e8f750d543f652c3d6926d8a15eed7f1fd8ad",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/FasterXML/jackson-1/contents/release-notes/lgpl?ref=1.8",
+      "git": "https://api.github.com/repos/FasterXML/jackson-1/git/trees/7f3e8f750d543f652c3d6926d8a15eed7f1fd8ad",
+      "html": "https://github.com/FasterXML/jackson-1/tree/1.8/release-notes/lgpl"
+    }
+  }
+]
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/
+web search: 
+web search: 
+web search: 
+web search: javadoc.io org.codehaus.jackson jackson-mapper-asl 1.8.3 index
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/1.8.3/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/FasterXML/jackson-1/tags?per_page=100 | rg '\"name\"' | sed -n '1,60p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/jackson-mapper-asl-1.8.3-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/FasterXML/jackson-1/1.8/src/VERSION.txt' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 238ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jackson-mapper-asl 1.8.3 javadoc (org.codehaus.jackson)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/org.codehaus.jackson">org.codehaus.jackson</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jackson-mapper-asl
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/org.codehaus.jackson/jackson-asl" class="dropdown-item">
+							jackson-asl
+						</a>
+						
+						<a href="/doc/org.codehaus.jackson/jackson-core-asl" class="dropdown-item">
+							jackson-core-asl
+						</a>
+						
+						<a href="/doc/org.codehaus.jackson/jackson-core-lgpl" class="dropdown-item">
+							jackson-core-lgpl
+						</a>
+						
+						<a href="/doc/org.codehaus.jackson/jackson-jaxrs" class="dropdown-item">
+							jackson-jaxrs
+						</a>
+						
+						<a href="/doc/org.codehaus.jackson/jackson-lgpl" class="dropdown-item">
+							jackson-lgpl
+						</a>
+						
+						<a href="/doc/org.codehaus.jackson/jackson-mapper-asl" class="dropdown-item">
+							jackson-mapper-asl
+						</a>
+						
+						<a href="/doc/org.codehaus.jackson/jackson-mapper-lgpl" class="dropdown-item">
+							jackson-mapper-lgpl
+
+ succeeded in 259ms:
+@VERSION@
+
+ exited 22 in 318ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 04 May 2026 23:57:21 GMT
+content-type: text/html
+cf-ray: 9f6b727fe80dbac0-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/jackson-mapper-asl-1.8.3-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 343ms:
+    "name": "1.9",
+    "name": "1.8",
+    "name": "1.7",
+    "name": "1.6",
+    "name": "1.5",
+    "name": "1.4.6",
+    "name": "1.4.0",
+    "name": "1.3",
+    "name": "1.2.0",
+    "name": "1.1.2",
+    "name": "1.1.0",
+    "name": "1.0.0",
+    "name": "0.9.7",
+
+web search: 
+web search: Maven Central org.codehaus.jackson jackson-mapper-asl 1.8.3 sources jar
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\" : \"https://repo1.maven.org/maven2' build/discovered-artifact-metadata | head -10" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"repository-url\" : \"https://github.com/FasterXML/jackson' -n build/discovered-artifact-metadata metadata tests 2>/dev/null | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:31:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-module-kotlin",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-databind",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:38:    "repository-url" : "https://github.com/FasterXML/jackson-annotations",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:129:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:23:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:56:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/tools.jackson.core/jackson-core/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.fasterxml.jackson.core/jackson-databind/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.15.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/jackson-databind",
+    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+    "description" : "Jackson Databind provides general-purpose data binding and tree-model APIs for Jackson on top of the core streaming API. It converts between JSON and Java objects and can also work with other data formats when compatible parsers and generators are available.",
+    "tested-versions" : [
+      "2.15.2",
+      "2.15.4",
+      "2.16.0",
+      "2.16.1",
+      "2.16.2",
+      "2.17.0",
+      "2.17.1",
+      "2.17.2",
+      "2.17.3",
+      "2.18.0",
+      "2.18.1",
+      "2.18.2",
+      "2.18.3",
+      "2.18.4",
+      "2.18.5",
+      "2.19.0",
+      "2.19.1",
+      "2.19.2",
+      "2.19.3",
+      "2.19.4",
+      "2.20.0",
+      "2.20.1",
+      "2.21.0",
+      "2.21.1",
+      "2.21.2",
+      "2.21.3"
+    ],
+    "allowed-packages" : [
+      "com.fasterxml.jackson.databind"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg '\"language\"' build/discovered-artifact-metadata metadata | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "language" : {
+metadata/com.github.scopt/scopt_3/index.json:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:    "language" : {
+metadata/org.scala-lang.modules/scala-parallel-collections_3/index.json:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:    "language" : {
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:    "language" : {
+metadata/app.cash.sqldelight/runtime-jvm/index.json:    "language" : {
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:    "language" : {
+metadata/app.cash.sqldelight/sqlite-driver/index.json:    "language" : {
+metadata/app.cash.sqldelight/jdbc-driver/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:    "language" : {
+
+exec
+/usr/bin/bash -lc "rg '\"not-for-native-image\"' build/discovered-artifact-metadata metadata | head -20" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+metadata/com.squareup.wire/wire-runtime/index.json:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-codec-native-quic/index.json:    "not-for-native-image": true,
+metadata/io.netty.incubator/netty-incubator-transport-native-io_uring/index.json:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:    "not-for-native-image": true,
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:        "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrency/index.json:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria_3/index.json:    "not-for-native-image": true,
+metadata/com.squareup/kotlinpoet/index.json:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/runtime/index.json:    "not-for-native-image": true,
+metadata/app.cash.sqldelight/primitive-adapters/index.json:    "not-for-native-image": true,
+metadata/com.github.h0tk3y.betterParse/better-parse/index.json:    "not-for-native-image": true,
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -5" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | sed -n '2p' | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+codex
+I found an exact Maven sources JAR and exact javadoc.io documentation for `1.8.3`. The GitHub migration only exposes a `1.8` tag and Maven Central does not publish a test-sources artifact for this version, so I’m leaving `test-code-url` as `N/A` rather than recording a non-exact test URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+diff --git a/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json b/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+index a8fc155c68204d536120788df2978ae103abd704..b1ae58cf7bd13adb087997c6808c911e343f4365
+--- a/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
++++ b/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3"
++  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3",
++  "repository-url" : "https://github.com/FasterXML/jackson-1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/$version$/jackson-mapper-asl-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/$version$/index.html",
++  "description" : "Jackson Mapper ASL is the legacy Jackson 1.x data-binding module that maps JSON content to and from Java objects using the Jackson streaming parser and generator. It provides ObjectMapper, serializers, deserializers, annotations, and related configuration APIs for building JSON data-binding workflows on the JVM."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json b/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+index a8fc155c68204d536120788df2978ae103abd704..b1ae58cf7bd13adb087997c6808c911e343f4365
+--- a/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
++++ b/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3"
++  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3",
++  "repository-url" : "https://github.com/FasterXML/jackson-1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/$version$/jackson-mapper-asl-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/$version$/index.html",
++  "description" : "Jackson Mapper ASL is the legacy Jackson 1.x data-binding module that maps JSON content to and from Java objects using the Jackson streaming parser and generator. It provides ObjectMapper, serializers, deserializers, annotations, and related configuration APIs for building JSON data-binding workflows on the JVM."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python3 -m json.tool build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json >/tmp/jackson-metadata.json && sed -n '1,120p' /tmp/jackson-metadata.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+{
+    "coordinates": "org.codehaus.jackson:jackson-mapper-asl:1.8.3",
+    "repository-url": "https://github.com/FasterXML/jackson-1",
+    "source-code-url": "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/$version$/jackson-mapper-asl-$version$-sources.jar",
+    "test-code-url": "N/A",
+    "documentation-url": "https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/$version$/index.html",
+    "description": "Jackson Mapper ASL is the legacy Jackson 1.x data-binding module that maps JSON content to and from Java objects using the Jackson streaming parser and generator. It provides ObjectMapper, serializers, deserializers, annotations, and related configuration APIs for building JSON data-binding workflows on the JVM."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.8.3/jackson-mapper-asl-1.8.3-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:57:53 GMT
+content-type: application/java-archive
+content-length: 452950
+cf-ray: 9f6b734a8e89bab9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 174684
+etag: "260952edb03315654411ecc35472c889"
+last-modified: Sat, 09 Jul 2011 05:23:04 GMT
+x-checksum-md5: 260952edb03315654411ecc35472c889
+x-checksum-sha1: 895a285bc49d872bacdddc32ce515cf0e969385a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/1.8.3/index.html' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+diff --git a/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json b/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+index a8fc155c68204d536120788df2978ae103abd704..b1ae58cf7bd13adb087997c6808c911e343f4365
+--- a/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
++++ b/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3"
++  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3",
++  "repository-url" : "https://github.com/FasterXML/jackson-1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/$version$/jackson-mapper-asl-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/$version$/index.html",
++  "description" : "Jackson Mapper ASL is the legacy Jackson 1.x data-binding module that maps JSON content to and from Java objects using the Jackson streaming parser and generator. It provides ObjectMapper, serializers, deserializers, annotations, and related configuration APIs for building JSON data-binding workflows on the JVM."
+ }
+
+ succeeded in 143ms:
+HTTP/2 200 
+date: Mon, 04 May 2026 23:57:53 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=TLzAOpAswFejBYKc7Ke8WbSy%2FXNiad4A6FTA0cTvsP3JK7yFT0okGFWKA%2BbS4aJlFXUeL7wK919YQbnUX5eo7so0IZTNtt4SQhOCyhmSyf%2B37NpskYCQvtzX1GU9KLbVbW9oT1VW8FHp"}]}
+server: cloudflare
+cf-ray: 9f6b734a8b753b51-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json && sed -n '1,120p' build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2862-39e45b10
+diff --git a/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json b/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+index a8fc155c68204d536120788df2978ae103abd704..b1ae58cf7bd13adb087997c6808c911e343f4365
+--- a/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
++++ b/build/discovered-artifact-metadata/org.codehaus.jackson-jackson-mapper-asl-1.8.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3"
++  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3",
++  "repository-url" : "https://github.com/FasterXML/jackson-1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/$version$/jackson-mapper-asl-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/$version$/index.html",
++  "description" : "Jackson Mapper ASL is the legacy Jackson 1.x data-binding module that maps JSON content to and from Java objects using the Jackson streaming parser and generator. It provides ObjectMapper, serializers, deserializers, annotations, and related configuration APIs for building JSON data-binding workflows on the JVM."
+ }
+
+ succeeded in 175ms:
+{
+  "coordinates" : "org.codehaus.jackson:jackson-mapper-asl:1.8.3",
+  "repository-url" : "https://github.com/FasterXML/jackson-1",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/$version$/jackson-mapper-asl-$version$-sources.jar",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/$version$/index.html",
+  "description" : "Jackson Mapper ASL is the legacy Jackson 1.x data-binding module that maps JSON content to and from Java objects using the Jackson streaming parser and generator. It provides ObjectMapper, serializers, deserializers, annotations, and related configuration APIs for building JSON data-binding workflows on the JVM."
+}
+
+web search: 
+web search: Maven Central org.codehaus.jackson jackson-mapper-asl 1.8.3 sources jar
+web search: 
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon has been stopped: stop command received
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
