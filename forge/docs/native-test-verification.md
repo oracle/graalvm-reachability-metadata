@@ -27,6 +27,8 @@ code:
   running `metadataConfigDirs` so the next cycle's build sees it, then
   continue. If later `172` cycles stop producing new trace metadata
   entries, retry once and then route to codex with the native failure log.
+  If the outer metadata-gap budget is exhausted, route to codex with the
+  accumulated trace context.
 - any other non-0  -> code/test failure; route to codex (the coding
   agent). Codex finishes it: on codex success return
   `PASSED_WITH_INTERVENTION`; on codex failure return `FAILED`. The gate
@@ -82,7 +84,7 @@ branch to its checkpoint.
 flowchart TD
     Start([invoke gate]) --> Init[reset output_dir + runs_dir<br/>config_dirs = []<br/>i = 0]
     Init --> Outer{i &lt; max-native-test-verification-iterations?}
-    Outer -- no --> FailExhausted([return FAILED<br/>metadata-gap-exhausted])
+    Outer -- no --> Codex
     Outer -- yes --> Run[gradlew runNativeTraceImage<br/>-PtraceMetadataPath=runs/cycle-i<br/>-PtraceMetadataConditionPackages=&lt;packages&gt;<br/>-PmetadataConfigDirs=&lt;config_dirs&gt;]
     Run --> Route{binary exit code}
     Route -- 0 --> Merge[mergeNativeTraceMetadata<br/>config_dirs &rarr; output_dir]
@@ -136,10 +138,10 @@ Per-cycle semantics:
   tests when codex cannot recover — exactly the wrong move when the
   failure is a real code/test bug we want surfaced.
 - **Two failure reasons, one status.** `FAILED` is returned on
-  `metadata-gap-exhausted` (172 every cycle until the budget runs out) or
-  `code-failure` (codex did not converge after a routed failure). The
-  diagnostic is recorded in the result's `intervention_records`,
-  `accepted_run_dirs`, and `last_native_test_log_path`.
+  `code-failure` (codex did not converge after a routed failure), including
+  after a metadata-gap budget exhaustion. The diagnostic is recorded in the
+  result's `intervention_records`, `accepted_run_dirs`, and
+  `last_native_test_log_path`.
 - **Codex keeps prior config_dirs.** Codex's fixes are additive; the gate
   does not discard `config_dirs` before codex runs. (Codex returns
   terminally so the question of carrying state across codex is moot for
@@ -231,7 +233,8 @@ A `verify_native_test_passes(...)` invocation is correct iff:
 4. The gate never invokes `run_pi_post_generation_fix`.
 5. The function honors `max-native-test-verification-iterations` and never
    exceeds the configured outer budget. Reaching the budget without a
-   passing exit returns `FAILED` with reason "metadata-gap-exhausted".
+   passing exit invokes `run_codex_metadata_fix` once and returns based on
+   codex's exit code.
 6. On `FAILED`, the result includes a non-empty
    `last_native_test_log_path`, a populated
    `last_native_test_exit_code` (when the binary actually ran), the

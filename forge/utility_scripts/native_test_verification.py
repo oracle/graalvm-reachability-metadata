@@ -17,7 +17,8 @@ code. The gate routes on that exit code:
 - ``172``   → metadata gap; append the cycle's trace dir to the running
   ``metadataConfigDirs`` so the next cycle's build sees it, then continue.
   If later ``172`` runs stop producing new trace entries, retry once and then
-  route to Codex with the native failure log.
+  route to Codex with the native failure log. If the outer metadata-gap budget
+  is exhausted, route to Codex with the accumulated trace context.
 - any other → run ``run_codex_metadata_fix`` once. Codex finishes it: on
   codex success return ``PASSED_WITH_INTERVENTION``; on codex failure return
   ``FAILED``. The gate does not re-verify after codex.
@@ -140,10 +141,16 @@ def verify_native_test_passes(
             intervention_records=intervention_records,
         )
 
-    def _route_to_codex(cycle: int, run_dir: str, reason: str) -> NativeTestVerificationResult:
+    def _route_to_codex(
+            cycle: int,
+            run_dir: str,
+            reason: str,
+            iterations_used: int | None = None,
+    ) -> NativeTestVerificationResult:
+        result_iterations = iterations_used if iterations_used is not None else cycle + 1
         log_stage(
             _GATE_STAGE,
-            f"cycle {cycle + 1}: {reason}; routing to codex (terminal)",
+            f"cycle {result_iterations}: {reason}; routing to codex (terminal)",
         )
         codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
             reachability_repo_path,
@@ -156,7 +163,7 @@ def verify_native_test_passes(
         )
         intervention_records.append(
             InterventionRecord(
-                stage=f"cycle-{cycle + 1}-codex",
+                stage=f"cycle-{result_iterations}-codex",
                 kind="codex",
                 log_path=codex_log_path,
             )
@@ -166,9 +173,9 @@ def verify_native_test_passes(
                 _GATE_STAGE,
                 f"codex did not converge (timed_out={codex_timed_out}, rc={codex_rc}); FAILED",
             )
-            return _make_result(STATUS_FAILED, cycle + 1)
+            return _make_result(STATUS_FAILED, result_iterations)
         log_stage(_GATE_STAGE, "codex finished; trusting codex's outcome")
-        return _make_result(STATUS_PASSED_WITH_INTERVENTION, cycle + 1)
+        return _make_result(STATUS_PASSED_WITH_INTERVENTION, result_iterations)
 
     for cycle in range(max_iterations):
         log_stage(_GATE_STAGE, f"cycle {cycle + 1}/{max_iterations}")
@@ -262,12 +269,16 @@ def verify_native_test_passes(
             f"binary failed (gradle_exit={gradle_rc}, binary_exit={binary_rc})",
         )
 
-    log_stage(
-        _GATE_STAGE,
-        f"FAILED after {max_iterations} cycles "
-        f"(metadata-gap-exhausted; last binary_exit={last_binary_rc})",
+    codex_run_dir = os.path.join(runs_dir, f"cycle-{max_iterations}-codex")
+    os.makedirs(codex_run_dir, exist_ok=True)
+    if last_log_path is not None:
+        _print_failure_log_tail(last_log_path, max_iterations)
+    return _route_to_codex(
+        max_iterations - 1,
+        codex_run_dir,
+        f"metadata gap budget exhausted after {max_iterations} cycles",
+        iterations_used=max_iterations,
     )
-    return _make_result(STATUS_FAILED, max_iterations)
 
 
 def _run_native_trace_image_command(

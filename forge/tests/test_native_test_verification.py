@@ -444,19 +444,27 @@ class GateRoutingTests(unittest.TestCase):
         self.assertIn("native log line 6\n", printed)
         self.assertIn("MissingResourceRegistrationError: missing resource", printed)
 
-    def test_failed_when_budget_exhausted_with_only_172(self) -> None:
+    def test_routes_to_codex_when_budget_exhausted_with_only_172(self) -> None:
         fake, _calls = self._fake_run_factory([172, 172])
-        with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake):
+        with patch(
+            "utility_scripts.native_test_verification.subprocess.run",
+            side_effect=fake,
+        ), patch(
+            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            return_value=(0, "/tmp/codex.log", False),
+        ) as codex_mock:
             result = ntv.verify_native_test_passes(
                 reachability_repo_path=self.repo,
                 coordinate="g:a:1.0",
                 output_dir=self.output_dir,
                 max_iterations=2,
             )
-        self.assertEqual(result.status, ntv.STATUS_FAILED)
+        self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
         self.assertEqual(result.iterations_used, 2)
         self.assertEqual(result.last_native_test_exit_code, ntv.MISSING_METADATA_EXIT_CODE)
-        self.assertEqual(result.intervention_records, [])
+        codex_mock.assert_called_once()
+        self.assertEqual(len(result.intervention_records), 1)
+        self.assertEqual(result.intervention_records[0].kind, "codex")
 
     def test_routes_to_codex_on_non_172_failure(self) -> None:
         fake, _calls = self._fake_run_factory([1])
